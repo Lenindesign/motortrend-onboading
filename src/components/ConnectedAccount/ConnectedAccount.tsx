@@ -6,15 +6,13 @@ export interface ConnectedAccountProps {
   accountName?: string;
   isConnected?: boolean;
   onConnect?: () => void;
-  onDisconnect?: () => void;
 }
 
 export const ConnectedAccount: React.FC<ConnectedAccountProps> = ({ 
   provider, 
   accountName,
   isConnected = false,
-  onConnect,
-  onDisconnect
+  onConnect
 }) => {
   const getProviderIcon = () => {
     switch (provider) {

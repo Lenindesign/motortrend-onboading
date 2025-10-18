@@ -76,7 +76,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
 
         {/* Interest Tiles */}
         <div className="interest-tiles">
-          {interestOptions.map((interest, index) => (
+          {interestOptions.map((interest) => (
             <button
               key={interest}
               className={`interest-tile ${

@@ -3,7 +3,7 @@
  * Integrates Figma design system with Sign In and Onboarding pages
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import SignIn from './pages/SignIn';
