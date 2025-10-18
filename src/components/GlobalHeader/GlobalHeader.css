@@ -1,0 +1,127 @@
+/**
+ * Global Header Styles
+ * Based on Figma Community design system
+ */
+
+.global-header {
+  background-color: var(--color-neutrals-1);
+  padding: 12px 24px;
+  width: 100%;
+}
+
+.global-header__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+/* Left Section */
+.global-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.global-header__logo {
+  height: 24px;
+  width: auto;
+}
+
+.global-header__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.global-header__nav-link {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-5);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.global-header__nav-link:hover {
+  color: var(--color-neutrals-8);
+}
+
+/* Right Section */
+.global-header__right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.global-header__search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background-color: var(--color-neutrals-3);
+  border: none;
+  border-radius: var(--border-radius-md);
+  color: var(--color-neutrals-8);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.global-header__search-btn:hover {
+  background-color: var(--color-neutrals-4);
+}
+
+.global-header__sign-in-btn {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-5);
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.global-header__sign-in-btn:hover {
+  color: var(--color-neutrals-8);
+}
+
+.global-header__profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color var(--transition-fast);
+}
+
+.global-header__profile-btn:hover {
+  background-color: var(--color-neutrals-3);
+}
+
+.global-header__profile-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .global-header__nav {
+    display: none;
+  }
+  
+  .global-header__content {
+    gap: var(--spacing-2);
+  }
+}
+

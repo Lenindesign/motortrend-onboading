@@ -1,0 +1,159 @@
+/**
+ * Article Card Styles
+ * Based on Figma Community design system
+ */
+
+.article-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  width: 421px;
+  height: 178px;
+  background-color: var(--color-neutrals-7);
+  border-radius: 8px;
+  transition: box-shadow var(--transition-fast);
+}
+
+.article-card:hover {
+  box-shadow: var(--shadow-depth-5);
+}
+
+.article-card__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: stretch;
+  gap: 16px;
+  width: 100%;
+}
+
+.article-card__image-container {
+  position: relative;
+  flex-shrink: 0;
+  width: 153.5px;
+  height: 104.34px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.article-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-card__gallery-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 4px;
+  background-color: var(--color-neutrals-2);
+  border-radius: 4px;
+}
+
+.article-card__gallery-badge svg {
+  width: 24px;
+  height: 24px;
+}
+
+.article-card__info {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex: 1;
+}
+
+.article-card__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.article-card__title-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  gap: 4px;
+}
+
+.article-card__title {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.143em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-card__meta {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+}
+
+.article-card__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  align-self: stretch;
+}
+
+.article-card__read-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background-color: var(--color-neutrals-3);
+  border: none;
+  border-radius: 4px;
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.143em;
+  color: var(--color-neutrals-8);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.article-card__read-btn:hover {
+  background-color: var(--color-neutrals-2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .article-card {
+    width: 100%;
+    height: auto;
+    min-height: 178px;
+  }
+
+  .article-card__content {
+    flex-direction: column;
+  }
+
+  .article-card__image-container {
+    width: 100%;
+    height: 180px;
+  }
+}
+

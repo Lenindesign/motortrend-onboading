@@ -1,0 +1,144 @@
+/**
+ * Global Footer Styles
+ * Based on Figma Community design system
+ */
+
+.global-footer {
+  background-color: var(--color-neutrals-1);
+  padding: 48px 24px;
+  width: 100%;
+}
+
+.global-footer__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Main Footer Content */
+.global-footer__main {
+  display: flex;
+  gap: var(--spacing-3);
+  justify-content: space-between;
+}
+
+.global-footer__left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.global-footer__logo {
+  height: 24px;
+  width: auto;
+}
+
+.global-footer__links {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.714em;
+  color: var(--color-neutrals-5);
+  margin: 0;
+}
+
+.global-footer__link {
+  color: var(--color-neutrals-5);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.global-footer__link:hover {
+  color: var(--color-neutrals-8);
+}
+
+/* Newsletter Section */
+.global-footer__newsletter {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.global-footer__newsletter-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-8);
+  margin: 0;
+}
+
+.global-footer__newsletter-description {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-5);
+  margin: 0;
+}
+
+/* Divider */
+.global-footer__divider {
+  height: 1px;
+  background-color: var(--color-neutrals-3);
+  width: 100%;
+}
+
+/* Bottom Bar */
+.global-footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: 11px 0;
+}
+
+.global-footer__bottom-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.global-footer__copyright,
+.global-footer__magazine-links,
+.global-footer__disclaimer {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-5);
+  margin: 0;
+}
+
+.global-footer__magazine-link {
+  color: var(--color-neutrals-5);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.global-footer__magazine-link:hover {
+  color: var(--color-neutrals-8);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .global-footer {
+    padding: 32px 16px;
+  }
+  
+  .global-footer__main {
+    flex-direction: column;
+  }
+  
+  .global-footer__newsletter {
+    width: 100%;
+  }
+  
+  .global-footer__bottom {
+    flex-direction: column;
+  }
+}
+

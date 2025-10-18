@@ -1,0 +1,113 @@
+.comparison-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--neutrals-7);
+  border-radius: 8px;
+  width: 421px;
+  height: 207px;
+}
+
+.comparison-card__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
+}
+
+.comparison-card__vehicle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  width: 153px;
+}
+
+.comparison-card__image-container {
+  width: 153px;
+  height: 104.34px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.comparison-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comparison-card__name {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.14em;
+  color: var(--neutrals-2);
+  margin: 0;
+  text-align: left;
+}
+
+.comparison-card__vs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--neutrals-1);
+  border-radius: 100px;
+  font-family: var(--font-gilroy);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.33em;
+  color: var(--neutrals-8);
+  flex-shrink: 0;
+}
+
+.comparison-card__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.comparison-card__button {
+  padding: 6px 16px;
+  background: var(--neutrals-3);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.14em;
+  color: var(--neutrals-8);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.comparison-card__button:hover {
+  background: var(--neutrals-4);
+}
+
+@media (max-width: 768px) {
+  .comparison-card {
+    width: 100%;
+    height: auto;
+  }
+  
+  .comparison-card__content {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .comparison-card__vehicle {
+    width: 100%;
+  }
+  
+  .comparison-card__image-container {
+    width: 100%;
+  }
+}
+

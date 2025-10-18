@@ -1,0 +1,126 @@
+/**
+ * TextField Styles
+ * Based on Figma Community design system
+ */
+
+.text-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.text-field--full-width {
+  width: 100%;
+}
+
+/* Label */
+.text-field__label {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-3);
+}
+
+/* Input Container */
+.text-field__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: var(--border-radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.text-field__input-container:focus-within {
+  border-color: var(--color-blue);
+}
+
+.text-field--error .text-field__input-container {
+  border-color: var(--color-primary-2);
+}
+
+/* Input */
+.text-field__input {
+  flex: 1;
+  padding: 9px 15px;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 18px;
+  line-height: 1.556em;
+  color: var(--color-neutrals-1);
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.text-field__input::placeholder {
+  color: var(--color-neutrals-5);
+}
+
+.text-field__input--icon-left {
+  padding-left: 40px;
+}
+
+.text-field__input--icon-right {
+  padding-right: 40px;
+}
+
+/* Disabled State */
+.text-field--disabled .text-field__input-container {
+  background-color: var(--color-neutrals-7);
+  cursor: not-allowed;
+}
+
+.text-field--disabled .text-field__input {
+  color: var(--color-neutrals-4);
+  cursor: not-allowed;
+}
+
+/* Icon */
+.text-field__icon {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutrals-4);
+  transition: color var(--transition-fast);
+}
+
+.text-field__icon:hover {
+  color: var(--color-neutrals-3);
+}
+
+.text-field__icon--left {
+  left: 12px;
+}
+
+.text-field__icon--right {
+  right: 12px;
+}
+
+.text-field__icon[aria-hidden="true"] {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Helper Text */
+.text-field__helper-text {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-4);
+}
+
+.text-field__helper-text--error {
+  color: var(--color-primary-2);
+}
+

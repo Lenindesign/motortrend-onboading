@@ -1,0 +1,313 @@
+/**
+ * Profile Banner Styles
+ * Apple Design Guidelines inspired
+ * 
+ * Design Principles:
+ * - Clarity: Clean typography with proper hierarchy
+ * - Deference: Content-focused, minimal chrome
+ * - Depth: Subtle shadows for layering
+ * - Breathing room: Generous spacing
+ */
+
+.profile-banner {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-neutrals-7);
+}
+
+/* Background Image with Overlay */
+.profile-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=400&fit=crop&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(1px) brightness(1.1);
+  opacity: 0.15;
+  z-index: 0;
+}
+
+/* Gradient Overlay for Depth */
+.profile-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  z-index: 1;
+}
+
+.profile-banner__container {
+  position: relative;
+  z-index: 2;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 48px 32px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ========================================
+   Avatar
+   ======================================== */
+
+.profile-banner__avatar {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.profile-banner__avatar:hover {
+  transform: scale(1.03);
+}
+
+.profile-banner__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-banner__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 36px;
+  letter-spacing: -0.5px;
+  color: #FFFFFF;
+  user-select: none;
+}
+
+/* ========================================
+   User Info
+   ======================================== */
+
+.profile-banner__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0; /* Allow text truncation */
+}
+
+.profile-banner__name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: var(--color-neutrals-1);
+  /* Text overflow handling */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-banner__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.profile-banner__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-banner__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-neutrals-4);
+}
+
+.profile-banner__meta-text {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--color-neutrals-3);
+  white-space: nowrap;
+}
+
+.profile-banner__meta-separator {
+  font-size: 15px;
+  color: var(--color-neutrals-5);
+  user-select: none;
+}
+
+/* ========================================
+   Edit Button (Apple style)
+   ======================================== */
+
+.profile-banner__edit-btn {
+  padding: 10px 20px;
+  background: var(--color-neutrals-1);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.profile-banner__edit-btn:hover {
+  background: var(--color-neutrals-2);
+  transform: translateY(-1px);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-banner__edit-btn:active {
+  transform: scale(0.98);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   Tablet Responsive (iPad)
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .profile-banner__container {
+    padding: 40px 24px 28px;
+  }
+
+  .profile-banner__name {
+    font-size: 28px;
+  }
+}
+
+/* ========================================
+   Mobile Responsive (iPhone)
+   ======================================== */
+
+@media (max-width: 768px) {
+  .profile-banner__container {
+    padding: 32px 20px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .profile-banner__avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-banner__avatar-placeholder {
+    font-size: 32px;
+  }
+
+  .profile-banner__name {
+    font-size: 24px;
+    letter-spacing: -0.3px;
+  }
+
+  .profile-banner__meta {
+    gap: 10px;
+  }
+
+  .profile-banner__meta-text {
+    font-size: 14px;
+  }
+
+  .profile-banner__icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .profile-banner__edit-btn {
+    width: 100%;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+}
+
+/* ========================================
+   Dark Mode Support (Apple style)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .profile-banner {
+    background-color: var(--color-neutrals-2);
+  }
+
+  .profile-banner::before {
+    filter: blur(1px) brightness(0.7);
+    opacity: 0.2;
+  }
+
+  .profile-banner::after {
+    background: linear-gradient(
+      135deg,
+      rgba(20, 20, 22, 0.85) 0%,
+      rgba(35, 38, 47, 0.9) 50%,
+      rgba(20, 20, 22, 0.85) 100%
+    );
+  }
+
+  .profile-banner__name {
+    color: var(--color-neutrals-8);
+  }
+
+  .profile-banner__meta-text {
+    color: var(--color-neutrals-5);
+  }
+
+  .profile-banner__icon {
+    color: var(--color-neutrals-5);
+  }
+
+  .profile-banner__meta-separator {
+    color: var(--color-neutrals-4);
+  }
+
+  .profile-banner__edit-btn {
+    background: var(--color-neutrals-7);
+    color: var(--color-neutrals-1);
+  }
+
+  .profile-banner__edit-btn:hover {
+    background: var(--color-neutrals-6);
+  }
+}

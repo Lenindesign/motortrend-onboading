@@ -1,0 +1,128 @@
+.vehicle-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--neutrals-7);
+  border-radius: 8px;
+  width: 421px;
+  height: 178px;
+}
+
+.vehicle-card__image-container {
+  position: relative;
+  width: 153.5px;
+  height: 104.34px;
+  flex-shrink: 0;
+}
+
+.vehicle-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.vehicle-card__gallery-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 24px;
+  height: 24px;
+  color: var(--neutrals-2);
+  opacity: 0.6;
+}
+
+.vehicle-card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  height: 100%;
+}
+
+.vehicle-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vehicle-card__name {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375em;
+  color: var(--neutrals-2);
+  margin: 0;
+}
+
+.vehicle-card__type {
+  font-family: var(--font-geist);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.33em;
+  color: var(--neutrals-2);
+  margin: 0;
+}
+
+.vehicle-card__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.vehicle-card__ratings {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  padding: 4px 8px;
+  background: var(--neutrals-1);
+  border-radius: 4px;
+}
+
+.vehicle-card__rating {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-gilroy);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1em;
+  color: var(--neutrals-8);
+  padding: 0 8px;
+}
+
+.vehicle-card__rating:first-child {
+  border-right: 1px solid var(--neutrals-3);
+}
+
+.vehicle-card__button {
+  padding: 6px 16px;
+  background: var(--neutrals-3);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.14em;
+  color: var(--neutrals-8);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.vehicle-card__button:hover {
+  background: var(--neutrals-4);
+}
+
+@media (max-width: 768px) {
+  .vehicle-card {
+    width: 100%;
+    height: auto;
+  }
+}
+

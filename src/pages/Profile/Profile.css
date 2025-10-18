@@ -1,0 +1,478 @@
+/**
+ * Profile Page Styles
+ * Based on Figma Community design system
+ */
+
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  background-color: var(--color-neutrals-8);
+  padding-bottom: var(--spacing-4);
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: row;
+  align-self: stretch;
+  gap: 24px;
+  padding: 0 24px;
+}
+
+.profile-sidebar {
+  flex-shrink: 0;
+}
+
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  max-width: 966px;
+}
+
+/* Profile Sections */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  gap: 24px;
+  padding: 24px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: 8px;
+  box-shadow: var(--shadow-depth-5);
+}
+
+.profile-section--header {
+  height: 65px;
+  background-color: var(--color-neutrals-1);
+}
+
+.profile-section--articles {
+  padding: 24px;
+}
+
+.profile-section--form {
+  padding: 0 24px 24px;
+}
+
+.profile-section--vehicles {
+  padding: 24px;
+}
+
+.profile-section--comparisons {
+  padding: 24px;
+}
+
+.profile-section--videos {
+  padding: 24px;
+}
+
+.profile-section--subscriptions {
+  padding: 24px;
+}
+
+.profile-section--settings {
+  padding: 24px;
+}
+
+.profile-section--connected-accounts {
+  padding: 24px;
+  gap: 24px;
+}
+
+.profile-section__title {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.167em;
+  color: var(--color-neutrals-7);
+  margin: 0;
+}
+
+.profile-section__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+}
+
+.profile-section__header-row {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: 16px;
+}
+
+.profile-section__heading {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+  width: 451px;
+  height: 19px;
+}
+
+.profile-articles {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  width: 918px;
+}
+
+/* Vehicles Section */
+.profile-vehicles-subsection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.profile-subsection__title {
+  font-family: var(--font-geist);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.29em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+}
+
+.profile-vehicles-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.profile-section-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-neutrals-5);
+  margin: 8px 0;
+}
+
+/* Comparisons Section */
+.profile-comparisons-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  width: 918px;
+}
+
+/* Videos Section */
+.profile-videos-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  width: 918px;
+}
+
+/* Subscriptions Section */
+.profile-subscriptions-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: 918px;
+  flex-wrap: wrap;
+}
+
+/* Account Settings Section */
+.profile-settings-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.profile-settings-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #C4C7C5;
+}
+
+.profile-connected-accounts-title {
+  font-family: var(--font-gilroy);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.17em;
+  color: var(--neutrals-1);
+  margin: 0;
+}
+
+.profile-connected-accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.profile-empty-state {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-4);
+  text-align: center;
+  margin: var(--spacing-4) 0;
+}
+
+/* Profile Form Section */
+.profile-form-header {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-form-title {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+  width: 451px;
+  height: 30px;
+}
+
+.profile-form-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  padding: 48px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-7);
+  border-radius: 8px;
+  box-shadow: var(--shadow-depth-5);
+}
+
+.profile-form-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-form-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-form-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-form-step {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3em;
+  text-align: center;
+  color: var(--color-black);
+  width: 526px;
+  height: 16px;
+}
+
+.profile-form-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-form-heading {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.125em;
+  text-align: center;
+  color: #111827;
+  margin: 0;
+  width: 564px;
+  height: 32px;
+}
+
+.profile-form-subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.3em;
+  text-align: center;
+  color: #4B5563;
+  margin: 0;
+}
+
+.profile-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 548px;
+}
+
+.profile-form-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  gap: 16px;
+}
+
+.profile-form-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  width: 124px;
+  height: 40px;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 16px;
+  line-height: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.profile-form-btn--primary {
+  background-color: var(--color-neutrals-2);
+  color: var(--color-neutrals-8);
+  border: none;
+}
+
+.profile-form-btn--primary:hover {
+  background-color: var(--color-neutrals-1);
+}
+
+.profile-form-btn--secondary {
+  background-color: transparent;
+  color: var(--color-neutrals-2);
+  border: 1px solid var(--color-neutrals-2);
+  opacity: 0.5;
+}
+
+.profile-form-btn--secondary:disabled {
+  cursor: not-allowed;
+}
+
+.profile-form-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.profile-form-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  gap: 16px;
+}
+
+.profile-form-skip {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3em;
+  text-align: center;
+  color: var(--color-neutrals-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.profile-form-skip:hover {
+  color: var(--color-neutrals-3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .profile-content {
+    flex-direction: column;
+  }
+
+  .profile-sidebar {
+    width: 100%;
+  }
+
+  .profile-main {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .profile-articles {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-vehicles-grid,
+  .profile-comparisons-grid,
+  .profile-videos-grid,
+  .profile-subscriptions-grid {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profile-form-card {
+    padding: var(--spacing-4);
+  }
+
+  .profile-form-fields {
+    width: 100%;
+  }
+
+  .profile-form-heading,
+  .profile-form-step {
+    width: 100%;
+  }
+
+  .profile-form-actions {
+    flex-direction: column;
+  }
+
+  .profile-form-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-content {
+    padding: 0 12px;
+  }
+
+  .profile-section {
+    padding: 16px;
+  }
+
+  .profile-section__heading,
+  .profile-form-title {
+    width: 100%;
+    height: auto;
+  }
+
+  .profile-form-heading {
+    font-size: 24px;
+    height: auto;
+  }
+}
+

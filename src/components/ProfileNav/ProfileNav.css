@@ -1,0 +1,67 @@
+/**
+ * Profile Navigation Styles
+ * Based on Figma Community design system
+ */
+
+.profile-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--color-neutrals-7);
+  border-radius: 8px;
+}
+
+.profile-nav__btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  width: 194px;
+  background-color: transparent;
+  border: 1px solid var(--color-neutrals-2);
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 16px;
+  line-height: 1em;
+  text-align: center;
+  color: var(--color-neutrals-1);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.profile-nav__btn:hover {
+  background-color: var(--color-neutrals-6);
+}
+
+.profile-nav__btn--active {
+  background-color: var(--color-neutrals-1);
+  color: var(--color-neutrals-8);
+  border-color: var(--color-neutrals-1);
+}
+
+.profile-nav__btn--active:hover {
+  background-color: var(--color-neutrals-2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .profile-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .profile-nav__btn {
+    width: auto;
+    flex: 1 1 calc(50% - 8px);
+    min-width: 140px;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+

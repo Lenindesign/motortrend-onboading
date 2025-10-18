@@ -1,0 +1,94 @@
+/**
+ * Onboarding Step 2 Styles
+ * Based on Figma Community design system
+ */
+
+/* Wide card for step 2 */
+.onboarding-card--wide {
+  max-width: 660px;
+}
+
+/* Larger subtitle for step 2 */
+.onboarding-card__subtitle--larger {
+  font-size: 20px;
+  line-height: 1.3em;
+}
+
+/* Interest Tiles Grid */
+.interest-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.interest-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2);
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  text-align: left;
+  width: 100%;
+  min-height: 60px;
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-neutrals-8);
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-depth-5);
+}
+
+.interest-tile:hover {
+  border-color: var(--color-neutrals-5);
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 24px 0px rgba(20, 20, 22, 0.1);
+}
+
+.interest-tile--selected {
+  background-color: var(--color-neutrals-2);
+  color: var(--color-neutrals-8);
+  border-color: var(--color-neutrals-2);
+  box-shadow: none;
+}
+
+.interest-tile--selected:hover {
+  background-color: var(--color-neutrals-3);
+  border-color: var(--color-neutrals-3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .onboarding-card--wide {
+    max-width: 100%;
+  }
+
+  .interest-tiles {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+
+  .interest-tile {
+    min-height: 56px;
+    font-size: 16px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .interest-tiles {
+    gap: var(--spacing-1);
+  }
+  
+  .interest-tile {
+    padding: var(--spacing-2);
+    min-height: 52px;
+  }
+}
+

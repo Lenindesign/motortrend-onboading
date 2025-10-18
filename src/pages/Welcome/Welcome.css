@@ -1,0 +1,419 @@
+/**
+ * Welcome Page Styles
+ * Based on Figma Community design system
+ */
+
+.welcome-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px);
+  padding: var(--spacing-6);
+  background-color: var(--color-neutrals-2);
+}
+
+.welcome-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-7);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-depth-5);
+}
+
+/* MotorTrend Logo */
+.welcome-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: var(--spacing-2);
+}
+
+.welcome-logo {
+  width: 280px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Welcome Message */
+.welcome-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.welcome-message__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-2);
+}
+
+.welcome-title {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  text-align: center;
+  margin: 0;
+}
+
+.welcome-subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: #4B5563;
+  text-align: center;
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Profile Summary */
+.profile-summary {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.profile-summary__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: var(--color-white);
+  box-shadow: 0px 2px 8px 0px rgba(20, 20, 22, 0.08);
+  border-radius: var(--border-radius-md);
+}
+
+.profile-summary__header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+
+.profile-summary__title {
+  font-family: 'Poppins', var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+  text-align: left;
+  margin: 0;
+}
+
+.profile-summary__details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2) var(--spacing-4);
+  width: 100%;
+}
+
+.profile-summary__left,
+.profile-summary__right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-detail {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.profile-detail strong {
+  font-weight: 600;
+  color: var(--color-neutrals-1);
+}
+
+.profile-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-neutrals-6);
+  margin: 4px 0;
+}
+
+/* Vehicle Section */
+.vehicle-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.vehicle-section__title {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.vehicle-card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--color-neutrals-7);
+  border-radius: var(--border-radius-md);
+}
+
+.vehicle-card__image {
+  flex-shrink: 0;
+  width: 150px;
+  height: 100px;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+.vehicle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vehicle-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  padding-top: 4px;
+}
+
+.vehicle-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.vehicle-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.vehicle-change-link {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.vehicle-change-link:hover {
+  color: var(--color-neutrals-2);
+}
+
+.vehicle-type-radios {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.radio-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-neutrals-5);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.radio-option--selected .radio-button {
+  background-color: var(--color-neutrals-1);
+  border-color: var(--color-neutrals-1);
+}
+
+.radio-button__dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--color-white);
+  border-radius: 50%;
+}
+
+.radio-option__label {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+}
+
+.vehicle-card__remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: var(--color-neutrals-1);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--color-white);
+  transition: background-color var(--transition-fast);
+}
+
+.vehicle-card__remove:hover {
+  background-color: var(--color-neutrals-2);
+}
+
+.vehicle-card__remove svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Welcome Actions */
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  margin-top: var(--spacing-2);
+}
+
+.welcome-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  width: 100%;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 16px;
+  line-height: 1em;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.welcome-btn--primary {
+  background-color: var(--color-neutrals-2);
+  color: var(--color-neutrals-8);
+  border: none;
+}
+
+.welcome-btn--primary:hover {
+  background-color: var(--color-neutrals-1);
+}
+
+.welcome-btn--primary svg {
+  width: 18px;
+  height: 18px;
+}
+
+.welcome-btn--secondary {
+  background-color: transparent;
+  color: var(--color-neutrals-4);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.welcome-btn--secondary:hover {
+  border-color: var(--color-neutrals-5);
+  color: var(--color-neutrals-3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .welcome-page {
+    padding: var(--spacing-3);
+  }
+
+  .welcome-card {
+    padding: var(--spacing-4);
+    gap: var(--spacing-3);
+  }
+
+  .welcome-logo {
+    width: 220px;
+    max-width: 90%;
+  }
+
+  .welcome-title {
+    font-size: 24px;
+  }
+
+  .welcome-subtitle {
+    font-size: 15px;
+  }
+
+  .profile-summary__details {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vehicle-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vehicle-card__image {
+    width: 100%;
+    height: 160px;
+  }
+
+  .vehicle-type-radios {
+    flex-wrap: wrap;
+  }
+
+  .welcome-btn {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+

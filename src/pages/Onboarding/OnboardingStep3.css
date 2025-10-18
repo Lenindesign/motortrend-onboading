@@ -1,0 +1,196 @@
+/**
+ * Onboarding Step 3 Styles
+ * Based on Figma Community design system
+ */
+
+/* Vehicle Search Section */
+.vehicle-search {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vehicle-search__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 32px;
+  width: 100%;
+  max-width: 564px;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-depth-5);
+}
+
+.vehicle-search__header {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  flex: 1;
+}
+
+.vehicle-search__label {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3em;
+  color: var(--color-black);
+}
+
+/* Radio Group */
+.vehicle-search__radio-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.radio-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.radio-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 24px;
+  border: 1px solid var(--color-neutrals-5);
+  background-color: var(--color-neutrals-8);
+  padding: 5px;
+  transition: all var(--transition-fast);
+}
+
+.radio-option--selected .radio-button {
+  background-color: var(--color-neutrals-2);
+  border-color: var(--color-neutrals-2);
+}
+
+.radio-button__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-primary-2);
+}
+
+.radio-option__label {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-2);
+}
+
+/* Search Input Section */
+.vehicle-search__input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  flex: 1;
+}
+
+.vehicle-search__input-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: 6px 16px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: var(--border-radius-md);
+  transition: border-color var(--transition-fast);
+}
+
+.vehicle-search__input-container:focus-within {
+  border-color: var(--color-blue);
+}
+
+.vehicle-search__icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-neutrals-4);
+  flex-shrink: 0;
+}
+
+.vehicle-search__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.75em;
+  color: var(--color-neutrals-2);
+  padding: 0;
+}
+
+.vehicle-search__input::placeholder {
+  color: var(--color-neutrals-5);
+}
+
+.vehicle-search__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vehicle-search__no-vehicle {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3em;
+  color: #9CA3AF;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: color var(--transition-fast);
+}
+
+.vehicle-search__no-vehicle:hover {
+  color: var(--color-neutrals-4);
+  text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .vehicle-search__container {
+    flex-direction: column;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+  }
+
+  .vehicle-search__radio-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .vehicle-search__container {
+    padding: var(--spacing-2);
+  }
+
+  .vehicle-search__input-container {
+    padding: 8px 12px;
+  }
+
+  .vehicle-search__input {
+    font-size: 14px;
+  }
+}
+
