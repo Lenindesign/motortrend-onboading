@@ -49,6 +49,22 @@
   box-shadow: var(--shadow-depth-5);
 }
 
+/* Empty State */
+.profile-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--color-neutrals-3);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5em;
+  background-color: var(--color-neutrals-7);
+  border: 1px dashed var(--color-neutrals-5);
+  border-radius: var(--border-radius-md);
+}
+
 .profile-section--header {
   height: 65px;
   background-color: var(--color-neutrals-1);

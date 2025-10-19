@@ -354,7 +354,13 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                             checked={car.ownership === 'own'}
                             onChange={(e) => handleOwnershipChange(car.name, e.target.value as 'own' | 'want')}
                           />
-                          <span className="radio-custom"></span>
+                          <div className="radio-icon">
+                            {car.ownership === 'own' ? (
+                              <Icon name="radio_button_checked" size={20} style={{ color: "#DC3545" }} />
+                            ) : (
+                              <Icon name="radio_button_unchecked" size={20} style={{ color: "#CED4DA" }} />
+                            )}
+                          </div>
                           <span className="radio-text">I Own This Car</span>
                         </label>
                         <label className="ownership-option">
@@ -365,7 +371,13 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                             checked={car.ownership === 'want'}
                             onChange={(e) => handleOwnershipChange(car.name, e.target.value as 'own' | 'want')}
                           />
-                          <span className="radio-custom"></span>
+                          <div className="radio-icon">
+                            {car.ownership === 'want' ? (
+                              <Icon name="radio_button_checked" size={20} style={{ color: "#DC3545" }} />
+                            ) : (
+                              <Icon name="radio_button_unchecked" size={20} style={{ color: "#CED4DA" }} />
+                            )}
+                          </div>
                           <span className="radio-text">I Want This Car</span>
                         </label>
                       </div>

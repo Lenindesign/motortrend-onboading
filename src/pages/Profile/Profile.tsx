@@ -3,7 +3,7 @@
  * Based on Figma Community design system
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProfileBanner from '../../components/ProfileBanner';
 import ProfileNav from '../../components/ProfileNav';
 import type { ProfileNavTab } from '../../components/ProfileNav';
@@ -54,17 +54,34 @@ export const Profile: React.FC<ProfileProps> = ({
   const [activeTab, setActiveTab] = useState<ProfileNavTab>('my-account');
   
   // Bookmark state management
-  const [savedVehicles, setSavedVehicles] = useState<string[]>(['vehicle-1', 'vehicle-2', 'vehicle-3']);
   const [savedArticles, setSavedArticles] = useState<string[]>(['article-1', 'article-2']);
   const [savedComparisons, setSavedComparisons] = useState<string[]>(['comparison-1']);
   const [savedVideos, setSavedVideos] = useState<string[]>(['video-1', 'video-2']);
+  
+  // Onboarding vehicles state
+  const [onboardingVehicles, setOnboardingVehicles] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
+  
+  // Load onboarding vehicles from localStorage
+  useEffect(() => {
+    const onboardingData = localStorage.getItem('onboardingData');
+    if (onboardingData) {
+      try {
+        const parsed = JSON.parse(onboardingData);
+        if (parsed.vehicles && Array.isArray(parsed.vehicles)) {
+          setOnboardingVehicles(parsed.vehicles);
+        }
+      } catch (error) {
+        console.error('Error parsing onboarding data:', error);
+      }
+    }
+  }, []);
   
   // Toast state
   const [showToast, setShowToast] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ type: string; id: string } | null>(null);
 
   // Bookmark handlers
-  const handleBookmarkClick = (type: 'vehicle' | 'article' | 'comparison' | 'video', id: string) => {
+  const handleBookmarkClick = (type: 'article' | 'comparison' | 'video', id: string) => {
     setPendingDelete({ type, id });
     setShowToast(true);
   };
@@ -75,9 +92,6 @@ export const Profile: React.FC<ProfileProps> = ({
     const { type, id } = pendingDelete;
     
     switch (type) {
-      case 'vehicle':
-        setSavedVehicles(prev => prev.filter(v => v !== id));
-        break;
       case 'article':
         setSavedArticles(prev => prev.filter(a => a !== id));
         break;
@@ -96,6 +110,27 @@ export const Profile: React.FC<ProfileProps> = ({
   const handleCancelDelete = () => {
     setShowToast(false);
     setPendingDelete(null);
+  };
+
+  // Categorize onboarding vehicles
+  const vehiclesIOwn = onboardingVehicles.filter(vehicle => vehicle.ownership === 'own');
+  const vehiclesIWant = onboardingVehicles.filter(vehicle => vehicle.ownership === 'want');
+
+  // Handle removing onboarding vehicles
+  const handleRemoveOnboardingVehicle = (vehicleName: string) => {
+    setOnboardingVehicles(prev => prev.filter(v => v.name !== vehicleName));
+    
+    // Update localStorage
+    const onboardingData = localStorage.getItem('onboardingData');
+    if (onboardingData) {
+      try {
+        const parsed = JSON.parse(onboardingData);
+        parsed.vehicles = parsed.vehicles.filter((v: any) => v.name !== vehicleName);
+        localStorage.setItem('onboardingData', JSON.stringify(parsed));
+      } catch (error) {
+        console.error('Error updating onboarding data:', error);
+      }
+    }
   };
 
   const mockArticles = [
@@ -200,57 +235,64 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                   
                   {/* Cars I Own */}
-                  <div className="profile-vehicles-subsection">
-                    <h4 className="profile-subsection__title">Cars I Own</h4>
-                    <div className="profile-vehicles-grid">
-                      {savedVehicles.includes('vehicle-1') && (
-                        <VehicleCard
-                          image="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=400&h=300&fit=crop&q=80"
-                          name="2021 Subaru WRX"
-                          type="Sedan"
-                          rating1={9.1}
-                          rating2={8.5}
-                          hasMultipleRatings={true}
-                          isBookmarked={true}
-                          onBookmark={() => handleBookmarkClick('vehicle', 'vehicle-1')}
-                        />
-                      )}
-                      {savedVehicles.includes('vehicle-2') && (
-                        <VehicleCard
-                          image="https://images.unsplash.com/photo-1590362891991-f776e747a588?w=400&h=300&fit=crop&q=80"
-                          name="2024 Honda Civic"
-                          type="Sedan"
-                          rating1={9.1}
-                          rating2={8.5}
-                          hasMultipleRatings={true}
-                          isBookmarked={true}
-                          onBookmark={() => handleBookmarkClick('vehicle', 'vehicle-2')}
-                        />
-                      )}
+                  {vehiclesIOwn.length > 0 && (
+                    <div className="profile-vehicles-subsection">
+                      <h4 className="profile-subsection__title">Cars I Own</h4>
+                      <div className="profile-vehicles-grid">
+                        {vehiclesIOwn.map((vehicle, index) => (
+                          <VehicleCard
+                            key={`own-${index}`}
+                            image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop&q=80"
+                            name={vehicle.name}
+                            type="Vehicle"
+                            rating1={9.1}
+                            rating2={8.5}
+                            hasMultipleRatings={true}
+                            isBookmarked={true}
+                            onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Divider */}
-                  <div className="profile-section-divider"></div>
+                  {/* Divider - only show if we have both sections */}
+                  {vehiclesIOwn.length > 0 && vehiclesIWant.length > 0 && (
+                    <div className="profile-section-divider"></div>
+                  )}
 
                   {/* Cars I Want */}
-                  <div className="profile-vehicles-subsection">
-                    <h4 className="profile-subsection__title">Cars I Want</h4>
-                    <div className="profile-vehicles-grid">
-                      {savedVehicles.includes('vehicle-3') && (
-                        <VehicleCard
-                          image="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop&q=80"
-                          name="2025 Ford Bronco"
-                          type="SUV"
-                          rating1={9.1}
-                          rating2={8.5}
-                          hasMultipleRatings={true}
-                          isBookmarked={true}
-                          onBookmark={() => handleBookmarkClick('vehicle', 'vehicle-3')}
-                        />
-                      )}
+                  {vehiclesIWant.length > 0 && (
+                    <div className="profile-vehicles-subsection">
+                      <h4 className="profile-subsection__title">Cars I Want</h4>
+                      <div className="profile-vehicles-grid">
+                        {vehiclesIWant.map((vehicle, index) => (
+                          <VehicleCard
+                            key={`want-${index}`}
+                            image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop&q=80"
+                            name={vehicle.name}
+                            type="Vehicle"
+                            rating1={9.1}
+                            rating2={8.5}
+                            hasMultipleRatings={true}
+                            isBookmarked={true}
+                            onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Show message if no vehicles */}
+                  {onboardingVehicles.length === 0 && (
+                    <div className="profile-vehicles-subsection">
+                      <div className="profile-vehicles-grid">
+                        <div className="profile-empty-state">
+                          <p>No vehicles added yet. Complete the onboarding process to add your vehicles.</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import step4Illustration from '../../assets/images/step4-illustration.png';
 import './OnboardingStep4.css';
 import Icon from '../../components/Icon';
@@ -32,15 +33,9 @@ const newsletterOptions = [
   },
 ];
 
-export const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
-  onNext,
-  onPrevious,
-  onSkip,
-  initialData,
-}) => {
-  const [selectedNewsletters, setSelectedNewsletters] = useState<string[]>(
-    initialData?.newsletters || []
-  );
+export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
+  const navigate = useNavigate();
+  const [selectedNewsletters, setSelectedNewsletters] = useState<string[]>([]);
 
   const toggleNewsletter = (id: string) => {
     setSelectedNewsletters((prev) =>
@@ -48,8 +43,22 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
     );
   };
 
-  const handleNext = () => {
-    onNext?.({ newsletters: selectedNewsletters });
+  const handleComplete = () => {
+    // Store newsletter preferences in localStorage
+    const existingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+    localStorage.setItem('onboardingData', JSON.stringify({
+      ...existingData,
+      newsletters: selectedNewsletters
+    }));
+    navigate('/welcome');
+  };
+
+  const handlePrevious = () => {
+    navigate('/onboarding/step3');
+  };
+
+  const handleSkip = () => {
+    navigate('/welcome');
   };
 
   return (
@@ -150,7 +159,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
           <div className="onboarding-card__nav-row">
             <button
               className="onboarding-nav-btn onboarding-nav-btn--previous"
-              onClick={onPrevious}
+              onClick={handlePrevious}
             >
               <Icon name="chevron_left" size={20} />
               <span>Previous</span>
@@ -158,7 +167,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
 
             <button
               className="onboarding-skip-btn"
-              onClick={onSkip}
+              onClick={handleSkip}
               type="button"
             >
               Skip for now
@@ -166,9 +175,9 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
 
             <button
               className="onboarding-nav-btn onboarding-nav-btn--next"
-              onClick={handleNext}
+              onClick={handleComplete}
             >
-              <span>Next</span>
+              <span>Complete</span>
               <Icon name="chevron_right" size={20} />
             </button>
           </div>

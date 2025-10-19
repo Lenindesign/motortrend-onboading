@@ -309,30 +309,11 @@
   display: none;
 }
 
-.radio-custom {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #CED4DA;
-  border-radius: 50%;
-  position: relative;
+.radio-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all var(--transition-fast);
-  background-color: transparent;
-}
-
-.ownership-option input[type="radio"]:checked + .radio-custom {
-  border-color: #DC3545;
-}
-
-.ownership-option input[type="radio"]:checked + .radio-custom::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  background-color: #DC3545;
-  border-radius: 50%;
 }
 
 .radio-text {
