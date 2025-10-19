@@ -527,3 +527,338 @@
   }
 }
 
+/* ========================================
+   Account Settings Accordion Content
+   ======================================== */
+
+/* Privacy Settings */
+.privacy-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.privacy-setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.privacy-setting-info {
+  flex: 1;
+}
+
+.privacy-setting-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-2);
+  margin: 0 0 4px 0;
+}
+
+.privacy-setting-description {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-4);
+  margin: 0;
+}
+
+.privacy-setting-control {
+  flex-shrink: 0;
+}
+
+.privacy-select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  background-color: var(--color-white);
+  min-width: 120px;
+}
+
+.privacy-select:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Privacy Toggle */
+.privacy-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.privacy-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.privacy-toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-neutrals-5);
+  border-radius: 24px;
+  transition: var(--transition-fast);
+}
+
+.privacy-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--color-white);
+  border-radius: 50%;
+  transition: var(--transition-fast);
+}
+
+.privacy-toggle input:checked + .privacy-toggle-slider {
+  background-color: var(--color-blue);
+}
+
+.privacy-toggle input:checked + .privacy-toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* Personal Settings */
+.personal-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.personal-setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.personal-setting-info {
+  flex: 1;
+}
+
+.personal-setting-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-2);
+  margin: 0 0 4px 0;
+}
+
+.personal-setting-description {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-4);
+  margin: 0;
+}
+
+.personal-setting-control {
+  flex-shrink: 0;
+}
+
+.personal-input,
+.personal-select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  background-color: var(--color-white);
+  min-width: 160px;
+}
+
+.personal-input:focus,
+.personal-select:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Delete Account */
+.delete-account-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.delete-account-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: var(--border-radius-md);
+}
+
+.delete-account-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.delete-account-text {
+  flex: 1;
+}
+
+.delete-account-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.5em;
+  color: #DC2626;
+  margin: 0 0 8px 0;
+}
+
+.delete-account-description {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5em;
+  color: #7F1D1D;
+  margin: 0;
+}
+
+.delete-account-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.delete-account-option {
+  display: flex;
+  align-items: center;
+}
+
+.delete-account-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.delete-account-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.delete-account-checkmark {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-neutrals-5);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-white);
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.delete-account-checkbox input[type="checkbox"]:checked + .delete-account-checkmark {
+  background-color: #DC2626;
+  border-color: #DC2626;
+}
+
+.delete-account-checkbox input[type="checkbox"]:checked + .delete-account-checkmark:after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.delete-account-label {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-2);
+}
+
+.delete-account-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.delete-account-btn {
+  padding: 12px 24px;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  border: none;
+}
+
+.delete-account-btn--secondary {
+  background-color: var(--color-neutrals-7);
+  color: var(--color-neutrals-2);
+}
+
+.delete-account-btn--secondary:hover {
+  background-color: var(--color-neutrals-6);
+}
+
+.delete-account-btn--danger {
+  background-color: #DC2626;
+  color: var(--color-white);
+}
+
+.delete-account-btn--danger:hover {
+  background-color: #B91C1C;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .privacy-setting-item,
+  .personal-setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .privacy-setting-control,
+  .personal-setting-control {
+    width: 100%;
+  }
+  
+  .privacy-select,
+  .personal-input,
+  .personal-select {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .delete-account-actions {
+    flex-direction: column;
+  }
+  
+  .delete-account-btn {
+    width: 100%;
+  }
+}
+

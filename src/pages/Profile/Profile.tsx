@@ -17,6 +17,7 @@ import ConnectedAccount from '../../components/ConnectedAccount';
 import CollapsibleSection from '../../components/CollapsibleSection';
 import ProfileCompletionCard from '../../components/ProfileCompletionCard';
 import Toast from '../../components/Toast';
+import Icon from '../../components/Icon';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -519,20 +520,165 @@ export const Profile: React.FC<ProfileProps> = ({
                 title="Privacy Settings"
                 description="Edit the visibility"
               >
-                <p>Privacy settings content will go here.</p>
+                <div className="privacy-settings-content">
+                  <div className="privacy-setting-item">
+                    <div className="privacy-setting-info">
+                      <h4 className="privacy-setting-title">Profile Visibility</h4>
+                      <p className="privacy-setting-description">Control who can see your profile information</p>
+                    </div>
+                    <div className="privacy-setting-control">
+                      <select className="privacy-select">
+                        <option value="public">Public</option>
+                        <option value="friends">Friends Only</option>
+                        <option value="private">Private</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="privacy-setting-item">
+                    <div className="privacy-setting-info">
+                      <h4 className="privacy-setting-title">Activity Status</h4>
+                      <p className="privacy-setting-description">Show when you're online or recently active</p>
+                    </div>
+                    <div className="privacy-setting-control">
+                      <label className="privacy-toggle">
+                        <input type="checkbox" defaultChecked />
+                        <span className="privacy-toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div className="privacy-setting-item">
+                    <div className="privacy-setting-info">
+                      <h4 className="privacy-setting-title">Data Sharing</h4>
+                      <p className="privacy-setting-description">Allow MotorTrend to use your data for personalization</p>
+                    </div>
+                    <div className="privacy-setting-control">
+                      <label className="privacy-toggle">
+                        <input type="checkbox" defaultChecked />
+                        <span className="privacy-toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </CollapsibleSection>
 
               <CollapsibleSection
                 title="Personal Settings"
-                description="Edit your age and country of recidence"
+                description="Edit your age and country of residence"
               >
-                <p>Personal settings content will go here.</p>
+                <div className="personal-settings-content">
+                  <div className="personal-setting-item">
+                    <div className="personal-setting-info">
+                      <h4 className="personal-setting-title">Date of Birth</h4>
+                      <p className="personal-setting-description">Used for age-appropriate content and features</p>
+                    </div>
+                    <div className="personal-setting-control">
+                      <input type="date" className="personal-input" defaultValue="1990-01-01" />
+                    </div>
+                  </div>
+                  
+                  <div className="personal-setting-item">
+                    <div className="personal-setting-info">
+                      <h4 className="personal-setting-title">Country of Residence</h4>
+                      <p className="personal-setting-description">Helps us provide relevant content and services</p>
+                    </div>
+                    <div className="personal-setting-control">
+                      <select className="personal-select">
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="MX">Mexico</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="personal-setting-item">
+                    <div className="personal-setting-info">
+                      <h4 className="personal-setting-title">Language Preference</h4>
+                      <p className="personal-setting-description">Choose your preferred language for the interface</p>
+                    </div>
+                    <div className="personal-setting-control">
+                      <select className="personal-select">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="ja">日本語</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="personal-setting-item">
+                    <div className="personal-setting-info">
+                      <h4 className="personal-setting-title">Time Zone</h4>
+                      <p className="personal-setting-description">Used for scheduling and notifications</p>
+                    </div>
+                    <div className="personal-setting-control">
+                      <select className="personal-select">
+                        <option value="PST">Pacific Standard Time (PST)</option>
+                        <option value="MST">Mountain Standard Time (MST)</option>
+                        <option value="CST">Central Standard Time (CST)</option>
+                        <option value="EST">Eastern Standard Time (EST)</option>
+                        <option value="GMT">Greenwich Mean Time (GMT)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
               </CollapsibleSection>
 
               <CollapsibleSection
                 title="Delete Account"
               >
-                <p>Account deletion options will go here.</p>
+                <div className="delete-account-content">
+                  <div className="delete-account-warning">
+                    <div className="delete-account-icon">
+                      <Icon name="warning" size={24} style={{ color: "#DC3545" }} />
+                    </div>
+                    <div className="delete-account-text">
+                      <h4 className="delete-account-title">Permanently Delete Account</h4>
+                      <p className="delete-account-description">
+                        This action cannot be undone. All your data, including saved articles, 
+                        vehicles, and preferences will be permanently deleted.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="delete-account-options">
+                    <div className="delete-account-option">
+                      <label className="delete-account-checkbox">
+                        <input type="checkbox" />
+                        <span className="delete-account-checkmark"></span>
+                        <span className="delete-account-label">
+                          I understand that this action is irreversible
+                        </span>
+                      </label>
+                    </div>
+                    
+                    <div className="delete-account-option">
+                      <label className="delete-account-checkbox">
+                        <input type="checkbox" />
+                        <span className="delete-account-checkmark"></span>
+                        <span className="delete-account-label">
+                          I want to delete all my personal data
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  
+                  <div className="delete-account-actions">
+                    <button className="delete-account-btn delete-account-btn--secondary">
+                      Download My Data
+                    </button>
+                    <button className="delete-account-btn delete-account-btn--danger">
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
               </CollapsibleSection>
             </>
           )}
