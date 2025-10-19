@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 import motortrendLogo from '../../assets/images/motortrend-logo.png';
 import Icon from '../../components/Icon';
 import './Welcome.css';
@@ -41,6 +42,34 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         console.error('Error parsing onboarding data:', error);
       }
     }
+  }, []);
+
+  // Trigger confetti effect when component mounts
+  useEffect(() => {
+    const triggerConfetti = () => {
+      // Create a confetti cannon from the center of the screen
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#DC3545', '#00C2FF', '#28A745', '#FFC107', '#6F42C1', '#E83E8C']
+      });
+
+      // Add a second burst after a short delay
+      setTimeout(() => {
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.4 },
+          colors: ['#DC3545', '#00C2FF', '#28A745', '#FFC107', '#6F42C1', '#E83E8C']
+        });
+      }, 300);
+    };
+
+    // Trigger confetti after a short delay to ensure the page is fully loaded
+    const timer = setTimeout(triggerConfetti, 500);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const { name = 'Guest', location, interests = [], vehicles = [], newsletters = [] } = onboardingData;
