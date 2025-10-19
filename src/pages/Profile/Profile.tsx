@@ -16,7 +16,6 @@ import EditableField from '../../components/EditableField';
 import ConnectedAccount from '../../components/ConnectedAccount';
 import CollapsibleSection from '../../components/CollapsibleSection';
 import ProfileCompletionCard from '../../components/ProfileCompletionCard';
-import type { OnboardingStatus } from '../../components/ProfileCompletionCard';
 import Toast from '../../components/Toast';
 import './Profile.css';
 
@@ -27,7 +26,6 @@ export interface ProfileProps {
     joinDate: string;
     location?: string;
   };
-  onboardingCompletion?: OnboardingStatus;
   onboardingData?: {
     name?: string;
     location?: string;
@@ -44,7 +42,6 @@ export interface ProfileProps {
 
 export const Profile: React.FC<ProfileProps> = ({ 
   userData, 
-  onboardingCompletion, 
   onboardingData,
   onUpdateStep1,
   onUpdateStep2,
@@ -58,18 +55,22 @@ export const Profile: React.FC<ProfileProps> = ({
   const [savedComparisons, setSavedComparisons] = useState<string[]>(['comparison-1']);
   const [savedVideos, setSavedVideos] = useState<string[]>(['video-1', 'video-2']);
   
-  // Onboarding vehicles state
-  const [onboardingVehicles, setOnboardingVehicles] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
+  // Onboarding data state
+  const [localOnboardingData, setLocalOnboardingData] = useState<{
+    name?: string;
+    location?: string;
+    interests?: string[];
+    vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
+    newsletters?: string[];
+  }>({});
   
-  // Load onboarding vehicles from localStorage
+  // Load onboarding data from localStorage
   useEffect(() => {
-    const onboardingData = localStorage.getItem('onboardingData');
-    if (onboardingData) {
+    const data = localStorage.getItem('onboardingData');
+    if (data) {
       try {
-        const parsed = JSON.parse(onboardingData);
-        if (parsed.vehicles && Array.isArray(parsed.vehicles)) {
-          setOnboardingVehicles(parsed.vehicles);
-        }
+        const parsed = JSON.parse(data);
+        setLocalOnboardingData(parsed);
       } catch (error) {
         console.error('Error parsing onboarding data:', error);
       }
@@ -113,24 +114,21 @@ export const Profile: React.FC<ProfileProps> = ({
   };
 
   // Categorize onboarding vehicles
-  const vehiclesIOwn = onboardingVehicles.filter(vehicle => vehicle.ownership === 'own');
-  const vehiclesIWant = onboardingVehicles.filter(vehicle => vehicle.ownership === 'want');
+  const vehiclesIOwn = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'own');
+  const vehiclesIWant = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'want');
 
   // Handle removing onboarding vehicles
   const handleRemoveOnboardingVehicle = (vehicleName: string) => {
-    setOnboardingVehicles(prev => prev.filter(v => v.name !== vehicleName));
+    const updatedVehicles = (localOnboardingData.vehicles || []).filter(v => v.name !== vehicleName);
+    const updatedData = {
+      ...localOnboardingData,
+      vehicles: updatedVehicles
+    };
+    
+    setLocalOnboardingData(updatedData);
     
     // Update localStorage
-    const onboardingData = localStorage.getItem('onboardingData');
-    if (onboardingData) {
-      try {
-        const parsed = JSON.parse(onboardingData);
-        parsed.vehicles = parsed.vehicles.filter((v: any) => v.name !== vehicleName);
-        localStorage.setItem('onboardingData', JSON.stringify(parsed));
-      } catch (error) {
-        console.error('Error updating onboarding data:', error);
-      }
-    }
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
   };
 
   const mockArticles = [
@@ -151,10 +149,10 @@ export const Profile: React.FC<ProfileProps> = ({
   return (
     <div className="profile-page">
       <ProfileBanner
-        userName={userData?.name || 'Greg Smith'}
+        userName={localOnboardingData.name || userData?.name || 'Guest User'}
         userAvatar={userData?.avatar}
-        joinDate={userData?.joinDate || '1/14/224'}
-        location={userData?.location || 'Orange County, CA'}
+        joinDate={userData?.joinDate || '1/14/2024'}
+        location={localOnboardingData.location || userData?.location || 'Location not specified'}
         onEditProfile={() => console.log('Edit profile')}
       />
 
@@ -198,12 +196,6 @@ export const Profile: React.FC<ProfileProps> = ({
 
                      {/* Profile Completion Card */}
                      <ProfileCompletionCard
-                       completionStatus={onboardingCompletion || {
-                         step1: false,
-                         step2: false,
-                         step3: false,
-                         step4: false,
-                       }}
                        onboardingData={onboardingData}
                        onUpdateStep1={onUpdateStep1}
                        onUpdateStep2={onUpdateStep2}
@@ -284,7 +276,7 @@ export const Profile: React.FC<ProfileProps> = ({
                   )}
 
                   {/* Show message if no vehicles */}
-                  {onboardingVehicles.length === 0 && (
+                  {(localOnboardingData.vehicles || []).length === 0 && (
                     <div className="profile-vehicles-subsection">
                       <div className="profile-vehicles-grid">
                         <div className="profile-empty-state">

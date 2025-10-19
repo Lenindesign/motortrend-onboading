@@ -18,7 +18,6 @@ export interface OnboardingData {
 }
 
 export interface ProfileCompletionCardProps {
-  completionStatus: OnboardingStatus;
   onboardingData?: OnboardingData;
   onUpdateStep1?: (data: { name: string; location: string }) => void;
   onUpdateStep2?: (data: { interests: string[] }) => void;
@@ -28,7 +27,6 @@ export interface ProfileCompletionCardProps {
 }
 
 export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({ 
-  completionStatus, 
   onUpdateStep1,
   onUpdateStep2,
   onUpdateStep3,
@@ -69,11 +67,17 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     }
   }, [localOnboardingData]);
 
+  // Calculate completion status based on actual data
+  const step1Completed = !!(step1Name && step1Name.trim() !== '');
+  const step2Completed = step2Interests.length > 0;
+  const step3Completed = step3Vehicles.length > 0;
+  const step4Completed = step4Newsletters.length > 0;
+
   const steps = [
-    { number: 1, title: 'Tell us about yourself', completed: completionStatus.step1 },
-    { number: 2, title: 'Your interests', completed: completionStatus.step2 },
-    { number: 3, title: 'Your vehicles', completed: completionStatus.step3 },
-    { number: 4, title: 'Newsletter preferences', completed: completionStatus.step4 },
+    { number: 1, title: 'Tell us about yourself', completed: step1Completed },
+    { number: 2, title: 'Your interests', completed: step2Completed },
+    { number: 3, title: 'Your vehicles', completed: step3Completed },
+    { number: 4, title: 'Newsletter preferences', completed: step4Completed },
   ];
 
   const completedCount = steps.filter(step => step.completed).length;
