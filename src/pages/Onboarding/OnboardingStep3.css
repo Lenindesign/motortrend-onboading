@@ -126,68 +126,6 @@
 }
 
 /* ========================================
-   Radio Buttons (Original MotorTrend Styles)
-   ======================================== */
-
-.vehicle-search__radio-group {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-
-.vehicle-search__radio-label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: all var(--transition-fast);
-}
-
-.vehicle-search__radio-input {
-  display: none;
-}
-
-.vehicle-search__radio-custom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 24px;
-  border: 1px solid var(--color-neutrals-5);
-  background-color: var(--color-neutrals-8);
-  padding: 5px;
-  transition: all var(--transition-fast);
-}
-
-.vehicle-search__radio-input:checked + .vehicle-search__radio-custom {
-  background-color: var(--color-neutrals-2);
-  border-color: var(--color-neutrals-2);
-}
-
-.vehicle-search__radio-input:checked + .vehicle-search__radio-custom::after {
-  content: '';
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color-primary-2);
-}
-
-.vehicle-search__radio-text {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.333em;
-  color: var(--color-neutrals-2);
-}
-
-/* ========================================
    Search Input (Original MotorTrend Styles)
    ======================================== */
 

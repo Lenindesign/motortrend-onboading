@@ -170,10 +170,9 @@ export interface OnboardingStep3Props {
 
 export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   const navigate = useNavigate();
-  const [vehicleType, setVehicleType] = useState<'own' | 'want'>('own');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCars, setFilteredCars] = useState<string[]>([]);
-  const [selectedCars, setSelectedCars] = useState<string[]>([]);
+  const [selectedCars, setSelectedCars] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [showAddAnother, setShowAddAnother] = useState(false);
@@ -215,8 +214,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleCarSelect = (car: string) => {
-    if (!selectedCars.includes(car)) {
-      setSelectedCars([...selectedCars, car]);
+    if (!selectedCars.some(selectedCar => selectedCar.name === car)) {
+      setSelectedCars([...selectedCars, { name: car, ownership: 'own' }]);
     }
     setSearchQuery('');
     setShowDropdown(false);
@@ -224,11 +223,17 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleRemoveCar = (carToRemove: string) => {
-    const updatedCars = selectedCars.filter(car => car !== carToRemove);
+    const updatedCars = selectedCars.filter(car => car.name !== carToRemove);
     setSelectedCars(updatedCars);
     if (updatedCars.length === 0) {
       setShowAddAnother(false);
     }
+  };
+
+  const handleOwnershipChange = (carName: string, ownership: 'own' | 'want') => {
+    setSelectedCars(selectedCars.map(car => 
+      car.name === carName ? { ...car, ownership } : car
+    ));
   };
 
   const handleAddAnother = () => {
@@ -266,12 +271,11 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
 
   const handleNext = () => {
     if (selectedCars.length > 0) {
-      console.log('Step 3 data:', { vehicleType, vehicles: selectedCars });
+      console.log('Step 3 data:', { vehicles: selectedCars });
       // Store data in localStorage
       const existingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
       localStorage.setItem('onboardingData', JSON.stringify({ 
         ...existingData, 
-        vehicleType, 
         vehicles: selectedCars 
       }));
       navigate('/onboarding/step4');
@@ -318,34 +322,6 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
             <div className="vehicle-search__header">
               <label className="vehicle-search__label">Search for a vehicle</label>
               
-              {/* Radio Buttons */}
-              <div className="vehicle-search__radio-group">
-                <label className="vehicle-search__radio-label">
-                  <input
-                    type="radio"
-                    name="vehicleType"
-                    value="own"
-                    checked={vehicleType === 'own'}
-                    onChange={(e) => setVehicleType(e.target.value as 'own' | 'want')}
-                    className="vehicle-search__radio-input"
-                  />
-                  <span className="vehicle-search__radio-custom"></span>
-                  <span className="vehicle-search__radio-text">I Own This Car</span>
-                </label>
-                
-                <label className="vehicle-search__radio-label">
-                  <input
-                    type="radio"
-                    name="vehicleType"
-                    value="want"
-                    checked={vehicleType === 'want'}
-                    onChange={(e) => setVehicleType(e.target.value as 'own' | 'want')}
-                    className="vehicle-search__radio-input"
-                  />
-                  <span className="vehicle-search__radio-custom"></span>
-                  <span className="vehicle-search__radio-text">I Want This Car</span>
-                </label>
-              </div>
             </div>
 
             {/* Selected Cars Display */}
@@ -356,12 +332,12 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     <div className="selected-car-image">
                       <img 
                         src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=100&h=100&fit=crop&crop=center" 
-                        alt={car}
+                        alt={car.name}
                         className="car-image"
                       />
                     </div>
                     <div className="selected-car-details">
-                      <h3 className="selected-car-name">{car}</h3>
+                      <h3 className="selected-car-name">{car.name}</h3>
                       <button
                         type="button"
                         className="change-vehicle-btn"
@@ -375,8 +351,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                             type="radio"
                             name={`ownership-${index}`}
                             value="own"
-                            checked={vehicleType === 'own'}
-                            onChange={(e) => setVehicleType(e.target.value as 'own' | 'want')}
+                            checked={car.ownership === 'own'}
+                            onChange={(e) => handleOwnershipChange(car.name, e.target.value as 'own' | 'want')}
                           />
                           <span className="radio-custom"></span>
                           <span className="radio-text">I Own This Car</span>
@@ -386,8 +362,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                             type="radio"
                             name={`ownership-${index}`}
                             value="want"
-                            checked={vehicleType === 'want'}
-                            onChange={(e) => setVehicleType(e.target.value as 'own' | 'want')}
+                            checked={car.ownership === 'want'}
+                            onChange={(e) => handleOwnershipChange(car.name, e.target.value as 'own' | 'want')}
                           />
                           <span className="radio-custom"></span>
                           <span className="radio-text">I Want This Car</span>
@@ -397,8 +373,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     <button
                       type="button"
                       className="selected-car-remove"
-                      onClick={() => handleRemoveCar(car)}
-                      aria-label={`Remove ${car}`}
+                      onClick={() => handleRemoveCar(car.name)}
+                      aria-label={`Remove ${car.name}`}
                     >
                       <Icon name="close" size={16} />
                     </button>
