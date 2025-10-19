@@ -1,125 +1,206 @@
 /**
  * Onboarding Step 3 Styles
+ * Tell Us About Your Ride - Car Search with Autocomplete
  * Based on Figma Community design system
  */
 
-/* Vehicle Search Section */
-.vehicle-search {
-  width: 100%;
+.onboarding-step {
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+  background: linear-gradient(135deg, var(--color-neutrals-1) 0%, var(--color-neutrals-2) 100%);
 }
 
-.vehicle-search__container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 32px;
-  width: 100%;
-  max-width: 564px;
-  background-color: var(--color-white);
-  border-radius: var(--border-radius-md);
+.onboarding-card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-4);
   box-shadow: var(--shadow-depth-5);
+  padding: var(--spacing-6);
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+}
+
+/* ========================================
+   Header with Progress
+   ======================================== */
+
+.onboarding-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.onboarding-card__illustration {
+  margin-bottom: var(--spacing-3);
+}
+
+.onboarding-card__progress-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.onboarding-card__step-indicator {
+  margin-bottom: var(--spacing-2);
+}
+
+.onboarding-card__step-text {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  font-size: 14px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-4);
+  letter-spacing: 0.5px;
+}
+
+/* ========================================
+   Content
+   ======================================== */
+
+.onboarding-card__content {
+  margin-bottom: var(--spacing-6);
+}
+
+.onboarding-card__title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 32px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  text-align: center;
+  margin: 0 0 var(--spacing-2) 0;
+  letter-spacing: -0.5px;
+}
+
+.onboarding-card__subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-4);
+  text-align: center;
+  margin: 0 0 var(--spacing-6) 0;
+}
+
+/* ========================================
+   Vehicle Search Section
+   ======================================== */
+
+.vehicle-search-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
 }
 
 .vehicle-search__header {
   display: flex;
-  flex-direction: column;
-  gap: 13px;
-  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
 }
 
 .vehicle-search__label {
   font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  font-size: 16px;
   line-height: 1.3em;
-  color: var(--color-black);
+  color: var(--color-neutrals-1);
 }
 
-/* Radio Group */
+/* ========================================
+   Radio Buttons
+   ======================================== */
+
 .vehicle-search__radio-group {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
+  gap: var(--spacing-4);
 }
 
-.radio-option {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: all var(--transition-fast);
-}
-
-.radio-button {
+.vehicle-search__radio-label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 24px;
-  border: 1px solid var(--color-neutrals-5);
-  background-color: var(--color-neutrals-8);
-  padding: 5px;
-  transition: all var(--transition-fast);
-}
-
-.radio-option--selected .radio-button {
-  background-color: var(--color-neutrals-2);
-  border-color: var(--color-neutrals-2);
-}
-
-.radio-button__dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: var(--color-primary-2);
-}
-
-.radio-option__label {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.333em;
-  color: var(--color-neutrals-2);
-}
-
-/* Search Input Section */
-.vehicle-search__input-wrapper {
-  display: flex;
-  flex-direction: column;
   gap: var(--spacing-2);
-  flex: 1;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.3em;
+  color: var(--color-neutrals-3);
 }
+
+.vehicle-search__radio-input {
+  display: none;
+}
+
+.vehicle-search__radio-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-neutrals-5);
+  border-radius: 50%;
+  position: relative;
+  transition: all var(--transition-fast);
+  background: var(--color-white);
+}
+
+.vehicle-search__radio-input:checked + .vehicle-search__radio-custom {
+  border-color: var(--color-semantic-error);
+  background: var(--color-white);
+}
+
+.vehicle-search__radio-input:checked + .vehicle-search__radio-custom::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-semantic-error);
+}
+
+.vehicle-search__radio-input:checked ~ .vehicle-search__radio-text {
+  color: var(--color-neutrals-1);
+  font-weight: var(--font-weight-semibold);
+}
+
+.vehicle-search__radio-text {
+  transition: all var(--transition-fast);
+}
+
+/* ========================================
+   Search Input
+   ======================================== */
 
 .vehicle-search__input-container {
+  position: relative;
+  width: 100%;
+}
+
+.vehicle-search__input-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--spacing-1);
-  padding: 6px 16px;
-  background-color: var(--color-neutrals-8);
-  border: 1px solid var(--color-neutrals-5);
-  border-radius: var(--border-radius-md);
-  transition: border-color var(--transition-fast);
+  background: var(--color-white);
+  border: 2px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  transition: all var(--transition-fast);
 }
 
-.vehicle-search__input-container:focus-within {
-  border-color: var(--color-blue);
+.vehicle-search__input-wrapper:focus-within {
+  border-color: var(--color-semantic-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.vehicle-search__icon {
-  width: 24px;
-  height: 24px;
+.vehicle-search__search-icon {
   color: var(--color-neutrals-4);
+  margin-right: var(--spacing-3);
   flex-shrink: 0;
 }
 
@@ -127,70 +208,189 @@
   flex: 1;
   border: none;
   outline: none;
-  background: none;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
-  line-height: 1.75em;
-  color: var(--color-neutrals-2);
-  padding: 0;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+  background: transparent;
 }
 
 .vehicle-search__input::placeholder {
   color: var(--color-neutrals-5);
 }
 
-.vehicle-search__input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* ========================================
+   Autocomplete Dropdown
+   ======================================== */
+
+.vehicle-search__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border: 2px solid var(--color-neutrals-6);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius-2) var(--border-radius-2);
+  box-shadow: var(--shadow-depth-3);
+  z-index: 10;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
-.vehicle-search__no-vehicle {
+.vehicle-search__dropdown-item {
+  padding: var(--spacing-3) var(--spacing-4);
   font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 1.3em;
-  color: #9CA3AF;
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--color-neutrals-7);
+}
+
+.vehicle-search__dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.vehicle-search__dropdown-item:hover,
+.vehicle-search__dropdown-item--highlighted {
+  background: var(--color-neutrals-7);
+}
+
+/* ========================================
+   Navigation
+   ======================================== */
+
+.onboarding-card__navigation {
+  display: flex;
+  justify-content: center;
+}
+
+.onboarding-card__nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-4);
+}
+
+.onboarding-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-neutrals-1);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-2);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-semibold);
+  font-size: 16px;
+  line-height: 1.2em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.onboarding-nav-btn:hover:not(.onboarding-nav-btn--disabled) {
+  background: var(--color-neutrals-2);
+  transform: translateY(-1px);
+}
+
+.onboarding-nav-btn--disabled {
+  background: var(--color-neutrals-5);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.onboarding-nav-btn--disabled:hover {
+  transform: none;
+}
+
+.onboarding-card__skip-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.onboarding-skip-btn {
   background: none;
   border: none;
-  cursor: pointer;
-  text-align: left;
-  padding: 0;
-  transition: color var(--transition-fast);
-}
-
-.vehicle-search__no-vehicle:hover {
   color: var(--color-neutrals-4);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.3em;
+  cursor: pointer;
+  transition: color var(--transition-fast);
   text-decoration: underline;
 }
 
-/* Mobile Responsive */
+.onboarding-skip-btn:hover {
+  color: var(--color-neutrals-2);
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
 @media (max-width: 768px) {
-  .vehicle-search__container {
+  .onboarding-step {
+    padding: var(--spacing-3);
+  }
+
+  .onboarding-card {
+    padding: var(--spacing-4);
+  }
+
+  .onboarding-card__title {
+    font-size: 28px;
+  }
+
+  .onboarding-card__subtitle {
+    font-size: 14px;
+  }
+
+  .vehicle-search__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+  }
+
+  .vehicle-search__radio-group {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .onboarding-card__nav-row {
     flex-direction: column;
     gap: var(--spacing-3);
-    padding: var(--spacing-3);
+  }
+
+  .onboarding-nav-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .onboarding-card__skip-section {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .onboarding-card__title {
+    font-size: 24px;
   }
 
   .vehicle-search__radio-group {
     flex-direction: column;
-    align-items: flex-start;
     gap: var(--spacing-2);
   }
-}
 
-/* Small mobile */
-@media (max-width: 480px) {
-  .vehicle-search__container {
-    padding: var(--spacing-2);
-  }
-
-  .vehicle-search__input-container {
-    padding: 8px 12px;
-  }
-
-  .vehicle-search__input {
-    font-size: 14px;
+  .vehicle-search__radio-label {
+    font-size: 16px;
   }
 }
-
