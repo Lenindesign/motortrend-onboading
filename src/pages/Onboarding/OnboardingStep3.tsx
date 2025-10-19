@@ -173,9 +173,10 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   const [vehicleType, setVehicleType] = useState<'own' | 'want'>('own');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCars, setFilteredCars] = useState<string[]>([]);
-  const [selectedCar, setSelectedCar] = useState('');
+  const [selectedCars, setSelectedCars] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [showAddAnother, setShowAddAnother] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -211,13 +212,29 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-    setSelectedCar('');
   };
 
   const handleCarSelect = (car: string) => {
-    setSelectedCar(car);
-    setSearchQuery(car);
+    if (!selectedCars.includes(car)) {
+      setSelectedCars([...selectedCars, car]);
+    }
+    setSearchQuery('');
     setShowDropdown(false);
+    setShowAddAnother(true);
+  };
+
+  const handleRemoveCar = (carToRemove: string) => {
+    const updatedCars = selectedCars.filter(car => car !== carToRemove);
+    setSelectedCars(updatedCars);
+    if (updatedCars.length === 0) {
+      setShowAddAnother(false);
+    }
+  };
+
+  const handleAddAnother = () => {
+    setSearchQuery('');
+    setShowAddAnother(false);
+    inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -248,14 +265,14 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleNext = () => {
-    if (selectedCar.trim()) {
-      console.log('Step 3 data:', { vehicleType, vehicle: selectedCar });
+    if (selectedCars.length > 0) {
+      console.log('Step 3 data:', { vehicleType, vehicles: selectedCars });
       // Store data in localStorage
       const existingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
       localStorage.setItem('onboardingData', JSON.stringify({ 
         ...existingData, 
         vehicleType, 
-        vehicle: selectedCar 
+        vehicles: selectedCars 
       }));
       navigate('/onboarding/step4');
     }
@@ -269,7 +286,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
     navigate('/profile');
   };
 
-  const isNextDisabled = !selectedCar.trim();
+  const isNextDisabled = selectedCars.length === 0;
 
   return (
     <div className="onboarding-step">
@@ -331,40 +348,73 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
               </div>
             </div>
 
-            {/* Search Input with Autocomplete */}
-            <div className="vehicle-search__input-container" ref={searchRef}>
-              <div className="vehicle-search__input-wrapper">
-                <Icon name="search" size={20} className="vehicle-search__search-icon" />
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  onFocus={() => searchQuery.length > 0 && setShowDropdown(true)}
-                  placeholder="Start typing to search..."
-                  className="vehicle-search__input"
-                />
-              </div>
-
-              {/* Autocomplete Dropdown */}
-              {showDropdown && filteredCars.length > 0 && (
-                <div className="vehicle-search__dropdown">
-                  {filteredCars.map((car, index) => (
-                    <div
-                      key={car}
-                      className={`vehicle-search__dropdown-item ${
-                        index === highlightedIndex ? 'vehicle-search__dropdown-item--highlighted' : ''
-                      }`}
-                      onClick={() => handleCarSelect(car)}
-                      onMouseEnter={() => setHighlightedIndex(index)}
+            {/* Selected Cars Display */}
+            {selectedCars.length > 0 && (
+              <div className="selected-cars">
+                {selectedCars.map((car, index) => (
+                  <div key={index} className="selected-car-item">
+                    <span className="selected-car-name">{car}</span>
+                    <button
+                      type="button"
+                      className="selected-car-remove"
+                      onClick={() => handleRemoveCar(car)}
+                      aria-label={`Remove ${car}`}
                     >
-                      {car}
-                    </div>
-                  ))}
+                      <Icon name="close" size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Search Input with Autocomplete */}
+            {(!showAddAnother || selectedCars.length === 0) && (
+              <div className="vehicle-search__input-container" ref={searchRef}>
+                <div className="vehicle-search__input-wrapper">
+                  <Icon name="search" size={20} className="vehicle-search__search-icon" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    onFocus={() => searchQuery.length > 0 && setShowDropdown(true)}
+                    placeholder="Start typing to search..."
+                    className="vehicle-search__input"
+                  />
                 </div>
-              )}
-            </div>
+
+                {/* Autocomplete Dropdown */}
+                {showDropdown && filteredCars.length > 0 && (
+                  <div className="vehicle-search__dropdown">
+                    {filteredCars.map((car, index) => (
+                      <div
+                        key={car}
+                        className={`vehicle-search__dropdown-item ${
+                          index === highlightedIndex ? 'vehicle-search__dropdown-item--highlighted' : ''
+                        }`}
+                        onClick={() => handleCarSelect(car)}
+                        onMouseEnter={() => setHighlightedIndex(index)}
+                      >
+                        {car}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Add Another Vehicle Button */}
+            {showAddAnother && selectedCars.length > 0 && (
+              <button
+                type="button"
+                className="add-another-vehicle-btn"
+                onClick={handleAddAnother}
+              >
+                <Icon name="add" size={20} />
+                <span>Add Another Vehicle</span>
+              </button>
+            )}
           </div>
         </div>
 
