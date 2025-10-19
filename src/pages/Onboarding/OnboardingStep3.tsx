@@ -352,8 +352,48 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
             {selectedCars.length > 0 && (
               <div className="selected-cars">
                 {selectedCars.map((car, index) => (
-                  <div key={index} className="selected-car-item">
-                    <span className="selected-car-name">{car}</span>
+                  <div key={index} className="selected-car-card">
+                    <div className="selected-car-image">
+                      <img 
+                        src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=100&h=100&fit=crop&crop=center" 
+                        alt={car}
+                        className="car-image"
+                      />
+                    </div>
+                    <div className="selected-car-details">
+                      <h3 className="selected-car-name">{car}</h3>
+                      <button
+                        type="button"
+                        className="change-vehicle-btn"
+                        onClick={handleAddAnother}
+                      >
+                        Change Vehicle
+                      </button>
+                      <div className="ownership-options">
+                        <label className="ownership-option">
+                          <input
+                            type="radio"
+                            name={`ownership-${index}`}
+                            value="own"
+                            checked={vehicleType === 'own'}
+                            onChange={(e) => setVehicleType(e.target.value as 'own' | 'want')}
+                          />
+                          <span className="radio-custom"></span>
+                          <span className="radio-text">I Own This Car</span>
+                        </label>
+                        <label className="ownership-option">
+                          <input
+                            type="radio"
+                            name={`ownership-${index}`}
+                            value="want"
+                            checked={vehicleType === 'want'}
+                            onChange={(e) => setVehicleType(e.target.value as 'own' | 'want')}
+                          />
+                          <span className="radio-custom"></span>
+                          <span className="radio-text">I Want This Car</span>
+                        </label>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       className="selected-car-remove"
@@ -367,8 +407,68 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
               </div>
             )}
 
-            {/* Search Input with Autocomplete */}
-            {(!showAddAnother || selectedCars.length === 0) && (
+            {/* Add Another Vehicle Section */}
+            {selectedCars.length > 0 && (
+              <div className="add-another-section">
+                <h3 className="add-another-title">Add Another Vehicle</h3>
+                
+                {!showAddAnother ? (
+                  <button
+                    type="button"
+                    className="add-another-vehicle-btn"
+                    onClick={handleAddAnother}
+                  >
+                    <Icon name="add" size={20} />
+                    <span>Add Another Vehicle</span>
+                  </button>
+                ) : (
+                  <div className="vehicle-search__input-container" ref={searchRef}>
+                    <div className="vehicle-search__input-wrapper">
+                      <Icon name="search" size={20} className="vehicle-search__search-icon" />
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        onFocus={() => searchQuery.length > 0 && setShowDropdown(true)}
+                        placeholder="Select another Vehicle"
+                        className="vehicle-search__input"
+                      />
+                    </div>
+
+                    {/* Autocomplete Dropdown */}
+                    {showDropdown && filteredCars.length > 0 && (
+                      <div className="vehicle-search__dropdown">
+                        {filteredCars.map((car, index) => (
+                          <div
+                            key={car}
+                            className={`vehicle-search__dropdown-item ${
+                              index === highlightedIndex ? 'vehicle-search__dropdown-item--highlighted' : ''
+                            }`}
+                            onClick={() => handleCarSelect(car)}
+                            onMouseEnter={() => setHighlightedIndex(index)}
+                          >
+                            {car}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  className="no-vehicle-link"
+                  onClick={() => navigate('/onboarding/step4')}
+                >
+                  I don't currently own a vehicle
+                </button>
+              </div>
+            )}
+
+            {/* Initial Search Input */}
+            {selectedCars.length === 0 && (
               <div className="vehicle-search__input-container" ref={searchRef}>
                 <div className="vehicle-search__input-wrapper">
                   <Icon name="search" size={20} className="vehicle-search__search-icon" />
@@ -402,18 +502,6 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                   </div>
                 )}
               </div>
-            )}
-
-            {/* Add Another Vehicle Button */}
-            {showAddAnother && selectedCars.length > 0 && (
-              <button
-                type="button"
-                className="add-another-vehicle-btn"
-                onClick={handleAddAnother}
-              >
-                <Icon name="add" size={20} />
-                <span>Add Another Vehicle</span>
-              </button>
             )}
           </div>
         </div>
