@@ -5,7 +5,8 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import step2Illustration from '../../assets/images/step2-illustration.png';
+// Using SVG illustration from URL
+const step2Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4db35cc41280002b024b1/step2.svg';
 import './OnboardingStep2.css';
 import Icon from '../../components/Icon';
 

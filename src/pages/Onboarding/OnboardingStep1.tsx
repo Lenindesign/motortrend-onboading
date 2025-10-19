@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField } from '../../design-system/components';
 // Using SVG illustration from URL
-const step1Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4d3ea1dd8ca0002a8a5aa/step1.svg';
+const step1Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4db351dd8ca0002a8a5ad/step1.svg';
 import './OnboardingStep1.css';
 import Icon from '../../components/Icon';
 
