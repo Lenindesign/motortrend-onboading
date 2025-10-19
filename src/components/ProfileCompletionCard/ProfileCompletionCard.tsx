@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ProfileCompletionCard.css';
 import Icon from '../Icon';
 
@@ -13,8 +13,7 @@ export interface OnboardingData {
   name?: string;
   location?: string;
   interests?: string[];
-  vehicleType?: 'own' | 'want';
-  vehicle?: string;
+  vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
   newsletters?: string[];
 }
 
@@ -30,7 +29,6 @@ export interface ProfileCompletionCardProps {
 
 export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({ 
   completionStatus, 
-  onboardingData = {},
   onUpdateStep1,
   onUpdateStep2,
   onUpdateStep3,
@@ -38,14 +36,38 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   onDismiss 
 }) => {
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
+  const [localOnboardingData, setLocalOnboardingData] = useState<OnboardingData>({});
+  
+  // Load onboarding data from localStorage
+  useEffect(() => {
+    const data = localStorage.getItem('onboardingData');
+    if (data) {
+      try {
+        const parsed = JSON.parse(data);
+        setLocalOnboardingData(parsed);
+      } catch (error) {
+        console.error('Error parsing onboarding data:', error);
+      }
+    }
+  }, []);
   
   // Local state for each step
-  const [step1Name, setStep1Name] = useState(onboardingData.name || '');
-  const [step1Location, setStep1Location] = useState(onboardingData.location || '');
-  const [step2Interests, setStep2Interests] = useState<string[]>(onboardingData.interests || []);
-  const [step3VehicleType, setStep3VehicleType] = useState<'own' | 'want'>(onboardingData.vehicleType || 'own');
-  const [step3Vehicle, setStep3Vehicle] = useState(onboardingData.vehicle || '');
-  const [step4Newsletters, setStep4Newsletters] = useState<string[]>(onboardingData.newsletters || []);
+  const [step1Name, setStep1Name] = useState('');
+  const [step1Location, setStep1Location] = useState('');
+  const [step2Interests, setStep2Interests] = useState<string[]>([]);
+  const [step3Vehicles, setStep3Vehicles] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
+  const [step4Newsletters, setStep4Newsletters] = useState<string[]>([]);
+
+  // Update state when localStorage data is loaded
+  useEffect(() => {
+    if (localOnboardingData.name !== undefined) {
+      setStep1Name(localOnboardingData.name || '');
+      setStep1Location(localOnboardingData.location || '');
+      setStep2Interests(localOnboardingData.interests || []);
+      setStep3Vehicles(localOnboardingData.vehicles || []);
+      setStep4Newsletters(localOnboardingData.newsletters || []);
+    }
+  }, [localOnboardingData]);
 
   const steps = [
     { number: 1, title: 'Tell us about yourself', completed: completionStatus.step1 },
@@ -78,8 +100,10 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   };
 
   const handleSaveStep3 = () => {
-    if (step3Vehicle && onUpdateStep3) {
-      onUpdateStep3({ vehicleType: step3VehicleType, vehicle: step3Vehicle });
+    if (step3Vehicles.length > 0 && onUpdateStep3) {
+      // For backward compatibility, use the first vehicle's data
+      const firstVehicle = step3Vehicles[0];
+      onUpdateStep3({ vehicleType: firstVehicle.ownership, vehicle: firstVehicle.name });
       setExpandedStep(null);
     }
   };
@@ -249,42 +273,29 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
               <div className="profile-completion-step__form">
                 <h4 className="profile-completion-step__form-title">Your Vehicles</h4>
                 <div className="profile-completion-step__fields">
-                  <div className="profile-field">
-                    <label className="profile-field__label">Vehicle</label>
-                    <input 
-                      type="text"
-                      className="profile-field__input"
-                      placeholder="e.g., 2024 Honda Civic"
-                      value={step3Vehicle}
-                      onChange={(e) => setStep3Vehicle(e.target.value)}
-                    />
-                  </div>
-                  <div className="profile-field">
-                    <label className="profile-field__label">Vehicle Type</label>
-                    <div className="profile-radio-group">
-                      <label className="profile-radio">
-                        <input
-                          type="radio"
-                          checked={step3VehicleType === 'own'}
-                          onChange={() => setStep3VehicleType('own')}
-                        />
-                        <span>I Own This Car</span>
-                      </label>
-                      <label className="profile-radio">
-                        <input
-                          type="radio"
-                          checked={step3VehicleType === 'want'}
-                          onChange={() => setStep3VehicleType('want')}
-                        />
-                        <span>I Want This Car</span>
-                      </label>
+                  {step3Vehicles.length > 0 ? (
+                    <div className="vehicles-display">
+                      <h5 className="vehicles-display__title">Selected Vehicles:</h5>
+                      {step3Vehicles.map((vehicle, index) => (
+                        <div key={index} className="vehicle-item">
+                          <div className="vehicle-item__info">
+                            <span className="vehicle-item__name">{vehicle.name}</span>
+                            <span className="vehicle-item__ownership">
+                              {vehicle.ownership === 'own' ? 'I Own This Car' : 'I Want This Car'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="no-vehicles">
+                      <p>No vehicles selected yet.</p>
+                    </div>
+                  )}
                 </div>
                 <button 
                   className="profile-completion-step__save-btn"
                   onClick={handleSaveStep3}
-                  disabled={!step3Vehicle}
                 >
                   Save Changes
                 </button>
