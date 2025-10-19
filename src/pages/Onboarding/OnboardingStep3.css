@@ -407,13 +407,13 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 1.4em;
-  color: #00C2FF;
+  color: #4B5563;
   cursor: pointer;
   padding: 8px 0;
   text-align: right;
   text-decoration: none;
   transition: color var(--transition-fast);
-  align-self: flex-end;
+  align-self: center;
 }
 
 .no-vehicle-link:hover {
