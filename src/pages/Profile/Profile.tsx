@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import ProfileBanner from '../../components/ProfileBanner';
 import ProfileNav from '../../components/ProfileNav';
 import type { ProfileNavTab } from '../../components/ProfileNav';
@@ -50,7 +51,16 @@ export const Profile: React.FC<ProfileProps> = ({
   onUpdateStep3,
   onUpdateStep4
 }) => {
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<ProfileNavTab>('my-account');
+  
+  // Set initial tab based on URL parameter
+  useEffect(() => {
+    const tab = searchParams.get('tab') as ProfileNavTab;
+    if (tab && ['my-account', 'saved-items', 'subscriptions', 'settings'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
   
   // Bookmark state management
   const [savedArticles, setSavedArticles] = useState<string[]>(['article-1', 'article-2']);
@@ -198,11 +208,6 @@ export const Profile: React.FC<ProfileProps> = ({
         <div className="profile-main">
                  {activeTab === 'my-account' && (
                    <>
-                     {/* My Account Header */}
-                     <div className="profile-section profile-section--header">
-                       <h2 className="profile-section__title">My Account</h2>
-                     </div>
-
                      {/* Continue Reading Section */}
                      <div className="profile-section profile-section--articles">
                        <div className="profile-section__content">
@@ -241,11 +246,6 @@ export const Profile: React.FC<ProfileProps> = ({
 
           {activeTab === 'saved-items' && (
             <>
-              {/* Saved Items Header */}
-              <div className="profile-section profile-section--header">
-                <h2 className="profile-section__title">Saved Items</h2>
-              </div>
-
               {/* Vehicles Section */}
               <div className="profile-section profile-section--vehicles">
                 <div className="profile-section__content">
@@ -417,11 +417,6 @@ export const Profile: React.FC<ProfileProps> = ({
 
           {activeTab === 'subscriptions' && (
             <>
-              {/* My Subscriptions Header */}
-              <div className="profile-section profile-section--header">
-                <h2 className="profile-section__title">My Subscriptions</h2>
-              </div>
-
               {/* My Newsletters Section */}
               <div className="profile-section profile-section--subscriptions">
                 <div className="profile-section__content">
@@ -480,11 +475,6 @@ export const Profile: React.FC<ProfileProps> = ({
 
           {activeTab === 'settings' && (
             <>
-              {/* Account Settings Header */}
-              <div className="profile-section profile-section--header">
-                <h2 className="profile-section__title">Account Settings</h2>
-              </div>
-
               {/* Basic Info Section */}
               <div className="profile-section profile-section--settings">
                 <div className="profile-settings-fields">

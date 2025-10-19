@@ -5,7 +5,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-const step3Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4db33cc41280002b024af/step3.svg';
+const step3Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1853/group1318348095.svg';
 import './OnboardingStep3.css';
 import Icon from '../../components/Icon';
 
