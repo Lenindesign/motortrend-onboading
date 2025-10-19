@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField } from '../../design-system/components';
 import step1Illustration from '../../assets/images/step1-illustration.png';
 import './OnboardingStep1.css';
@@ -19,18 +20,17 @@ export interface OnboardingStep1Props {
   };
 }
 
-export const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
-  onNext,
-  onPrevious,
-  onSkip,
-  initialData,
-}) => {
-  const [name, setName] = useState(initialData?.name || '');
-  const [location, setLocation] = useState(initialData?.location || '');
+export const OnboardingStep1: React.FC<OnboardingStep1Props> = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [location, setLocation] = useState('');
 
   const handleNext = () => {
     if (name.trim()) {
-      onNext?.({ name, location });
+      console.log('Step 1 data:', { name, location });
+      // Store data in localStorage for now
+      localStorage.setItem('onboardingData', JSON.stringify({ name, location }));
+      navigate('/onboarding/step2');
     }
   };
 
@@ -86,7 +86,6 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
           <div className="onboarding-card__nav-row">
             <button
               className="onboarding-nav-btn onboarding-nav-btn--previous onboarding-nav-btn--disabled"
-              onClick={onPrevious}
               disabled
             >
               <Icon name="chevron_left" size={20} />
@@ -96,7 +95,7 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
             <div className="onboarding-card__skip-section">
               <button
                 className="onboarding-skip-btn"
-                onClick={onSkip}
+                onClick={() => navigate('/profile')}
                 type="button"
               >
                 Skip for now

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './GlobalHeader.css';
 import motorTrendLogo from '../../assets/images/motortrend-logo.svg';
 import Icon from '../Icon';
@@ -24,17 +25,25 @@ const navigationItems = [
   { label: 'Videos', href: '#' },
 ];
 
-export const GlobalHeader: React.FC<GlobalHeaderProps> = ({ onSignInClick, onProfileClick, isAuthenticated = false }) => {
+export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if user is authenticated (you can implement your own logic here)
+  const isAuthenticated = location.pathname !== '/signin';
+
   return (
     <header className="global-header">
       <div className="global-header__content">
         {/* Logo and Navigation */}
         <div className="global-header__left">
-          <img 
-            src={motorTrendLogo} 
-            alt="MotorTrend" 
-            className="global-header__logo"
-          />
+          <Link to="/" className="global-header__logo-link">
+            <img 
+              src={motorTrendLogo} 
+              alt="MotorTrend" 
+              className="global-header__logo"
+            />
+          </Link>
           <nav className="global-header__nav">
             {navigationItems.map((item) => (
               <a 
@@ -59,7 +68,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = ({ onSignInClick, onPro
           {isAuthenticated ? (
             <button 
               className="global-header__profile-btn" 
-              onClick={onProfileClick}
+              onClick={() => navigate('/profile')}
               aria-label="Profile"
             >
               <Icon name="account_circle" size={24} />
@@ -67,7 +76,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = ({ onSignInClick, onPro
           ) : (
             <button 
               className="global-header__sign-in-btn"
-              onClick={onSignInClick}
+              onClick={() => navigate('/signin')}
             >
               Sign In
             </button>

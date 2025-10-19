@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import step4Illustration from '../../assets/images/step4-illustration.png';
 import './OnboardingStep4.css';
 import Icon from '../../components/Icon';

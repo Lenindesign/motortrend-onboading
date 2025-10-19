@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import step2Illustration from '../../assets/images/step2-illustration.png';
 import './OnboardingStep2.css';
 import Icon from '../../components/Icon';
@@ -28,15 +29,9 @@ const interestOptions = [
   'Racing & Sports',
 ];
 
-export const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
-  onNext,
-  onPrevious,
-  onSkip,
-  initialData,
-}) => {
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(
-    initialData?.interests || []
-  );
+export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
+  const navigate = useNavigate();
+  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -47,7 +42,11 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
   };
 
   const handleNext = () => {
-    onNext?.({ interests: selectedInterests });
+    console.log('Step 2 data:', selectedInterests);
+    // Store data in localStorage
+    const existingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+    localStorage.setItem('onboardingData', JSON.stringify({ ...existingData, interests: selectedInterests }));
+    navigate('/onboarding/step3');
   };
 
   return (
@@ -96,7 +95,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
           <div className="onboarding-card__nav-row">
             <button
               className="onboarding-nav-btn onboarding-nav-btn--previous"
-              onClick={onPrevious}
+              onClick={() => navigate('/onboarding/step1')}
             >
               <Icon name="chevron_left" size={20} />
               <span>Previous</span>
@@ -104,7 +103,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = ({
 
             <button
               className="onboarding-skip-btn"
-              onClick={onSkip}
+              onClick={() => navigate('/profile')}
               type="button"
             >
               Skip for now

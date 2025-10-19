@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '../../design-system/components';
 import './SignIn.css';
 import motorTrendLogo from '../../assets/images/motortrend-logo.png';
@@ -19,23 +20,23 @@ export interface SignInProps {
   onForgotPasswordClick?: () => void;
 }
 
-export const SignIn: React.FC<SignInProps> = ({
-  onSignIn,
-  onSocialSignIn,
-  onSignUpClick,
-  onForgotPasswordClick,
-}) => {
+export const SignIn: React.FC<SignInProps> = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSignIn?.(email, password);
+    console.log('Sign in with:', email, password);
+    // Navigate to onboarding step 1
+    navigate('/onboarding/step1');
   };
 
   const handleSocialSignIn = (provider: 'google' | 'facebook' | 'apple') => {
-    onSocialSignIn?.(provider);
+    console.log('Sign in with:', provider);
+    // Navigate to onboarding step 1
+    navigate('/onboarding/step1');
   };
 
   return (
@@ -113,7 +114,7 @@ export const SignIn: React.FC<SignInProps> = ({
             <button
               type="button"
               className="sign-in-card__forgot-password"
-              onClick={onForgotPasswordClick}
+              onClick={() => console.log('Forgot password clicked')}
             >
               Forgot or need a password?
             </button>
@@ -134,7 +135,7 @@ export const SignIn: React.FC<SignInProps> = ({
             <button
               type="button"
               className="sign-in-card__sign-up-link"
-              onClick={onSignUpClick}
+              onClick={() => console.log('Sign up clicked')}
             >
               Sign Up
             </button>

@@ -8,7 +8,7 @@ import motortrendLogo from '../../assets/images/motortrend-logo.png';
 import './Welcome.css';
 
 export interface WelcomeProps {
-  userData: {
+  userData?: {
     name?: string;
     location?: string;
     interests?: string[];
@@ -25,7 +25,7 @@ export const Welcome: React.FC<WelcomeProps> = ({
   onGoHome,
   onCustomizeAgain,
 }) => {
-  const { name = 'Guest', location, interests = [], vehicle, vehicleType = 'own', newsletters = [] } = userData;
+  const { name = 'Guest', location, interests = [], vehicle, vehicleType = 'own', newsletters = [] } = userData || {};
 
   return (
     <div className="welcome-page">

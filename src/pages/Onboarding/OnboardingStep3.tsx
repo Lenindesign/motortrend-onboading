@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import step3Illustration from '../../assets/images/step3-illustration.png';
 import './OnboardingStep3.css';
 import Icon from '../../components/Icon';
