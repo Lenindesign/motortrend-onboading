@@ -3,7 +3,8 @@
  * Based on Figma Community design system
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import motortrendLogo from '../../assets/images/motortrend-logo.png';
 import './Welcome.css';
 
@@ -12,20 +13,36 @@ export interface WelcomeProps {
     name?: string;
     location?: string;
     interests?: string[];
-    vehicle?: string;
-    vehicleType?: 'own' | 'want';
+    vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
     newsletters?: string[];
   };
-  onGoHome?: () => void;
-  onCustomizeAgain?: () => void;
 }
 
-export const Welcome: React.FC<WelcomeProps> = ({
-  userData,
-  onGoHome,
-  onCustomizeAgain,
-}) => {
-  const { name = 'Guest', location, interests = [], vehicle, vehicleType = 'own', newsletters = [] } = userData || {};
+interface OnboardingData {
+  name?: string;
+  location?: string;
+  interests?: string[];
+  vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
+  newsletters?: string[];
+}
+
+export const Welcome: React.FC<WelcomeProps> = () => {
+  const navigate = useNavigate();
+  const [onboardingData, setOnboardingData] = useState<OnboardingData>({});
+
+  // Load onboarding data from localStorage
+  useEffect(() => {
+    const data = localStorage.getItem('onboardingData');
+    if (data) {
+      try {
+        setOnboardingData(JSON.parse(data));
+      } catch (error) {
+        console.error('Error parsing onboarding data:', error);
+      }
+    }
+  }, []);
+
+  const { name = 'Guest', location, interests = [], vehicles = [], newsletters = [] } = onboardingData;
 
   return (
     <div className="welcome-page">
@@ -71,7 +88,7 @@ export const Welcome: React.FC<WelcomeProps> = ({
 
                 <div className="profile-summary__right">
                   <p className="profile-detail">
-                    <strong>Current Vehicles:</strong> {vehicle && vehicle !== 'none' ? '1' : '0'}
+                    <strong>Current Vehicles:</strong> {vehicles.length}
                   </p>
                   <p className="profile-detail">
                     <strong>Newsletter:</strong> {newsletters.length > 0 ? 'Subscribed' : 'Not subscribed'}
@@ -82,50 +99,52 @@ export const Welcome: React.FC<WelcomeProps> = ({
               <div className="profile-divider" />
 
               {/* Vehicle Section */}
-              {vehicle && vehicle !== 'none' && (
+              {vehicles.length > 0 && (
                 <div className="vehicle-section">
                   <p className="vehicle-section__title">Your Vehicles:</p>
                   
-                  <div className="vehicle-card">
-                    <div className="vehicle-card__image">
-                      <img 
-                        src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=260&h=180&fit=crop&q=80" 
-                        alt={vehicle}
-                        className="vehicle-image"
-                      />
-                    </div>
-
-                    <div className="vehicle-card__info">
-                      <div className="vehicle-card__text">
-                        <h3 className="vehicle-name">{vehicle}</h3>
-                        <button className="vehicle-change-link" onClick={() => console.log('Change vehicle')}>
-                          Change Vehicle
-                        </button>
+                  {vehicles.map((vehicle, index) => (
+                    <div key={index} className="vehicle-card">
+                      <div className="vehicle-card__image">
+                        <img 
+                          src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=260&h=180&fit=crop&q=80" 
+                          alt={vehicle.name}
+                          className="vehicle-image"
+                        />
                       </div>
-                      
-                      <div className="vehicle-type-radios">
-                        <label className={`radio-option ${vehicleType === 'own' ? 'radio-option--selected' : ''}`}>
-                          <div className="radio-button">
-                            {vehicleType === 'own' && <div className="radio-button__dot" />}
-                          </div>
-                          <span className="radio-option__label">I Own This Car</span>
-                        </label>
 
-                        <label className={`radio-option ${vehicleType === 'want' ? 'radio-option--selected' : ''}`}>
-                          <div className="radio-button">
-                            {vehicleType === 'want' && <div className="radio-button__dot" />}
-                          </div>
-                          <span className="radio-option__label">I Want This Car</span>
-                        </label>
+                      <div className="vehicle-card__info">
+                        <div className="vehicle-card__text">
+                          <h3 className="vehicle-name">{vehicle.name}</h3>
+                          <button className="vehicle-change-link" onClick={() => navigate('/onboarding/step3')}>
+                            Change Vehicle
+                          </button>
+                        </div>
+                        
+                        <div className="vehicle-type-radios">
+                          <label className={`radio-option ${vehicle.ownership === 'own' ? 'radio-option--selected' : ''}`}>
+                            <div className="radio-button">
+                              {vehicle.ownership === 'own' && <div className="radio-button__dot" />}
+                            </div>
+                            <span className="radio-option__label">I Own This Car</span>
+                          </label>
+
+                          <label className={`radio-option ${vehicle.ownership === 'want' ? 'radio-option--selected' : ''}`}>
+                            <div className="radio-button">
+                              {vehicle.ownership === 'want' && <div className="radio-button__dot" />}
+                            </div>
+                            <span className="radio-option__label">I Want This Car</span>
+                          </label>
+                        </div>
                       </div>
-                    </div>
 
-                    <button className="vehicle-card__remove" aria-label="Remove vehicle" onClick={() => console.log('Remove vehicle')}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
-                  </div>
+                      <button className="vehicle-card__remove" aria-label="Remove vehicle" onClick={() => console.log('Remove vehicle')}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -136,7 +155,7 @@ export const Welcome: React.FC<WelcomeProps> = ({
         <div className="welcome-actions">
           <button
             className="welcome-btn welcome-btn--primary"
-            onClick={onGoHome}
+            onClick={() => navigate('/')}
           >
             <span>Go to Home Page</span>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -146,7 +165,7 @@ export const Welcome: React.FC<WelcomeProps> = ({
 
           <button
             className="welcome-btn welcome-btn--secondary"
-            onClick={onCustomizeAgain}
+            onClick={() => navigate('/onboarding/step1')}
           >
             Customize Again
           </button>
