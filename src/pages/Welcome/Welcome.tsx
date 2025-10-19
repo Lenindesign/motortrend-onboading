@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import motortrendLogo from '../../assets/images/motortrend-logo.png';
+import Icon from '../../components/Icon';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -103,48 +104,73 @@ export const Welcome: React.FC<WelcomeProps> = () => {
                 <div className="vehicle-section">
                   <p className="vehicle-section__title">Your Vehicles:</p>
                   
-                  {vehicles.map((vehicle, index) => (
-                    <div key={index} className="vehicle-card">
-                      <div className="vehicle-card__image">
-                        <img 
-                          src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=260&h=180&fit=crop&q=80" 
-                          alt={vehicle.name}
-                          className="vehicle-image"
-                        />
-                      </div>
-
-                      <div className="vehicle-card__info">
-                        <div className="vehicle-card__text">
-                          <h3 className="vehicle-name">{vehicle.name}</h3>
-                          <button className="vehicle-change-link" onClick={() => navigate('/onboarding/step3')}>
+                  <div className="selected-cars">
+                    {vehicles.map((vehicle, index) => (
+                      <div key={index} className="selected-car-card">
+                        <div className="selected-car-image">
+                          <img 
+                            src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=100&h=100&fit=crop&crop=center" 
+                            alt={vehicle.name}
+                            className="car-image"
+                          />
+                        </div>
+                        <div className="selected-car-details">
+                          <h3 className="selected-car-name">{vehicle.name}</h3>
+                          <button
+                            type="button"
+                            className="change-vehicle-btn"
+                            onClick={() => navigate('/onboarding/step3')}
+                          >
                             Change Vehicle
                           </button>
+                          <div className="ownership-options">
+                            <label className="ownership-option">
+                              <input
+                                type="radio"
+                                name={`ownership-${index}`}
+                                value="own"
+                                checked={vehicle.ownership === 'own'}
+                                readOnly
+                              />
+                              <div className="radio-icon">
+                                {vehicle.ownership === 'own' ? (
+                                  <Icon name="radio_button_checked" size={20} style={{ color: "#DC3545" }} />
+                                ) : (
+                                  <Icon name="radio_button_unchecked" size={20} style={{ color: "#CED4DA" }} />
+                                )}
+                              </div>
+                              <span className="radio-text">I Own This Car</span>
+                            </label>
+                            <label className="ownership-option">
+                              <input
+                                type="radio"
+                                name={`ownership-${index}`}
+                                value="want"
+                                checked={vehicle.ownership === 'want'}
+                                readOnly
+                              />
+                              <div className="radio-icon">
+                                {vehicle.ownership === 'want' ? (
+                                  <Icon name="radio_button_checked" size={20} style={{ color: "#DC3545" }} />
+                                ) : (
+                                  <Icon name="radio_button_unchecked" size={20} style={{ color: "#CED4DA" }} />
+                                )}
+                              </div>
+                              <span className="radio-text">I Want This Car</span>
+                            </label>
+                          </div>
                         </div>
-                        
-                        <div className="vehicle-type-radios">
-                          <label className={`radio-option ${vehicle.ownership === 'own' ? 'radio-option--selected' : ''}`}>
-                            <div className="radio-button">
-                              {vehicle.ownership === 'own' && <div className="radio-button__dot" />}
-                            </div>
-                            <span className="radio-option__label">I Own This Car</span>
-                          </label>
-
-                          <label className={`radio-option ${vehicle.ownership === 'want' ? 'radio-option--selected' : ''}`}>
-                            <div className="radio-button">
-                              {vehicle.ownership === 'want' && <div className="radio-button__dot" />}
-                            </div>
-                            <span className="radio-option__label">I Want This Car</span>
-                          </label>
-                        </div>
+                        <button
+                          type="button"
+                          className="selected-car-remove"
+                          onClick={() => console.log('Remove vehicle')}
+                          aria-label={`Remove ${vehicle.name}`}
+                        >
+                          <Icon name="close" size={16} />
+                        </button>
                       </div>
-
-                      <button className="vehicle-card__remove" aria-label="Remove vehicle" onClick={() => console.log('Remove vehicle')}>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

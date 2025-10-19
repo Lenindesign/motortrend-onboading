@@ -156,169 +156,151 @@
   margin: 4px 0;
 }
 
-/* Vehicle Section */
+/* Vehicle Section - matching OnboardingStep3 design */
 .vehicle-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
 .vehicle-section__title {
-  font-family: var(--font-body);
+  font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5em;
-  color: var(--color-neutrals-1);
+  color: var(--color-neutrals-2);
   margin: 0;
 }
 
-.vehicle-card {
-  position: relative;
+/* Selected Cars Display - matching OnboardingStep3 */
+.selected-cars {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  align-self: stretch;
-  gap: 16px;
-  padding: 16px;
-  background-color: var(--color-neutrals-7);
-  border-radius: var(--border-radius-md);
-  max-width: 100%;
-  overflow: hidden;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
 }
 
-.vehicle-card__image {
+.selected-car-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background-color: var(--color-white);
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  position: relative;
+  transition: all var(--transition-fast);
+  margin-bottom: 24px;
+}
+
+.selected-car-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.selected-car-image {
   flex-shrink: 0;
   width: 120px;
-  height: 80px;
+  height: 67.5px; /* 16:9 aspect ratio (120 * 9/16 = 67.5) */
   border-radius: var(--border-radius-sm);
   overflow: hidden;
+  background-color: var(--color-neutrals-7);
 }
 
-.vehicle-image {
+.car-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.vehicle-card__info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 16px;
+.selected-car-details {
   flex: 1;
-  min-width: 0;
-}
-
-.vehicle-card__text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
-.vehicle-name {
-  font-family: 'Poppins', var(--font-heading);
+.selected-car-name {
+  font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 15px;
-  line-height: 1.4em;
-  color: var(--color-neutrals-2);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: #212529;
   margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.vehicle-change-link {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 1.333em;
-  color: var(--color-neutrals-4);
+.change-vehicle-btn {
   background: none;
   border: none;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: #6C757D;
   cursor: pointer;
-  text-align: left;
   padding: 0;
-  text-decoration: none;
+  text-align: left;
   transition: color var(--transition-fast);
+  margin-bottom: 4px;
 }
 
-.vehicle-change-link:hover {
-  color: var(--color-neutrals-2);
+.change-vehicle-btn:hover {
+  color: #00C2FF;
 }
 
-.vehicle-type-radios {
+.ownership-options {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 0;
 }
 
-.radio-option {
+.ownership-option {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  cursor: pointer;
 }
 
-.radio-button {
+.ownership-option input[type="radio"] {
+  display: none;
+}
+
+.radio-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  background-color: var(--color-white);
-  border: 2px solid var(--color-neutrals-5);
-  border-radius: 50%;
-  flex-shrink: 0;
+  transition: all var(--transition-fast);
 }
 
-.radio-option--selected .radio-button {
-  background-color: var(--color-neutrals-2);
-  border-color: var(--color-neutrals-2);
-}
-
-.radio-button__dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--color-primary-2);
-  border-radius: 50%;
-}
-
-.radio-option__label {
+.radio-text {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 12px;
-  line-height: 1.333em;
-  color: var(--color-neutrals-2);
-  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: #212529;
 }
 
-.vehicle-card__remove {
+.selected-car-remove {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: var(--color-neutrals-1);
+  background-color: #6C757D;
   border: none;
   border-radius: 50%;
+  color: white;
   cursor: pointer;
-  color: var(--color-white);
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
 }
 
-.vehicle-card__remove:hover {
-  background-color: var(--color-neutrals-2);
-}
-
-.vehicle-card__remove svg {
-  width: 14px;
-  height: 14px;
+.selected-car-remove:hover {
+  background-color: #495057;
 }
 
 /* Welcome Actions */
