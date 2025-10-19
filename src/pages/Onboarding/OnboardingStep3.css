@@ -87,13 +87,13 @@
 }
 
 /* ========================================
-   Vehicle Search Section
+   Vehicle Search Section (Original MotorTrend Styles)
    ======================================== */
 
 .vehicle-search-section {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: 13px;
 }
 
 .vehicle-search__header {
@@ -101,36 +101,39 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-3);
+  gap: 16px;
 }
 
 .vehicle-search__label {
   font-family: var(--font-body);
-  font-weight: var(--font-weight-semibold);
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 12px;
   line-height: 1.3em;
-  color: var(--color-neutrals-1);
+  color: var(--color-black);
 }
 
 /* ========================================
-   Radio Buttons
+   Radio Buttons (Original MotorTrend Styles)
    ======================================== */
 
 .vehicle-search__radio-group {
   display: flex;
-  gap: var(--spacing-4);
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
 }
 
 .vehicle-search__radio-label {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: 4px;
+  background: none;
+  border: none;
   cursor: pointer;
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
-  font-size: 14px;
-  line-height: 1.3em;
-  color: var(--color-neutrals-3);
+  padding: 0;
+  transition: all var(--transition-fast);
 }
 
 .vehicle-search__radio-input {
@@ -138,43 +141,41 @@
 }
 
 .vehicle-search__radio-custom {
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--color-neutrals-5);
-  border-radius: 50%;
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 24px;
+  border: 1px solid var(--color-neutrals-5);
+  background-color: var(--color-neutrals-8);
+  padding: 5px;
   transition: all var(--transition-fast);
-  background: var(--color-white);
 }
 
 .vehicle-search__radio-input:checked + .vehicle-search__radio-custom {
-  border-color: var(--color-semantic-error);
-  background: var(--color-white);
+  background-color: var(--color-neutrals-2);
+  border-color: var(--color-neutrals-2);
 }
 
 .vehicle-search__radio-input:checked + .vehicle-search__radio-custom::after {
   content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: var(--color-semantic-error);
-}
-
-.vehicle-search__radio-input:checked ~ .vehicle-search__radio-text {
-  color: var(--color-neutrals-1);
-  font-weight: var(--font-weight-semibold);
+  background-color: var(--color-primary-2);
 }
 
 .vehicle-search__radio-text {
-  transition: all var(--transition-fast);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-2);
 }
 
 /* ========================================
-   Search Input
+   Search Input (Original MotorTrend Styles)
    ======================================== */
 
 .vehicle-search__input-container {
@@ -183,24 +184,24 @@
 }
 
 .vehicle-search__input-wrapper {
-  position: relative;
   display: flex;
   align-items: center;
-  background: var(--color-white);
-  border: 2px solid var(--color-neutrals-6);
-  border-radius: var(--border-radius-2);
-  padding: var(--spacing-3) var(--spacing-4);
-  transition: all var(--transition-fast);
+  gap: var(--spacing-1);
+  padding: 6px 16px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: var(--border-radius-md);
+  transition: border-color var(--transition-fast);
 }
 
 .vehicle-search__input-wrapper:focus-within {
-  border-color: var(--color-semantic-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--color-blue);
 }
 
 .vehicle-search__search-icon {
+  width: 24px;
+  height: 24px;
   color: var(--color-neutrals-4);
-  margin-right: var(--spacing-3);
   flex-shrink: 0;
 }
 
@@ -208,12 +209,13 @@
   flex: 1;
   border: none;
   outline: none;
+  background: none;
   font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
+  font-weight: 400;
   font-size: 16px;
-  line-height: 1.4em;
-  color: var(--color-neutrals-1);
-  background: transparent;
+  line-height: 1.75em;
+  color: var(--color-neutrals-2);
+  padding: 0;
 }
 
 .vehicle-search__input::placeholder {
@@ -221,7 +223,7 @@
 }
 
 /* ========================================
-   Autocomplete Dropdown
+   Autocomplete Dropdown (New functionality)
    ======================================== */
 
 .vehicle-search__dropdown {
@@ -230,9 +232,9 @@
   left: 0;
   right: 0;
   background: var(--color-white);
-  border: 2px solid var(--color-neutrals-6);
+  border: 1px solid var(--color-neutrals-5);
   border-top: none;
-  border-radius: 0 0 var(--border-radius-2) var(--border-radius-2);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
   box-shadow: var(--shadow-depth-3);
   z-index: 10;
   max-height: 240px;
@@ -240,12 +242,12 @@
 }
 
 .vehicle-search__dropdown-item {
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
+  font-weight: 400;
   font-size: 16px;
-  line-height: 1.4em;
-  color: var(--color-neutrals-1);
+  line-height: 1.75em;
+  color: var(--color-neutrals-2);
   cursor: pointer;
   transition: background-color var(--transition-fast);
   border-bottom: 1px solid var(--color-neutrals-7);
@@ -261,7 +263,7 @@
 }
 
 /* ========================================
-   Navigation
+   Navigation (Original MotorTrend Styles)
    ======================================== */
 
 .onboarding-card__navigation {
@@ -280,57 +282,70 @@
 .onboarding-nav-btn {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-3) var(--spacing-4);
-  background: var(--color-neutrals-1);
-  color: var(--color-white);
-  border: none;
-  border-radius: var(--border-radius-2);
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-semibold);
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 32px;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
   font-size: 16px;
-  line-height: 1.2em;
+  line-height: 1em;
+  border: none;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
-  text-decoration: none;
+  min-width: 124px;
+  height: 40px;
 }
 
-.onboarding-nav-btn:hover:not(.onboarding-nav-btn--disabled) {
-  background: var(--color-neutrals-2);
-  transform: translateY(-1px);
+.onboarding-nav-btn--previous {
+  background-color: transparent;
+  color: var(--color-neutrals-2);
+  border: 1px solid var(--color-neutrals-2);
+}
+
+.onboarding-nav-btn--next {
+  background-color: var(--color-neutrals-2);
+  color: var(--color-neutrals-8);
+}
+
+.onboarding-nav-btn--next:not(.onboarding-nav-btn--disabled):hover {
+  background-color: var(--color-neutrals-3);
 }
 
 .onboarding-nav-btn--disabled {
-  background: var(--color-neutrals-5);
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.6;
 }
 
-.onboarding-nav-btn--disabled:hover {
-  transform: none;
+.onboarding-nav-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .onboarding-card__skip-section {
-  flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex: 1;
 }
 
 .onboarding-skip-btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.3em;
+  color: var(--color-neutrals-4);
   background: none;
   border: none;
-  color: var(--color-neutrals-4);
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
-  font-size: 14px;
-  line-height: 1.3em;
   cursor: pointer;
   transition: color var(--transition-fast);
-  text-decoration: underline;
+  padding: var(--spacing-1);
 }
 
 .onboarding-skip-btn:hover {
-  color: var(--color-neutrals-2);
+  color: var(--color-neutrals-3);
+  text-decoration: underline;
 }
 
 /* ========================================
@@ -361,18 +376,18 @@
   }
 
   .vehicle-search__radio-group {
-    width: 100%;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
   }
 
   .onboarding-card__nav-row {
     flex-direction: column;
-    gap: var(--spacing-3);
+    gap: var(--spacing-2);
   }
 
   .onboarding-nav-btn {
     width: 100%;
-    justify-content: center;
   }
 
   .onboarding-card__skip-section {
@@ -385,12 +400,11 @@
     font-size: 24px;
   }
 
-  .vehicle-search__radio-group {
-    flex-direction: column;
-    gap: var(--spacing-2);
+  .vehicle-search__input-wrapper {
+    padding: 8px 12px;
   }
 
-  .vehicle-search__radio-label {
-    font-size: 16px;
+  .vehicle-search__input {
+    font-size: 14px;
   }
 }
