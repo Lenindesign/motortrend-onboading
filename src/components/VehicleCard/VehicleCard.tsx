@@ -1,5 +1,6 @@
 import React from 'react';
 import './VehicleCard.css';
+import Icon from '../Icon';
 
 export interface VehicleCardProps {
   image: string;
@@ -8,6 +9,8 @@ export interface VehicleCardProps {
   rating1?: number;
   rating2?: number;
   hasMultipleRatings?: boolean;
+  onBookmark?: () => void;
+  isBookmarked?: boolean;
 }
 
 export const VehicleCard: React.FC<VehicleCardProps> = ({ 
@@ -16,17 +19,21 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   type, 
   rating1, 
   rating2,
-  hasMultipleRatings = false 
+  hasMultipleRatings = false,
+  onBookmark,
+  isBookmarked = false
 }) => {
   return (
     <div className="vehicle-card">
       <div className="vehicle-card__image-container">
         <img src={image} alt={name} className="vehicle-card__image" />
-        <div className="vehicle-card__gallery-badge">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect width="24" height="24" rx="4" fill="currentColor"/>
-          </svg>
-        </div>
+        <button 
+          className={`vehicle-card__bookmark-btn ${isBookmarked ? 'vehicle-card__bookmark-btn--active' : ''}`}
+          onClick={onBookmark}
+          aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+        >
+          <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
+        </button>
       </div>
       
       <div className="vehicle-card__content">

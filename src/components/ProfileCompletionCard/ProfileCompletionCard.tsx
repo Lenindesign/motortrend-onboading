@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ProfileCompletionCard.css';
+import Icon from '../Icon';
 
 export interface OnboardingStatus {
   step1: boolean;
@@ -58,10 +59,6 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   const progressPercentage = (completedCount / totalSteps) * 100;
   const isFullyComplete = completedCount === totalSteps;
 
-  if (isFullyComplete) {
-    return null; // Don't show if everything is complete
-  }
-
   const handleToggleStep = (stepNumber: number) => {
     setExpandedStep(expandedStep === stepNumber ? null : stepNumber);
   };
@@ -111,28 +108,29 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   };
 
   return (
-    <div className="profile-completion-card">
+    <div className={`profile-completion-card ${isFullyComplete ? 'profile-completion-card--complete' : ''}`}>
       <div className="profile-completion-card__header">
         <div className="profile-completion-card__title-row">
           <div className="profile-completion-card__icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 11L12 14L22 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <Icon name="check_circle" size={24} />
           </div>
           <div className="profile-completion-card__title-content">
             <h3 className="profile-completion-card__title">
-              Complete Your Profile ({completedCount} of {totalSteps})
+              {isFullyComplete 
+                ? '✨ Profile Complete!' 
+                : `Complete Your Profile (${completedCount} of ${totalSteps})`
+              }
             </h3>
             <p className="profile-completion-card__subtitle">
-              Get personalized recommendations and tailored content by completing your profile.
+              {isFullyComplete
+                ? 'Your profile is all set up! You can edit any information below.'
+                : 'Get personalized recommendations and tailored content by completing your profile.'
+              }
             </p>
           </div>
           {onDismiss && (
             <button className="profile-completion-card__dismiss" onClick={onDismiss} aria-label="Dismiss">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <Icon name="close" size={20} />
             </button>
           )}
         </div>
@@ -160,14 +158,9 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
               <div className="profile-completion-step__info">
                 <div className="profile-completion-step__icon">
                   {step.completed ? (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <circle cx="10" cy="10" r="9" fill="#34A853" stroke="#34A853" strokeWidth="2"/>
-                      <path d="M6 10L8.5 12.5L14 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <Icon name="check_circle" variant="filled" size={20} style={{ color: '#34A853' }} />
                   ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <circle cx="10" cy="10" r="9" stroke="#E6E8EC" strokeWidth="2" fill="white"/>
-                    </svg>
+                    <Icon name="radio_button_unchecked" size={20} style={{ color: '#E6E8EC' }} />
                   )}
                 </div>
                 <div className="profile-completion-step__content">

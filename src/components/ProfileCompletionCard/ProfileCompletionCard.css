@@ -1,38 +1,44 @@
 .profile-completion-card {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px;
-  background: white;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  background: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
-  box-shadow: 0px 4px 20px 0px rgba(20, 20, 22, 0.06);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-depth-5);
   width: 100%;
   max-width: 966px;
+  transition: var(--transition-normal);
+}
+
+.profile-completion-card--complete {
+  border-color: #34A853;
+  background: linear-gradient(135deg, var(--color-white) 0%, #f0fdf4 100%);
 }
 
 .profile-completion-card__header {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-2);
 }
 
 .profile-completion-card__title-row {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--spacing-2);
 }
 
 .profile-completion-card__icon {
   width: 40px;
   height: 40px;
-  background: white;
-  border-radius: 8px;
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0EA5E9;
+  color: var(--color-blue);
   flex-shrink: 0;
 }
 
@@ -40,7 +46,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-1);
 }
 
 .profile-completion-card__title {
@@ -67,12 +73,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 1px solid #E6E8EC;
-  border-radius: 6px;
+  background: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-sm);
   cursor: pointer;
   color: var(--color-neutrals-4);
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   flex-shrink: 0;
 }
 
@@ -100,6 +106,14 @@
   background: var(--color-neutrals-1);
   border-radius: 3px;
   transition: width 0.4s ease;
+}
+
+.profile-completion-card--complete .profile-completion-card__progress-fill {
+  background: #34A853;
+}
+
+.profile-completion-card--complete .profile-completion-card__icon {
+  color: #34A853;
 }
 
 .profile-completion-card__progress-text {
@@ -176,21 +190,21 @@
 .profile-completion-step__button {
   padding: 10px 20px;
   background: var(--color-neutrals-1);
-  color: white;
+  color: var(--color-white);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   white-space: nowrap;
 }
 
 .profile-completion-step__button:hover {
   background: var(--color-neutrals-2);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(20, 20, 22, 0.1);
+  box-shadow: var(--shadow-depth-5);
 }
 
 .profile-completion-step__button:active {
@@ -201,17 +215,17 @@
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 14px;
-  color: #16A34A;
+  color: #34A853;
 }
 
 .profile-completion-step__form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 24px;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
   background: var(--color-neutrals-8);
-  border-radius: 8px;
-  margin-top: 12px;
+  border-radius: var(--border-radius-md);
+  margin-top: var(--spacing-2);
   border: 1px solid var(--color-neutrals-6);
 }
 
@@ -266,8 +280,8 @@
 
 .profile-field__input:focus {
   outline: none;
-  border-color: #0EA5E9;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(24, 108, 234, 0.1);
 }
 
 .profile-field__input::placeholder {
@@ -277,7 +291,7 @@
 .profile-completion-step__options {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: var(--spacing-2);
 }
 
 .profile-completion-step__options--single-column {

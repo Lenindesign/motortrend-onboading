@@ -24,6 +24,39 @@
   border-radius: 8px;
 }
 
+.video-card__bookmark-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+
+.video-card__bookmark-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: scale(1.05);
+}
+
+.video-card__bookmark-btn--active {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.video-card__bookmark-btn--active:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
 .video-card__play-icon {
   position: absolute;
   top: 50%;
@@ -34,6 +67,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .video-card__content {

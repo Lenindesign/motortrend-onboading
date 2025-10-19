@@ -104,6 +104,25 @@
   user-select: none;
 }
 
+.profile-banner__avatar-logo {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.profile-banner__logo-img {
+  width: 100%;
+  height: auto;
+  max-width: 72px;
+  max-height: 72px;
+  object-fit: contain;
+}
+
 /* ========================================
    User Info
    ======================================== */
@@ -235,6 +254,15 @@
 
   .profile-banner__avatar-placeholder {
     font-size: 32px;
+  }
+
+  .profile-banner__avatar-logo {
+    padding: 10px;
+  }
+
+  .profile-banner__logo-img {
+    max-width: 60px;
+    max-height: 60px;
   }
 
   .profile-banner__name {

@@ -1,23 +1,37 @@
 import React from 'react';
 import './VideoCard.css';
+import Icon from '../Icon';
 
 export interface VideoCardProps {
   image: string;
   title: string;
   author: string;
   date: string;
+  onBookmark?: () => void;
+  isBookmarked?: boolean;
 }
 
-export const VideoCard: React.FC<VideoCardProps> = ({ image, title, author, date }) => {
+export const VideoCard: React.FC<VideoCardProps> = ({ 
+  image, 
+  title, 
+  author, 
+  date,
+  onBookmark,
+  isBookmarked = false
+}) => {
   return (
     <div className="video-card">
       <div className="video-card__image-container">
         <img src={image} alt={title} className="video-card__image" />
+        <button 
+          className={`video-card__bookmark-btn ${isBookmarked ? 'video-card__bookmark-btn--active' : ''}`}
+          onClick={onBookmark}
+          aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+        >
+          <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
+        </button>
         <div className="video-card__play-icon">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" opacity="0.7">
-            <circle cx="32" cy="32" r="32" fill="white"/>
-            <path d="M26 20L44 32L26 44V20Z" fill="#141416"/>
-          </svg>
+          <Icon name="play_circle" variant="filled" size={64} />
         </div>
       </div>
       

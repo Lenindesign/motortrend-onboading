@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import step3Illustration from '../../assets/images/step3-illustration.png';
 import './OnboardingStep3.css';
+import Icon from '../../components/Icon';
 
 export interface OnboardingStep3Props {
   onNext?: (data: { vehicleType: 'own' | 'want'; vehicle: string }) => void;
@@ -136,9 +137,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
               className="onboarding-nav-btn onboarding-nav-btn--previous"
               onClick={onPrevious}
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 16L6 10L12 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+                <Icon name="chevron_left" size={20} />
               <span>Previous</span>
             </button>
 
@@ -155,9 +154,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = ({
               onClick={handleNext}
             >
               <span>Next</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 16L14 10L8 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+                <Icon name="chevron_right" size={20} />
             </button>
           </div>
         </div>

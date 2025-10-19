@@ -17,6 +17,7 @@ import ConnectedAccount from '../../components/ConnectedAccount';
 import CollapsibleSection from '../../components/CollapsibleSection';
 import ProfileCompletionCard from '../../components/ProfileCompletionCard';
 import type { OnboardingStatus } from '../../components/ProfileCompletionCard';
+import Toast from '../../components/Toast';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -51,6 +52,51 @@ export const Profile: React.FC<ProfileProps> = ({
   onUpdateStep4
 }) => {
   const [activeTab, setActiveTab] = useState<ProfileNavTab>('my-account');
+  
+  // Bookmark state management
+  const [savedVehicles, setSavedVehicles] = useState<string[]>(['vehicle-1', 'vehicle-2', 'vehicle-3']);
+  const [savedArticles, setSavedArticles] = useState<string[]>(['article-1', 'article-2']);
+  const [savedComparisons, setSavedComparisons] = useState<string[]>(['comparison-1']);
+  const [savedVideos, setSavedVideos] = useState<string[]>(['video-1', 'video-2']);
+  
+  // Toast state
+  const [showToast, setShowToast] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ type: string; id: string } | null>(null);
+
+  // Bookmark handlers
+  const handleBookmarkClick = (type: 'vehicle' | 'article' | 'comparison' | 'video', id: string) => {
+    setPendingDelete({ type, id });
+    setShowToast(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!pendingDelete) return;
+
+    const { type, id } = pendingDelete;
+    
+    switch (type) {
+      case 'vehicle':
+        setSavedVehicles(prev => prev.filter(v => v !== id));
+        break;
+      case 'article':
+        setSavedArticles(prev => prev.filter(a => a !== id));
+        break;
+      case 'comparison':
+        setSavedComparisons(prev => prev.filter(c => c !== id));
+        break;
+      case 'video':
+        setSavedVideos(prev => prev.filter(v => v !== id));
+        break;
+    }
+
+    setShowToast(false);
+    setPendingDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setShowToast(false);
+    setPendingDelete(null);
+  };
 
   const mockArticles = [
     {
@@ -86,52 +132,52 @@ export const Profile: React.FC<ProfileProps> = ({
         </div>
 
         <div className="profile-main">
-          {activeTab === 'my-account' && (
-            <>
-              {/* My Account Header */}
-              <div className="profile-section profile-section--header">
-                <h2 className="profile-section__title">My Account</h2>
-              </div>
+                 {activeTab === 'my-account' && (
+                   <>
+                     {/* My Account Header */}
+                     <div className="profile-section profile-section--header">
+                       <h2 className="profile-section__title">My Account</h2>
+                     </div>
 
-              {/* Profile Completion Card */}
-              <ProfileCompletionCard
-                completionStatus={onboardingCompletion || {
-                  step1: false,
-                  step2: false,
-                  step3: false,
-                  step4: false,
-                }}
-                onboardingData={onboardingData}
-                onUpdateStep1={onUpdateStep1}
-                onUpdateStep2={onUpdateStep2}
-                onUpdateStep3={onUpdateStep3}
-                onUpdateStep4={onUpdateStep4}
-              />
+                     {/* Continue Reading Section */}
+                     <div className="profile-section profile-section--articles">
+                       <div className="profile-section__content">
+                         <div className="profile-section__header-row">
+                           <h3 className="profile-section__heading">Continue Reading</h3>
+                         </div>
+                         
+                         <div className="profile-articles">
+                           {mockArticles.map((article, index) => (
+                             <ArticleCard
+                               key={index}
+                               title={article.title}
+                               author={article.author}
+                               date={article.date}
+                               imageUrl={article.imageUrl}
+                               onReadArticle={() => console.log('Read article:', article.title)}
+                             />
+                           ))}
+                         </div>
+                       </div>
+                     </div>
 
-              {/* Continue Reading Section */}
-              <div className="profile-section profile-section--articles">
-                <div className="profile-section__content">
-                  <div className="profile-section__header-row">
-                    <h3 className="profile-section__heading">Continue Reading</h3>
-                  </div>
-                  
-                  <div className="profile-articles">
-                    {mockArticles.map((article, index) => (
-                      <ArticleCard
-                        key={index}
-                        title={article.title}
-                        author={article.author}
-                        date={article.date}
-                        imageUrl={article.imageUrl}
-                        onReadArticle={() => console.log('Read article:', article.title)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+                     {/* Profile Completion Card */}
+                     <ProfileCompletionCard
+                       completionStatus={onboardingCompletion || {
+                         step1: false,
+                         step2: false,
+                         step3: false,
+                         step4: false,
+                       }}
+                       onboardingData={onboardingData}
+                       onUpdateStep1={onUpdateStep1}
+                       onUpdateStep2={onUpdateStep2}
+                       onUpdateStep3={onUpdateStep3}
+                       onUpdateStep4={onUpdateStep4}
+                     />
 
-            </>
-          )}
+                   </>
+                 )}
 
           {activeTab === 'saved-items' && (
             <>
@@ -145,28 +191,42 @@ export const Profile: React.FC<ProfileProps> = ({
                 <div className="profile-section__content">
                   <div className="profile-section__header-row">
                     <h3 className="profile-section__heading">Vehicles</h3>
+                    <button 
+                      className="profile-section__add-btn"
+                      onClick={() => console.log('Add vehicle')}
+                    >
+                      Add A Vehicle
+                    </button>
                   </div>
                   
                   {/* Cars I Own */}
                   <div className="profile-vehicles-subsection">
                     <h4 className="profile-subsection__title">Cars I Own</h4>
                     <div className="profile-vehicles-grid">
-                      <VehicleCard
-                        image="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=400&h=300&fit=crop&q=80"
-                        name="2021 Subaru WRX"
-                        type="Sedan"
-                        rating1={9.1}
-                        rating2={8.5}
-                        hasMultipleRatings={true}
-                      />
-                      <VehicleCard
-                        image="https://images.unsplash.com/photo-1590362891991-f776e747a588?w=400&h=300&fit=crop&q=80"
-                        name="2024 Honda Civic"
-                        type="Sedan"
-                        rating1={9.1}
-                        rating2={8.5}
-                        hasMultipleRatings={true}
-                      />
+                      {savedVehicles.includes('vehicle-1') && (
+                        <VehicleCard
+                          image="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=400&h=300&fit=crop&q=80"
+                          name="2021 Subaru WRX"
+                          type="Sedan"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleBookmarkClick('vehicle', 'vehicle-1')}
+                        />
+                      )}
+                      {savedVehicles.includes('vehicle-2') && (
+                        <VehicleCard
+                          image="https://images.unsplash.com/photo-1590362891991-f776e747a588?w=400&h=300&fit=crop&q=80"
+                          name="2024 Honda Civic"
+                          type="Sedan"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleBookmarkClick('vehicle', 'vehicle-2')}
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -177,14 +237,18 @@ export const Profile: React.FC<ProfileProps> = ({
                   <div className="profile-vehicles-subsection">
                     <h4 className="profile-subsection__title">Cars I Want</h4>
                     <div className="profile-vehicles-grid">
-                      <VehicleCard
-                        image="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop&q=80"
-                        name="2025 Ford Bronco"
-                        type="SUV"
-                        rating1={9.1}
-                        rating2={8.5}
-                        hasMultipleRatings={true}
-                      />
+                      {savedVehicles.includes('vehicle-3') && (
+                        <VehicleCard
+                          image="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop&q=80"
+                          name="2025 Ford Bronco"
+                          type="SUV"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleBookmarkClick('vehicle', 'vehicle-3')}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -198,20 +262,28 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                   
                   <div className="profile-articles">
-                    <ArticleCard
-                      title="Tested: Audi Plays It Safe With the Audi A6 Sportback E-Tron"
-                      author="Justin Banner"
-                      date="Oct 10, 2025"
-                      imageUrl="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=300&h=200&fit=crop&q=80"
-                      onReadArticle={() => console.log('Read article')}
-                    />
-                    <ArticleCard
-                      title="We Didn't Ask the Toyota GR Corolla to Get Less Fun, But Here We Are"
-                      author="Justin Banner"
-                      date="Oct 10, 2025"
-                      imageUrl="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=300&h=200&fit=crop&q=80"
-                      onReadArticle={() => console.log('Read article')}
-                    />
+                    {savedArticles.includes('article-1') && (
+                      <ArticleCard
+                        title="Tested: Audi Plays It Safe With the Audi A6 Sportback E-Tron"
+                        author="Justin Banner"
+                        date="Oct 10, 2025"
+                        imageUrl="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=300&h=200&fit=crop&q=80"
+                        onReadArticle={() => console.log('Read article')}
+                        isBookmarked={true}
+                        onBookmark={() => handleBookmarkClick('article', 'article-1')}
+                      />
+                    )}
+                    {savedArticles.includes('article-2') && (
+                      <ArticleCard
+                        title="We Didn't Ask the Toyota GR Corolla to Get Less Fun, But Here We Are"
+                        author="Justin Banner"
+                        date="Oct 10, 2025"
+                        imageUrl="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=300&h=200&fit=crop&q=80"
+                        onReadArticle={() => console.log('Read article')}
+                        isBookmarked={true}
+                        onBookmark={() => handleBookmarkClick('article', 'article-2')}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -224,16 +296,20 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                   
                   <div className="profile-comparisons-grid">
-                    <ComparisonCard
-                      vehicle1={{
-                        image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop&q=80",
-                        name: "2025 Ford Bronco"
-                      }}
-                      vehicle2={{
-                        image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400&h=300&fit=crop&q=80",
-                        name: "2025 Ford Bronco S"
-                      }}
-                    />
+                    {savedComparisons.includes('comparison-1') && (
+                      <ComparisonCard
+                        vehicle1={{
+                          image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop&q=80",
+                          name: "2025 Ford Bronco"
+                        }}
+                        vehicle2={{
+                          image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400&h=300&fit=crop&q=80",
+                          name: "2025 Ford Bronco S"
+                        }}
+                        isBookmarked={true}
+                        onBookmark={() => handleBookmarkClick('comparison', 'comparison-1')}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -246,18 +322,26 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                   
                   <div className="profile-videos-grid">
-                    <VideoCard
-                      image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop&q=80"
-                      title="Tested: The 2023 Honda Civic Type R Shares Our Faith"
-                      author="Justin Banner"
-                      date="Oct 10, 2025"
-                    />
-                    <VideoCard
-                      image="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop&q=80"
-                      title="The Shelby GT500 Is The Coolest Mustang Ever Produced"
-                      author="Justin Banner"
-                      date="Oct 10, 2025"
-                    />
+                    {savedVideos.includes('video-1') && (
+                      <VideoCard
+                        image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop&q=80"
+                        title="Tested: The 2023 Honda Civic Type R Shares Our Faith"
+                        author="Justin Banner"
+                        date="Oct 10, 2025"
+                        isBookmarked={true}
+                        onBookmark={() => handleBookmarkClick('video', 'video-1')}
+                      />
+                    )}
+                    {savedVideos.includes('video-2') && (
+                      <VideoCard
+                        image="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop&q=80"
+                        title="The Shelby GT500 Is The Coolest Mustang Ever Produced"
+                        author="Justin Banner"
+                        date="Oct 10, 2025"
+                        isBookmarked={true}
+                        onBookmark={() => handleBookmarkClick('video', 'video-2')}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -412,6 +496,17 @@ export const Profile: React.FC<ProfileProps> = ({
           )}
         </div>
       </div>
+      
+      {/* Toast Confirmation Dialog */}
+      <Toast
+        message="Are you sure you want to remove this item from your saved items?"
+        isVisible={showToast}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        confirmText="Remove"
+        cancelText="Cancel"
+        type="warning"
+      />
     </div>
   );
 };

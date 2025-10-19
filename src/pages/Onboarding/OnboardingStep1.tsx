@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { TextField } from '../../design-system/components';
 import step1Illustration from '../../assets/images/step1-illustration.png';
 import './OnboardingStep1.css';
+import Icon from '../../components/Icon';
 
 export interface OnboardingStep1Props {
   onNext?: (data: { name: string; location: string }) => void;
@@ -88,9 +89,7 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
               onClick={onPrevious}
               disabled
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 16L6 10L12 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <Icon name="chevron_left" size={20} />
               <span>Previous</span>
             </button>
 
@@ -110,9 +109,7 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = ({
               disabled={isNextDisabled}
             >
               <span>Next</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 16L14 10L8 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <Icon name="chevron_right" size={20} />
             </button>
           </div>
         </div>
