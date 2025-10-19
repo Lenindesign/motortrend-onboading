@@ -33,6 +33,26 @@
   z-index: 0;
 }
 
+/* Dynamic Banner Image */
+.profile-banner__banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.profile-banner__banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: blur(1px) brightness(1.1);
+  opacity: 0.15;
+}
+
 /* Gradient Overlay for Depth */
 .profile-banner::after {
   content: '';

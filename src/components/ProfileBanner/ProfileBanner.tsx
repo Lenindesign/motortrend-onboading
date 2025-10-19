@@ -10,6 +10,7 @@ import Icon from '../Icon';
 export interface ProfileBannerProps {
   userName: string;
   userAvatar?: string;
+  userBanner?: string;
   joinDate: string;
   location?: string;
   onEditProfile?: () => void;
@@ -18,6 +19,7 @@ export interface ProfileBannerProps {
 export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   userName,
   userAvatar,
+  userBanner,
   joinDate,
   location,
   onEditProfile,
@@ -25,6 +27,13 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
 
   return (
     <div className="profile-banner">
+      {/* Banner Image */}
+      {userBanner && (
+        <div className="profile-banner__banner">
+          <img src={userBanner} alt="Profile Banner" className="profile-banner__banner-img" />
+        </div>
+      )}
+      
       <div className="profile-banner__container">
         {/* Avatar Section */}
         <div className="profile-banner__avatar">

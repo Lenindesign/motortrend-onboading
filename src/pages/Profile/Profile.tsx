@@ -18,6 +18,7 @@ import CollapsibleSection from '../../components/CollapsibleSection';
 import ProfileCompletionCard from '../../components/ProfileCompletionCard';
 import Toast from '../../components/Toast';
 import Icon from '../../components/Icon';
+import { AvatarBannerModal } from '../../components/AvatarBannerModal';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -81,6 +82,11 @@ export const Profile: React.FC<ProfileProps> = ({
   // Toast state
   const [showToast, setShowToast] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ type: string; id: string } | null>(null);
+  
+  // Avatar/Banner Modal state
+  const [showAvatarBannerModal, setShowAvatarBannerModal] = useState(false);
+  const [userAvatar, setUserAvatar] = useState(userData?.avatar);
+  const [userBanner, setUserBanner] = useState<string | undefined>(undefined);
 
   // Bookmark handlers
   const handleBookmarkClick = (type: 'article' | 'comparison' | 'video', id: string) => {
@@ -115,6 +121,21 @@ export const Profile: React.FC<ProfileProps> = ({
   const handleCancelDelete = () => {
     setShowToast(false);
     setPendingDelete(null);
+  };
+
+  // Avatar/Banner Modal handlers
+  const handleEditProfile = () => {
+    setShowAvatarBannerModal(true);
+  };
+
+  const handleSaveAvatarBanner = (avatarUrl: string, bannerUrl: string) => {
+    setUserAvatar(avatarUrl);
+    setUserBanner(bannerUrl);
+    setShowAvatarBannerModal(false);
+    
+    // Here you would typically save to localStorage or send to server
+    console.log('Avatar saved:', avatarUrl);
+    console.log('Banner saved:', bannerUrl);
   };
 
   // Categorize onboarding vehicles
@@ -159,10 +180,11 @@ export const Profile: React.FC<ProfileProps> = ({
     <div className="profile-page">
       <ProfileBanner
         userName={localOnboardingData.name || userData?.name || 'Guest User'}
-        userAvatar={userData?.avatar}
+        userAvatar={userAvatar}
+        userBanner={userBanner}
         joinDate={userData?.joinDate || '1/14/2024'}
         location={localOnboardingData.location || userData?.location || 'Location not specified'}
-        onEditProfile={() => console.log('Edit profile')}
+        onEditProfile={handleEditProfile}
       />
 
       <div className="profile-content">
@@ -197,6 +219,8 @@ export const Profile: React.FC<ProfileProps> = ({
                                date={article.date}
                                imageUrl={article.imageUrl}
                                onReadArticle={() => console.log('Read article:', article.title)}
+                               isBookmarked={savedArticles.includes(`article-${index + 1}`)}
+                               onBookmark={() => handleBookmarkClick('article', `article-${index + 1}`)}
                              />
                            ))}
                          </div>
@@ -698,6 +722,15 @@ export const Profile: React.FC<ProfileProps> = ({
         confirmText="Remove"
         cancelText="Cancel"
         type="warning"
+      />
+
+      {/* Avatar Banner Modal */}
+      <AvatarBannerModal
+        isVisible={showAvatarBannerModal}
+        onClose={() => setShowAvatarBannerModal(false)}
+        onSave={handleSaveAvatarBanner}
+        currentAvatar={userAvatar}
+        currentBanner={userBanner}
       />
     </div>
   );

@@ -25,6 +25,67 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+
+  const handleDetectLocation = async () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by this browser.');
+      return;
+    }
+
+    setIsDetectingLocation(true);
+
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        });
+      });
+
+      const { latitude, longitude } = position.coords;
+      
+      // Use reverse geocoding to get location name
+      try {
+        const response = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+        );
+        const data = await response.json();
+        
+        if (data.city && data.principalSubdivision) {
+          setLocation(`${data.city}, ${data.principalSubdivision}`);
+        } else if (data.locality) {
+          setLocation(data.locality);
+        } else {
+          setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        }
+      } catch (error) {
+        console.error('Reverse geocoding failed:', error);
+        setLocation(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+      }
+    } catch (error) {
+      console.error('Geolocation error:', error);
+      if (error instanceof GeolocationPositionError) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert('Location access denied. Please enable location permissions and try again.');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert('Location information is unavailable. Please try again.');
+            break;
+          case error.TIMEOUT:
+            alert('Location request timed out. Please try again.');
+            break;
+          default:
+            alert('An unknown error occurred while retrieving location.');
+            break;
+        }
+      }
+    } finally {
+      setIsDetectingLocation(false);
+    }
+  };
 
   const handleNext = () => {
     if (name.trim()) {
@@ -72,14 +133,29 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = () => {
             required
           />
 
-          <TextField
-            label="Where are you located? (Optional)"
-            type="text"
-            placeholder="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            fullWidth
-          />
+          <div className="location-field-container">
+            <TextField
+              label="Where are you located? (Optional)"
+              type="text"
+              placeholder="Current Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              fullWidth
+            />
+            <button
+              type="button"
+              className="location-icon-btn"
+              onClick={handleDetectLocation}
+              disabled={isDetectingLocation}
+              title={isDetectingLocation ? 'Detecting location...' : 'Auto-detect location'}
+            >
+              <Icon 
+                name={isDetectingLocation ? "refresh" : "my_location"} 
+                size={20} 
+                className={isDetectingLocation ? "spinning" : ""}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Navigation Buttons */}

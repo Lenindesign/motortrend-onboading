@@ -208,3 +208,78 @@
   }
 }
 
+/* Location Detection Icon */
+.location-field-container {
+  position: relative;
+  width: 100%;
+}
+
+.location-field-container .text-field__input-container {
+  position: relative;
+}
+
+.location-icon-btn {
+  position: absolute;
+  right: 12px;
+  top: calc(100% - 24px - 12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  color: var(--color-neutrals-4);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  z-index: 2;
+  border-radius: 50%;
+}
+
+.location-icon-btn:hover:not(:disabled) {
+  color: var(--color-blue);
+  background-color: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}
+
+.location-icon-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.location-icon-btn:disabled {
+  color: var(--color-neutrals-5);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.location-icon-btn .spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Adjust TextField padding to accommodate icon */
+.location-field-container .text-field__input {
+  padding-right: 48px;
+}
+
+/* Mobile adjustments for location icon */
+@media (max-width: 768px) {
+  .location-icon-btn {
+    right: 8px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .location-field-container .text-field__input {
+    padding-right: 44px;
+  }
+}
+
