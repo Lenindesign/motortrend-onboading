@@ -4,7 +4,6 @@
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ProfileBanner from '../../components/ProfileBanner';
 import ProfileNav from '../../components/ProfileNav';
 import type { ProfileNavTab } from '../../components/ProfileNav';
