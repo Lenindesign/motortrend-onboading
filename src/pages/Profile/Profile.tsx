@@ -102,6 +102,9 @@ export const Profile: React.FC<ProfileProps> = ({
       case 'video':
         setSavedVideos(prev => prev.filter(v => v !== id));
         break;
+      case 'vehicle':
+        handleConfirmVehicleDelete(id);
+        break;
     }
 
     setShowToast(false);
@@ -117,8 +120,13 @@ export const Profile: React.FC<ProfileProps> = ({
   const vehiclesIOwn = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'own');
   const vehiclesIWant = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'want');
 
-  // Handle removing onboarding vehicles
+  // Handle removing onboarding vehicles with confirmation
   const handleRemoveOnboardingVehicle = (vehicleName: string) => {
+    setPendingDelete({ type: 'vehicle', id: vehicleName });
+    setShowToast(true);
+  };
+
+  const handleConfirmVehicleDelete = (vehicleName: string) => {
     const updatedVehicles = (localOnboardingData.vehicles || []).filter(v => v.name !== vehicleName);
     const updatedData = {
       ...localOnboardingData,
@@ -533,7 +541,11 @@ export const Profile: React.FC<ProfileProps> = ({
       
       {/* Toast Confirmation Dialog */}
       <Toast
-        message="Are you sure you want to remove this item from your saved items?"
+        message={
+          pendingDelete?.type === 'vehicle' 
+            ? "Are you sure you want to remove this vehicle from your saved items?"
+            : "Are you sure you want to remove this item from your saved items?"
+        }
         isVisible={showToast}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
