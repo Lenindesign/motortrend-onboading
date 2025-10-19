@@ -31,18 +31,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-1);
   width: 100%;
 }
 
 .onboarding-card__illustration {
   display: flex;
   justify-content: center;
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-1);
 }
 
 .onboarding-card__illustration svg {
-  width: 200px;
+  width: 138px;
   height: 81px;
 }
 
