@@ -205,13 +205,12 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
+  gap: 16px;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
 }
 
-.vehicle-card__details {
+.vehicle-card__text {
   display: flex;
   flex-direction: column;
   gap: 4px;

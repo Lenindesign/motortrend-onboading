@@ -96,29 +96,31 @@ export const Welcome: React.FC<WelcomeProps> = ({
                     </div>
 
                     <div className="vehicle-card__info">
-                      <div className="vehicle-card__details">
+                      <div className="vehicle-card__text">
                         <h3 className="vehicle-name">{vehicle}</h3>
-                        <button className="vehicle-change-link">Change Vehicle</button>
-                        
-                        <div className="vehicle-type-radios">
-                          <div className={`radio-option ${vehicleType === 'own' ? 'radio-option--selected' : ''}`}>
-                            <div className="radio-button">
-                              {vehicleType === 'own' && <div className="radio-button__dot" />}
-                            </div>
-                            <span className="radio-option__label">I Own This Car</span>
+                        <button className="vehicle-change-link" onClick={() => console.log('Change vehicle')}>
+                          Change Vehicle
+                        </button>
+                      </div>
+                      
+                      <div className="vehicle-type-radios">
+                        <label className={`radio-option ${vehicleType === 'own' ? 'radio-option--selected' : ''}`}>
+                          <div className="radio-button">
+                            {vehicleType === 'own' && <div className="radio-button__dot" />}
                           </div>
+                          <span className="radio-option__label">I Own This Car</span>
+                        </label>
 
-                          <div className={`radio-option ${vehicleType === 'want' ? 'radio-option--selected' : ''}`}>
-                            <div className="radio-button">
-                              {vehicleType === 'want' && <div className="radio-button__dot" />}
-                            </div>
-                            <span className="radio-option__label">I Want This Car</span>
+                        <label className={`radio-option ${vehicleType === 'want' ? 'radio-option--selected' : ''}`}>
+                          <div className="radio-button">
+                            {vehicleType === 'want' && <div className="radio-button__dot" />}
                           </div>
-                        </div>
+                          <span className="radio-option__label">I Want This Car</span>
+                        </label>
                       </div>
                     </div>
 
-                    <button className="vehicle-card__remove" aria-label="Remove vehicle">
+                    <button className="vehicle-card__remove" aria-label="Remove vehicle" onClick={() => console.log('Remove vehicle')}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
