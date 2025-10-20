@@ -32,8 +32,10 @@
 }
 
 .global-footer__logo {
-  height: 24px;
+  height: 32px;
   width: auto;
+  object-fit: contain;
+  margin: 0;
 }
 
 .global-footer__links {

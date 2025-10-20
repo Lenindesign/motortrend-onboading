@@ -319,25 +319,26 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  padding: 16px 24px;
+  padding: 8px 16px;
   width: 100%;
-  font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
-  font-size: 16px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
   line-height: 1em;
-  border-radius: var(--border-radius-md);
+  border-radius: 6px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
 }
 
 .welcome-btn--primary {
   background-color: var(--color-neutrals-2);
-  color: var(--color-neutrals-8);
+  color: var(--color-white);
   border: none;
 }
 
 .welcome-btn--primary:hover {
   background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
 }
 
 .welcome-btn--primary svg {

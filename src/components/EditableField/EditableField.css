@@ -34,25 +34,7 @@
   align-items: center;
 }
 
-.editable-field__edit-btn {
-  font-family: var(--font-geist);
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 1.56em;
-  color: var(--neutrals-3);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  width: 512px;
-  height: 48px;
-  text-align: right;
-  transition: color 0.2s;
-}
-
-.editable-field__edit-btn:hover {
-  color: var(--neutrals-2);
-}
+/* Edit button now uses global Button component */
 
 @media (max-width: 768px) {
   .editable-field__value {

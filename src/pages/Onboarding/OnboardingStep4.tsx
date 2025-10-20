@@ -104,15 +104,21 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                 {/* Logo */}
                 <div className="newsletter-card__logo">
                   {newsletter.logo === 'motortrend' ? (
-                    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="72" height="72" rx="8" fill={selectedNewsletters.includes(newsletter.id) ? '#141416' : '#E90C17'}/>
-                      <text x="50%" y="60%" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" fontFamily="Gilroy, sans-serif">MT</text>
-                    </svg>
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64a2ae852a20002f9bc03/mt-nl.svg" 
+                      alt="MotorTrend Newsletter" 
+                      width="72" 
+                      height="72"
+                      style={{ borderRadius: '8px' }}
+                    />
                   ) : (
-                    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect width="72" height="72" rx="8" fill="#B40810"/>
-                      <text x="50%" y="60%" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold" fontFamily="Arial, sans-serif">HOT ROD</text>
-                    </svg>
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64aa7e852a20002f9bc04/hr-nl.svg" 
+                      alt="HOT ROD Newsletter" 
+                      width="72" 
+                      height="72"
+                      style={{ borderRadius: '8px' }}
+                    />
                   )}
                 </div>
 

@@ -32,8 +32,10 @@
 }
 
 .global-header__logo {
-  height: 24px;
+  height: 32px;
   width: auto;
+  max-width: 200px;
+  object-fit: contain;
 }
 
 .global-header__nav {

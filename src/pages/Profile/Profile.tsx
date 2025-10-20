@@ -20,6 +20,9 @@ import ProfileCompletionCard from '../../components/ProfileCompletionCard';
 import Toast from '../../components/Toast';
 import Icon from '../../components/Icon';
 import { AvatarBannerModal } from '../../components/AvatarBannerModal';
+import { VehicleSearch } from '../../components/VehicleSearch';
+import { vehicleImageFor } from '../../utils/vehicleImages';
+import Button from '../../design-system/components/Button';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -76,6 +79,17 @@ export const Profile: React.FC<ProfileProps> = ({
     newsletters?: string[];
   }>({});
   
+  // Subscription state management
+  const [newsletterSubscriptions, setNewsletterSubscriptions] = useState({
+    'MotorTrend': true,
+    'HOT ROD': false
+  });
+  
+  const [magazineSubscriptions, setMagazineSubscriptions] = useState({
+    'MotorTrend': true,
+    'Car and Driver': false
+  });
+  
   // Load onboarding data from localStorage
   useEffect(() => {
     const data = localStorage.getItem('onboardingData');
@@ -83,11 +97,16 @@ export const Profile: React.FC<ProfileProps> = ({
       try {
         const parsed = JSON.parse(data);
         setLocalOnboardingData(parsed);
+        // Update user settings with the latest data
+        setUserSettings(prev => ({
+          ...prev,
+          fullName: parsed.name || userData?.name || 'Greg Smith'
+        }));
       } catch (error) {
         console.error('Error parsing onboarding data:', error);
       }
     }
-  }, []);
+  }, [userData?.name]);
   
   // Toast state
   const [showToast, setShowToast] = useState(false);
@@ -96,7 +115,83 @@ export const Profile: React.FC<ProfileProps> = ({
   // Avatar/Banner Modal state
   const [showAvatarBannerModal, setShowAvatarBannerModal] = useState(false);
   const [userAvatar, setUserAvatar] = useState(userData?.avatar);
-  const [userBanner, setUserBanner] = useState<string | undefined>(undefined);
+  const [userBanner, setUserBanner] = useState<string | undefined>('https://d2kde5ohu8qb21.cloudfront.net/files/68f4f53d6befe300029e7151/group1175889109.jpg');
+  
+  // Vehicle search state
+  const [showVehicleSearch, setShowVehicleSearch] = useState(false);
+  
+  // User settings state
+  const [userSettings, setUserSettings] = useState({
+    fullName: localOnboardingData.name || userData?.name || 'Greg Smith',
+    username: 'Need-for-speed',
+    email: 'greg.smith@gmail.com',
+    password: '****************'
+  });
+  
+  // Vehicle search handlers
+  const handleAddVehicleClick = () => {
+    setShowVehicleSearch(true);
+  };
+
+  const handleCancelVehicleSearch = () => {
+    setShowVehicleSearch(false);
+  };
+
+  // User settings handlers
+  const handleEditFullName = () => {
+    const newName = prompt('Enter your full name:', userSettings.fullName);
+    if (newName && newName.trim() !== '') {
+      const updatedSettings = { ...userSettings, fullName: newName.trim() };
+      setUserSettings(updatedSettings);
+      
+      // Update onboarding data
+      const updatedOnboardingData = { ...localOnboardingData, name: newName.trim() };
+      setLocalOnboardingData(updatedOnboardingData);
+      localStorage.setItem('onboardingData', JSON.stringify(updatedOnboardingData));
+      
+      // Broadcast change for header sync
+      window.dispatchEvent(new Event('onboardingDataUpdated'));
+    }
+  };
+
+  const handleEditUsername = () => {
+    const newUsername = prompt('Enter your username:', userSettings.username);
+    if (newUsername && newUsername.trim() !== '') {
+      setUserSettings(prev => ({ ...prev, username: newUsername.trim() }));
+      // In a real app, you'd save this to the backend
+    }
+  };
+
+  const handleEditEmail = () => {
+    const newEmail = prompt('Enter your email address:', userSettings.email);
+    if (newEmail && newEmail.trim() !== '') {
+      setUserSettings(prev => ({ ...prev, email: newEmail.trim() }));
+      // In a real app, you'd save this to the backend
+    }
+  };
+
+  const handleEditPassword = () => {
+    const newPassword = prompt('Enter your new password:');
+    if (newPassword && newPassword.trim() !== '') {
+      setUserSettings(prev => ({ ...prev, password: '****************' }));
+      // In a real app, you'd hash and save this to the backend
+    }
+  };
+
+  // Subscription toggle handlers
+  const handleNewsletterToggle = (name: string, isActive: boolean) => {
+    setNewsletterSubscriptions(prev => ({
+      ...prev,
+      [name]: !isActive
+    }));
+  };
+
+  const handleMagazineToggle = (name: string, isActive: boolean) => {
+    setMagazineSubscriptions(prev => ({
+      ...prev,
+      [name]: !isActive
+    }));
+  };
 
   // Bookmark handlers
   const handleBookmarkClick = (type: 'article' | 'comparison' | 'video', id: string) => {
@@ -142,15 +237,37 @@ export const Profile: React.FC<ProfileProps> = ({
     setUserAvatar(avatarUrl);
     setUserBanner(bannerUrl);
     setShowAvatarBannerModal(false);
-    
-    // Here you would typically save to localStorage or send to server
-    console.log('Avatar saved:', avatarUrl);
-    console.log('Banner saved:', bannerUrl);
+  
+  // Persist to localStorage so header and other areas stay in sync
+  try {
+    const existing = localStorage.getItem('onboardingData');
+    const parsed = existing ? JSON.parse(existing) : {};
+    const updated = { ...parsed, avatar: avatarUrl, banner: bannerUrl };
+    localStorage.setItem('onboardingData', JSON.stringify(updated));
+    setLocalOnboardingData(updated);
+    // Broadcast change so GlobalHeader can refresh avatar without reload
+    window.dispatchEvent(new Event('onboardingDataUpdated'));
+  } catch (e) {
+    console.error('Failed to persist avatar/banner selection', e);
+  }
+  };
+
+  // Vehicle search handlers
+  const handleVehicleSelect = (vehicle: { name: string; ownership: 'own' | 'want' }) => {
+    const updatedData = {
+      ...localOnboardingData,
+      vehicles: [...(localOnboardingData.vehicles || []), vehicle]
+    };
+    setLocalOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+    setShowVehicleSearch(false); // Hide search after selection
   };
 
   // Categorize onboarding vehicles
   const vehiclesIOwn = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'own');
   const vehiclesIWant = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'want');
+
+  // Vehicle images now shared via utils/vehicleImages
 
   // Handle removing onboarding vehicles with confirmation
   const handleRemoveOnboardingVehicle = (vehicleName: string) => {
@@ -168,6 +285,17 @@ export const Profile: React.FC<ProfileProps> = ({
     setLocalOnboardingData(updatedData);
     
     // Update localStorage
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+  };
+
+  // Change vehicle ownership (moves card between Own/Want lists)
+  const handleChangeVehicleOwnership = (vehicleName: string, newOwnership: 'own' | 'want') => {
+    const vehicles = localOnboardingData.vehicles || [];
+    const updatedVehicles = vehicles.map(v => (
+      v.name === vehicleName ? { ...v, ownership: newOwnership } : v
+    ));
+    const updatedData = { ...localOnboardingData, vehicles: updatedVehicles };
+    setLocalOnboardingData(updatedData);
     localStorage.setItem('onboardingData', JSON.stringify(updatedData));
   };
 
@@ -189,7 +317,7 @@ export const Profile: React.FC<ProfileProps> = ({
   return (
     <div className="profile-page">
       <ProfileBanner
-        userName={localOnboardingData.name || userData?.name || 'Guest User'}
+        userName={userSettings.fullName}
         userAvatar={userAvatar}
         userBanner={userBanner}
         joinDate={userData?.joinDate || '1/14/2024'}
@@ -251,13 +379,35 @@ export const Profile: React.FC<ProfileProps> = ({
                 <div className="profile-section__content">
                   <div className="profile-section__header-row">
                     <h3 className="profile-section__heading">Vehicles</h3>
-                    <button 
-                      className="profile-section__add-btn"
-                      onClick={() => console.log('Add vehicle')}
+                    <Button 
+                      color="neutrals3" 
+                      variant="solid" 
+                      size="default"
+                      onClick={handleAddVehicleClick}
                     >
-                      Add A Vehicle
-                    </button>
+                      Add Vehicle
+                    </Button>
                   </div>
+                  
+                  {/* Vehicle Search - conditionally visible */}
+                  {showVehicleSearch && (
+                    <div className="profile-vehicle-search">
+                        <div className="profile-vehicle-search__header">
+                          <h4>Add a Vehicle</h4>
+                          <button 
+                            className="profile-vehicle-search__cancel"
+                            onClick={handleCancelVehicleSearch}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                        <VehicleSearch
+                          onVehicleSelect={handleVehicleSelect}
+                          placeholder="Search for a vehicle..."
+                          className="profile-vehicle-search__input"
+                        />
+                    </div>
+                  )}
                   
                   {/* Cars I Own */}
                   {vehiclesIOwn.length > 0 && (
@@ -265,16 +415,19 @@ export const Profile: React.FC<ProfileProps> = ({
                       <h4 className="profile-subsection__title">Cars I Own</h4>
                       <div className="profile-vehicles-grid">
                         {vehiclesIOwn.map((vehicle, index) => (
-                          <VehicleCard
-                            key={`own-${index}`}
-                            image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop&q=80"
-                            name={vehicle.name}
-                            type="Vehicle"
+                            <VehicleCard
+                              key={`own-${index}`}
+                              image={vehicleImageFor(vehicle.name)}
+                              name={vehicle.name}
+                              type="Vehicle"
                             rating1={9.1}
                             rating2={8.5}
                             hasMultipleRatings={true}
                             isBookmarked={true}
                             onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                            ownership={vehicle.ownership}
+                            onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
                           />
                         ))}
                       </div>
@@ -292,16 +445,19 @@ export const Profile: React.FC<ProfileProps> = ({
                       <h4 className="profile-subsection__title">Cars I Want</h4>
                       <div className="profile-vehicles-grid">
                         {vehiclesIWant.map((vehicle, index) => (
-                          <VehicleCard
-                            key={`want-${index}`}
-                            image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop&q=80"
-                            name={vehicle.name}
-                            type="Vehicle"
+                            <VehicleCard
+                              key={`want-${index}`}
+                              image={vehicleImageFor(vehicle.name)}
+                              name={vehicle.name}
+                              type="Vehicle"
                             rating1={9.1}
                             rating2={8.5}
                             hasMultipleRatings={true}
                             isBookmarked={true}
                             onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                            ownership={vehicle.ownership}
+                            onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
                           />
                         ))}
                       </div>
@@ -366,15 +522,16 @@ export const Profile: React.FC<ProfileProps> = ({
                     {savedComparisons.includes('comparison-1') && (
                       <ComparisonCard
                         vehicle1={{
-                          image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400&h=300&fit=crop&q=80",
-                          name: "2025 Ford Bronco"
+                          image: vehicleImageFor('2025 Ford Bronco'),
+                          name: '2025 Ford Bronco'
                         }}
                         vehicle2={{
-                          image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400&h=300&fit=crop&q=80",
-                          name: "2025 Ford Bronco S"
+                          image: vehicleImageFor('2025 Ford Bronco Sport'),
+                          name: '2025 Ford Bronco S'
                         }}
                         isBookmarked={true}
                         onBookmark={() => handleBookmarkClick('comparison', 'comparison-1')}
+                        onViewComparison={() => console.log('View comparison')}
                       />
                     )}
                   </div>
@@ -397,6 +554,7 @@ export const Profile: React.FC<ProfileProps> = ({
                         date="Oct 10, 2025"
                         isBookmarked={true}
                         onBookmark={() => handleBookmarkClick('video', 'video-1')}
+                        onPlayVideo={() => console.log('Play video 1')}
                       />
                     )}
                     {savedVideos.includes('video-2') && (
@@ -407,6 +565,7 @@ export const Profile: React.FC<ProfileProps> = ({
                         date="Oct 10, 2025"
                         isBookmarked={true}
                         onBookmark={() => handleBookmarkClick('video', 'video-2')}
+                        onPlayVideo={() => console.log('Play video 2')}
                       />
                     )}
                   </div>
@@ -427,13 +586,15 @@ export const Profile: React.FC<ProfileProps> = ({
                   <div className="profile-subscriptions-grid">
                     <SubscriptionItem
                       name="MotorTrend"
-                      logo="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=200&h=200&fit=crop&q=80"
-                      isActive={true}
+                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64a2ae852a20002f9bc03/mt-nl.svg"
+                      isActive={newsletterSubscriptions['MotorTrend']}
+                      onToggleSubscription={handleNewsletterToggle}
                     />
                     <SubscriptionItem
                       name="HOT ROD"
-                      logo="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=200&h=200&fit=crop&q=80"
-                      isActive={false}
+                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64aa7e852a20002f9bc04/hr-nl.svg"
+                      isActive={newsletterSubscriptions['HOT ROD']}
+                      onToggleSubscription={handleNewsletterToggle}
                     />
                     <SubscriptionItem
                       name="Find More"
@@ -454,13 +615,15 @@ export const Profile: React.FC<ProfileProps> = ({
                   <div className="profile-subscriptions-grid">
                     <SubscriptionItem
                       name="MotorTrend"
-                      logo="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=200&h=200&fit=crop&q=80"
-                      isActive={true}
+                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64d7a3a12db0002cab19f/mtmag.png"
+                      isActive={magazineSubscriptions['MotorTrend']}
+                      onToggleSubscription={handleMagazineToggle}
                     />
                     <SubscriptionItem
                       name="Car and Driver"
-                      logo="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&h=200&fit=crop&q=80"
-                      isActive={false}
+                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64d793a12db0002cab19d/caranddrivermagazine.png"
+                      isActive={magazineSubscriptions['Car and Driver']}
+                      onToggleSubscription={handleMagazineToggle}
                     />
                     <SubscriptionItem
                       name="Find More"
@@ -480,27 +643,27 @@ export const Profile: React.FC<ProfileProps> = ({
                 <div className="profile-settings-fields">
                   <EditableField
                     label="Full Name"
-                    value="Greg Smith"
-                    onEdit={() => console.log('Edit full name')}
+                    value={userSettings.fullName}
+                    onEdit={handleEditFullName}
                   />
                   <div className="profile-settings-divider"></div>
                   <EditableField
                     label="Username"
-                    value="Need-for-speed"
-                    onEdit={() => console.log('Edit username')}
+                    value={userSettings.username}
+                    onEdit={handleEditUsername}
                   />
                   <div className="profile-settings-divider"></div>
                   <EditableField
                     label="Email Address"
-                    value="greg.smith@gmail.com"
-                    onEdit={() => console.log('Edit email')}
+                    value={userSettings.email}
+                    onEdit={handleEditEmail}
                   />
                   <div className="profile-settings-divider"></div>
                   <EditableField
                     label="Password"
-                    value="****************"
+                    value={userSettings.password}
                     isPassword={true}
-                    onEdit={() => console.log('Edit password')}
+                    onEdit={handleEditPassword}
                   />
                 </div>
               </div>

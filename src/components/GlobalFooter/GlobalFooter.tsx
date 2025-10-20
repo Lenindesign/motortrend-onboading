@@ -6,7 +6,9 @@
 import React from 'react';
 import { Button } from '../../design-system/components';
 import './GlobalFooter.css';
-import motorTrendLogo from '../../assets/images/motortrend-logo.svg';
+
+// Using MotorTrend main logo from URL
+const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 
 export interface GlobalFooterProps {
   onNewsletterClick?: () => void;

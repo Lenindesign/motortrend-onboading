@@ -1,0 +1,101 @@
+/**
+ * Vehicle Search Component Styles
+ * Based on OnboardingStep3 design
+ */
+
+.vehicle-search {
+  position: relative;
+  width: 100%;
+}
+
+.vehicle-search__input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.vehicle-search__search-icon {
+  position: absolute;
+  left: 16px;
+  color: var(--color-neutrals-4);
+  z-index: 1;
+}
+
+.vehicle-search__input {
+  width: 100%;
+  padding: 14px 16px 14px 48px;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-2);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  outline: none;
+  box-shadow: var(--shadow-depth-2);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.vehicle-search__input:focus {
+  border-color: var(--color-primary-1);
+  box-shadow: var(--shadow-depth-3);
+}
+
+.vehicle-search__input::placeholder {
+  color: var(--color-neutrals-4);
+}
+
+.vehicle-search__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-depth-3);
+  z-index: 1000;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.vehicle-search__dropdown-item {
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--color-neutrals-7);
+}
+
+.vehicle-search__dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.vehicle-search__dropdown-item:hover,
+.vehicle-search__dropdown-item--highlighted {
+  background-color: var(--color-neutrals-7);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .vehicle-search__input {
+    font-size: 16px;
+    padding: 12px 16px 12px 44px;
+  }
+
+  .vehicle-search__search-icon {
+    left: 14px;
+  }
+
+  .vehicle-search__dropdown-item {
+    padding: 10px 14px;
+    font-size: 15px;
+  }
+}

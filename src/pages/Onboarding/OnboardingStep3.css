@@ -444,17 +444,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 14px 32px;
-  font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
-  font-size: 16px;
+  gap: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
   line-height: 1em;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: 6px;
   cursor: pointer;
-  transition: all var(--transition-fast);
-  min-width: 124px;
+  transition: all 0.2s ease;
+  width: 124px;
   height: 40px;
 }
 
@@ -466,11 +466,12 @@
 
 .onboarding-nav-btn--next {
   background-color: var(--color-neutrals-2);
-  color: var(--color-neutrals-8);
+  color: var(--color-white);
 }
 
 .onboarding-nav-btn--next:not(.onboarding-nav-btn--disabled):hover {
-  background-color: var(--color-neutrals-3);
+  background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
 }
 
 .onboarding-nav-btn--disabled {

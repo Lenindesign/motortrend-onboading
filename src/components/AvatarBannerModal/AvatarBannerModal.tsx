@@ -165,7 +165,7 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
                     }`}
                     onClick={() => setSelectedAvatar(avatar.url)}
                   >
-                    <div className="avatar-banner-modal__option-image">
+                    <div className={`avatar-banner-modal__option-image ${avatar.type === 'logo' ? 'avatar-banner-modal__option-image--logo' : ''}`}>
                       <img src={avatar.url} alt={avatar.name} />
                     </div>
                     <span className="avatar-banner-modal__option-name">{avatar.name}</span>

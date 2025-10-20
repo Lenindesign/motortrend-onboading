@@ -1,13 +1,20 @@
 .vehicle-card {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: 12px;
+  width: 421px;
+  box-shadow: var(--shadow-depth-2);
+}
+
+.vehicle-card__top-row {
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 16px;
-  padding: 16px;
-  background: var(--neutrals-7);
-  border-radius: 8px;
-  width: 421px;
-  height: 178px;
 }
 
 .vehicle-card__image-container {
@@ -59,15 +66,43 @@
 .vehicle-card__content {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   flex: 1;
-  height: 100%;
 }
 
 .vehicle-card__info {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+/* Ownership under details in top row right column */
+.vehicle-card__ownership {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.vehicle-card__ownership-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+}
+
+.vehicle-card__ownership-icon {
+  color: var(--color-neutrals-3);
+}
+
+/* Active/inactive colors for Material radio icons */
+.vehicle-card__ownership-option:first-child .vehicle-card__ownership-icon.material-icons,
+.vehicle-card__ownership-option:first-child .vehicle-card__ownership-icon.material-icons-outlined,
+.vehicle-card__ownership-option:first-child .vehicle-card__ownership-icon.material-icons-round {
+  color: var(--color-red, #E11D2E);
 }
 
 .vehicle-card__name {
@@ -84,11 +119,11 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 1.33em;
-  color: var(--neutrals-2);
+  color: var(--color-neutrals-4);
   margin: 0;
 }
 
-.vehicle-card__actions {
+.vehicle-card__bottom-row {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -119,26 +154,37 @@
   padding: 0 8px;
 }
 
+/* Ensure Material Icon stars match Figma size */
+.vehicle-card__rating .material-icons,
+.vehicle-card__rating .material-icons-outlined,
+.vehicle-card__rating .material-icons-round {
+  font-size: 18px;
+  line-height: 1;
+}
+
 .vehicle-card__rating:first-child {
   border-right: 1px solid var(--neutrals-3);
 }
 
 .vehicle-card__button {
-  padding: 6px 16px;
-  background: var(--neutrals-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-neutrals-1);
   border: none;
-  border-radius: 4px;
-  font-family: var(--font-poppins);
+  border-radius: 8px;
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
   line-height: 1.14em;
-  color: var(--neutrals-8);
+  color: var(--color-neutrals-8);
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .vehicle-card__button:hover {
-  background: var(--neutrals-4);
+  background: var(--color-neutrals-2);
 }
 
 @media (max-width: 768px) {

@@ -44,6 +44,11 @@
   z-index: 0;
 }
 
+/* Hide default background when user banner is present */
+.profile-banner--has-custom-banner::before {
+  display: none;
+}
+
 .profile-banner__banner-img {
   width: 100%;
   height: 100%;
@@ -172,7 +177,7 @@
 .profile-banner__meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
   flex-wrap: wrap;
 }
 
@@ -194,7 +199,7 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.4;
-  color: var(--color-neutrals-3);
+  color: #ffffff;
   white-space: nowrap;
 }
 
@@ -205,41 +210,8 @@
 }
 
 /* ========================================
-   Edit Button (Apple style)
+   Edit Button (now uses global Button component)
    ======================================== */
-
-.profile-banner__edit-btn {
-  padding: 10px 20px;
-  background: var(--color-neutrals-1);
-  color: #FFFFFF;
-  border: none;
-  border-radius: 10px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 1;
-  letter-spacing: -0.2px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
-  white-space: nowrap;
-  box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.1),
-    0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.profile-banner__edit-btn:hover {
-  background: var(--color-neutrals-2);
-  transform: translateY(-1px);
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.12),
-    0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.profile-banner__edit-btn:active {
-  transform: scale(0.98);
-  box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.1);
-}
 
 /* ========================================
    Tablet Responsive (iPad)
@@ -305,9 +277,10 @@
 
   .profile-banner__edit-btn {
     width: 100%;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 12px;
+    height: 36px;
+    padding: 0 16px;
+    font-size: 14px;
+    border-radius: var(--border-radius-sm);
   }
 }
 

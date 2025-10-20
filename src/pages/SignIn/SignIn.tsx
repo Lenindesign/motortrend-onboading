@@ -7,7 +7,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '../../design-system/components';
 import './SignIn.css';
-import motorTrendLogo from '../../assets/images/motortrend-logo.png';
+// Using MotorTrend main logo from URL
+const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import googleLogo from '../../assets/images/google-logo.svg';
 import facebookIcon from '../../assets/icons/facebook-icon.svg';
 import appleIcon from '../../assets/icons/apple-icon.svg';

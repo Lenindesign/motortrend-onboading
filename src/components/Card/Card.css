@@ -1,0 +1,274 @@
+/**
+ * Universal Card Styles
+ * Based on VehicleCard structure following atomic design principles
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: 12px;
+  width: 421px;
+  box-shadow: var(--shadow-depth-2);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-depth-3);
+  transform: translateY(-1px);
+}
+
+.card--compact {
+  padding: 12px;
+  gap: 8px;
+}
+
+.card__top-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.card__image-container {
+  position: relative;
+  width: 153.5px;
+  height: 104.34px;
+  flex-shrink: 0;
+}
+
+.card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card__bookmark-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.card__bookmark-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: scale(1.05);
+}
+
+.card__bookmark-btn--active {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.card__bookmark-btn--active:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.card__play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.card__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card__title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.25em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card__subtitle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.29em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card__type {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.33em;
+  color: var(--color-neutrals-4);
+  margin: 0;
+}
+
+.card__metadata {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.33em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+}
+
+/* Vehicle ownership section */
+.card__ownership {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.card__ownership-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+}
+
+.card__ownership-icon {
+  color: var(--color-neutrals-3);
+}
+
+.card__bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.card__ratings {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.card__rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+}
+
+.card__button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--color-neutrals-2);
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.card__button:hover {
+  background: var(--color-neutrals-1);
+  transform: translateY(-1px);
+}
+
+.card__button:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+    max-width: 421px;
+  }
+
+  .card__top-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .card__image-container {
+    width: 100%;
+    height: 200px;
+  }
+
+  .card__bottom-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .card__ratings {
+    justify-content: center;
+  }
+
+  .card__button {
+    justify-content: center;
+  }
+}
+
+/* Compact variant adjustments */
+.card--compact .card__title {
+  font-size: 14px;
+}
+
+.card--compact .card__subtitle {
+  font-size: 12px;
+}
+
+.card--compact .card__metadata {
+  font-size: 11px;
+}
+
+.card--compact .card__button {
+  padding: 6px 12px;
+  font-size: 12px;
+}

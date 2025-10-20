@@ -6,8 +6,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
-import motortrendLogo from '../../assets/images/motortrend-logo.png';
+// Using MotorTrend main logo from URL
+const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import Icon from '../../components/Icon';
+import VehicleCard from '../../components/VehicleCard';
+import { vehicleImageFor } from '../../utils/vehicleImages';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -133,71 +136,22 @@ export const Welcome: React.FC<WelcomeProps> = () => {
                 <div className="vehicle-section">
                   <p className="vehicle-section__title">Your Vehicles:</p>
                   
-                  <div className="selected-cars">
+                  <div className="profile-vehicles-grid">
                     {vehicles.map((vehicle, index) => (
-                      <div key={index} className="selected-car-card">
-                        <div className="selected-car-image">
-                          <img 
-                            src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=100&h=100&fit=crop&crop=center" 
-                            alt={vehicle.name}
-                            className="car-image"
-                          />
-                        </div>
-                        <div className="selected-car-details">
-                          <h3 className="selected-car-name">{vehicle.name}</h3>
-                          <button
-                            type="button"
-                            className="change-vehicle-btn"
-                            onClick={() => navigate('/onboarding/step3')}
-                          >
-                            Change Vehicle
-                          </button>
-                          <div className="ownership-options">
-                            <label className="ownership-option">
-                              <input
-                                type="radio"
-                                name={`ownership-${index}`}
-                                value="own"
-                                checked={vehicle.ownership === 'own'}
-                                readOnly
-                              />
-                              <div className="radio-icon">
-                                {vehicle.ownership === 'own' ? (
-                                  <Icon name="radio_button_checked" size={20} style={{ color: "#DC3545" }} />
-                                ) : (
-                                  <Icon name="radio_button_unchecked" size={20} style={{ color: "#CED4DA" }} />
-                                )}
-                              </div>
-                              <span className="radio-text">I Own This Car</span>
-                            </label>
-                            <label className="ownership-option">
-                              <input
-                                type="radio"
-                                name={`ownership-${index}`}
-                                value="want"
-                                checked={vehicle.ownership === 'want'}
-                                readOnly
-                              />
-                              <div className="radio-icon">
-                                {vehicle.ownership === 'want' ? (
-                                  <Icon name="radio_button_checked" size={20} style={{ color: "#DC3545" }} />
-                                ) : (
-                                  <Icon name="radio_button_unchecked" size={20} style={{ color: "#CED4DA" }} />
-                                )}
-                              </div>
-                              <span className="radio-text">I Want This Car</span>
-                            </label>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          className="selected-car-remove"
-                          onClick={() => console.log('Remove vehicle')}
-                          aria-label={`Remove ${vehicle.name}`}
-                        >
-                          <Icon name="close" size={16} />
-                        </button>
-                      </div>
+                      <VehicleCard
+                        key={index}
+                        image={vehicleImageFor(vehicle.name)}
+                        name={vehicle.name}
+                        type="Vehicle"
+                        rating1={9.1}
+                        rating2={8.5}
+                        hasMultipleRatings={true}
+                        isBookmarked={true}
+                        onBookmark={() => console.log('Remove vehicle')}
+                        ownership={vehicle.ownership}
+                        onOwnershipChange={() => navigate('/onboarding/step3')}
+                        onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                      />
                     ))}
                   </div>
                 </div>

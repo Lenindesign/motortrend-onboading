@@ -187,29 +187,7 @@
   color: var(--color-neutrals-1);
 }
 
-.profile-completion-step__button {
-  padding: 10px 20px;
-  background: var(--color-neutrals-1);
-  color: var(--color-white);
-  border: none;
-  border-radius: var(--border-radius-sm);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 15px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  white-space: nowrap;
-}
-
-.profile-completion-step__button:hover {
-  background: var(--color-neutrals-2);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-depth-5);
-}
-
-.profile-completion-step__button:active {
-  transform: translateY(0);
-}
+/* profile-completion-step__button now uses global Button component */
 
 .profile-completion-step__status {
   font-family: var(--font-body);
@@ -410,9 +388,7 @@
     align-items: flex-start;
   }
 
-  .profile-completion-step__button {
-    width: 100%;
-  }
+  /* Button now uses global Button component with responsive behavior */
 
   .profile-completion-step__form {
     padding: 16px;
@@ -494,5 +470,127 @@
   background-color: var(--color-neutrals-7);
   border: 1px dashed var(--color-neutrals-5);
   border-radius: var(--border-radius-sm);
+}
+
+/* Add Vehicle Button */
+.profile-completion-step__add-vehicle {
+  margin-bottom: var(--spacing-3);
+}
+
+.profile-completion-step__add-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-medium);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-primary-1);
+  background: none;
+  border: 1px solid var(--color-primary-1);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.profile-completion-step__add-btn:hover {
+  background-color: var(--color-primary-1);
+  color: var(--color-white);
+}
+
+/* Vehicle Search */
+.profile-completion-step__vehicle-search {
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+}
+
+.profile-completion-step__search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2);
+}
+
+.profile-completion-step__search-header h5 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 16px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+}
+
+.profile-completion-step__cancel-btn {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-4);
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.profile-completion-step__cancel-btn:hover {
+  color: var(--color-neutrals-2);
+}
+
+.profile-completion-step__search-input {
+  width: 100%;
+}
+
+/* Vehicle Item Remove Button */
+.vehicle-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-2);
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-1);
+}
+
+.vehicle-item__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  color: var(--color-neutrals-4);
+}
+
+.vehicle-item__remove:hover {
+  background-color: var(--color-neutrals-6);
+  color: var(--color-neutrals-2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .profile-completion-step__add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .profile-completion-step__vehicle-search {
+    padding: var(--spacing-2);
+  }
+
+  .profile-completion-step__search-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-1);
+  }
 }
 

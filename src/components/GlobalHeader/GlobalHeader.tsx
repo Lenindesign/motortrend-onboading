@@ -6,8 +6,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './GlobalHeader.css';
-// Using red MotorTrend logo from URL
-const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f53f35703ffe00027fa531/mt-logo-red.svg';
+// Using MotorTrend main logo from URL
+const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import Icon from '../Icon';
 
 export interface GlobalHeaderProps {
@@ -65,6 +65,26 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       }
     }
   }, [isAuthenticated]);
+
+  // Listen for onboarding data updates to keep avatar in sync
+  useEffect(() => {
+    const handleUpdate = () => {
+      try {
+        const onboardingData = localStorage.getItem('onboardingData');
+        if (onboardingData) {
+          const data = JSON.parse(onboardingData);
+          setUserData(prev => ({
+            name: data.name || prev?.name || 'User',
+            avatar: data.avatar
+          }));
+        }
+      } catch (e) {
+        /* noop */
+      }
+    };
+    window.addEventListener('onboardingDataUpdated', handleUpdate);
+    return () => window.removeEventListener('onboardingDataUpdated', handleUpdate);
+  }, []);
 
   // Handle click outside to close dropdown
   useEffect(() => {

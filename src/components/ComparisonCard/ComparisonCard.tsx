@@ -1,3 +1,8 @@
+/**
+ * Comparison Card Component
+ * Now using universal Card styling following atomic design principles
+ */
+
 import React from 'react';
 import './ComparisonCard.css';
 import Icon from '../Icon';
@@ -13,13 +18,15 @@ export interface ComparisonCardProps {
   };
   onBookmark?: () => void;
   isBookmarked?: boolean;
+  onViewComparison?: () => void;
 }
 
 export const ComparisonCard: React.FC<ComparisonCardProps> = ({ 
   vehicle1, 
   vehicle2,
   onBookmark,
-  isBookmarked = false
+  isBookmarked = false,
+  onViewComparison
 }) => {
   return (
     <div className="comparison-card">
@@ -27,13 +34,15 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <div className="comparison-card__vehicle">
           <div className="comparison-card__image-container">
             <img src={vehicle1.image} alt={vehicle1.name} className="comparison-card__image" />
-            <button 
-              className={`comparison-card__bookmark-btn ${isBookmarked ? 'comparison-card__bookmark-btn--active' : ''}`}
-              onClick={onBookmark}
-              aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-            >
-              <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
-            </button>
+            {onBookmark && (
+              <button 
+                className={`comparison-card__bookmark-btn ${isBookmarked ? 'comparison-card__bookmark-btn--active' : ''}`}
+                onClick={onBookmark}
+                aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+              >
+                <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
+              </button>
+            )}
           </div>
           <h4 className="comparison-card__name">{vehicle1.name}</h4>
         </div>
@@ -48,9 +57,14 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         </div>
       </div>
       
-      <div className="comparison-card__actions">
-        <button className="comparison-card__button">View Comparison</button>
-      </div>
+      {onViewComparison && (
+        <div className="comparison-card__actions">
+          <button className="comparison-card__button" onClick={onViewComparison}>
+            View Comparison
+            <Icon name="chevron_right" size={18} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

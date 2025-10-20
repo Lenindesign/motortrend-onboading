@@ -380,27 +380,28 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  padding: 14px 32px;
+  gap: 8px;
+  padding: 8px 16px;
   width: 124px;
   height: 40px;
-  font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
-  font-size: 16px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
   line-height: 1em;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
 }
 
 .profile-form-btn--primary {
   background-color: var(--color-neutrals-2);
-  color: var(--color-neutrals-8);
+  color: var(--color-white);
   border: none;
 }
 
 .profile-form-btn--primary:hover {
   background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
 }
 
 .profile-form-btn--secondary {
@@ -859,6 +860,67 @@
   
   .delete-account-btn {
     width: 100%;
+  }
+}
+
+/* Profile Vehicle Search */
+.profile-vehicle-search {
+  margin: var(--spacing-4) 0;
+  padding: var(--spacing-4);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-depth-2);
+  width: 100%;
+  align-self: stretch;
+}
+
+.profile-vehicle-search__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-3);
+}
+
+.profile-vehicle-search__header h4 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+}
+
+.profile-vehicle-search__cancel {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-4);
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.profile-vehicle-search__cancel:hover {
+  color: var(--color-neutrals-2);
+}
+
+.profile-vehicle-search__input {
+  width: 100%;
+}
+
+/* Mobile Responsive for Vehicle Search */
+@media (max-width: 768px) {
+  .profile-vehicle-search {
+    margin: var(--spacing-3) 0;
+    padding: var(--spacing-3);
+  }
+
+  .profile-vehicle-search__header h4 {
+    font-size: 16px;
   }
 }
 

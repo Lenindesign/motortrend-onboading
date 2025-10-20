@@ -1,5 +1,6 @@
 import React from 'react';
 import './EditableField.css';
+import Button from '../../design-system/components/Button';
 
 export interface EditableFieldProps {
   label: string;
@@ -21,9 +22,14 @@ export const EditableField: React.FC<EditableFieldProps> = ({
         <span className="editable-field__value">
           {isPassword ? value : value}
         </span>
-        <button className="editable-field__edit-btn" onClick={onEdit}>
+        <Button 
+          color="neutrals3" 
+          variant="solid" 
+          size="default"
+          onClick={onEdit}
+        >
           Edit
-        </button>
+        </Button>
       </div>
     </div>
   );

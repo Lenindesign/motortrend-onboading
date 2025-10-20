@@ -10,7 +10,7 @@
 
 /* Larger subtitle for step 2 */
 .onboarding-card__subtitle--larger {
-  font-size: 32px;
+  font-size: 20px;
   line-height: 1.3em;
 }
 
@@ -63,6 +63,83 @@
   border-color: var(--color-neutrals-3);
 }
 
+/* Navigation Buttons */
+.onboarding-card__navigation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.onboarding-card__nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.onboarding-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 124px;
+  height: 40px;
+}
+
+.onboarding-nav-btn--previous {
+  background-color: transparent;
+  color: var(--color-neutrals-2);
+  border: 1px solid var(--color-neutrals-2);
+}
+
+.onboarding-nav-btn--next {
+  background-color: var(--color-neutrals-2);
+  color: var(--color-white);
+}
+
+.onboarding-nav-btn--next:not(.onboarding-nav-btn--disabled):hover {
+  background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
+}
+
+.onboarding-nav-btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.onboarding-nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.onboarding-skip-btn {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1em;
+  color: var(--color-neutrals-4);
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.onboarding-skip-btn:hover {
+  color: var(--color-neutrals-2);
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .onboarding-card--wide {
@@ -77,6 +154,15 @@
   .interest-tile {
     min-height: 56px;
     font-size: 16px;
+  }
+
+  .onboarding-card__nav-row {
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .onboarding-nav-btn {
+    width: 100%;
   }
 }
 

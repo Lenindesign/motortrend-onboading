@@ -2,12 +2,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   padding: 16px;
-  background: var(--neutrals-7);
-  border-radius: 8px;
+  background: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: 12px;
   width: 421px;
-  height: 207px;
+  box-shadow: var(--shadow-depth-2);
+  transition: all 0.2s ease;
+}
+
+.comparison-card:hover {
+  box-shadow: var(--shadow-depth-3);
+  transform: translateY(-1px);
 }
 
 .comparison-card__content {
@@ -73,11 +80,11 @@
 }
 
 .comparison-card__name {
-  font-family: var(--font-poppins);
+  font-family: var(--font-heading);
   font-weight: 600;
   font-size: 14px;
   line-height: 1.14em;
-  color: var(--neutrals-2);
+  color: var(--color-neutrals-2);
   margin: 0;
   text-align: left;
 }
@@ -88,13 +95,13 @@
   align-items: center;
   width: 40px;
   height: 40px;
-  background: var(--neutrals-1);
+  background: var(--color-neutrals-2);
   border-radius: 100px;
-  font-family: var(--font-gilroy);
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 18px;
   line-height: 1.33em;
-  color: var(--neutrals-8);
+  color: var(--color-white);
   flex-shrink: 0;
 }
 
@@ -107,21 +114,29 @@
 }
 
 .comparison-card__button {
-  padding: 6px 16px;
-  background: var(--neutrals-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--color-neutrals-2);
   border: none;
-  border-radius: 4px;
-  font-family: var(--font-poppins);
-  font-weight: 600;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-weight: 500;
   font-size: 14px;
-  line-height: 1.14em;
-  color: var(--neutrals-8);
+  color: var(--color-white);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .comparison-card__button:hover {
-  background: var(--neutrals-4);
+  background: var(--color-neutrals-1);
+  transform: translateY(-1px);
+}
+
+.comparison-card__button:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 768px) {

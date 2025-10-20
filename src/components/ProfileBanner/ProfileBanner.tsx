@@ -6,6 +6,7 @@
 import React from 'react';
 import './ProfileBanner.css';
 import Icon from '../Icon';
+import Button from '../../design-system/components/Button';
 
 export interface ProfileBannerProps {
   userName: string;
@@ -26,7 +27,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
 }) => {
 
   return (
-    <div className="profile-banner">
+    <div className={`profile-banner ${userBanner ? 'profile-banner--has-custom-banner' : ''}`}>
       {/* Banner Image */}
       {userBanner && (
         <div className="profile-banner__banner">
@@ -74,9 +75,14 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
 
         {/* Edit Button */}
         {onEditProfile && (
-          <button className="profile-banner__edit-btn" onClick={onEditProfile}>
+          <Button 
+            color="neutrals3" 
+            variant="solid" 
+            size="default"
+            onClick={onEditProfile}
+          >
             Edit Profile
-          </button>
+          </Button>
         )}
       </div>
     </div>

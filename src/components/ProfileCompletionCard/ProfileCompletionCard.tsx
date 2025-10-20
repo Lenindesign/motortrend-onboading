@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './ProfileCompletionCard.css';
 import Icon from '../Icon';
+import { VehicleSearch } from '../VehicleSearch';
+import VehicleCard from '../VehicleCard';
+import { vehicleImageFor } from '../../utils/vehicleImages';
+import Button from '../../design-system/components/Button';
 
 export interface OnboardingStatus {
   step1: boolean;
@@ -55,6 +59,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   const [step2Interests, setStep2Interests] = useState<string[]>([]);
   const [step3Vehicles, setStep3Vehicles] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
   const [step4Newsletters, setStep4Newsletters] = useState<string[]>([]);
+  
+  // Vehicle search is always visible in Step 3 now
 
   // Update state when localStorage data is loaded
   useEffect(() => {
@@ -117,6 +123,18 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
       onUpdateStep4({ newsletters: step4Newsletters });
       setExpandedStep(null);
     }
+  };
+
+  // Vehicle search handlers
+
+  const handleVehicleSelect = (vehicle: { name: string; ownership: 'own' | 'want' }) => {
+    setStep3Vehicles([...step3Vehicles, vehicle]);
+  };
+
+  // Vehicle search is always visible, no cancel needed
+
+  const handleRemoveVehicle = (vehicleName: string) => {
+    setStep3Vehicles(step3Vehicles.filter(vehicle => vehicle.name !== vehicleName));
   };
 
   const toggleInterest = (interest: string) => {
@@ -195,12 +213,14 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                   <span className="profile-completion-step__title">Step {step.number}: {step.title}</span>
                 </div>
               </div>
-              <button 
-                className="profile-completion-step__button"
+              <Button 
+                color="neutrals3" 
+                variant="solid" 
+                size="default"
                 onClick={() => handleToggleStep(step.number)}
               >
                 {expandedStep === step.number ? 'Cancel' : (step.completed ? 'Edit' : 'Complete →')}
-              </button>
+              </Button>
             </div>
 
             {expandedStep === step.number && step.number === 1 && (
@@ -277,19 +297,45 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
               <div className="profile-completion-step__form">
                 <h4 className="profile-completion-step__form-title">Your Vehicles</h4>
                 <div className="profile-completion-step__fields">
+                  {/* Vehicle Search - always visible */}
+                  <div className="profile-completion-step__vehicle-search">
+                    <div className="profile-completion-step__search-header">
+                      <h5>Search for a vehicle</h5>
+                    </div>
+                    <VehicleSearch
+                      onVehicleSelect={handleVehicleSelect}
+                      placeholder="Start typing to search..."
+                      className="profile-completion-step__search-input"
+                    />
+                  </div>
+
+                  {/* Selected Vehicles */}
                   {step3Vehicles.length > 0 ? (
                     <div className="vehicles-display">
                       <h5 className="vehicles-display__title">Selected Vehicles:</h5>
-                      {step3Vehicles.map((vehicle, index) => (
-                        <div key={index} className="vehicle-item">
-                          <div className="vehicle-item__info">
-                            <span className="vehicle-item__name">{vehicle.name}</span>
-                            <span className="vehicle-item__ownership">
-                              {vehicle.ownership === 'own' ? 'I Own This Car' : 'I Want This Car'}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+                      <div className="profile-vehicles-grid">
+                        {step3Vehicles.map((vehicle, index) => (
+                          <VehicleCard
+                            key={index}
+                            image={vehicleImageFor(vehicle.name)}
+                            name={vehicle.name}
+                            type="Vehicle"
+                            rating1={9.1}
+                            rating2={8.5}
+                            hasMultipleRatings={true}
+                            isBookmarked={true}
+                            onBookmark={() => handleRemoveVehicle(vehicle.name)}
+                            ownership={vehicle.ownership}
+                            onOwnershipChange={(value) => {
+                              const updatedVehicles = step3Vehicles.map(v => 
+                                v.name === vehicle.name ? { ...v, ownership: value } : v
+                              );
+                              setStep3Vehicles(updatedVehicles);
+                            }}
+                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                          />
+                        ))}
+                      </div>
                     </div>
                   ) : (
                     <div className="no-vehicles">
