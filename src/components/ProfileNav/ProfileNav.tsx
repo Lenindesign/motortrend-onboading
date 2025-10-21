@@ -22,10 +22,10 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
   const currentPath = location.pathname;
   
   const tabs: { id: ProfileNavTab; label: string; path: string }[] = [
-    { id: 'my-account', label: 'My Account', path: '/profile/my-account' },
-    { id: 'saved-items', label: 'Saved Items', path: '/profile/saved-items' },
-    { id: 'subscriptions', label: 'My Subscriptions', path: '/profile/subscriptions' },
-    { id: 'settings', label: 'Account Settings', path: '/profile/settings' },
+    { id: 'my-account', label: 'Profile', path: '/my-account/profile' },
+    { id: 'saved-items', label: 'Saved Items', path: '/my-account/saved-items' },
+    { id: 'subscriptions', label: 'My Subscriptions', path: '/my-account/subscriptions' },
+    { id: 'settings', label: 'Account Settings', path: '/my-account/settings' },
   ];
 
   return (

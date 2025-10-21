@@ -37,10 +37,11 @@ function App() {
             
             {/* Profile Pages */}
             <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/my-account" element={<Profile />} />
-            <Route path="/profile/saved-items" element={<Profile />} />
-            <Route path="/profile/subscriptions" element={<Profile />} />
-            <Route path="/profile/settings" element={<Profile />} />
+            <Route path="/my-account" element={<Navigate to="/my-account/profile" replace />} />
+            <Route path="/my-account/profile" element={<Profile />} />
+            <Route path="/my-account/saved-items" element={<Profile />} />
+            <Route path="/my-account/subscriptions" element={<Profile />} />
+            <Route path="/my-account/settings" element={<Profile />} />
             
             {/* Catch all route - redirect to sign in */}
             <Route path="*" element={<Navigate to="/signin" replace />} />

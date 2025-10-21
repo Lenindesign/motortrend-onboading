@@ -62,10 +62,24 @@ export const Profile: React.FC<ProfileProps> = ({
   // Set initial tab based on URL path or parameter
   useEffect(() => {
     const pathname = location.pathname;
-    const tabFromPath = pathname.split('/').pop() as ProfileNavTab;
-    const tabFromParam = searchParams.get('tab') as ProfileNavTab;
+    let tabFromPath: ProfileNavTab | null = null;
     
+    // Handle new route structure: /my-account/profile, /my-account/saved-items, etc.
+    if (pathname.startsWith('/my-account/')) {
+      const pathParts = pathname.split('/');
+      const lastPart = pathParts[pathParts.length - 1];
+      if (['profile', 'saved-items', 'subscriptions', 'settings'].includes(lastPart)) {
+        // Map 'profile' to 'my-account' for the tab ID
+        tabFromPath = (lastPart === 'profile' ? 'my-account' : lastPart) as ProfileNavTab;
+      }
+    } else {
+      // Handle old route structure: /profile/my-account, etc.
+      tabFromPath = pathname.split('/').pop() as ProfileNavTab;
+    }
+    
+    const tabFromParam = searchParams.get('tab') as ProfileNavTab;
     const tab = tabFromPath || tabFromParam;
+    
     if (tab && ['my-account', 'saved-items', 'subscriptions', 'settings'].includes(tab)) {
       setActiveTab(tab);
     }
