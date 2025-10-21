@@ -13,8 +13,8 @@
 }
 
 .profile-completion-card--complete {
-  border-color: #34A853;
-  background: linear-gradient(135deg, var(--color-white) 0%, #f0fdf4 100%);
+  border-color: #FCFCFD;
+  background-color: #F4F5F6;
 }
 
 .profile-completion-card__header {
