@@ -203,8 +203,8 @@
   min-width: 240px;
   background-color: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-depth-3);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-depth-4);
   z-index: 1000;
   overflow: hidden;
   animation: slideDown 0.2s ease-out;
@@ -213,6 +213,7 @@
 .global-header__user-info {
   padding: 16px;
   background-color: var(--color-neutrals-8);
+  border-bottom: 1px solid var(--color-neutrals-6);
 }
 
 .global-header__user-name {
@@ -245,16 +246,17 @@
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 500;
   font-size: 14px;
   color: var(--color-neutrals-2);
   text-align: left;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .global-header__dropdown-item:hover {
   background-color: var(--color-neutrals-7);
+  color: var(--color-neutrals-1);
 }
 
 .global-header__dropdown-item--signout {
@@ -268,6 +270,11 @@
 .global-header__dropdown-item svg {
   color: var(--color-neutrals-4);
   flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.global-header__dropdown-item:hover svg {
+  color: var(--color-neutrals-2);
 }
 
 .global-header__dropdown-item--signout svg {

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 // Using new graphics for user types
 const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f669499911d50002cef1a2/buyer2.png';
 const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6694843a62400020366cc/enthusiast2.png';
+const bothImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f814a00a2fc80002ec5f02/both.png';
 // Step illustration for progress
 const step2Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1855/group1318348098.svg';
 import './OnboardingStep2.css';
@@ -99,6 +100,24 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
             <h3 className="user-type-title">Car Enthusiast</h3>
             <p className="user-type-description">
               Passionate about cars, reviews, and automotive culture
+            </p>
+          </button>
+          
+          <button
+            className={`user-type-option ${selectedUserType === 'both' ? 'user-type-option--selected' : ''}`}
+            onClick={() => handleUserTypeSelect('both')}
+            type="button"
+          >
+            <div className="user-type-image">
+              <img 
+                src={bothImage} 
+                alt="Both" 
+                className="user-type-img"
+              />
+            </div>
+            <h3 className="user-type-title">Both</h3>
+            <p className="user-type-description">
+              Passionate about cars and always in the market for your next ride
             </p>
           </button>
         </div>
