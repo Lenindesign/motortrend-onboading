@@ -278,7 +278,7 @@
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.4em;
   color: #6C757D;
@@ -404,7 +404,7 @@
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.4em;
   color: #4B5563;
@@ -447,7 +447,7 @@
   gap: 8px;
   padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1em;
   border: none;

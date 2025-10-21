@@ -163,7 +163,7 @@
 .profile-banner__name {
   margin: 0;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.2;
   letter-spacing: -0.5px;
@@ -197,7 +197,7 @@
 
 .profile-banner__meta-text {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 15px;
   line-height: 1.4;
   color: #ffffff;

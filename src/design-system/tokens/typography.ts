@@ -14,6 +14,7 @@ export const typography = {
   // Font Weights
   fontWeight: {
     regular: 400,
+    medium: 600,
     bold: 700,
   },
   
@@ -22,7 +23,7 @@ export const typography = {
     // Hero
     hero: {
       fontFamily: 'Poppins, sans-serif',
-      fontWeight: 700,
+      fontWeight: 600,
       fontSize: '96px',
       lineHeight: '1em',
     },
@@ -30,14 +31,14 @@ export const typography = {
     // Headings
     h5: {
       fontFamily: 'Poppins, sans-serif',
-      fontWeight: 700,
+      fontWeight: 600,
       fontSize: '24px',
       lineHeight: '1.167em',
     },
     
     subtitle1: {
       fontFamily: 'Poppins, sans-serif',
-      fontWeight: 700,
+      fontWeight: 600,
       fontSize: '18px',
       lineHeight: '1.333em',
     },
@@ -60,7 +61,7 @@ export const typography = {
     // Button
     button1: {
       fontFamily: 'Poppins, sans-serif',
-      fontWeight: 700,
+      fontWeight: 600,
       fontSize: '16px',
       lineHeight: '1em',
     },

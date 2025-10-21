@@ -33,7 +33,8 @@
   
   /* Typography - Font Weights */
   --font-weight-regular: 400;
-  --font-weight-bold: 700;
+  --font-weight-medium: 600;
+  --font-weight-bold: 600;
   
   /* Spacing */
   --spacing-0: 0px;

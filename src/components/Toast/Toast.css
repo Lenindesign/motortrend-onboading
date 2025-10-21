@@ -4,24 +4,28 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(20, 20, 22, 0.5);
-  z-index: 999;
+  background-color: rgba(20, 20, 22, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
   animation: fadeIn 0.2s ease-in-out;
 }
 
 .toast {
-  position: fixed;
-  bottom: var(--spacing-3);
-  left: 50%;
-  transform: translateX(-50%);
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
   background-color: var(--color-white);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-depth-5);
-  padding: var(--spacing-3);
+  padding: var(--spacing-4);
   min-width: 360px;
   max-width: 480px;
-  z-index: 1000;
-  animation: slideUp 0.3s ease-out;
+  z-index: 9999;
+  animation: modalFadeIn 0.3s ease-out;
+  margin: 0 !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 .toast--warning {
@@ -38,6 +42,27 @@
 
 .toast--info {
   border-left: 4px solid var(--color-blue);
+}
+
+.toast__close {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  background: none;
+  border: none;
+  padding: var(--spacing-1);
+  cursor: pointer;
+  color: var(--color-neutrals-4);
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast__close:hover {
+  background-color: var(--color-neutrals-7);
+  color: var(--color-neutrals-2);
 }
 
 .toast__content {
@@ -85,34 +110,7 @@
   justify-content: flex-end;
 }
 
-.toast__button {
-  padding: var(--spacing-1) var(--spacing-2);
-  border-radius: var(--border-radius-sm);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  border: none;
-}
-
-.toast__button--cancel {
-  background-color: var(--color-neutrals-7);
-  color: var(--color-neutrals-2);
-}
-
-.toast__button--cancel:hover {
-  background-color: var(--color-neutrals-6);
-}
-
-.toast__button--confirm {
-  background-color: var(--color-primary-1);
-  color: var(--color-white);
-}
-
-.toast__button--confirm:hover {
-  background-color: var(--color-neutrals-1);
-}
+/* Toast buttons now use global Button component */
 
 @keyframes fadeIn {
   from {
@@ -123,13 +121,13 @@
   }
 }
 
-@keyframes slideUp {
+@keyframes modalFadeIn {
   from {
-    transform: translateX(-50%) translateY(100px);
+    transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
   }
   to {
-    transform: translateX(-50%) translateY(0);
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
 }
@@ -139,21 +137,10 @@
   .toast {
     min-width: auto;
     max-width: calc(100% - 32px);
-    left: 16px;
-    right: 16px;
-    transform: none;
-    bottom: 16px;
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(100px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    width: calc(100% - 32px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 

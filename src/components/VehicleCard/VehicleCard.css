@@ -116,7 +116,7 @@
 
 .vehicle-card__type {
   font-family: var(--font-geist);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 12px;
   line-height: 1.33em;
   color: var(--color-neutrals-4);
@@ -147,7 +147,7 @@
   align-items: center;
   gap: 4px;
   font-family: var(--font-gilroy);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   line-height: 1em;
   color: var(--neutrals-8);

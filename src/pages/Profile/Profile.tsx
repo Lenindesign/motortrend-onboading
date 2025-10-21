@@ -259,19 +259,19 @@ export const Profile: React.FC<ProfileProps> = ({
     setUserAvatar(avatarUrl);
     setUserBanner(bannerUrl);
     setShowAvatarBannerModal(false);
-  
-  // Persist to localStorage so header and other areas stay in sync
-  try {
-    const existing = localStorage.getItem('onboardingData');
-    const parsed = existing ? JSON.parse(existing) : {};
-    const updated = { ...parsed, avatar: avatarUrl, banner: bannerUrl };
-    localStorage.setItem('onboardingData', JSON.stringify(updated));
-    setLocalOnboardingData(updated);
-    // Broadcast change so GlobalHeader can refresh avatar without reload
-    window.dispatchEvent(new Event('onboardingDataUpdated'));
-  } catch (e) {
-    console.error('Failed to persist avatar/banner selection', e);
-  }
+    
+    // Persist to localStorage so header and other areas stay in sync
+    try {
+      const existing = localStorage.getItem('onboardingData');
+      const parsed = existing ? JSON.parse(existing) : {};
+      const updated = { ...parsed, avatar: avatarUrl, banner: bannerUrl };
+      localStorage.setItem('onboardingData', JSON.stringify(updated));
+      setLocalOnboardingData(updated);
+      // Broadcast change so GlobalHeader can refresh avatar without reload
+      window.dispatchEvent(new Event('onboardingDataUpdated'));
+    } catch (e) {
+      console.error('Failed to persist avatar/banner selection', e);
+    }
   };
 
   // Vehicle search handlers

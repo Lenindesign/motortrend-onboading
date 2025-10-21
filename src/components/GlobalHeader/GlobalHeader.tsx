@@ -157,8 +157,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               >
                 <div className="global-header__user-avatar global-header__user-avatar--default">
                   <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg" 
-                    alt="MotorTrend" 
+                    src={userData?.avatar || "https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg"} 
+                    alt="User Avatar" 
                     className="global-header__user-avatar-img"
                   />
                 </div>
@@ -179,7 +179,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       setShowUserDropdown(false);
                     }}
                   >
-                    <Icon name="person" size={16} />
+                    <Icon name="account_circle" size={16} />
                     Profile
                   </button>
                   <button 
@@ -189,7 +189,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       setShowUserDropdown(false);
                     }}
                   >
-                    <Icon name="bookmark" size={16} />
+                    <Icon name="bookmark_border" size={16} />
                     Saved Items
                   </button>
                   <button 

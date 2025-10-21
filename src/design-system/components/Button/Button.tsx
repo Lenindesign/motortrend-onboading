@@ -6,7 +6,7 @@
 import React from 'react';
 import './Button.css';
 
-export type ButtonColor = 'blue' | 'red' | 'neutrals3';
+export type ButtonColor = 'blue' | 'red' | 'neutrals3' | 'toast-cancel' | 'toast-confirm';
 export type ButtonSize = 'default' | 'large';
 export type ButtonVariant = 'solid' | 'ghost' | 'outline';
 
@@ -34,9 +34,9 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const classNames = [
     'btn',
-    `btn--${color}`,
-    `btn--${size}`,
-    `btn--${variant}`,
+    color === 'toast-cancel' || color === 'toast-confirm' ? `btn--${color}` : `btn--${color}`,
+    color === 'toast-cancel' || color === 'toast-confirm' ? '' : `btn--${size}`,
+    color === 'toast-cancel' || color === 'toast-confirm' ? '' : `btn--${variant}`,
     fullWidth && 'btn--full-width',
     disabled && 'btn--disabled',
     className,

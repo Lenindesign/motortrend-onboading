@@ -7,7 +7,7 @@
 
 .editable-field__label {
   font-family: var(--font-geist);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   line-height: 1.5em;
   color: var(--neutrals-3);
@@ -24,7 +24,7 @@
 
 .editable-field__value {
   font-family: var(--font-geist);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   line-height: 1.56em;
   color: var(--neutrals-3);
@@ -50,7 +50,7 @@
   border: 2px solid var(--color-blue);
   border-radius: 6px;
   font-family: var(--font-geist);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   line-height: 1.56em;
   color: var(--neutrals-3);

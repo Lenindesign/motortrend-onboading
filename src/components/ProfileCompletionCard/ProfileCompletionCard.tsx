@@ -20,6 +20,7 @@ export interface OnboardingData {
   interests?: string[];
   vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
   newsletters?: string[];
+  userType?: string;
 }
 
 export interface ProfileCompletionCardProps {
@@ -75,7 +76,16 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     if (localOnboardingData.name !== undefined) {
       setStep1Name(localOnboardingData.name || '');
       setStep1Location(localOnboardingData.location || '');
-      setStep2Interests(localOnboardingData.interests || []);
+      
+      // Auto-select Car Buyer or Car Enthusiast based on onboarding choice
+      let interests = localOnboardingData.interests || [];
+      if (localOnboardingData.userType === 'buyer' && !interests.includes('Car Buyer')) {
+        interests = [...interests, 'Car Buyer'];
+      } else if (localOnboardingData.userType === 'enthusiast' && !interests.includes('Car Enthusiast')) {
+        interests = [...interests, 'Car Enthusiast'];
+      }
+      
+      setStep2Interests(interests);
       setStep3Vehicles(localOnboardingData.vehicles || []);
       setStep4Newsletters(localOnboardingData.newsletters || []);
     }
@@ -294,8 +304,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                 <p className="profile-completion-step__form-subtitle">So we can help you on your journey?</p>
                 <div className="profile-completion-step__options">
                   {[
-                    'Are you shopping?',
-                    'Are you browsing?',
+                    'Car Buyer',
+                    'Car Enthusiast',
                     'Vehicle Reviews',
                     'Automotive News',
                     'Car Comparisons',

@@ -1,6 +1,7 @@
 /**
  * Button Styles
  * Based on Figma Community design system
+ * Unified with Toast modal button styling
  */
 
 .btn {
@@ -9,32 +10,33 @@
   justify-content: center;
   gap: 8px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1em;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-fast);
   text-decoration: none;
   white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Sizes - Standardized to match VehicleCard CTA */
+/* Sizes - Standardized to match Toast modal buttons */
 .btn--default {
-  padding: 8px 16px;
+  padding: var(--spacing-1) var(--spacing-2);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: var(--font-body);
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
 }
 
 .btn--large {
   padding: 12px 24px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: var(--font-body);
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
 }
 
 /* Full Width */
@@ -42,10 +44,10 @@
   width: 100%;
 }
 
-/* Color Variants - Solid */
+/* Color Variants - Solid (matching Toast modal buttons) */
 .btn--blue.btn--solid {
   background-color: var(--color-blue);
-  color: var(--color-neutrals-1);
+  color: var(--color-white);
 }
 
 .btn--blue.btn--solid:hover:not(.btn--disabled) {
@@ -53,22 +55,21 @@
 }
 
 .btn--red.btn--solid {
-  background-color: var(--color-primary-2);
-  color: var(--color-neutrals-8);
-}
-
-.btn--red.btn--solid:hover:not(.btn--disabled) {
-  background-color: #c70a14;
-}
-
-.btn--neutrals3.btn--solid {
-  background-color: var(--color-neutrals-2);
+  background-color: var(--color-primary-1);
   color: var(--color-white);
 }
 
-.btn--neutrals3.btn--solid:hover:not(.btn--disabled) {
+.btn--red.btn--solid:hover:not(.btn--disabled) {
   background-color: var(--color-neutrals-1);
-  transform: translateY(-1px);
+}
+
+.btn--neutrals3.btn--solid {
+  background-color: var(--color-neutrals-7);
+  color: var(--color-neutrals-2);
+}
+
+.btn--neutrals3.btn--solid:hover:not(.btn--disabled) {
+  background-color: var(--color-neutrals-6);
 }
 
 /* Color Variants - Ghost */
@@ -128,6 +129,35 @@
 
 .btn--neutrals3.btn--outline:hover:not(.btn--disabled) {
   background-color: var(--color-neutrals-2);
+}
+
+/* Toast Modal Button Variants (exact match) */
+.btn--toast-cancel {
+  background-color: var(--color-neutrals-7);
+  color: var(--color-neutrals-2);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn--toast-cancel:hover:not(.btn--disabled) {
+  background-color: var(--color-neutrals-6);
+}
+
+.btn--toast-confirm {
+  background-color: var(--color-primary-1);
+  color: var(--color-white);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn--toast-confirm:hover:not(.btn--disabled) {
+  background-color: var(--color-neutrals-1);
 }
 
 /* Disabled State */

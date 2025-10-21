@@ -181,7 +181,7 @@
 
 .profile-subsection__title {
   font-family: var(--font-geist);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.29em;
   color: var(--color-neutrals-2);
@@ -246,7 +246,7 @@
 
 .profile-connected-accounts-title {
   font-family: var(--font-gilroy);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.17em;
   color: var(--neutrals-1);
@@ -351,7 +351,7 @@
 
 .profile-form-subtitle {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 16px;
   line-height: 1.3em;
   text-align: center;
@@ -385,7 +385,7 @@
   width: 124px;
   height: 40px;
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1em;
   border-radius: 6px;
@@ -562,7 +562,7 @@
 
 .privacy-setting-description {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -666,7 +666,7 @@
 
 .personal-setting-description {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -734,7 +734,7 @@
 
 .delete-account-description {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.5em;
   color: #7F1D1D;
@@ -792,7 +792,7 @@
 
 .delete-account-label {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-2);

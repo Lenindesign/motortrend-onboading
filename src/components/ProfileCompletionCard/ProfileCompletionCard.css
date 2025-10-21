@@ -51,7 +51,7 @@
 
 .profile-completion-card__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 22px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -60,7 +60,7 @@
 
 .profile-completion-card__subtitle {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 15px;
   line-height: 1.5em;
   color: var(--color-neutrals-3);
@@ -118,7 +118,7 @@
 
 .profile-completion-card__progress-text {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   color: var(--color-neutrals-4);
 }
@@ -191,7 +191,7 @@
 
 .profile-completion-step__status {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   color: #34A853;
 }
@@ -218,7 +218,7 @@
 
 .profile-completion-step__form-subtitle {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.5em;
   color: var(--color-neutrals-3);
@@ -239,7 +239,7 @@
 
 .profile-field__label {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   line-height: 1.5em;
   color: var(--color-neutrals-1);
@@ -302,7 +302,7 @@
 
 .profile-option__label {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   color: var(--color-neutrals-1);
 }
@@ -339,7 +339,7 @@
 
 .profile-radio span {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
   color: var(--color-neutrals-1);
 }
@@ -451,7 +451,7 @@
 
 .vehicle-item__ownership {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: 600;
   font-size: 12px;
   line-height: 1.3em;
   color: var(--color-neutrals-3);

@@ -29,6 +29,7 @@ interface OnboardingData {
   interests?: string[];
   vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
   newsletters?: string[];
+  userType?: string;
 }
 
 export const Welcome: React.FC<WelcomeProps> = () => {
@@ -82,7 +83,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const { name = 'Guest', location, interests = [], vehicles = [], newsletters = [] } = onboardingData;
+  const { name = 'Guest', location, interests = [], vehicles = [], newsletters = [], userType } = onboardingData;
 
   // Rating handlers
   const handleRateVehicle = (vehicleName: string) => {
@@ -129,7 +130,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
           <div className="welcome-message__content">
             <h1 className="welcome-title">Welcome {name}</h1>
             <p className="welcome-subtitle">
-              Based on your interests{interests.length > 0 ? ` in ${interests.slice(0, 2).join(' and ')}` : ''}, 
+              Based on your interest in {userType === 'buyer' ? 'buying a car' : userType === 'enthusiast' ? 'automotive enthusiasm' : 'automotive content'}, 
               I've personalized your MotorTrend experience.
             </p>
           </div>
@@ -150,7 +151,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
                     <strong>Location:</strong> {location || 'Not specified'}
                   </p>
                   <p className="profile-detail">
-                    <strong>Interests:</strong> {interests.length} selected
+                    <strong>Interests:</strong> {userType === 'buyer' ? 'Buying a car' : userType === 'enthusiast' ? 'Enthusiast' : 'Not specified'}
                   </p>
                 </div>
 

@@ -149,8 +149,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--color-primary-1);
+  overflow: hidden;
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.08),
     0 8px 24px rgba(0, 0, 0, 0.06),
@@ -158,7 +157,7 @@
 }
 
 .global-header__user-avatar--default {
-  background-color: var(--color-primary-1);
+  background-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,9 +172,8 @@
 .global-header__user-avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  max-width: 20px;
-  max-height: 20px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .global-header__dropdown-arrow {
