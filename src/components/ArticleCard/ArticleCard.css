@@ -10,7 +10,7 @@
   align-items: center;
   gap: 8px;
   padding: 16px;
-  flex: 1;
+  width: auto;
   height: 178px;
   background-color: var(--color-neutrals-7);
   border-radius: 8px;
