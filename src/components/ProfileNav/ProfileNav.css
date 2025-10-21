@@ -32,6 +32,7 @@
   color: var(--color-neutrals-1);
   cursor: pointer;
   transition: all var(--transition-fast);
+  text-decoration: none;
 }
 
 .profile-nav__btn:hover {

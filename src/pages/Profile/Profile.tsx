@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import ProfileBanner from '../../components/ProfileBanner';
 import ProfileNav from '../../components/ProfileNav';
 import type { ProfileNavTab } from '../../components/ProfileNav';
@@ -56,15 +56,20 @@ export const Profile: React.FC<ProfileProps> = ({
   onUpdateStep4
 }) => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<ProfileNavTab>('my-account');
   
-  // Set initial tab based on URL parameter
+  // Set initial tab based on URL path or parameter
   useEffect(() => {
-    const tab = searchParams.get('tab') as ProfileNavTab;
+    const pathname = location.pathname;
+    const tabFromPath = pathname.split('/').pop() as ProfileNavTab;
+    const tabFromParam = searchParams.get('tab') as ProfileNavTab;
+    
+    const tab = tabFromPath || tabFromParam;
     if (tab && ['my-account', 'saved-items', 'subscriptions', 'settings'].includes(tab)) {
       setActiveTab(tab);
     }
-  }, [searchParams]);
+  }, [location.pathname, searchParams]);
   
   // Bookmark state management
   const [savedArticles, setSavedArticles] = useState<string[]>(['article-1', 'article-2']);
