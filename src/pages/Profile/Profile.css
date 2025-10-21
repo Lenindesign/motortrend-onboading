@@ -261,11 +261,19 @@
 }
 
 .profile-empty-state {
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.5em;
-  color: var(--color-neutrals-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
   text-align: center;
+  color: var(--color-neutrals-3);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5em;
+  background-color: var(--color-neutrals-7);
+  border: 1px dashed var(--color-neutrals-5);
+  border-radius: var(--border-radius-md);
+  width: 100%;
   margin: var(--spacing-4) 0;
 }
 

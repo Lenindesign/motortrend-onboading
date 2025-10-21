@@ -139,14 +139,6 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                   <p className="newsletter-card__description">{newsletter.description}</p>
                 </div>
 
-                {/* MotorTrend logo watermark for selected state */}
-                {newsletter.logo === 'motortrend' && selectedNewsletters.includes(newsletter.id) && (
-                  <div className="newsletter-card__watermark">
-                    <svg width="60" height="12" viewBox="0 0 60 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0 0H60V12H0V0Z" fill="#E90C17" fillOpacity="0.15"/>
-                    </svg>
-                  </div>
-                )}
               </div>
             </button>
           ))}

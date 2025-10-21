@@ -83,7 +83,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const { name = 'Guest', location, interests = [], vehicles = [], newsletters = [], userType } = onboardingData;
+  const { name = 'Guest', location, vehicles = [], newsletters = [], userType } = onboardingData;
 
   // Rating handlers
   const handleRateVehicle = (vehicleName: string) => {

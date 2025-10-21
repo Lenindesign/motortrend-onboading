@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import './AvatarBannerModal.css';
 import Icon from '../Icon';
+import { Button } from '../../design-system/components/Button/Button';
 
 export interface AvatarBannerModalProps {
   isVisible: boolean;
@@ -25,38 +26,38 @@ const avatarOptions = [
   },
   {
     id: 'avatar-1',
-    name: 'Avatar 1',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f3fcfcb7bf00029a0345/ellipse127.png',
+    name: 'Classic Car',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e98afbb8d0002a273ac/classic.png',
     type: 'photo'
   },
   {
     id: 'avatar-2',
-    name: 'Avatar 2',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f3fffcb7bf00029a0346/ellipse129.png',
+    name: 'Supercar',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e979a927f00029054d1/supercar.png',
     type: 'photo'
   },
   {
     id: 'avatar-3',
-    name: 'Avatar 3',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f400fcb7bf00029a0348/ellipse130.png',
+    name: 'Off-Road',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e964fba630002fdc12d/offroad.png',
     type: 'photo'
   },
   {
     id: 'avatar-4',
-    name: 'Avatar 4',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f401fcb7bf00029a0349/ellipse131.png',
+    name: 'Electric',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e954fba630002fdc12b/electric.png',
     type: 'photo'
   },
   {
     id: 'avatar-5',
-    name: 'Avatar 5',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f4024bb9f6000296b179/ellipse133.png',
+    name: 'Utility Vehicle',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e941191030002a3d54c/utility.png',
     type: 'photo'
   },
   {
     id: 'avatar-6',
-    name: 'Avatar 6',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f4034bb9f6000296b17b/ellipse137.png',
+    name: 'Compact Car',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e924fba630002fdc129/compact.png',
     type: 'photo'
   }
 ];
@@ -65,39 +66,39 @@ const avatarOptions = [
 const bannerOptions = [
   {
     id: 'banner-1',
-    name: 'Group Banner',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f53d6befe300029e7151/group1175889109.jpg',
+    name: 'Supercar',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg',
     type: 'group'
   },
-  {
-    id: 'banner-2',
-    name: 'Nissan Z vs Toyota Supra',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f53f6befe300029e7153/nissan-z-vs-toyota-supra-55.jpg',
-    type: 'comparison'
-  },
+    {
+      id: 'banner-2',
+      name: 'Retro Muscle Car',
+      url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f7802354ddc00002289097/bg-image-retro.jpg',
+      type: 'retro'
+    },
   {
     id: 'banner-3',
-    name: 'Lamborghini Aventador 1',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f5409777ec0002d12c1e/2022-lamborghini-aventador-5241487.jpg',
-    type: 'supercar'
+    name: 'Modern Electric',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f782781191030002a3d549/modern-electric.jpg',
+    type: 'electric'
   },
   {
     id: 'banner-4',
-    name: 'Lamborghini Aventador 2',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f542e470c10002ffecfb/2022-lamborghini-aventador-5241488.jpg',
-    type: 'supercar'
+    name: 'Off-Road Adventure',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f784b61191030002a3d54b/off-road.jpg',
+    type: 'offroad'
   },
   {
     id: 'banner-5',
-    name: 'Nissan Z vs Toyota Supra 2',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f543fcb7bf00029a034b/nissan-z-vs-toyota-supra-57.jpg',
-    type: 'comparison'
+    name: 'Ford Bronco',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78656afbb8d0002a273ab/bronco.jpg',
+    type: 'bronco'
   },
   {
     id: 'banner-6',
-    name: 'Nissan Z vs Toyota Supra 3',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f4f544fcb7bf00029a034d/nissan-z-vs-toyota-supra-56.jpg',
-    type: 'comparison'
+    name: 'Compact Fun Car',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f787e24fba630002fdc127/golf.jpg',
+    type: 'golf'
   }
 ];
 
@@ -209,12 +210,22 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
         </div>
 
         <div className="avatar-banner-modal__actions">
-          <button className="avatar-banner-modal__btn avatar-banner-modal__btn--cancel" onClick={onClose}>
+          <Button 
+            color="neutrals3" 
+            variant="solid" 
+            size="default"
+            onClick={onClose}
+          >
             Cancel
-          </button>
-          <button className="avatar-banner-modal__btn avatar-banner-modal__btn--save" onClick={handleSave}>
+          </Button>
+          <Button 
+            color="blue" 
+            variant="solid" 
+            size="default"
+            onClick={handleSave}
+          >
             Save Changes
-          </button>
+          </Button>
         </div>
       </div>
     </div>

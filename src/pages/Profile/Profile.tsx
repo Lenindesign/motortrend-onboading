@@ -116,7 +116,7 @@ export const Profile: React.FC<ProfileProps> = ({
   // Avatar/Banner Modal state
   const [showAvatarBannerModal, setShowAvatarBannerModal] = useState(false);
   const [userAvatar, setUserAvatar] = useState(userData?.avatar);
-  const [userBanner, setUserBanner] = useState<string | undefined>('https://d2kde5ohu8qb21.cloudfront.net/files/68f4f53d6befe300029e7151/group1175889109.jpg');
+  const [userBanner, setUserBanner] = useState<string | undefined>('https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg');
   
   // Vehicle search state
   const [showVehicleSearch, setShowVehicleSearch] = useState(false);

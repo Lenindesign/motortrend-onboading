@@ -60,7 +60,7 @@
 
 .profile-completion-card__subtitle {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 400;
   font-size: 15px;
   line-height: 1.5em;
   color: var(--color-neutrals-3);

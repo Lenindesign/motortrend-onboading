@@ -37,7 +37,7 @@
 
 .collapsible-section__description {
   font-family: var(--font-geist);
-  font-weight: 600;
+  font-weight: 400;
   font-size: 16px;
   line-height: 1.5em;
   color: var(--neutrals-3);

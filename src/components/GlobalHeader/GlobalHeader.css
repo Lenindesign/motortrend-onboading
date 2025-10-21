@@ -152,8 +152,12 @@
   overflow: hidden;
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  /* Improve rendering quality */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .global-header__user-avatar--default {
@@ -165,8 +169,7 @@
   border-radius: 50%;
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .global-header__user-avatar-img {
@@ -174,6 +177,12 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  /* Improve image rendering quality */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .global-header__dropdown-arrow {

@@ -3,7 +3,7 @@
  * Apple Design Guidelines inspired
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './ProfileBanner.css';
 import Icon from '../Icon';
 import Button from '../../design-system/components/Button';
@@ -25,9 +25,34 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   location,
   onEditProfile,
 }) => {
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (bannerRef.current) {
+        const scrolled = window.pageYOffset;
+        const parallaxSpeed = 0.5; // Adjust this value to control parallax speed
+        const yPos = -(scrolled * parallaxSpeed);
+        
+        // Apply parallax to the background image
+        const bannerElement = bannerRef.current;
+        const beforeElement = bannerElement.querySelector('::before') as HTMLElement;
+        
+        if (bannerElement) {
+          bannerElement.style.setProperty('--parallax-y', `${yPos}px`);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className={`profile-banner ${userBanner ? 'profile-banner--has-custom-banner' : ''}`}>
+    <div 
+      ref={bannerRef}
+      className={`profile-banner ${userBanner ? 'profile-banner--has-custom-banner' : ''}`}
+    >
       {/* Banner Image */}
       {userBanner && (
         <div className="profile-banner__banner">

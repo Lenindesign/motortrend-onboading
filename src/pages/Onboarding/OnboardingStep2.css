@@ -60,9 +60,9 @@
 
 .user-type-img {
   width: 156px;
-  height: 156px;
+  height: auto;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 0px;
 }
 
 .user-type-title {
@@ -154,7 +154,7 @@
 .onboarding-skip-btn {
   font-family: var(--font-body);
   font-weight: var(--font-weight-regular);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1em;
   color: var(--color-neutrals-4);
   background: none;

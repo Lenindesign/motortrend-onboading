@@ -16,30 +16,32 @@
   background-color: var(--color-neutrals-7);
 }
 
-/* Background Image with Overlay */
+/* Background Image with Overlay and Parallax */
 .profile-banner::before {
   content: '';
   position: absolute;
-  top: 0;
+  top: -50%;
   left: 0;
   right: 0;
-  bottom: 0;
-  background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&h=400&fit=crop&q=80');
+  height: 200%;
+  background-image: url('https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   filter: blur(0.5px) brightness(0.6);
   opacity: 0.4;
   z-index: 0;
+  transform: translateY(var(--parallax-y, 0)) translateZ(0);
+  will-change: transform;
 }
 
 /* Dynamic Banner Image */
 .profile-banner__banner {
   position: absolute;
-  top: 0;
+  top: -50%;
   left: 0;
   right: 0;
-  height: 200px;
+  height: 200%;
   overflow: hidden;
   z-index: 0;
 }
@@ -56,6 +58,8 @@
   object-position: center;
   filter: blur(0.5px) brightness(0.6);
   opacity: 0.4;
+  transform: translateY(var(--parallax-y, 0)) translateZ(0);
+  will-change: transform;
 }
 
 /* Gradient Overlay for Depth */
@@ -100,9 +104,13 @@
   background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.06),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 8px 24px rgba(0, 0, 0, 0.06);
   transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  /* Improve rendering quality */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .profile-banner__avatar:hover {
@@ -113,6 +121,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Improve image rendering quality */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .profile-banner__avatar-placeholder {
