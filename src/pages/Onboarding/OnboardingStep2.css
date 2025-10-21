@@ -3,9 +3,24 @@
  * Based on Figma Community design system
  */
 
+/* Ensure onboarding step container doesn't limit width */
+.onboarding-step {
+  width: 100%;
+  max-width: none;
+}
+
 /* Wide card for step 2 */
 .onboarding-card--wide {
-  max-width: 660px;
+  width: 800px !important;
+  max-width: 800px !important;
+  height: 800px !important;
+}
+
+/* Override base onboarding card constraints */
+.onboarding-card.onboarding-card--wide {
+  width: 800px !important;
+  max-width: 800px !important;
+  height: 800px !important;
 }
 
 /* Larger subtitle for step 2 */
@@ -18,15 +33,19 @@
 .user-type-selection {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  justify-items: center;
+  justify-content: center;
 }
 
 .user-type-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--spacing-5);
+  padding: var(--spacing-4);
   background: var(--color-white);
   border: 2px solid var(--color-neutrals-6);
   border-radius: var(--border-radius-lg);
@@ -34,6 +53,7 @@
   transition: all 0.2s ease;
   text-align: center;
   width: 100%;
+  max-width: 280px;
 }
 
 .user-type-option:hover {
@@ -59,10 +79,11 @@
 }
 
 .user-type-img {
-  width: 156px;
+  width: 120px;
   height: auto;
   object-fit: contain;
-  border-radius: 0px;
+  border-radius: 8px;
+  border: 2px solid var(--color-neutrals-1);
 }
 
 .user-type-title {
@@ -171,7 +192,9 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .onboarding-card--wide {
+    width: 100%;
     max-width: 100%;
+    height: auto;
   }
 
   .user-type-selection {
@@ -180,8 +203,8 @@
   }
 
   .user-type-img {
-    width: 130px;
-    height: 130px;
+    width: 120px;
+    height: auto;
     border-radius: 8px;
   }
 
@@ -214,8 +237,8 @@
   }
 
   .user-type-img {
-    width: 104px;
-    height: 104px;
+    width: 100px;
+    height: auto;
     border-radius: 8px;
   }
 
