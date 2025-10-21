@@ -36,7 +36,6 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
         
         // Apply parallax to the background image
         const bannerElement = bannerRef.current;
-        const beforeElement = bannerElement.querySelector('::before') as HTMLElement;
         
         if (bannerElement) {
           bannerElement.style.setProperty('--parallax-y', `${yPos}px`);
