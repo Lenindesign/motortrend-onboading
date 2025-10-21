@@ -1,13 +1,13 @@
 /**
  * Design Tokens - Typography
  * Extracted from Figma Community design system
- * Uses Gilroy for headings and Geist for body text
+ * Uses Poppins for headings and Geist for body text
  */
 
 export const typography = {
   // Font Families
   fontFamily: {
-    heading: 'Gilroy, sans-serif',
+    heading: 'Poppins, sans-serif',
     body: 'Geist, system-ui, -apple-system, sans-serif',
   },
   
@@ -21,7 +21,7 @@ export const typography = {
   styles: {
     // Hero
     hero: {
-      fontFamily: 'Gilroy, sans-serif',
+      fontFamily: 'Poppins, sans-serif',
       fontWeight: 700,
       fontSize: '96px',
       lineHeight: '1em',
@@ -29,14 +29,14 @@ export const typography = {
     
     // Headings
     h5: {
-      fontFamily: 'Gilroy, sans-serif',
+      fontFamily: 'Poppins, sans-serif',
       fontWeight: 700,
       fontSize: '24px',
       lineHeight: '1.167em',
     },
     
     subtitle1: {
-      fontFamily: 'Gilroy, sans-serif',
+      fontFamily: 'Poppins, sans-serif',
       fontWeight: 700,
       fontSize: '18px',
       lineHeight: '1.333em',
@@ -59,7 +59,7 @@ export const typography = {
     
     // Button
     button1: {
-      fontFamily: 'Gilroy, sans-serif',
+      fontFamily: 'Poppins, sans-serif',
       fontWeight: 700,
       fontSize: '16px',
       lineHeight: '1em',

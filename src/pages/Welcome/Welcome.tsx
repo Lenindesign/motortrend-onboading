@@ -9,6 +9,7 @@ import confetti from 'canvas-confetti';
 // Using MotorTrend main logo from URL
 const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import VehicleCard from '../../components/VehicleCard';
+import RatingModal from '../../components/RatingModal';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import './Welcome.css';
 
@@ -26,13 +27,20 @@ interface OnboardingData {
   name?: string;
   location?: string;
   interests?: string[];
-  vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
+  vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
   newsletters?: string[];
 }
 
 export const Welcome: React.FC<WelcomeProps> = () => {
   const navigate = useNavigate();
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({});
+  
+  // Rating modal state
+  const [ratingModal, setRatingModal] = useState<{isOpen: boolean, vehicleName: string, currentRating?: number}>({
+    isOpen: false,
+    vehicleName: '',
+    currentRating: 0
+  });
 
   // Load onboarding data from localStorage
   useEffect(() => {
@@ -75,6 +83,34 @@ export const Welcome: React.FC<WelcomeProps> = () => {
   }, []);
 
   const { name = 'Guest', location, interests = [], vehicles = [], newsletters = [] } = onboardingData;
+
+  // Rating handlers
+  const handleRateVehicle = (vehicleName: string) => {
+    const vehicle = vehicles.find(v => v.name === vehicleName);
+    setRatingModal({
+      isOpen: true,
+      vehicleName,
+      currentRating: vehicle?.rating || 0
+    });
+  };
+
+  const handleRatingSubmit = (rating: number) => {
+    const updatedVehicles = vehicles.map(vehicle => 
+      vehicle.name === ratingModal.vehicleName 
+        ? { ...vehicle, rating }
+        : vehicle
+    );
+    
+    const updatedData = { ...onboardingData, vehicles: updatedVehicles };
+    setOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+    
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRatingModalClose = () => {
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
 
   return (
     <div className="welcome-page">
@@ -150,6 +186,8 @@ export const Welcome: React.FC<WelcomeProps> = () => {
                         ownership={vehicle.ownership}
                         onOwnershipChange={() => navigate('/onboarding/step3')}
                         onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                        onRate={() => handleRateVehicle(vehicle.name)}
+                        userRating={vehicle.rating}
                       />
                     ))}
                   </div>
@@ -179,6 +217,15 @@ export const Welcome: React.FC<WelcomeProps> = () => {
           </button>
         </div>
       </div>
+      
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={ratingModal.isOpen}
+        onClose={handleRatingModalClose}
+        onRate={handleRatingSubmit}
+        vehicleName={ratingModal.vehicleName}
+        currentRating={ratingModal.currentRating}
+      />
     </div>
   );
 };

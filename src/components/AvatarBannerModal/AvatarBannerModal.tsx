@@ -20,7 +20,7 @@ const avatarOptions = [
   {
     id: 'motortrend-logo',
     name: 'MotorTrend Logo',
-    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png',
+    url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg',
     type: 'logo'
   },
   {

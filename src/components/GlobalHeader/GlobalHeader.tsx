@@ -155,21 +155,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 onClick={handleUserMenuClick}
                 aria-label="User menu"
               >
-                {userData?.avatar ? (
+                <div className="global-header__user-avatar global-header__user-avatar--default">
                   <img 
-                    src={userData.avatar} 
-                    alt={userData.name}
-                    className="global-header__user-avatar"
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg" 
+                    alt="MotorTrend" 
+                    className="global-header__user-avatar-img"
                   />
-                ) : (
-                  <div className="global-header__user-avatar global-header__user-avatar--default">
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png" 
-                      alt="MotorTrend" 
-                      className="global-header__user-avatar-img"
-                    />
-                  </div>
-                )}
+                </div>
                 <Icon name="keyboard_arrow_down" size={16} className="global-header__dropdown-arrow" />
               </button>
               

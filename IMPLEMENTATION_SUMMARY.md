@@ -10,7 +10,7 @@ Your Figma designs have been successfully integrated into a fully functional Rea
 
 **Design Tokens** (extracted from Figma)
 - ✅ Colors: 8-level Neutrals palette + Primary red + Semantic colors
-- ✅ Typography: Gilroy (headings) + Geist (body) with 8 text styles
+- ✅ Typography: Poppins (headings) + Geist (body) with 8 text styles
 - ✅ Spacing: 8px-based system (8px, 16px, 24px, 32px, 40px, 48px)
 - ✅ Effects: Shadows, border radius, transitions
 - ✅ Layout: Max-widths (1040px container, 1280px content)
@@ -256,10 +256,10 @@ Your Figma MCP integration is configured and ready. To fetch updates:
 
 **Typography**
 ```
-Hero: 96px (Gilroy Bold)
-H5: 24px (Gilroy Bold)
+Hero: 96px (Poppins Bold)
+H5: 24px (Poppins Bold)
 Body2: 18px (Geist Regular)
-Button: 16px (Gilroy Bold)
+Button: 16px (Poppins Bold)
 Caption: 14px (Geist Regular)
 ```
 

@@ -43,7 +43,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
           ) : (
             <div className="profile-banner__avatar-logo">
               <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png" 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg" 
                 alt="MotorTrend" 
                 className="profile-banner__logo-img" 
               />
