@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 // Using MotorTrend main logo from URL
 const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
-import Icon from '../../components/Icon';
 import VehicleCard from '../../components/VehicleCard';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import './Welcome.css';

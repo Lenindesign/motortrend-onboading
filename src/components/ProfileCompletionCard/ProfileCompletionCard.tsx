@@ -5,6 +5,7 @@ import { VehicleSearch } from '../VehicleSearch';
 import VehicleCard from '../VehicleCard';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import Button from '../../design-system/components/Button';
+import RatingModal from '../RatingModal';
 
 export interface OnboardingStatus {
   step1: boolean;
@@ -17,7 +18,7 @@ export interface OnboardingData {
   name?: string;
   location?: string;
   interests?: string[];
-  vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
+  vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
   newsletters?: string[];
 }
 
@@ -57,8 +58,15 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   const [step1Name, setStep1Name] = useState('');
   const [step1Location, setStep1Location] = useState('');
   const [step2Interests, setStep2Interests] = useState<string[]>([]);
-  const [step3Vehicles, setStep3Vehicles] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
+  const [step3Vehicles, setStep3Vehicles] = useState<Array<{name: string, ownership: 'own' | 'want', rating?: number}>>([]);
   const [step4Newsletters, setStep4Newsletters] = useState<string[]>([]);
+
+  // Rating modal state
+  const [ratingModal, setRatingModal] = useState<{isOpen: boolean, vehicleName: string, currentRating?: number}>({
+    isOpen: false,
+    vehicleName: '',
+    currentRating: 0
+  });
   
   // Vehicle search is always visible in Step 3 now
 
@@ -151,6 +159,28 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
         ? prev.filter(n => n !== newsletter)
         : [...prev, newsletter]
     );
+  };
+
+  // Rating handlers
+  const handleRateVehicle = (vehicleName: string) => {
+    const vehicle = step3Vehicles.find(v => v.name === vehicleName);
+    setRatingModal({
+      isOpen: true,
+      vehicleName,
+      currentRating: vehicle?.rating || 0
+    });
+  };
+
+  const handleRatingSubmit = (rating: number) => {
+    const updatedVehicles = step3Vehicles.map(v => 
+      v.name === ratingModal.vehicleName ? { ...v, rating } : v
+    );
+    setStep3Vehicles(updatedVehicles);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRatingModalClose = () => {
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
   };
 
   return (
@@ -333,6 +363,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                               setStep3Vehicles(updatedVehicles);
                             }}
                             onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onRate={() => handleRateVehicle(vehicle.name)}
+                            userRating={vehicle.rating}
                           />
                         ))}
                       </div>
@@ -382,6 +414,15 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
           </div>
         ))}
       </div>
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={ratingModal.isOpen}
+        onClose={handleRatingModalClose}
+        onRate={handleRatingSubmit}
+        vehicleName={ratingModal.vehicleName}
+        currentRating={ratingModal.currentRating}
+      />
     </div>
   );
 };

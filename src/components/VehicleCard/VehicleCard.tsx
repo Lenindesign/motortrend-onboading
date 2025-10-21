@@ -18,6 +18,8 @@ export interface VehicleCardProps {
   ownership?: 'own' | 'want';
   onOwnershipChange?: (value: 'own' | 'want') => void;
   onViewDetails?: () => void;
+  onRate?: () => void;
+  userRating?: number;
 }
 
 export const VehicleCard: React.FC<VehicleCardProps> = ({ 
@@ -31,7 +33,9 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   isBookmarked = false,
   ownership = 'own',
   onOwnershipChange,
-  onViewDetails
+  onViewDetails,
+  onRate,
+  userRating
 }) => {
   const ratings = [];
   if (rating1) ratings.push({ value: rating1, color: '#FFB74D' });
@@ -50,6 +54,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       onOwnershipChange={onOwnershipChange}
       onAction={onViewDetails}
       actionText="View Details"
+      onRate={onRate}
+      userRating={userRating}
     />
   );
 };

@@ -23,6 +23,7 @@ import { AvatarBannerModal } from '../../components/AvatarBannerModal';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import Button from '../../design-system/components/Button';
+import RatingModal from '../../components/RatingModal';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -75,19 +76,19 @@ export const Profile: React.FC<ProfileProps> = ({
     name?: string;
     location?: string;
     interests?: string[];
-    vehicles?: Array<{name: string, ownership: 'own' | 'want'}>;
+    vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
     newsletters?: string[];
   }>({});
   
   // Subscription state management
   const [newsletterSubscriptions, setNewsletterSubscriptions] = useState({
     'MotorTrend': true,
-    'HOT ROD': false
+    'HOT ROD': true
   });
   
   const [magazineSubscriptions, setMagazineSubscriptions] = useState({
     'MotorTrend': true,
-    'Car and Driver': false
+    'Car and Driver': true
   });
   
   // Load onboarding data from localStorage
@@ -127,6 +128,13 @@ export const Profile: React.FC<ProfileProps> = ({
     email: 'greg.smith@gmail.com',
     password: '****************'
   });
+
+  // Rating modal state
+  const [ratingModal, setRatingModal] = useState<{isOpen: boolean, vehicleName: string, currentRating?: number}>({
+    isOpen: false,
+    vehicleName: '',
+    currentRating: 0
+  });
   
   // Vehicle search handlers
   const handleAddVehicleClick = () => {
@@ -138,44 +146,58 @@ export const Profile: React.FC<ProfileProps> = ({
   };
 
   // User settings handlers
-  const handleEditFullName = () => {
-    const newName = prompt('Enter your full name:', userSettings.fullName);
-    if (newName && newName.trim() !== '') {
-      const updatedSettings = { ...userSettings, fullName: newName.trim() };
-      setUserSettings(updatedSettings);
-      
-      // Update onboarding data
-      const updatedOnboardingData = { ...localOnboardingData, name: newName.trim() };
-      setLocalOnboardingData(updatedOnboardingData);
-      localStorage.setItem('onboardingData', JSON.stringify(updatedOnboardingData));
-      
-      // Broadcast change for header sync
-      window.dispatchEvent(new Event('onboardingDataUpdated'));
-    }
+  const handleSaveFullName = (newName: string) => {
+    const updatedSettings = { ...userSettings, fullName: newName };
+    setUserSettings(updatedSettings);
+    
+    // Update onboarding data
+    const updatedOnboardingData = { ...localOnboardingData, name: newName };
+    setLocalOnboardingData(updatedOnboardingData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedOnboardingData));
+    
+    // Broadcast change for header sync
+    window.dispatchEvent(new Event('onboardingDataUpdated'));
   };
 
-  const handleEditUsername = () => {
-    const newUsername = prompt('Enter your username:', userSettings.username);
-    if (newUsername && newUsername.trim() !== '') {
-      setUserSettings(prev => ({ ...prev, username: newUsername.trim() }));
-      // In a real app, you'd save this to the backend
-    }
+  const handleSaveUsername = (newUsername: string) => {
+    setUserSettings(prev => ({ ...prev, username: newUsername }));
+    // In a real app, you'd save this to the backend
   };
 
-  const handleEditEmail = () => {
-    const newEmail = prompt('Enter your email address:', userSettings.email);
-    if (newEmail && newEmail.trim() !== '') {
-      setUserSettings(prev => ({ ...prev, email: newEmail.trim() }));
-      // In a real app, you'd save this to the backend
-    }
+  const handleSaveEmail = (newEmail: string) => {
+    setUserSettings(prev => ({ ...prev, email: newEmail }));
+    // In a real app, you'd save this to the backend
   };
 
-  const handleEditPassword = () => {
-    const newPassword = prompt('Enter your new password:');
-    if (newPassword && newPassword.trim() !== '') {
-      setUserSettings(prev => ({ ...prev, password: '****************' }));
-      // In a real app, you'd hash and save this to the backend
-    }
+  const handleSavePassword = (newPassword: string) => {
+    setUserSettings(prev => ({ ...prev, password: '****************' }));
+    // In a real app, you'd hash and save newPassword to the backend
+    console.log('Password updated:', newPassword.length > 0 ? 'New password set' : 'No password provided');
+  };
+
+  // Rating handlers
+  const handleRateVehicle = (vehicleName: string) => {
+    const vehicle = (localOnboardingData.vehicles || []).find(v => v.name === vehicleName);
+    setRatingModal({
+      isOpen: true,
+      vehicleName,
+      currentRating: vehicle?.rating || 0
+    });
+  };
+
+  const handleRatingSubmit = (rating: number) => {
+    const vehicles = localOnboardingData.vehicles || [];
+    const updatedVehicles = vehicles.map(v => 
+      v.name === ratingModal.vehicleName ? { ...v, rating } : v
+    );
+    const updatedData = { ...localOnboardingData, vehicles: updatedVehicles };
+    setLocalOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRatingModalClose = () => {
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
   };
 
   // Subscription toggle handlers
@@ -428,6 +450,8 @@ export const Profile: React.FC<ProfileProps> = ({
                             ownership={vehicle.ownership}
                             onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
                             onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onRate={() => handleRateVehicle(vehicle.name)}
+                            userRating={vehicle.rating}
                           />
                         ))}
                       </div>
@@ -458,6 +482,8 @@ export const Profile: React.FC<ProfileProps> = ({
                             ownership={vehicle.ownership}
                             onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
                             onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onRate={() => handleRateVehicle(vehicle.name)}
+                            userRating={vehicle.rating}
                           />
                         ))}
                       </div>
@@ -644,26 +670,30 @@ export const Profile: React.FC<ProfileProps> = ({
                   <EditableField
                     label="Full Name"
                     value={userSettings.fullName}
-                    onEdit={handleEditFullName}
+                    onSave={handleSaveFullName}
+                    placeholder="Enter your full name"
                   />
                   <div className="profile-settings-divider"></div>
                   <EditableField
                     label="Username"
                     value={userSettings.username}
-                    onEdit={handleEditUsername}
+                    onSave={handleSaveUsername}
+                    placeholder="Enter your username"
                   />
                   <div className="profile-settings-divider"></div>
                   <EditableField
                     label="Email Address"
                     value={userSettings.email}
-                    onEdit={handleEditEmail}
+                    onSave={handleSaveEmail}
+                    placeholder="Enter your email address"
                   />
                   <div className="profile-settings-divider"></div>
                   <EditableField
                     label="Password"
                     value={userSettings.password}
                     isPassword={true}
-                    onEdit={handleEditPassword}
+                    onSave={handleSavePassword}
+                    placeholder="Enter your new password"
                   />
                 </div>
               </div>
@@ -884,6 +914,15 @@ export const Profile: React.FC<ProfileProps> = ({
         onSave={handleSaveAvatarBanner}
         currentAvatar={userAvatar}
         currentBanner={userBanner}
+      />
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={ratingModal.isOpen}
+        onClose={handleRatingModalClose}
+        onRate={handleRatingSubmit}
+        vehicleName={ratingModal.vehicleName}
+        currentRating={ratingModal.currentRating}
       />
     </div>
   );

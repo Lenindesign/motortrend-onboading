@@ -1,5 +1,6 @@
 import React from 'react';
 import './ConnectedAccount.css';
+import Button from '../../design-system/components/Button';
 
 export interface ConnectedAccountProps {
   provider: 'google' | 'facebook' | 'apple';
@@ -55,17 +56,24 @@ export const ConnectedAccount: React.FC<ConnectedAccountProps> = ({
       <div className="connected-account__content">
         <div className="connected-account__info">
           <span className="connected-account__name">{getProviderName()}</span>
-          {isConnected ? (
-            <div className="connected-account__status">
-              <span className="connected-account__account-name">{accountName}</span>
-              <span className="connected-account__connected">Connected</span>
-            </div>
-          ) : (
-            <button className="connected-account__connect-btn" onClick={onConnect}>
-              Connect
-            </button>
+          {isConnected && accountName && (
+            <span className="connected-account__account-name">{accountName}</span>
           )}
         </div>
+      </div>
+      <div className="connected-account__actions">
+        {isConnected ? (
+          <span className="connected-account__connected">Connected</span>
+        ) : (
+          <Button 
+            color="neutrals3" 
+            variant="solid" 
+            size="default"
+            onClick={onConnect}
+          >
+            Connect
+          </Button>
+        )}
       </div>
     </div>
   );

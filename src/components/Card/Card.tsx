@@ -24,6 +24,8 @@ export interface CardProps {
   isBookmarked?: boolean;
   onAction?: () => void;
   actionText?: string;
+  onRate?: () => void; // New prop for the "Rate" action
+  userRating?: number; // User's rating for the vehicle
   
   // Vehicle-specific props (optional)
   ownership?: 'own' | 'want';
@@ -49,6 +51,8 @@ export const Card: React.FC<CardProps> = ({
   isBookmarked = false,
   onAction,
   actionText = 'View Details',
+  onRate,
+  userRating,
   ownership,
   onOwnershipChange,
   showPlayIcon = false,
@@ -104,19 +108,48 @@ export const Card: React.FC<CardProps> = ({
 
       <div className="card__bottom-row">
         {/* Ratings section */}
-        {hasMultipleRatings && ratings.length > 0 && (
+        {(hasMultipleRatings && ratings.length > 0) || onRate ? (
           <div className="card__ratings">
-            {ratings.map((rating, index) => (
-              <div key={index} className="card__rating">
-                <Icon name="star" size={18} style={{ color: rating.color }} />
-                <span>{rating.value}</span>
+            {hasMultipleRatings && ratings.length > 0 && (
+              <>
+                {ratings.map((rating, index) => {
+                  const tooltipText = rating.color === '#FFB74D' ? 'Staff Rating' : 'Community Rating (252)';
+                  return (
+                    <div key={index} className="card__rating card__rating--with-tooltip">
+                      <div className="card__rating-tooltip">
+                        {tooltipText}
+                      </div>
+                      <img 
+                        src={rating.color === '#FFB74D' ? 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg' : 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg'} 
+                        alt="Star rating" 
+                        className="card__rating-star"
+                      />
+                      <span>{rating.value}</span>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+            {onRate && (
+              <div className="card__rating card__rating--with-tooltip">
+                <div className="card__rating-tooltip">
+                  {userRating ? 'Your Rating' : 'Add Your Rate'}
+                </div>
+                <button className="card__rate-option" onClick={onRate}>
+                  <img 
+                    src={userRating ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"} 
+                    alt={userRating ? "User rated star" : "Rate star"} 
+                    className="card__rating-star"
+                  />
+                  <span>{userRating ? userRating.toString() : "Rate"}</span>
+                </button>
               </div>
-            ))}
+            )}
           </div>
-        )}
+        ) : null}
         
-        {/* Spacer when no ratings */}
-        {(!hasMultipleRatings || ratings.length === 0) && <div></div>}
+        {/* Spacer when no ratings or rate option */}
+        {!((hasMultipleRatings && ratings.length > 0) || onRate) && <div></div>}
         
         {/* Action button */}
         {onAction && (

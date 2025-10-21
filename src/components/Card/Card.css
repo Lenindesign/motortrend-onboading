@@ -176,8 +176,9 @@
 .card__bottom-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   gap: 16px;
+  min-height: 40px;
 }
 
 .card__ratings {
@@ -194,6 +195,81 @@
   font-weight: 500;
   font-size: 14px;
   color: var(--color-neutrals-2);
+}
+
+.card__rating span {
+  font-size: 14px;
+}
+
+.card__rate-option span {
+  position: relative;
+  top: -2px;
+  left: 3px;
+}
+
+.card__rate-option .card__rating-star {
+  position: relative;
+  top: 2px;
+}
+
+.card__rating-star {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.card__rating--with-tooltip {
+  position: relative;
+}
+
+.card__rating-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-neutrals-2);
+  color: var(--color-white);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 8px;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.card__rating-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--color-neutrals-2);
+}
+
+.card__rating--with-tooltip:hover .card__rating-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card__rate-option {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.card__rate-option:hover {
+  opacity: 0.7;
 }
 
 .card__button {

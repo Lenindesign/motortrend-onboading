@@ -5,7 +5,10 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Using SVG illustration from URL
+// Using new graphics for user types
+const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f669499911d50002cef1a2/buyer2.png';
+const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6694843a62400020366cc/enthusiast2.png';
+// Step illustration for progress
 const step2Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1855/group1318348098.svg';
 import './OnboardingStep2.css';
 import Icon from '../../components/Icon';
@@ -19,34 +22,20 @@ export interface OnboardingStep2Props {
   };
 }
 
-const interestOptions = [
-  'Are you shopping?',
-  'Are you browsing?',
-  'Vehicle Reviews',
-  'Automotive News',
-  'Car Comparisons',
-  'Buying Guides',
-  'Maintenance Tips',
-  'Racing & Sports',
-];
 
 export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
   const navigate = useNavigate();
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedUserType, setSelectedUserType] = useState<string>('buyer');
 
-  const toggleInterest = (interest: string) => {
-    setSelectedInterests((prev) =>
-      prev.includes(interest)
-        ? prev.filter((i) => i !== interest)
-        : [...prev, interest]
-    );
+  const handleUserTypeSelect = (userType: string) => {
+    setSelectedUserType(userType);
   };
 
   const handleNext = () => {
-    console.log('Step 2 data:', selectedInterests);
+    console.log('Step 2 data:', selectedUserType);
     // Store data in localStorage
     const existingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-    localStorage.setItem('onboardingData', JSON.stringify({ ...existingData, interests: selectedInterests }));
+    localStorage.setItem('onboardingData', JSON.stringify({ ...existingData, userType: selectedUserType }));
     navigate('/onboarding/step3');
   };
 
@@ -69,26 +58,49 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
 
         {/* Title Section */}
         <div className="onboarding-card__title-section">
-          <h1 className="onboarding-card__title">Tell Us Your Interests</h1>
+          <h1 className="onboarding-card__title">What describes you best?</h1>
           <p className="onboarding-card__subtitle onboarding-card__subtitle--larger">
-            So we can help you on your journey?
+            Choose the option that best fits your automotive interests
           </p>
         </div>
 
-        {/* Interest Tiles */}
-        <div className="interest-tiles">
-          {interestOptions.map((interest) => (
-            <button
-              key={interest}
-              className={`interest-tile ${
-                selectedInterests.includes(interest) ? 'interest-tile--selected' : ''
-              }`}
-              onClick={() => toggleInterest(interest)}
-              type="button"
-            >
-              {interest}
-            </button>
-          ))}
+        {/* User Type Selection */}
+        <div className="user-type-selection">
+          <button
+            className={`user-type-option ${selectedUserType === 'buyer' ? 'user-type-option--selected' : ''}`}
+            onClick={() => handleUserTypeSelect('buyer')}
+            type="button"
+          >
+            <div className="user-type-image">
+              <img 
+                src={buyerImage} 
+                alt="Car Buyer" 
+                className="user-type-img"
+              />
+            </div>
+            <h3 className="user-type-title">Car Buyer</h3>
+            <p className="user-type-description">
+              Looking to purchase a new or used vehicle
+            </p>
+          </button>
+          
+          <button
+            className={`user-type-option ${selectedUserType === 'enthusiast' ? 'user-type-option--selected' : ''}`}
+            onClick={() => handleUserTypeSelect('enthusiast')}
+            type="button"
+          >
+            <div className="user-type-image">
+              <img 
+                src={enthusiastImage} 
+                alt="Car Enthusiast" 
+                className="user-type-img"
+              />
+            </div>
+            <h3 className="user-type-title">Car Enthusiast</h3>
+            <p className="user-type-description">
+              Passionate about cars, reviews, and automotive culture
+            </p>
+          </button>
         </div>
 
         {/* Navigation Buttons */}

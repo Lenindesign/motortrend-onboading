@@ -11,6 +11,7 @@ import Icon from '../../components/Icon';
 import VehicleCard from '../../components/VehicleCard';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { VehicleSearch } from '../../components/VehicleSearch';
+import RatingModal from '../../components/RatingModal';
 
 // Vehicle list handled by VehicleSearch
 
@@ -27,8 +28,13 @@ export interface OnboardingStep3Props {
 export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   const navigate = useNavigate();
   // Search input handled within VehicleSearch
-  const [selectedCars, setSelectedCars] = useState<Array<{name: string, ownership: 'own' | 'want'}>>([]);
+  const [selectedCars, setSelectedCars] = useState<Array<{name: string, ownership: 'own' | 'want', rating?: number}>>([]);
   const [showAddAnother, setShowAddAnother] = useState(false);
+  const [ratingModal, setRatingModal] = useState<{isOpen: boolean, vehicleName: string, currentRating?: number}>({
+    isOpen: false,
+    vehicleName: '',
+    currentRating: 0
+  });
   const inputRef = useRef<HTMLInputElement>(null);
 
   // VehicleSearch handles filtering and dropdown behavior
@@ -60,6 +66,26 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   const handleAddAnother = () => {
     setShowAddAnother(false);
     inputRef.current?.focus();
+  };
+
+  const handleRateVehicle = (vehicleName: string) => {
+    const vehicle = selectedCars.find(car => car.name === vehicleName);
+    setRatingModal({
+      isOpen: true,
+      vehicleName,
+      currentRating: vehicle?.rating || 0
+    });
+  };
+
+  const handleRatingSubmit = (rating: number) => {
+    setSelectedCars(selectedCars.map(car => 
+      car.name === ratingModal.vehicleName ? { ...car, rating } : car
+    ));
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRatingModalClose = () => {
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
   };
 
   // Keyboard navigation handled by VehicleSearch as well
@@ -110,14 +136,16 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
         {/* Title and Subtitle */}
         <div className="onboarding-card__content">
           <h1 className="onboarding-card__title">Tell Us About Your Ride</h1>
-          <p className="onboarding-card__subtitle">The Cars you Drive and Want</p>
+          <p className="onboarding-card__subtitle">Choose what you drive now and what you’d like next</p>
 
           {/* Vehicle Search Section */}
           <div className="vehicle-search-section">
-            <div className="vehicle-search__header">
-              <label className="vehicle-search__label">Search for a vehicle</label>
-              
-            </div>
+            {/* Only show "Search for a vehicle" label when no vehicles are selected */}
+            {selectedCars.length === 0 && (
+              <div className="vehicle-search__header">
+                <label className="vehicle-search__label">Search for a vehicle</label>
+              </div>
+            )}
 
             {/* Selected Cars Display using shared VehicleCard */}
             {selectedCars.length > 0 && (
@@ -136,6 +164,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     ownership={car.ownership}
                     onOwnershipChange={(value) => handleOwnershipChange(car.name, value)}
                     onViewDetails={() => console.log('View vehicle details:', car.name)}
+                    onRate={() => handleRateVehicle(car.name)}
+                    userRating={car.rating}
                   />
                 ))}
               </div>
@@ -214,6 +244,15 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
           </div>
         </div>
       </div>
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={ratingModal.isOpen}
+        onClose={handleRatingModalClose}
+        onRate={handleRatingSubmit}
+        vehicleName={ratingModal.vehicleName}
+        currentRating={ratingModal.currentRating}
+      />
     </div>
   );
 };
