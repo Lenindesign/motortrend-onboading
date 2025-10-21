@@ -64,7 +64,7 @@ import { colors } from './design-system/tokens';
 ### Typography
 
 Two font families are used:
-- **Gilroy** (bold, 700): Headings and buttons
+- **Poppins** (bold, 700): Headings and buttons
 - **Geist** (regular, 400): Body text
 
 Text styles include:
