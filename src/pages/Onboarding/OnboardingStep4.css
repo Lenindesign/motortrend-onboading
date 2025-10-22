@@ -12,6 +12,8 @@
 /* Ensure onboarding card can expand to fit content */
 .onboarding-card {
   min-height: auto;
+  width: 660px;
+  max-width: 660px;
 }
 
 /* Newsletter Section */
@@ -20,38 +22,38 @@
   flex-direction: column;
   gap: var(--spacing-2);
   width: 100%;
+  align-items: center;
 }
 
 .newsletter-card {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  gap: var(--spacing-1);
-  padding: var(--spacing-2);
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
   width: 100%;
-  min-height: 162px;
+  max-width: 600px;
+  min-height: 120px;
   border: 2px solid var(--color-neutrals-6);
   border-radius: var(--border-radius-lg);
   background-color: var(--color-white);
-  box-shadow: var(--shadow-depth-5);
+  box-shadow: var(--shadow-depth-1);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   position: relative;
-  overflow: hidden;
 }
 
 .newsletter-card:hover {
   border-color: var(--color-neutrals-5);
   transform: translateY(-2px);
-  box-shadow: 0px 6px 24px 0px rgba(20, 20, 22, 0.1);
+  box-shadow: var(--shadow-depth-3);
 }
 
 .newsletter-card--selected {
   background-color: var(--color-neutrals-2);
   border-color: var(--color-neutrals-2);
   transform: translateY(-2px);
-  box-shadow: 0px 6px 24px 0px rgba(20, 20, 22, 0.1);
+  box-shadow: var(--shadow-depth-3);
 }
 
 .newsletter-card--selected:hover {
@@ -63,15 +65,16 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
   width: 100%;
+  flex: 1;
 }
 
 /* Newsletter Logo */
 .newsletter-card__logo {
   flex-shrink: 0;
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
 }
 
 .newsletter-card__logo svg {
@@ -82,10 +85,10 @@
 /* Text Content */
 .newsletter-card__text {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--spacing-1);
   flex: 1;
+  text-align: left;
 }
 
 .newsletter-card__checkbox-row {
@@ -140,6 +143,7 @@
   color: var(--color-neutrals-2);
   margin: 0;
   flex: 1;
+  text-align: left;
 }
 
 .newsletter-card--selected .newsletter-card__title {
@@ -155,6 +159,7 @@
   color: var(--color-neutrals-2);
   margin: 0;
   width: 274px;
+  text-align: left;
 }
 
 .newsletter-card--selected .newsletter-card__description {

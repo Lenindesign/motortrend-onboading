@@ -83,7 +83,8 @@
   height: auto;
   object-fit: contain;
   border-radius: 8px;
-  border: 2px solid var(--color-neutrals-1);
+  border: 1px solid var(--color-neutrals-1);
+  border-width: 1px;
 }
 
 .user-type-title {

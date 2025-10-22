@@ -106,8 +106,9 @@
   flex-direction: column;
   gap: 18px;
   width: 100%;
-  max-width: 366px;
+  max-width: none;
   margin-top: 24px; /* 32px total spacing - 8px from content gap = 24px additional */
+  padding: 0 24px;
 }
 
 .vehicle-search__header {
