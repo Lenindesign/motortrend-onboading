@@ -3,6 +3,17 @@
  * Based on Figma Community design system
  */
 
+/* Ensure onboarding step container doesn't limit width */
+.onboarding-step {
+  width: 100%;
+  max-width: none;
+}
+
+/* Ensure onboarding card can expand to fit content */
+.onboarding-card {
+  min-height: auto;
+}
+
 /* Newsletter Section */
 .newsletter-section {
   display: flex;

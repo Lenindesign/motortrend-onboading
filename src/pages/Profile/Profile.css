@@ -191,8 +191,9 @@
 .profile-vehicles-grid {
   display: flex;
   flex-direction: row;
-  gap: 32px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
 }
 
 .profile-section-divider {

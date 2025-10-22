@@ -13,14 +13,14 @@
 .onboarding-card--wide {
   width: 800px !important;
   max-width: 800px !important;
-  height: 800px !important;
+  min-height: 800px !important;
 }
 
 /* Override base onboarding card constraints */
 .onboarding-card.onboarding-card--wide {
   width: 800px !important;
   max-width: 800px !important;
-  height: 800px !important;
+  min-height: 800px !important;
 }
 
 /* Larger subtitle for step 2 */
