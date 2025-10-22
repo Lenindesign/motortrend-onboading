@@ -3,7 +3,7 @@
  * Apple Design Guidelines inspired
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './ProfileBanner.css';
 import Icon from '../Icon';
 import Button from '../../design-system/components/Button';
@@ -17,6 +17,16 @@ export interface ProfileBannerProps {
   onEditProfile?: () => void;
 }
 
+// Banner images for animation
+const bannerImages = [
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg',
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f7802354ddc00002289097/bg-image-retro.jpg',
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f782781191030002a3d549/modern-electric.jpg',
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f784b61191030002a3d54b/off-road.jpg',
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f78656afbb8d0002a273ab/bronco.jpg',
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f787e24fba630002fdc127/golf.jpg'
+];
+
 export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   userName,
   userAvatar,
@@ -26,6 +36,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   onEditProfile,
 }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,17 +58,36 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Banner animation effect
+  useEffect(() => {
+    // Always animate the banner slideshow
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        (prevIndex + 1) % bannerImages.length
+      );
+    }, 10000); // Change image every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div 
       ref={bannerRef}
       className={`profile-banner ${userBanner ? 'profile-banner--has-custom-banner' : ''}`}
     >
-      {/* Banner Image */}
-      {userBanner && (
-        <div className="profile-banner__banner">
-          <img src={userBanner} alt="Profile Banner" className="profile-banner__banner-img" />
-        </div>
-      )}
+      {/* Animated Banner Image */}
+      <div className="profile-banner__banner profile-banner__banner--animated">
+        {bannerImages.map((imageUrl, index) => (
+          <img
+            key={imageUrl}
+            src={imageUrl}
+            alt={`Banner ${index + 1}`}
+            className={`profile-banner__banner-img ${
+              index === currentImageIndex ? 'profile-banner__banner-img--active' : ''
+            }`}
+          />
+        ))}
+      </div>
       
       <div className="profile-banner__container">
         {/* Avatar Section */}

@@ -21,6 +21,7 @@ export interface OnboardingData {
   vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
   newsletters?: string[];
   userType?: string;
+  joinDate?: string;
 }
 
 export interface ProfileCompletionCardProps {
@@ -58,6 +59,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   // Local state for each step
   const [step1Name, setStep1Name] = useState('');
   const [step1Location, setStep1Location] = useState('');
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [step2Interests, setStep2Interests] = useState<string[]>([]);
   const [step3Vehicles, setStep3Vehicles] = useState<Array<{name: string, ownership: 'own' | 'want', rating?: number}>>([]);
   const [step4Newsletters, setStep4Newsletters] = useState<string[]>([]);
@@ -193,6 +195,52 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
   };
 
+  // Location detection handler
+  const handleDetectLocation = async () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by this browser.');
+      return;
+    }
+
+    setIsDetectingLocation(true);
+
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000 // 5 minutes
+        });
+      });
+
+      const { latitude, longitude } = position.coords;
+      
+      // Use reverse geocoding to get location name
+      try {
+        const response = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+        );
+        const data = await response.json();
+        
+        if (data.city && data.principalSubdivision) {
+          setStep1Location(`${data.city}, ${data.principalSubdivision}`);
+        } else if (data.locality) {
+          setStep1Location(data.locality);
+        } else {
+          setStep1Location(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        }
+      } catch (error) {
+        console.error('Reverse geocoding failed:', error);
+        setStep1Location(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+      }
+    } catch (error) {
+      console.error('Geolocation error:', error);
+      alert('Unable to detect your location. Please enter it manually.');
+    } finally {
+      setIsDetectingLocation(false);
+    }
+  };
+
   return (
     <div className={`profile-completion-card ${isFullyComplete ? 'profile-completion-card--complete' : ''}`}>
       <div className="profile-completion-card__header">
@@ -203,7 +251,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
           <div className="profile-completion-card__title-content">
             <h3 className="profile-completion-card__title">
               {isFullyComplete 
-                ? '✨ Profile Complete!' 
+                ? 'Profile Complete!' 
                 : `Complete Your Profile (${completedCount} of ${totalSteps})`
               }
             </h3>
@@ -279,13 +327,28 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                   </div>
                   <div className="profile-field">
                     <label className="profile-field__label">Where are you located? (Optional)</label>
-                    <input 
-                      type="text"
-                      className="profile-field__input"
-                      placeholder="Location"
-                      value={step1Location}
-                      onChange={(e) => setStep1Location(e.target.value)}
-                    />
+                    <div className="location-field-container">
+                      <input 
+                        type="text"
+                        className="profile-field__input"
+                        placeholder="Location"
+                        value={step1Location}
+                        onChange={(e) => setStep1Location(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="location-icon-btn"
+                        onClick={handleDetectLocation}
+                        disabled={isDetectingLocation}
+                        title={isDetectingLocation ? 'Detecting location...' : 'Auto-detect location'}
+                      >
+                        <Icon 
+                          name={isDetectingLocation ? "refresh" : "my_location"} 
+                          size={20} 
+                          className={isDetectingLocation ? "spinning" : ""}
+                        />
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <button 

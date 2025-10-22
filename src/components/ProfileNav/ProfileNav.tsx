@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import Icon from '../Icon';
 import './ProfileNav.css';
 
 export type ProfileNavTab = 'my-account' | 'saved-items' | 'subscriptions' | 'settings';
@@ -21,11 +22,11 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
   const location = useLocation();
   const currentPath = location.pathname;
   
-  const tabs: { id: ProfileNavTab; label: string; path: string }[] = [
-    { id: 'my-account', label: 'Profile', path: '/my-account/profile' },
-    { id: 'saved-items', label: 'Saved Items', path: '/my-account/saved-items' },
-    { id: 'subscriptions', label: 'My Subscriptions', path: '/my-account/subscriptions' },
-    { id: 'settings', label: 'Account Settings', path: '/my-account/settings' },
+  const tabs: { id: ProfileNavTab; label: string; path: string; icon: string }[] = [
+    { id: 'my-account', label: 'Profile', path: '/my-account/profile', icon: 'account_circle' },
+    { id: 'saved-items', label: 'Saved Items', path: '/my-account/saved-items', icon: 'bookmark_border' },
+    { id: 'subscriptions', label: 'Subscriptions', path: '/my-account/subscriptions', icon: 'newspaper' },
+    { id: 'settings', label: 'Settings', path: '/my-account/settings', icon: 'settings' },
   ];
 
   return (
@@ -39,6 +40,7 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
             className={`profile-nav__btn ${isActive ? 'profile-nav__btn--active' : ''}`}
             onClick={() => onTabChange?.(tab.id)}
           >
+            <Icon name={tab.icon} size={16} />
             {tab.label}
           </Link>
         );

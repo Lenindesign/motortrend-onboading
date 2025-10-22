@@ -11,6 +11,7 @@ const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfec
 import VehicleCard from '../../components/VehicleCard';
 import RatingModal from '../../components/RatingModal';
 import { vehicleImageFor } from '../../utils/vehicleImages';
+import { getCurrentJoinDate } from '../../utils/dateUtils';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -30,6 +31,7 @@ interface OnboardingData {
   vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
   newsletters?: string[];
   userType?: string;
+  joinDate?: string;
 }
 
 export const Welcome: React.FC<WelcomeProps> = () => {
@@ -48,7 +50,17 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     const data = localStorage.getItem('onboardingData');
     if (data) {
       try {
-        setOnboardingData(JSON.parse(data));
+        const parsed = JSON.parse(data);
+        
+        // Auto-detect join date if not already set
+        if (!parsed.joinDate) {
+          const joinDate = getCurrentJoinDate();
+          const updatedData = { ...parsed, joinDate };
+          setOnboardingData(updatedData);
+          localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+        } else {
+          setOnboardingData(parsed);
+        }
       } catch (error) {
         console.error('Error parsing onboarding data:', error);
       }
@@ -60,8 +72,8 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     const triggerConfetti = () => {
       // Create a confetti cannon from the center of the screen
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 200,
+        spread: 120,
         origin: { y: 0.6 },
         colors: ['#DC3545', '#00C2FF', '#28A745', '#FFC107', '#6F42C1', '#E83E8C']
       });
@@ -70,7 +82,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
       setTimeout(() => {
         confetti({
           particleCount: 50,
-          spread: 60,
+          spread: 120,
           origin: { y: 0.4 },
           colors: ['#DC3545', '#00C2FF', '#28A745', '#FFC107', '#6F42C1', '#E83E8C']
         });

@@ -16,7 +16,7 @@
 .profile-nav__btn {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
@@ -26,9 +26,9 @@
   border-radius: 8px;
   font-family: var(--font-heading);
   font-weight: var(--font-weight-bold);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1em;
-  text-align: center;
+  text-align: left;
   color: var(--color-neutrals-1);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -40,13 +40,27 @@
 }
 
 .profile-nav__btn--active {
-  background-color: var(--color-neutrals-1);
+  background-color: var(--color-neutrals-3);
   color: var(--color-neutrals-8);
-  border-color: var(--color-neutrals-1);
+  border-color: var(--color-neutrals-3);
 }
 
 .profile-nav__btn--active:hover {
   background-color: var(--color-neutrals-2);
+}
+
+.profile-nav__btn svg {
+  color: var(--color-neutrals-4);
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.profile-nav__btn:hover svg {
+  color: var(--color-neutrals-2);
+}
+
+.profile-nav__btn--active svg {
+  color: var(--color-neutrals-8);
 }
 
 /* Mobile Responsive */

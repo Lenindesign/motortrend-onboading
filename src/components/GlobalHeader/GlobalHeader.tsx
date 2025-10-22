@@ -175,7 +175,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   <button 
                     className="global-header__dropdown-item"
                     onClick={() => {
-                      navigate('/profile');
+                      navigate('/my-account/profile');
                       setShowUserDropdown(false);
                     }}
                   >
@@ -185,7 +185,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   <button 
                     className="global-header__dropdown-item"
                     onClick={() => {
-                      navigate('/profile?tab=saved-items');
+                      navigate('/my-account/saved-items');
                       setShowUserDropdown(false);
                     }}
                   >
@@ -195,7 +195,17 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   <button 
                     className="global-header__dropdown-item"
                     onClick={() => {
-                      navigate('/profile?tab=settings');
+                      navigate('/my-account/subscriptions');
+                      setShowUserDropdown(false);
+                    }}
+                  >
+                    <Icon name="newspaper" size={16} />
+                    Subscriptions
+                  </button>
+                  <button 
+                    className="global-header__dropdown-item"
+                    onClick={() => {
+                      navigate('/my-account/settings');
                       setShowUserDropdown(false);
                     }}
                   >

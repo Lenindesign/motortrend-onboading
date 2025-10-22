@@ -22,6 +22,7 @@ import Icon from '../../components/Icon';
 import { AvatarBannerModal } from '../../components/AvatarBannerModal';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import { vehicleImageFor } from '../../utils/vehicleImages';
+import { getCurrentJoinDate } from '../../utils/dateUtils';
 import Button from '../../design-system/components/Button';
 import RatingModal from '../../components/RatingModal';
 import './Profile.css';
@@ -33,27 +34,10 @@ export interface ProfileProps {
     joinDate: string;
     location?: string;
   };
-  onboardingData?: {
-    name?: string;
-    location?: string;
-    interests?: string[];
-    vehicleType?: 'own' | 'want';
-    vehicle?: string;
-    newsletters?: string[];
-  };
-  onUpdateStep1?: (data: { name: string; location: string }) => void;
-  onUpdateStep2?: (data: { interests: string[] }) => void;
-  onUpdateStep3?: (data: { vehicleType: 'own' | 'want'; vehicle: string }) => void;
-  onUpdateStep4?: (data: { newsletters: string[] }) => void;
 }
 
 export const Profile: React.FC<ProfileProps> = ({ 
-  userData, 
-  onboardingData,
-  onUpdateStep1,
-  onUpdateStep2,
-  onUpdateStep3,
-  onUpdateStep4
+  userData
 }) => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
@@ -97,6 +81,7 @@ export const Profile: React.FC<ProfileProps> = ({
     interests?: string[];
     vehicles?: Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
     newsletters?: string[];
+    joinDate?: string;
   }>({});
   
   // Subscription state management
@@ -116,7 +101,17 @@ export const Profile: React.FC<ProfileProps> = ({
     if (data) {
       try {
         const parsed = JSON.parse(data);
-        setLocalOnboardingData(parsed);
+        
+        // Auto-detect join date if not already set
+        if (!parsed.joinDate) {
+          const joinDate = getCurrentJoinDate();
+          const updatedData = { ...parsed, joinDate };
+          setLocalOnboardingData(updatedData);
+          localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+        } else {
+          setLocalOnboardingData(parsed);
+        }
+        
         // Update user settings with the latest data
         setUserSettings(prev => ({
           ...prev,
@@ -127,6 +122,40 @@ export const Profile: React.FC<ProfileProps> = ({
       }
     }
   }, [userData?.name]);
+
+  // Callback functions for ProfileCompletionCard
+  const handleUpdateStep1 = (data: { name: string; location: string }) => {
+    const updatedData = { ...localOnboardingData, ...data };
+    setLocalOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+    // Update user settings with the new name
+    setUserSettings(prev => ({
+      ...prev,
+      fullName: data.name
+    }));
+  };
+
+  const handleUpdateStep2 = (data: { interests: string[] }) => {
+    const updatedData = { ...localOnboardingData, interests: data.interests };
+    setLocalOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+  };
+
+  const handleUpdateStep3 = (data: { vehicleType: 'own' | 'want'; vehicle: string }) => {
+    const updatedData = { 
+      ...localOnboardingData, 
+      vehicleType: data.vehicleType,
+      vehicle: data.vehicle 
+    };
+    setLocalOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+  };
+
+  const handleUpdateStep4 = (data: { newsletters: string[] }) => {
+    const updatedData = { ...localOnboardingData, newsletters: data.newsletters };
+    setLocalOnboardingData(updatedData);
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+  };
   
   // Toast state
   const [showToast, setShowToast] = useState(false);
@@ -361,7 +390,7 @@ export const Profile: React.FC<ProfileProps> = ({
         userName={userSettings.fullName}
         userAvatar={userAvatar}
         userBanner={userBanner}
-        joinDate={userData?.joinDate || '1/14/2024'}
+        joinDate={localOnboardingData.joinDate || userData?.joinDate || '1/14/2024'}
         location={localOnboardingData.location || userData?.location || 'Location not specified'}
         onEditProfile={handleEditProfile}
       />
@@ -403,11 +432,11 @@ export const Profile: React.FC<ProfileProps> = ({
 
                      {/* Profile Completion Card */}
                      <ProfileCompletionCard
-                       onboardingData={onboardingData}
-                       onUpdateStep1={onUpdateStep1}
-                       onUpdateStep2={onUpdateStep2}
-                       onUpdateStep3={onUpdateStep3}
-                       onUpdateStep4={onUpdateStep4}
+                       onboardingData={localOnboardingData}
+                       onUpdateStep1={handleUpdateStep1}
+                       onUpdateStep2={handleUpdateStep2}
+                       onUpdateStep3={handleUpdateStep3}
+                       onUpdateStep4={handleUpdateStep4}
                      />
 
                    </>

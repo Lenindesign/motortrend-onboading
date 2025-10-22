@@ -93,7 +93,7 @@
 }
 
 .avatar-banner-modal__tab--active {
-  background-color: var(--color-neutrals-2);
+  background-color: var(--color-neutrals-3);
   border-color: var(--color-neutrals-2);
   color: var(--color-neutrals-8);
 }

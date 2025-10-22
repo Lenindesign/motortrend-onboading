@@ -46,12 +46,12 @@
 
 /* Color Variants - Solid (matching Toast modal buttons) */
 .btn--blue.btn--solid {
-  background-color: var(--color-blue);
+  background-color: #353945;
   color: var(--color-white);
 }
 
 .btn--blue.btn--solid:hover:not(.btn--disabled) {
-  background-color: #1557c1;
+  background-color: #2a2d35;
 }
 
 .btn--red.btn--solid {

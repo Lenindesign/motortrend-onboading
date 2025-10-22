@@ -74,9 +74,16 @@ export const RatingModal: React.FC<RatingModalProps> = ({
         <div className="rating-modal__header">
           <div className="rating-modal__title-section">
             <div className="rating-modal__main-rating">
-              <span className="rating-modal__rating-number-large">
-                {selectedRating > 0 ? selectedRating : '0'}
-              </span>
+              <div className="rating-modal__score-star">
+                <img 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                  alt="Rating star"
+                  className="rating-modal__score-star-icon"
+                />
+                <span className="rating-modal__rating-number-large">
+                  {selectedRating > 0 ? selectedRating : '0'}
+                </span>
+              </div>
             </div>
             <h2 className="rating-modal__title">RATE THIS</h2>
             <p className="rating-modal__vehicle-name">{vehicleName}</p>
