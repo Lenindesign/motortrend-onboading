@@ -163,10 +163,8 @@
 }
 
 .profile-articles {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
   width: 100%;
 }
@@ -190,7 +188,7 @@
 
 .profile-vehicles-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
   width: 100%;
 }
@@ -204,21 +202,18 @@
 
 /* Comparisons Section */
 .profile-comparisons-grid {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  width: 918px;
+  width: 100%;
 }
 
 /* Videos Section */
 .profile-videos-grid {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  width: 918px;
+  width: 100%;
 }
 
 /* Subscriptions Section */
@@ -513,7 +508,10 @@
     padding: 16px;
   }
 
-  .profile-vehicles-grid {
+  .profile-vehicles-grid,
+  .profile-articles,
+  .profile-comparisons-grid,
+  .profile-videos-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }

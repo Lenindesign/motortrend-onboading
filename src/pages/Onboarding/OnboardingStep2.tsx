@@ -81,7 +81,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
             </div>
             <h3 className="user-type-title">Car Buyer</h3>
             <p className="user-type-description">
-              Looking to purchase a new or used vehicle
+              Shopping for a new or used car
             </p>
           </button>
           
@@ -99,7 +99,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
             </div>
             <h3 className="user-type-title">Car Enthusiast</h3>
             <p className="user-type-description">
-              Passionate about cars, reviews, and automotive culture
+            Love cars, reviews, and auto culture
             </p>
           </button>
           
@@ -117,7 +117,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
             </div>
             <h3 className="user-type-title">Both</h3>
             <p className="user-type-description">
-              Passionate about cars and always in the market for your next ride
+            Car lover always eyeing the next ride
             </p>
           </button>
         </div>
