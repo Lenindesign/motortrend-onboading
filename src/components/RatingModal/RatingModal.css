@@ -26,6 +26,7 @@
   max-height: 90vh;
   overflow-y: auto;
   border: none;
+  border-style: none;
 }
 
 .rating-modal__header {

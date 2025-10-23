@@ -44,13 +44,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     if (isAuthenticated) {
       try {
         const onboardingData = localStorage.getItem('onboardingData');
+        console.log('GlobalHeader: Loading user data from localStorage:', onboardingData);
         if (onboardingData) {
           const data = JSON.parse(onboardingData);
+          console.log('GlobalHeader: Parsed user data:', data);
           setUserData({
             name: data.name || 'User',
             avatar: data.avatar
           });
         } else {
+          console.log('GlobalHeader: No onboarding data found, using default');
           setUserData({
             name: 'User',
             avatar: undefined
@@ -73,17 +76,63 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         const onboardingData = localStorage.getItem('onboardingData');
         if (onboardingData) {
           const data = JSON.parse(onboardingData);
+          console.log('GlobalHeader: Updating user data from event:', data);
           setUserData(prev => ({
             name: data.name || prev?.name || 'User',
             avatar: data.avatar
           }));
         }
       } catch (e) {
-        /* noop */
+        console.error('Error updating user data:', e);
       }
     };
+    
+    // Listen for custom events
     window.addEventListener('onboardingDataUpdated', handleUpdate);
-    return () => window.removeEventListener('onboardingDataUpdated', handleUpdate);
+    
+    // Also listen for storage events (when localStorage changes in other tabs)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'onboardingData' && e.newValue) {
+        try {
+          const data = JSON.parse(e.newValue);
+          console.log('GlobalHeader: Updating user data from storage event:', data);
+          setUserData(prev => ({
+            name: data.name || prev?.name || 'User',
+            avatar: data.avatar
+          }));
+        } catch (error) {
+          console.error('Error parsing storage data:', error);
+        }
+      }
+    });
+    
+    // Also add a periodic check to ensure data stays in sync
+    const intervalId = setInterval(() => {
+      try {
+        const onboardingData = localStorage.getItem('onboardingData');
+        if (onboardingData) {
+          const data = JSON.parse(onboardingData);
+          setUserData(prev => {
+            if (prev?.name !== data.name) {
+              console.log('GlobalHeader: Periodic check - name changed from', prev?.name, 'to', data.name);
+              return {
+                name: data.name || 'User',
+                avatar: data.avatar
+              };
+            }
+            return prev;
+          });
+        }
+      } catch (error) {
+        console.error('Error in periodic check:', error);
+      }
+    }, 1000); // Check every second
+
+    return () => {
+      window.removeEventListener('onboardingDataUpdated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+      clearInterval(intervalId);
+    };
   }, []);
 
   // Handle click outside to close dropdown
@@ -168,7 +217,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               {showUserDropdown && (
                 <div className="global-header__user-dropdown">
                   <div className="global-header__user-info">
-                    <div className="global-header__user-name">{userData?.name}</div>
+                    <div className="global-header__user-name">{userData?.name || 'User'}</div>
                     <div className="global-header__user-email">user@example.com</div>
                   </div>
                   <div className="global-header__dropdown-divider"></div>

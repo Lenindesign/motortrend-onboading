@@ -169,7 +169,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
               onClick={handleSkip}
               type="button"
             >
-              Skip for now
+              Skip this step
             </button>
 
             <button

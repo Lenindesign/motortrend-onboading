@@ -10,20 +10,21 @@
   min-height: calc(100vh - 160px);
   padding: var(--spacing-6);
   background-color: var(--color-neutrals-2);
+  letter-spacing: 0px;
 }
 
 .onboarding-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-6);
-  padding: var(--spacing-6);
+  gap: 48px;
+  padding: 48px 48px 48px 48px;
   width: 100%;
   max-width: 660px;
-  background-color: var(--color-neutrals-8);
-  border: 1px solid var(--color-neutrals-7);
+  background-color: #F4F5F6;
+  border: 1px solid #F4F5F6;
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-depth-5);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Header with Progress */
@@ -89,8 +90,15 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  width: 100%;
-  max-width: 366px;
+  width: 366%;
+  max-width: 100%;
+  padding: 32px 32px 32px 32px;
+  background-color: #FCFCFD;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Navigation */

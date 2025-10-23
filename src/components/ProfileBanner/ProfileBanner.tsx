@@ -20,7 +20,7 @@ export interface ProfileBannerProps {
 // Banner images for animation
 const bannerImages = [
   'https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f7802354ddc00002289097/bg-image-retro.jpg',
+  'https://d2kde5ohu8qb21.cloudfront.net/files/68f8f5df37e1e80002de1a02/muscle2.jpg',
   'https://d2kde5ohu8qb21.cloudfront.net/files/68f782781191030002a3d549/modern-electric.jpg',
   'https://d2kde5ohu8qb21.cloudfront.net/files/68f784b61191030002a3d54b/off-road.jpg',
   'https://d2kde5ohu8qb21.cloudfront.net/files/68f78656afbb8d0002a273ab/bronco.jpg',
@@ -60,34 +60,46 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
 
   // Banner animation effect
   useEffect(() => {
-    // Always animate the banner slideshow
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => 
-        (prevIndex + 1) % bannerImages.length
-      );
-    }, 10000); // Change image every 10 seconds
+    // Only animate if no user banner is selected
+    if (!userBanner) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => 
+          (prevIndex + 1) % bannerImages.length
+        );
+      }, 10000); // Change image every 10 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [userBanner]);
 
   return (
     <div 
       ref={bannerRef}
       className={`profile-banner ${userBanner ? 'profile-banner--has-custom-banner' : ''}`}
     >
-      {/* Animated Banner Image */}
-      <div className="profile-banner__banner profile-banner__banner--animated">
-        {bannerImages.map((imageUrl, index) => (
+      {/* Banner Image - Static if user selected, animated if not */}
+      {userBanner ? (
+        <div className="profile-banner__banner">
           <img
-            key={imageUrl}
-            src={imageUrl}
-            alt={`Banner ${index + 1}`}
-            className={`profile-banner__banner-img ${
-              index === currentImageIndex ? 'profile-banner__banner-img--active' : ''
-            }`}
+            src={userBanner}
+            alt="User selected banner"
+            className="profile-banner__banner-img profile-banner__banner-img--static"
           />
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="profile-banner__banner profile-banner__banner--animated">
+          {bannerImages.map((imageUrl, index) => (
+            <img
+              key={imageUrl}
+              src={imageUrl}
+              alt={`Banner ${index + 1}`}
+              className={`profile-banner__banner-img ${
+                index === currentImageIndex ? 'profile-banner__banner-img--active' : ''
+              }`}
+            />
+          ))}
+        </div>
+      )}
       
       <div className="profile-banner__container">
         {/* Avatar Section */}

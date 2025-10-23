@@ -202,41 +202,45 @@
   top: 100%;
   right: 0;
   margin-top: 8px;
-  min-width: 240px;
-  background-color: var(--color-white);
-  border: 1px solid var(--color-neutrals-6);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-depth-4);
+  min-width: 280px;
+  background-color: #141416;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   overflow: hidden;
   animation: slideDown 0.2s ease-out;
 }
 
 .global-header__user-info {
-  padding: 16px;
-  background-color: var(--color-neutrals-8);
-  border-bottom: 1px solid var(--color-neutrals-6);
+  padding: 20px;
+  background-color: #141416;
+  border-bottom: 1px solid #374151;
 }
 
 .global-header__user-name {
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: 14px;
-  color: var(--color-neutrals-1);
-  margin-bottom: 2px;
+  font-size: 16px;
+  color: #FFFFFF;
+  margin-bottom: 4px;
+  line-height: 1.2;
+  text-align: left;
 }
 
 .global-header__user-email {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 12px;
-  color: var(--color-neutrals-4);
+  font-size: 14px;
+  color: #9CA3AF;
+  line-height: 1.2;
+  text-align: left;
 }
 
 .global-header__dropdown-divider {
   height: 1px;
-  background-color: var(--color-neutrals-6);
-  margin: 8px 0;
+  background-color: #374151;
+  margin: 0;
 }
 
 .global-header__dropdown-item {
@@ -244,43 +248,44 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 20px;
   background: none;
   border: none;
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 14px;
-  color: var(--color-neutrals-2);
+  color: #FFFFFF;
   text-align: left;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .global-header__dropdown-item:hover {
-  background-color: var(--color-neutrals-7);
-  color: var(--color-neutrals-1);
+  background-color: #374151;
+  color: #FFFFFF;
 }
 
 .global-header__dropdown-item--signout {
-  color: var(--color-primary-2);
+  color: #FFFFFF;
 }
 
 .global-header__dropdown-item--signout:hover {
-  background-color: rgba(220, 53, 69, 0.1);
+  background-color: #374151;
+  color: #FFFFFF;
 }
 
 .global-header__dropdown-item svg {
-  color: var(--color-neutrals-4);
+  color: #9CA3AF;
   flex-shrink: 0;
   transition: color var(--transition-fast);
 }
 
 .global-header__dropdown-item:hover svg {
-  color: var(--color-neutrals-2);
+  color: #FFFFFF;
 }
 
 .global-header__dropdown-item--signout svg {
-  color: var(--color-primary-2);
+  color: #9CA3AF;
 }
 
 /* Animations */

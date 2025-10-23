@@ -15,11 +15,12 @@
 
 /* Label */
 .text-field__label {
-  font-family: var(--font-body);
+  font-family: Geist;
   font-weight: var(--font-weight-regular);
   font-size: 16px;
-  line-height: 1.5em;
+  line-height: normal;
   color: var(--color-neutrals-3);
+  letter-spacing: 0px;
 }
 
 /* Input Container */

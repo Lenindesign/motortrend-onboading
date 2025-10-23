@@ -108,7 +108,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleSkip = () => {
-    navigate('/profile');
+    navigate('/onboarding/step4');
   };
 
   const isNextDisabled = selectedCars.length === 0;
@@ -229,7 +229,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                 onClick={handleSkip}
                 type="button"
               >
-                Skip for now
+                Skip this step
               </button>
             </div>
 

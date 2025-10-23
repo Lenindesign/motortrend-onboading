@@ -117,6 +117,11 @@ export const Profile: React.FC<ProfileProps> = ({
           ...prev,
           fullName: parsed.name || userData?.name || 'Greg Smith'
         }));
+        
+        // Load saved banner if it exists
+        if (parsed.banner) {
+          setUserBanner(parsed.banner);
+        }
       } catch (error) {
         console.error('Error parsing onboarding data:', error);
       }
@@ -133,12 +138,16 @@ export const Profile: React.FC<ProfileProps> = ({
       ...prev,
       fullName: data.name
     }));
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('onboardingDataUpdated'));
   };
 
   const handleUpdateStep2 = (data: { interests: string[] }) => {
     const updatedData = { ...localOnboardingData, interests: data.interests };
     setLocalOnboardingData(updatedData);
     localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('onboardingDataUpdated'));
   };
 
   const handleUpdateStep3 = (data: { vehicleType: 'own' | 'want'; vehicle: string }) => {
@@ -164,7 +173,7 @@ export const Profile: React.FC<ProfileProps> = ({
   // Avatar/Banner Modal state
   const [showAvatarBannerModal, setShowAvatarBannerModal] = useState(false);
   const [userAvatar, setUserAvatar] = useState(userData?.avatar);
-  const [userBanner, setUserBanner] = useState<string | undefined>('https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg');
+  const [userBanner, setUserBanner] = useState<string | undefined>(undefined);
   
   // Vehicle search state
   const [showVehicleSearch, setShowVehicleSearch] = useState(false);
@@ -543,7 +552,7 @@ export const Profile: React.FC<ProfileProps> = ({
                     <div className="profile-vehicles-subsection">
                       <div className="profile-vehicles-grid">
                         <div className="profile-empty-state">
-                          <p>No vehicles added yet. Complete the onboarding process to add your vehicles.</p>
+                          <p>No vehicles added yet.</p>
                         </div>
                       </div>
                     </div>

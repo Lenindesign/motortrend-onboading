@@ -254,6 +254,12 @@
   font-size: 16px;
   color: var(--color-neutrals-1);
   transition: all 0.2s;
+  width: 100%;
+}
+
+/* Ensure location field input takes full width */
+.location-field-container .profile-field__input {
+  width: 100%;
 }
 
 .profile-field__input:focus {

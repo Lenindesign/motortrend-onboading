@@ -73,7 +73,7 @@ const bannerOptions = [
     {
       id: 'banner-2',
       name: 'Retro Muscle Car',
-      url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f7802354ddc00002289097/bg-image-retro.jpg',
+      url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f8f5df37e1e80002de1a02/muscle2.jpg',
       type: 'retro'
     },
   {

@@ -188,9 +188,10 @@
 
 .profile-vehicles-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 24px;
   width: 100%;
+  text-align: left;
 }
 
 .profile-section-divider {
