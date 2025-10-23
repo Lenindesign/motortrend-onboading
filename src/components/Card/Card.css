@@ -36,7 +36,7 @@
 .card__image-container {
   position: relative;
   width: 153.5px;
-  height: 104.34px;
+  height: 86.34px; /* 16:9 aspect ratio: 153.5 / 16 * 9 = 86.34px */
   flex-shrink: 0;
 }
 

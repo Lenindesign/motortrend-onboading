@@ -191,14 +191,6 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     placeholder="Select another Vehicle"
                   />
                 )}
-
-                <button
-                  type="button"
-                  className="no-vehicle-link"
-                  onClick={() => navigate('/onboarding/step4')}
-                >
-                  I don't currently own a vehicle
-                </button>
               </div>
             )}
 

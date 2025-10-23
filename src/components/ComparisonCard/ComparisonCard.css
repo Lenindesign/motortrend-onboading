@@ -37,7 +37,7 @@
 .comparison-card__image-container {
   position: relative;
   width: 100%;
-  height: 104.34px;
+  height: 86.34px; /* 16:9 aspect ratio: 153.5 / 16 * 9 = 86.34px */
   border-radius: 8px;
   overflow: hidden;
 }
