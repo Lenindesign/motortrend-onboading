@@ -1,0 +1,218 @@
+/**
+ * Membership Card Styles
+ * Based on Figma Community design
+ */
+
+.membership-card {
+  width: 396px;
+  height: 241px;
+  background: linear-gradient(209deg, rgba(56, 56, 56, 1) 35%, rgba(0, 0, 0, 1) 100%);
+  border-radius: 8px;
+  box-shadow: 0px 2.54px 12.69px 0px rgba(20, 20, 22, 0.06);
+  padding: 0 20px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.membership-card__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  max-width: 395px;
+}
+
+.membership-card__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 39px;
+  width: 331px;
+  height: 105px;
+}
+
+.membership-card__avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #E90C17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 19px 13px;
+  flex-shrink: 0;
+}
+
+.membership-card__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.membership-card__avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #E90C17;
+  border-radius: 50%;
+}
+
+.membership-card__avatar-text {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 24px;
+  color: #FFFFFF;
+  font-style: italic;
+}
+
+.membership-card__title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 216px;
+}
+
+.membership-card__title {
+  font-family: 'Poppins', var(--font-body);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.4em;
+  color: #FFFFFF;
+  margin: 0;
+  width: 216px;
+}
+
+.membership-card__subtitle {
+  font-family: 'Geist', var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.35em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.membership-card__details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 145px;
+  padding: 0 7px;
+  width: 331px;
+}
+
+.membership-card__left-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.membership-card__right-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 69px;
+}
+
+.membership-card__detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.membership-card__detail-label {
+  font-family: 'Geist', var(--font-body);
+  font-weight: 400;
+  font-size: 8.88px;
+  line-height: 1.71em;
+  color: #B1B5C3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.membership-card__detail-value {
+  font-family: 'Geist', var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.26em;
+  color: #FCFCFD;
+}
+
+.membership-card__right-details .membership-card__detail-value {
+  color: #FCFCFD;
+}
+
+.membership-card__left-details .membership-card__detail-value:last-child {
+  color: #FCFCFD;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .membership-card {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    padding: 16px;
+  }
+  
+  .membership-card__content {
+    max-width: 100%;
+  }
+  
+  .membership-card__header {
+    width: 100%;
+    padding-right: 0;
+    gap: 12px;
+  }
+  
+  .membership-card__avatar {
+    width: 60px;
+    height: 60px;
+    padding: 15px 10px;
+  }
+  
+  .membership-card__title {
+    font-size: 18px;
+    width: auto;
+  }
+  
+  .membership-card__subtitle {
+    font-size: 11px;
+  }
+  
+  .membership-card__details {
+    width: 100%;
+    gap: 20px;
+    padding: 0;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .membership-card__left-details,
+  .membership-card__right-details {
+    width: 100%;
+    gap: 16px;
+  }
+  
+  .membership-card__detail-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .membership-card__detail-label {
+    font-size: 10px;
+  }
+  
+  .membership-card__detail-value {
+    font-size: 14px;
+  }
+}

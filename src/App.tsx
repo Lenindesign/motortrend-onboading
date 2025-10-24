@@ -10,6 +10,7 @@ import SignIn from './pages/SignIn';
 import { OnboardingStep1, OnboardingStep2, OnboardingStep3, OnboardingStep4 } from './pages/Onboarding';
 import Welcome from './pages/Welcome';
 import Profile from './pages/Profile';
+import { Membership } from './pages/Membership';
 import './App.css';
 
 function App() {
@@ -42,6 +43,9 @@ function App() {
             <Route path="/my-account/saved-items" element={<Profile />} />
             <Route path="/my-account/subscriptions" element={<Profile />} />
             <Route path="/my-account/settings" element={<Profile />} />
+            
+            {/* Membership Page */}
+            <Route path="/membership" element={<Membership />} />
             
             {/* Catch all route - redirect to sign in */}
             <Route path="*" element={<Navigate to="/signin" replace />} />
