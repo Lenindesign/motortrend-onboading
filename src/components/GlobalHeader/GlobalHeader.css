@@ -10,7 +10,8 @@
 }
 
 .global-header__content {
-  max-width: 1280px;
+  max-width: auto;
+  width: 1280px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -129,6 +130,8 @@
 /* User Menu */
 .global-header__user-menu {
   position: relative;
+  width: 36px;
+  height: 36px;
 }
 
 .global-header__user-btn {
@@ -137,7 +140,9 @@
   gap: 8px;
   background: none;
   border: none;
-  padding: 4px 8px;
+  width: 40px;
+  padding: 8px 8px;
+  font-size: 14px;
   cursor: pointer;
   border-radius: var(--border-radius-md);
   transition: background-color var(--transition-fast);
@@ -163,11 +168,11 @@
 }
 
 .global-header__user-avatar--default {
-  background-color: transparent;
+  background-color: #23262F;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  padding: 0px;
   border-radius: 50%;
   box-shadow: 
     0 2px 8px rgba(0, 0, 0, 0.08),
@@ -202,7 +207,9 @@
   top: 100%;
   right: 0;
   margin-top: 8px;
-  min-width: 280px;
+  width: max-content;
+  min-width: 200px;
+  max-width: 320px;
   background-color: #141416;
   border: none;
   border-radius: 12px;
@@ -213,9 +220,59 @@
 }
 
 .global-header__user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 20px;
   background-color: #141416;
   border-bottom: 1px solid #374151;
+}
+
+/* Avatar in dropdown */
+.global-header__user-avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-header__user-avatar--default {
+  width: 100%;
+  height: 100%;
+  background-color: #23262F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0px;
+}
+
+.global-header__user-avatar-text {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  color: #FFFFFF;
+  font-style: italic;
+}
+
+.global-header__user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* User details container */
+.global-header__user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .global-header__user-name {
@@ -223,9 +280,9 @@
   font-weight: 600;
   font-size: 16px;
   color: #FFFFFF;
-  margin-bottom: 4px;
   line-height: 1.2;
   text-align: left;
+  margin: 0;
 }
 
 .global-header__user-email {
@@ -235,6 +292,7 @@
   color: #9CA3AF;
   line-height: 1.2;
   text-align: left;
+  margin: 0;
 }
 
 .global-header__dropdown-divider {
@@ -302,17 +360,132 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .global-header {
+    padding: 8px 12px;
+  }
+  
   .global-header__nav {
     display: none;
   }
   
   .global-header__content {
-    gap: var(--spacing-2);
+    gap: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .global-header__left {
+    gap: 8px;
+  }
+
+  .global-header__right {
+    gap: 8px;
   }
 
   .global-header__user-dropdown {
     right: -8px;
     min-width: 200px;
+  }
+  
+  .global-header__logo {
+    max-width: 100px;
+    height: 24px;
+  }
+  
+  .global-header__search-btn {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+
+  .global-header__user-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .global-header__user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .global-header__user-avatar--default {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Medium mobile breakpoint for better responsive design */
+@media (max-width: 640px) {
+  .global-header__logo {
+    max-width: 90px;
+    height: 22px;
+  }
+  
+  .global-header__search-btn {
+    width: 34px;
+    height: 34px;
+    padding: 5px;
+  }
+
+  .global-header__user-avatar {
+    width: 26px;
+    height: 26px;
+  }
+
+  .global-header__user-avatar--default {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-header {
+    padding: 6px 8px;
+  }
+  
+  .global-header__content {
+    gap: 6px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .global-header__left {
+    gap: 6px;
+  }
+
+  .global-header__right {
+    gap: 6px;
+  }
+  
+  .global-header__logo {
+    max-width: 80px;
+    height: 20px;
+  }
+  
+  .global-header__search-btn {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+  }
+
+  .global-header__user-btn {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+
+  .global-header__user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .global-header__user-avatar--default {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .global-header__user-dropdown {
+    right: -12px;
+    min-width: 160px;
   }
 }
 

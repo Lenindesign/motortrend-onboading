@@ -204,21 +204,27 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 onClick={handleUserMenuClick}
                 aria-label="User menu"
               >
-                <div className="global-header__user-avatar global-header__user-avatar--default">
-                  <img 
-                    src={userData?.avatar || "https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg"} 
-                    alt="User Avatar" 
-                    className="global-header__user-avatar-img"
-                  />
-                </div>
-                <Icon name="keyboard_arrow_down" size={16} className="global-header__dropdown-arrow" />
+                <img 
+                  src={userData?.avatar || "https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg"} 
+                  alt="User Avatar" 
+                  className="global-header__user-avatar-img"
+                />
               </button>
               
               {showUserDropdown && (
                 <div className="global-header__user-dropdown">
                   <div className="global-header__user-info">
-                    <div className="global-header__user-name">{userData?.name || 'User'}</div>
-                    <div className="global-header__user-email">user@example.com</div>
+                    <div className="global-header__user-avatar">
+                      <img 
+                        src={userData?.avatar || "https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg"} 
+                        alt={userData?.name || 'User'} 
+                        className="global-header__user-avatar-img"
+                      />
+                    </div>
+                    <div className="global-header__user-details">
+                      <div className="global-header__user-name">{userData?.name || 'User'}</div>
+                      <div className="global-header__user-email">user@example.com</div>
+                    </div>
                   </div>
                   <div className="global-header__dropdown-divider"></div>
                   <button 

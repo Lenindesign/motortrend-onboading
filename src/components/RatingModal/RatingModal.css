@@ -186,7 +186,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border: 1px solid var(--color-neutrals-6);
   margin-bottom: 12px;
-  z-index: 10;
+  z-index: 1001;
 }
 
 .rating-modal__tooltip::after {
