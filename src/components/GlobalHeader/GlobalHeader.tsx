@@ -9,6 +9,7 @@ import './GlobalHeader.css';
 // Using MotorTrend main logo from URL
 const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg';
 import Icon from '../Icon';
+import { useResponsiveNavigation } from '../../hooks/useResponsiveNavigation';
 
 export interface GlobalHeaderProps {
   onSignInClick?: () => void;
@@ -35,6 +36,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     avatar?: string;
   } | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  
+  // Use responsive navigation hook
+  const { visibleItems, hiddenItems, navRef, showMoreMenu, setShowMoreMenu } = useResponsiveNavigation(navigationItems);
   
   // Check if user is authenticated (you can implement your own logic here)
   const isAuthenticated = location.pathname !== '/signin';
@@ -135,22 +139,26 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     };
   }, []);
 
-  // Handle click outside to close dropdown
+  // Handle click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserDropdown(false);
       }
+      // Close more menu if clicking outside
+      if (!(event.target as Element).closest('.global-header__more-menu')) {
+        setShowMoreMenu(false);
+      }
     };
 
-    if (showUserDropdown) {
+    if (showUserDropdown || showMoreMenu) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showUserDropdown]);
+  }, [showUserDropdown, showMoreMenu]);
 
   const handleUserMenuClick = () => {
     setShowUserDropdown(!showUserDropdown);
@@ -176,8 +184,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               className="global-header__logo"
             />
           </Link>
-          <nav className="global-header__nav">
-            {navigationItems.map((item) => (
+          <nav className="global-header__nav" ref={navRef}>
+            {visibleItems.map((item) => (
               <a 
                 key={item.label} 
                 href={item.href} 
@@ -186,6 +194,32 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 {item.label}
               </a>
             ))}
+            {hiddenItems.length > 0 && (
+              <div className="global-header__more-menu">
+                <button 
+                  className="global-header__more-btn"
+                  onClick={() => setShowMoreMenu(!showMoreMenu)}
+                  aria-label="More navigation items"
+                >
+                  More
+                  <Icon name="expand_more" size={16} />
+                </button>
+                {showMoreMenu && (
+                  <div className="global-header__more-dropdown">
+                    {hiddenItems.map((item) => (
+                      <a 
+                        key={item.label} 
+                        href={item.href} 
+                        className="global-header__more-link"
+                        onClick={() => setShowMoreMenu(false)}
+                      >
+                        {item.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </nav>
         </div>
 
