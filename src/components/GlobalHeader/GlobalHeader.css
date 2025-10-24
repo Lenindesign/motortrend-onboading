@@ -61,64 +61,6 @@
   color: var(--color-neutrals-8);
 }
 
-/* More Menu */
-.global-header__more-menu {
-  position: relative;
-  display: inline-block;
-}
-
-.global-header__more-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
-  font-size: 14px;
-  line-height: 1.286em;
-  color: var(--color-neutrals-5);
-  background: none;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: color var(--transition-fast);
-}
-
-.global-header__more-btn:hover {
-  color: var(--color-neutrals-8);
-}
-
-.global-header__more-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 8px;
-  min-width: 160px;
-  background-color: #141416;
-  border: 1px solid #374151;
-  border-radius: 8px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  overflow: hidden;
-  animation: slideDown 0.2s ease-out;
-}
-
-.global-header__more-link {
-  display: block;
-  padding: 12px 16px;
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
-  font-size: 14px;
-  line-height: 1.286em;
-  color: var(--color-neutrals-5);
-  text-decoration: none;
-  transition: all var(--transition-fast);
-}
-
-.global-header__more-link:hover {
-  background-color: #374151;
-  color: var(--color-neutrals-8);
-}
-
 /* Right Section */
 .global-header__right {
   display: flex;
@@ -401,6 +343,43 @@
   }
 }
 
+/* Responsive Navigation - Hide items from right to left */
+@media (max-width: 1200px) {
+  .global-header__nav-link:nth-last-child(-n+1) {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .global-header__nav-link:nth-last-child(-n+2) {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .global-header__nav-link:nth-last-child(-n+3) {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .global-header__nav-link:nth-last-child(-n+4) {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .global-header__nav-link:nth-last-child(-n+5) {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .global-header__nav-link:nth-last-child(-n+6) {
+    display: none;
+  }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .global-header {
@@ -408,10 +387,6 @@
   }
   
   .global-header__nav {
-    display: none;
-  }
-  
-  .global-header__more-menu {
     display: none;
   }
   
