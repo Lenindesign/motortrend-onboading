@@ -10,8 +10,8 @@
 }
 
 .global-header__content {
-  max-width: auto;
-  width: 1280px;
+  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -357,6 +357,8 @@
     gap: 8px;
     padding-left: 8px;
     padding-right: 8px;
+    max-width: 100%;
+    width: 100%;
   }
 
   .global-header__left {
@@ -383,17 +385,18 @@
     padding: 6px;
   }
 
+  .global-header__search-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
   .global-header__user-btn {
-    padding: 6px 8px;
-    font-size: 12px;
+    padding: 4px;
+    width: 36px;
+    height: 36px;
   }
 
-  .global-header__user-avatar {
-    width: 28px;
-    height: 28px;
-  }
-
-  .global-header__user-avatar--default {
+  .global-header__user-avatar-img {
     width: 28px;
     height: 28px;
   }
@@ -412,12 +415,18 @@
     padding: 5px;
   }
 
-  .global-header__user-avatar {
-    width: 26px;
-    height: 26px;
+  .global-header__search-btn svg {
+    width: 18px;
+    height: 18px;
   }
 
-  .global-header__user-avatar--default {
+  .global-header__user-btn {
+    width: 34px;
+    height: 34px;
+    padding: 3px;
+  }
+
+  .global-header__user-avatar-img {
     width: 26px;
     height: 26px;
   }
@@ -432,6 +441,8 @@
     gap: 6px;
     padding-left: 4px;
     padding-right: 4px;
+    max-width: 100%;
+    width: 100%;
   }
 
   .global-header__left {
@@ -453,19 +464,20 @@
     padding: 4px;
   }
 
+  .global-header__search-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .global-header__user-btn {
-    padding: 4px 6px;
-    font-size: 11px;
+    width: 32px;
+    height: 32px;
+    padding: 2px;
   }
 
-  .global-header__user-avatar {
-    width: 28px;
-    height: 28px;
-  }
-
-  .global-header__user-avatar--default {
-    width: 28px;
-    height: 28px;
+  .global-header__user-avatar-img {
+    width: 24px;
+    height: 24px;
   }
   
   .global-header__user-dropdown {

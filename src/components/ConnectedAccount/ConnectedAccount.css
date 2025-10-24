@@ -65,8 +65,8 @@
 
 @media (max-width: 768px) {
   .connected-account {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 12px;
   }
 

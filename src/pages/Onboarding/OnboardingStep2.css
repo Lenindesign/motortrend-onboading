@@ -12,15 +12,19 @@
 /* Wide card for step 2 */
 .onboarding-card--wide {
   width: 800px !important;
-  max-width: 800px !important;
-  min-height: 800px !important;
+  height: 100% !important;
+  min-height: none !important;
+  min-width: none !important;
+  max-width: none !important;
 }
 
 /* Override base onboarding card constraints */
 .onboarding-card.onboarding-card--wide {
   width: 800px !important;
-  max-width: 800px !important;
-  min-height: 800px !important;
+  height: 100% !important;
+  min-height: none !important;
+  min-width: none !important;
+  max-width: none !important;
 }
 
 /* Larger subtitle for step 2 */
@@ -33,7 +37,7 @@
 .user-type-selection {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
@@ -202,7 +206,7 @@
 
   .user-type-selection {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 16px;
     width: 100%;
     max-width: 343px;
     margin: 0 auto;
@@ -274,7 +278,7 @@
 /* Small mobile */
 @media (max-width: 480px) {
   .user-type-selection {
-    gap: 24px;
+    gap: 16px;
     max-width: 100%;
   }
   

@@ -147,14 +147,6 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = () => {
         {/* Navigation Buttons */}
         <div className="onboarding-card__navigation">
           <div className="onboarding-card__nav-row">
-            <button
-              className="onboarding-nav-btn onboarding-nav-btn--previous onboarding-nav-btn--disabled"
-              disabled
-            >
-              <Icon name="chevron_left" size={20} />
-              <span>Previous</span>
-            </button>
-
             <div className="onboarding-card__skip-section">
               <button
                 className="onboarding-skip-btn"

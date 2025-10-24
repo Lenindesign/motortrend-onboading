@@ -63,8 +63,8 @@
   color: var(--color-neutrals-8);
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
+/* Tablet and smaller - when not in sidebar */
+@media (max-width: 1024px) {
   .profile-nav {
     flex-direction: row;
     flex-wrap: nowrap;
@@ -84,15 +84,40 @@
     font-size: 14px;
     white-space: nowrap;
   }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .profile-nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 12px 16px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .profile-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .profile-nav__btn {
+    width: auto;
+    flex: 0 0 auto;
+    min-width: max-content;
+    padding: 8px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+    gap: 0;
+  }
 
   /* Hide icons on mobile */
   .profile-nav__btn svg {
     display: none;
-  }
-
-  /* Remove gap since icons are hidden */
-  .profile-nav__btn {
-    gap: 0;
   }
 }
 

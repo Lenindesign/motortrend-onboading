@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 48px;
+  gap: 24px;
   padding: 48px 48px 48px 48px;
   width: 100%;
   max-width: 660px;
@@ -112,7 +112,7 @@
 .onboarding-card__nav-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: var(--spacing-2);
   width: 100%;

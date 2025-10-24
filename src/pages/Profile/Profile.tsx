@@ -17,6 +17,7 @@ import EditableField from '../../components/EditableField';
 import ConnectedAccount from '../../components/ConnectedAccount';
 import CollapsibleSection from '../../components/CollapsibleSection';
 import ProfileCompletionCard from '../../components/ProfileCompletionCard';
+import EmptyVehiclesCard from '../../components/EmptyVehiclesCard';
 import Toast from '../../components/Toast';
 import Icon from '../../components/Icon';
 import { AvatarBannerModal } from '../../components/AvatarBannerModal';
@@ -547,14 +548,10 @@ export const Profile: React.FC<ProfileProps> = ({
                     </div>
                   )}
 
-                  {/* Show message if no vehicles */}
-                  {(localOnboardingData.vehicles || []).length === 0 && (
+                  {/* Show empty state if no vehicles and not searching */}
+                  {(localOnboardingData.vehicles || []).length === 0 && !showVehicleSearch && (
                     <div className="profile-vehicles-subsection">
-                      <div className="profile-vehicles-grid">
-                        <div className="profile-empty-state">
-                          <p>No vehicles added yet.</p>
-                        </div>
-                      </div>
+                      <EmptyVehiclesCard onAddVehicle={handleAddVehicleClick} />
                     </div>
                   )}
                 </div>

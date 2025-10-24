@@ -216,6 +216,7 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0; /* Allow text truncation */
+  height: 70px;
 }
 
 .profile-banner__name {
@@ -235,7 +236,8 @@
 .profile-banner__meta {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 12px;
+  justify-content: start;
   flex-wrap: wrap;
 }
 
@@ -246,21 +248,26 @@
 }
 
 .profile-banner__icon {
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
   color: #ffffff;
   opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-banner__meta-text {
   font-family: var(--font-body);
   font-weight: 400;
   font-size: 15px;
-  line-height: 1.4;
+  line-height: 1;
   color: #ffffff;
   white-space: nowrap;
   opacity: 1;
+  display: flex;
+  align-items: center;
 }
 
 .profile-banner__meta-separator {
@@ -341,11 +348,17 @@
 
   .profile-banner__meta-text {
     font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
   }
 
   .profile-banner__icon {
     width: 14px;
     height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .profile-banner__edit-btn {

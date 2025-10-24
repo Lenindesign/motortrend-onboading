@@ -315,12 +315,12 @@
   }
 
   .onboarding-card__nav-row {
-    flex-direction: column;
+    flex-direction: row;
     gap: var(--spacing-2);
   }
 
   .onboarding-nav-btn {
-    width: 100%;
+    width: 124px;
   }
 }
 
