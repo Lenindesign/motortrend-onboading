@@ -34,20 +34,22 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <div className="comparison-card__vehicle">
           <div className="comparison-card__image-container">
             <img src={vehicle1.image} alt={vehicle1.name} className="comparison-card__image" />
-            {onBookmark && (
-              <button 
-                className={`comparison-card__bookmark-btn ${isBookmarked ? 'comparison-card__bookmark-btn--active' : ''}`}
-                onClick={onBookmark}
-                aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
-              >
-                <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
-              </button>
-            )}
           </div>
           <h4 className="comparison-card__name">{vehicle1.name}</h4>
         </div>
         
-        <div className="comparison-card__vs">VS</div>
+        <div className="comparison-card__vs">
+          {onBookmark && (
+            <button 
+              className={`comparison-card__bookmark-btn ${isBookmarked ? 'comparison-card__bookmark-btn--active' : ''}`}
+              onClick={onBookmark}
+              aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
+            >
+              <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
+            </button>
+          )}
+          <span className="comparison-card__vs-text">VS</span>
+        </div>
         
         <div className="comparison-card__vehicle">
           <div className="comparison-card__image-container">

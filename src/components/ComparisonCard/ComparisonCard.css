@@ -54,8 +54,9 @@
 
 .comparison-card__bookmark-btn {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,7 +74,7 @@
 
 .comparison-card__bookmark-btn:hover {
   background: rgba(0, 0, 0, 0.6);
-  transform: scale(1.05);
+  transform: translateX(-50%) scale(1.05);
 }
 
 .comparison-card__bookmark-btn--active {
@@ -102,6 +103,22 @@
   gap: 16px;
   height: 109px;
   flex-shrink: 0;
+  position: relative;
+}
+
+.comparison-card__vs-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--color-neutrals-2);
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.33em;
+  color: var(--color-white);
 }
 
 .comparison-card__actions {
