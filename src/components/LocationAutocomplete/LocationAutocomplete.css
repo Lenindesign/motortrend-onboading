@@ -108,6 +108,14 @@
   background-color: #f9fafb;
 }
 
+.location-suggestion-item:hover .location-suggestion-name {
+  color: #374151;
+}
+
+.location-suggestion-item:hover .location-suggestion-details {
+  color: #6b7280;
+}
+
 .location-suggestion-item--selected {
   background-color: #F4F5F6;
 }
@@ -158,7 +166,15 @@
 
 .location-suggestion-item svg {
   flex-shrink: 0;
-  color: #6b7280;
+  color: #ffffff !important;
+}
+
+.location-suggestion-item:hover svg {
+  color: #ffffff !important;
+}
+
+.location-suggestion-item--selected svg {
+  color: #ffffff !important;
 }
 
 /* Mobile Responsive - Matching VehicleSearch */
@@ -198,9 +214,28 @@
     border-bottom-color: var(--color-neutrals-5);
   }
 
-  .location-suggestion-item:hover,
+  .location-suggestion-item:hover {
+    background-color: var(--color-neutrals-3);
+  }
+
+  .location-suggestion-item:hover .location-suggestion-name {
+    color: var(--color-neutrals-8);
+  }
+
+  .location-suggestion-item:hover .location-suggestion-details {
+    color: var(--color-neutrals-6);
+  }
+
   .location-suggestion-item--selected {
     background-color: var(--color-neutrals-3);
+  }
+
+  .location-suggestion-item--selected .location-suggestion-name {
+    color: var(--color-neutrals-8);
+  }
+
+  .location-suggestion-item--selected .location-suggestion-details {
+    color: var(--color-neutrals-6);
   }
 
   .location-suggestion-name {
@@ -212,6 +247,14 @@
   }
 
   .location-suggestion-item svg {
-    color: var(--color-neutrals-6);
+    color: #ffffff !important;
+  }
+
+  .location-suggestion-item:hover svg {
+    color: #ffffff !important;
+  }
+
+  .location-suggestion-item--selected svg {
+    color: #ffffff !important;
   }
 }
