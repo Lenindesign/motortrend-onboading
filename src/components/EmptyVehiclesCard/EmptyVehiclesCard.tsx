@@ -5,16 +5,15 @@
  */
 
 import React from 'react';
-import Icon from '../Icon';
-import { Button } from '../../design-system/components';
+import { VehicleSearch } from '../VehicleSearch';
 import './EmptyVehiclesCard.css';
 
 export interface EmptyVehiclesCardProps {
-  onAddVehicle?: () => void;
+  onVehicleSelect?: (vehicle: { name: string; ownership: 'own' | 'want' }) => void;
 }
 
 export const EmptyVehiclesCard: React.FC<EmptyVehiclesCardProps> = ({
-  onAddVehicle
+  onVehicleSelect
 }) => {
   return (
     <div className="empty-vehicles-card">
@@ -25,8 +24,6 @@ export const EmptyVehiclesCard: React.FC<EmptyVehiclesCardProps> = ({
             src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64af5e852a20002f9bc06/more.svg"
             alt="Vehicles"
             className="empty-vehicles-card__icon-img"
-            onClick={onAddVehicle}
-            style={{ cursor: 'pointer' }}
           />
         </div>
         
@@ -40,17 +37,14 @@ export const EmptyVehiclesCard: React.FC<EmptyVehiclesCardProps> = ({
           Start building your collection by saving vehicles you're interested in or own.
         </p>
         
-        {/* Action Button */}
-        <Button
-          color="neutrals3"
-          variant="solid"
-          size="default"
-          onClick={onAddVehicle}
-          className="empty-vehicles-card__button"
-        >
-          <Icon name="add" size={20} />
-          Add Your First Vehicle
-        </Button>
+        {/* Search Input */}
+        {onVehicleSelect && (
+          <VehicleSearch
+            onVehicleSelect={onVehicleSelect}
+            placeholder="Search for a vehicle..."
+            className="empty-vehicles-card__search"
+          />
+        )}
       </div>
     </div>
   );

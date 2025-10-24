@@ -68,13 +68,10 @@
   max-width: 320px;
 }
 
-.empty-vehicles-card__button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-2);
+.empty-vehicles-card__search {
   margin-top: var(--spacing-2);
-  min-width: 200px;
+  width: 100%;
+  max-width: 400px;
 }
 
 /* Mobile Responsive */

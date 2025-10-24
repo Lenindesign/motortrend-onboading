@@ -551,7 +551,7 @@ export const Profile: React.FC<ProfileProps> = ({
                   {/* Show empty state if no vehicles and not searching */}
                   {(localOnboardingData.vehicles || []).length === 0 && !showVehicleSearch && (
                     <div className="profile-vehicles-subsection">
-                      <EmptyVehiclesCard onAddVehicle={handleAddVehicleClick} />
+                      <EmptyVehiclesCard onVehicleSelect={handleVehicleSelect} />
                     </div>
                   )}
                 </div>
