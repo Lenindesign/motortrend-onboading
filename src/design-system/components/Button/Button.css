@@ -64,12 +64,13 @@
 }
 
 .btn--neutrals3.btn--solid {
-  background-color: var(--color-neutrals-7);
-  color: var(--color-neutrals-2);
+  background-color: #353945;
+  color: #FCFCFD;
 }
 
 .btn--neutrals3.btn--solid:hover:not(.btn--disabled) {
   background-color: var(--color-neutrals-6);
+  color: var(--color-neutrals-2);
 }
 
 /* Color Variants - Ghost */

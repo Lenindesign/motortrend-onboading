@@ -124,6 +124,7 @@
 
 .onboarding-card__nav-row {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-2);
@@ -201,46 +202,91 @@
 
   .user-type-selection {
     grid-template-columns: 1fr;
-    gap: var(--spacing-3);
+    gap: 32px;
+    width: 100%;
+    max-width: 343px;
+    margin: 0 auto;
+  }
+
+  .user-type-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    width: 100%;
+    max-width: 343px;
+    height: auto;
+    min-height: 125px;
+    text-align: left;
+  }
+
+  .user-type-image {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .user-type-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
   }
 
   .user-type-img {
-    width: 120px;
-    height: auto;
+    width: 133px;
+    height: 93px;
+    object-fit: cover;
     border-radius: 8px;
+    border: 1px solid #000000;
   }
 
   .user-type-title {
+    font-family: 'Gilroy', sans-serif;
+    font-weight: 700;
     font-size: 18px;
+    line-height: 1.33em;
+    color: var(--color-neutrals-2);
+    margin: 0 0 4px 0;
+  }
+
+  .user-type-option--selected .user-type-title {
+    color: var(--color-neutrals-7);
   }
 
   .user-type-description {
-    font-size: 14px;
+    font-family: 'Geist', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.3em;
+    color: var(--color-neutrals-2);
+    margin: 0;
   }
 
-  .onboarding-card__nav-row {
-    flex-direction: column;
-    gap: var(--spacing-2);
+  .user-type-option--selected .user-type-description {
+    color: var(--color-neutrals-7);
   }
 
-  .onboarding-nav-btn {
-    width: 100%;
-  }
+  /* Keep desktop button layout on mobile */
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
   .user-type-selection {
-    gap: var(--spacing-2);
+    gap: 24px;
+    max-width: 100%;
   }
   
   .user-type-option {
-    padding: var(--spacing-3);
+    padding: 12px;
+    gap: 12px;
+    min-height: 100px;
   }
 
   .user-type-img {
     width: 100px;
-    height: auto;
+    height: 70px;
     border-radius: 8px;
   }
 
@@ -249,7 +295,7 @@
   }
 
   .user-type-description {
-    font-size: 13px;
+    font-size: 11px;
   }
 }
 

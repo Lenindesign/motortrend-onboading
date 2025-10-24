@@ -207,6 +207,7 @@
 
 .onboarding-card__nav-row {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-2);

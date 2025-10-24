@@ -3,26 +3,39 @@
  * Based on Figma Community design
  */
 
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .membership-card {
-  width: 396px;
-  height: 241px;
+  width: 500px;
+  height: 280px;
   background: linear-gradient(209deg, rgba(56, 56, 56, 1) 35%, rgba(0, 0, 0, 1) 100%);
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: 0px 2.54px 12.69px 0px rgba(20, 20, 22, 0.06);
-  padding: 0 20px 20px;
+  padding: 20px 20px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
+  animation: fadeInScale 0.6s ease-out;
 }
 
 .membership-card__content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 42px;
   width: 100%;
-  max-width: 395px;
+  max-width: 460px;
+  height: 209px;
 }
 
 .membership-card__header {
@@ -30,45 +43,24 @@
   align-items: center;
   gap: 14px;
   padding-right: 39px;
-  width: 331px;
-  height: 105px;
+  width: 420px;
+  height: 80px;
 }
 
-.membership-card__avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: #E90C17;
+.membership-card__logo {
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 19px 13px;
+  padding: 0;
   flex-shrink: 0;
 }
 
-.membership-card__avatar-img {
+.membership-card__logo-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-.membership-card__avatar-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #E90C17;
-  border-radius: 50%;
-}
-
-.membership-card__avatar-text {
-  font-family: var(--font-body);
-  font-weight: 700;
-  font-size: 24px;
-  color: #FFFFFF;
-  font-style: italic;
+  object-fit: contain;
 }
 
 .membership-card__title-section {
@@ -81,17 +73,17 @@
 .membership-card__title {
   font-family: 'Poppins', var(--font-body);
   font-weight: 600;
-  font-size: 20px;
+  font-size: 24px;
   line-height: 1.4em;
   color: #FFFFFF;
   margin: 0;
-  width: 216px;
+  width: 240px;
 }
 
 .membership-card__subtitle {
   font-family: 'Geist', var(--font-body);
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.35em;
   color: #FFFFFF;
   margin: 0;
@@ -101,23 +93,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 145px;
+  gap: 0px;
   padding: 0 7px;
-  width: 331px;
+  width: 392px;
 }
 
 .membership-card__left-details {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  flex: 1;
+  width: 240px;
 }
 
 .membership-card__right-details {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 69px;
+  width: 180px;
 }
 
 .membership-card__detail-item {
@@ -139,7 +131,7 @@
 .membership-card__detail-value {
   font-family: 'Geist', var(--font-body);
   font-weight: 500;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.26em;
   color: #FCFCFD;
 }
@@ -171,10 +163,10 @@
     gap: 12px;
   }
   
-  .membership-card__avatar {
-    width: 60px;
-    height: 60px;
-    padding: 15px 10px;
+  .membership-card__logo {
+    width: 180px;
+    height: 180px;
+    padding: 45px 30px;
   }
   
   .membership-card__title {

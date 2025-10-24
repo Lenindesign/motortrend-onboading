@@ -20,7 +20,7 @@
   gap: 48px;
   padding: 48px 48px 48px 48px;
   width: 100%;
-  max-width: 660px;
+  max-width: none;
   background-color: #F4F5F6;
   border: 1px solid #E6E8EC;
   border-radius: var(--border-radius-md);
@@ -441,6 +441,7 @@
 
 .onboarding-card__nav-row {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-2);
@@ -515,6 +516,18 @@
 .onboarding-skip-btn:hover {
   color: var(--color-neutrals-3);
   text-decoration: underline;
+}
+
+/* ========================================
+   Override Profile Grid for Single Column
+   ======================================== */
+
+/* Override the profile-vehicles-grid to be single column for onboarding step 3 */
+.onboarding-step .profile-vehicles-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
 }
 
 /* ========================================

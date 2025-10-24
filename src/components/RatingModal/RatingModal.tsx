@@ -109,7 +109,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
               return (
                 <div key={starNumber} className="rating-modal__star-container">
                   {showTooltip && (
-                    <div className="rating-modal__tooltip">
+                    <div className={`rating-modal__tooltip ${starNumber <= 3 ? 'rating-modal__tooltip--left' : starNumber >= 8 ? 'rating-modal__tooltip--right' : ''}`}>
                       {ratingLabels[starNumber as keyof typeof ratingLabels]}
                     </div>
                   )}

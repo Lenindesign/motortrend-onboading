@@ -205,8 +205,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 aria-label="User menu"
               >
                 <img 
-                  src={userData?.avatar || "https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg"} 
-                  alt="User Avatar" 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
+                  alt="MotorTrend" 
                   className="global-header__user-avatar-img"
                 />
               </button>
@@ -216,8 +216,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   <div className="global-header__user-info">
                     <div className="global-header__user-avatar">
                       <img 
-                        src={userData?.avatar || "https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg"} 
-                        alt={userData?.name || 'User'} 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
+                        alt="MotorTrend" 
                         className="global-header__user-avatar-img"
                       />
                     </div>

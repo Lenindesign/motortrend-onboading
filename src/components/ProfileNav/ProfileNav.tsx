@@ -3,7 +3,7 @@
  * Based on Figma Community design system
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Icon from '../Icon';
 import './ProfileNav.css';
@@ -21,6 +21,17 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
 }) => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
   
   const tabs: { id: ProfileNavTab; label: string; path: string; icon: string }[] = [
     { id: 'my-account', label: 'Profile', path: '/my-account/profile', icon: 'account_circle' },
@@ -40,7 +51,7 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
             className={`profile-nav__btn ${isActive ? 'profile-nav__btn--active' : ''}`}
             onClick={() => onTabChange?.(tab.id)}
           >
-            <Icon name={tab.icon} size={16} />
+            {!isMobile && <Icon name={tab.icon} size={16} />}
             {tab.label}
           </Link>
         );

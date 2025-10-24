@@ -79,10 +79,12 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
                 className="user-type-img"
               />
             </div>
-            <h3 className="user-type-title">Car Buyer</h3>
-            <p className="user-type-description">
-              Shopping for a new or used car
-            </p>
+            <div className="user-type-content">
+              <h3 className="user-type-title">Car Buyer</h3>
+              <p className="user-type-description">
+                Shopping for a new or used car
+              </p>
+            </div>
           </button>
           
           <button
@@ -97,10 +99,12 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
                 className="user-type-img"
               />
             </div>
-            <h3 className="user-type-title">Car Enthusiast</h3>
-            <p className="user-type-description">
-            Love cars, reviews, and auto culture
-            </p>
+            <div className="user-type-content">
+              <h3 className="user-type-title">Car Enthusiast</h3>
+              <p className="user-type-description">
+                Love cars, reviews, and auto culture
+              </p>
+            </div>
           </button>
           
           <button
@@ -115,10 +119,12 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
                 className="user-type-img"
               />
             </div>
-            <h3 className="user-type-title">Both</h3>
-            <p className="user-type-description">
-            Car lover always eyeing the next ride
-            </p>
+            <div className="user-type-content">
+              <h3 className="user-type-title">Both</h3>
+              <p className="user-type-description">
+                Car lover always eyeing the next ride
+              </p>
+            </div>
           </button>
         </div>
 

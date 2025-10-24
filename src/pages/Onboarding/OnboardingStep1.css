@@ -111,6 +111,7 @@
 
 .onboarding-card__nav-row {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-2);
@@ -203,14 +204,7 @@
     font-size: 24px;
   }
 
-  .onboarding-card__nav-row {
-    flex-direction: column;
-    gap: var(--spacing-2);
-  }
-
-  .onboarding-nav-btn {
-    width: 100%;
-  }
+  /* Keep desktop button layout on mobile */
 
   .onboarding-card__skip-section {
     order: -1;

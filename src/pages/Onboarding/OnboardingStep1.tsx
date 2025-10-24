@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField } from '../../design-system/components';
+import LocationAutocomplete from '../../components/LocationAutocomplete';
 // Using SVG illustration from URL
 const step1Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56011a481f700027e1857/group1318348097.svg';
 import './OnboardingStep1.css';
@@ -133,29 +134,14 @@ export const OnboardingStep1: React.FC<OnboardingStep1Props> = () => {
             required
           />
 
-          <div className="location-field-container">
-            <TextField
-              label="Where are you located? (Optional)"
-              type="text"
-              placeholder="Current Location"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              fullWidth
-            />
-            <button
-              type="button"
-              className="location-icon-btn"
-              onClick={handleDetectLocation}
-              disabled={isDetectingLocation}
-              title={isDetectingLocation ? 'Detecting location...' : 'Auto-detect location'}
-            >
-              <Icon 
-                name={isDetectingLocation ? "refresh" : "my_location"} 
-                size={20} 
-                className={isDetectingLocation ? "spinning" : ""}
-              />
-            </button>
-          </div>
+          <LocationAutocomplete
+            value={location}
+            onChange={setLocation}
+            onDetectLocation={handleDetectLocation}
+            isDetectingLocation={isDetectingLocation}
+            placeholder="Current Location"
+            label="Where are you located? (Optional)"
+          />
         </div>
 
         {/* Navigation Buttons */}

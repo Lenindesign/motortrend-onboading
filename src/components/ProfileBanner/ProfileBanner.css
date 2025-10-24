@@ -274,6 +274,13 @@
    Edit Button (now uses global Button component)
    ======================================== */
 
+.profile-banner__edit-button {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 3;
+}
+
 /* ========================================
    Tablet Responsive (iPad)
    ======================================== */
@@ -293,6 +300,11 @@
    ======================================== */
 
 @media (max-width: 768px) {
+  .profile-banner__edit-button {
+    top: 16px;
+    right: 16px;
+  }
+
   .profile-banner__container {
     padding: 32px 20px 24px;
     flex-direction: column;

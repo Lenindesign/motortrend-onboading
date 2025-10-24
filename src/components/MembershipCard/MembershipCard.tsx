@@ -11,34 +11,24 @@ export interface MembershipCardProps {
   memberSince?: string;
   car?: string;
   newsletter?: string;
-  avatar?: string;
 }
 
 export const MembershipCard: React.FC<MembershipCardProps> = ({
   name = 'Lenin Aviles',
   memberSince = '09/27/2025',
   car = '2021 Subaru WRX',
-  newsletter = 'MotorTrend',
-  avatar
+  newsletter = 'MotorTrend'
 }) => {
   return (
     <div className="membership-card">
       <div className="membership-card__content">
         <div className="membership-card__header">
-          <div className="membership-card__avatar">
-            {avatar ? (
-              <img 
-                src={avatar} 
-                alt="User Avatar" 
-                className="membership-card__avatar-img"
-              />
-            ) : (
-              <div className="membership-card__avatar-placeholder">
-                <span className="membership-card__avatar-text">
-                  {name.split(' ').map(n => n[0]).join('')}
-                </span>
-              </div>
-            )}
+          <div className="membership-card__logo">
+            <img 
+              src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
+              alt="MotorTrend Logo" 
+              className="membership-card__logo-img"
+            />
           </div>
           <div className="membership-card__title-section">
             <h2 className="membership-card__title">Membership Card</h2>

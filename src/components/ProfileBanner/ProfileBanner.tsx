@@ -101,6 +101,20 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
         </div>
       )}
       
+      {/* Edit Button - Top Right Corner */}
+      {onEditProfile && (
+        <div className="profile-banner__edit-button">
+          <Button 
+            color="neutrals3" 
+            variant="solid" 
+            size="default"
+            onClick={onEditProfile}
+          >
+            Edit Profile
+          </Button>
+        </div>
+      )}
+
       <div className="profile-banner__container">
         {/* Avatar Section */}
         <div className="profile-banner__avatar">
@@ -138,18 +152,6 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
             )}
           </div>
         </div>
-
-        {/* Edit Button */}
-        {onEditProfile && (
-          <Button 
-            color="neutrals3" 
-            variant="solid" 
-            size="default"
-            onClick={onEditProfile}
-          >
-            Edit Profile
-          </Button>
-        )}
       </div>
     </div>
   );

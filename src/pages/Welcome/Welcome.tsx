@@ -8,9 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 // Using MotorTrend main logo from URL
 const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
-import VehicleCard from '../../components/VehicleCard';
+import { MembershipCard } from '../../components/MembershipCard';
 import RatingModal from '../../components/RatingModal';
-import { vehicleImageFor } from '../../utils/vehicleImages';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
 import './Welcome.css';
 
@@ -95,17 +94,9 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const { name = 'Guest', location, vehicles = [], newsletters = [], userType } = onboardingData;
+  const { name = 'Guest', vehicles = [], userType } = onboardingData;
 
   // Rating handlers
-  const handleRateVehicle = (vehicleName: string) => {
-    const vehicle = vehicles.find(v => v.name === vehicleName);
-    setRatingModal({
-      isOpen: true,
-      vehicleName,
-      currentRating: vehicle?.rating || 0
-    });
-  };
 
   const handleRatingSubmit = (rating: number) => {
     const updatedVehicles = vehicles.map(vehicle => 
@@ -147,66 +138,14 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             </p>
           </div>
 
-          {/* Profile Summary */}
-          <div className="profile-summary">
-            <div className="profile-summary__container">
-              <div className="profile-summary__header">
-                <h2 className="profile-summary__title">Your Profile Summary</h2>
-              </div>
-
-              <div className="profile-summary__details">
-                <div className="profile-summary__left">
-                  <p className="profile-detail">
-                    <strong>Name:</strong> {name}
-                  </p>
-                  <p className="profile-detail">
-                    <strong>Location:</strong> {location || 'Not specified'}
-                  </p>
-                  <p className="profile-detail">
-                    <strong>Interests:</strong> {userType === 'buyer' ? 'Buying a car' : userType === 'enthusiast' ? 'Enthusiast' : 'Not specified'}
-                  </p>
-                </div>
-
-                <div className="profile-summary__right">
-                  <p className="profile-detail">
-                    <strong>Current Vehicles:</strong> {vehicles.length}
-                  </p>
-                  <p className="profile-detail">
-                    <strong>Newsletter:</strong> {newsletters.length > 0 ? 'Subscribed' : 'Not subscribed'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="profile-divider" />
-
-              {/* Vehicle Section */}
-              {vehicles.length > 0 && (
-                <div className="vehicle-section">
-                  <p className="vehicle-section__title">Your Vehicles:</p>
-                  
-                  <div className="profile-vehicles-grid">
-                    {vehicles.map((vehicle, index) => (
-                      <VehicleCard
-                        key={index}
-                        image={vehicleImageFor(vehicle.name)}
-                        name={vehicle.name}
-                        type="Vehicle"
-                        rating1={9.1}
-                        rating2={8.5}
-                        hasMultipleRatings={true}
-                        isBookmarked={true}
-                        onBookmark={() => console.log('Remove vehicle')}
-                        ownership={vehicle.ownership}
-                        onOwnershipChange={() => navigate('/onboarding/step3')}
-                        onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
-                        onRate={() => handleRateVehicle(vehicle.name)}
-                        userRating={vehicle.rating}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+          {/* Membership Card Section */}
+          <div className="membership-section">
+            <MembershipCard 
+              name={onboardingData?.name || 'User'}
+              memberSince={onboardingData?.joinDate || getCurrentJoinDate()}
+              car={vehicles.length > 0 ? vehicles[0].name : 'No vehicle selected'}
+              newsletter="MotorTrend"
+            />
           </div>
         </div>
 
@@ -226,7 +165,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             className="welcome-btn welcome-btn--secondary"
             onClick={() => navigate('/onboarding/step1')}
           >
-            Customize Again
+            Start Over
           </button>
         </div>
       </div>

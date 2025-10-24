@@ -10,7 +10,6 @@ import './Membership.css';
 export const Membership: React.FC = () => {
   const [userData, setUserData] = useState<{
     name: string;
-    avatar?: string;
     memberSince?: string;
     car?: string;
     newsletter?: string;
@@ -30,7 +29,6 @@ export const Membership: React.FC = () => {
         setUserData(prev => ({
           ...prev,
           name: data.name || prev.name,
-          avatar: data.avatar,
           car: data.vehicle || prev.car,
           memberSince: data.memberSince || prev.memberSince,
           newsletter: data.newsletter || prev.newsletter
@@ -54,7 +52,6 @@ export const Membership: React.FC = () => {
         <div className="membership-page__card-container">
           <MembershipCard
             name={userData.name}
-            avatar={userData.avatar}
             memberSince={userData.memberSince}
             car={userData.car}
             newsletter={userData.newsletter}

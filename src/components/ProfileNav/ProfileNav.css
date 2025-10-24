@@ -67,16 +67,32 @@
 @media (max-width: 768px) {
   .profile-nav {
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 16px 8px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
   }
 
   .profile-nav__btn {
     width: auto;
-    flex: 1 1 calc(50% - 8px);
-    min-width: 140px;
+    flex: 0 0 auto;
+    min-width: max-content;
     padding: 10px 16px;
     font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* Hide icons on mobile */
+  .profile-nav__btn svg {
+    display: none;
+  }
+
+  /* Remove gap since icons are hidden */
+  .profile-nav__btn {
+    gap: 0;
   }
 }
 

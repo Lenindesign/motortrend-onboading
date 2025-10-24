@@ -189,6 +189,17 @@
   z-index: 1001;
 }
 
+.rating-modal__tooltip--left {
+  left: 0;
+  transform: translateX(0);
+}
+
+.rating-modal__tooltip--right {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}
+
 .rating-modal__tooltip::after {
   content: '';
   position: absolute;
@@ -197,6 +208,17 @@
   transform: translateX(-50%);
   border: 8px solid transparent;
   border-top-color: var(--color-white);
+}
+
+.rating-modal__tooltip--left::after {
+  left: 20px;
+  transform: translateX(0);
+}
+
+.rating-modal__tooltip--right::after {
+  left: auto;
+  right: 20px;
+  transform: translateX(0);
 }
 
 .rating-modal__footer {
