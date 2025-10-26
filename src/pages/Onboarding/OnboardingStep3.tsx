@@ -221,7 +221,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                 onClick={handleSkip}
                 type="button"
               >
-                Skip this step
+                <span className="skip-text-desktop">Skip this step</span>
+                <span className="skip-text-mobile">Skip</span>
               </button>
             </div>
 

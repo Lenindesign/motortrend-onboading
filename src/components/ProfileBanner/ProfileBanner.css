@@ -52,7 +52,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: blur(0.5px) brightness(0.6);
+  filter: blur(0.5px) brightness(1);
   opacity: 0;
   transform: translateY(var(--parallax-y, 0)) translateZ(0);
   will-change: transform, opacity;
@@ -61,7 +61,7 @@
 
 /* Active banner image */
 .profile-banner__banner--animated .profile-banner__banner-img--active {
-  opacity: 0.4;
+  opacity: 1;
 }
 
 /* Static banner image (user selected) */
@@ -73,8 +73,8 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: blur(0.5px) brightness(0.6);
-  opacity: 0.4;
+  filter: blur(0.5px) brightness(1);
+  opacity: 1;
   transform: translateY(var(--parallax-y, 0)) translateZ(0);
   will-change: transform;
 }
@@ -89,8 +89,8 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: blur(0.5px) brightness(0.6);
-  opacity: 0.4;
+  filter: blur(0.5px) brightness(1);
+  opacity: 1;
   transform: translateY(var(--parallax-y, 0)) translateZ(0);
   will-change: transform;
 }
@@ -104,10 +104,10 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.4) 50%,
-    rgba(0, 0, 0, 0.3) 100%
+    to right,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 60%,
+    rgba(0, 0, 0, 0) 100%
   );
   z-index: 1;
 }
@@ -386,10 +386,10 @@
 
   .profile-banner::after {
     background: linear-gradient(
-      135deg,
-      rgba(20, 20, 22, 0.6) 0%,
-      rgba(35, 38, 47, 0.7) 50%,
-      rgba(20, 20, 22, 0.6) 100%
+      to right,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.7) 60%,
+      rgba(0, 0, 0, 0) 100%
     );
   }
 

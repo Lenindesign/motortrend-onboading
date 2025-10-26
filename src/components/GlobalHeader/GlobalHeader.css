@@ -77,10 +77,11 @@
   padding: 8px;
   background-color: var(--color-neutrals-3);
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-sm);
   color: var(--color-neutrals-8);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .global-header__search-btn:hover {

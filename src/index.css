@@ -21,3 +21,22 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* Skip button text responsive behavior */
+.skip-text-desktop {
+  display: inline;
+}
+
+.skip-text-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .skip-text-desktop {
+    display: none;
+  }
+  
+  .skip-text-mobile {
+    display: inline;
+  }
+}

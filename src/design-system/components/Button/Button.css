@@ -1,7 +1,7 @@
 /**
- * Button Styles
+ * Standardized Button Styles
+ * Unified CTA system across the entire app
  * Based on Figma Community design system
- * Unified with Toast modal button styling
  */
 
 .btn {
@@ -16,19 +16,22 @@
   font-size: 14px;
   line-height: 1em;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all 0.2s ease;
   text-decoration: none;
   white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Sizes - Standardized to match Toast modal buttons */
+/* Sizes - Standardized CTA system */
 .btn--default {
-  padding: var(--spacing-1) var(--spacing-2);
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: 600;
   font-family: var(--font-body);
   border-radius: var(--border-radius-sm);
+  height: 36px;
 }
 
 .btn--large {
@@ -37,6 +40,16 @@
   font-weight: 600;
   font-family: var(--font-body);
   border-radius: var(--border-radius-sm);
+  height: 44px;
+}
+
+.btn--small {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border-radius: var(--border-radius-sm);
+  height: 28px;
 }
 
 /* Full Width */
@@ -44,7 +57,64 @@
   width: 100%;
 }
 
-/* Color Variants - Solid (matching Toast modal buttons) */
+/* Primary CTA - Main action buttons */
+.btn--primary.btn--solid {
+  background-color: var(--color-primary-1);
+  color: var(--color-white);
+  box-shadow: 0 2px 4px rgba(233, 12, 23, 0.2);
+}
+
+.btn--primary.btn--solid:hover:not(.btn--disabled) {
+  background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(233, 12, 23, 0.3);
+}
+
+/* Secondary CTA - Secondary actions */
+.btn--secondary.btn--solid {
+  background-color: #353945;
+  color: var(--color-white);
+}
+
+.btn--secondary.btn--solid:hover:not(.btn--disabled) {
+  background-color: #2a2d35;
+  transform: translateY(-1px);
+}
+
+/* Neutral CTA - Subtle actions */
+.btn--neutral.btn--solid {
+  background-color: var(--color-neutrals-5);
+  color: var(--color-white);
+}
+
+.btn--neutral.btn--solid:hover:not(.btn--disabled) {
+  background-color: var(--color-neutrals-4);
+  transform: translateY(-1px);
+}
+
+/* Success CTA - Positive actions */
+.btn--success.btn--solid {
+  background-color: #34A853;
+  color: var(--color-white);
+}
+
+.btn--success.btn--solid:hover:not(.btn--disabled) {
+  background-color: #2d8f47;
+  transform: translateY(-1px);
+}
+
+/* Warning CTA - Caution actions */
+.btn--warning.btn--solid {
+  background-color: #F59E0B;
+  color: var(--color-white);
+}
+
+.btn--warning.btn--solid:hover:not(.btn--disabled) {
+  background-color: #D97706;
+  transform: translateY(-1px);
+}
+
+/* Legacy color support */
 .btn--blue.btn--solid {
   background-color: #353945;
   color: var(--color-white);
@@ -52,6 +122,7 @@
 
 .btn--blue.btn--solid:hover:not(.btn--disabled) {
   background-color: #2a2d35;
+  transform: translateY(-1px);
 }
 
 .btn--red.btn--solid {
@@ -61,6 +132,7 @@
 
 .btn--red.btn--solid:hover:not(.btn--disabled) {
   background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
 }
 
 .btn--neutrals3.btn--solid {
@@ -71,6 +143,7 @@
 .btn--neutrals3.btn--solid:hover:not(.btn--disabled) {
   background-color: var(--color-neutrals-6);
   color: var(--color-neutrals-2);
+  transform: translateY(-1px);
 }
 
 /* Color Variants - Ghost */

@@ -144,7 +144,8 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
               onClick={() => navigate('/onboarding/step3')}
               type="button"
             >
-              Skip this step
+              <span className="skip-text-desktop">Skip this step</span>
+              <span className="skip-text-mobile">Skip</span>
             </button>
 
             <button

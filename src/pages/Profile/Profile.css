@@ -6,7 +6,7 @@
 .profile-page {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: row;
   align-self: stretch;
-  gap: 8px;
+  gap: 12px;
   padding: 0 24px;
 }
 
@@ -134,17 +134,19 @@
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  background-color: var(--color-neutrals-1);
+  background-color: var(--color-primary-1);
   color: var(--color-white);
   border: none;
-  border-radius: 8px;
-  font-family: 'Poppins', var(--font-heading);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 16px;
   line-height: 1em;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(233, 12, 23, 0.2);
+  height: 44px;
 }
 
 .profile-section__add-btn:hover {

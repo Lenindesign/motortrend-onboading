@@ -6,8 +6,8 @@
 import React from 'react';
 import './Button.css';
 
-export type ButtonColor = 'blue' | 'red' | 'neutrals3' | 'toast-cancel' | 'toast-confirm';
-export type ButtonSize = 'default' | 'large';
+export type ButtonColor = 'primary' | 'secondary' | 'neutral' | 'success' | 'warning' | 'blue' | 'red' | 'neutrals3' | 'toast-cancel' | 'toast-confirm';
+export type ButtonSize = 'small' | 'default' | 'large';
 export type ButtonVariant = 'solid' | 'ghost' | 'outline';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
