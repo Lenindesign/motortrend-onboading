@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProfileCompletionCard.css';
 import Icon from '../Icon';
 import { VehicleSearch } from '../VehicleSearch';
 import VehicleCard from '../VehicleCard';
-import { vehicleImageFor } from '../../utils/vehicleImages';
+import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import Button from '../../design-system/components/Button';
 import RatingModal from '../RatingModal';
+import { useRating } from '../../contexts/RatingContext';
 
 export interface OnboardingStatus {
   step1: boolean;
@@ -40,6 +42,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   onUpdateStep4,
   onDismiss 
 }) => {
+  const navigate = useNavigate();
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
   const [localOnboardingData, setLocalOnboardingData] = useState<OnboardingData>({});
   
@@ -70,6 +73,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     vehicleName: '',
     currentRating: 0
   });
+  const { getUserRating, setUserRating } = useRating();
   
   // Vehicle search is always visible in Step 3 now
 
@@ -175,15 +179,16 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
 
   // Rating handlers
   const handleRateVehicle = (vehicleName: string) => {
-    const vehicle = step3Vehicles.find(v => v.name === vehicleName);
+    const globalRating = getUserRating(vehicleName);
     setRatingModal({
       isOpen: true,
       vehicleName,
-      currentRating: vehicle?.rating || 0
+      currentRating: globalRating
     });
   };
 
   const handleRatingSubmit = (rating: number) => {
+    setUserRating(ratingModal.vehicleName, rating);
     const updatedVehicles = step3Vehicles.map(v => 
       v.name === ratingModal.vehicleName ? { ...v, rating } : v
     );
@@ -435,9 +440,12 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                               );
                               setStep3Vehicles(updatedVehicles);
                             }}
-                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onViewDetails={() => {
+                              const { year, make, model } = parseVehicleName(vehicle.name);
+                              navigate(`/vehicles/${year}/${make}/${model}`);
+                            }}
                             onRate={() => handleRateVehicle(vehicle.name)}
-                            userRating={vehicle.rating}
+                            userRating={getUserRating(vehicle.name)}
                           />
                         ))}
                       </div>

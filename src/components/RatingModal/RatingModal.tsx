@@ -3,7 +3,7 @@
  * Modal overlay for rating vehicles with 1-10 star selection
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RatingModal.css';
 import Icon from '../Icon';
 
@@ -13,6 +13,7 @@ export interface RatingModalProps {
   onRate: (rating: number) => void;
   vehicleName: string;
   currentRating?: number;
+  onRateAndReview?: (rating: number) => void;
 }
 
 export const RatingModal: React.FC<RatingModalProps> = ({
@@ -20,10 +21,18 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   onClose,
   onRate,
   vehicleName,
-  currentRating = 0
+  currentRating = 0,
+  onRateAndReview
 }) => {
   const [selectedRating, setSelectedRating] = useState(currentRating);
   const [hoveredRating, setHoveredRating] = useState(0);
+
+  // Sync selectedRating with currentRating when modal opens or currentRating changes
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedRating(currentRating);
+    }
+  }, [isOpen, currentRating]);
 
   const ratingLabels = {
     1: "Awful – Never again",
@@ -53,6 +62,13 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   const handleSubmit = () => {
     onRate(selectedRating);
     onClose();
+  };
+
+  const handleRateAndReview = () => {
+    if (onRateAndReview) {
+      onRateAndReview(selectedRating);
+      onClose();
+    }
   };
 
   const handleCancel = () => {
@@ -140,6 +156,15 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           >
             RATE
           </button>
+          {onRateAndReview && (
+            <button 
+              className="rating-modal__btn rating-modal__btn--rate-and-review"
+              onClick={handleRateAndReview}
+              disabled={selectedRating === 0}
+            >
+              RATE AND REVIEW
+            </button>
+          )}
         </div>
       </div>
     </div>

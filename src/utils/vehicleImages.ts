@@ -47,4 +47,45 @@ export const vehicleImageFor = (vehicleName: string): string => {
 
 export default vehicleImageFor;
 
+/**
+ * Parse vehicle name into year, make, and model for URL routing
+ * Example: "2025 BMW 3-Series" -> { year: "2025", make: "BMW", model: "3-Series" }
+ */
+export const parseVehicleName = (vehicleName: string): { year: string; make: string; model: string } => {
+  const parts = vehicleName.trim().split(/\s+/);
+  
+  // Extract year (first 4-digit number)
+  let year = '2025'; // default
+  let make = '';
+  let model = '';
+  
+  const yearIndex = parts.findIndex(part => /^\d{4}$/.test(part));
+  
+  if (yearIndex !== -1) {
+    year = parts[yearIndex];
+    // Everything after year is make and model
+    const remaining = parts.slice(yearIndex + 1);
+    if (remaining.length > 0) {
+      make = remaining[0];
+      model = remaining.slice(1).join('-');
+    }
+  } else {
+    // No year found, assume first part is make
+    if (parts.length > 0) {
+      make = parts[0];
+      model = parts.slice(1).join('-');
+    }
+  }
+  
+  // Defaults if parsing fails
+  if (!make) make = 'BMW';
+  if (!model) model = '3-Series';
+  
+  return {
+    year: encodeURIComponent(year),
+    make: encodeURIComponent(make),
+    model: encodeURIComponent(model)
+  };
+};
+
 

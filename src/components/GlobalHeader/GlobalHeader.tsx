@@ -17,24 +17,73 @@ export interface GlobalHeaderProps {
 }
 
 const navigationItems = [
-  { label: 'News', href: '#' },
-  { label: 'Reviews', href: '#' },
-  { label: "Buyer's Guide", href: '#' },
-  { label: 'Events', href: '#' },
-  { label: 'Magazines', href: '#' },
-  { label: 'The Future', href: '#' },
-  { label: 'Videos', href: '#' },
+  { 
+    label: 'Buy / Research Cars', 
+    href: '#',
+    subItems: [
+      { label: 'New Cars', href: '#' },
+      { label: 'Used Cars', href: '#' },
+      { label: 'Car Reviews', href: '#' },
+      { label: 'Rankings & Awards', href: '#' },
+      { label: 'Compare Vehicles', href: '#' },
+      { label: 'EV Hub', href: '#' }
+    ]
+  },
+  { 
+    label: 'News & Reviews', 
+    href: '#',
+    subItems: [
+      { label: 'Latest News', href: '#' },
+      { label: 'Expert Reviews', href: '#' },
+      { label: 'First Drives', href: '#' },
+      { label: 'Long-Term Tests', href: '#' },
+      { label: 'Industry Trends', href: '#' }
+    ]
+  },
+  { 
+    label: 'Videos', 
+    href: '#',
+    subItems: [
+      { label: 'Latest Videos', href: '#' },
+      { label: 'Editorial Features', href: '#' },
+      { label: 'Car Walkarounds & Reviews', href: '#' },
+      { label: 'How-To & Explainers', href: '#' },
+      { label: 'Motorsports Highlights', href: '#' }
+    ]
+  },
+  { 
+    label: 'Features & Gear', 
+    href: '#',
+    subItems: [
+      { label: 'Feature Stories', href: '#' },
+      { label: 'Gear & Accessories', href: '#' },
+      { label: 'Car Culture', href: '#' },
+      { label: 'Events', href: '#' }
+    ]
+  },
+  { 
+    label: 'Community', 
+    href: '#',
+    subItems: [
+      { label: 'Forums', href: '#' },
+      { label: 'Contests', href: '#' },
+      { label: 'Car Clubs', href: '#' },
+      { label: 'Events Calendar', href: '#' }
+    ]
+  }
 ];
 
 export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [userData, setUserData] = useState<{
     name: string;
     avatar?: string;
   } | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const navMenuRef = useRef<HTMLDivElement>(null);
   
   // Check if user is authenticated (you can implement your own logic here)
   const isAuthenticated = location.pathname !== '/signin';
@@ -77,10 +126,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         if (onboardingData) {
           const data = JSON.parse(onboardingData);
           console.log('GlobalHeader: Updating user data from event:', data);
-          setUserData(prev => ({
-            name: data.name || prev?.name || 'User',
-            avatar: data.avatar
-          }));
+          setUserData(prev => {
+            const newData = {
+              name: data.name || prev?.name || 'User',
+              avatar: data.avatar
+            };
+            console.log('GlobalHeader: Setting user data to:', newData);
+            return newData;
+          });
         }
       } catch (e) {
         console.error('Error updating user data:', e);
@@ -96,15 +149,22 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         try {
           const data = JSON.parse(e.newValue);
           console.log('GlobalHeader: Updating user data from storage event:', data);
-          setUserData(prev => ({
-            name: data.name || prev?.name || 'User',
-            avatar: data.avatar
-          }));
+          setUserData(prev => {
+            const newData = {
+              name: data.name || prev?.name || 'User',
+              avatar: data.avatar
+            };
+            console.log('GlobalHeader: Setting user data from storage to:', newData);
+            return newData;
+          });
         } catch (error) {
           console.error('Error parsing storage data:', error);
         }
       }
     });
+
+    // Also check for updates when the window regains focus
+    window.addEventListener('focus', handleUpdate);
     
     // Also add a periodic check to ensure data stays in sync
     const intervalId = setInterval(() => {
@@ -113,8 +173,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         if (onboardingData) {
           const data = JSON.parse(onboardingData);
           setUserData(prev => {
-            if (prev?.name !== data.name) {
-              console.log('GlobalHeader: Periodic check - name changed from', prev?.name, 'to', data.name);
+            if (prev?.name !== data.name || prev?.avatar !== data.avatar) {
+              console.log('GlobalHeader: Periodic check - data changed from', prev, 'to', { name: data.name, avatar: data.avatar });
               return {
                 name: data.name || 'User',
                 avatar: data.avatar
@@ -126,34 +186,46 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       } catch (error) {
         console.error('Error in periodic check:', error);
       }
-    }, 1000); // Check every second
+    }, 500); // Check every 500ms for more responsive updates
 
     return () => {
       window.removeEventListener('onboardingDataUpdated', handleUpdate);
       window.removeEventListener('storage', handleUpdate);
+      window.removeEventListener('focus', handleUpdate);
       clearInterval(intervalId);
     };
   }, []);
 
-  // Handle click outside to close dropdown
+  // Handle click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserDropdown(false);
       }
+      if (navMenuRef.current && !navMenuRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null);
+      }
     };
 
-    if (showUserDropdown) {
+    if (showUserDropdown || activeDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showUserDropdown]);
+  }, [showUserDropdown, activeDropdown]);
 
   const handleUserMenuClick = () => {
     setShowUserDropdown(!showUserDropdown);
+  };
+
+  const handleNavHover = (label: string) => {
+    setActiveDropdown(label);
+  };
+
+  const handleNavLeave = () => {
+    setActiveDropdown(null);
   };
 
   const handleSignOut = () => {
@@ -176,15 +248,35 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               className="global-header__logo"
             />
           </Link>
-          <nav className="global-header__nav">
+          <nav className="global-header__nav" ref={navMenuRef}>
             {navigationItems.map((item) => (
-              <a 
+              <div 
                 key={item.label} 
-                href={item.href} 
-                className="global-header__nav-link"
+                className="global-header__nav-item"
+                onMouseEnter={() => handleNavHover(item.label)}
+                onMouseLeave={handleNavLeave}
               >
-                {item.label}
-              </a>
+                <a 
+                  href={item.href} 
+                  className="global-header__nav-link"
+                >
+                  {item.label}
+                  <Icon name="keyboard_arrow_down" size={16} />
+                </a>
+                {activeDropdown === item.label && item.subItems && (
+                  <div className="global-header__dropdown">
+                    {item.subItems.map((subItem) => (
+                      <a 
+                        key={subItem.label}
+                        href={subItem.href} 
+                        className="global-header__dropdown-item"
+                      >
+                        {subItem.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
         </div>
@@ -204,22 +296,40 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 onClick={handleUserMenuClick}
                 aria-label="User menu"
               >
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
-                  alt="MotorTrend" 
-                  className="global-header__user-avatar-img"
-                />
+                {userData?.avatar ? (
+                  <img 
+                    key={userData.avatar} // Force re-render when avatar changes
+                    src={userData.avatar} 
+                    alt={userData.name || 'User'} 
+                    className="global-header__user-avatar-img"
+                  />
+                ) : (
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
+                    alt="MotorTrend" 
+                    className="global-header__user-avatar-img"
+                  />
+                )}
               </button>
               
               {showUserDropdown && (
                 <div className="global-header__user-dropdown">
                   <div className="global-header__user-info">
                     <div className="global-header__user-avatar">
-                      <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
-                        alt="MotorTrend" 
-                        className="global-header__user-avatar-img"
-                      />
+                      {userData?.avatar ? (
+                        <img 
+                          key={userData.avatar} // Force re-render when avatar changes
+                          src={userData.avatar} 
+                          alt={userData.name || 'User'} 
+                          className="global-header__user-avatar-img"
+                        />
+                      ) : (
+                        <img 
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
+                          alt="MotorTrend" 
+                          className="global-header__user-avatar-img"
+                        />
+                      )}
                     </div>
                     <div className="global-header__user-details">
                       <div className="global-header__user-name">{userData?.name || 'User'}</div>

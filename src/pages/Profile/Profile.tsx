@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import ProfileBanner from '../../components/ProfileBanner';
 import ProfileNav from '../../components/ProfileNav';
 import type { ProfileNavTab } from '../../components/ProfileNav';
@@ -22,10 +22,11 @@ import Toast from '../../components/Toast';
 import Icon from '../../components/Icon';
 import { AvatarBannerModal } from '../../components/AvatarBannerModal';
 import { VehicleSearch } from '../../components/VehicleSearch';
-import { vehicleImageFor } from '../../utils/vehicleImages';
+import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
 import Button from '../../design-system/components/Button';
 import RatingModal from '../../components/RatingModal';
+import { useRating } from '../../contexts/RatingContext';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -42,6 +43,7 @@ export const Profile: React.FC<ProfileProps> = ({
 }) => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<ProfileNavTab>('my-account');
   
   // Set initial tab based on URL path or parameter
@@ -193,6 +195,7 @@ export const Profile: React.FC<ProfileProps> = ({
     vehicleName: '',
     currentRating: 0
   });
+  const { getUserRating, setUserRating } = useRating();
   
   // Vehicle search handlers
   const handleAddVehicleClick = () => {
@@ -235,15 +238,16 @@ export const Profile: React.FC<ProfileProps> = ({
 
   // Rating handlers
   const handleRateVehicle = (vehicleName: string) => {
-    const vehicle = (localOnboardingData.vehicles || []).find(v => v.name === vehicleName);
+    const globalRating = getUserRating(vehicleName);
     setRatingModal({
       isOpen: true,
       vehicleName,
-      currentRating: vehicle?.rating || 0
+      currentRating: globalRating
     });
   };
 
   const handleRatingSubmit = (rating: number) => {
+    setUserRating(ratingModal.vehicleName, rating);
     const vehicles = localOnboardingData.vehicles || [];
     const updatedVehicles = vehicles.map(v => 
       v.name === ratingModal.vehicleName ? { ...v, rating } : v
@@ -507,9 +511,12 @@ export const Profile: React.FC<ProfileProps> = ({
                             onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
                             ownership={vehicle.ownership}
                             onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
-                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onViewDetails={() => {
+                              const { year, make, model } = parseVehicleName(vehicle.name);
+                              navigate(`/vehicles/${year}/${make}/${model}`);
+                            }}
                             onRate={() => handleRateVehicle(vehicle.name)}
-                            userRating={vehicle.rating}
+                            userRating={getUserRating(vehicle.name)}
                           />
                         ))}
                       </div>
@@ -539,9 +546,12 @@ export const Profile: React.FC<ProfileProps> = ({
                             onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
                             ownership={vehicle.ownership}
                             onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
-                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onViewDetails={() => {
+                              const { year, make, model } = parseVehicleName(vehicle.name);
+                              navigate(`/vehicles/${year}/${make}/${model}`);
+                            }}
                             onRate={() => handleRateVehicle(vehicle.name)}
-                            userRating={vehicle.rating}
+                            userRating={getUserRating(vehicle.name)}
                           />
                         ))}
                       </div>

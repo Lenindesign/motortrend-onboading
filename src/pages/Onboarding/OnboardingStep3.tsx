@@ -9,9 +9,10 @@ const step3Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a
 import './OnboardingStep3.css';
 import Icon from '../../components/Icon';
 import VehicleCard from '../../components/VehicleCard';
-import { vehicleImageFor } from '../../utils/vehicleImages';
+import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import RatingModal from '../../components/RatingModal';
+import { useRating } from '../../contexts/RatingContext';
 
 // Vehicle list handled by VehicleSearch
 
@@ -35,6 +36,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
     vehicleName: '',
     currentRating: 0
   });
+  const { getUserRating, setUserRating } = useRating();
   const inputRef = useRef<HTMLInputElement>(null);
 
   // VehicleSearch handles filtering and dropdown behavior
@@ -69,15 +71,16 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleRateVehicle = (vehicleName: string) => {
-    const vehicle = selectedCars.find(car => car.name === vehicleName);
+    const globalRating = getUserRating(vehicleName);
     setRatingModal({
       isOpen: true,
       vehicleName,
-      currentRating: vehicle?.rating || 0
+      currentRating: globalRating
     });
   };
 
   const handleRatingSubmit = (rating: number) => {
+    setUserRating(ratingModal.vehicleName, rating);
     setSelectedCars(selectedCars.map(car => 
       car.name === ratingModal.vehicleName ? { ...car, rating } : car
     ));
@@ -163,9 +166,12 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     onBookmark={() => handleRemoveCar(car.name)}
                     ownership={car.ownership}
                     onOwnershipChange={(value) => handleOwnershipChange(car.name, value)}
-                    onViewDetails={() => console.log('View vehicle details:', car.name)}
+                    onViewDetails={() => {
+                      const { year, make, model } = parseVehicleName(car.name);
+                      navigate(`/vehicles/${year}/${make}/${model}`);
+                    }}
                     onRate={() => handleRateVehicle(car.name)}
-                    userRating={car.rating}
+                    userRating={getUserRating(car.name)}
                   />
                 ))}
               </div>

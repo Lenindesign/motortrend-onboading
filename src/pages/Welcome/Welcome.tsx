@@ -11,6 +11,7 @@ const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfec
 import { MembershipCard } from '../../components/MembershipCard';
 import RatingModal from '../../components/RatingModal';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
+import { useRating } from '../../contexts/RatingContext';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -43,6 +44,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     vehicleName: '',
     currentRating: 0
   });
+  const { setUserRating } = useRating();
 
   // Load onboarding data from localStorage
   useEffect(() => {
@@ -99,6 +101,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
   // Rating handlers
 
   const handleRatingSubmit = (rating: number) => {
+    setUserRating(ratingModal.vehicleName, rating);
     const updatedVehicles = vehicles.map(vehicle => 
       vehicle.name === ratingModal.vehicleName 
         ? { ...vehicle, rating }
