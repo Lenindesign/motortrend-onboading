@@ -35,7 +35,7 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
   
   const tabs: { id: ProfileNavTab; label: string; path: string; icon: string }[] = [
     { id: 'my-account', label: 'Profile', path: '/my-account/profile', icon: 'account_circle' },
-    { id: 'saved-items', label: 'Saved Items', path: '/my-account/saved-items', icon: 'bookmark_border' },
+    { id: 'saved-items', label: 'Saved', path: '/my-account/saved-items', icon: 'bookmark_border' },
     { id: 'subscriptions', label: 'Subscriptions', path: '/my-account/subscriptions', icon: 'newspaper' },
     { id: 'settings', label: 'Settings', path: '/my-account/settings', icon: 'settings' },
   ];

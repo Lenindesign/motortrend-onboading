@@ -1,0 +1,189 @@
+/**
+ * Staff Rating Tooltip Styles
+ * Based on RatingDistributionTooltip design system
+ */
+
+.staff-rating-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 4px;
+  background-color: #1a1a1a;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  min-width: 280px;
+  z-index: 99999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.staff-rating-tooltip.staff-rating-tooltip--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.staff-rating-tooltip--portal {
+  position: fixed !important;
+}
+
+.staff-rating-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #1a1a1a;
+}
+
+.staff-rating-tooltip::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #333333;
+  z-index: -1;
+}
+
+.staff-rating-tooltip__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #444444;
+}
+
+.staff-rating-tooltip__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.staff-rating-tooltip__total {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.staff-rating-tooltip__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.staff-rating-tooltip__bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.staff-rating-tooltip__rating-label {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  color: #cccccc;
+  min-width: 120px;
+  text-align: left;
+}
+
+.staff-rating-tooltip__bar-container {
+  flex: 1;
+  height: 8px;
+  background-color: #282a30;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.staff-rating-tooltip__bar-fill {
+  height: 100%;
+  background-color: #FFB74D;
+  border-radius: 4px;
+  transition: width var(--transition-fast);
+}
+
+.staff-rating-tooltip__score {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  min-width: 28px;
+  text-align: right;
+}
+
+.staff-rating-tooltip__footer {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #444444;
+  text-align: center;
+}
+
+.staff-rating-tooltip__link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFB74D;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.staff-rating-tooltip__link:hover {
+  color: #FFB74D;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .staff-rating-tooltip {
+    min-width: 260px;
+    padding: 12px;
+  }
+  
+  .staff-rating-tooltip__title {
+    font-size: 14px;
+  }
+  
+  .staff-rating-tooltip__total {
+    font-size: 13px;
+  }
+  
+  .staff-rating-tooltip__bar-row {
+    gap: 6px;
+  }
+  
+  .staff-rating-tooltip__rating-label {
+    font-size: 12px;
+    min-width: 100px;
+  }
+  
+  .staff-rating-tooltip__score {
+    font-size: 12px;
+    min-width: 24px;
+  }
+  
+  .staff-rating-tooltip__footer {
+    margin-top: 10px;
+    padding-top: 6px;
+  }
+  
+  .staff-rating-tooltip__link {
+    font-size: 11px;
+  }
+}
+

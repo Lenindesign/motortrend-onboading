@@ -29,14 +29,31 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isVisible && triggerRef?.current) {
-      const triggerRect = triggerRef.current.getBoundingClientRect();
-      
-      setPosition({
-        top: triggerRect.bottom + window.scrollY + 4,
-        left: triggerRect.left + triggerRect.width / 2
-      });
-    }
+    if (!isVisible || !triggerRef?.current) return;
+
+    const updatePosition = () => {
+      if (triggerRef?.current) {
+        const triggerRect = triggerRef.current.getBoundingClientRect();
+        
+        // Use getBoundingClientRect() for fixed positioning (viewport coordinates)
+        setPosition({
+          top: triggerRect.bottom + 4,
+          left: triggerRect.left + triggerRect.width / 2
+        });
+      }
+    };
+
+    // Initial position calculation
+    updatePosition();
+
+    // Update position on scroll and resize
+    window.addEventListener('scroll', updatePosition, { passive: true });
+    window.addEventListener('resize', updatePosition);
+
+    return () => {
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
+    };
   }, [isVisible, triggerRef]);
 
   console.log('Tooltip render:', { isVisible, totalReviews, distribution });

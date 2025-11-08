@@ -65,7 +65,8 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  height: 818px;
+  overflow-y: auto;
+  padding-bottom: 100px; /* Space for sticky footer */
 }
 
 .write-review-modal__divider {
@@ -81,7 +82,6 @@
   gap: 8px;
   padding: 0 16px;
   width: 100%;
-  height: 653px;
 }
 
 .write-review-modal__title {
@@ -283,6 +283,31 @@
   color: var(--color-neutrals-5);
 }
 
+.write-review-modal__textarea-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.write-review-modal__expand-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutrals-4);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.write-review-modal__expand-btn:hover {
+  color: var(--color-neutrals-2);
+  background-color: var(--color-neutrals-7);
+}
+
 .write-review-modal__textarea {
   resize: vertical;
   min-height: 100px;
@@ -400,6 +425,109 @@
   height: 16px;
 }
 
+/* Experience Rating Section */
+.write-review-modal__experience-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.write-review-modal__experience-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3333333333333333em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.write-review-modal__category-card {
+  background-color: var(--color-neutrals-3);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.write-review-modal__category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.write-review-modal__category-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.write-review-modal__category-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375em;
+  color: var(--color-neutrals-8);
+  margin: 0;
+}
+
+.write-review-modal__category-description {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-8);
+  margin: 0;
+  width: 100%;
+}
+
+.write-review-modal__category-rating-value {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3333333333333333em;
+  color: var(--color-neutrals-8);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.write-review-modal__category-stars {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.write-review-modal__category-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.write-review-modal__category-star:hover {
+  transform: scale(1.1);
+}
+
+.write-review-modal__category-star.active {
+  transform: scale(1.05);
+}
+
+.write-review-modal__category-star-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 /* Vehicle Details */
 .write-review-modal__vehicle-details {
   display: flex;
@@ -428,14 +556,20 @@
 
 /* Footer */
 .write-review-modal__footer {
+  position: sticky;
+  bottom: 0;
   width: 100%;
-  padding: 0 16px;
+  padding: 16px;
   display: flex;
   justify-content: center;
+  background-color: var(--color-neutrals-7);
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .write-review-modal__submit-btn {
-  width: 328px;
+  width: 100%;
+  max-width: 328px;
   height: 48px;
   background-color: var(--color-neutrals-2);
   color: var(--color-neutrals-8);
@@ -484,4 +618,152 @@
   .write-review-modal__details-row {
     flex-direction: column;
   }
+}
+
+/* VIN Verification */
+.write-review-modal__field-hint {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-4);
+  margin-top: 4px;
+}
+
+.write-review-modal__vin-input {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.write-review-modal__vin-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--color-neutrals-7);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.write-review-modal__vin-disclaimer svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary-500);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.write-review-modal__vin-disclaimer span {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-3);
+}
+
+/* Fullscreen Textarea Overlay */
+.write-review-modal__fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.write-review-modal__fullscreen-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  max-height: 90vh;
+  background-color: var(--color-white);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.write-review-modal__fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid var(--color-neutrals-6);
+}
+
+.write-review-modal__fullscreen-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-2);
+}
+
+.write-review-modal__fullscreen-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutrals-3);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.write-review-modal__fullscreen-close:hover {
+  color: var(--color-neutrals-1);
+  background-color: var(--color-neutrals-7);
+}
+
+.write-review-modal__fullscreen-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 24px;
+  background-color: var(--color-white);
+  border: none;
+  border-radius: 0 0 12px 12px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.75em;
+  color: var(--color-neutrals-2);
+  resize: none;
+  outline: none;
+  min-height: 400px;
+}
+
+.write-review-modal__fullscreen-textarea::placeholder {
+  color: var(--color-neutrals-5);
 }

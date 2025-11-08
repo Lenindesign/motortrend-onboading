@@ -17,8 +17,16 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
   name = 'Lenin Aviles',
   memberSince = '09/27/2025',
   car = '2021 Subaru WRX',
-  newsletter = 'MotorTrend'
+  newsletter
 }) => {
+  // Debug: Log the newsletter prop value
+  console.log('🔍 [MembershipCard] newsletter prop value:', newsletter);
+  console.log('🔍 [MembershipCard] newsletter type:', typeof newsletter);
+  console.log('🔍 [MembershipCard] newsletter is undefined?', newsletter === undefined);
+  console.log('🔍 [MembershipCard] newsletter is null?', newsletter === null);
+  console.log('🔍 [MembershipCard] newsletter is empty string?', newsletter === '');
+  console.log('🔍 [MembershipCard] newsletter display value:', newsletter ?? '');
+  
   return (
     <div className="membership-card">
       <div className="membership-card__content">
@@ -55,7 +63,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
             </div>
             <div className="membership-card__detail-item">
               <span className="membership-card__detail-label">Newsletter</span>
-              <span className="membership-card__detail-value">{newsletter}</span>
+              <span className="membership-card__detail-value">{newsletter ?? ''}</span>
             </div>
           </div>
         </div>

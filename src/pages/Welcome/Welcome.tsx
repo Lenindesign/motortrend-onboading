@@ -12,6 +12,7 @@ import { MembershipCard } from '../../components/MembershipCard';
 import RatingModal from '../../components/RatingModal';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
 import { useRating } from '../../contexts/RatingContext';
+import { parseVehicleName } from '../../utils/vehicleImages';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -62,6 +63,10 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         } else {
           setOnboardingData(parsed);
         }
+        
+        // Mark onboarding as complete - show notification dot on profile avatar
+        localStorage.setItem('onboardingComplete', 'true');
+        localStorage.setItem('profileNotificationSeen', 'false');
       } catch (error) {
         console.error('Error parsing onboarding data:', error);
       }
@@ -102,17 +107,22 @@ export const Welcome: React.FC<WelcomeProps> = () => {
 
   const handleRatingSubmit = (rating: number) => {
     setUserRating(ratingModal.vehicleName, rating);
-    const updatedVehicles = vehicles.map(vehicle => 
-      vehicle.name === ratingModal.vehicleName 
-        ? { ...vehicle, rating }
-        : vehicle
-    );
-    
-    const updatedData = { ...onboardingData, vehicles: updatedVehicles };
-    setOnboardingData(updatedData);
-    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
-    
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Navigate to vehicle details page where they can write a review
+    try {
+      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
+      navigate(`/vehicles/${year}/${make}/${model}`);
+    } catch (error) {
+      console.error('Error parsing vehicle name:', error);
+      // If parsing fails, just stay on current page
+    }
   };
 
   const handleRatingModalClose = () => {
@@ -147,7 +157,21 @@ export const Welcome: React.FC<WelcomeProps> = () => {
               name={onboardingData?.name || 'User'}
               memberSince={onboardingData?.joinDate || getCurrentJoinDate()}
               car={vehicles.length > 0 ? vehicles[0].name : 'No vehicle selected'}
-              newsletter="MotorTrend"
+              newsletter={(() => {
+                // Map newsletter IDs to display names
+                const newsletterMap: Record<string, string> = {
+                  'motortrend': 'MotorTrend',
+                  'hotrod': 'HOT ROD',
+                  'events': 'Events'
+                };
+                
+                // Get first newsletter from array, or undefined if empty/not exists
+                if (onboardingData?.newsletters && Array.isArray(onboardingData.newsletters) && onboardingData.newsletters.length > 0) {
+                  const newsletterId = onboardingData.newsletters[0];
+                  return newsletterMap[newsletterId] || newsletterId;
+                }
+                return undefined;
+              })()}
             />
           </div>
         </div>
@@ -180,6 +204,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
       />
     </div>
   );

@@ -172,7 +172,7 @@
 .membership-card__details {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   gap: 0px;
   padding: 0 7px;
   width: 100%;

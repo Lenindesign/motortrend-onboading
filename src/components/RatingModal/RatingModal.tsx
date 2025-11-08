@@ -14,6 +14,7 @@ export interface RatingModalProps {
   vehicleName: string;
   currentRating?: number;
   onRateAndReview?: (rating: number) => void;
+  onClear?: () => void;
 }
 
 export const RatingModal: React.FC<RatingModalProps> = ({
@@ -22,7 +23,8 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   onRate,
   vehicleName,
   currentRating = 0,
-  onRateAndReview
+  onRateAndReview,
+  onClear
 }) => {
   const [selectedRating, setSelectedRating] = useState(currentRating);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -60,15 +62,26 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   };
 
   const handleSubmit = () => {
-    onRate(selectedRating);
-    onClose();
+    // If there's an existing rating, clear it
+    if (currentRating > 0 && onClear) {
+      onClear();
+      setSelectedRating(0);
+      onClose();
+    } else if (selectedRating > 0) {
+      // Submit a new rating
+      onRate(selectedRating);
+      onClose();
+    }
   };
 
   const handleRateAndReview = () => {
     if (onRateAndReview) {
       onRateAndReview(selectedRating);
-      onClose();
+    } else {
+      // Default behavior: just submit the rating if handler not provided
+      onRate(selectedRating);
     }
+    onClose();
   };
 
   const handleCancel = () => {
@@ -152,19 +165,17 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           <button 
             className="rating-modal__btn rating-modal__btn--submit"
             onClick={handleSubmit}
+            disabled={selectedRating === 0 && currentRating === 0}
+          >
+            {currentRating > 0 ? 'CLEAR RATING' : 'RATE'}
+          </button>
+          <button 
+            className="rating-modal__btn rating-modal__btn--rate-and-review"
+            onClick={handleRateAndReview}
             disabled={selectedRating === 0}
           >
-            RATE
+            WRITE A REVIEW
           </button>
-          {onRateAndReview && (
-            <button 
-              className="rating-modal__btn rating-modal__btn--rate-and-review"
-              onClick={handleRateAndReview}
-              disabled={selectedRating === 0}
-            >
-              RATE AND REVIEW
-            </button>
-          )}
         </div>
       </div>
     </div>

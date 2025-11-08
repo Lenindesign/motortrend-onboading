@@ -189,11 +189,22 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
 
   const handleRatingSubmit = (rating: number) => {
     setUserRating(ratingModal.vehicleName, rating);
-    const updatedVehicles = step3Vehicles.map(v => 
-      v.name === ratingModal.vehicleName ? { ...v, rating } : v
-    );
-    setStep3Vehicles(updatedVehicles);
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Navigate to vehicle details page where they can write a review
+    try {
+      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
+      navigate(`/vehicles/${year}/${make}/${model}`);
+    } catch (error) {
+      console.error('Error parsing vehicle name:', error);
+      // If parsing fails, just stay on current page
+    }
   };
 
   const handleRatingModalClose = () => {
@@ -472,7 +483,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                 <div className="profile-completion-step__options profile-completion-step__options--single-column">
                   {[
                     { id: 'motortrend', label: 'Subscribe to MotorTrend Newsletter' },
-                    { id: 'hotrod', label: 'Subscribe to HOT ROD Newsletter' }
+                    { id: 'hotrod', label: 'Subscribe to HOT ROD Newsletter' },
+                    { id: 'events', label: 'Subscribe to Our Events Newsletter' }
                   ].map((newsletter) => (
                     <label key={newsletter.id} className="profile-option">
                       <input
@@ -503,6 +515,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
       />
     </div>
   );

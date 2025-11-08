@@ -9,6 +9,54 @@ import './GlobalHeader.css';
 // Using MotorTrend main logo from URL
 const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg';
 import Icon from '../Icon';
+import { parseVehicleName } from '../../utils/vehicleImages';
+
+// Car database for search autocomplete (same as VehicleSearch component)
+const carDatabase = [
+  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2023 Subaru WRX',
+  '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic',
+  '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry',
+  '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang',
+  '2021 Tesla Model 3', '2022 Tesla Model 3', '2023 Tesla Model 3', '2024 Tesla Model 3',
+  '2020 BMW 3 Series', '2021 BMW 3 Series', '2022 BMW 3 Series', '2023 BMW 3 Series', '2024 BMW 3 Series',
+  '2019 Audi A4', '2020 Audi A4', '2021 Audi A4', '2022 Audi A4', '2023 Audi A4', '2024 Audi A4',
+  '2020 Mercedes C-Class', '2021 Mercedes C-Class', '2022 Mercedes C-Class', '2023 Mercedes C-Class', '2024 Mercedes C-Class',
+  '2021 Nissan Altima', '2022 Nissan Altima', '2023 Nissan Altima', '2024 Nissan Altima',
+  '2020 Chevrolet Camaro', '2021 Chevrolet Camaro', '2022 Chevrolet Camaro', '2023 Chevrolet Camaro', '2024 Chevrolet Camaro',
+  '2021 Dodge Challenger', '2022 Dodge Challenger', '2023 Dodge Challenger', '2024 Dodge Challenger',
+  '2020 Lexus IS', '2021 Lexus IS', '2022 Lexus IS', '2023 Lexus IS', '2024 Lexus IS',
+  '2021 Infiniti Q50', '2022 Infiniti Q50', '2023 Infiniti Q50', '2024 Infiniti Q50',
+  '2020 Acura TLX', '2021 Acura TLX', '2022 Acura TLX', '2023 Acura TLX', '2024 Acura TLX',
+  '2021 Genesis G70', '2022 Genesis G70', '2023 Genesis G70', '2024 Genesis G70',
+  '2020 Volvo S60', '2021 Volvo S60', '2022 Volvo S60', '2023 Volvo S60', '2024 Volvo S60',
+  '2021 Cadillac CT4', '2022 Cadillac CT4', '2023 Cadillac CT4', '2024 Cadillac CT4',
+  '2020 Jaguar XE', '2021 Jaguar XE', '2022 Jaguar XE', '2023 Jaguar XE', '2024 Jaguar XE',
+  '2021 Alfa Romeo Giulia', '2022 Alfa Romeo Giulia', '2023 Alfa Romeo Giulia', '2024 Alfa Romeo Giulia',
+  '2020 Kia Stinger', '2021 Kia Stinger', '2022 Kia Stinger', '2023 Kia Stinger', '2024 Kia Stinger',
+  '2021 Hyundai Sonata', '2022 Hyundai Sonata', '2023 Hyundai Sonata', '2024 Hyundai Sonata',
+  '2020 Mazda6', '2021 Mazda6', '2022 Mazda6', '2023 Mazda6', '2024 Mazda6',
+  '2020 Subaru Legacy', '2021 Subaru Legacy', '2022 Subaru Legacy', '2023 Subaru Legacy', '2024 Subaru Legacy',
+  '2020 Subaru Impreza', '2021 Subaru Impreza', '2022 Subaru Impreza', '2023 Subaru Impreza', '2024 Subaru Impreza',
+  '2020 Subaru Outback', '2021 Subaru Outback', '2022 Subaru Outback', '2023 Subaru Outback', '2024 Subaru Outback',
+  '2020 Subaru Forester', '2021 Subaru Forester', '2022 Subaru Forester', '2023 Subaru Forester', '2024 Subaru Forester',
+  '2020 Subaru Ascent', '2021 Subaru Ascent', '2022 Subaru Ascent', '2023 Subaru Ascent', '2024 Subaru Ascent',
+  '2020 Subaru Crosstrek', '2021 Subaru Crosstrek', '2022 Subaru Crosstrek', '2023 Subaru Crosstrek', '2024 Subaru Crosstrek',
+  '2020 Subaru BRZ', '2021 Subaru BRZ', '2022 Subaru BRZ', '2023 Subaru BRZ', '2024 Subaru BRZ',
+  '2020 Subaru WRX STI', '2021 Subaru WRX STI', '2022 Subaru WRX STI', '2023 Subaru WRX STI', '2024 Subaru WRX STI',
+  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150', '2025 Ford F-150', '2026 Ford F-150',
+  '2020 Ford Explorer', '2021 Ford Explorer', '2022 Ford Explorer', '2023 Ford Explorer', '2024 Ford Explorer',
+  '2020 Ford Escape', '2021 Ford Escape', '2022 Ford Escape', '2023 Ford Escape', '2024 Ford Escape',
+  '2020 Ford Edge', '2021 Ford Edge', '2022 Ford Edge', '2023 Ford Edge', '2024 Ford Edge',
+  '2020 Ford Bronco', '2021 Ford Bronco', '2022 Ford Bronco', '2023 Ford Bronco', '2024 Ford Bronco',
+  '2020 Ford Bronco Sport', '2021 Ford Bronco Sport', '2022 Ford Bronco Sport', '2023 Ford Bronco Sport', '2024 Ford Bronco Sport',
+  '2020 Ford Ranger', '2021 Ford Ranger', '2022 Ford Ranger', '2023 Ford Ranger', '2024 Ford Ranger',
+  '2020 Ford Maverick', '2021 Ford Maverick', '2022 Ford Maverick', '2023 Ford Maverick', '2024 Ford Maverick',
+  '2020 Chevrolet Silverado', '2021 Chevrolet Silverado', '2022 Chevrolet Silverado', '2023 Chevrolet Silverado', '2024 Chevrolet Silverado',
+  '2020 Toyota RAV4', '2021 Toyota RAV4', '2022 Toyota RAV4', '2023 Toyota RAV4', '2024 Toyota RAV4',
+  '2020 Honda CR-V', '2021 Honda CR-V', '2022 Honda CR-V', '2023 Honda CR-V', '2024 Honda CR-V',
+  '2020 Mazda CX-5', '2021 Mazda CX-5', '2022 Mazda CX-5', '2023 Mazda CX-5', '2024 Mazda CX-5',
+  '2020 Mazda CX-30', '2021 Mazda CX-30', '2022 Mazda CX-30', '2023 Mazda CX-30', '2024 Mazda CX-30'
+];
 
 export interface GlobalHeaderProps {
   onSignInClick?: () => void;
@@ -52,16 +100,6 @@ const navigationItems = [
     ]
   },
   { 
-    label: 'Features & Gear', 
-    href: '#',
-    subItems: [
-      { label: 'Feature Stories', href: '#' },
-      { label: 'Gear & Accessories', href: '#' },
-      { label: 'Car Culture', href: '#' },
-      { label: 'Events', href: '#' }
-    ]
-  },
-  { 
     label: 'Community', 
     href: '#',
     subItems: [
@@ -82,41 +120,107 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     name: string;
     avatar?: string;
   } | null>(null);
+  const [showProfileNotification, setShowProfileNotification] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const navMenuRef = useRef<HTMLDivElement>(null);
   
-  // Check if user is authenticated (you can implement your own logic here)
-  const isAuthenticated = location.pathname !== '/signin';
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredCars, setFilteredCars] = useState<string[]>([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [highlightedSearchIndex, setHighlightedSearchIndex] = useState(-1);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  
+  // Check if user is authenticated by checking for onboarding data
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Load user data from localStorage
+  // Check authentication status on mount and when pathname changes
   useEffect(() => {
-    if (isAuthenticated) {
+    const checkAuth = () => {
       try {
         const onboardingData = localStorage.getItem('onboardingData');
-        console.log('GlobalHeader: Loading user data from localStorage:', onboardingData);
-        if (onboardingData) {
+        // User is authenticated if they have onboarding data (completed sign in)
+        const authenticated = !!onboardingData;
+        setIsAuthenticated(authenticated);
+        
+        // Only load user data if authenticated
+        if (authenticated && onboardingData) {
           const data = JSON.parse(onboardingData);
-          console.log('GlobalHeader: Parsed user data:', data);
+          console.log('GlobalHeader: Loading user data from localStorage:', data);
           setUserData({
             name: data.name || 'User',
             avatar: data.avatar
           });
         } else {
-          console.log('GlobalHeader: No onboarding data found, using default');
-          setUserData({
-            name: 'User',
-            avatar: undefined
-          });
+          setUserData(null);
         }
       } catch (error) {
-        console.error('Error loading user data:', error);
-        setUserData({
-          name: 'User',
-          avatar: undefined
-        });
+        console.error('Error checking authentication:', error);
+        setIsAuthenticated(false);
+        setUserData(null);
       }
-    }
-  }, [isAuthenticated]);
+    };
+
+    // Check on mount and when pathname changes
+    checkAuth();
+
+    // Listen for storage changes (when user signs in/out in another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'onboardingData') {
+        checkAuth();
+      }
+    };
+
+    // Listen for custom events (when user signs in/out in same tab)
+    const handleCustomEvent = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('onboardingDataUpdated', handleCustomEvent);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('onboardingDataUpdated', handleCustomEvent);
+    };
+  }, [location.pathname]);
+
+  // Check for profile notification (blinking dot) visibility
+  useEffect(() => {
+    const checkNotification = () => {
+      const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
+      const notificationSeen = localStorage.getItem('profileNotificationSeen') === 'true';
+      setShowProfileNotification(onboardingComplete && !notificationSeen);
+    };
+
+    // Check on mount
+    checkNotification();
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'onboardingComplete' || e.key === 'profileNotificationSeen') {
+        checkNotification();
+      }
+    };
+
+    // Listen for custom events
+    const handleCustomEvent = () => {
+      checkNotification();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('profileNotificationUpdated', handleCustomEvent);
+
+    // Periodic check
+    const intervalId = setInterval(checkNotification, 500);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('profileNotificationUpdated', handleCustomEvent);
+      clearInterval(intervalId);
+    };
+  }, []);
 
   // Listen for onboarding data updates to keep avatar in sync
   useEffect(() => {
@@ -196,6 +300,21 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     };
   }, []);
 
+  // Filter cars based on search query
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      const filtered = carDatabase.filter(car =>
+        car.toLowerCase().includes(searchQuery.toLowerCase())
+      ).slice(0, 6); // Limit to 6 results
+      setFilteredCars(filtered);
+      setShowSearchDropdown(true);
+    } else {
+      setFilteredCars([]);
+      setShowSearchDropdown(false);
+    }
+    setHighlightedSearchIndex(-1);
+  }, [searchQuery]);
+
   // Handle click outside to close dropdowns
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -205,16 +324,19 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       if (navMenuRef.current && !navMenuRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
       }
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowSearchDropdown(false);
+      }
     };
 
-    if (showUserDropdown || activeDropdown) {
+    if (showUserDropdown || activeDropdown || showSearchDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showUserDropdown, activeDropdown]);
+  }, [showUserDropdown, activeDropdown, showSearchDropdown]);
 
   const handleUserMenuClick = () => {
     setShowUserDropdown(!showUserDropdown);
@@ -234,6 +356,46 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     setUserData(null);
     setShowUserDropdown(false);
     navigate('/signin');
+  };
+
+  // Search handlers
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+  };
+
+  const handleVehicleSelect = (vehicleName: string) => {
+    const { year, make, model } = parseVehicleName(vehicleName);
+    setSearchQuery('');
+    setShowSearchDropdown(false);
+    navigate(`/vehicles/${year}/${make}/${model}`);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setHighlightedSearchIndex(prev => 
+          prev < filteredCars.length - 1 ? prev + 1 : prev
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setHighlightedSearchIndex(prev => prev > 0 ? prev - 1 : -1);
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (highlightedSearchIndex >= 0 && filteredCars[highlightedSearchIndex]) {
+          handleVehicleSelect(filteredCars[highlightedSearchIndex]);
+        } else if (filteredCars.length > 0) {
+          handleVehicleSelect(filteredCars[0]);
+        }
+        break;
+      case 'Escape':
+        setShowSearchDropdown(false);
+        setHighlightedSearchIndex(-1);
+        break;
+    }
   };
 
   return (
@@ -283,12 +445,38 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
         {/* Search and Sign In */}
         <div className="global-header__right">
-          <button 
-            className="global-header__search-btn"
-            aria-label="Search"
-          >
-            <Icon name="search" size={24} />
-          </button>
+          <div className="global-header__search" ref={searchRef}>
+            <div className="global-header__search-container">
+              <Icon name="search" size={20} className="global-header__search-icon" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+                onKeyDown={handleSearchKeyDown}
+                onFocus={() => searchQuery.length > 0 && setShowSearchDropdown(true)}
+                placeholder="Search year, make, model..."
+                className="global-header__search-input"
+              />
+            </div>
+            {/* Search Dropdown */}
+            {showSearchDropdown && filteredCars.length > 0 && (
+              <div className="global-header__search-dropdown">
+                {filteredCars.map((car, index) => (
+                  <div
+                    key={car}
+                    className={`global-header__search-dropdown-item ${
+                      index === highlightedSearchIndex ? 'global-header__search-dropdown-item--highlighted' : ''
+                    }`}
+                    onClick={() => handleVehicleSelect(car)}
+                    onMouseEnter={() => setHighlightedSearchIndex(index)}
+                  >
+                    {car}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           {isAuthenticated ? (
             <div className="global-header__user-menu" ref={userMenuRef}>
               <button 
@@ -296,20 +484,25 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 onClick={handleUserMenuClick}
                 aria-label="User menu"
               >
-                {userData?.avatar ? (
-                  <img 
-                    key={userData.avatar} // Force re-render when avatar changes
-                    src={userData.avatar} 
-                    alt={userData.name || 'User'} 
-                    className="global-header__user-avatar-img"
-                  />
-                ) : (
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
-                    alt="MotorTrend" 
-                    className="global-header__user-avatar-img"
-                  />
-                )}
+                <div className="global-header__user-avatar-wrapper">
+                  {userData?.avatar ? (
+                    <img 
+                      key={userData.avatar} // Force re-render when avatar changes
+                      src={userData.avatar} 
+                      alt={userData.name || 'User'} 
+                      className="global-header__user-avatar-img"
+                    />
+                  ) : (
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
+                      alt="MotorTrend" 
+                      className="global-header__user-avatar-img"
+                    />
+                  )}
+                  {showProfileNotification && (
+                    <span className="global-header__profile-notification-dot" aria-label="New profile notification"></span>
+                  )}
+                </div>
               </button>
               
               {showUserDropdown && (
@@ -355,7 +548,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     }}
                   >
                     <Icon name="bookmark_border" size={16} />
-                    Saved Items
+                    Saved
                   </button>
                   <button 
                     className="global-header__dropdown-item"

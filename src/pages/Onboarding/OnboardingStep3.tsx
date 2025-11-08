@@ -3,7 +3,7 @@
  * Based on Figma Community design system with autocomplete car search
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const step3Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1853/group1318348095.svg';
 import './OnboardingStep3.css';
@@ -37,7 +37,6 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
     currentRating: 0
   });
   const { getUserRating, setUserRating } = useRating();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // VehicleSearch handles filtering and dropdown behavior
 
@@ -66,8 +65,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleAddAnother = () => {
-    setShowAddAnother(false);
-    inputRef.current?.focus();
+    setShowAddAnother(true);
   };
 
   const handleRateVehicle = (vehicleName: string) => {
@@ -81,10 +79,22 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
 
   const handleRatingSubmit = (rating: number) => {
     setUserRating(ratingModal.vehicleName, rating);
-    setSelectedCars(selectedCars.map(car => 
-      car.name === ratingModal.vehicleName ? { ...car, rating } : car
-    ));
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Navigate to vehicle details page where they can write a review
+    try {
+      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
+      navigate(`/vehicles/${year}/${make}/${model}`);
+    } catch (error) {
+      console.error('Error parsing vehicle name:', error);
+      // If parsing fails, just stay on current page
+    }
   };
 
   const handleRatingModalClose = () => {
@@ -166,10 +176,6 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     onBookmark={() => handleRemoveCar(car.name)}
                     ownership={car.ownership}
                     onOwnershipChange={(value) => handleOwnershipChange(car.name, value)}
-                    onViewDetails={() => {
-                      const { year, make, model } = parseVehicleName(car.name);
-                      navigate(`/vehicles/${year}/${make}/${model}`);
-                    }}
                     onRate={() => handleRateVehicle(car.name)}
                     userRating={getUserRating(car.name)}
                   />
@@ -195,6 +201,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                   <VehicleSearch
                     onVehicleSelect={(vehicle) => handleCarSelect(vehicle.name)}
                     placeholder="Select another Vehicle"
+                    autoFocus={true}
                   />
                 )}
               </div>
@@ -251,6 +258,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
       />
     </div>
   );

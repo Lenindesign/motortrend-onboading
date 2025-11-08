@@ -12,6 +12,10 @@ import Welcome from './pages/Welcome';
 import Profile from './pages/Profile';
 import { Membership } from './pages/Membership';
 import VehicleDetails from './pages/VehicleDetails';
+import { VehicleInventory } from './pages/VehicleInventory';
+import Documentation from './pages/Documentation';
+import OnboardingDocumentation from './pages/OnboardingDocumentation';
+import ProfileDocumentation from './pages/ProfileDocumentation';
 import { RatingProvider } from './contexts/RatingContext';
 import './App.css';
 
@@ -24,11 +28,14 @@ function App() {
           
           <main className="app__main">
             <Routes>
-              {/* Default route - redirect to sign in */}
-              <Route path="/" element={<Navigate to="/signin" replace />} />
+              {/* Default route - show vehicle inventory */}
+              <Route path="/" element={<VehicleInventory />} />
               
               {/* Sign In Page */}
               <Route path="/signin" element={<SignIn />} />
+              
+              {/* Vehicle Inventory */}
+              <Route path="/vehicles" element={<VehicleInventory />} />
               
               {/* Onboarding Steps */}
               <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
@@ -52,6 +59,14 @@ function App() {
               
               {/* Vehicle Details Page */}
               <Route path="/vehicles/:year/:make/:model" element={<VehicleDetails />} />
+              
+              {/* Documentation Pages */}
+              <Route path="/documentation/review-system" element={<Documentation />} />
+              <Route path="/docs/review-system" element={<Documentation />} />
+              <Route path="/documentation/onboarding" element={<OnboardingDocumentation />} />
+              <Route path="/docs/onboarding" element={<OnboardingDocumentation />} />
+              <Route path="/documentation/profile" element={<ProfileDocumentation />} />
+              <Route path="/docs/profile" element={<ProfileDocumentation />} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />

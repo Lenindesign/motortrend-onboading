@@ -39,7 +39,7 @@ const carDatabase = [
   '2020 Subaru Crosstrek', '2021 Subaru Crosstrek', '2022 Subaru Crosstrek', '2023 Subaru Crosstrek', '2024 Subaru Crosstrek',
   '2020 Subaru BRZ', '2021 Subaru BRZ', '2022 Subaru BRZ', '2023 Subaru BRZ', '2024 Subaru BRZ',
   '2020 Subaru WRX STI', '2021 Subaru WRX STI', '2022 Subaru WRX STI', '2023 Subaru WRX STI', '2024 Subaru WRX STI',
-  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150',
+  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150', '2025 Ford F-150', '2026 Ford F-150',
   '2020 Ford Explorer', '2021 Ford Explorer', '2022 Ford Explorer', '2023 Ford Explorer', '2024 Ford Explorer',
   '2020 Ford Escape', '2021 Ford Escape', '2022 Ford Escape', '2023 Ford Escape', '2024 Ford Escape',
   '2020 Ford Edge', '2021 Ford Edge', '2022 Ford Edge', '2023 Ford Edge', '2024 Ford Edge',
@@ -241,12 +241,16 @@ export interface VehicleSearchProps {
   onVehicleSelect: (vehicle: { name: string; ownership: 'own' | 'want' }) => void;
   placeholder?: string;
   className?: string;
+  defaultOwnership?: 'own' | 'want';
+  autoFocus?: boolean;
 }
 
 export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   onVehicleSelect,
   placeholder = "Start typing to search...",
-  className = ""
+  className = "",
+  defaultOwnership = 'own',
+  autoFocus = false
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCars, setFilteredCars] = useState<string[]>([]);
@@ -270,6 +274,16 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
     setHighlightedIndex(-1);
   }, [searchQuery]);
 
+  // Auto-focus input when component is shown
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [autoFocus]);
+
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -290,7 +304,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   };
 
   const handleCarSelect = (car: string) => {
-    onVehicleSelect({ name: car, ownership: 'own' });
+    onVehicleSelect({ name: car, ownership: defaultOwnership });
     setSearchQuery('');
     setShowDropdown(false);
   };

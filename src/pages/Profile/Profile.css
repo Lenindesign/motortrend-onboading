@@ -196,6 +196,11 @@
   text-align: left;
 }
 
+.profile-vehicles-grid .empty-vehicle-section {
+  height: 168px;
+  min-height: 168px;
+}
+
 .profile-section-divider {
   width: 100%;
   height: 1px;
@@ -916,6 +921,7 @@
   padding: 8px 12px;
   cursor: pointer;
   transition: color var(--transition-fast);
+  height: 34px;
 }
 
 .profile-vehicle-search__cancel:hover {

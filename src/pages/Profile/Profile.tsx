@@ -3,7 +3,7 @@
  * Based on Figma Community design system
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import ProfileBanner from '../../components/ProfileBanner';
 import ProfileNav from '../../components/ProfileNav';
@@ -17,16 +17,19 @@ import EditableField from '../../components/EditableField';
 import ConnectedAccount from '../../components/ConnectedAccount';
 import CollapsibleSection from '../../components/CollapsibleSection';
 import ProfileCompletionCard from '../../components/ProfileCompletionCard';
-import EmptyVehiclesCard from '../../components/EmptyVehiclesCard';
+import { EmptyVehicleSection } from '../../components/EmptyVehicleSection';
 import Toast from '../../components/Toast';
 import Icon from '../../components/Icon';
 import { AvatarBannerModal } from '../../components/AvatarBannerModal';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
+import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
-import Button from '../../design-system/components/Button';
 import RatingModal from '../../components/RatingModal';
+import WriteReviewModal from '../../components/WriteReviewModal';
+import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import { useRating } from '../../contexts/RatingContext';
+import { type ReviewData } from '../../components/UserReviews';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -71,6 +74,20 @@ export const Profile: React.FC<ProfileProps> = ({
       setActiveTab(tab);
     }
   }, [location.pathname, searchParams]);
+
+  // Clear profile notification when user visits profile page
+  useEffect(() => {
+    // Check if user has completed onboarding and hasn't seen the notification yet
+    const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
+    const notificationSeen = localStorage.getItem('profileNotificationSeen') === 'true';
+    
+    if (onboardingComplete && !notificationSeen) {
+      // Mark notification as seen
+      localStorage.setItem('profileNotificationSeen', 'true');
+      // Dispatch event to notify GlobalHeader to hide the dot
+      window.dispatchEvent(new CustomEvent('profileNotificationUpdated'));
+    }
+  }, []);
   
   // Bookmark state management
   const [savedArticles, setSavedArticles] = useState<string[]>(['article-1', 'article-2']);
@@ -90,7 +107,8 @@ export const Profile: React.FC<ProfileProps> = ({
   // Subscription state management
   const [newsletterSubscriptions, setNewsletterSubscriptions] = useState({
     'MotorTrend': true,
-    'HOT ROD': true
+    'HOT ROD': true,
+    'Events': true
   });
   
   const [magazineSubscriptions, setMagazineSubscriptions] = useState({
@@ -130,6 +148,38 @@ export const Profile: React.FC<ProfileProps> = ({
       }
     }
   }, [userData?.name]);
+
+  // Listen for onboarding data updates (e.g., when vehicles are saved from VehicleDetails page)
+  useEffect(() => {
+    const handleOnboardingDataUpdate = () => {
+      // Reload data from localStorage when event is triggered
+      const data = localStorage.getItem('onboardingData');
+      if (data) {
+        try {
+          const parsed = JSON.parse(data);
+          // Always update to ensure latest data is reflected
+          setLocalOnboardingData(prev => {
+            // Only update if vehicles actually changed to avoid unnecessary re-renders
+            const currentVehicles = JSON.stringify(prev.vehicles || []);
+            const newVehicles = JSON.stringify(parsed.vehicles || []);
+            if (currentVehicles !== newVehicles) {
+              return parsed;
+            }
+            return prev;
+          });
+        } catch (error) {
+          console.error('Error parsing onboarding data on update:', error);
+        }
+      }
+    };
+
+    // Listen for onboarding data updates
+    window.addEventListener('onboardingDataUpdated', handleOnboardingDataUpdate);
+    
+    return () => {
+      window.removeEventListener('onboardingDataUpdated', handleOnboardingDataUpdate);
+    };
+  }, []); // Only set up listener once on mount
 
   // Callback functions for ProfileCompletionCard
   const handleUpdateStep1 = (data: { name: string; location: string }) => {
@@ -178,8 +228,8 @@ export const Profile: React.FC<ProfileProps> = ({
   const [userAvatar, setUserAvatar] = useState(userData?.avatar);
   const [userBanner, setUserBanner] = useState<string | undefined>(undefined);
   
-  // Vehicle search state
-  const [showVehicleSearch, setShowVehicleSearch] = useState(false);
+  // Vehicle search state - tracks which section is showing search ('own' | 'want' | null)
+  const [activeVehicleSearch, setActiveVehicleSearch] = useState<'own' | 'want' | null>(null);
   
   // User settings state
   const [userSettings, setUserSettings] = useState({
@@ -195,15 +245,23 @@ export const Profile: React.FC<ProfileProps> = ({
     vehicleName: '',
     currentRating: 0
   });
-  const { getUserRating, setUserRating } = useRating();
+  const [writeReviewModal, setWriteReviewModal] = useState<{isOpen: boolean, vehicleName: string, vehicleImage?: string}>({
+    isOpen: false,
+    vehicleName: '',
+    vehicleImage: undefined
+  });
+  const [isReviewToastVisible, setIsReviewToastVisible] = useState(false);
+  const [reviewedVehicleName, setReviewedVehicleName] = useState<string>('');
+  const { getUserRating, setUserRating, clearRating, userRatings } = useRating();
   
   // Vehicle search handlers
-  const handleAddVehicleClick = () => {
-    setShowVehicleSearch(true);
+  const handleAddVehicleClick = (ownership?: 'own' | 'want') => {
+    // Default to 'own' if no ownership specified (from header button)
+    setActiveVehicleSearch(ownership || 'own');
   };
 
   const handleCancelVehicleSearch = () => {
-    setShowVehicleSearch(false);
+    setActiveVehicleSearch(null);
   };
 
   // User settings handlers
@@ -248,17 +306,43 @@ export const Profile: React.FC<ProfileProps> = ({
 
   const handleRatingSubmit = (rating: number) => {
     setUserRating(ratingModal.vehicleName, rating);
-    const vehicles = localOnboardingData.vehicles || [];
-    const updatedVehicles = vehicles.map(v => 
-      v.name === ratingModal.vehicleName ? { ...v, rating } : v
-    );
-    const updatedData = { ...localOnboardingData, vehicles: updatedVehicles };
-    setLocalOnboardingData(updatedData);
-    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
   };
 
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Open write review modal
+    setWriteReviewModal({
+      isOpen: true,
+      vehicleName: ratingModal.vehicleName,
+      vehicleImage: vehicleImageFor(ratingModal.vehicleName)
+    });
+  };
+
+  const handleSubmitReview = (review: ReviewData) => {
+    // In a real app, this would save the review to the backend
+    console.log('Review submitted:', review);
+    const vehicleName = writeReviewModal.vehicleName;
+    setWriteReviewModal({ isOpen: false, vehicleName: '', vehicleImage: undefined });
+    
+    // Show toast notification after a brief delay to ensure modal is closed
+    if (vehicleName) {
+      setReviewedVehicleName(vehicleName);
+      setTimeout(() => {
+        setIsReviewToastVisible(true);
+      }, 300);
+    }
+  };
+
   const handleRatingModalClose = () => {
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleClearRating = () => {
+    clearRating(ratingModal.vehicleName);
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
   };
 
@@ -344,12 +428,30 @@ export const Profile: React.FC<ProfileProps> = ({
     };
     setLocalOnboardingData(updatedData);
     localStorage.setItem('onboardingData', JSON.stringify(updatedData));
-    setShowVehicleSearch(false); // Hide search after selection
+    setActiveVehicleSearch(null); // Hide search after selection
   };
 
-  // Categorize onboarding vehicles
-  const vehiclesIOwn = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'own');
-  const vehiclesIWant = (localOnboardingData.vehicles || []).filter(vehicle => vehicle.ownership === 'want');
+  // Categorize onboarding vehicles - memoized to ensure updates are reflected
+  const vehiclesIOwn = useMemo(() => {
+    return (localOnboardingData.vehicles || []).filter(vehicle => vehicle && vehicle.ownership === 'own');
+  }, [localOnboardingData.vehicles]);
+  
+  const vehiclesIWant = useMemo(() => {
+    return (localOnboardingData.vehicles || []).filter(vehicle => vehicle && vehicle.ownership === 'want');
+  }, [localOnboardingData.vehicles]);
+  
+  // Get vehicles the user has reviewed (where rating > 0)
+  const vehiclesIReviewed = useMemo(() => {
+    return Object.entries(userRatings)
+      .filter(([_, rating]) => rating > 0)
+      .map(([vehicleName, rating]) => ({
+        name: vehicleName,
+        rating: rating,
+        image: vehicleImageFor(vehicleName),
+        staffRating: generateStaffRating(vehicleName),
+        communityRating: generateCommunityRating(vehicleName)
+      }));
+  }, [userRatings]);
 
   // Vehicle images now shared via utils/vehicleImages
 
@@ -383,21 +485,6 @@ export const Profile: React.FC<ProfileProps> = ({
     localStorage.setItem('onboardingData', JSON.stringify(updatedData));
   };
 
-  const mockArticles = [
-    {
-      title: 'Tested: Audi Plays It Safe With the Audi A6 Sportback E-Tron',
-      author: 'Justin Banner',
-      date: 'Oct 10, 2025',
-      imageUrl: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=300&h=200&fit=crop&q=80',
-    },
-    {
-      title: "We Didn't Ask the Toyota GR Corolla to Get Less Fun, But Here We Are",
-      author: 'Justin Banner',
-      date: 'Oct 10, 2025',
-      imageUrl: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=300&h=200&fit=crop&q=80',
-    },
-  ];
-
   return (
     <div className="profile-page">
       <ProfileBanner
@@ -420,27 +507,37 @@ export const Profile: React.FC<ProfileProps> = ({
         <div className="profile-main">
                  {activeTab === 'my-account' && (
                    <>
-                     {/* Continue Reading Section */}
-                     <div className="profile-section profile-section--articles">
-                       <div className="profile-section__content">
-                         <div className="profile-section__header-row">
-                           <h3 className="profile-section__heading">Continue Reading</h3>
-                         </div>
-                         
-                         <div className="profile-articles">
-                           {mockArticles.map((article, index) => (
-                             <ArticleCard
-                               key={index}
-                               title={article.title}
-                               author={article.author}
-                               date={article.date}
-                               imageUrl={article.imageUrl}
-                               onReadArticle={() => console.log('Read article:', article.title)}
-                               isBookmarked={savedArticles.includes(`article-${index + 1}`)}
-                               onBookmark={() => handleBookmarkClick('article', `article-${index + 1}`)}
-                             />
-                           ))}
-                         </div>
+                     {/* Basic Info Section */}
+                     <div className="profile-section profile-section--settings">
+                       <div className="profile-settings-fields">
+                         <EditableField
+                           label="Full Name"
+                           value={userSettings.fullName}
+                           onSave={handleSaveFullName}
+                           placeholder="Enter your full name"
+                         />
+                         <div className="profile-settings-divider"></div>
+                         <EditableField
+                           label="Username"
+                           value={userSettings.username}
+                           onSave={handleSaveUsername}
+                           placeholder="Enter your username"
+                         />
+                         <div className="profile-settings-divider"></div>
+                         <EditableField
+                           label="Email Address"
+                           value={userSettings.email}
+                           onSave={handleSaveEmail}
+                           placeholder="Enter your email address"
+                         />
+                         <div className="profile-settings-divider"></div>
+                         <EditableField
+                           label="Password"
+                           value={userSettings.password}
+                           isPassword={true}
+                           onSave={handleSavePassword}
+                           placeholder="Enter your new password"
+                         />
                        </div>
                      </div>
 
@@ -463,19 +560,41 @@ export const Profile: React.FC<ProfileProps> = ({
                 <div className="profile-section__content">
                   <div className="profile-section__header-row">
                     <h3 className="profile-section__heading">Vehicles</h3>
-                    <Button 
-                      color="neutrals3" 
-                      variant="solid" 
-                      size="default"
-                      onClick={handleAddVehicleClick}
-                    >
-                      Add Vehicle
-                    </Button>
                   </div>
                   
-                  {/* Vehicle Search - conditionally visible */}
-                  {showVehicleSearch && (
-                    <div className="profile-vehicle-search">
+                  {/* Cars I Own */}
+                  <div className="profile-vehicles-subsection">
+                    <h4 className="profile-subsection__title">Cars I Own</h4>
+                    <div className="profile-vehicles-grid">
+                      {vehiclesIOwn.map((vehicle, index) => (
+                        <VehicleCard
+                          key={`own-${index}`}
+                          image={vehicleImageFor(vehicle.name)}
+                          name={vehicle.name}
+                          type="Vehicle"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                          ownership={vehicle.ownership}
+                          onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                          onViewDetails={() => {
+                            const { year, make, model } = parseVehicleName(vehicle.name);
+                            navigate(`/vehicles/${year}/${make}/${model}`);
+                          }}
+                          onRate={() => handleRateVehicle(vehicle.name)}
+                          userRating={getUserRating(vehicle.name)}
+                        />
+                      ))}
+                      <EmptyVehicleSection 
+                        type="own" 
+                        onClick={() => handleAddVehicleClick('own')}
+                      />
+                    </div>
+                    {/* Vehicle Search - appears inline under Cars I Own when active */}
+                    {activeVehicleSearch === 'own' && (
+                      <div className="profile-vehicle-search">
                         <div className="profile-vehicle-search__header">
                           <h4>Add a Vehicle</h4>
                           <button 
@@ -487,82 +606,101 @@ export const Profile: React.FC<ProfileProps> = ({
                         </div>
                         <VehicleSearch
                           onVehicleSelect={handleVehicleSelect}
-                          placeholder="Search for a vehicle..."
+                          placeholder="Start typing to search"
                           className="profile-vehicle-search__input"
+                          defaultOwnership="own"
+                          autoFocus={true}
                         />
-                    </div>
-                  )}
-                  
-                  {/* Cars I Own */}
-                  {vehiclesIOwn.length > 0 && (
-                    <div className="profile-vehicles-subsection">
-                      <h4 className="profile-subsection__title">Cars I Own</h4>
-                      <div className="profile-vehicles-grid">
-                        {vehiclesIOwn.map((vehicle, index) => (
-                            <VehicleCard
-                              key={`own-${index}`}
-                              image={vehicleImageFor(vehicle.name)}
-                              name={vehicle.name}
-                              type="Vehicle"
-                            rating1={9.1}
-                            rating2={8.5}
-                            hasMultipleRatings={true}
-                            isBookmarked={true}
-                            onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
-                            ownership={vehicle.ownership}
-                            onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
-                            onViewDetails={() => {
-                              const { year, make, model } = parseVehicleName(vehicle.name);
-                              navigate(`/vehicles/${year}/${make}/${model}`);
-                            }}
-                            onRate={() => handleRateVehicle(vehicle.name)}
-                            userRating={getUserRating(vehicle.name)}
-                          />
-                        ))}
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
-                  {/* Divider - only show if we have both sections */}
-                  {vehiclesIOwn.length > 0 && vehiclesIWant.length > 0 && (
-                    <div className="profile-section-divider"></div>
-                  )}
+                  {/* Divider - always show between sections */}
+                  <div className="profile-section-divider"></div>
 
                   {/* Cars I Want */}
-                  {vehiclesIWant.length > 0 && (
-                    <div className="profile-vehicles-subsection">
-                      <h4 className="profile-subsection__title">Cars I Want</h4>
-                      <div className="profile-vehicles-grid">
-                        {vehiclesIWant.map((vehicle, index) => (
+                  <div className="profile-vehicles-subsection">
+                    <h4 className="profile-subsection__title">Cars I Want</h4>
+                    <div className="profile-vehicles-grid">
+                      {vehiclesIWant.map((vehicle, index) => (
+                        <VehicleCard
+                          key={`want-${index}`}
+                          image={vehicleImageFor(vehicle.name)}
+                          name={vehicle.name}
+                          type="Vehicle"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                          ownership={vehicle.ownership}
+                          onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                          onViewDetails={() => {
+                            const { year, make, model } = parseVehicleName(vehicle.name);
+                            navigate(`/vehicles/${year}/${make}/${model}`);
+                          }}
+                          onRate={() => handleRateVehicle(vehicle.name)}
+                          userRating={getUserRating(vehicle.name)}
+                        />
+                      ))}
+                      <EmptyVehicleSection 
+                        type="want" 
+                        onClick={() => handleAddVehicleClick('want')}
+                      />
+                    </div>
+                    {/* Vehicle Search - appears inline under Cars I Want when active */}
+                    {activeVehicleSearch === 'want' && (
+                      <div className="profile-vehicle-search">
+                        <div className="profile-vehicle-search__header">
+                          <h4>Add a Vehicle</h4>
+                          <button 
+                            className="profile-vehicle-search__cancel"
+                            onClick={handleCancelVehicleSearch}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                        <VehicleSearch
+                          onVehicleSelect={handleVehicleSelect}
+                          placeholder="Start typing to search"
+                          className="profile-vehicle-search__input"
+                          defaultOwnership="want"
+                          autoFocus={true}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Divider - show between sections */}
+                  {vehiclesIReviewed.length > 0 && (
+                    <>
+                      <div className="profile-section-divider"></div>
+                      
+                      {/* Cars I Rated or Reviewed */}
+                      <div className="profile-vehicles-subsection">
+                        <h4 className="profile-subsection__title">Cars I Rated or Reviewed</h4>
+                        <div className="profile-vehicles-grid">
+                          {vehiclesIReviewed.map((vehicle, index) => (
                             <VehicleCard
-                              key={`want-${index}`}
-                              image={vehicleImageFor(vehicle.name)}
+                              key={`reviewed-${index}`}
+                              image={vehicle.image}
                               name={vehicle.name}
                               type="Vehicle"
-                            rating1={9.1}
-                            rating2={8.5}
-                            hasMultipleRatings={true}
-                            isBookmarked={true}
-                            onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
-                            ownership={vehicle.ownership}
-                            onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
-                            onViewDetails={() => {
-                              const { year, make, model } = parseVehicleName(vehicle.name);
-                              navigate(`/vehicles/${year}/${make}/${model}`);
-                            }}
-                            onRate={() => handleRateVehicle(vehicle.name)}
-                            userRating={getUserRating(vehicle.name)}
-                          />
-                        ))}
+                              rating1={vehicle.staffRating}
+                              rating2={vehicle.communityRating}
+                              hasMultipleRatings={true}
+                              isBookmarked={false}
+                              onViewDetails={() => {
+                                const { year, make, model } = parseVehicleName(vehicle.name);
+                                navigate(`/vehicles/${year}/${make}/${model}`);
+                              }}
+                              onRate={() => handleRateVehicle(vehicle.name)}
+                              userRating={vehicle.rating}
+                            />
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Show empty state if no vehicles and not searching */}
-                  {(localOnboardingData.vehicles || []).length === 0 && !showVehicleSearch && (
-                    <div className="profile-vehicles-subsection">
-                      <EmptyVehiclesCard onVehicleSelect={handleVehicleSelect} />
-                    </div>
+                    </>
                   )}
                 </div>
               </div>
@@ -661,6 +799,54 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Rate Your Cars Section */}
+              <div className="profile-section profile-section--vehicles">
+                <div className="profile-section__content">
+                  <div className="profile-section__header-row">
+                    <h3 className="profile-section__heading">Rate Your Cars</h3>
+                  </div>
+                  
+                  <div className="profile-vehicles-grid">
+                    {(() => {
+                      // Filter to show only owned vehicles that haven't been rated yet
+                      const unratedOwnedVehicles = vehiclesIOwn.filter(vehicle => 
+                        getUserRating(vehicle.name) === 0
+                      );
+
+                      if (unratedOwnedVehicles.length === 0) {
+                        return (
+                          <div className="profile-empty-state">
+                            <p>All your cars have been rated!</p>
+                          </div>
+                        );
+                      }
+
+                      return unratedOwnedVehicles.map((vehicle, index) => (
+                        <VehicleCard
+                          key={`rate-${index}`}
+                          image={vehicleImageFor(vehicle.name)}
+                          name={vehicle.name}
+                          type="Vehicle"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                          ownership={vehicle.ownership}
+                          onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                          onViewDetails={() => {
+                            const { year, make, model } = parseVehicleName(vehicle.name);
+                            navigate(`/vehicles/${year}/${make}/${model}`);
+                          }}
+                          onRate={() => handleRateVehicle(vehicle.name)}
+                          userRating={getUserRating(vehicle.name)}
+                        />
+                      ));
+                    })()}
+                  </div>
+                </div>
+              </div>
             </>
           )}
 
@@ -684,6 +870,12 @@ export const Profile: React.FC<ProfileProps> = ({
                       name="HOT ROD"
                       logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64aa7e852a20002f9bc04/hr-nl.svg"
                       isActive={newsletterSubscriptions['HOT ROD']}
+                      onToggleSubscription={handleNewsletterToggle}
+                    />
+                    <SubscriptionItem
+                      name="Events"
+                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/69040ce5e09a72000286cf1d/event.png"
+                      isActive={newsletterSubscriptions['Events']}
                       onToggleSubscription={handleNewsletterToggle}
                     />
                     <SubscriptionItem
@@ -728,40 +920,6 @@ export const Profile: React.FC<ProfileProps> = ({
 
           {activeTab === 'settings' && (
             <>
-              {/* Basic Info Section */}
-              <div className="profile-section profile-section--settings">
-                <div className="profile-settings-fields">
-                  <EditableField
-                    label="Full Name"
-                    value={userSettings.fullName}
-                    onSave={handleSaveFullName}
-                    placeholder="Enter your full name"
-                  />
-                  <div className="profile-settings-divider"></div>
-                  <EditableField
-                    label="Username"
-                    value={userSettings.username}
-                    onSave={handleSaveUsername}
-                    placeholder="Enter your username"
-                  />
-                  <div className="profile-settings-divider"></div>
-                  <EditableField
-                    label="Email Address"
-                    value={userSettings.email}
-                    onSave={handleSaveEmail}
-                    placeholder="Enter your email address"
-                  />
-                  <div className="profile-settings-divider"></div>
-                  <EditableField
-                    label="Password"
-                    value={userSettings.password}
-                    isPassword={true}
-                    onSave={handleSavePassword}
-                    placeholder="Enter your new password"
-                  />
-                </div>
-              </div>
-
               {/* Connected Accounts Section */}
               <div className="profile-section profile-section--connected-accounts">
                 <h3 className="profile-connected-accounts-title">Connected Accounts</h3>
@@ -987,6 +1145,35 @@ export const Profile: React.FC<ProfileProps> = ({
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
+        onClear={handleClearRating}
+      />
+
+      {/* Write Review Modal */}
+      <WriteReviewModal
+        isOpen={writeReviewModal.isOpen}
+        onClose={() => setWriteReviewModal({ isOpen: false, vehicleName: '', vehicleImage: undefined })}
+        vehicleName={writeReviewModal.vehicleName}
+        vehicleImage={writeReviewModal.vehicleImage}
+        onSubmit={handleSubmitReview}
+      />
+
+      {/* Review Submitted Modal */}
+      <ReviewSubmittedToast
+        isVisible={isReviewToastVisible}
+        onClose={() => {
+          setIsReviewToastVisible(false);
+          setReviewedVehicleName('');
+        }}
+        onViewReview={() => {
+          if (reviewedVehicleName) {
+            const { year, make, model } = parseVehicleName(reviewedVehicleName);
+            setIsReviewToastVisible(false);
+            setReviewedVehicleName('');
+            navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
+          }
+        }}
+        vehicleName={reviewedVehicleName}
       />
     </div>
   );

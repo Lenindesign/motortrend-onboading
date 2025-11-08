@@ -51,6 +51,16 @@
   position: relative;
 }
 
+.global-header__nav-item::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 999;
+}
+
 .global-header__nav-link {
   display: flex;
   align-items: center;
@@ -82,9 +92,9 @@
 /* Navigation Dropdown */
 .global-header__dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 4px);
   left: 0;
-  margin-top: 4px;
+  margin-top: 0;
   width: max-content;
   min-width: 200px;
   max-width: 280px;
@@ -128,24 +138,91 @@
   gap: var(--spacing-2);
 }
 
-.global-header__search-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 8px;
-  background-color: var(--color-neutrals-3);
-  border: none;
-  border-radius: var(--border-radius-sm);
-  color: var(--color-neutrals-8);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* Search Box */
+.global-header__search {
+  position: relative;
+  width: 280px;
+  flex-shrink: 1;
+  min-width: 200px;
 }
 
-.global-header__search-btn:hover {
-  background-color: var(--color-neutrals-4);
+.global-header__search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.global-header__search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--color-neutrals-5);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.global-header__search-input {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.286em;
+  color: var(--color-neutrals-8);
+  background-color: var(--color-neutrals-3);
+  border: 1px solid var(--color-neutrals-4);
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.global-header__search-input:focus {
+  background-color: var(--color-neutrals-2);
+  border-color: var(--color-primary-1);
+  color: var(--color-neutrals-8);
+}
+
+.global-header__search-input::placeholder {
+  color: var(--color-neutrals-5);
+}
+
+.global-header__search-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin-top: 0;
+  background-color: #141416;
+  border: 1px solid #374151;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.global-header__search-dropdown-item {
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-bottom: 1px solid #374151;
+}
+
+.global-header__search-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.global-header__search-dropdown-item:hover,
+.global-header__search-dropdown-item--highlighted {
+  background-color: #374151;
+  color: #FFFFFF;
 }
 
 .global-header__sign-in-btn {
@@ -191,6 +268,16 @@
 /* User Menu */
 .global-header__user-menu {
   position: relative;
+}
+
+.global-header__user-menu::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  z-index: 999;
 }
 
 .global-header__user-btn {
@@ -246,13 +333,42 @@
   transform: translateZ(0);
 }
 
+.global-header__user-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.global-header__profile-notification-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+  z-index: 10;
+  box-shadow: 0 0 0 2px #141416;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+}
+
 
 /* User Dropdown */
 .global-header__user-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   right: 0;
-  margin-top: 8px;
+  margin-top: 0;
   width: max-content;
   min-width: 200px;
   max-width: 320px;
@@ -481,15 +597,23 @@
     height: 24px;
   }
   
-  .global-header__search-btn {
-    width: 36px;
-    height: 36px;
-    padding: 6px;
+  .global-header__search {
+    width: 200px;
+    min-width: 150px;
   }
 
-  .global-header__search-btn svg {
-    width: 20px;
-    height: 20px;
+  .global-header__search-input {
+    padding: 8px 10px 8px 36px;
+    font-size: 14px;
+  }
+
+  .global-header__search-icon {
+    left: 10px;
+  }
+
+  .global-header__search-icon svg {
+    width: 18px;
+    height: 18px;
   }
 
   .global-header__user-btn {
@@ -502,6 +626,13 @@
     width: 28px;
     height: 28px;
   }
+
+  .global-header__profile-notification-dot {
+    width: 8px;
+    height: 8px;
+    top: -1px;
+    right: -1px;
+  }
 }
 
 /* Medium mobile breakpoint for better responsive design */
@@ -511,15 +642,23 @@
     height: 22px;
   }
   
-  .global-header__search-btn {
-    width: 34px;
-    height: 34px;
-    padding: 5px;
+  .global-header__search {
+    width: 180px;
+    min-width: 140px;
   }
 
-  .global-header__search-btn svg {
-    width: 18px;
-    height: 18px;
+  .global-header__search-input {
+    padding: 7px 9px 7px 32px;
+    font-size: 13px;
+  }
+
+  .global-header__search-icon {
+    left: 9px;
+  }
+
+  .global-header__search-icon svg {
+    width: 16px;
+    height: 16px;
   }
 
   .global-header__user-btn {
@@ -531,6 +670,13 @@
   .global-header__user-avatar-img {
     width: 26px;
     height: 26px;
+  }
+
+  .global-header__profile-notification-dot {
+    width: 8px;
+    height: 8px;
+    top: -1px;
+    right: -1px;
   }
 }
 
@@ -560,15 +706,23 @@
     height: 20px;
   }
   
-  .global-header__search-btn {
-    width: 32px;
-    height: 32px;
-    padding: 4px;
+  .global-header__search {
+    width: 160px;
+    min-width: 120px;
   }
 
-  .global-header__search-btn svg {
-    width: 16px;
-    height: 16px;
+  .global-header__search-input {
+    padding: 6px 8px 6px 30px;
+    font-size: 12px;
+  }
+
+  .global-header__search-icon {
+    left: 8px;
+  }
+
+  .global-header__search-icon svg {
+    width: 14px;
+    height: 14px;
   }
 
   .global-header__user-btn {
@@ -580,6 +734,13 @@
   .global-header__user-avatar-img {
     width: 24px;
     height: 24px;
+  }
+
+  .global-header__profile-notification-dot {
+    width: 7px;
+    height: 7px;
+    top: -1px;
+    right: -1px;
   }
   
   .global-header__user-dropdown {

@@ -59,6 +59,19 @@
   color: var(--color-neutrals-8);
 }
 
+.global-footer__links--documentation {
+  margin-top: var(--spacing-2);
+}
+
+.global-footer__docs-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutrals-6);
+}
+
+.global-footer__link--docs {
+  font-weight: var(--font-weight-medium);
+}
+
 /* Newsletter Section */
 .global-footer__newsletter {
   width: 300px;

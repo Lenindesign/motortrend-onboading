@@ -120,6 +120,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -133,6 +134,7 @@
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -180,7 +182,7 @@
 .card__bottom-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   gap: 16px;
   min-height: 34px;
 }
@@ -195,25 +197,56 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-family: var(--font-body);
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 14px;
   color: var(--color-neutrals-2);
 }
 
-.card__rating span {
+.card__rating span:not(.card__rating-label):not(.card__rating-value) {
   font-size: 14px;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+}
+
+.card__rating-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+}
+
+.card__rating-label {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+}
+
+.card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+}
+
+.card__rating-display .card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.card__rating.card__rating--with-tooltip .card__rating-display .card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.card__rating-display span.card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
 }
 
 .card__rate-option span {
-  position: relative;
-  top: -2px;
-  left: 3px;
-}
-
-.card__rate-option .card__rating-star {
-  position: relative;
-  top: 2px;
+  font-weight: 600;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
 }
 
 .card__rating-star {
@@ -235,7 +268,7 @@
   color: var(--color-white);
   padding: 6px 10px;
   border-radius: 4px;
-  font-family: var(--font-body);
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 12px;
   line-height: 1.2;
@@ -265,11 +298,15 @@
 }
 
 .card__rate-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
   transition: opacity 0.2s ease;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
 }
 
 .card__rate-option:hover {

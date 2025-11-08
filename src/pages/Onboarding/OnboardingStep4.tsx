@@ -23,7 +23,7 @@ const newsletterOptions = [
   {
     id: 'motortrend',
     title: 'Subscribe to MotorTrend Newsletter',
-    description: 'Get the latest automotive news and insights delivered to your inbox',
+    description: 'Trust MotorTrend for the best car reviews, news, car rankings, and much more',
     logo: 'motortrend',
   },
   {
@@ -31,6 +31,12 @@ const newsletterOptions = [
     title: 'Subscribe to HOT ROD Newsletter',
     description: 'Get the latest automotive news and insights delivered to your inbox',
     logo: 'hotrod',
+  },
+  {
+    id: 'events',
+    title: 'Subscribe to Our Events Newsletter',
+    description: 'Stay informed on our epic car events!',
+    logo: 'events',
   },
 ];
 
@@ -111,10 +117,18 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                       height="72"
                       style={{ borderRadius: '8px' }}
                     />
-                  ) : (
+                  ) : newsletter.logo === 'hotrod' ? (
                     <img 
                       src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64aa7e852a20002f9bc04/hr-nl.svg" 
                       alt="HOT ROD Newsletter" 
+                      width="72" 
+                      height="72"
+                      style={{ borderRadius: '8px' }}
+                    />
+                  ) : (
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/69040ce5e09a72000286cf1d/event.png" 
+                      alt="Our Events Newsletter" 
                       width="72" 
                       height="72"
                       style={{ borderRadius: '8px' }}
