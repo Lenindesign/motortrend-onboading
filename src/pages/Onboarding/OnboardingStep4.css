@@ -46,14 +46,14 @@
 .newsletter-card:hover {
   border-color: var(--color-neutrals-5);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
 }
 
 .newsletter-card--selected {
   background-color: var(--color-neutrals-2);
   border-color: var(--color-neutrals-2);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
 }
 
 .newsletter-card--selected:hover {

@@ -10,7 +10,7 @@
 }
 
 .vehicle-inventory .container {
-  max-width: 1280px;
+  max-width: var(--max-width-container);
 }
 
 /* Hero Slider Section */

@@ -14,7 +14,7 @@
 }
 
 .comparison-card:hover {
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
   transform: translateY(-1px);
 }
 

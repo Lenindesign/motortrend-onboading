@@ -5,6 +5,7 @@
 
 import React from 'react';
 import Card from '../Card';
+import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 
 export interface VehicleCardProps {
   image: string;
@@ -41,11 +42,15 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   if (rating1) ratings.push({ value: rating1, color: '#FFB74D' });
   if (rating2) ratings.push({ value: rating2, color: '#33CCFF' });
 
+  // Get body style from vehicle name
+  const bodyStyles = getVehicleBodyStyle(name);
+  const bodyStyle = bodyStyles[0] || 'Sedan'; // Use first body style or default to Sedan
+
   return (
     <Card
       image={image}
       title={name}
-      type={type}
+      type={bodyStyle}
       ratings={ratings}
       hasMultipleRatings={hasMultipleRatings}
       onBookmark={onBookmark}

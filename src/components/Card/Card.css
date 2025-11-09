@@ -6,14 +6,14 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 16px 16px 16px;
-  background: #FCFCFD;
-  border: 1px solid #E6E8EC;
-  border-radius: 12px;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2);
+  background: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
   width: 100%;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-depth-5);
+  transition: all var(--transition-fast);
   align-self: space-between;
   align-items: stretch;
   justify-content: space-between;
@@ -21,20 +21,20 @@
 }
 
 .card:hover {
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
   transform: translateY(-1px);
 }
 
 .card--compact {
-  padding: 12px;
-  gap: 8px;
+  padding: var(--spacing-2);
+  gap: var(--spacing-1);
 }
 
 .card__top-row {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-2);
 }
 
 .card__image-container {
@@ -48,7 +48,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .card__bookmark-btn {
@@ -63,10 +63,10 @@
   padding: 4px;
   background: rgba(0, 0, 0, 0.4);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   backdrop-filter: blur(4px);
 }
 
@@ -160,7 +160,7 @@
 /* Vehicle ownership section */
 .card__ownership {
   display: flex;
-  gap: 24px;
+  gap: var(--spacing-3);
   align-items: center;
   margin-top: 12px;
 }
@@ -183,13 +183,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-2);
   min-height: 34px;
 }
 
 .card__ratings {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-2);
   align-items: center;
 }
 
@@ -267,7 +267,7 @@
   background: var(--color-neutrals-2);
   color: var(--color-white);
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 12px;
@@ -278,7 +278,7 @@
   z-index: 1001;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   pointer-events: none;
 }
 
@@ -326,7 +326,7 @@
   font-size: 14px;
   color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   white-space: nowrap;
   height: 36px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -365,11 +365,11 @@
   .card {
     padding: 12px;
     gap: 10px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-md);
   }
   
   .card__top-row {
-    gap: 12px;
+    gap: var(--spacing-2);
   }
   
   .card__image-container {
@@ -401,7 +401,7 @@
   }
   
   .card__ownership {
-    gap: 16px;
+    gap: var(--spacing-2);
     margin-top: 8px;
   }
   
@@ -446,7 +446,7 @@
   }
   
   .card__ownership {
-    gap: 12px;
+    gap: var(--spacing-2);
     margin-top: 6px;
   }
   

@@ -42,7 +42,7 @@ export const spacing = {
 
 // Maximum content width
 export const maxWidth = {
-  container: '1040px',  // Standard container max-width from design rules
+  container: '1280px',  // Standard container max-width from design rules
   content: '1280px',    // Content area from Figma
 } as const;
 

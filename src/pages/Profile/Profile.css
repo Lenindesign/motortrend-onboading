@@ -6,9 +6,9 @@
 .profile-page {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-2);
   width: 100%;
-  max-width: 1280px;
+  max-width: var(--max-width-container);
   margin: 0 auto;
   background-color: var(--color-neutrals-8);
   padding-bottom: var(--spacing-4);
@@ -18,8 +18,8 @@
   display: flex;
   flex-direction: row;
   align-self: stretch;
-  gap: 12px;
-  padding: 0 24px;
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-3);
 }
 
 .profile-sidebar {
@@ -30,7 +30,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
   flex: 1;
   max-width: 966px;
 }
@@ -41,11 +41,11 @@
   flex-direction: column;
   justify-content: center;
   align-self: stretch;
-  gap: 24px;
-  padding: 24px;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
   background-color: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-depth-5);
 }
 
@@ -71,7 +71,7 @@
 }
 
 .profile-section--articles {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--form {
@@ -79,28 +79,28 @@
 }
 
 .profile-section--vehicles {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--comparisons {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--videos {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--subscriptions {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--settings {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--connected-accounts {
-  padding: 24px;
-  gap: 24px;
+  padding: var(--spacing-3);
+  gap: var(--spacing-3);
 }
 
 .profile-section__title {
@@ -116,7 +116,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -167,7 +167,7 @@
 .profile-articles {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -191,7 +191,7 @@
 .profile-vehicles-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
   text-align: left;
 }
@@ -212,7 +212,7 @@
 .profile-comparisons-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -220,7 +220,7 @@
 .profile-videos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -228,7 +228,7 @@
 .profile-subscriptions-grid {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 918px;
   flex-wrap: wrap;
 }
@@ -237,7 +237,7 @@
 .profile-settings-fields {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -259,7 +259,7 @@
 .profile-connected-accounts-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -284,7 +284,7 @@
 .profile-form-header {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 .profile-form-title {
@@ -306,7 +306,7 @@
   padding: 48px;
   background-color: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-7);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-depth-5);
 }
 
@@ -538,7 +538,7 @@
   .profile-section__header-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-2);
   }
 
   .profile-section__add-btn {
@@ -555,15 +555,15 @@
 .privacy-settings-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
 }
 
 .privacy-setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 .privacy-setting-info {
@@ -659,15 +659,15 @@
 .personal-settings-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
 }
 
 .personal-setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 .personal-setting-info {
@@ -719,8 +719,8 @@
 .delete-account-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
 }
 
 .delete-account-warning {
@@ -774,7 +774,7 @@
 .delete-account-checkbox {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-2);
   cursor: pointer;
 }
 
@@ -858,7 +858,7 @@
   .personal-setting-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-2);
   }
   
   .privacy-setting-control,
