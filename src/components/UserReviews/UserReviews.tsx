@@ -12,6 +12,16 @@ export interface ReplyData {
   date: string;
 }
 
+export interface CommentData {
+  id: string;
+  commenterName: string;
+  content: string;
+  date: string;
+  likes?: number;
+  isLiked?: boolean;
+  replies?: ReplyData[];
+}
+
 export type VerificationLevel = 'none' | 'owner' | 'verified' | 'verified_documents';
 export type VehicleRelationship = 'own' | 'previously_owned' | 'leased' | 'rented' | 'test_drove' | 'passenger';
 
@@ -52,6 +62,7 @@ interface UserReviewsProps {
   reviews: ReviewData[];
   onWriteReview?: () => void;
   onUpdateReview?: (reviewId: string, updatedReview: ReviewData) => void;
+  defaultTab?: 'reviews' | 'comments';
 }
 
 export const UserReviews: React.FC<UserReviewsProps> = ({ 
@@ -62,7 +73,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   vehicleImage,
   reviews,
   onWriteReview,
-  onUpdateReview
+  onUpdateReview,
+  defaultTab = 'reviews'
 }) => {
   const [expandedReview, setExpandedReview] = useState<string | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -79,6 +91,11 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const [sortBy, setSortBy] = useState<'best' | 'latest_owners' | 'verified_owners' | 'all'>('best');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
+  const [activeTab, setActiveTab] = useState<'reviews' | 'comments'>(defaultTab);
+  const [comments, setComments] = useState<CommentData[]>([]);
+  const [commentText, setCommentText] = useState<string>('');
+  const [commentSortBy, setCommentSortBy] = useState<'newest' | 'oldest' | 'most_liked'>('newest');
+  const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({});
   const { getUserRating, setUserRating } = useRating();
   const userRating = getUserRating(vehicleName);
 
@@ -421,6 +438,129 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     }
   };
 
+  // Default comments for illustration
+  const getDefaultComments = (): CommentData[] => {
+    return [
+      {
+        id: 'comment_default_1',
+        commenterName: 'one2three',
+        content: 'Edgy design makes this the most head-turning Elantra yet. But it\'s more than just stylish—the Elantra is comfortable and offers many features. Value is high, and the hardcore Elantra N is a riot.',
+        date: '4 days ago',
+        likes: 30,
+        isLiked: false,
+        replies: []
+      },
+      {
+        id: 'comment_default_2',
+        commenterName: 'Ajm4042',
+        content: 'Edgy design makes this the most head-turning Elantra yet. But it\'s more than just stylish—the Elantra is comfortable and offers many features. Value is high, and the hardcore Elantra N is a riot.',
+        date: '4 days ago',
+        likes: 30,
+        isLiked: false,
+        replies: []
+      }
+    ];
+  };
+
+  // Load comments from localStorage
+  useEffect(() => {
+    try {
+      const commentsKey = `comments_${vehicleName}`;
+      const savedCommentsJson = localStorage.getItem(commentsKey);
+      if (savedCommentsJson) {
+        const savedComments: CommentData[] = JSON.parse(savedCommentsJson);
+        setComments(savedComments);
+        // Load like states
+        const likesKey = `commentLikes_${vehicleName}`;
+        const savedLikesJson = localStorage.getItem(likesKey);
+        if (savedLikesJson) {
+          setCommentLikes(JSON.parse(savedLikesJson));
+        }
+      } else {
+        // Use default comments if no saved comments exist
+        const defaultComments = getDefaultComments();
+        setComments(defaultComments);
+        // Save default comments to localStorage
+        localStorage.setItem(commentsKey, JSON.stringify(defaultComments));
+      }
+    } catch (error) {
+      console.error('Error loading comments:', error);
+      // Use default comments on error
+      const defaultComments = getDefaultComments();
+      setComments(defaultComments);
+    }
+  }, [vehicleName]);
+
+  const handlePostComment = () => {
+    if (!commentText.trim()) return;
+
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      const userName = onboardingData ? JSON.parse(onboardingData).fullName || 'You' : 'You';
+
+      const newComment: CommentData = {
+        id: `comment_${Date.now()}`,
+        commenterName: userName,
+        content: commentText.trim(),
+        date: new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric' 
+        }),
+        likes: 0,
+        isLiked: false,
+        replies: []
+      };
+
+      const updatedComments = [newComment, ...comments];
+      setComments(updatedComments);
+      setCommentText('');
+
+      // Save to localStorage
+      const commentsKey = `comments_${vehicleName}`;
+      localStorage.setItem(commentsKey, JSON.stringify(updatedComments));
+    } catch (error) {
+      console.error('Error posting comment:', error);
+    }
+  };
+
+  const handleCommentLike = (commentId: string) => {
+    const isLiked = commentLikes[commentId] || false;
+    const newLikes = { ...commentLikes, [commentId]: !isLiked };
+    setCommentLikes(newLikes);
+
+    // Update comment likes count
+    const updatedComments = comments.map(comment => {
+      if (comment.id === commentId) {
+        return {
+          ...comment,
+          likes: (comment.likes || 0) + (isLiked ? -1 : 1)
+        };
+      }
+      return comment;
+    });
+    setComments(updatedComments);
+
+    // Save to localStorage
+    const commentsKey = `comments_${vehicleName}`;
+    const likesKey = `commentLikes_${vehicleName}`;
+    localStorage.setItem(commentsKey, JSON.stringify(updatedComments));
+    localStorage.setItem(likesKey, JSON.stringify(newLikes));
+  };
+
+  const getSortedComments = (): CommentData[] => {
+    const sorted = [...comments];
+    switch (commentSortBy) {
+      case 'oldest':
+        return sorted;
+      case 'most_liked':
+        return sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+      case 'newest':
+      default:
+        return sorted; // Already in newest order
+    }
+  };
+
   return (
     <div className="user-reviews">
       {/* Main Header */}
@@ -437,6 +577,24 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
       </div>
 
       <div className="user-reviews__content">
+        {/* Tabs */}
+        <div className="user-reviews__tabs">
+          <button
+            className={`user-reviews__tab ${activeTab === 'reviews' ? 'user-reviews__tab--active' : ''}`}
+            onClick={() => setActiveTab('reviews')}
+          >
+            Reviews
+          </button>
+          <button
+            className={`user-reviews__tab ${activeTab === 'comments' ? 'user-reviews__tab--active' : ''}`}
+            onClick={() => setActiveTab('comments')}
+          >
+            Comments
+          </button>
+        </div>
+
+        {activeTab === 'reviews' ? (
+          <>
         {/* Vehicle Name and Write Review Button */}
         <div className="user-reviews__vehicle-header">
           <h3 className="user-reviews__vehicle-name">
@@ -838,6 +996,110 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
             </button>
           )}
         </div>
+          </>
+        ) : (
+          <>
+            {/* Comments Section */}
+            <div className="user-reviews__comments-section">
+              <div className="user-reviews__comments-header">
+                <h3 className="user-reviews__comments-title">Conversation</h3>
+                <div className="user-reviews__comments-header-right">
+                  <span className="user-reviews__comments-count">{comments.length} Comment{comments.length !== 1 ? 's' : ''}</span>
+                  <div className="user-reviews__comment-sort-dropdown">
+                    <label className="user-reviews__comment-sort-label">Sort by</label>
+                    <select
+                      className="user-reviews__comment-sort-select"
+                      value={commentSortBy}
+                      onChange={(e) => setCommentSortBy(e.target.value as 'newest' | 'oldest' | 'most_liked')}
+                    >
+                      <option value="newest">Newest</option>
+                      <option value="oldest">Oldest</option>
+                      <option value="most_liked">Most Liked</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comment Input */}
+              <div className="user-reviews__comment-input-section">
+                <textarea
+                  className="user-reviews__comment-input"
+                  placeholder="What do you think?"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  rows={3}
+                />
+                <button
+                  className="user-reviews__comment-submit-btn"
+                  onClick={handlePostComment}
+                  disabled={!commentText.trim()}
+                >
+                  Post Comment
+                </button>
+              </div>
+
+              {/* Comments List */}
+              <div className="user-reviews__comments-list">
+                {getSortedComments().length === 0 ? (
+                  <div className="user-reviews__no-comments">
+                    No comments yet. Be the first to comment!
+                  </div>
+                ) : (
+                  getSortedComments().map((comment) => (
+                    <div key={comment.id} className="user-reviews__comment-card">
+                      <div className="user-reviews__comment-header">
+                        <div className="user-reviews__commenter-avatar">
+                          {comment.commenterName === 'You' && userAvatar ? (
+                            <img 
+                              src={userAvatar} 
+                              alt="Your avatar" 
+                              className="user-reviews__commenter-avatar-img"
+                            />
+                          ) : (
+                            <div className="user-reviews__commenter-avatar-placeholder">
+                              {getInitials(comment.commenterName)}
+                            </div>
+                          )}
+                        </div>
+                        <div className="user-reviews__commenter-info">
+                          <span className="user-reviews__commenter-name">{comment.commenterName}</span>
+                          <span className="user-reviews__comment-date">{comment.date}</span>
+                        </div>
+                      </div>
+                      <div className="user-reviews__comment-content">
+                        {comment.content}
+                      </div>
+                      <div className="user-reviews__comment-actions">
+                        <button 
+                          className={`user-reviews__comment-like-btn ${commentLikes[comment.id] ? 'user-reviews__comment-like-btn--active' : ''}`}
+                          onClick={() => handleCommentLike(comment.id)}
+                        >
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/69024b627e39a30002ddc45d/thumbsup.svg"
+                            alt="Like"
+                            className="user-reviews__comment-like-icon"
+                            style={{
+                              filter: commentLikes[comment.id]
+                                ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' 
+                                : 'brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(90%) contrast(86%)'
+                            }}
+                          />
+                          {comment.likes || 0}
+                        </button>
+                        <button className="user-reviews__comment-reply-btn">
+                          Reply
+                        </button>
+                        <button className="user-reviews__comment-share-btn">
+                          Share
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Rating Modal */}

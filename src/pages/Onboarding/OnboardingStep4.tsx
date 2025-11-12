@@ -175,7 +175,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
               onClick={handlePrevious}
             >
               <Icon name="chevron_left" size={20} />
-              <span>Previous</span>
+              <span>Back</span>
             </button>
 
             <button

@@ -8,8 +8,6 @@
   flex-direction: column;
   gap: var(--spacing-2);
   width: 100%;
-  max-width: var(--max-width-container);
-  margin: 0 auto;
   background-color: var(--color-neutrals-8);
   padding-bottom: var(--spacing-4);
 }
@@ -20,6 +18,9 @@
   align-self: stretch;
   gap: var(--spacing-2);
   padding: 0 var(--spacing-3);
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  width: 100%;
 }
 
 .profile-sidebar {
@@ -164,6 +165,15 @@
   height: 19px;
 }
 
+.profile-section__empty {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-neutrals-4);
+  text-align: center;
+  padding: var(--spacing-4);
+  margin: 0;
+}
+
 .profile-articles {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -231,6 +241,29 @@
   gap: var(--spacing-3);
   width: 918px;
   flex-wrap: wrap;
+}
+
+/* Hide specific subscription items */
+.profile-section--subscriptions:nth-of-type(1) .profile-subscriptions-grid .subscription-item:nth-of-type(4) {
+  display: none;
+}
+
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(2),
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(3) {
+  display: none;
+}
+
+/* Hide badge elements */
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(1) .subscription-item__badge--clickable {
+  display: none;
+}
+
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(1) .subscription-item__badge--clickable svg {
+  display: none;
+}
+
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(1) .subscription-item__badge--clickable svg circle {
+  display: none;
 }
 
 /* Account Settings Section */

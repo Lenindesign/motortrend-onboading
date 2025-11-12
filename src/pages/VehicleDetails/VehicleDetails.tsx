@@ -19,6 +19,8 @@ import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
 import { RatingDistributionTooltip, type RatingDistributionData } from '../../components/RatingDistributionTooltip';
 import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
+import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
+import { articles } from '../../utils/articles';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -39,7 +41,11 @@ export const VehicleDetails: React.FC = () => {
   const staffRatingRef = useRef<HTMLDivElement>(null);
   const hideTooltipTimeout = useRef<number | null>(null);
   const hideStaffTooltipTimeout = useRef<number | null>(null);
+  const ratingsBarRef = useRef<HTMLDivElement>(null);
+  const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const [communityRatingCount, setCommunityRatingCount] = useState(252);
+  const [listings, setListings] = useState<VehicleListing[]>([]);
+  const [isLoadingListings, setIsLoadingListings] = useState(true);
   
   // Parse vehicle name from URL params
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel}`;
@@ -437,7 +443,23 @@ export const VehicleDetails: React.FC = () => {
     communityRatingCount: 252,
     priceRange: reviewData.priceRange,
     award: reviewData.award,
-    image: vehicleImageFor(vehicleName),
+    image: (() => {
+      // Use custom image for Kia EV9-Land
+      const normalizedVehicleName = vehicleName.toLowerCase().replace(/-/g, ' ');
+      const normalizedMake = decodedMake.toLowerCase();
+      const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
+      const isKiaEV9 = (normalizedMake === 'kia' && normalizedModel.includes('ev9')) ||
+                      normalizedVehicleName.includes('kia ev9') ||
+                      normalizedModel === 'ev9' ||
+                      normalizedModel === 'ev9 land' ||
+                      decodedModel.toLowerCase() === 'ev9-land';
+      
+      if (isKiaEV9) {
+        return 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg';
+      }
+      
+      return vehicleImageFor(vehicleName);
+    })(),
     pros: reviewData.pros,
     cons: reviewData.cons,
     trims: reviewData.trims,
@@ -478,6 +500,45 @@ export const VehicleDetails: React.FC = () => {
       console.error('Error checking saved vehicle status:', error);
     }
   }, [vehicleName]);
+
+  // Reload reviews when vehicleName changes to ensure saved reviews are displayed
+  // Use a ref to track the previous vehicleName to avoid reloading unnecessarily
+  const prevVehicleNameRef = useRef<string>(vehicleName);
+  useEffect(() => {
+    // Only reload if vehicleName actually changed (not just on mount)
+    if (prevVehicleNameRef.current !== vehicleName) {
+      const loadedReviews = getInitialReviews();
+      setReviews(loadedReviews);
+      prevVehicleNameRef.current = vehicleName;
+    }
+  }, [vehicleName]);
+
+  // Fetch local listings when vehicle changes
+  useEffect(() => {
+    const loadListings = async () => {
+      setIsLoadingListings(true);
+      try {
+        const yearNum = parseInt(decodedYear) || new Date().getFullYear();
+        const fetchedListings = await fetchVehicleListings(yearNum, decodedMake, decodedModel, 4);
+        // Set images for listings using vehicleImageFor
+        const listingsWithImages = fetchedListings.map((listing) => {
+          const listingVehicleName = `${listing.year} ${listing.make} ${listing.model}`;
+          return {
+            ...listing,
+            image: vehicleImageFor(listingVehicleName)
+          };
+        });
+        setListings(listingsWithImages);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+        setListings([]);
+      } finally {
+        setIsLoadingListings(false);
+      }
+    };
+    
+    loadListings();
+  }, [decodedYear, decodedMake, decodedModel]);
 
   const handleSave = () => {
     try {
@@ -693,12 +754,105 @@ export const VehicleDetails: React.FC = () => {
     };
   }, []);
 
+  // Scroll detection for sticky rate bar
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!ratingsBarRef.current) return;
+
+      const ratingsBarRect = ratingsBarRef.current.getBoundingClientRect();
+      
+      // When the ratings bar reaches or passes the top of the viewport
+      if (ratingsBarRect.top <= 0) {
+        setIsStickyBarVisible(true);
+      } else {
+        setIsStickyBarVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   // Both tooltips now follow their elements on scroll (no hide on scroll)
 
   const availableYears = ['2025', '2024', '2023', '2022', '2021'];
 
   return (
     <div className="vehicle-details">
+      {/* Sticky Rate Bar - appears when scrolled */}
+      <div className={`vehicle-details__sticky-rate-bar ${isStickyBarVisible ? 'vehicle-details__sticky-rate-bar--visible' : ''}`}>
+        <div className="vehicle-details__sticky-rate-bar-content">
+          <div className="vehicle-details__sticky-vehicle-name">
+            {vehicleName}
+          </div>
+          <div className="vehicle-details__sticky-ratings">
+            <div 
+              className="vehicle-details__sticky-rating-item" 
+              onClick={handleScrollToStaffRating}
+            >
+              <span className="vehicle-details__sticky-rating-label">MotorTrend</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
+                alt="MotorTrend Rating Star" 
+                className="vehicle-details__sticky-rating-icon" 
+              />
+              <span className="vehicle-details__sticky-rating-value">{vehicleData.staffRating}</span>
+            </div>
+            <div 
+              className="vehicle-details__sticky-rating-item" 
+              onClick={handleScrollToCommunityRatings}
+            >
+              <span className="vehicle-details__sticky-rating-label">Community ({communityRatingCount})</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                alt="Community Rating Star" 
+                className="vehicle-details__sticky-rating-icon" 
+              />
+              <span className="vehicle-details__sticky-rating-value">
+                {vehicleData.communityRating % 1 === 0 
+                  ? vehicleData.communityRating 
+                  : vehicleData.communityRating.toFixed(1)}
+              </span>
+            </div>
+            <button 
+              className="vehicle-details__sticky-rating-item vehicle-details__sticky-rate-btn" 
+              onClick={handleOpenRatingModal}
+            >
+              <span className="vehicle-details__sticky-rating-label">
+                {userRating > 0 ? 'Yours' : 'Add Your Rating'}
+              </span>
+              <img 
+                src={userRating > 0 
+                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                } 
+                alt="Add Rating Star" 
+                className="vehicle-details__sticky-rating-icon" 
+              />
+              {userRating > 0 && (
+                <span className="vehicle-details__sticky-rating-value">{userRating}</span>
+              )}
+            </button>
+          </div>
+          <button 
+            className="vehicle-details__sticky-cta"
+            onClick={() => {
+              // Scroll to local listings section
+              const listingsSection = document.querySelector('.vehicle-details__listings');
+              if (listingsSection) {
+                listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }}
+          >
+            See Local Listings
+          </button>
+        </div>
+      </div>
+
       {/* Breadcrumbs and Social Share */}
       <div className="vehicle-details__top-section">
         <div className="vehicle-details__breadcrumbs">
@@ -771,7 +925,7 @@ export const VehicleDetails: React.FC = () => {
           </div>
 
           {/* Ratings Section */}
-          <div className="vehicle-details__ratings">
+          <div ref={ratingsBarRef} className="vehicle-details__ratings">
             <div 
               ref={staffRatingRef}
               className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
@@ -779,10 +933,10 @@ export const VehicleDetails: React.FC = () => {
               onMouseEnter={handleStaffTooltipMouseEnter}
               onMouseLeave={handleStaffTooltipMouseLeave}
             >
-              <span className="vehicle-details__rating-label">Staff</span>
+              <span className="vehicle-details__rating-label">MotorTrend</span>
               <img 
                 src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                alt="Staff Rating Star" 
+                alt="MotorTrend Rating Star" 
                 className="vehicle-details__rating-icon staff" 
               />
               <span className="vehicle-details__rating-value">{vehicleData.staffRating}</span>
@@ -924,40 +1078,37 @@ export const VehicleDetails: React.FC = () => {
           <div className="vehicle-details__listings">
             <h2>Local Listings</h2>
             <div className="vehicle-details__listings-grid">
-              {(() => {
-                // Use specific images for 2021 Subaru WRX
-                const is2021SubaruWRX = decodedYear === '2021' && decodedMake === 'Subaru' && decodedModel === 'WRX';
-                const listingImages = is2021SubaruWRX
-                  ? [
-                      'https://d2kde5ohu8qb21.cloudfront.net/files/69045131774a4b00025c59dd/1452a23b9a4af07d6d69ace750403bc1.jpg',
-                      'https://d2kde5ohu8qb21.cloudfront.net/files/69045130dceefd0002fae9f4/2021-subaru-wrx-pic-6641138493027679611-1024x768.webp',
-                      'https://d2kde5ohu8qb21.cloudfront.net/files/6904512edceefd0002fae9f2/2021-subaru-wrx-pic-5908504691463282735-1024x768.webp',
-                      'https://d2kde5ohu8qb21.cloudfront.net/files/6904528ea8cecf00021df284/2021-subaru-wrx-pic-5144508864245672409-1024x768.webp'
-                    ]
-                  : [vehicleData.image, vehicleData.image, vehicleData.image, vehicleData.image];
-                
-                return [1, 2, 3, 4].map((item) => (
-                  <div key={item} className="vehicle-details__listing-card">
+              {isLoadingListings ? (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-neutrals-4)' }}>
+                  Loading listings...
+                </div>
+              ) : listings.length > 0 ? (
+                listings.map((listing) => (
+                  <div key={listing.id} className="vehicle-details__listing-card">
                     <div className="vehicle-details__listing-image">
-                      <img src={listingImages[item - 1]} alt="Listing" />
+                      <img src={listing.image || vehicleData.image} alt={listing.name} />
                     </div>
                     <div className="vehicle-details__listing-info">
-                      <div className="vehicle-details__listing-price">$20,450</div>
-                      <div className="vehicle-details__listing-name">2019 Kia Telluride SX 4 dr SUV</div>
+                      <div className="vehicle-details__listing-price">{listing.price}</div>
+                      <div className="vehicle-details__listing-name">{listing.name}</div>
                       <div className="vehicle-details__listing-details">
                         <span>
                           <Icon name="speed" size={16} />
-                          81,281 miles
+                          {listing.mileage}
                         </span>
                         <span>
                           <Icon name="location_on" size={16} />
-                          Garden Grove Toyota
+                          {listing.dealer}
                         </span>
                       </div>
                     </div>
                   </div>
-                ));
-              })()}
+                ))
+              ) : (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-neutrals-4)' }}>
+                  No listings available at this time.
+                </div>
+              )}
             </div>
           </div>
 
@@ -1027,7 +1178,7 @@ export const VehicleDetails: React.FC = () => {
                       height={48}
                     />
                     <span className="vehicle-details__score-number">{vehicleData.staffRating}</span>
-                    <span className="vehicle-details__score-label">Staff</span>
+                    <span className="vehicle-details__score-label">MotorTrend</span>
                   </div>
                 </div>
                 <div className="vehicle-details__score-breakdown">
@@ -1175,6 +1326,7 @@ export const VehicleDetails: React.FC = () => {
               reviews={reviews}
               onWriteReview={() => setIsWriteReviewModalOpen(true)}
               onUpdateReview={handleUpdateReview}
+              defaultTab="reviews"
             />
           </div>
 
@@ -1217,33 +1369,126 @@ export const VehicleDetails: React.FC = () => {
           <div className="vehicle-details__sidebar-section">
             <h3>Related Articles</h3>
             <div className="vehicle-details__sidebar-articles">
-              <div className="vehicle-details__sidebar-article">
-                <div className="vehicle-details__sidebar-article-image">
-                  <img src="https://d2kde5ohu8qb21.cloudfront.net/files/678ada1954184b00081d5055/001-2025-subaru-wrx-ts.jpg" alt="2025 Subaru WRX TS" />
-                </div>
-                <div className="vehicle-details__sidebar-article-content">
-                  <h4>2025 Subaru WRX TS Review</h4>
-                  <p>Everything you need to know about the latest WRX TS</p>
-                </div>
-              </div>
-              <div className="vehicle-details__sidebar-article">
-                <div className="vehicle-details__sidebar-article-image">
-                  <img src="https://d2kde5ohu8qb21.cloudfront.net/files/68766a92d691820002ba3c74/subaru-wrx-ara-front.jpg" alt="Subaru WRX ARA" />
-                </div>
-                <div className="vehicle-details__sidebar-article-content">
-                  <h4>Subaru WRX ARA Edition</h4>
-                  <p>Explore the special ARA edition features</p>
-                </div>
-              </div>
-              <div className="vehicle-details__sidebar-article">
-                <div className="vehicle-details__sidebar-article-image">
-                  <img src="https://d2kde5ohu8qb21.cloudfront.net/files/6862cdbeded5ea0002a20173/012-2006-subaru-wrx-sti.jpg" alt="2006 Subaru WRX STI" />
-                </div>
-                <div className="vehicle-details__sidebar-article-content">
-                  <h4>Classic 2006 Subaru WRX STI</h4>
-                  <p>Looking back at the legendary WRX STI</p>
-                </div>
-              </div>
+              {(() => {
+                const relatedArticles: React.ReactElement[] = [];
+                const addedSlugs = new Set<string>();
+                
+                // Normalize current vehicle info for matching
+                const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
+                const normalizedMake = decodedMake.toLowerCase();
+                const normalizedYear = decodedYear.toLowerCase();
+                
+                // Helper function to normalize vehicle name for comparison
+                const normalizeForComparison = (name: string): string => {
+                  return name.toLowerCase().replace(/-/g, ' ').trim();
+                };
+                
+                // Helper function to check if two vehicle names match
+                const vehiclesMatch = (articleVehicleName: string, currentYear: string, currentMake: string, currentModel: string): boolean => {
+                  const normalizedArticleName = normalizeForComparison(articleVehicleName);
+                  
+                  // Extract year, make, model from article vehicle name
+                  const parts = normalizedArticleName.split(/\s+/);
+                  const yearIndex = parts.findIndex(part => /^\d{4}$/.test(part));
+                  
+                  if (yearIndex === -1) {
+                    // No year found, try to match by make and model only
+                    const articleMake = parts[0] || '';
+                    const articleModel = parts.slice(1).join(' ');
+                    return normalizeForComparison(currentMake) === articleMake && 
+                           normalizeForComparison(currentModel).includes(articleModel) ||
+                           articleModel.includes(normalizeForComparison(currentModel));
+                  }
+                  
+                  const articleYear = parts[yearIndex];
+                  const articleMake = parts[yearIndex + 1] || '';
+                  const articleModel = parts.slice(yearIndex + 2).join(' ');
+                  
+                  // Match by year, make, and model (flexible matching)
+                  const yearMatch = articleYear === normalizeForComparison(currentYear);
+                  const makeMatch = normalizeForComparison(currentMake) === articleMake;
+                  const modelMatch = normalizeForComparison(currentModel).includes(articleModel) ||
+                                    articleModel.includes(normalizeForComparison(currentModel)) ||
+                                    normalizedArticleName.includes(normalizeForComparison(currentModel));
+                  
+                  // Also check if the full vehicle name contains key parts
+                  const fullNameMatch = normalizedArticleName.includes(normalizeForComparison(currentMake)) &&
+                                       normalizedArticleName.includes(normalizeForComparison(currentModel));
+                  
+                  return (yearMatch && makeMatch && modelMatch) || fullNameMatch;
+                };
+                
+                // Find articles that match the current vehicle
+                Object.entries(articles).forEach(([slug, article]) => {
+                  if (relatedArticles.length >= 3) return;
+                  
+                  const articleVehicleName = article.motortrendScore?.vehicleName;
+                  if (!articleVehicleName) return;
+                  
+                  // Check if this article's vehicle matches the current vehicle
+                  if (vehiclesMatch(articleVehicleName, normalizedYear, normalizedMake, normalizedModel)) {
+                    addedSlugs.add(slug);
+                    relatedArticles.push(
+                      <Link 
+                        key={slug}
+                        to={`/articles/${slug}`}
+                        className="vehicle-details__sidebar-article"
+                      >
+                        <div className="vehicle-details__sidebar-article-image">
+                          <img src={article.heroImage} alt={article.title} />
+                        </div>
+                        <div className="vehicle-details__sidebar-article-content">
+                          <h4>{article.title}</h4>
+                          <p className="vehicle-details__sidebar-article-meta">
+                            {article.author} | {article.date}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  }
+                });
+                
+                // Add default articles if we don't have enough
+                // Try to load from articles data first, then fall back to hardcoded defaults
+                if (relatedArticles.length < 3) {
+                  const defaultArticleSlugs = [
+                    '2024-kia-ev9-yearlong-review-verdict',
+                    'new-details-2026-rivian-r2-ev-suv-battery-charging',
+                    '2025-acura-adx-awd-yearlong-review-arrival'
+                  ];
+                  
+                  defaultArticleSlugs.forEach((slug) => {
+                    if (relatedArticles.length >= 3) return;
+                    
+                    // Skip if already added as a matching article
+                    if (addedSlugs.has(slug)) return;
+                    
+                    const article = articles[slug];
+                    if (article) {
+                      addedSlugs.add(slug);
+                      relatedArticles.push(
+                        <Link 
+                          key={slug}
+                          to={`/articles/${slug}`}
+                          className="vehicle-details__sidebar-article"
+                        >
+                          <div className="vehicle-details__sidebar-article-image">
+                            <img src={article.heroImage} alt={article.title} />
+                          </div>
+                          <div className="vehicle-details__sidebar-article-content">
+                            <h4>{article.title}</h4>
+                            <p className="vehicle-details__sidebar-article-meta">
+                              {article.author} | {article.date}
+                            </p>
+                          </div>
+                        </Link>
+                      );
+                    }
+                  });
+                }
+                
+                return relatedArticles.slice(0, 3);
+              })()}
             </div>
           </div>
 

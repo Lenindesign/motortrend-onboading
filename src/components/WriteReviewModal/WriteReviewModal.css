@@ -79,20 +79,20 @@
 .write-review-modal__main {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: -1px;
   padding: 0 16px;
   width: 100%;
 }
 
 .write-review-modal__title {
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 1.4em;
+  font-weight: var(--font-weight-bold);
+  font-size: 24px;
+  line-height: 1.333em;
   color: var(--color-neutrals-1);
   text-align: center;
-  margin-top: 16px;
-  margin-bottom: 8px;
+  margin-top: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
 }
 
 /* Vehicle Card */
@@ -144,6 +144,17 @@
   font-size: 16px;
   line-height: 1.375em;
   color: var(--color-neutrals-2);
+  margin: 0;
+  display: block;
+}
+
+.write-review-modal__vehicle-body-style {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.29em;
+  color: var(--color-neutrals-3);
+  margin: 0;
 }
 
 .write-review-modal__change-vehicle {
@@ -154,6 +165,7 @@
   color: var(--color-neutrals-2);
   cursor: pointer;
   transition: color var(--transition-fast);
+  margin-top: 4px;
 }
 
 .write-review-modal__change-vehicle:hover {
@@ -233,25 +245,105 @@
 .write-review-modal__form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-4);
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-3);
 }
 
 .write-review-modal__field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-1);
   width: 100%;
 }
 
 .write-review-modal__field-label {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-2);
+  margin-bottom: var(--spacing-1);
+}
+
+/* Main Section Headlines */
+.write-review-modal__section-title {
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 1.375em;
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
   color: var(--color-neutrals-1);
-  height: 15px;
+  margin: 0;
+  margin-bottom: var(--spacing-2);
+}
+
+.write-review-modal__section-subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+  margin-bottom: var(--spacing-3);
+}
+
+/* Section Groups */
+.write-review-modal__section-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.write-review-modal__section-group--optional {
+  background-color: transparent;
+  border: 1px dashed var(--color-neutrals-5);
+  padding: var(--spacing-3);
+}
+
+.write-review-modal__section-group:nth-of-type(4) {
+  gap: var(--spacing-2);
+}
+
+.write-review-modal__section-group-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-2);
+}
+
+.write-review-modal__section-group-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.write-review-modal__section-group-subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+}
+
+.write-review-modal__optional-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-4);
+  margin-left: var(--spacing-1);
+  font-style: italic;
 }
 
 .write-review-modal__input,
@@ -429,18 +521,33 @@
 .write-review-modal__experience-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-3);
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
 }
 
 .write-review-modal__experience-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   font-size: 18px;
-  line-height: 1.3333333333333333em;
+  line-height: 1.333em;
   color: var(--color-neutrals-1);
   margin: 0;
+  margin-bottom: var(--spacing-1);
+}
+
+.write-review-modal__experience-subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+  margin-bottom: var(--spacing-3);
 }
 
 .write-review-modal__category-card {
@@ -478,12 +585,13 @@
 
 .write-review-modal__category-description {
   font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1.4em;
-  color: var(--color-neutrals-8);
+  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-5);
   margin: 0;
   width: 100%;
+  opacity: 0.9;
 }
 
 .write-review-modal__category-rating-value {
@@ -526,6 +634,7 @@
   width: 24px;
   height: 24px;
   object-fit: contain;
+  pointer-events: none;
 }
 
 /* Vehicle Details */
@@ -624,11 +733,12 @@
 .write-review-modal__field-hint {
   display: block;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 12px;
   line-height: 1.333em;
   color: var(--color-neutrals-4);
-  margin-top: 4px;
+  margin-top: var(--spacing-1);
+  font-style: italic;
 }
 
 .write-review-modal__vin-input {

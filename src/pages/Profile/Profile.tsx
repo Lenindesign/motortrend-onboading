@@ -58,7 +58,7 @@ export const Profile: React.FC<ProfileProps> = ({
     if (pathname.startsWith('/my-account/')) {
       const pathParts = pathname.split('/');
       const lastPart = pathParts[pathParts.length - 1];
-      if (['profile', 'saved-items', 'subscriptions', 'settings'].includes(lastPart)) {
+      if (['profile', 'saved-items', 'subscriptions'].includes(lastPart)) {
         // Map 'profile' to 'my-account' for the tab ID
         tabFromPath = (lastPart === 'profile' ? 'my-account' : lastPart) as ProfileNavTab;
       }
@@ -70,7 +70,7 @@ export const Profile: React.FC<ProfileProps> = ({
     const tabFromParam = searchParams.get('tab') as ProfileNavTab;
     const tab = tabFromPath || tabFromParam;
     
-    if (tab && ['my-account', 'saved-items', 'subscriptions', 'settings'].includes(tab)) {
+    if (tab && ['my-account', 'saved-items', 'subscriptions'].includes(tab)) {
       setActiveTab(tab);
     }
   }, [location.pathname, searchParams]);
@@ -90,9 +90,41 @@ export const Profile: React.FC<ProfileProps> = ({
   }, []);
   
   // Bookmark state management
-  const [savedArticles, setSavedArticles] = useState<string[]>(['article-1', 'article-2']);
+  const [savedArticles, setSavedArticles] = useState<string[]>([]);
+  const [savedArticlesMetadata, setSavedArticlesMetadata] = useState<Record<string, { title: string; author: string; date: string; imageUrl: string; slug: string }>>({});
   const [savedComparisons, setSavedComparisons] = useState<string[]>(['comparison-1']);
   const [savedVideos, setSavedVideos] = useState<string[]>(['video-1', 'video-2']);
+  
+  // Load saved articles from localStorage
+  const loadSavedArticles = () => {
+    try {
+      const savedArticlesJson = localStorage.getItem('savedArticles');
+      if (savedArticlesJson) {
+        const articles: string[] = JSON.parse(savedArticlesJson);
+        setSavedArticles(articles);
+      }
+      
+      const savedArticlesMetadataJson = localStorage.getItem('savedArticlesMetadata');
+      if (savedArticlesMetadataJson) {
+        const metadata: Record<string, { title: string; author: string; date: string; imageUrl: string; slug: string }> = 
+          JSON.parse(savedArticlesMetadataJson);
+        setSavedArticlesMetadata(metadata);
+      }
+    } catch (error) {
+      console.error('Error loading saved articles:', error);
+    }
+  };
+  
+  useEffect(() => {
+    loadSavedArticles();
+  }, []);
+  
+  // Reload saved articles when switching to saved-items tab
+  useEffect(() => {
+    if (activeTab === 'saved-items') {
+      loadSavedArticles();
+    }
+  }, [activeTab]);
   
   // Onboarding data state
   const [localOnboardingData, setLocalOnboardingData] = useState<{
@@ -323,18 +355,54 @@ export const Profile: React.FC<ProfileProps> = ({
   };
 
   const handleSubmitReview = (review: ReviewData) => {
-    // In a real app, this would save the review to the backend
-    console.log('Review submitted:', review);
-    const vehicleName = writeReviewModal.vehicleName;
+    // Get vehicle name from review object or modal state
+    const vehicleNameFromReview = (review as any)?._vehicleName;
+    const vehicleName = vehicleNameFromReview || writeReviewModal.vehicleName;
+    
+    if (!vehicleName || vehicleName.trim() === '') {
+      console.error('Profile: No vehicle name available when submitting review');
+      return;
+    }
+    
+    // Remove the _vehicleName property from review before processing
+    const { _vehicleName, ...cleanReview } = review as any;
+    
+    // Convert File objects to preview URLs for display
+    const reviewWithPreviews: ReviewData = {
+      ...cleanReview,
+      mediaPreviews: cleanReview.mediaFiles?.map((file: File) => URL.createObjectURL(file)) || []
+    };
+    
+    // Save review to localStorage so it appears on the vehicle details page
+    try {
+      const savedReviewsKey = `vehicleReviews_${vehicleName}`;
+      const existingReviewsJson = localStorage.getItem(savedReviewsKey);
+      const existingReviews: ReviewData[] = existingReviewsJson ? JSON.parse(existingReviewsJson) : [];
+      
+      // Add the new review at the beginning
+      const updatedReviews = [reviewWithPreviews, ...existingReviews];
+      
+      // Save to localStorage (convert File objects to strings for storage)
+      // Note: File objects can't be serialized, so we only save the preview URLs
+      const reviewsToSave = updatedReviews.map(review => ({
+        ...review,
+        mediaFiles: undefined, // Remove File objects as they can't be serialized
+        mediaPreviews: review.mediaPreviews || [] // Keep preview URLs
+      }));
+      
+      localStorage.setItem(savedReviewsKey, JSON.stringify(reviewsToSave));
+      console.log('Profile: Saved review to localStorage for:', vehicleName);
+    } catch (error) {
+      console.error('Profile: Error saving review to localStorage:', error);
+    }
+    
     setWriteReviewModal({ isOpen: false, vehicleName: '', vehicleImage: undefined });
     
     // Show toast notification after a brief delay to ensure modal is closed
-    if (vehicleName) {
-      setReviewedVehicleName(vehicleName);
-      setTimeout(() => {
-        setIsReviewToastVisible(true);
-      }, 300);
-    }
+    setReviewedVehicleName(vehicleName);
+    setTimeout(() => {
+      setIsReviewToastVisible(true);
+    }, 300);
   };
 
   const handleRatingModalClose = () => {
@@ -374,7 +442,20 @@ export const Profile: React.FC<ProfileProps> = ({
     
     switch (type) {
       case 'article':
-        setSavedArticles(prev => prev.filter(a => a !== id));
+        setSavedArticles(prev => {
+          const updated = prev.filter(a => a !== id);
+          // Update localStorage
+          try {
+            localStorage.setItem('savedArticles', JSON.stringify(updated));
+            const metadata = { ...savedArticlesMetadata };
+            delete metadata[id];
+            localStorage.setItem('savedArticlesMetadata', JSON.stringify(metadata));
+            setSavedArticlesMetadata(metadata);
+          } catch (error) {
+            console.error('Error removing article from localStorage:', error);
+          }
+          return updated;
+        });
         break;
       case 'comparison':
         setSavedComparisons(prev => prev.filter(c => c !== id));
@@ -550,6 +631,196 @@ export const Profile: React.FC<ProfileProps> = ({
                        onUpdateStep4={handleUpdateStep4}
                      />
 
+                     {/* Connected Accounts Section */}
+                     <div className="profile-section profile-section--connected-accounts">
+                       <h3 className="profile-connected-accounts-title">Connected Accounts</h3>
+                       <div className="profile-connected-accounts-list">
+                         <ConnectedAccount
+                           provider="google"
+                           accountName="Lenin Aviles"
+                           isConnected={true}
+                         />
+                         <div className="profile-settings-divider"></div>
+                         <ConnectedAccount
+                           provider="facebook"
+                           isConnected={false}
+                           onConnect={() => console.log('Connect Facebook')}
+                         />
+                         <div className="profile-settings-divider"></div>
+                         <ConnectedAccount
+                           provider="apple"
+                           isConnected={false}
+                           onConnect={() => console.log('Connect Apple')}
+                         />
+                       </div>
+                     </div>
+
+                     {/* Collapsible Sections */}
+                     <CollapsibleSection
+                       title="Privacy Settings"
+                       description="Edit the visibility"
+                     >
+                       <div className="privacy-settings-content">
+                         <div className="privacy-setting-item">
+                           <div className="privacy-setting-info">
+                             <h4 className="privacy-setting-title">Profile Visibility</h4>
+                             <p className="privacy-setting-description">Control who can see your profile information</p>
+                           </div>
+                           <div className="privacy-setting-control">
+                             <select className="privacy-select">
+                               <option value="public">Public</option>
+                               <option value="friends">Friends Only</option>
+                               <option value="private">Private</option>
+                             </select>
+                           </div>
+                         </div>
+                         
+                         <div className="privacy-setting-item">
+                           <div className="privacy-setting-info">
+                             <h4 className="privacy-setting-title">Activity Status</h4>
+                             <p className="privacy-setting-description">Show when you're online or recently active</p>
+                           </div>
+                           <div className="privacy-setting-control">
+                             <label className="privacy-toggle">
+                               <input type="checkbox" defaultChecked />
+                               <span className="privacy-toggle-slider"></span>
+                             </label>
+                           </div>
+                         </div>
+                         
+                         <div className="privacy-setting-item">
+                           <div className="privacy-setting-info">
+                             <h4 className="privacy-setting-title">Data Sharing</h4>
+                             <p className="privacy-setting-description">Allow MotorTrend to use your data for personalization</p>
+                           </div>
+                           <div className="privacy-setting-control">
+                             <label className="privacy-toggle">
+                               <input type="checkbox" defaultChecked />
+                               <span className="privacy-toggle-slider"></span>
+                             </label>
+                           </div>
+                         </div>
+                       </div>
+                     </CollapsibleSection>
+
+                     <CollapsibleSection
+                       title="Personal Settings"
+                       description="Edit your age and country of residence"
+                     >
+                       <div className="personal-settings-content">
+                         <div className="personal-setting-item">
+                           <div className="personal-setting-info">
+                             <h4 className="personal-setting-title">Date of Birth</h4>
+                             <p className="personal-setting-description">Used for age-appropriate content and features</p>
+                           </div>
+                           <div className="personal-setting-control">
+                             <input type="date" className="personal-input" defaultValue="1990-01-01" />
+                           </div>
+                         </div>
+                         
+                         <div className="personal-setting-item">
+                           <div className="personal-setting-info">
+                             <h4 className="personal-setting-title">Country of Residence</h4>
+                             <p className="personal-setting-description">Helps us provide relevant content and services</p>
+                           </div>
+                           <div className="personal-setting-control">
+                             <select className="personal-select">
+                               <option value="US">United States</option>
+                               <option value="CA">Canada</option>
+                               <option value="UK">United Kingdom</option>
+                               <option value="AU">Australia</option>
+                               <option value="DE">Germany</option>
+                               <option value="FR">France</option>
+                               <option value="JP">Japan</option>
+                               <option value="MX">Mexico</option>
+                             </select>
+                           </div>
+                         </div>
+                         
+                         <div className="personal-setting-item">
+                           <div className="personal-setting-info">
+                             <h4 className="personal-setting-title">Language Preference</h4>
+                             <p className="personal-setting-description">Choose your preferred language for the interface</p>
+                           </div>
+                           <div className="personal-setting-control">
+                             <select className="personal-select">
+                               <option value="en">English</option>
+                               <option value="es">Español</option>
+                               <option value="fr">Français</option>
+                               <option value="de">Deutsch</option>
+                               <option value="ja">日本語</option>
+                             </select>
+                           </div>
+                         </div>
+                         
+                         <div className="personal-setting-item">
+                           <div className="personal-setting-info">
+                             <h4 className="personal-setting-title">Time Zone</h4>
+                             <p className="personal-setting-description">Used for scheduling and notifications</p>
+                           </div>
+                           <div className="personal-setting-control">
+                             <select className="personal-select">
+                               <option value="PST">Pacific Standard Time (PST)</option>
+                               <option value="MST">Mountain Standard Time (MST)</option>
+                               <option value="CST">Central Standard Time (CST)</option>
+                               <option value="EST">Eastern Standard Time (EST)</option>
+                               <option value="GMT">Greenwich Mean Time (GMT)</option>
+                             </select>
+                           </div>
+                         </div>
+                       </div>
+                     </CollapsibleSection>
+
+                     <CollapsibleSection
+                       title="Delete Account"
+                     >
+                       <div className="delete-account-content">
+                         <div className="delete-account-warning">
+                           <div className="delete-account-icon">
+                             <Icon name="warning" size={24} style={{ color: "#DC3545" }} />
+                           </div>
+                           <div className="delete-account-text">
+                             <h4 className="delete-account-title">Permanently Delete Account</h4>
+                             <p className="delete-account-description">
+                               This action cannot be undone. All your data, including saved articles, 
+                               vehicles, and preferences will be permanently deleted.
+                             </p>
+                           </div>
+                         </div>
+                         
+                         <div className="delete-account-options">
+                           <div className="delete-account-option">
+                             <label className="delete-account-checkbox">
+                               <input type="checkbox" />
+                               <span className="delete-account-checkmark"></span>
+                               <span className="delete-account-label">
+                                 I understand that this action is irreversible
+                               </span>
+                             </label>
+                           </div>
+                           
+                           <div className="delete-account-option">
+                             <label className="delete-account-checkbox">
+                               <input type="checkbox" />
+                               <span className="delete-account-checkmark"></span>
+                               <span className="delete-account-label">
+                                 I want to delete all my personal data
+                               </span>
+                             </label>
+                           </div>
+                         </div>
+                         
+                         <div className="delete-account-actions">
+                           <button className="delete-account-btn delete-account-btn--secondary">
+                             Download My Data
+                           </button>
+                           <button className="delete-account-btn delete-account-btn--danger">
+                             Delete Account
+                           </button>
+                         </div>
+                       </div>
+                     </CollapsibleSection>
+
                    </>
                  )}
 
@@ -713,27 +984,26 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                   
                   <div className="profile-articles">
-                    {savedArticles.includes('article-1') && (
-                      <ArticleCard
-                        title="Tested: Audi Plays It Safe With the Audi A6 Sportback E-Tron"
-                        author="Justin Banner"
-                        date="Oct 10, 2025"
-                        imageUrl="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=300&h=200&fit=crop&q=80"
-                        onReadArticle={() => console.log('Read article')}
-                        isBookmarked={true}
-                        onBookmark={() => handleBookmarkClick('article', 'article-1')}
-                      />
-                    )}
-                    {savedArticles.includes('article-2') && (
-                      <ArticleCard
-                        title="We Didn't Ask the Toyota GR Corolla to Get Less Fun, But Here We Are"
-                        author="Justin Banner"
-                        date="Oct 10, 2025"
-                        imageUrl="https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=300&h=200&fit=crop&q=80"
-                        onReadArticle={() => console.log('Read article')}
-                        isBookmarked={true}
-                        onBookmark={() => handleBookmarkClick('article', 'article-2')}
-                      />
+                    {savedArticles.length === 0 ? (
+                      <p className="profile-section__empty">No saved articles yet.</p>
+                    ) : (
+                      savedArticles.map((slug) => {
+                        const articleData = savedArticlesMetadata[slug];
+                        if (!articleData) return null;
+                        
+                        return (
+                          <ArticleCard
+                            key={slug}
+                            title={articleData.title}
+                            author={articleData.author}
+                            date={articleData.date}
+                            imageUrl={articleData.imageUrl}
+                            onReadArticle={() => navigate(`/articles/${slug}`)}
+                            isBookmarked={true}
+                            onBookmark={() => handleBookmarkClick('article', slug)}
+                          />
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -918,199 +1188,6 @@ export const Profile: React.FC<ProfileProps> = ({
             </>
           )}
 
-          {activeTab === 'settings' && (
-            <>
-              {/* Connected Accounts Section */}
-              <div className="profile-section profile-section--connected-accounts">
-                <h3 className="profile-connected-accounts-title">Connected Accounts</h3>
-                <div className="profile-connected-accounts-list">
-                  <ConnectedAccount
-                    provider="google"
-                    accountName="Lenin Aviles"
-                    isConnected={true}
-                  />
-                  <div className="profile-settings-divider"></div>
-                  <ConnectedAccount
-                    provider="facebook"
-                    isConnected={false}
-                    onConnect={() => console.log('Connect Facebook')}
-                  />
-                  <div className="profile-settings-divider"></div>
-                  <ConnectedAccount
-                    provider="apple"
-                    isConnected={false}
-                    onConnect={() => console.log('Connect Apple')}
-                  />
-                </div>
-              </div>
-
-              {/* Collapsible Sections */}
-              <CollapsibleSection
-                title="Privacy Settings"
-                description="Edit the visibility"
-              >
-                <div className="privacy-settings-content">
-                  <div className="privacy-setting-item">
-                    <div className="privacy-setting-info">
-                      <h4 className="privacy-setting-title">Profile Visibility</h4>
-                      <p className="privacy-setting-description">Control who can see your profile information</p>
-                    </div>
-                    <div className="privacy-setting-control">
-                      <select className="privacy-select">
-                        <option value="public">Public</option>
-                        <option value="friends">Friends Only</option>
-                        <option value="private">Private</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className="privacy-setting-item">
-                    <div className="privacy-setting-info">
-                      <h4 className="privacy-setting-title">Activity Status</h4>
-                      <p className="privacy-setting-description">Show when you're online or recently active</p>
-                    </div>
-                    <div className="privacy-setting-control">
-                      <label className="privacy-toggle">
-                        <input type="checkbox" defaultChecked />
-                        <span className="privacy-toggle-slider"></span>
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="privacy-setting-item">
-                    <div className="privacy-setting-info">
-                      <h4 className="privacy-setting-title">Data Sharing</h4>
-                      <p className="privacy-setting-description">Allow MotorTrend to use your data for personalization</p>
-                    </div>
-                    <div className="privacy-setting-control">
-                      <label className="privacy-toggle">
-                        <input type="checkbox" defaultChecked />
-                        <span className="privacy-toggle-slider"></span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </CollapsibleSection>
-
-              <CollapsibleSection
-                title="Personal Settings"
-                description="Edit your age and country of residence"
-              >
-                <div className="personal-settings-content">
-                  <div className="personal-setting-item">
-                    <div className="personal-setting-info">
-                      <h4 className="personal-setting-title">Date of Birth</h4>
-                      <p className="personal-setting-description">Used for age-appropriate content and features</p>
-                    </div>
-                    <div className="personal-setting-control">
-                      <input type="date" className="personal-input" defaultValue="1990-01-01" />
-                    </div>
-                  </div>
-                  
-                  <div className="personal-setting-item">
-                    <div className="personal-setting-info">
-                      <h4 className="personal-setting-title">Country of Residence</h4>
-                      <p className="personal-setting-description">Helps us provide relevant content and services</p>
-                    </div>
-                    <div className="personal-setting-control">
-                      <select className="personal-select">
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="AU">Australia</option>
-                        <option value="DE">Germany</option>
-                        <option value="FR">France</option>
-                        <option value="JP">Japan</option>
-                        <option value="MX">Mexico</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className="personal-setting-item">
-                    <div className="personal-setting-info">
-                      <h4 className="personal-setting-title">Language Preference</h4>
-                      <p className="personal-setting-description">Choose your preferred language for the interface</p>
-                    </div>
-                    <div className="personal-setting-control">
-                      <select className="personal-select">
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
-                        <option value="fr">Français</option>
-                        <option value="de">Deutsch</option>
-                        <option value="ja">日本語</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className="personal-setting-item">
-                    <div className="personal-setting-info">
-                      <h4 className="personal-setting-title">Time Zone</h4>
-                      <p className="personal-setting-description">Used for scheduling and notifications</p>
-                    </div>
-                    <div className="personal-setting-control">
-                      <select className="personal-select">
-                        <option value="PST">Pacific Standard Time (PST)</option>
-                        <option value="MST">Mountain Standard Time (MST)</option>
-                        <option value="CST">Central Standard Time (CST)</option>
-                        <option value="EST">Eastern Standard Time (EST)</option>
-                        <option value="GMT">Greenwich Mean Time (GMT)</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </CollapsibleSection>
-
-              <CollapsibleSection
-                title="Delete Account"
-              >
-                <div className="delete-account-content">
-                  <div className="delete-account-warning">
-                    <div className="delete-account-icon">
-                      <Icon name="warning" size={24} style={{ color: "#DC3545" }} />
-                    </div>
-                    <div className="delete-account-text">
-                      <h4 className="delete-account-title">Permanently Delete Account</h4>
-                      <p className="delete-account-description">
-                        This action cannot be undone. All your data, including saved articles, 
-                        vehicles, and preferences will be permanently deleted.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="delete-account-options">
-                    <div className="delete-account-option">
-                      <label className="delete-account-checkbox">
-                        <input type="checkbox" />
-                        <span className="delete-account-checkmark"></span>
-                        <span className="delete-account-label">
-                          I understand that this action is irreversible
-                        </span>
-                      </label>
-                    </div>
-                    
-                    <div className="delete-account-option">
-                      <label className="delete-account-checkbox">
-                        <input type="checkbox" />
-                        <span className="delete-account-checkmark"></span>
-                        <span className="delete-account-label">
-                          I want to delete all my personal data
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                  
-                  <div className="delete-account-actions">
-                    <button className="delete-account-btn delete-account-btn--secondary">
-                      Download My Data
-                    </button>
-                    <button className="delete-account-btn delete-account-btn--danger">
-                      Delete Account
-                    </button>
-                  </div>
-                </div>
-              </CollapsibleSection>
-            </>
-          )}
         </div>
       </div>
       

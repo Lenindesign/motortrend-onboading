@@ -53,40 +53,6 @@ export const SignIn: React.FC<SignInProps> = () => {
           <h1 className="sign-in-card__title">Sign In</h1>
         </div>
 
-        {/* Social Sign In Buttons */}
-        <div className="sign-in-card__social">
-          <button 
-            className="social-btn social-btn--google"
-            onClick={() => handleSocialSignIn('google')}
-          >
-            <img src={googleLogo} alt="" className="social-btn__icon" />
-            <span className="social-btn__label">Continue with Google</span>
-          </button>
-
-          <button 
-            className="social-btn social-btn--facebook"
-            onClick={() => handleSocialSignIn('facebook')}
-          >
-            <img src={facebookIcon} alt="" className="social-btn__icon" />
-            <span className="social-btn__label">Continue with Facebook</span>
-          </button>
-
-          <button 
-            className="social-btn social-btn--apple"
-            onClick={() => handleSocialSignIn('apple')}
-          >
-            <img src={appleIcon} alt="" className="social-btn__icon" />
-            <span className="social-btn__label">Continue with Apple</span>
-          </button>
-        </div>
-
-        {/* Divider */}
-        <div className="sign-in-card__divider">
-          <div className="sign-in-card__divider-line" />
-          <span className="sign-in-card__divider-text">Or</span>
-          <div className="sign-in-card__divider-line" />
-        </div>
-
         {/* Email/Password Form */}
         <form className="sign-in-card__form" onSubmit={handleSubmit}>
           <TextField
@@ -142,6 +108,40 @@ export const SignIn: React.FC<SignInProps> = () => {
             </button>
           </p>
         </form>
+
+        {/* Divider */}
+        <div className="sign-in-card__divider">
+          <div className="sign-in-card__divider-line" />
+          <span className="sign-in-card__divider-text">Or</span>
+          <div className="sign-in-card__divider-line" />
+        </div>
+
+        {/* Social Sign In Buttons */}
+        <div className="sign-in-card__social">
+          <button 
+            className="social-btn social-btn--google"
+            onClick={() => handleSocialSignIn('google')}
+          >
+            <img src={googleLogo} alt="" className="social-btn__icon" />
+            <span className="social-btn__label">Continue with Google</span>
+          </button>
+
+          <button 
+            className="social-btn social-btn--facebook"
+            onClick={() => handleSocialSignIn('facebook')}
+          >
+            <img src={facebookIcon} alt="" className="social-btn__icon" />
+            <span className="social-btn__label">Continue with Facebook</span>
+          </button>
+
+          <button 
+            className="social-btn social-btn--apple"
+            onClick={() => handleSocialSignIn('apple')}
+          >
+            <img src={appleIcon} alt="" className="social-btn__icon" />
+            <span className="social-btn__label">Continue with Apple</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,78 @@
+/**
+ * Vehicles Section Styles
+ * Section with heading and vehicle cards
+ */
+
+.vehicles-section {
+  width: 100%;
+  margin-bottom: var(--section-spacing-vertical);
+}
+
+.vehicles-section__title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 24px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  margin: 0 0 var(--spacing-3) 0;
+}
+
+.vehicles-section__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.vehicles-section__show-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--spacing-4);
+  width: 100%;
+}
+
+.vehicles-section__show-more-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-medium);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vehicles-section__show-more-btn:hover {
+  background-color: var(--color-neutrals-7);
+  border-color: var(--color-neutrals-3);
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .vehicles-section__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-3);
+  }
+}
+
+@media (max-width: 768px) {
+  .vehicles-section__title {
+    font-size: 24px;
+  }
+
+  .vehicles-section__grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+}
+
+
+

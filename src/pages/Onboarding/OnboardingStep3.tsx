@@ -225,7 +225,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
               onClick={handlePrevious}
             >
               <Icon name="chevron_left" size={20} />
-              <span>Previous</span>
+              <span>Back</span>
             </button>
 
             <div className="onboarding-card__skip-section">

@@ -98,7 +98,8 @@ const vehicleLifestyleMap: Record<string, LifestyleCategory[]> = {
  * @returns Array of lifestyle categories
  */
 export const getVehicleLifestyles = (vehicleName: string): LifestyleCategory[] => {
-  const normalizedName = vehicleName.toLowerCase();
+  // Normalize: lowercase and replace hyphens with spaces for better matching
+  const normalizedName = vehicleName.toLowerCase().replace(/-/g, ' ');
   const lifestyles: Set<LifestyleCategory> = new Set();
   
   // Check each key in the map for matches

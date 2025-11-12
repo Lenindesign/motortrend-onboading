@@ -109,7 +109,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
       onMouseLeave={onMouseLeave}
     >
       <div className="staff-rating-tooltip__header">
-        <div className="staff-rating-tooltip__title">Staff Rating</div>
+        <div className="staff-rating-tooltip__title">MotorTrend</div>
         <div className="staff-rating-tooltip__total">{overallRating}/10</div>
       </div>
       <div className="staff-rating-tooltip__content">
@@ -123,7 +123,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
             onRequestClose?.();
           }}
         >
-          See Full Staff Review
+          See Full MotorTrend Review
         </a>
       </div>
     </div>

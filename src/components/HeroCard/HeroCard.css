@@ -1,0 +1,66 @@
+/**
+ * Hero Card Styles
+ * Large hero card for featured content
+ */
+
+.hero-card {
+  position: relative;
+  width: 100%;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  background-color: var(--color-neutrals-8);
+}
+
+.hero-card:hover {
+  transform: translateY(-2px);
+}
+
+.hero-card:focus {
+  outline: none;
+}
+
+.hero-card__image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--color-neutrals-7);
+}
+
+.hero-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-card__content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-4);
+  background: linear-gradient(to top, rgba(20, 20, 22, 0.9), transparent);
+}
+
+.hero-card__title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 32px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-8);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-card__title {
+    font-size: 24px;
+  }
+
+  .hero-card__content {
+    padding: var(--spacing-3);
+  }
+}
+

@@ -1,0 +1,84 @@
+/**
+ * Home Page Styles
+ * MotorTrend home page layout
+ */
+
+.home {
+  width: 100%;
+  background-color: var(--color-neutrals-8);
+  padding: var(--spacing-4) 0;
+}
+
+.home__container {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: 0;
+}
+
+.home__section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-4);
+  margin-bottom: var(--section-spacing-vertical);
+}
+
+.home__section:last-child {
+  margin-bottom: 0;
+}
+
+.home__left-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.home__right-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .home__section {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  .home__right-column {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    padding: var(--spacing-3) 0;
+  }
+
+  .home__container {
+    padding: 0 var(--spacing-2);
+  }
+
+  .home__section {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .home__right-column {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+

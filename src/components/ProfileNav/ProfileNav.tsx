@@ -8,7 +8,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Icon from '../Icon';
 import './ProfileNav.css';
 
-export type ProfileNavTab = 'my-account' | 'saved-items' | 'subscriptions' | 'settings';
+export type ProfileNavTab = 'my-account' | 'saved-items' | 'subscriptions';
 
 export interface ProfileNavProps {
   activeTab?: ProfileNavTab;
@@ -37,7 +37,6 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
     { id: 'my-account', label: 'Profile', path: '/my-account/profile', icon: 'account_circle' },
     { id: 'saved-items', label: 'Saved', path: '/my-account/saved-items', icon: 'bookmark_border' },
     { id: 'subscriptions', label: 'Subscriptions', path: '/my-account/subscriptions', icon: 'newspaper' },
-    { id: 'settings', label: 'Settings', path: '/my-account/settings', icon: 'settings' },
   ];
 
   return (

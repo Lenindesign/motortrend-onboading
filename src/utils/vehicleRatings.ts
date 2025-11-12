@@ -24,6 +24,9 @@ const COMMUNITY_RATINGS = [
 export const generateStaffRating = (vehicleName: string): number => {
   // Specific vehicle rating overrides
   const normalizedName = vehicleName.toLowerCase();
+  if (normalizedName.includes('2026') && normalizedName.includes('hyundai') && normalizedName.includes('ioniq') && normalizedName.includes('6') && normalizedName.includes('n')) {
+    return 9.2;
+  }
   if (normalizedName.includes('2025') && normalizedName.includes('f-150')) {
     return 9.2;
   }
@@ -31,8 +34,8 @@ export const generateStaffRating = (vehicleName: string): number => {
     return 9.5;
   }
   
-  // Honda Civic - ensure rating is at least 8.5 for all years
-  if (normalizedName.includes('honda') && normalizedName.includes('civic')) {
+  // Honda - ensure rating is at least 8.5 for all models and years
+  if (normalizedName.includes('honda')) {
     // Simple hash from vehicle name for deterministic results
     let hash = 0;
     for (let i = 0; i < vehicleName.length; i++) {
@@ -42,23 +45,8 @@ export const generateStaffRating = (vehicleName: string): number => {
     hash = Math.abs(hash);
     
     // Select from ratings array (8.5-9.5 range)
-    const civicRatings = [8.5, 8.6, 8.7, 8.8, 8.9, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5];
-    return civicRatings[hash % civicRatings.length];
-  }
-  
-  // Honda Accord - ensure rating is at least 8.5 for all years
-  if (normalizedName.includes('honda') && normalizedName.includes('accord')) {
-    // Simple hash from vehicle name for deterministic results
-    let hash = 0;
-    for (let i = 0; i < vehicleName.length; i++) {
-      hash = ((hash << 5) - hash) + vehicleName.charCodeAt(i);
-      hash = hash | 0; // Convert to 32-bit integer
-    }
-    hash = Math.abs(hash);
-    
-    // Select from ratings array (8.5-9.5 range)
-    const accordRatings = [8.5, 8.6, 8.7, 8.8, 8.9, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5];
-    return accordRatings[hash % accordRatings.length];
+    const hondaRatings = [8.5, 8.6, 8.7, 8.8, 8.9, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5];
+    return hondaRatings[hash % hondaRatings.length];
   }
   
   // Tesla - ensure rating is at least 8.5 for all models and years
@@ -100,7 +88,14 @@ export const generateStaffRating = (vehicleName: string): number => {
   hash = Math.abs(hash);
   
   // Select from predefined ratings array
-  return STAFF_RATINGS[hash % STAFF_RATINGS.length];
+  const rating = STAFF_RATINGS[hash % STAFF_RATINGS.length];
+  
+  // Override: Change 6.3 to 9.3
+  if (rating === 6.3) {
+    return 9.3;
+  }
+  
+  return rating;
 };
 
 /**
@@ -111,11 +106,29 @@ export const generateStaffRating = (vehicleName: string): number => {
 export const generateCommunityRating = (vehicleName: string): number => {
   // Specific vehicle rating overrides
   const normalizedName = vehicleName.toLowerCase();
+  if (normalizedName.includes('2026') && normalizedName.includes('hyundai') && normalizedName.includes('ioniq') && normalizedName.includes('6') && normalizedName.includes('n')) {
+    return 8.9;
+  }
   if (normalizedName.includes('2025') && normalizedName.includes('f-150')) {
     return 8.9;
   }
   if (normalizedName.includes('2026') && normalizedName.includes('f-150')) {
     return 9.2;
+  }
+  
+  // Honda - ensure rating is at least 8.5 for all models and years
+  if (normalizedName.includes('honda')) {
+    // Different hash for community rating to ensure variation
+    let hash = 5381;
+    for (let i = 0; i < vehicleName.length; i++) {
+      hash = ((hash << 5) + hash) + vehicleName.charCodeAt(i);
+      hash = hash | 0;
+    }
+    hash = Math.abs(hash);
+    
+    // Select from ratings array (8.5-9.5 range)
+    const hondaRatings = [8.5, 8.6, 8.7, 8.8, 8.9, 9.0, 9.1, 9.2, 9.3, 9.4, 9.5];
+    return hondaRatings[hash % hondaRatings.length];
   }
   
   // Different hash for community rating to ensure variation

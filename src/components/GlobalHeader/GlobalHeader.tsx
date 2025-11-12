@@ -13,7 +13,7 @@ import { parseVehicleName } from '../../utils/vehicleImages';
 
 // Car database for search autocomplete (same as VehicleSearch component)
 const carDatabase = [
-  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2023 Subaru WRX',
+  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2023 Subaru WRX', '2025 Subaru WRX',
   '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic',
   '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry',
   '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang',
@@ -67,7 +67,7 @@ export interface GlobalHeaderProps {
 const navigationItems = [
   { 
     label: 'Buy / Research Cars', 
-    href: '#',
+    href: '/vehicles',
     subItems: [
       { label: 'New Cars', href: '#' },
       { label: 'Used Cars', href: '#' },
@@ -303,9 +303,23 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   // Filter cars based on search query
   useEffect(() => {
     if (searchQuery.length > 0) {
-      const filtered = carDatabase.filter(car =>
-        car.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 6); // Limit to 6 results
+      const queryLower = searchQuery.toLowerCase().trim();
+      const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
+      
+      const filtered = carDatabase.filter(car => {
+        const carLower = car.toLowerCase();
+        // Check if all words in the query appear in the vehicle name (order-independent)
+        return queryWords.every(word => carLower.includes(word));
+      })
+      .sort((a, b) => {
+        // Extract year from vehicle name (e.g., "2025 Subaru WRX" -> 2025)
+        const yearA = parseInt(a.match(/\d{4}/)?.[0] || '0');
+        const yearB = parseInt(b.match(/\d{4}/)?.[0] || '0');
+        // Sort by year descending (newest first)
+        return yearB - yearA;
+      })
+      .slice(0, 6); // Limit to 6 results
+      
       setFilteredCars(filtered);
       setShowSearchDropdown(true);
     } else {
@@ -559,16 +573,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   >
                     <Icon name="newspaper" size={16} />
                     Subscriptions
-                  </button>
-                  <button 
-                    className="global-header__dropdown-item"
-                    onClick={() => {
-                      navigate('/my-account/settings');
-                      setShowUserDropdown(false);
-                    }}
-                  >
-                    <Icon name="settings" size={16} />
-                    Settings
                   </button>
                   <div className="global-header__dropdown-divider"></div>
                   <button 

@@ -330,7 +330,7 @@ const generateDetailedSections = (
   const overallContent = `The ${year} ${make} ${model} continues to be a compelling choice in its segment, offering a winning combination of ${segment === 'performance' ? 'performance, handling, and technology' : segment === 'luxury' ? 'luxury, technology, and refinement' : segment === 'truck' ? 'capability, technology, and comfort' : segment === 'suv' ? 'versatility, comfort, and capability' : segment === 'electric' ? 'electric innovation, performance, and technology' : 'performance, efficiency, and technology'}. While it may not excel in every single category, its overall package provides excellent value and a satisfying ownership experience. Whether you prioritize ${segment === 'performance' ? 'driving excitement' : segment === 'luxury' ? 'luxury and refinement' : segment === 'truck' ? 'towing and hauling capability' : segment === 'suv' ? 'versatility and space' : segment === 'electric' ? 'eco-friendly technology' : 'practicality and efficiency'}, the ${model} delivers with confidence and style.`;
   
   sections.push({
-    title: `Overall Impression — ${staffRating.toFixed(1)} Staff Rating`,
+    title: `Overall Impression — ${staffRating.toFixed(1)} MotorTrend Rating`,
     content: overallContent
   });
   

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRating } from '../../contexts/RatingContext';
 import { computeOverallRating } from '../../utils/ratingUtils';
+import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import type { ReviewData, VerificationLevel, VehicleRelationship } from '../UserReviews/UserReviews';
 import './WriteReviewModal.css';
 
@@ -429,11 +430,32 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     }
   };
 
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only close if clicking directly on the overlay, not on the modal content
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  // Handle Escape key to close modal (only if textarea is not expanded)
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen && !isTextareaExpanded) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleEscape);
+      return () => window.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen, isTextareaExpanded, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="write-review-modal-overlay">
-      <div className="write-review-modal">
+    <div className="write-review-modal-overlay" onClick={handleOverlayClick}>
+      <div className="write-review-modal" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="write-review-modal__header">
           <div className="write-review-modal__close-btn" onClick={onClose}>
@@ -464,17 +486,34 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 )}
               </div>
               <div className="write-review-modal__vehicle-info">
-                <div className="write-review-modal__vehicle-name">{vehicleName}</div>
-                <div className="write-review-modal__change-vehicle">Change Vehicle</div>
+                {vehicleName && vehicleName.trim() ? (
+                  <>
+                    <div className="write-review-modal__vehicle-name">
+                      {vehicleName}
+                    </div>
+                    <div className="write-review-modal__vehicle-body-style">
+                      {getVehicleBodyStyle(vehicleName)[0] || 'Sedan'}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="write-review-modal__vehicle-name">
+                      Select Vehicle
+                    </div>
+                    <div className="write-review-modal__vehicle-body-style">
+                      Sedan
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Rating Section */}
             <div className="write-review-modal__rating-section">
               <div className="write-review-modal__rating-header">
-                <span className="write-review-modal__rating-label">Your Rating</span>
+                <span className="write-review-modal__rating-label">Rate Your Experience (1-10)</span>
                 <span className="write-review-modal__rating-value">
-                  {rating % 1 === 0 ? rating : rating.toFixed(1)}/10
+                  {rating > 0 ? (rating % 1 === 0 ? rating : rating.toFixed(1)) : '?'}/10
                 </span>
               </div>
               <div className="write-review-modal__stars">
@@ -497,49 +536,62 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </div>
             </div>
 
-            {/* Vehicle Relationship Section */}
-            <div className="write-review-modal__field">
-              <label className="write-review-modal__field-label">
-                Your experience with this vehicle
-              </label>
-              <select
-                className="write-review-modal__select"
-                value={vehicleRelationship}
-                onChange={(e) => setVehicleRelationship(e.target.value as VehicleRelationship | '')}
-              >
-                <option value="">Select experience</option>
-                <option value="own">I currently own this vehicle</option>
-                <option value="previously_owned">I previously owned this vehicle</option>
-                <option value="leased">I leased this vehicle</option>
-                <option value="rented">I rented this vehicle</option>
-                <option value="test_drove">I test drove this vehicle</option>
-                <option value="passenger">I was a passenger</option>
-              </select>
-            </div>
-
-            {/* Experience Duration Section */}
-            {vehicleRelationship && (
+            {/* Your Experience Section */}
+            <div className="write-review-modal__section-group">
+              <div className="write-review-modal__section-group-header">
+                <h3 className="write-review-modal__section-group-title">Your Experience</h3>
+                <p className="write-review-modal__section-group-subtitle">Tell us about your relationship with this vehicle</p>
+              </div>
+              
+              {/* Vehicle Relationship Section */}
               <div className="write-review-modal__field">
                 <label className="write-review-modal__field-label">
-                  {vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
-                   vehicleRelationship === 'previously_owned' ? 'How long did you own this vehicle?' :
-                   vehicleRelationship === 'leased' ? 'How long did you lease this vehicle?' :
-                   vehicleRelationship === 'rented' ? 'How long did you rent this vehicle?' :
-                   vehicleRelationship === 'test_drove' ? 'When did you test drive this vehicle?' :
-                   'How long have you experienced this vehicle?'}
+                  Your experience with this vehicle
                 </label>
-                <input
-                  type="text"
-                  className="write-review-modal__input"
-                  placeholder={vehicleRelationship === 'test_drove' ? 'e.g., Last month, 2 weeks ago, January 2025' : 'e.g., 2 years, 6 months, 1 week, 500 miles'}
-                  value={experienceDuration}
-                  onChange={(e) => setExperienceDuration(e.target.value)}
-                />
+                <select
+                  className="write-review-modal__select"
+                  value={vehicleRelationship}
+                  onChange={(e) => setVehicleRelationship(e.target.value as VehicleRelationship | '')}
+                >
+                  <option value="">Select experience</option>
+                  <option value="own">I currently own this vehicle</option>
+                  <option value="previously_owned">I previously owned this vehicle</option>
+                  <option value="leased">I leased this vehicle</option>
+                  <option value="rented">I rented this vehicle</option>
+                  <option value="test_drove">I test drove this vehicle</option>
+                  <option value="passenger">I was a passenger</option>
+                </select>
               </div>
-            )}
+
+              {/* Experience Duration Section */}
+              {vehicleRelationship && (
+                <div className="write-review-modal__field">
+                  <label className="write-review-modal__field-label">
+                    {vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
+                     vehicleRelationship === 'previously_owned' ? 'How long did you own this vehicle?' :
+                     vehicleRelationship === 'leased' ? 'How long did you lease this vehicle?' :
+                     vehicleRelationship === 'rented' ? 'How long did you rent this vehicle?' :
+                     vehicleRelationship === 'test_drove' ? 'When did you test drive this vehicle?' :
+                     'How long have you experienced this vehicle?'}
+                  </label>
+                  <input
+                    type="text"
+                    className="write-review-modal__input"
+                    placeholder={vehicleRelationship === 'test_drove' ? 'e.g., Last month, 2 weeks ago, January 2025' : 'e.g., 2 years, 6 months, 1 week, 500 miles'}
+                    value={experienceDuration}
+                    onChange={(e) => setExperienceDuration(e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
 
             {/* Review Form */}
-            <div className="write-review-modal__form">
+            <div className="write-review-modal__section-group">
+              <div className="write-review-modal__section-group-header">
+                <h3 className="write-review-modal__section-group-title">Your Review</h3>
+                <p className="write-review-modal__section-group-subtitle">Share your thoughts and experiences</p>
+              </div>
+              
               {/* Review Title */}
               <div className="write-review-modal__field">
                 <label className="write-review-modal__field-label">Review Title</label>
@@ -584,103 +636,120 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </div>
             </div>
 
-            {/* VIN Verification Section (Optional) */}
-            <div className="write-review-modal__field">
-              <label className="write-review-modal__field-label">
-                Verify Ownership (Optional)
-                <span className="write-review-modal__field-hint">
-                  Enter your Vehicle Identification Number (VIN) for highest verification level
-                </span>
-              </label>
-              <input
-                type="text"
-                className="write-review-modal__input write-review-modal__vin-input"
-                placeholder="Enter VIN (17 characters)"
-                value={vinNumber}
-                onChange={(e) => {
-                  // Limit to 17 characters and convert to uppercase
-                  const value = e.target.value.toUpperCase().slice(0, 17);
-                  setVinNumber(value);
-                }}
-                maxLength={17}
-              />
-              <div className="write-review-modal__vin-disclaimer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  <path d="M12 8v4M12 16h.01"/>
-                </svg>
-                <span>Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.</span>
+            {/* Optional Information Section */}
+            <div className="write-review-modal__section-group write-review-modal__section-group--optional">
+              <div className="write-review-modal__section-group-header">
+                <h3 className="write-review-modal__section-group-title">
+                  Additional Information
+                  <span className="write-review-modal__optional-badge">(Optional)</span>
+                </h3>
+                <p className="write-review-modal__section-group-subtitle">Help others by providing more details</p>
               </div>
-            </div>
 
-            {/* Media Upload Section */}
-            <div className="write-review-modal__field">
-              <label className="write-review-modal__field-label">Share a video or photo of your car</label>
-              <div className="write-review-modal__media-upload">
-                <input
-                  type="file"
-                  id="media-upload"
-                  className="write-review-modal__media-input"
-                  accept="image/*,video/*"
-                  multiple
-                  onChange={handleMediaUpload}
-                />
-                <label htmlFor="media-upload" className="write-review-modal__media-label">
-                  <div className="write-review-modal__media-placeholder">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="8.5" cy="8.5" r="1.5"/>
-                      <polyline points="21 15 16 10 5 21"/>
-                    </svg>
-                  </div>
+              {/* Model Selection */}
+              <div className="write-review-modal__field">
+                <label className="write-review-modal__field-label">Model</label>
+                <select
+                  className="write-review-modal__select"
+                  value={vehicleModel}
+                  onChange={(e) => setVehicleModel(e.target.value)}
+                >
+                  <option value="">Select Model</option>
+                  <option value="base">Base</option>
+                  <option value="sport">Sport</option>
+                  <option value="luxury">Luxury</option>
+                  <option value="performance">Performance</option>
+                </select>
+              </div>
+
+              {/* Media Upload Section */}
+              <div className="write-review-modal__field">
+                <label className="write-review-modal__field-label">Share a video or photo of your car</label>
+                <div className="write-review-modal__media-upload">
+                  <input
+                    type="file"
+                    id="media-upload"
+                    className="write-review-modal__media-input"
+                    accept="image/*,video/*"
+                    multiple
+                    onChange={handleMediaUpload}
+                  />
+                  <label htmlFor="media-upload" className="write-review-modal__media-label">
+                    <div className="write-review-modal__media-placeholder">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                      </svg>
+                    </div>
+                  </label>
+                  
+                  {/* Media Previews */}
+                  {mediaPreviews.length > 0 && (
+                    <div className="write-review-modal__media-previews">
+                      {mediaPreviews.map((preview, index) => (
+                        <div key={index} className="write-review-modal__media-preview">
+                          {mediaFiles[index]?.type.startsWith('video/') ? (
+                            <video src={preview} controls className="write-review-modal__media-item" />
+                          ) : (
+                            <img src={preview} alt={`Preview ${index + 1}`} className="write-review-modal__media-item" />
+                          )}
+                          <button
+                            type="button"
+                            className="write-review-modal__media-remove"
+                            onClick={() => handleRemoveMedia(index)}
+                            aria-label="Remove media"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M18 6L6 18M6 6L18 18"/>
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* VIN Verification Section (Optional) */}
+              <div className="write-review-modal__field">
+                <label className="write-review-modal__field-label">
+                  Verify Ownership
+                  <span className="write-review-modal__field-hint">
+                    Enter your Vehicle Identification Number (VIN) for highest verification level
+                  </span>
                 </label>
-                
-                {/* Media Previews */}
-                {mediaPreviews.length > 0 && (
-                  <div className="write-review-modal__media-previews">
-                    {mediaPreviews.map((preview, index) => (
-                      <div key={index} className="write-review-modal__media-preview">
-                        {mediaFiles[index]?.type.startsWith('video/') ? (
-                          <video src={preview} controls className="write-review-modal__media-item" />
-                        ) : (
-                          <img src={preview} alt={`Preview ${index + 1}`} className="write-review-modal__media-item" />
-                        )}
-                        <button
-                          type="button"
-                          className="write-review-modal__media-remove"
-                          onClick={() => handleRemoveMedia(index)}
-                          aria-label="Remove media"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M18 6L6 18M6 6L18 18"/>
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <input
+                  type="text"
+                  className="write-review-modal__input write-review-modal__vin-input"
+                  placeholder="Enter VIN (17 characters)"
+                  value={vinNumber}
+                  onChange={(e) => {
+                    // Limit to 17 characters and convert to uppercase
+                    const value = e.target.value.toUpperCase().slice(0, 17);
+                    setVinNumber(value);
+                  }}
+                  maxLength={17}
+                />
+                <div className="write-review-modal__vin-disclaimer">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 8v4M12 16h.01"/>
+                  </svg>
+                  <span>Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.</span>
+                </div>
               </div>
-            </div>
-
-            {/* Model Selection */}
-            <div className="write-review-modal__field">
-              <label className="write-review-modal__field-label">Model</label>
-              <select
-                className="write-review-modal__select"
-                value={vehicleModel}
-                onChange={(e) => setVehicleModel(e.target.value)}
-              >
-                <option value="">Select Model</option>
-                <option value="base">Base</option>
-                <option value="sport">Sport</option>
-                <option value="luxury">Luxury</option>
-                <option value="performance">Performance</option>
-              </select>
             </div>
 
             {/* Experience Rating Section */}
             <div className="write-review-modal__experience-section">
-              <h3 className="write-review-modal__experience-title">Tell Us More About Your Experience (Optional)</h3>
+              <div className="write-review-modal__section-group-header">
+                <h3 className="write-review-modal__experience-title">
+                  Rate Your Experience
+                  <span className="write-review-modal__optional-badge">(Optional)</span>
+                </h3>
+                <p className="write-review-modal__experience-subtitle">Rate specific aspects of your experience with this vehicle</p>
+              </div>
               
               {/* Comfort */}
               <div className="write-review-modal__category-card">
@@ -697,8 +766,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
                     <button
                       key={star}
+                      type="button"
                       className={`write-review-modal__category-star ${star <= categoryRatings.comfort ? 'active' : ''}`}
-                      onClick={() => handleCategoryRatingClick('comfort', star)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryRatingClick('comfort', star);
+                      }}
                     >
                       <img 
                         src={star <= categoryRatings.comfort 
@@ -728,8 +801,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
                     <button
                       key={star}
+                      type="button"
                       className={`write-review-modal__category-star ${star <= categoryRatings.reliability ? 'active' : ''}`}
-                      onClick={() => handleCategoryRatingClick('reliability', star)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryRatingClick('reliability', star);
+                      }}
                     >
                       <img 
                         src={star <= categoryRatings.reliability 
@@ -759,8 +836,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
                     <button
                       key={star}
+                      type="button"
                       className={`write-review-modal__category-star ${star <= categoryRatings.interior ? 'active' : ''}`}
-                      onClick={() => handleCategoryRatingClick('interior', star)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryRatingClick('interior', star);
+                      }}
                     >
                       <img 
                         src={star <= categoryRatings.interior 
@@ -790,8 +871,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
                     <button
                       key={star}
+                      type="button"
                       className={`write-review-modal__category-star ${star <= categoryRatings.value ? 'active' : ''}`}
-                      onClick={() => handleCategoryRatingClick('value', star)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryRatingClick('value', star);
+                      }}
                     >
                       <img 
                         src={star <= categoryRatings.value 
@@ -821,8 +906,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
                     <button
                       key={star}
+                      type="button"
                       className={`write-review-modal__category-star ${star <= categoryRatings.safety ? 'active' : ''}`}
-                      onClick={() => handleCategoryRatingClick('safety', star)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryRatingClick('safety', star);
+                      }}
                     >
                       <img 
                         src={star <= categoryRatings.safety 

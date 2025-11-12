@@ -116,7 +116,7 @@ export const Card: React.FC<CardProps> = ({
             {hasMultipleRatings && ratings.length > 0 && (
               <>
                 {ratings.map((rating, index) => {
-                  const tooltipText = rating.color === '#FFB74D' ? 'Staff Rating' : 'Community Rating (252)';
+                  const tooltipText = rating.color === '#FFB74D' ? 'MotorTrend Rating' : 'Community Rating (252)';
                   return (
                     <div key={index} className="card__rating card__rating--with-tooltip">
                       <div className="card__rating-tooltip">

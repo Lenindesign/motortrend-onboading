@@ -5,12 +5,14 @@
 
 .vehicle-inventory {
   min-height: calc(100vh - 160px);
-  padding: var(--spacing-6) 0;
+  padding: var(--spacing-4) 0;
   background-color: var(--color-white);
 }
 
 .vehicle-inventory .container {
   max-width: var(--max-width-container);
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* Hero Slider Section */

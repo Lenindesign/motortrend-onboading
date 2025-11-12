@@ -10,6 +10,7 @@ const vehicleImageMap: Record<string, string> = {
   '2022 dodge challenger': 'https://d2kde5ohu8qb21.cloudfront.net/files/660c96337d393d00087e73b6/022-2024-dodge-demon-challenger.jpg',
   '2021 dodge challenger': 'https://d2kde5ohu8qb21.cloudfront.net/files/660c96337d393d00087e73b6/022-2024-dodge-demon-challenger.jpg',
   'supra': 'https://images.unsplash.com/photo-1619767886558-efdc259c3988?w=800&q=80&auto=format&fit=crop',
+  '2025 subaru wrx': 'https://d2kde5ohu8qb21.cloudfront.net/files/670dd37c5cb71f0008d1935f/2025-subaru-wrx-ts-079.jpg',
   '2024 subaru wrx': 'https://d2kde5ohu8qb21.cloudfront.net/files/6691c38a1be69000085340bb/003-2024-subaru-wrx-tr.jpg',
   '2023 subaru wrx': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a1cee378cd6100089d2bb3/2023-subaru-wrx-motion-front-three-view-25.jpg',
   '2021 subaru wrx': 'https://d2kde5ohu8qb21.cloudfront.net/files/6691c38a1be69000085340bb/003-2024-subaru-wrx-tr.jpg',
@@ -92,6 +93,11 @@ const vehicleImageMap: Record<string, string> = {
   '2023 acura tlx': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f7f488e7e84a0008f4cb9b/004-2024-acura-tlx-type-s-front-three-quarter-motion.jpg',
   '2022 acura tlx': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f7f488e7e84a0008f4cb9b/004-2024-acura-tlx-type-s-front-three-quarter-motion.jpg',
   '2021 acura tlx': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f7f488e7e84a0008f4cb9b/004-2024-acura-tlx-type-s-front-three-quarter-motion.jpg',
+  'adx': 'https://d2kde5ohu8qb21.cloudfront.net/files/6735197dfea200000873d814/002-2025-acura-adx.jpg',
+  '2025 acura adx': 'https://d2kde5ohu8qb21.cloudfront.net/files/6735197dfea200000873d814/002-2025-acura-adx.jpg',
+  '2025 acura ad-x': 'https://d2kde5ohu8qb21.cloudfront.net/files/6735197dfea200000873d814/002-2025-acura-adx.jpg',
+  'acura adx': 'https://d2kde5ohu8qb21.cloudfront.net/files/6735197dfea200000873d814/002-2025-acura-adx.jpg',
+  'acura ad-x': 'https://d2kde5ohu8qb21.cloudfront.net/files/6735197dfea200000873d814/002-2025-acura-adx.jpg',
   'legacy': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a04773d0229100083d285e/2024-subaru-legacy-4.jpg',
   '2024 subaru legacy': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a04773d0229100083d285e/2024-subaru-legacy-4.jpg',
   '2023 subaru legacy': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a04773d0229100083d285e/2024-subaru-legacy-4.jpg',
@@ -157,8 +163,11 @@ const vehicleImageMap: Record<string, string> = {
   'bronco': 'https://d2kde5ohu8qb21.cloudfront.net/files/67237b68a0efe50008b489ed/2025fordbroncowildfundsemasuv10.png',
   'bronco sport': 'https://d2kde5ohu8qb21.cloudfront.net/files/674e2b7efe24400008290ba0/003-2025-ford-bronco-free-wheeling.jpg',
   'f-150': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f7f7d98e933e0002e8c24b/001-2026f-150lightningstx-side-view.jpg',
+  'f-150 lightning': 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg',
   '2026 ford f-150': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f7f7d98e933e0002e8c24b/001-2026f-150lightningstx-side-view.jpg',
   '2026 f-150': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f7f7d98e933e0002e8c24b/001-2026f-150lightningstx-side-view.jpg',
+  '2025 ford f-150 lightning': 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg',
+  '2025 ford f-150-lightning': 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg',
   '2025 ford f-150': 'https://d2kde5ohu8qb21.cloudfront.net/files/68c090307123160002bf3d2c/2025fordf-150roushperformancert6offroadpickuptruck-15.jpg',
   '2025 f-150': 'https://d2kde5ohu8qb21.cloudfront.net/files/68c090307123160002bf3d2c/2025fordf-150roushperformancert6offroadpickuptruck-15.jpg',
   '2023 chevrolet silverado': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a1abe05e5f6c0008edb5b4/005-2022-chevrolet-silverado-zr2-toty2023.jpg',
@@ -197,6 +206,18 @@ const vehicleImageMap: Record<string, string> = {
   '2020 ford escape': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a479cdfc8dbb0008e5ccaf/002-2024-ford-escape-phev-front-three-quarters-in-action-scaled.jpg',
   'rav4': 'https://d2kde5ohu8qb21.cloudfront.net/files/682cd83b39615000089431b5/2026toyotarav4hybridsuvcrossover-1.jpg',
   'cr-v': 'https://d2kde5ohu8qb21.cloudfront.net/files/685edc71f123b4000238efd1/10-2026-honda-cr-v-trailsport.jpg',
+  'passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  'passport rtl': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  'passport-rtl': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2026 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2026 honda passport rtl': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2026 honda passport-rtl': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2025 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2024 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2023 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2022 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2021 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
+  '2020 honda passport': 'https://d2kde5ohu8qb21.cloudfront.net/files/690a5f1c69a9550002fb94b7/024-2026-honda-passport-rtl.jpg',
   'cx-5': 'https://d2kde5ohu8qb21.cloudfront.net/files/686c4f52a5f0070002f31f87/2026mazdacx-517.jpg',
   'cx-30': 'https://d2kde5ohu8qb21.cloudfront.net/files/66c3b56305d26600081bc616/034-2024-mazda-cx-30.jpg',
   '2024 mazda cx-30': 'https://d2kde5ohu8qb21.cloudfront.net/files/66c3b56305d26600081bc616/034-2024-mazda-cx-30.jpg',
@@ -242,7 +263,19 @@ const vehicleImageMap: Record<string, string> = {
 
   // Tesla
   'model 3': 'https://d2kde5ohu8qb21.cloudfront.net/files/68e5862037f20500027cfb5f/2026teslamodel3standardrwdevelectricvehiclesedan-14.jpg',
-  'model s': 'https://d2kde5ohu8qb21.cloudfront.net/files/68e5863676e22400025001a9/2026teslamodelystandardrwdsuvevelectricvehiclecrossover-12.jpg'
+  'model s': 'https://d2kde5ohu8qb21.cloudfront.net/files/68e5863676e22400025001a9/2026teslamodelystandardrwdsuvevelectricvehiclecrossover-12.jpg',
+
+  // Rivian
+  '2026 rivian r2': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f8061eb53e720008a3bb02/2026-rivian-r2-ev-suv-10.jpg',
+  '2026 rivian r-2': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f8061eb53e720008a3bb02/2026-rivian-r2-ev-suv-10.jpg',
+  'rivian r2': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f8061eb53e720008a3bb02/2026-rivian-r2-ev-suv-10.jpg',
+  'rivian r-2': 'https://d2kde5ohu8qb21.cloudfront.net/files/65f8061eb53e720008a3bb02/2026-rivian-r2-ev-suv-10.jpg',
+
+  // Hyundai Ioniq 6 N
+  '2026 hyundai ioniq 6 n': 'https://d2kde5ohu8qb21.cloudfront.net/files/67ef547e9e2b380008ba43f0/2026hyundaiioniq6nlineevelectricsedan-13.jpg',
+  '2026 hyundai ioniq-6-n': 'https://d2kde5ohu8qb21.cloudfront.net/files/67ef547e9e2b380008ba43f0/2026hyundaiioniq6nlineevelectricsedan-13.jpg',
+  'ioniq 6 n': 'https://d2kde5ohu8qb21.cloudfront.net/files/67ef547e9e2b380008ba43f0/2026hyundaiioniq6nlineevelectricsedan-13.jpg',
+  'ioniq-6-n': 'https://d2kde5ohu8qb21.cloudfront.net/files/67ef547e9e2b380008ba43f0/2026hyundaiioniq6nlineevelectricsedan-13.jpg'
 };
 
 export const vehicleImageFor = (vehicleName: string): string => {

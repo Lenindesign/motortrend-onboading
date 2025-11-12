@@ -101,7 +101,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const { name = 'Guest', vehicles = [], userType } = onboardingData;
+  const { name = 'Guest', vehicles = [] } = onboardingData;
 
   // Rating handlers
 
@@ -144,10 +144,9 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         {/* Welcome Message */}
         <div className="welcome-message">
           <div className="welcome-message__content">
-            <h1 className="welcome-title">Welcome {name}</h1>
+            <h1 className="welcome-title">Welcome to the Club, {name}!</h1>
             <p className="welcome-subtitle">
-              Based on your interest in {userType === 'buyer' ? 'buying a car' : userType === 'enthusiast' ? 'automotive enthusiasm' : 'automotive content'}, 
-              I've personalized your MotorTrend experience.
+              Enjoy your MotorTrend member benefits.
             </p>
           </div>
 
@@ -182,7 +181,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             className="welcome-btn welcome-btn--primary"
             onClick={() => navigate('/')}
           >
-            <span>Go to Home Page</span>
+            <span>Close</span>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 16L14 10L8 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -192,7 +191,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             className="welcome-btn welcome-btn--secondary"
             onClick={() => navigate('/onboarding/step1')}
           >
-            Start Over
+            Back
           </button>
         </div>
       </div>

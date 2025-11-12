@@ -6,6 +6,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
+import { ScrollToTop } from './components/ScrollToTop';
 import SignIn from './pages/SignIn';
 import { OnboardingStep1, OnboardingStep2, OnboardingStep3, OnboardingStep4 } from './pages/Onboarding';
 import Welcome from './pages/Welcome';
@@ -13,6 +14,8 @@ import Profile from './pages/Profile';
 import { Membership } from './pages/Membership';
 import VehicleDetails from './pages/VehicleDetails';
 import { VehicleInventory } from './pages/VehicleInventory';
+import { Home } from './pages/Home';
+import { Article } from './pages/Article';
 import Documentation from './pages/Documentation';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
 import ProfileDocumentation from './pages/ProfileDocumentation';
@@ -23,13 +26,14 @@ function App() {
   return (
     <RatingProvider>
       <Router>
+        <ScrollToTop />
         <div className="app">
           <GlobalHeader />
           
           <main className="app__main">
             <Routes>
-              {/* Default route - show vehicle inventory */}
-              <Route path="/" element={<VehicleInventory />} />
+              {/* Default route - show home page */}
+              <Route path="/" element={<Home />} />
               
               {/* Sign In Page */}
               <Route path="/signin" element={<SignIn />} />
@@ -52,13 +56,15 @@ function App() {
               <Route path="/my-account/profile" element={<Profile />} />
               <Route path="/my-account/saved-items" element={<Profile />} />
               <Route path="/my-account/subscriptions" element={<Profile />} />
-              <Route path="/my-account/settings" element={<Profile />} />
               
               {/* Membership Page */}
               <Route path="/membership" element={<Membership />} />
               
               {/* Vehicle Details Page */}
               <Route path="/vehicles/:year/:make/:model" element={<VehicleDetails />} />
+              
+              {/* Article Page */}
+              <Route path="/articles/:slug" element={<Article />} />
               
               {/* Documentation Pages */}
               <Route path="/documentation/review-system" element={<Documentation />} />

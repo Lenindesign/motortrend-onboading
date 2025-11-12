@@ -1,0 +1,33 @@
+/**
+ * Hero Plus Three Styles
+ * Hero card with 3 vertical cards below
+ */
+
+.hero-plus-three {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.hero-plus-three__hero {
+  width: 100%;
+}
+
+.hero-plus-three__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-plus-three__cards {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2);
+  }
+}
+
+
+

@@ -21,7 +21,7 @@ import './VehicleInventory.css';
 
 // Import vehicle database from VehicleSearch
 const carDatabase = [
-  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX',
+  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2025 Subaru WRX',
   '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic',
   '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry',
   '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang',
@@ -772,7 +772,7 @@ export const VehicleInventory: React.FC = () => {
                             <div className="vehicle-inventory__hero-rating-value-wrapper">
                           <img 
                             src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                            alt="Staff Rating Star" 
+                            alt="MotorTrend Rating Star" 
                             className="vehicle-inventory__hero-rating-icon staff" 
                           />
                           <span className="vehicle-inventory__hero-rating-value">
@@ -1152,11 +1152,11 @@ export const VehicleInventory: React.FC = () => {
 
       {/* Write Review Modal */}
       <WriteReviewModal
-        key={`${ratingVehicle}-${reviewModalRating || 'new'}`}
+        key={`${ratingVehicle || ratingVehicleRef.current}-${reviewModalRating || 'new'}`}
         isOpen={isWriteReviewModalOpen}
         onClose={handleCloseWriteReviewModal}
-        vehicleName={ratingVehicle}
-        vehicleImage={reviewVehicleImage}
+        vehicleName={ratingVehicle || ratingVehicleRef.current}
+        vehicleImage={reviewVehicleImage || reviewVehicleImageRef.current}
         onSubmit={(review) => {
           // Try to get vehicle name from multiple sources:
           // 1. From the review object itself (if WriteReviewModal added it)
