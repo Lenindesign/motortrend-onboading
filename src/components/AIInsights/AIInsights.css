@@ -13,7 +13,7 @@
 
 .ai-insights__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -74,7 +74,7 @@
   position: absolute;
   left: 0;
   color: var(--color-neutrals-4);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .ai-insights__list li strong {

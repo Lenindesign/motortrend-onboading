@@ -415,13 +415,13 @@ export const VehicleInventory: React.FC = () => {
 
       case 'rating':
         sorted.sort((a, b) => {
-          // Sort by staff rating first, then community rating as tiebreaker
+          // Sort by MotorTrend rating first, then community rating as tiebreaker
           if (a.staffRating !== b.staffRating) {
             return sortOrder === 'desc' 
               ? b.staffRating - a.staffRating 
               : a.staffRating - b.staffRating;
           }
-          // If staff ratings are equal, sort by community rating
+          // If MotorTrend ratings are equal, sort by community rating
           return sortOrder === 'desc' 
             ? b.communityRating - a.communityRating 
             : a.communityRating - b.communityRating;
@@ -775,7 +775,7 @@ export const VehicleInventory: React.FC = () => {
                         <div className="vehicle-inventory__hero-ratings-list">
                         <div className="vehicle-inventory__hero-rating-item">
                             <div className="vehicle-inventory__hero-rating-label-wrapper">
-                              <span className="vehicle-inventory__hero-rating-label-top">Staff</span>
+                              <span className="vehicle-inventory__hero-rating-label-top">MotorTrend</span>
                               <span className="vehicle-inventory__hero-rating-label-bottom">Rating</span>
                             </div>
                             <div className="vehicle-inventory__hero-rating-value-wrapper">

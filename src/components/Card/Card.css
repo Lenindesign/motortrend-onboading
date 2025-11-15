@@ -42,6 +42,12 @@
   width: 150px;
   height: 100px; /* 3:2 aspect ratio for vehicle cards */
   flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+}
+
+.card__image-container--clickable {
+  cursor: pointer;
 }
 
 .card__image {
@@ -49,18 +55,28 @@
   height: 100%;
   object-fit: cover;
   border-radius: var(--border-radius-md);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+}
+
+.card__image-container:hover .card__image {
+  transform: scale(1.03);
+}
+
+.card__image-container--clickable:hover .card__image {
+  transform: scale(1.03);
 }
 
 .card__bookmark-btn {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 12px;
+  left: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 4px;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
   background: rgba(0, 0, 0, 0.4);
   border: none;
   border-radius: var(--border-radius-sm);
@@ -68,6 +84,7 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   backdrop-filter: blur(4px);
+  z-index: 10;
 }
 
 .card__bookmark-btn:hover {

@@ -18,6 +18,7 @@ import { generateStaffRating, generateCommunityRating } from '../../utils/vehicl
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { useRating } from '../../contexts/RatingContext';
 import { getVehicleSpecs } from '../../utils/vehicleSpecs';
+import { getArticleBySlug } from '../../utils/articles';
 import './Home.css';
 
 // Full vehicle database - same as VehicleInventory
@@ -358,6 +359,38 @@ export const Home: React.FC = () => {
   const sortedNewsItems = useMemo(() => {
     return sortContentByUserType(newsItems, userType);
   }, [userType, newsItems]);
+
+  // Rankings & Awards articles for first river
+  const rankingsArticles = useMemo(() => {
+    const rankingSlugs = [
+      'top-10-daily-commute',
+      'top-10-family-practical',
+      'top-10-adventure-off-road',
+      'top-10-urban-style',
+      'top-10-performance-enthusiast',
+      'top-10-eco-future-ready',
+      'top-10-luxury-comfort',
+      'top-10-utility-work'
+    ];
+
+    return rankingSlugs
+      .map(slug => {
+        const article = getArticleBySlug(slug);
+        if (!article) return null;
+        
+        return {
+          imageUrl: article.heroImage,
+          title: article.title,
+          author: article.author,
+          date: article.date,
+          category: 'MotorTrend | Rankings',
+          onClick: () => {
+            navigate(`/article/${slug}`);
+          },
+        } as RiverItem;
+      })
+      .filter((item): item is RiverItem => item !== null);
+  }, [navigate]);
 
 
   // Filter vehicles based on user type using vehicle lifestyles
@@ -920,7 +953,7 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* News Section with Right Column Ad */}
+        {/* Latest From MotorTrend Section - Right after Hero */}
         <div className="home__section">
           <div className="home__left-column">
             <NewsSection
@@ -959,12 +992,12 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Additional News Section */}
+        {/* News Section with Right Column Ad - Rankings & Awards */}
         <div className="home__section">
           <div className="home__left-column">
             <NewsSection
-              title="The Latest From MotorTrend"
-              items={sortedNewsItems}
+              title="Rankings & Awards"
+              items={rankingsArticles}
             />
           </div>
           <div className="home__right-column">
@@ -973,12 +1006,12 @@ export const Home: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>
 
-        {/* Vehicle Carousel Section - Full width */}
+        {/* Vehicle Carousel Section - Full width - Top Ten SUVs */}
         {carouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
             <div 
@@ -1019,7 +1052,7 @@ export const Home: React.FC = () => {
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Staff</span>
+                                <span className="home__carousel-rating-label-top">MotorTrend</span>
                                 <span className="home__carousel-rating-label-bottom">Rating</span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
@@ -1175,7 +1208,7 @@ export const Home: React.FC = () => {
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Staff</span>
+                                <span className="home__carousel-rating-label-top">MotorTrend</span>
                                 <span className="home__carousel-rating-label-bottom">Rating</span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
@@ -1331,7 +1364,7 @@ export const Home: React.FC = () => {
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Staff</span>
+                                <span className="home__carousel-rating-label-top">MotorTrend</span>
                                 <span className="home__carousel-rating-label-bottom">Rating</span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">

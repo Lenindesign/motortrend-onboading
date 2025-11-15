@@ -15,6 +15,8 @@
   width: 153.5px;
   height: 86.34px; /* 16:9 aspect ratio: 153.5 / 16 * 9 = 86.34px */
   flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 .video-card__image {
@@ -22,6 +24,12 @@
   height: 100%;
   object-fit: cover;
   border-radius: 8px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+}
+
+.video-card__image-container:hover .video-card__image {
+  transform: scale(1.03);
 }
 
 .video-card__bookmark-btn {

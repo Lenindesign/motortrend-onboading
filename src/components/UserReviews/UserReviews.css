@@ -13,7 +13,7 @@
 
 .user-reviews__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -119,7 +119,7 @@
 
 .user-reviews__vehicle-name {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-1);
@@ -136,7 +136,7 @@
   border: none;
   border-radius: 8px;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   cursor: pointer;
   transition: background-color var(--transition-fast);
@@ -197,7 +197,7 @@
 
 .user-reviews__rating-score {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 42px;
   line-height: 1.2em;
   color: var(--color-white);
@@ -213,7 +213,7 @@
 
 .user-reviews__rating-label-text {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 12px;
   line-height: 1.1428571428571428em;
   color: var(--color-white);
@@ -352,7 +352,7 @@
 
 .user-reviews__recent-title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-1);
@@ -1010,7 +1010,7 @@
   border: none;
   border-radius: 4px;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   color: var(--color-neutrals-3);
   cursor: pointer;
@@ -1183,7 +1183,7 @@
 
 .user-reviews__comments-title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-1);

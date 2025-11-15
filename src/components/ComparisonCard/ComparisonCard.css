@@ -50,6 +50,12 @@
   height: 100%;
   object-fit: cover;
   border-radius: 4px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+}
+
+.comparison-card__image-container:hover .comparison-card__image {
+  transform: scale(1.03);
 }
 
 .comparison-card__bookmark-btn {

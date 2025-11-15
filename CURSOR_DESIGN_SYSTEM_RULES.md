@@ -83,7 +83,7 @@ font-family: Arial, sans-serif;
 /* ✅ CORRECT */
 font-weight: var(--font-weight-regular);  /* 400 */
 font-weight: var(--font-weight-medium);   /* 600 */
-font-weight: var(--font-weight-bold);      /* 700 */
+font-weight: var(--font-weight-bold);      /* 600 */
 
 /* ❌ WRONG */
 font-weight: 400;

@@ -202,7 +202,7 @@
 
 .home__carousel-name {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.2;
   color: #FFFFFF;
@@ -281,7 +281,7 @@
 .home__carousel-rating-value {
   color: #FFFFFF;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: var(--font-heading);
   line-height: 1;
 }

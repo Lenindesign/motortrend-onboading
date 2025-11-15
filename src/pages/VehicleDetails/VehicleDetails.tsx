@@ -814,7 +814,7 @@ export const VehicleDetails: React.FC = () => {
               onClick={handleScrollToStaffRating}
             >
               <span className="vehicle-details__sticky-rating-label">MotorTrend</span>
-              <span className="vehicle-details__sticky-rating-value">{vehicleData.staffRating}</span>
+              <span className="vehicle-details__sticky-rating-value">{typeof vehicleData.staffRating === 'number' ? vehicleData.staffRating.toFixed(1) : vehicleData.staffRating}</span>
             </div>
             <div 
               className="vehicle-details__sticky-rating-item" 
@@ -954,7 +954,7 @@ export const VehicleDetails: React.FC = () => {
               onMouseLeave={handleStaffTooltipMouseLeave}
             >
               <span className="vehicle-details__rating-label">MotorTrend</span>
-              <span className="vehicle-details__rating-value">{vehicleData.staffRating}</span>
+              <span className="vehicle-details__rating-value">{typeof vehicleData.staffRating === 'number' ? vehicleData.staffRating.toFixed(1) : vehicleData.staffRating}</span>
               <StaffRatingTooltip
                 overallRating={vehicleData.staffRating}
                 scores={vehicleData.scores}
@@ -1182,7 +1182,7 @@ export const VehicleDetails: React.FC = () => {
               <div className="vehicle-details__score-content">
                 <div className="vehicle-details__overall-score">
                   <div className="vehicle-details__score-circle">
-                    <span className="vehicle-details__score-number">{vehicleData.staffRating}</span>
+                    <span className="vehicle-details__score-number">{typeof vehicleData.staffRating === 'number' ? vehicleData.staffRating.toFixed(1) : vehicleData.staffRating}</span>
                     <span className="vehicle-details__score-label">MotorTrend</span>
                   </div>
                 </div>
@@ -1192,28 +1192,28 @@ export const VehicleDetails: React.FC = () => {
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.performance / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.performance}</span>
+                  <span>{vehicleData.scores.performance.toFixed(1)}</span>
                 </div>
                 <div className="vehicle-details__score-item">
                   <span>Efficiency/Range</span>
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.efficiency / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.efficiency}</span>
+                  <span>{vehicleData.scores.efficiency.toFixed(1)}</span>
                 </div>
                 <div className="vehicle-details__score-item">
                   <span>Tech/Innovation</span>
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.tech / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.tech}</span>
+                  <span>{vehicleData.scores.tech.toFixed(1)}</span>
                 </div>
                 <div className="vehicle-details__score-item">
                   <span>Value</span>
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.value / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.value}</span>
+                  <span>{vehicleData.scores.value.toFixed(1)}</span>
                 </div>
                 </div>
               </div>

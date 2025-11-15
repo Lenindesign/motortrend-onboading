@@ -28,6 +28,20 @@ export const Article: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   
+  // Premium articles (no sidebar, no ads)
+  const premiumArticles = [
+    'how-motortrend-tests-cars',
+    'top-10-daily-commute',
+    'top-10-family-practical',
+    'top-10-adventure-off-road',
+    'top-10-urban-style',
+    'top-10-performance-enthusiast',
+    'top-10-eco-future-ready',
+    'top-10-luxury-comfort',
+    'top-10-utility-work'
+  ];
+  const isPremiumArticle = slug ? premiumArticles.includes(slug) : false;
+  
   // Load bookmark state from localStorage on mount
   const [isSaved, setIsSaved] = useState(() => {
     if (!slug) return false;
@@ -52,6 +66,7 @@ export const Article: React.FC = () => {
   const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
+  const [isScoreInfoTooltipVisible, setIsScoreInfoTooltipVisible] = useState(false);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
@@ -59,6 +74,7 @@ export const Article: React.FC = () => {
   const communityRatingRef = useRef<HTMLDivElement>(null);
   const staffRatingRef = useRef<HTMLDivElement>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
+  const scoreInfoRef = useRef<HTMLDivElement>(null);
   const justSavedReviewRef = useRef<boolean>(false);
   const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
   const { getUserRating, setUserRating, clearRating } = useRating();
@@ -80,6 +96,22 @@ export const Article: React.FC = () => {
     return loadedArticle;
   }, [slug]);
   
+  // Extract #1 vehicle name for Top 10 articles (for hero image)
+  const topVehicleName = useMemo(() => {
+    if (!isPremiumArticle || !articleData.content) return null;
+    
+    // Find the first heading that matches "1. [Vehicle Name]" pattern
+    for (const block of articleData.content) {
+      if (block.type === "heading" && block.text) {
+        const match = block.text.match(/^1\.\s*(.+)$/);
+        if (match) {
+          return match[1].trim();
+        }
+      }
+    }
+    return null;
+  }, [isPremiumArticle, articleData.content]);
+
   // Get all article images for gallery
   const articleImages = useMemo(() => {
     return articleData.images || [];
@@ -130,6 +162,13 @@ export const Article: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [galleryOpen, handleCloseGallery, handleGalleryPrev, handleGalleryNext]);
+
+  // Fade-in reveal effect for premium article images - DISABLED
+  // Images now display immediately without fade-in animation
+  // useEffect(() => {
+  //   if (!isPremiumArticle) return;
+  //   ... fade-in effect code removed ...
+  // }, [isPremiumArticle, articleData.content]);
 
   // Vehicle name for reviews (extracted from motortrendScore or article title)
   // Normalize to ensure consistent format (spaces, not dashes) to match VehicleDetails page
@@ -397,20 +436,72 @@ export const Article: React.FC = () => {
   };
 
   // Handlers for tooltips
+  const tooltipHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const staffTooltipHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scoreInfoTooltipHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (tooltipHideTimeoutRef.current) {
+        clearTimeout(tooltipHideTimeoutRef.current);
+      }
+      if (staffTooltipHideTimeoutRef.current) {
+        clearTimeout(staffTooltipHideTimeoutRef.current);
+      }
+      if (scoreInfoTooltipHideTimeoutRef.current) {
+        clearTimeout(scoreInfoTooltipHideTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleTooltipMouseEnter = () => {
+    // Clear any pending hide timeout
+    if (tooltipHideTimeoutRef.current) {
+      clearTimeout(tooltipHideTimeoutRef.current);
+      tooltipHideTimeoutRef.current = null;
+    }
     setIsTooltipVisible(true);
   };
 
   const handleTooltipMouseLeave = () => {
-    setIsTooltipVisible(false);
+    // Add a small delay before hiding to allow moving mouse to tooltip
+    tooltipHideTimeoutRef.current = setTimeout(() => {
+      setIsTooltipVisible(false);
+      tooltipHideTimeoutRef.current = null;
+    }, 150);
   };
 
   const handleStaffTooltipMouseEnter = () => {
+    // Clear any pending hide timeout
+    if (staffTooltipHideTimeoutRef.current) {
+      clearTimeout(staffTooltipHideTimeoutRef.current);
+      staffTooltipHideTimeoutRef.current = null;
+    }
     setIsStaffTooltipVisible(true);
   };
 
   const handleStaffTooltipMouseLeave = () => {
-    setIsStaffTooltipVisible(false);
+    // Add a small delay before hiding to allow moving mouse to tooltip
+    staffTooltipHideTimeoutRef.current = setTimeout(() => {
+      setIsStaffTooltipVisible(false);
+      staffTooltipHideTimeoutRef.current = null;
+    }, 150);
+  };
+
+  const handleScoreInfoTooltipMouseEnter = () => {
+    if (scoreInfoTooltipHideTimeoutRef.current) {
+      clearTimeout(scoreInfoTooltipHideTimeoutRef.current);
+      scoreInfoTooltipHideTimeoutRef.current = null;
+    }
+    setIsScoreInfoTooltipVisible(true);
+  };
+
+  const handleScoreInfoTooltipMouseLeave = () => {
+    scoreInfoTooltipHideTimeoutRef.current = setTimeout(() => {
+      setIsScoreInfoTooltipVisible(false);
+      scoreInfoTooltipHideTimeoutRef.current = null;
+    }, 150);
   };
 
   // Scroll handlers
@@ -592,7 +683,7 @@ export const Article: React.FC = () => {
   }, [articlesToShow, allArticles.length]);
 
   // Check if rating bar should be hidden for this article
-  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car';
+  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || isPremiumArticle;
 
   // Scroll detection for sticky rate bar
   useEffect(() => {
@@ -752,9 +843,9 @@ export const Article: React.FC = () => {
         )}
 
         {/* Main Layout: 2/3 content, 1/3 sidebar */}
-        <div className="article__layout">
+        <div className={`article__layout ${isPremiumArticle ? 'article__layout--premium' : ''}`}>
           {/* Left Column: Content (2/3) */}
-          <div className="article__content-column">
+          <div className={`article__content-column ${isPremiumArticle ? 'article__content-column--premium' : ''}`}>
             {/* Article Header */}
             <div className="article__header">
               <h1 className="article__title">{article.title}</h1>
@@ -784,12 +875,12 @@ export const Article: React.FC = () => {
             </div>
 
             {/* Hero Section */}
-            <div className="article__hero-wrapper">
+            <div className={`article__hero-wrapper ${isPremiumArticle ? 'article__hero-wrapper--premium' : ''}`}>
               <div className="article__hero">
                 <div className="article__hero-image-wrapper">
                   <img 
-                    src={article.heroImage} 
-                    alt={article.title}
+                    src={topVehicleName ? vehicleImageFor(topVehicleName) : article.heroImage} 
+                    alt={topVehicleName || article.title}
                     className="article__hero-image article__image-clickable"
                     onClick={() => handleImageClick(0)}
                     style={{ cursor: 'pointer' }}
@@ -835,32 +926,222 @@ export const Article: React.FC = () => {
                           .slice(0, index)
                           .filter(b => b.type === "heading").length;
                         
-                        // Render the heading
-                        elements.push(
-                          <h2 
-                            key={`heading-${index}`}
-                            id={`heading-${tocIndex}`}
-                            className="article__heading"
-                          >
-                            {block.text}
-                          </h2>
-                        );
-
-                        // Add an image after the heading if available
-                        if (imageIndex < contentImages.length) {
-                          const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
+                        // Extract vehicle name from heading for Top 10 articles
+                        let vehicleNameForImage: string | null = null;
+                        let rankingNumber: string | null = null;
+                        let motortrendScoreForImage: number | null = null;
+                        let userScoreForImage: number | null = null;
+                        let vehicleImageUrl: string | null = null;
+                        
+                        if (isPremiumArticle && block.text) {
+                          // Extract vehicle name and ranking from heading (e.g., "10. 2025 Kia K4" -> ranking: "10", vehicle: "2025 Kia K4")
+                          const headingMatch = block.text.match(/^(\d+)\.\s*(.+)$/);
+                          if (headingMatch) {
+                            rankingNumber = headingMatch[1];
+                            vehicleNameForImage = headingMatch[2].trim();
+                            motortrendScoreForImage = generateStaffRating(vehicleNameForImage);
+                            userScoreForImage = generateCommunityRating(vehicleNameForImage);
+                            // Get the image for this specific vehicle
+                            vehicleImageUrl = vehicleImageFor(vehicleNameForImage);
+                          }
+                        }
+                        
+                        // Use vehicle-specific image if available, otherwise fall back to index-based
+                        const imageToUse = vehicleImageUrl || (imageIndex < contentImages.length ? contentImages[imageIndex] : null);
+                        
+                        // Check if next block is a paragraph - if so, render image first, then heading, then paragraph
+                        const nextBlock = article.content[index + 1];
+                        const shouldMoveHeadingAfterImage = isPremiumArticle && imageToUse && nextBlock?.type === "paragraph";
+                        
+                        if (shouldMoveHeadingAfterImage) {
+                          // Render image first
+                          if (imageToUse) {
+                            const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
+                            
+                            elements.push(
+                              <div 
+                                key={`image-after-${index}`} 
+                                className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
+                              >
+                                {rankingNumber && (
+                                  <div className="article__image-ranking-badge" data-number={`#${rankingNumber}`}>
+                                  </div>
+                                )}
+                                <img 
+                                  src={imageToUse} 
+                                  alt={vehicleNameForImage || `${article.title} - Image ${imageIndex + 2}`}
+                                  className={`article__image article__image-clickable ${isPremiumArticle ? 'article__image--premium' : ''}`}
+                                  onClick={() => {
+                                    if (vehicleNameForImage) {
+                                      // Navigate to vehicle page if vehicle name exists
+                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                      navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
+                                    } else {
+                                      // Otherwise open gallery
+                                      handleImageClick(galleryIndex);
+                                    }
+                                  }}
+                                  style={{ cursor: 'pointer' }}
+                                />
+                                {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
+                                  <div className="article__image-score-overlay">
+                                    <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
+                                    <div className="article__image-score-ratings-list">
+                                      <div className="article__image-score-rating-item">
+                                        <div className="article__image-score-rating-label-wrapper">
+                                          <span className="article__image-score-rating-label-top">MotorTrend</span>
+                                          <span className="article__image-score-rating-label-bottom">Rating</span>
+                                        </div>
+                                        <div className="article__image-score-rating-value-wrapper">
+                                          <span className="article__image-score-rating-value">
+                                            {motortrendScoreForImage.toFixed(1)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="article__image-score-rating-item">
+                                        <div className="article__image-score-rating-label-wrapper">
+                                          <span className="article__image-score-rating-label-top">Community</span>
+                                          <span className="article__image-score-rating-label-bottom">
+                                            Rating <span className="article__image-score-rating-count">(252)</span>
+                                          </span>
+                                        </div>
+                                        <div className="article__image-score-rating-value-wrapper">
+                                          <img 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                            alt="Community Rating Star" 
+                                            className="article__image-score-rating-icon community" 
+                                          />
+                                          <span className="article__image-score-rating-value">
+                                            {userScoreForImage.toFixed(1)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      className="article__image-score-cta cta cta--primary cta--default"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                        navigate(`/vehicles/${year}/${make}/${model}`);
+                                      }}
+                                    >
+                                      See Local Listings
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                            // Only increment imageIndex if we used the index-based image
+                            if (!vehicleImageUrl) {
+                              imageIndex++;
+                            }
+                          }
+                          
+                          // Render heading after image/overlay
                           elements.push(
-                            <div key={`image-after-${index}`} className="article__image-wrapper">
-                              <img 
-                                src={contentImages[imageIndex]} 
-                                alt={`${article.title} - Image ${imageIndex + 2}`}
-                                className="article__image article__image-clickable"
-                                onClick={() => handleImageClick(galleryIndex)}
-                                style={{ cursor: 'pointer' }}
-                              />
-                            </div>
+                            <h2 
+                              key={`heading-${index}`}
+                              id={`heading-${tocIndex}`}
+                              className="article__heading"
+                            >
+                              {block.text}
+                            </h2>
                           );
-                          imageIndex++;
+                        } else {
+                          // Original behavior: render heading first, then image
+                          // Render the heading
+                          elements.push(
+                            <h2 
+                              key={`heading-${index}`}
+                              id={`heading-${tocIndex}`}
+                              className="article__heading"
+                            >
+                              {block.text}
+                            </h2>
+                          );
+
+                          // Add an image after the heading if available
+                          if (imageToUse) {
+                            const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
+                            
+                            elements.push(
+                              <div 
+                                key={`image-after-${index}`} 
+                                className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
+                              >
+                                {rankingNumber && (
+                                  <div className="article__image-ranking-badge" data-number={`#${rankingNumber}`}>
+                                  </div>
+                                )}
+                                <img 
+                                  src={imageToUse} 
+                                  alt={vehicleNameForImage || `${article.title} - Image ${imageIndex + 2}`}
+                                  className={`article__image article__image-clickable ${isPremiumArticle ? 'article__image--premium' : ''}`}
+                                  onClick={() => {
+                                    if (vehicleNameForImage) {
+                                      // Navigate to vehicle page if vehicle name exists
+                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                      navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
+                                    } else {
+                                      // Otherwise open gallery
+                                      handleImageClick(galleryIndex);
+                                    }
+                                  }}
+                                  style={{ cursor: 'pointer' }}
+                                />
+                                {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
+                                  <div className="article__image-score-overlay">
+                                    <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
+                                    <div className="article__image-score-ratings-list">
+                                      <div className="article__image-score-rating-item">
+                                        <div className="article__image-score-rating-label-wrapper">
+                                          <span className="article__image-score-rating-label-top">MotorTrend</span>
+                                          <span className="article__image-score-rating-label-bottom">Rating</span>
+                                        </div>
+                                        <div className="article__image-score-rating-value-wrapper">
+                                          <span className="article__image-score-rating-value">
+                                            {motortrendScoreForImage.toFixed(1)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div className="article__image-score-rating-item">
+                                        <div className="article__image-score-rating-label-wrapper">
+                                          <span className="article__image-score-rating-label-top">Community</span>
+                                          <span className="article__image-score-rating-label-bottom">
+                                            Rating <span className="article__image-score-rating-count">(252)</span>
+                                          </span>
+                                        </div>
+                                        <div className="article__image-score-rating-value-wrapper">
+                                          <img 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                            alt="Community Rating Star" 
+                                            className="article__image-score-rating-icon community" 
+                                          />
+                                          <span className="article__image-score-rating-value">
+                                            {userScoreForImage.toFixed(1)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      className="article__image-score-cta cta cta--primary cta--default"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                        navigate(`/vehicles/${year}/${make}/${model}`);
+                                      }}
+                                    >
+                                      See Local Listings
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                            // Only increment imageIndex if we used the index-based image
+                            if (!vehicleImageUrl) {
+                              imageIndex++;
+                            }
+                          }
                         }
                       } else if (block.type === "paragraph") {
                         paragraphCount++;
@@ -872,12 +1153,34 @@ export const Article: React.FC = () => {
                           </p>
                         );
 
-                        // Add MotorTrend Score component after the 8th paragraph
-                        if (paragraphCount === 8) {
+                        // Add MotorTrend Score component after the 8th paragraph (skip for premium articles)
+                        if (paragraphCount === 8 && !isPremiumArticle) {
                           elements.push(
                             <div key="motortrend-score" id="motortrend-score" className="article__motortrend-score">
                               <div className="article__motortrend-header">
-                                <h2>MotorTrend Score</h2>
+                                <div className="article__motortrend-title-group">
+                                  <h2>MotorTrend Score</h2>
+                                  <div 
+                                    ref={scoreInfoRef}
+                                    className="article__score-info-icon"
+                                    onMouseEnter={handleScoreInfoTooltipMouseEnter}
+                                    onMouseLeave={handleScoreInfoTooltipMouseLeave}
+                                  >
+                                    <Icon name="info" variant="outlined" size={20} />
+                                    {isScoreInfoTooltipVisible && (
+                                      <div 
+                                        className="article__score-info-tooltip"
+                                        onMouseEnter={handleScoreInfoTooltipMouseEnter}
+                                        onMouseLeave={handleScoreInfoTooltipMouseLeave}
+                                      >
+                                        <p>
+                                          MotorTrend scores vehicles based on comprehensive testing of performance, efficiency, technology, and value. Our expert reviewers evaluate each vehicle through rigorous standardized testing procedures to provide objective ratings. 
+                                          <Link to="/article/how-motortrend-tests-cars" className="article__score-info-link">Learn more about how MotorTrend tests cars</Link>.
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
                                 <img 
                                   src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg" 
                                   alt="MotorTrend Logo" 
@@ -901,7 +1204,7 @@ export const Article: React.FC = () => {
                                 <div className="article__score-content">
                                   <div className="article__overall-score">
                                     <div className="article__score-circle">
-                                      <span className="article__score-number">{motortrendScore.overallRating}</span>
+                                      <span className="article__score-number">{typeof motortrendScore.overallRating === 'number' ? motortrendScore.overallRating.toFixed(1) : motortrendScore.overallRating}</span>
                                       <span className="article__score-label">MotorTrend Rating</span>
                                     </div>
                                   </div>
@@ -911,28 +1214,28 @@ export const Article: React.FC = () => {
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.performance / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.performance}</span>
+                                      <span>{motortrendScore.scores.performance.toFixed(1)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Efficiency/Range</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.efficiency / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.efficiency}</span>
+                                      <span>{motortrendScore.scores.efficiency.toFixed(1)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Tech/Innovation</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.tech / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.tech}</span>
+                                      <span>{motortrendScore.scores.tech.toFixed(1)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Value</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.value / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.value}</span>
+                                      <span>{motortrendScore.scores.value.toFixed(1)}</span>
                                     </div>
                                   </div>
                                 </div>
@@ -1232,81 +1535,50 @@ export const Article: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Photo Gallery Bento Module */}
-            {articleImages.length > 1 && (
-              <div className="article__photo-gallery-bento">
-                <div className="article__photo-gallery-header">
-                  <h3 className="article__photo-gallery-title">Photo Gallery</h3>
-                  <button
-                    className="article__photo-gallery-view-all cta cta--ghost cta--default"
-                    onClick={() => handleImageClick(0)}
-                  >
-                    View All Photos
-                  </button>
-                </div>
-                <div className="article__photo-gallery-grid">
-                  {articleImages.slice(0, 6).map((image, index) => (
-                    <div
-                      key={index}
-                      className={`article__photo-gallery-item article__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
-                      onClick={() => handleImageClick(index)}
+          {/* Right Column: Sidebar (1/3) - Hidden for premium articles */}
+          {!isPremiumArticle && (
+            <div className="article__sidebar">
+              {/* Ad Container */}
+              <div className="article__sidebar-section">
+                <AdContainer
+                  width={300}
+                  height={600}
+                  label="300 x 600"
+                  position="right-column"
+                  imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+                />
+              </div>
+
+              {/* Related Articles */}
+              <div className="article__sidebar-section">
+                <h3 className="article__sidebar-title">Related Articles</h3>
+                <div className="article__sidebar-articles">
+                  {relatedArticles.map((relatedArticle) => (
+                    <div 
+                      key={relatedArticle.id}
+                      className="article__sidebar-article"
+                      onClick={() => handleRelatedArticleClick(relatedArticle.slug)}
                     >
-                      <img 
-                        src={image} 
-                        alt={`${article.title} - Photo ${index + 1}`}
-                        className="article__photo-gallery-thumb"
-                      />
-                      <div className="article__photo-gallery-overlay">
-                        <Icon name="open_in_full" size={24} />
+                      <div className="article__sidebar-article-image">
+                        <img 
+                          src={relatedArticle.imageUrl} 
+                          alt={relatedArticle.title}
+                        />
+                      </div>
+                      <div className="article__sidebar-article-content">
+                        <h4>{relatedArticle.title}</h4>
+                        <p className="article__sidebar-article-meta">
+                          {relatedArticle.author} | {relatedArticle.date}
+                        </p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Right Column: Sidebar (1/3) */}
-          <div className="article__sidebar">
-            {/* Ad Container */}
-            <div className="article__sidebar-section">
-              <AdContainer
-                width={300}
-                height={600}
-                label="300 x 600"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
-              />
             </div>
-
-            {/* Related Articles */}
-            <div className="article__sidebar-section">
-              <h3 className="article__sidebar-title">Related Articles</h3>
-              <div className="article__sidebar-articles">
-                {relatedArticles.map((relatedArticle) => (
-                  <div 
-                    key={relatedArticle.id}
-                    className="article__sidebar-article"
-                    onClick={() => handleRelatedArticleClick(relatedArticle.slug)}
-                  >
-                    <div className="article__sidebar-article-image">
-                      <img 
-                        src={relatedArticle.imageUrl} 
-                        alt={relatedArticle.title}
-                      />
-                    </div>
-                    <div className="article__sidebar-article-content">
-                      <h4>{relatedArticle.title}</h4>
-                      <p className="article__sidebar-article-meta">
-                        {relatedArticle.author} | {relatedArticle.date}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 

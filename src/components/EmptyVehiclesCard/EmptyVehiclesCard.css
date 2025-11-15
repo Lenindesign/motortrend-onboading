@@ -42,11 +42,6 @@
   height: 80px;
   object-fit: contain;
   cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.empty-vehicles-card__icon-img:hover {
-  opacity: 0.8;
 }
 
 .empty-vehicles-card__title {
@@ -94,11 +89,6 @@
     width: 64px;
     height: 64px;
     cursor: pointer;
-    transition: opacity 0.2s ease;
-  }
-
-  .empty-vehicles-card__icon-img:hover {
-    opacity: 0.8;
   }
 
   .empty-vehicles-card__title {
@@ -131,11 +121,6 @@
     width: 56px;
     height: 56px;
     cursor: pointer;
-    transition: opacity 0.2s ease;
-  }
-
-  .empty-vehicles-card__icon-img:hover {
-    opacity: 0.8;
   }
 
   .empty-vehicles-card__title {
