@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Review System Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1A1A1A;
+            background: #F5F5F5;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            border-bottom: 3px solid #33CCFF;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #6E7481;
+            margin-bottom: 20px;
+        }
+        
+        .meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #808080;
+        }
+        
+        .meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        nav {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            position: sticky;
+            top: 20px;
+        }
+        
+        nav h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #1A1A1A;
+        }
+        
+        nav ul {
+            list-style: none;
+        }
+        
+        nav li {
+            margin: 8px 0;
+        }
+        
+        nav a {
+            color: #33CCFF;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        nav a:hover {
+            color: #2196F3;
+        }
+        
+        section {
+            margin-bottom: 60px;
+        }
+        
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1A1A1A;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #E5E5E5;
+        }
+        
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4A4A4A;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #4A4A4A;
+            line-height: 1.8;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #33CCFF;
+        }
+        
+        .feature-card h4 {
+            color: #1A1A1A;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card ul {
+            margin-left: 20px;
+            color: #4A4A4A;
+        }
+        
+        .feature-card li {
+            margin: 5px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .badge-success {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+        
+        .badge-info {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+        
+        .badge-gray {
+            background: #F5F5F5;
+            color: #4A4A4A;
+            border: 1px solid #CCCCCC;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        table th {
+            background: #F5F5F5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #1A1A1A;
+            border-bottom: 2px solid #E5E5E5;
+        }
+        
+        table td {
+            padding: 12px;
+            border-bottom: 1px solid #E5E5E5;
+            color: #4A4A4A;
+        }
+        
+        table tr:hover {
+            background: #F9F9F9;
+        }
+        
+        .code-block {
+            background: #1A1A1A;
+            color: #F5F5F5;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .code-block code {
+            color: #F5F5F5;
+        }
+        
+        .flow-diagram {
+            background: #F5F5F5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        
+        .flow-step {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .flow-step::before {
+            content: '↓';
+            margin-right: 10px;
+            color: #33CCFF;
+            font-weight: bold;
+        }
+        
+        .flow-step:first-child::before {
+            content: '→';
+        }
+        
+        .checklist {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #F5F5F5;
+            border-left: 3px solid #33CCFF;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 10px;
+            font-size: 18px;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+        
+        .alert-info {
+            background: #E3F2FD;
+            border-color: #2196F3;
+            color: #1976D2;
+        }
+        
+        .alert-warning {
+            background: #FFF3E0;
+            border-color: #FF9800;
+            color: #E65100;
+        }
+        
+        .highlight-box {
+            background: #F0F9FF;
+            border: 2px solid #33CCFF;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight-box h4 {
+            color: #1A1A1A;
+            margin-top: 0;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+            color: #4A4A4A;
+        }
+        
+        ul li, ol li {
+            margin: 8px 0;
+        }
+        
+        .color-swatch {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            border: 1px solid #CCCCCC;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+            nav {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 32px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            .code-block {
+                font-size: 12px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 User Review System</h1>
+            <p class="subtitle">Comprehensive Documentation for Product Managers and Developers</p>
+            <div class="meta">
+                <span>📅 Last Updated: December 2024</span>
+                <span>📌 Version: 1.0.0</span>
+                <span>👥 Team: Product & Engineering</span>
+            </div>
+        </header>
+
+        <nav>
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#features">Features & Capabilities</a></li>
+                <li><a href="#architecture">Component Architecture</a></li>
+                <li><a href="#data-models">Data Models</a></li>
+                <li><a href="#user-flows">User Flows</a></li>
+                <li><a href="#design">Design Specifications</a></li>
+                <li><a href="#implementation">Technical Implementation</a></li>
+                <li><a href="#api">API Integration Guide</a></li>
+                <li><a href="#testing">Testing Checklist</a></li>
+            </ul>
+        </nav>
+
+        <section id="overview">
+            <h2>🎯 Overview</h2>
+            <p>The User Review System enables customers to share detailed vehicle reviews with ratings, media, verification, and social interactions. The system supports both creating new reviews and editing existing ones.</p>
+            
+            <div class="highlight-box">
+                <h4>Key Benefits</h4>
+                <ul>
+                    <li><strong>Comprehensive Rating System</strong> - Overall ratings (1-10) with 5 category-specific ratings</li>
+                    <li><strong>Media Support</strong> - Image and video uploads with preview</li>
+                    <li><strong>Verification System</strong> - Multi-tier ownership verification with badges</li>
+                    <li><strong>Social Features</strong> - Thumbs up, replies, and sharing capabilities</li>
+                    <li><strong>Edit Functionality</strong> - Users can update their reviews with change tracking</li>
+                    <li><strong>Auto-Calculation</strong> - Overall rating automatically computed from category ratings</li>
+                    <li><strong>Responsive Design</strong> - Mobile-first with desktop optimization</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="features">
+            <h2>🚀 Features & Capabilities</h2>
+            
+            <h3>Core Features</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>1. Review Creation</h4>
+                    <ul>
+                        <li>Overall rating (1-10 with decimals)</li>
+                        <li>Review title (required)</li>
+                        <li>Review content with paragraphs</li>
+                        <li>Vehicle model selection</li>
+                        <li>Media upload (images/videos)</li>
+                        <li>Category ratings</li>
+                        <li>Vehicle relationship</li>
+                        <li>VIN verification (optional)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>2. Review Editing</h4>
+                    <ul>
+                        <li>Edit any field</li>
+                        <li>Original date preserved</li>
+                        <li>Updated date timestamp</li>
+                        <li>Visual change indicator</li>
+                        <li>Pre-filled data in modal</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>3. Rating System</h4>
+                    <ul>
+                        <li>Automatic calculation</li>
+                        <li>Manual override</li>
+                        <li>Fractional support (e.g., 7.5)</li>
+                        <li>Smart sync logic</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>4. Verification System</h4>
+                    <ul>
+                        <li><span class="badge badge-success">Documents Verified</span> - VIN provided</li>
+                        <li><span class="badge badge-info">Verified Owner</span> - Reserved</li>
+                        <li><span class="badge badge-gray">Owner</span> - Basic verification</li>
+                        <li>No badge - Unverified</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Vehicle Relationship Options</h3>
+            <p>Users can specify their relationship with the vehicle:</p>
+            <ul>
+                <li>✅ Currently own</li>
+                <li>✅ Previously owned</li>
+                <li>✅ Leased</li>
+                <li>✅ Rented</li>
+                <li>✅ Test drove</li>
+                <li>✅ Was a passenger</li>
+            </ul>
+            <p>Duration is collected for each relationship type.</p>
+        </section>
+
+        <section id="architecture">
+            <h2>🏗️ Component Architecture</h2>
+            
+            <h3>Main Components</h3>
+            <div class="code-block">
+<code>src/components/
+├── UserReviews/
+│   ├── UserReviews.tsx          # Main review display component
+│   ├── UserReviews.css          # Component styles
+│   └── index.ts                 # Exports
+├── WriteReviewModal/
+│   ├── WriteReviewModal.tsx     # Create/edit review modal
+│   ├── WriteReviewModal.css     # Modal styles
+│   └── index.ts                 # Exports
+└── RatingModal/
+    └── RatingModal.tsx          # Overall rating input</code>
+            </div>
+
+            <h3>Component Hierarchy</h3>
+            <div class="code-block">
+<code>VehicleDetails Page
+└── UserReviews Component
+    ├── Rating Modal (overlay)
+    ├── Write Review Modal (overlay)
+    └── Review List
+        └── Review Card
+            ├── Reviewer Info
+            ├── Title
+            ├── Media
+            ├── Content (formatted)
+            ├── Category Ratings
+            ├── Actions
+            └── Replies</code>
+            </div>
+        </section>
+
+        <section id="data-models">
+            <h2>📊 Data Models</h2>
+            
+            <h3>ReviewData Interface</h3>
+            <div class="code-block">
+<code>export interface ReviewData {
+  // Core Fields
+  id: string;                      // Unique review identifier
+  reviewerName: string;            // Reviewer's name
+  rating: number;                  // Overall rating (1-10, supports decimals)
+  title: string;                   // Review title (required)
+  content: string;                 // Review body (required, supports paragraphs)
+  vehicleType: string;             // Vehicle type
+  vehicleModel: string;            // Specific model/variant
+  date: string;                    // Original publish date
+  updatedDate?: string;            // Last update date (if edited)
+  
+  // Media
+  mediaFiles?: File[];             // Uploaded media files
+  mediaPreviews?: string[];        // Preview URLs for display
+  
+  // Social Features
+  thumbsUpCount?: number;          // Number of likes
+  isThumbsUp?: boolean;            // Current user's like status
+  replies?: ReplyData[];            // Comments/replies
+  
+  // Category Ratings (1-10 scale)
+  categoryRatings?: {
+    comfort?: number;              // Comfort rating
+    reliability?: number;          // Reliability rating
+    interior?: number;            // Interior rating
+    value?: number;               // Value rating
+    safety?: number;               // Safety rating
+  };
+  
+  // Verification
+  verificationLevel?: VerificationLevel;  // Badge level
+  vinNumber?: string;              // VIN (confidential)
+  
+  // Relationship
+  vehicleRelationship?: VehicleRelationship;  // User's relationship
+  experienceDuration?: string;    // How long user experienced vehicle
+}</code>
+            </div>
+
+            <h3>Type Definitions</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Values</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>VerificationLevel</strong></td>
+                        <td>'none' | 'owner' | 'verified' | 'verified_documents'</td>
+                        <td>Verification badge level</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VehicleRelationship</strong></td>
+                        <td>'own' | 'previously_owned' | 'leased' | 'rented' | 'test_drove' | 'passenger'</td>
+                        <td>User's relationship with vehicle</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="user-flows">
+            <h2>🔄 User Flows</h2>
+            
+            <h3>Flow 1: Creating a New Review</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">User clicks "Write a Vehicle Review"</div>
+                <div class="flow-step">WriteReviewModal opens</div>
+                <div class="flow-step">User sets rating (overall or categories)</div>
+                <div class="flow-step">User fills required fields: Title, Content</div>
+                <div class="flow-step">User optionally adds: Relationship, Duration, VIN, Category Ratings, Media</div>
+                <div class="flow-step">User clicks "Submit Your Review"</div>
+                <div class="flow-step">Review appears at top of list</div>
+                <div class="flow-step">CTA button changes to "Edit Your Review"</div>
+            </div>
+
+            <h3>Flow 2: Editing an Existing Review</h3>
+            <div class="flow-diagram">
+                <div class="flow-step">User clicks "Edit Your Review" (CTA or Edit button)</div>
+                <div class="flow-step">WriteReviewModal opens in edit mode with pre-filled data</div>
+                <div class="flow-step">User modifies desired fields</div>
+                <div class="flow-step">User clicks "Update Review"</div>
+                <div class="flow-step">Review updates with modifiedDate timestamp</div>
+                <div class="flow-step">Review displays "Updated [date]"</div>
+            </div>
+
+            <h3>Flow 3: Rating Calculation Logic</h3>
+            <div class="highlight-box">
+                <h4>Automatic Mode (Default)</h4>
+                <p>User sets category ratings → Overall rating auto-calculates (average) → Supports fractional ratings (e.g., 7.5)</p>
+                
+                <h4>Manual Override</h4>
+                <p>User clicks overall rating stars → Manual mode activated → Category changes reset manual mode → Returns to automatic calculation</p>
+            </div>
+        </section>
+
+        <section id="design">
+            <h2>🎨 Design Specifications</h2>
+            
+            <h3>Typography</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Font Family</th>
+                        <th>Weight</th>
+                        <th>Size</th>
+                        <th>Line Height</th>
+                        <th>Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Review Title</td>
+                        <td>Heading (Poppins)</td>
+                        <td>600</td>
+                        <td>18px</td>
+                        <td>1.333em</td>
+                        <td>Neutrals-1</td>
+                    </tr>
+                    <tr>
+                        <td>Review Content</td>
+                        <td>Body (Geist)</td>
+                        <td>400</td>
+                        <td>16px</td>
+                        <td>1.6em</td>
+                        <td>Neutrals-2</td>
+                    </tr>
+                    <tr>
+                        <td>Reviewer Name</td>
+                        <td>Body (Geist)</td>
+                        <td>600</td>
+                        <td>16px</td>
+                        <td>1.5em</td>
+                        <td>Neutrals-1</td>
+                    </tr>
+                    <tr>
+                        <td>Review Date</td>
+                        <td>Body (Geist)</td>
+                        <td>400</td>
+                        <td>12px</td>
+                        <td>1.5em</td>
+                        <td>#6E7481</td>
+                    </tr>
+                    <tr>
+                        <td>Overall Rating</td>
+                        <td>Heading (Poppins)</td>
+                        <td>600</td>
+                        <td>24px</td>
+                        <td>1.375em</td>
+                        <td>Neutrals-1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Color Palette</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Color</th>
+                        <th>Hex Value</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="color-swatch" style="background: #1A1A1A;"></span>Neutrals-1</td>
+                        <td>#1A1A1A</td>
+                        <td>Headings, high contrast text</td>
+                    </tr>
+                    <tr>
+                        <td><span class="color-swatch" style="background: #4A4A4A;"></span>Neutrals-2</td>
+                        <td>#4A4A4A</td>
+                        <td>Body text</td>
+                    </tr>
+                    <tr>
+                        <td><span class="color-swatch" style="background: #808080;"></span>Neutrals-3</td>
+                        <td>#808080</td>
+                        <td>Secondary text</td>
+                    </tr>
+                    <tr>
+                        <td><span class="color-swatch" style="background: #33CCFF;"></span>Primary-500</td>
+                        <td>#33CCFF</td>
+                        <td>Primary actions</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Verification Badges</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Badge</th>
+                        <th>Background</th>
+                        <th>Border</th>
+                        <th>Text Color</th>
+                        <th>Icon</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-gray">Owner</span></td>
+                        <td>Neutrals-7</td>
+                        <td>1px Neutrals-5</td>
+                        <td>Neutrals-2</td>
+                        <td>Blue star</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-info">Verified Owner</span></td>
+                        <td>#E3F2FD</td>
+                        <td>1px #2196F3</td>
+                        <td>#1976D2</td>
+                        <td>Blue star</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-success">Documents Verified</span></td>
+                        <td>#E8F5E9</td>
+                        <td>1px #4CAF50</td>
+                        <td>#2E7D32</td>
+                        <td>Blue star</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Spacing System</h3>
+            <p>Based on 8px grid:</p>
+            <ul>
+                <li><strong>xs</strong>: 4px</li>
+                <li><strong>sm</strong>: 8px</li>
+                <li><strong>md</strong>: 12px</li>
+                <li><strong>lg</strong>: 16px</li>
+                <li><strong>xl</strong>: 24px</li>
+                <li><strong>2xl</strong>: 32px</li>
+                <li><strong>3xl</strong>: 42px (featured review padding)</li>
+            </ul>
+        </section>
+
+        <section id="implementation">
+            <h2>💻 Technical Implementation</h2>
+            
+            <h3>Rating Calculation Algorithm</h3>
+            <p><strong>Location</strong>: <code>src/utils/ratingUtils.ts</code></p>
+            <div class="code-block">
+<code>export function computeOverallRating(categoryRatings: {
+  comfort?: number;
+  reliability?: number;
+  interior?: number;
+  value?: number;
+  safety?: number;
+}): number {
+  // Filter out undefined/zero ratings
+  const ratings = Object.values(categoryRatings).filter(
+    (r): r is number => typeof r === 'number' && r > 0
+  );
+  
+  if (ratings.length === 0) return 0;
+  
+  // Calculate average
+  const average = ratings.reduce((sum, r) => sum + r, 0) / ratings.length;
+  
+  // Round to 1 decimal place for fractional support
+  return Math.round(average * 10) / 10;
+}</code>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>Note:</strong> The rating system supports fractional values (e.g., 7.5) and automatically calculates the overall rating from category ratings unless manually overridden.
+            </div>
+
+            <h3>Paragraph Formatting</h3>
+            <p>Review content is automatically formatted into paragraphs:</p>
+            <ol>
+                <li><strong>Primary Split</strong>: Double line breaks (<code>\n\n</code>)</li>
+                <li><strong>Fallback</strong>: Single line breaks (<code>\n</code>)</li>
+                <li><strong>Rendering</strong>: Each paragraph wrapped in <code>&lt;p&gt;</code> tag</li>
+                <li><strong>CSS</strong>: 1em spacing between paragraphs (web standard)</li>
+            </ol>
+
+            <h3>VIN Storage</h3>
+            <div class="alert alert-warning">
+                <strong>Security Note:</strong> In production, VINs should be encrypted before storage in localStorage or sent securely to the backend.
+            </div>
+            <p>VINs stored in localStorage:</p>
+            <div class="code-block">
+<code>{
+  "vehicleVINs": {
+    "2025 BMW 3-Series": {
+      "vehicleName": "2025 BMW 3-Series",
+      "vin": "WBA123456789ABCDE",
+      "timestamp": "2024-12-01T10:30:00.000Z"
+    }
+  }
+}</code>
+            </div>
+        </section>
+
+        <section id="api">
+            <h2>🔌 API Integration Guide</h2>
+            
+            <h3>Component Usage Example</h3>
+            <div class="code-block">
+<code>import { UserReviews } from '../../components/UserReviews';
+import WriteReviewModal from '../../components/WriteReviewModal';
+import type { ReviewData } from '../../components/UserReviews';
+
+function VehicleDetailsPage() {
+  const [reviews, setReviews] = useState&lt;ReviewData[]&gt;([]);
+  const [isWriteModalOpen, setIsWriteModalOpen] = useState(false);
+
+  const handleSubmitReview = (newReview: ReviewData) => {
+    // In production: Send to API
+    // await api.post('/reviews', newReview);
+    
+    // Update local state
+    setReviews(prev => [newReview, ...prev]);
+    setIsWriteModalOpen(false);
+  };
+
+  const handleUpdateReview = (reviewId: string, updatedReview: ReviewData) => {
+    // In production: Send to API
+    // await api.put(`/reviews/${reviewId}`, updatedReview);
+    
+    setReviews(prev => prev.map(review => 
+      review.id === reviewId ? updatedReview : review
+    ));
+  };
+
+  return (
+    &lt;&gt;
+      &lt;UserReviews
+        vehicleName="2025 BMW 3-Series"
+        communityRating={8.5}
+        totalReviews={253}
+        ratingDistribution={[5, 3, 8, 10, 20, 30, 45, 63, 50, 18]}
+        reviews={reviews}
+        onWriteReview={() => setIsWriteModalOpen(true)}
+        onUpdateReview={handleUpdateReview}
+      /&gt;
+      
+      &lt;WriteReviewModal
+        isOpen={isWriteModalOpen}
+        onClose={() => setIsWriteModalOpen(false)}
+        vehicleName="2025 BMW 3-Series"
+        onSubmit={handleSubmitReview}
+      /&gt;
+    &lt;/&gt;
+  );
+}</code>
+            </div>
+
+            <h3>Suggested API Endpoints</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>POST</td>
+                        <td><code>/api/vehicles/:vehicleId/reviews</code></td>
+                        <td>Create new review</td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td><code>/api/reviews/:reviewId</code></td>
+                        <td>Update existing review</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td><code>/api/vehicles/:vehicleId/reviews</code></td>
+                        <td>Get all reviews for vehicle</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td><code>/api/reviews/:reviewId/media</code></td>
+                        <td>Upload media files</td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td><code>/api/reviews/:reviewId</code></td>
+                        <td>Delete review</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="testing">
+            <h2>✅ Testing Checklist</h2>
+            
+            <h3>Functional Testing</h3>
+            <ul class="checklist">
+                <li><strong>Review Creation</strong> - Can create review with all required fields, optional fields work, validation works</li>
+                <li><strong>Review Editing</strong> - Edit button appears for user's reviews, modal pre-fills data, updates work correctly</li>
+                <li><strong>Rating System</strong> - Category ratings calculate overall rating, fractional ratings work, manual override works</li>
+                <li><strong>Verification System</strong> - Badge levels assign correctly based on VIN/relationship/profile</li>
+                <li><strong>Social Features</strong> - Thumbs up increments count, reply functionality works, share button appears</li>
+                <li><strong>UI/UX</strong> - CTA button changes text, paragraph formatting works, media previews display, responsive design</li>
+            </ul>
+
+            <h3>Edge Cases</h3>
+            <ul class="checklist">
+                <li>Empty review content</li>
+                <li>Very long review content</li>
+                <li>Multiple media files</li>
+                <li>Large file sizes</li>
+                <li>Special characters in review</li>
+                <li>Network errors during submission</li>
+                <li>Rapid editing (race conditions)</li>
+            </ul>
+        </section>
+
+        <section style="margin-top: 60px; padding-top: 30px; border-top: 2px solid #E5E5E5;">
+            <h2>📞 Support & Questions</h2>
+            <p>For technical questions or issues:</p>
+            <ul>
+                <li><strong>Component Files</strong>: <code>src/components/UserReviews/</code>, <code>src/components/WriteReviewModal/</code></li>
+                <li><strong>Utility Functions</strong>: <code>src/utils/ratingUtils.ts</code></li>
+                <li><strong>Type Definitions</strong>: Exported from <code>UserReviews.tsx</code></li>
+            </ul>
+            
+            <div class="highlight-box">
+                <p><strong>Document Version</strong>: 1.0.0<br>
+                <strong>Last Updated</strong>: December 2024<br>
+                <strong>Maintained By</strong>: Development Team</p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+

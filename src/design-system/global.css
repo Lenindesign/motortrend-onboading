@@ -61,7 +61,7 @@
   --transition-slow: 350ms ease-in-out;
   
   /* Layout */
-  --max-width-container: 1040px;
+  --max-width-container: 1280px;
   --max-width-content: 1280px;
   
   /* Section Spacing */
@@ -148,6 +148,143 @@ body {
   max-width: var(--max-width-container);
   margin: 0 auto;
   padding: 0 var(--section-spacing-horizontal);
+}
+
+/* ========================================
+   Standardized CTA System
+   ======================================== */
+
+/* CTA Base - Standardized button foundation */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* CTA Sizes */
+.cta--small {
+  padding: 6px 12px;
+  font-size: 12px;
+  height: 28px;
+}
+
+.cta--default {
+  padding: 8px 16px;
+  font-size: 14px;
+  height: 36px;
+}
+
+.cta--large {
+  padding: 12px 24px;
+  font-size: 16px;
+  height: 44px;
+}
+
+/* CTA Colors - Primary Actions */
+.cta--primary {
+  background-color: var(--color-primary-1);
+  color: var(--color-white);
+  box-shadow: 0 2px 4px rgba(233, 12, 23, 0.2);
+}
+
+.cta--primary:hover:not(:disabled) {
+  background-color: var(--color-neutrals-1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(233, 12, 23, 0.3);
+}
+
+/* CTA Colors - Secondary Actions */
+.cta--secondary {
+  background-color: #353945;
+  color: var(--color-white);
+}
+
+.cta--secondary:hover:not(:disabled) {
+  background-color: #2a2d35;
+  transform: translateY(-1px);
+}
+
+/* CTA Colors - Neutral Actions */
+.cta--neutral {
+  background-color: var(--color-neutrals-5);
+  color: var(--color-white);
+}
+
+.cta--neutral:hover:not(:disabled) {
+  background-color: var(--color-neutrals-4);
+  transform: translateY(-1px);
+}
+
+/* CTA Colors - Success Actions */
+.cta--success {
+  background-color: #34A853;
+  color: var(--color-white);
+}
+
+.cta--success:hover:not(:disabled) {
+  background-color: #2d8f47;
+  transform: translateY(-1px);
+}
+
+/* CTA Colors - Warning Actions */
+.cta--warning {
+  background-color: #F59E0B;
+  color: var(--color-white);
+}
+
+.cta--warning:hover:not(:disabled) {
+  background-color: #D97706;
+  transform: translateY(-1px);
+}
+
+/* CTA Variants - Ghost */
+.cta--ghost {
+  background-color: transparent;
+  color: var(--color-primary-1);
+  box-shadow: none;
+}
+
+.cta--ghost:hover:not(:disabled) {
+  background-color: rgba(233, 12, 23, 0.1);
+  transform: translateY(-1px);
+}
+
+/* CTA Variants - Outline */
+.cta--outline {
+  background-color: transparent;
+  color: var(--color-primary-1);
+  border: 1px solid var(--color-primary-1);
+  box-shadow: none;
+}
+
+.cta--outline:hover:not(:disabled) {
+  background-color: rgba(233, 12, 23, 0.1);
+  transform: translateY(-1px);
+}
+
+/* CTA States */
+.cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.cta--full-width {
+  width: 100%;
 }
 
 /* Mobile-first responsive breakpoints */

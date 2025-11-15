@@ -6,55 +6,83 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
+import { ScrollToTop } from './components/ScrollToTop';
 import SignIn from './pages/SignIn';
 import { OnboardingStep1, OnboardingStep2, OnboardingStep3, OnboardingStep4 } from './pages/Onboarding';
 import Welcome from './pages/Welcome';
 import Profile from './pages/Profile';
 import { Membership } from './pages/Membership';
+import VehicleDetails from './pages/VehicleDetails';
+import { VehicleInventory } from './pages/VehicleInventory';
+import { Home } from './pages/Home';
+import { Article } from './pages/Article';
+import Documentation from './pages/Documentation';
+import OnboardingDocumentation from './pages/OnboardingDocumentation';
+import ProfileDocumentation from './pages/ProfileDocumentation';
+import { RatingProvider } from './contexts/RatingContext';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <GlobalHeader />
-        
-        <main className="app__main">
-          <Routes>
-            {/* Default route - redirect to sign in */}
-            <Route path="/" element={<Navigate to="/signin" replace />} />
-            
-            {/* Sign In Page */}
-            <Route path="/signin" element={<SignIn />} />
-            
-            {/* Onboarding Steps */}
-            <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
-            <Route path="/onboarding/step2" element={<OnboardingStep2 />} />
-            <Route path="/onboarding/step3" element={<OnboardingStep3 />} />
-            <Route path="/onboarding/step4" element={<OnboardingStep4 />} />
-            
-            {/* Welcome/Complete Page */}
-            <Route path="/welcome" element={<Welcome />} />
-            
-            {/* Profile Pages */}
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/my-account" element={<Navigate to="/my-account/profile" replace />} />
-            <Route path="/my-account/profile" element={<Profile />} />
-            <Route path="/my-account/saved-items" element={<Profile />} />
-            <Route path="/my-account/subscriptions" element={<Profile />} />
-            <Route path="/my-account/settings" element={<Profile />} />
-            
-            {/* Membership Page */}
-            <Route path="/membership" element={<Membership />} />
-            
-            {/* Catch all route - redirect to sign in */}
-            <Route path="*" element={<Navigate to="/signin" replace />} />
-          </Routes>
-        </main>
+    <RatingProvider>
+      <Router>
+        <ScrollToTop />
+        <div className="app">
+          <GlobalHeader />
+          
+          <main className="app__main">
+            <Routes>
+              {/* Default route - show home page */}
+              <Route path="/" element={<Home />} />
+              
+              {/* Sign In Page */}
+              <Route path="/signin" element={<SignIn />} />
+              
+              {/* Vehicle Inventory */}
+              <Route path="/vehicles" element={<VehicleInventory />} />
+              
+              {/* Onboarding Steps */}
+              <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
+              <Route path="/onboarding/step2" element={<OnboardingStep2 />} />
+              <Route path="/onboarding/step3" element={<OnboardingStep3 />} />
+              <Route path="/onboarding/step4" element={<OnboardingStep4 />} />
+              
+              {/* Welcome/Complete Page */}
+              <Route path="/welcome" element={<Welcome />} />
+              
+              {/* Profile Pages */}
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/my-account" element={<Navigate to="/my-account/profile" replace />} />
+              <Route path="/my-account/profile" element={<Profile />} />
+              <Route path="/my-account/saved-items" element={<Profile />} />
+              <Route path="/my-account/subscriptions" element={<Profile />} />
+              
+              {/* Membership Page */}
+              <Route path="/membership" element={<Membership />} />
+              
+              {/* Vehicle Details Page */}
+              <Route path="/vehicles/:year/:make/:model" element={<VehicleDetails />} />
+              
+              {/* Article Page */}
+              <Route path="/articles/:slug" element={<Article />} />
+              
+              {/* Documentation Pages */}
+              <Route path="/documentation/review-system" element={<Documentation />} />
+              <Route path="/docs/review-system" element={<Documentation />} />
+              <Route path="/documentation/onboarding" element={<OnboardingDocumentation />} />
+              <Route path="/docs/onboarding" element={<OnboardingDocumentation />} />
+              <Route path="/documentation/profile" element={<ProfileDocumentation />} />
+              <Route path="/docs/profile" element={<ProfileDocumentation />} />
+              
+              {/* Catch all route - redirect to sign in */}
+              <Route path="*" element={<Navigate to="/signin" replace />} />
+            </Routes>
+          </main>
 
-        <GlobalFooter />
-      </div>
-    </Router>
+          <GlobalFooter />
+        </div>
+      </Router>
+    </RatingProvider>
   );
 }
 

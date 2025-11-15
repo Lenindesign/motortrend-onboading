@@ -11,6 +11,8 @@ const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfec
 import { MembershipCard } from '../../components/MembershipCard';
 import RatingModal from '../../components/RatingModal';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
+import { useRating } from '../../contexts/RatingContext';
+import { parseVehicleName } from '../../utils/vehicleImages';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -43,6 +45,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     vehicleName: '',
     currentRating: 0
   });
+  const { setUserRating } = useRating();
 
   // Load onboarding data from localStorage
   useEffect(() => {
@@ -60,6 +63,10 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         } else {
           setOnboardingData(parsed);
         }
+        
+        // Mark onboarding as complete - show notification dot on profile avatar
+        localStorage.setItem('onboardingComplete', 'true');
+        localStorage.setItem('profileNotificationSeen', 'false');
       } catch (error) {
         console.error('Error parsing onboarding data:', error);
       }
@@ -94,22 +101,28 @@ export const Welcome: React.FC<WelcomeProps> = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const { name = 'Guest', vehicles = [], userType } = onboardingData;
+  const { name = 'Guest', vehicles = [] } = onboardingData;
 
   // Rating handlers
 
   const handleRatingSubmit = (rating: number) => {
-    const updatedVehicles = vehicles.map(vehicle => 
-      vehicle.name === ratingModal.vehicleName 
-        ? { ...vehicle, rating }
-        : vehicle
-    );
-    
-    const updatedData = { ...onboardingData, vehicles: updatedVehicles };
-    setOnboardingData(updatedData);
-    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
-    
+    setUserRating(ratingModal.vehicleName, rating);
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Navigate to vehicle details page where they can write a review
+    try {
+      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
+      navigate(`/vehicles/${year}/${make}/${model}`);
+    } catch (error) {
+      console.error('Error parsing vehicle name:', error);
+      // If parsing fails, just stay on current page
+    }
   };
 
   const handleRatingModalClose = () => {
@@ -131,10 +144,9 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         {/* Welcome Message */}
         <div className="welcome-message">
           <div className="welcome-message__content">
-            <h1 className="welcome-title">Welcome {name}</h1>
+            <h1 className="welcome-title">Welcome to the Club, {name}!</h1>
             <p className="welcome-subtitle">
-              Based on your interest in {userType === 'buyer' ? 'buying a car' : userType === 'enthusiast' ? 'automotive enthusiasm' : 'automotive content'}, 
-              I've personalized your MotorTrend experience.
+              Enjoy your MotorTrend member benefits.
             </p>
           </div>
 
@@ -144,7 +156,21 @@ export const Welcome: React.FC<WelcomeProps> = () => {
               name={onboardingData?.name || 'User'}
               memberSince={onboardingData?.joinDate || getCurrentJoinDate()}
               car={vehicles.length > 0 ? vehicles[0].name : 'No vehicle selected'}
-              newsletter="MotorTrend"
+              newsletter={(() => {
+                // Map newsletter IDs to display names
+                const newsletterMap: Record<string, string> = {
+                  'motortrend': 'MotorTrend',
+                  'hotrod': 'HOT ROD',
+                  'events': 'Events'
+                };
+                
+                // Get first newsletter from array, or undefined if empty/not exists
+                if (onboardingData?.newsletters && Array.isArray(onboardingData.newsletters) && onboardingData.newsletters.length > 0) {
+                  const newsletterId = onboardingData.newsletters[0];
+                  return newsletterMap[newsletterId] || newsletterId;
+                }
+                return undefined;
+              })()}
             />
           </div>
         </div>
@@ -155,7 +181,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             className="welcome-btn welcome-btn--primary"
             onClick={() => navigate('/')}
           >
-            <span>Go to Home Page</span>
+            <span>Close</span>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 16L14 10L8 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
@@ -165,7 +191,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             className="welcome-btn welcome-btn--secondary"
             onClick={() => navigate('/onboarding/step1')}
           >
-            Start Over
+            Back
           </button>
         </div>
       </div>
@@ -177,6 +203,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
       />
     </div>
   );

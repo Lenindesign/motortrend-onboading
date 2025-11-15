@@ -149,14 +149,14 @@
 .avatar-banner-modal__option:hover {
   border-color: var(--color-neutrals-5);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
 }
 
 .avatar-banner-modal__option--selected {
   border-color: var(--color-neutrals-2);
   background-color: var(--color-neutrals-7);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
 }
 
 .avatar-banner-modal__option--selected:hover {

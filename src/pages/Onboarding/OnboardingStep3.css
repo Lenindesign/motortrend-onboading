@@ -76,6 +76,8 @@
   align-items: center;
   gap: var(--spacing-1);
   width: 100%;
+  margin-top: 2px;
+  padding-top: 2px;
 }
 
 .onboarding-card__title {
@@ -107,10 +109,10 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 32px;
+  gap: 24px;
   width: 100%;
   max-width: none;
-  margin-top: 32px;
+  margin-top: 24px;
   padding: 32px;
   background: #FFFFFF;
   border-radius: 8px;
@@ -194,7 +196,7 @@
   border: 1px solid var(--color-neutrals-5);
   border-top: none;
   border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
   z-index: 10;
   max-height: 240px;
   overflow-y: auto;

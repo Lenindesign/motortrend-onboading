@@ -3,15 +3,16 @@
  * Based on Figma Community design system with autocomplete car search
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const step3Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1853/group1318348095.svg';
 import './OnboardingStep3.css';
 import Icon from '../../components/Icon';
 import VehicleCard from '../../components/VehicleCard';
-import { vehicleImageFor } from '../../utils/vehicleImages';
+import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import RatingModal from '../../components/RatingModal';
+import { useRating } from '../../contexts/RatingContext';
 
 // Vehicle list handled by VehicleSearch
 
@@ -35,7 +36,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
     vehicleName: '',
     currentRating: 0
   });
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { getUserRating, setUserRating } = useRating();
 
   // VehicleSearch handles filtering and dropdown behavior
 
@@ -64,24 +65,36 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
   };
 
   const handleAddAnother = () => {
-    setShowAddAnother(false);
-    inputRef.current?.focus();
+    setShowAddAnother(true);
   };
 
   const handleRateVehicle = (vehicleName: string) => {
-    const vehicle = selectedCars.find(car => car.name === vehicleName);
+    const globalRating = getUserRating(vehicleName);
     setRatingModal({
       isOpen: true,
       vehicleName,
-      currentRating: vehicle?.rating || 0
+      currentRating: globalRating
     });
   };
 
   const handleRatingSubmit = (rating: number) => {
-    setSelectedCars(selectedCars.map(car => 
-      car.name === ratingModal.vehicleName ? { ...car, rating } : car
-    ));
+    setUserRating(ratingModal.vehicleName, rating);
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Navigate to vehicle details page where they can write a review
+    try {
+      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
+      navigate(`/vehicles/${year}/${make}/${model}`);
+    } catch (error) {
+      console.error('Error parsing vehicle name:', error);
+      // If parsing fails, just stay on current page
+    }
   };
 
   const handleRatingModalClose = () => {
@@ -163,9 +176,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                     onBookmark={() => handleRemoveCar(car.name)}
                     ownership={car.ownership}
                     onOwnershipChange={(value) => handleOwnershipChange(car.name, value)}
-                    onViewDetails={() => console.log('View vehicle details:', car.name)}
                     onRate={() => handleRateVehicle(car.name)}
-                    userRating={car.rating}
+                    userRating={getUserRating(car.name)}
                   />
                 ))}
               </div>
@@ -189,6 +201,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                   <VehicleSearch
                     onVehicleSelect={(vehicle) => handleCarSelect(vehicle.name)}
                     placeholder="Select another Vehicle"
+                    autoFocus={true}
                   />
                 )}
               </div>
@@ -212,7 +225,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
               onClick={handlePrevious}
             >
               <Icon name="chevron_left" size={20} />
-              <span>Previous</span>
+              <span>Back</span>
             </button>
 
             <div className="onboarding-card__skip-section">
@@ -221,7 +234,8 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
                 onClick={handleSkip}
                 type="button"
               >
-                Skip this step
+                <span className="skip-text-desktop">Skip this step</span>
+                <span className="skip-text-mobile">Skip</span>
               </button>
             </div>
 
@@ -244,6 +258,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
       />
     </div>
   );

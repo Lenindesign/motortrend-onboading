@@ -69,7 +69,10 @@ export const Card: React.FC<CardProps> = ({
           {onBookmark && (
             <button 
               className={`card__bookmark-btn ${isBookmarked ? 'card__bookmark-btn--active' : ''}`}
-              onClick={onBookmark}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBookmark();
+              }}
               aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
             >
               <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
@@ -113,7 +116,7 @@ export const Card: React.FC<CardProps> = ({
             {hasMultipleRatings && ratings.length > 0 && (
               <>
                 {ratings.map((rating, index) => {
-                  const tooltipText = rating.color === '#FFB74D' ? 'Staff Rating' : 'Community Rating (252)';
+                  const tooltipText = rating.color === '#FFB74D' ? 'MotorTrend Rating' : 'Community Rating (252)';
                   return (
                     <div key={index} className="card__rating card__rating--with-tooltip">
                       <div className="card__rating-tooltip">
@@ -133,16 +136,34 @@ export const Card: React.FC<CardProps> = ({
             {onRate && (
               <div className="card__rating card__rating--with-tooltip">
                 <div className="card__rating-tooltip">
-                  {userRating ? 'Your Rating' : 'Add Your Rate'}
+                  {userRating ? 'Your Rating' : 'Add Your Rating'}
                 </div>
-                <button className="card__rate-option" onClick={onRate}>
-                  <img 
-                    src={userRating ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"} 
-                    alt={userRating ? "User rated star" : "Rate star"} 
-                    className="card__rating-star"
-                  />
-                  <span>{userRating ? userRating.toString() : "Rate"}</span>
-                </button>
+                {userRating ? (
+                  <button className="card__rate-option" onClick={(e) => {
+                    e.stopPropagation();
+                    onRate();
+                  }}>
+                    <span className="card__rating-label">Your Rating</span>
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                      alt="User rated star" 
+                      className="card__rating-star"
+                    />
+                    <span className="card__rating-value">{userRating.toString()}</span>
+                  </button>
+                ) : (
+                  <button className="card__rate-option" onClick={(e) => {
+                    e.stopPropagation();
+                    onRate();
+                  }}>
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg" 
+                      alt="Rate star" 
+                      className="card__rating-star"
+                    />
+                    <span>Rate Your Car</span>
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -153,7 +174,10 @@ export const Card: React.FC<CardProps> = ({
         
         {/* Action button */}
         {onAction && (
-          <button className="card__button" onClick={onAction}>
+          <button className="card__button" onClick={(e) => {
+            e.stopPropagation();
+            onAction();
+          }}>
             {actionText}
             <Icon name="chevron_right" size={18} />
           </button>

@@ -89,6 +89,12 @@
   border-radius: 8px;
   border: 1px solid var(--color-neutrals-1);
   border-width: 1px;
+  transition: border-color var(--transition-fast);
+}
+
+.user-type-option--selected .user-type-img {
+  border: 2px solid var(--color-primary-1);
+  border-width: 2px;
 }
 
 .user-type-title {
@@ -244,6 +250,12 @@
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #000000;
+    transition: border-color var(--transition-fast);
+  }
+
+  .user-type-option--selected .user-type-img {
+    border: 2px solid var(--color-primary-1);
+    border-width: 2px;
   }
 
   .user-type-title {
@@ -292,6 +304,12 @@
     width: 100px;
     height: 70px;
     border-radius: 8px;
+    transition: border-color var(--transition-fast);
+  }
+
+  .user-type-option--selected .user-type-img {
+    border: 2px solid var(--color-primary-1);
+    border-width: 2px;
   }
 
   .user-type-title {

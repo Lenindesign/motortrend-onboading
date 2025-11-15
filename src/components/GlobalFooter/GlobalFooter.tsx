@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '../../design-system/components';
 import './GlobalFooter.css';
 
@@ -43,6 +44,12 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
     'Warner Bros. Discovery Inc.',
   ];
 
+  const documentationLinks = [
+    { label: 'Review System Docs', path: '/docs/review-system' },
+    { label: 'Onboarding Docs', path: '/docs/onboarding' },
+    { label: 'Profile Docs', path: '/docs/profile' },
+  ];
+
   const magazineLinks = [
     'Automobile Magazine',
     'Truck Trend',
@@ -69,6 +76,17 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
                 <React.Fragment key={link}>
                   <a href="#" className="global-footer__link">{link}</a>
                   {index < footerLinks.length - 1 && '   |   '}
+                </React.Fragment>
+              ))}
+            </p>
+            <p className="global-footer__links global-footer__links--documentation">
+              <span className="global-footer__docs-label">Documentation: </span>
+              {documentationLinks.map((docLink, index) => (
+                <React.Fragment key={docLink.path}>
+                  <Link to={docLink.path} className="global-footer__link global-footer__link--docs">
+                    {docLink.label}
+                  </Link>
+                  {index < documentationLinks.length - 1 && '   |   '}
                 </React.Fragment>
               ))}
             </p>

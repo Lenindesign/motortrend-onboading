@@ -1,0 +1,879 @@
+/**
+ * Write Review Modal Component Styles
+ * Based on Figma Community design system
+ */
+
+.write-review-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  z-index: 1000;
+  padding: 0;
+}
+
+.write-review-modal {
+  width: 360px;
+  height: 100%;
+  background-color: var(--color-neutrals-7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 40px 0;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.write-review-modal__header {
+  width: 100%;
+  height: 32px;
+  background-color: var(--color-neutrals-2);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+}
+
+.write-review-modal__close-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-neutrals-8);
+  transition: opacity var(--transition-fast);
+}
+
+.write-review-modal__close-btn:hover {
+  opacity: 0.7;
+}
+
+/* Content */
+.write-review-modal__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 100px; /* Space for sticky footer */
+}
+
+.write-review-modal__divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-neutrals-5);
+  margin: 0 32px;
+}
+
+.write-review-modal__main {
+  display: flex;
+  flex-direction: column;
+  gap: -1px;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.write-review-modal__title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 24px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-1);
+  text-align: center;
+  margin-top: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+}
+
+/* Vehicle Card */
+.write-review-modal__vehicle-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.write-review-modal__vehicle-image {
+  width: 153.5px;
+  height: 104.34px;
+  background-color: var(--color-neutrals-6);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.write-review-modal__vehicle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.write-review-modal__vehicle-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-neutrals-4);
+}
+
+.write-review-modal__vehicle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.write-review-modal__vehicle-name {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+  display: block;
+}
+
+.write-review-modal__vehicle-body-style {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.29em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+}
+
+.write-review-modal__change-vehicle {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.3333333333333333em;
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  margin-top: 4px;
+}
+
+.write-review-modal__change-vehicle:hover {
+  color: var(--color-primary-500);
+}
+
+/* Rating Section */
+.write-review-modal__rating-section {
+  background-color: var(--color-neutrals-3);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  height: 104px;
+  margin-bottom: 16px;
+}
+
+.write-review-modal__rating-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.write-review-modal__rating-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375em;
+  color: var(--color-neutrals-8);
+}
+
+.write-review-modal__rating-value {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.3333333333333333em;
+  color: var(--color-neutrals-8);
+}
+
+.write-review-modal__stars {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.write-review-modal__star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.write-review-modal__star:hover {
+  transform: scale(1.1);
+}
+
+.write-review-modal__star.active {
+  transform: scale(1.05);
+}
+
+.write-review-modal__star-icon {
+  width: 27.72px;
+  height: 26.34px;
+  object-fit: contain;
+}
+
+/* Form Fields */
+.write-review-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  width: 100%;
+  margin-bottom: var(--spacing-3);
+}
+
+.write-review-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  width: 100%;
+}
+
+.write-review-modal__field-label {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-2);
+  margin-bottom: var(--spacing-1);
+}
+
+/* Main Section Headlines */
+.write-review-modal__section-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+  margin-bottom: var(--spacing-2);
+}
+
+.write-review-modal__section-subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+  margin-bottom: var(--spacing-3);
+}
+
+/* Section Groups */
+.write-review-modal__section-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.write-review-modal__section-group--optional {
+  background-color: transparent;
+  border: 1px dashed var(--color-neutrals-5);
+  padding: var(--spacing-3);
+}
+
+.write-review-modal__section-group:nth-of-type(4) {
+  gap: var(--spacing-2);
+}
+
+.write-review-modal__section-group-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-2);
+}
+
+.write-review-modal__section-group-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.write-review-modal__section-group-subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+}
+
+.write-review-modal__optional-badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-4);
+  margin-left: var(--spacing-1);
+  font-style: italic;
+}
+
+.write-review-modal__input,
+.write-review-modal__textarea,
+.write-review-modal__select {
+  width: 100%;
+  padding: 6px 16px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.75em;
+  color: var(--color-neutrals-2);
+  transition: border-color var(--transition-fast);
+}
+
+.write-review-modal__input:focus,
+.write-review-modal__textarea:focus,
+.write-review-modal__select:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px var(--color-primary-100);
+}
+
+.write-review-modal__input::placeholder,
+.write-review-modal__textarea::placeholder {
+  color: var(--color-neutrals-5);
+}
+
+.write-review-modal__textarea-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.write-review-modal__expand-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutrals-4);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.write-review-modal__expand-btn:hover {
+  color: var(--color-neutrals-2);
+  background-color: var(--color-neutrals-7);
+}
+
+.write-review-modal__textarea {
+  resize: vertical;
+  min-height: 100px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.write-review-modal__select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+/* Media Upload Section */
+.write-review-modal__media-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.write-review-modal__media-input {
+  display: none;
+}
+
+.write-review-modal__media-label {
+  width: 100%;
+  cursor: pointer;
+  display: block;
+}
+
+.write-review-modal__media-placeholder {
+  width: 100%;
+  min-height: 120px;
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-neutrals-4);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.write-review-modal__media-label:hover .write-review-modal__media-placeholder {
+  border-color: var(--color-primary-500);
+  background-color: var(--color-neutrals-7);
+}
+
+.write-review-modal__media-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+
+.write-review-modal__media-previews {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.write-review-modal__media-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--color-neutrals-6);
+}
+
+.write-review-modal__media-item {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.write-review-modal__media-item video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.write-review-modal__media-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  color: var(--color-neutrals-8);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+  z-index: 10;
+}
+
+.write-review-modal__media-remove:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.write-review-modal__media-remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Experience Rating Section */
+.write-review-modal__experience-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: 100%;
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.write-review-modal__experience-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+  margin-bottom: var(--spacing-1);
+}
+
+.write-review-modal__experience-subtitle {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.429em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+  margin-bottom: var(--spacing-3);
+}
+
+.write-review-modal__category-card {
+  background-color: var(--color-neutrals-3);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.write-review-modal__category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.write-review-modal__category-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.write-review-modal__category-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375em;
+  color: var(--color-neutrals-8);
+  margin: 0;
+}
+
+.write-review-modal__category-description {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-5);
+  margin: 0;
+  width: 100%;
+  opacity: 0.9;
+}
+
+.write-review-modal__category-rating-value {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3333333333333333em;
+  color: var(--color-neutrals-8);
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.write-review-modal__category-stars {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.write-review-modal__category-star {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.write-review-modal__category-star:hover {
+  transform: scale(1.1);
+}
+
+.write-review-modal__category-star.active {
+  transform: scale(1.05);
+}
+
+.write-review-modal__category-star-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Vehicle Details */
+.write-review-modal__vehicle-details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.write-review-modal__details-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3333333333333333em;
+  color: var(--color-neutrals-1);
+  text-align: center;
+  margin: 0;
+}
+
+.write-review-modal__details-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Footer */
+.write-review-modal__footer {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  background-color: var(--color-neutrals-7);
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.write-review-modal__submit-btn {
+  width: 100%;
+  max-width: 328px;
+  height: 48px;
+  background-color: var(--color-neutrals-2);
+  color: var(--color-neutrals-8);
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1em;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.write-review-modal__submit-btn:hover:not(:disabled) {
+  background-color: var(--color-neutrals-1);
+}
+
+.write-review-modal__submit-btn:disabled {
+  background-color: var(--color-neutrals-5);
+  color: var(--color-neutrals-6);
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .write-review-modal {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .write-review-modal__vehicle-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .write-review-modal__vehicle-image {
+    width: 100%;
+    height: 200px;
+  }
+
+  .write-review-modal__details-row {
+    flex-direction: column;
+  }
+}
+
+/* VIN Verification */
+.write-review-modal__field-hint {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 12px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-4);
+  margin-top: var(--spacing-1);
+  font-style: italic;
+}
+
+.write-review-modal__vin-input {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.write-review-modal__vin-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--color-neutrals-7);
+  border: 1px solid var(--color-neutrals-5);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.write-review-modal__vin-disclaimer svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-primary-500);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.write-review-modal__vin-disclaimer span {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5em;
+  color: var(--color-neutrals-3);
+}
+
+/* Fullscreen Textarea Overlay */
+.write-review-modal__fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.write-review-modal__fullscreen-container {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  max-height: 90vh;
+  background-color: var(--color-white);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.write-review-modal__fullscreen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid var(--color-neutrals-6);
+}
+
+.write-review-modal__fullscreen-label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.333em;
+  color: var(--color-neutrals-2);
+}
+
+.write-review-modal__fullscreen-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-neutrals-3);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.write-review-modal__fullscreen-close:hover {
+  color: var(--color-neutrals-1);
+  background-color: var(--color-neutrals-7);
+}
+
+.write-review-modal__fullscreen-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 24px;
+  background-color: var(--color-white);
+  border: none;
+  border-radius: 0 0 12px 12px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.75em;
+  color: var(--color-neutrals-2);
+  resize: none;
+  outline: none;
+  min-height: 400px;
+}
+
+.write-review-modal__fullscreen-textarea::placeholder {
+  color: var(--color-neutrals-5);
+}

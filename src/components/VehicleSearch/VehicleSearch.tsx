@@ -9,7 +9,7 @@ import './VehicleSearch.css';
 
 // Car database for autocomplete
 const carDatabase = [
-  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX',
+  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2025 Subaru WRX',
   '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic',
   '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry',
   '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang',
@@ -39,7 +39,7 @@ const carDatabase = [
   '2020 Subaru Crosstrek', '2021 Subaru Crosstrek', '2022 Subaru Crosstrek', '2023 Subaru Crosstrek', '2024 Subaru Crosstrek',
   '2020 Subaru BRZ', '2021 Subaru BRZ', '2022 Subaru BRZ', '2023 Subaru BRZ', '2024 Subaru BRZ',
   '2020 Subaru WRX STI', '2021 Subaru WRX STI', '2022 Subaru WRX STI', '2023 Subaru WRX STI', '2024 Subaru WRX STI',
-  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150',
+  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150', '2025 Ford F-150', '2026 Ford F-150',
   '2020 Ford Explorer', '2021 Ford Explorer', '2022 Ford Explorer', '2023 Ford Explorer', '2024 Ford Explorer',
   '2020 Ford Escape', '2021 Ford Escape', '2022 Ford Escape', '2023 Ford Escape', '2024 Ford Escape',
   '2020 Ford Edge', '2021 Ford Edge', '2022 Ford Edge', '2023 Ford Edge', '2024 Ford Edge',
@@ -241,12 +241,16 @@ export interface VehicleSearchProps {
   onVehicleSelect: (vehicle: { name: string; ownership: 'own' | 'want' }) => void;
   placeholder?: string;
   className?: string;
+  defaultOwnership?: 'own' | 'want';
+  autoFocus?: boolean;
 }
 
 export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   onVehicleSelect,
   placeholder = "Start typing to search...",
-  className = ""
+  className = "",
+  defaultOwnership = 'own',
+  autoFocus = false
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCars, setFilteredCars] = useState<string[]>([]);
@@ -258,9 +262,23 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   // Filter cars based on search query
   useEffect(() => {
     if (searchQuery.length > 0) {
-      const filtered = carDatabase.filter(car =>
-        car.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 6); // Limit to 6 results
+      const queryLower = searchQuery.toLowerCase().trim();
+      const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
+      
+      const filtered = carDatabase.filter(car => {
+        const carLower = car.toLowerCase();
+        // Check if all words in the query appear in the vehicle name (order-independent)
+        return queryWords.every(word => carLower.includes(word));
+      })
+      .sort((a, b) => {
+        // Extract year from vehicle name (e.g., "2025 Subaru WRX" -> 2025)
+        const yearA = parseInt(a.match(/\d{4}/)?.[0] || '0');
+        const yearB = parseInt(b.match(/\d{4}/)?.[0] || '0');
+        // Sort by year descending (newest first)
+        return yearB - yearA;
+      })
+      .slice(0, 6); // Limit to 6 results
+      
       setFilteredCars(filtered);
       setShowDropdown(true);
     } else {
@@ -269,6 +287,16 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
     }
     setHighlightedIndex(-1);
   }, [searchQuery]);
+
+  // Auto-focus input when component is shown
+  useEffect(() => {
+    if (autoFocus && inputRef.current) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [autoFocus]);
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -290,7 +318,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   };
 
   const handleCarSelect = (car: string) => {
-    onVehicleSelect({ name: car, ownership: 'own' });
+    onVehicleSelect({ name: car, ownership: defaultOwnership });
     setSearchQuery('');
     setShowDropdown(false);
   };

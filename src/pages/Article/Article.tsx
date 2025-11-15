@@ -1,0 +1,1081 @@
+/**
+ * Article Page Component
+ * Full article detail page based on MotorTrend article structure
+ */
+
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import Icon from '../../components/Icon';
+import { AdContainer } from '../../components/AdContainer';
+import { UserReviews } from '../../components/UserReviews';
+import WriteReviewModal from '../../components/WriteReviewModal';
+import RatingModal from '../../components/RatingModal';
+import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
+import { RatingDistributionTooltip } from '../../components/RatingDistributionTooltip';
+import { generateUserReviews } from '../../utils/vehicleUserReviews';
+import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
+import { useRating } from '../../contexts/RatingContext';
+import { type ReviewData } from '../../components/UserReviews';
+import { getArticleBySlug, getDefaultArticle } from '../../utils/articles';
+import { parseVehicleName } from '../../utils/vehicleImages';
+import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
+import { vehicleImageFor } from '../../utils/vehicleImages';
+import './Article.css';
+
+export const Article: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  
+  // Load bookmark state from localStorage on mount
+  const [isSaved, setIsSaved] = useState(() => {
+    if (!slug) return false;
+    try {
+      const savedArticlesJson = localStorage.getItem('savedArticles');
+      if (savedArticlesJson) {
+        const savedArticles: string[] = JSON.parse(savedArticlesJson);
+        return savedArticles.includes(slug);
+      }
+    } catch (error) {
+      console.error('Error loading bookmark state:', error);
+    }
+    return false;
+  });
+  const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [communityRatingCount, setCommunityRatingCount] = useState(252);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
+  const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+  const [listings, setListings] = useState<VehicleListing[]>([]);
+  const [isLoadingListings, setIsLoadingListings] = useState(true);
+  const communityRatingRef = useRef<HTMLDivElement>(null);
+  const staffRatingRef = useRef<HTMLDivElement>(null);
+  const ratingsBarRef = useRef<HTMLDivElement>(null);
+  const { getUserRating, setUserRating } = useRating();
+  
+  // Load article data based on slug
+  const articleData = useMemo(() => {
+    const loadedArticle = slug ? getArticleBySlug(slug) : getDefaultArticle();
+    if (!loadedArticle) {
+      // Fallback to default if article not found
+      return getDefaultArticle();
+    }
+    return loadedArticle;
+  }, [slug]);
+
+  // Vehicle name for reviews (extracted from motortrendScore or article title)
+  const vehicleName = useMemo(() => {
+    if (articleData.motortrendScore?.vehicleName) {
+      return articleData.motortrendScore.vehicleName;
+    }
+    // Try to extract vehicle name from title (e.g., "2026 Hyundai Ioniq 6 N First Drive" -> "2026 Hyundai Ioniq 6 N")
+    const titleMatch = articleData.title.match(/^(\d{4}\s+[\w\s]+?)(?:\s+(?:First Drive|Review|Yearlong|Verdict))/i);
+    if (titleMatch) {
+      return titleMatch[1].trim();
+    }
+    // Fallback: use first part of title before colon
+    const colonIndex = articleData.title.indexOf(':');
+    if (colonIndex > 0) {
+      return articleData.title.substring(0, colonIndex).trim();
+    }
+    return articleData.title;
+  }, [articleData]);
+  
+  // Parse vehicle name to get year, make, and model for navigation
+  const vehiclePath = useMemo(() => {
+    if (!vehicleName) return null;
+    const { year, make, model } = parseVehicleName(vehicleName);
+    return `/vehicles/${year}/${make}/${model}`;
+  }, [vehicleName]);
+  
+  const userRating = getUserRating(vehicleName);
+
+  // Article data - using loaded article
+  const article = articleData;
+
+  const handleBookmark = () => {
+    if (!slug) return;
+    
+    const newBookmarkState = !isSaved;
+    setIsSaved(newBookmarkState);
+    
+    try {
+      // Get current saved articles
+      const savedArticlesJson = localStorage.getItem('savedArticles');
+      const savedArticles: string[] = savedArticlesJson ? JSON.parse(savedArticlesJson) : [];
+      
+      // Get current saved articles metadata
+      const savedArticlesMetadataJson = localStorage.getItem('savedArticlesMetadata');
+      const savedArticlesMetadata: Record<string, { title: string; author: string; date: string; imageUrl: string; slug: string }> = 
+        savedArticlesMetadataJson ? JSON.parse(savedArticlesMetadataJson) : {};
+      
+      if (newBookmarkState) {
+        // Add article to saved list
+        if (!savedArticles.includes(slug)) {
+          savedArticles.push(slug);
+        }
+        
+        // Save article metadata
+        savedArticlesMetadata[slug] = {
+          title: article.title,
+          author: article.author,
+          date: article.date,
+          imageUrl: article.heroImage,
+          slug: slug
+        };
+      } else {
+        // Remove article from saved list
+        const index = savedArticles.indexOf(slug);
+        if (index > -1) {
+          savedArticles.splice(index, 1);
+        }
+        
+        // Remove article metadata
+        delete savedArticlesMetadata[slug];
+      }
+      
+      // Save to localStorage
+      localStorage.setItem('savedArticles', JSON.stringify(savedArticles));
+      localStorage.setItem('savedArticlesMetadata', JSON.stringify(savedArticlesMetadata));
+    } catch (error) {
+      console.error('Error saving bookmark:', error);
+    }
+  };
+
+  const handleShare = () => {
+    // In production, this would open share dialog
+    if (navigator.share) {
+      navigator.share({
+        title: article.title,
+        text: article.excerpt,
+        url: window.location.href,
+      });
+    }
+  };
+
+  // MotorTrend Score data - from article data or fallback
+  const motortrendScore = useMemo(() => {
+    if (article.motortrendScore) {
+      return article.motortrendScore;
+    }
+    // Fallback for articles without motortrendScore
+    return {
+      overallRating: 9.2,
+      scores: {
+        performance: 6.8,
+        efficiency: 7.8,
+        tech: 9.8,
+        value: 8.8,
+      },
+      award: "Best Compact Plug-in Hybrid",
+      vehicleName: vehicleName,
+      reviewer: {
+        name: article.author,
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: article.date,
+        title: article.title,
+        excerpt: article.excerpt,
+        detailedSections: []
+      }
+    };
+  }, [article, vehicleName]);
+
+  // Generate user reviews for the vehicle
+  const reviews = useMemo(() => {
+    try {
+      const savedReviewsJson = localStorage.getItem(`reviews_${vehicleName}`);
+      if (savedReviewsJson) {
+        const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
+        if (savedReviews && savedReviews.length > 0) {
+          const generatedReviews = generateUserReviews(vehicleName);
+          const generatedIds = new Set(generatedReviews.map(r => r.id));
+          const uniqueSavedReviews = savedReviews.filter(r => !generatedIds.has(r.id));
+          return [...uniqueSavedReviews, ...generatedReviews];
+        }
+      }
+    } catch (error) {
+      console.error('Error loading saved reviews from localStorage:', error);
+    }
+    return generateUserReviews(vehicleName);
+  }, [vehicleName]);
+
+  // Generate community rating and staff rating
+  const communityRating = useMemo(() => generateCommunityRating(vehicleName), [vehicleName]);
+  const staffRating = useMemo(() => generateStaffRating(vehicleName), [vehicleName]);
+  
+  // Generate scores for staff rating tooltip
+  const scores = useMemo(() => ({
+    performance: motortrendScore.scores.performance,
+    efficiency: motortrendScore.scores.efficiency,
+    tech: motortrendScore.scores.tech,
+    value: motortrendScore.scores.value,
+  }), [motortrendScore.scores]);
+  
+  // Rating distribution for community rating tooltip
+  const ratingDistribution = useMemo(() => ({
+    1: 5,
+    2: 3,
+    3: 8,
+    4: 10,
+    5: 20,
+    6: 30,
+    7: 45,
+    8: 63,
+    9: 50,
+    10: 18,
+  }), []);
+  
+  // Handlers for rating modal
+  const handleOpenRatingModal = () => {
+    setIsRatingModalOpen(true);
+  };
+
+  const handleCloseRatingModal = () => {
+    setIsRatingModalOpen(false);
+  };
+
+  const handleSubmitRating = (rating: number) => {
+    setUserRating(vehicleName, rating);
+    setIsRatingModalOpen(false);
+  };
+
+  // Handlers for tooltips
+  const handleTooltipMouseEnter = () => {
+    setIsTooltipVisible(true);
+  };
+
+  const handleTooltipMouseLeave = () => {
+    setIsTooltipVisible(false);
+  };
+
+  const handleStaffTooltipMouseEnter = () => {
+    setIsStaffTooltipVisible(true);
+  };
+
+  const handleStaffTooltipMouseLeave = () => {
+    setIsStaffTooltipVisible(false);
+  };
+
+  // Scroll handlers
+  const handleScrollToStaffRating = () => {
+    const staffRatingSection = document.getElementById('motortrend-score');
+    if (staffRatingSection) {
+      staffRatingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleScrollToCommunityRatings = () => {
+    const communityRatingsSection = document.getElementById('community-ratings');
+    if (communityRatingsSection) {
+      communityRatingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Handle review update
+  const handleUpdateReview = (reviewId: string, updatedReview: ReviewData) => {
+    try {
+      const savedReviewsJson = localStorage.getItem(`reviews_${vehicleName}`);
+      if (savedReviewsJson) {
+        const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
+        const updatedReviews = savedReviews.map(r => r.id === reviewId ? updatedReview : r);
+        localStorage.setItem(`reviews_${vehicleName}`, JSON.stringify(updatedReviews));
+      }
+    } catch (error) {
+      console.error('Error updating review:', error);
+    }
+  };
+
+  // Related articles - dynamic based on current article's vehicle
+  const relatedArticles = useMemo(() => {
+    const articlesList: Array<{
+      id: string;
+      title: string;
+      imageUrl: string;
+      author: string;
+      date: string;
+      slug: string;
+    }> = [];
+
+    // If viewing Ioniq 6 N article, add it to related articles
+    if (vehicleName && vehicleName.toLowerCase().includes('ioniq 6 n')) {
+      const ioniq6NArticle = getArticleBySlug('2026-hyundai-ioniq-6-n-first-drive-review');
+      if (ioniq6NArticle && slug !== '2026-hyundai-ioniq-6-n-first-drive-review') {
+        articlesList.push({
+          id: 'ioniq-6-n',
+          title: ioniq6NArticle.title,
+          imageUrl: ioniq6NArticle.heroImage,
+          author: ioniq6NArticle.author,
+          date: ioniq6NArticle.date,
+          slug: '2026-hyundai-ioniq-6-n-first-drive-review'
+        });
+      }
+    }
+
+    // Add default related articles if we don't have enough
+    if (articlesList.length < 3) {
+      // Try to load articles dynamically from articles data
+      const defaultArticleSlugs = [
+        '2026-cadillac-optiq-v-first-drive',
+        '2024-kia-ev9-yearlong-review-verdict',
+        'new-details-2026-rivian-r2-ev-suv-battery-charging',
+        '2025-acura-adx-awd-yearlong-review-arrival'
+      ];
+
+      defaultArticleSlugs.forEach(articleSlug => {
+        if (articleSlug !== slug && articlesList.length < 3) {
+          const article = getArticleBySlug(articleSlug);
+          if (article) {
+            articlesList.push({
+              id: articleSlug,
+              title: article.title,
+              imageUrl: article.heroImage,
+              author: article.author,
+              date: article.date,
+              slug: articleSlug
+            });
+          }
+        }
+      });
+    }
+
+    return articlesList.slice(0, 3);
+  }, [vehicleName, slug]);
+
+  const handleRelatedArticleClick = (slug: string) => {
+    navigate(`/articles/${slug}`);
+  };
+
+  // Check if rating bar should be hidden for this article
+  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car';
+
+  // Scroll detection for sticky rate bar
+  useEffect(() => {
+    // Don't set up scroll detection if rating bar is hidden
+    if (shouldHideRatingBar) return;
+
+    const handleScroll = () => {
+      if (!ratingsBarRef.current) return;
+
+      const ratingsBarRect = ratingsBarRef.current.getBoundingClientRect();
+      
+      // When the ratings bar reaches or passes the top of the viewport
+      if (ratingsBarRect.top <= 0) {
+        setIsStickyBarVisible(true);
+      } else {
+        setIsStickyBarVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [shouldHideRatingBar]);
+
+  // Fetch local listings when vehicle changes
+  useEffect(() => {
+    const loadListings = async () => {
+      if (!vehicleName) return;
+      
+      setIsLoadingListings(true);
+      try {
+        const parsed = parseVehicleName(vehicleName);
+        const yearNum = parseInt(parsed.year) || new Date().getFullYear();
+        const fetchedListings = await fetchVehicleListings(yearNum, parsed.make, parsed.model, 4);
+        // Set images for listings using vehicleImageFor
+        const listingsWithImages = fetchedListings.map((listing) => {
+          const listingVehicleName = `${listing.year} ${listing.make} ${listing.model}`;
+          return {
+            ...listing,
+            image: vehicleImageFor(listingVehicleName)
+          };
+        });
+        setListings(listingsWithImages);
+      } catch (error) {
+        console.error('Error fetching listings:', error);
+        setListings([]);
+      } finally {
+        setIsLoadingListings(false);
+      }
+    };
+    
+    loadListings();
+  }, [vehicleName]);
+
+  return (
+    <div className="article">
+      <div className="article__container">
+        {/* Ratings Bar - Full Width */}
+        {!shouldHideRatingBar && (
+        <div ref={ratingsBarRef} className="article__ratings">
+          <div className="article__ratings-left">
+            {vehiclePath ? (
+              <Link to={vehiclePath} className="article__vehicle-name">
+                {vehicleName}
+              </Link>
+            ) : (
+              <div className="article__vehicle-name">{vehicleName}</div>
+            )}
+          </div>
+          <div className="article__ratings-center">
+            <div 
+              ref={staffRatingRef}
+              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip" 
+              onClick={handleScrollToStaffRating}
+              onMouseEnter={handleStaffTooltipMouseEnter}
+              onMouseLeave={handleStaffTooltipMouseLeave}
+            >
+              <span className="article__rating-label">MotorTrend</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
+                alt="MotorTrend Rating Star" 
+                className="article__rating-icon article__rating-icon--staff" 
+              />
+              <span className="article__rating-value">{staffRating}</span>
+              <StaffRatingTooltip
+                overallRating={staffRating}
+                scores={scores}
+                isVisible={isStaffTooltipVisible}
+                triggerRef={staffRatingRef}
+                onMouseEnter={handleStaffTooltipMouseEnter}
+                onMouseLeave={handleStaffTooltipMouseLeave}
+                onRequestClose={() => setIsStaffTooltipVisible(false)}
+              />
+            </div>
+            <div 
+              ref={communityRatingRef}
+              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip" 
+              onClick={handleScrollToCommunityRatings}
+              onMouseEnter={handleTooltipMouseEnter}
+              onMouseLeave={handleTooltipMouseLeave}
+            >
+              <span className="article__rating-label">Community ({communityRatingCount})</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                alt="Community Rating Star" 
+                className="article__rating-icon article__rating-icon--community" 
+              />
+              <span className="article__rating-value">
+                {communityRating % 1 === 0 
+                  ? communityRating 
+                  : communityRating.toFixed(1)}
+              </span>
+              <RatingDistributionTooltip
+                distribution={ratingDistribution}
+                totalReviews={communityRatingCount}
+                isVisible={isTooltipVisible}
+                triggerRef={communityRatingRef}
+                onMouseEnter={handleTooltipMouseEnter}
+                onMouseLeave={handleTooltipMouseLeave}
+                onRequestClose={() => setIsTooltipVisible(false)}
+              />
+            </div>
+            <button className="article__rate-btn" onClick={handleOpenRatingModal}>
+              <span className="article__rating-label">
+                {userRating > 0 ? 'Yours' : 'Rate Your Car'}
+              </span>
+              <img 
+                src={userRating > 0 
+                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                }
+                alt="Add Rating Star" 
+                className="article__rating-icon article__rating-icon--add-rate" 
+              />
+              {userRating > 0 && (
+                <span className="article__rating-value">{userRating}</span>
+              )}
+            </button>
+          </div>
+          <div className="article__ratings-right">
+            <button 
+              className="article__cta"
+              onClick={() => {
+                // Scroll to local listings section or handle navigation
+                const listingsSection = document.querySelector('.article__listings');
+                if (listingsSection) {
+                  listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  // If no listings section exists, could navigate to a listings page
+                  // For now, just log or handle as needed
+                  console.log('Navigate to local listings');
+                }
+              }}
+            >
+              Local Listings
+            </button>
+          </div>
+        </div>
+        )}
+
+        {/* Main Layout: 2/3 content, 1/3 sidebar */}
+        <div className="article__layout">
+          {/* Left Column: Content (2/3) */}
+          <div className="article__content-column">
+            {/* Hero Section */}
+            <div className="article__hero-wrapper">
+              <div className="article__hero">
+                <div className="article__hero-image-wrapper">
+                  <img 
+                    src={article.heroImage} 
+                    alt={article.title}
+                    className="article__hero-image"
+                  />
+                  <button 
+                    className={`article__save-btn ${isSaved ? 'saved' : ''}`}
+                    onClick={handleBookmark}
+                    aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
+                  >
+                    <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                    <span>{isSaved ? 'Saved!' : 'Save'}</span>
+                  </button>
+                  <div className="article__hero-overlay">
+                    <button 
+                      className="article__share-btn"
+                      onClick={handleShare}
+                      aria-label="Share article"
+                    >
+                      <Icon name="share" size={24} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Article Header */}
+            <div className="article__header">
+              <div className="article__meta">
+                <span className="article__category">{article.category}</span>
+                <span className="article__date">{article.date}</span>
+              </div>
+              <h1 className="article__title">{article.title}</h1>
+              <p className="article__excerpt">{article.excerpt}</p>
+              <div className="article__author">
+                <span className="article__author-label">By</span>
+                <span className="article__author-name">{article.author}</span>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="article__content-wrapper">
+              <div className="article__main">
+                <div className="article__content">
+                  {(() => {
+                    // Count headings to distribute images
+                    const headingIndices: number[] = [];
+                    article.content.forEach((block, idx) => {
+                      if (block.type === "heading") {
+                        headingIndices.push(idx);
+                      }
+                    });
+
+                    // Get content images (excluding hero image at index 0)
+                    const contentImages = article.images.slice(1);
+                    let imageIndex = 0;
+
+                    // Count paragraphs to place MotorTrend Score after the 8th paragraph
+                    let paragraphCount = 0;
+
+                    return article.content.map((block, index) => {
+                      const elements: React.ReactNode[] = [];
+
+                      if (block.type === "heading") {
+                        const tocIndex = article.content
+                          .slice(0, index)
+                          .filter(b => b.type === "heading").length;
+                        
+                        // Render the heading
+                        elements.push(
+                          <h2 
+                            key={`heading-${index}`}
+                            id={`heading-${tocIndex}`}
+                            className="article__heading"
+                          >
+                            {block.text}
+                          </h2>
+                        );
+
+                        // Add an image after the heading if available
+                        if (imageIndex < contentImages.length) {
+                          elements.push(
+                            <div key={`image-after-${index}`} className="article__image-wrapper">
+                              <img 
+                                src={contentImages[imageIndex]} 
+                                alt={`${article.title} - Image ${imageIndex + 2}`}
+                                className="article__image"
+                              />
+                            </div>
+                          );
+                          imageIndex++;
+                        }
+                      } else if (block.type === "paragraph") {
+                        paragraphCount++;
+                        
+                        // Render the paragraph
+                        elements.push(
+                          <p key={`paragraph-${index}`} className="article__paragraph">
+                            {block.text}
+                          </p>
+                        );
+
+                        // Add MotorTrend Score component after the 8th paragraph
+                        if (paragraphCount === 8) {
+                          elements.push(
+                            <div key="motortrend-score" id="motortrend-score" className="article__motortrend-score">
+                              <div className="article__motortrend-header">
+                                <h2>MotorTrend Score</h2>
+                                <img 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg" 
+                                  alt="MotorTrend Logo" 
+                                  className="article__motortrend-logo"
+                                />
+                              </div>
+                              <div className="article__score-card">
+                                <div className="article__score-header">
+                                  <h3>{motortrendScore.vehicleName}</h3>
+                                  <div className="article__score-award">
+                                    <img 
+                                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg" 
+                                      alt="Trophy" 
+                                      width={24} 
+                                      height={24}
+                                    />
+                                    <span>{motortrendScore.award}</span>
+                                    <Icon name="keyboard_arrow_down" size={16} />
+                                  </div>
+                                </div>
+                                <div className="article__score-content">
+                                  <div className="article__overall-score">
+                                    <div className="article__score-circle">
+                                      <img 
+                                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
+                                        alt="Star" 
+                                        width={48} 
+                                        height={48}
+                                      />
+                                      <span className="article__score-number">{motortrendScore.overallRating}</span>
+                                      <span className="article__score-label">MotorTrend Rating</span>
+                                    </div>
+                                  </div>
+                                  <div className="article__score-breakdown">
+                                    <div className="article__score-item">
+                                      <span>Performance</span>
+                                      <div className="article__score-bar">
+                                        <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.performance / 10) * 100}%` }}></div>
+                                      </div>
+                                      <span>{motortrendScore.scores.performance}</span>
+                                    </div>
+                                    <div className="article__score-item">
+                                      <span>Efficiency/Range</span>
+                                      <div className="article__score-bar">
+                                        <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.efficiency / 10) * 100}%` }}></div>
+                                      </div>
+                                      <span>{motortrendScore.scores.efficiency}</span>
+                                    </div>
+                                    <div className="article__score-item">
+                                      <span>Tech/Innovation</span>
+                                      <div className="article__score-bar">
+                                        <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.tech / 10) * 100}%` }}></div>
+                                      </div>
+                                      <span>{motortrendScore.scores.tech}</span>
+                                    </div>
+                                    <div className="article__score-item">
+                                      <span>Value</span>
+                                      <div className="article__score-bar">
+                                        <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.value / 10) * 100}%` }}></div>
+                                      </div>
+                                      <span>{motortrendScore.scores.value}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="article__score-review">
+                                  <div className="article__reviewer-section">
+                                    <div className="article__reviewer-avatar-group">
+                                      <img 
+                                        src={motortrendScore.reviewer.avatar} 
+                                        alt="Reviewer avatar" 
+                                        className="article__reviewer-avatar"
+                                        width={43}
+                                        height={43}
+                                      />
+                                    </div>
+                                    <div className="article__reviewer-info">
+                                      <div className="article__reviewer-header">
+                                        <div className="article__reviewer-name-group">
+                                          <span className="article__reviewer-name">{motortrendScore.reviewer.name}</span>
+                                        </div>
+                                        <div className="article__reviewer-meta">
+                                          <span className="article__reviewer-date">Driven, tested | {motortrendScore.reviewer.date}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <h3>{motortrendScore.reviewer.title}</h3>
+                                  <p>{motortrendScore.reviewer.excerpt}</p>
+                                  
+                                  {/* Read Full Review Accordion CTA */}
+                                  <div className="article__review-accordion">
+                                    <button
+                                      className="article__review-accordion-button"
+                                      onClick={() => setIsReviewAccordionOpen(!isReviewAccordionOpen)}
+                                      aria-expanded={isReviewAccordionOpen}
+                                    >
+                                      <span>Read Full Review</span>
+                                      <svg
+                                        className={`article__review-accordion-chevron ${isReviewAccordionOpen ? 'article__review-accordion-chevron--open' : ''}`}
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 20 20"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          d="M5 7.5L10 12.5L15 7.5"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        />
+                                      </svg>
+                                    </button>
+                                    {isReviewAccordionOpen && (
+                                      <div className="article__review-accordion-content">
+                                        <div className="article__review-accordion-text">
+                                          {motortrendScore.reviewer.detailedSections ? (
+                                            motortrendScore.reviewer.detailedSections.map((section, index) => (
+                                              <div key={index} className="article__review-section">
+                                                <h4 className="article__review-section-title">{section.title}</h4>
+                                                {section.content.split('\n\n').map((paragraph, pIndex) => (
+                                                  <p key={pIndex}>{paragraph}</p>
+                                                ))}
+                                              </div>
+                                            ))
+                                          ) : (
+                                            <>
+                                              <h4>Detailed Review</h4>
+                                              <p>
+                                                {motortrendScore.reviewer.excerpt} The vehicle has been thoroughly tested across various conditions, 
+                                                from daily commuting to extended highway journeys. Performance metrics have been evaluated 
+                                                including acceleration, braking, handling, and overall driving dynamics. The interior quality, 
+                                                technology integration, and overall value proposition have been carefully assessed to provide 
+                                                a comprehensive evaluation.
+                                              </p>
+                                            </>
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                      }
+
+                      return elements;
+                    }).flat();
+                  })()}
+
+              {/* Specifications Table */}
+              {article.specifications && (
+                <div className="article__specs">
+                  <h2 className="article__specs-title">{vehicleName} Specifications</h2>
+                  <table className="article__specs-table">
+                    <tbody>
+                      {article.specifications.basePrice && (
+                        <tr>
+                          <td className="article__specs-label">BASE PRICE</td>
+                          <td className="article__specs-value">{article.specifications.basePrice}</td>
+                        </tr>
+                      )}
+                      {article.specifications.layout && (
+                        <tr>
+                          <td className="article__specs-label">LAYOUT</td>
+                          <td className="article__specs-value">{article.specifications.layout}</td>
+                        </tr>
+                      )}
+                      {article.specifications.motors && (
+                        <tr>
+                          <td className="article__specs-label">MOTORS</td>
+                          <td className="article__specs-value">{article.specifications.motors}</td>
+                        </tr>
+                      )}
+                      {article.specifications.transmission && (
+                        <tr>
+                          <td className="article__specs-label">TRANSMISSION</td>
+                          <td className="article__specs-value">{article.specifications.transmission}</td>
+                        </tr>
+                      )}
+                      {article.specifications.curbWeight && (
+                        <tr>
+                          <td className="article__specs-label">CURB WEIGHT</td>
+                          <td className="article__specs-value">{article.specifications.curbWeight}</td>
+                        </tr>
+                      )}
+                      {article.specifications.wheelbase && (
+                        <tr>
+                          <td className="article__specs-label">WHEELBASE</td>
+                          <td className="article__specs-value">{article.specifications.wheelbase}</td>
+                        </tr>
+                      )}
+                      {article.specifications.dimensions && (
+                        <tr>
+                          <td className="article__specs-label">L x W x H</td>
+                          <td className="article__specs-value">{article.specifications.dimensions}</td>
+                        </tr>
+                      )}
+                      {article.specifications.zeroToSixty && (
+                        <tr>
+                          <td className="article__specs-label">0–60 MPH</td>
+                          <td className="article__specs-value">{article.specifications.zeroToSixty}</td>
+                        </tr>
+                      )}
+                      {article.specifications.epaFuelEcon && (
+                        <tr>
+                          <td className="article__specs-label">EPA CITY / HWY / COMB FUEL ECON</td>
+                          <td className="article__specs-value">{article.specifications.epaFuelEcon}</td>
+                        </tr>
+                      )}
+                      {article.specifications.epaRange && (
+                        <tr>
+                          <td className="article__specs-label">EPA RANGE, COMB</td>
+                          <td className="article__specs-value">{article.specifications.epaRange}</td>
+                        </tr>
+                      )}
+                      {article.specifications.onSale && (
+                        <tr>
+                          <td className="article__specs-label">ON SALE</td>
+                          <td className="article__specs-value">{article.specifications.onSale}</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Author Bio */}
+              <div className="article__author-bio">
+                <h3 className="article__author-bio-title">{article.author}</h3>
+                <p className="article__author-bio-text">
+                  Alex's earliest memory is of a teal 1993 Ford Aspire, the car that sparked his automotive obsession. He's never driven that tiny hatchback—at six feet, 10 inches tall, he likely wouldn't fit—but has assessed hundreds of other vehicles, sharing his insights on MotorTrend as a writer and video host.
+                </p>
+              </div>
+
+              {/* User Reviews */}
+              <div id="community-ratings" className="article__user-reviews">
+                <UserReviews
+                  vehicleName={vehicleName}
+                  communityRating={communityRating}
+                  totalReviews={communityRatingCount}
+                  ratingDistribution={[5, 3, 8, 10, 20, 30, 45, 63, 50, 18]}
+                  vehicleImage={article.heroImage}
+                  reviews={reviews}
+                  onWriteReview={() => setIsWriteReviewModalOpen(true)}
+                  onUpdateReview={handleUpdateReview}
+                  defaultTab="comments"
+                />
+              </div>
+
+              {/* Local Listings */}
+              <div id="local-listings" className="article__listings">
+                <h2 className="article__listings-title">Local Listings</h2>
+                <div className="article__listings-grid">
+                  {isLoadingListings ? (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-neutrals-4)' }}>
+                      Loading listings...
+                    </div>
+                  ) : listings.length > 0 ? (
+                    listings.map((listing) => (
+                      <div key={listing.id} className="article__listing-card">
+                        <div className="article__listing-image">
+                          <img src={listing.image || article.heroImage} alt={listing.name} />
+                        </div>
+                        <div className="article__listing-info">
+                          <div className="article__listing-price">{listing.price}</div>
+                          <div className="article__listing-name">{listing.name}</div>
+                          <div className="article__listing-details">
+                            <span>
+                              <Icon name="speed" size={16} />
+                              {listing.mileage}
+                            </span>
+                            <span>
+                              <Icon name="location_on" size={16} />
+                              {listing.dealer}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-neutrals-4)' }}>
+                      No listings available at this time.
+                    </div>
+                  )}
+                </div>
+              </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Sidebar (1/3) */}
+          <div className="article__sidebar">
+            {/* Ad Container */}
+            <div className="article__sidebar-section">
+              <AdContainer
+                width={300}
+                height={600}
+                label="300 x 600"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              />
+            </div>
+
+            {/* Related Articles */}
+            <div className="article__sidebar-section">
+              <h3 className="article__sidebar-title">Related Articles</h3>
+              <div className="article__sidebar-articles">
+                {relatedArticles.map((relatedArticle) => (
+                  <div 
+                    key={relatedArticle.id}
+                    className="article__sidebar-article"
+                    onClick={() => handleRelatedArticleClick(relatedArticle.slug)}
+                  >
+                    <div className="article__sidebar-article-image">
+                      <img 
+                        src={relatedArticle.imageUrl} 
+                        alt={relatedArticle.title}
+                      />
+                    </div>
+                    <div className="article__sidebar-article-content">
+                      <h4>{relatedArticle.title}</h4>
+                      <p className="article__sidebar-article-meta">
+                        {relatedArticle.author} | {relatedArticle.date}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Rate Bar - appears when scrolled */}
+      {!shouldHideRatingBar && (
+      <div className={`article__sticky-rate-bar ${isStickyBarVisible ? 'article__sticky-rate-bar--visible' : ''}`}>
+        <div className="article__sticky-rate-bar-content">
+          {vehiclePath ? (
+            <Link to={vehiclePath} className="article__sticky-vehicle-name">
+              {vehicleName}
+            </Link>
+          ) : (
+            <div className="article__sticky-vehicle-name">
+              {vehicleName}
+            </div>
+          )}
+          <div className="article__sticky-ratings">
+            <div 
+              className="article__sticky-rating-item" 
+              onClick={handleScrollToStaffRating}
+            >
+              <span className="article__sticky-rating-label">MotorTrend</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
+                alt="MotorTrend Rating Star" 
+                className="article__sticky-rating-icon" 
+              />
+              <span className="article__sticky-rating-value">{staffRating}</span>
+            </div>
+            <div 
+              className="article__sticky-rating-item" 
+              onClick={handleScrollToCommunityRatings}
+            >
+              <span className="article__sticky-rating-label">Community ({communityRatingCount})</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                alt="Community Rating Star" 
+                className="article__sticky-rating-icon" 
+              />
+              <span className="article__sticky-rating-value">
+                {communityRating % 1 === 0 
+                  ? communityRating 
+                  : communityRating.toFixed(1)}
+              </span>
+            </div>
+            <button 
+              className="article__sticky-rating-item article__sticky-rate-btn" 
+              onClick={handleOpenRatingModal}
+            >
+              <span className="article__sticky-rating-label">
+                {userRating > 0 ? 'Yours' : 'Rate Your Car'}
+              </span>
+              <img 
+                src={userRating > 0 
+                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                } 
+                alt="Add Rating Star" 
+                className="article__sticky-rating-icon" 
+              />
+              {userRating > 0 && (
+                <span className="article__sticky-rating-value">{userRating}</span>
+              )}
+            </button>
+          </div>
+          <button 
+            className="article__sticky-cta"
+            onClick={() => {
+              // Scroll to local listings section or handle navigation
+              const listingsSection = document.querySelector('.article__listings');
+              if (listingsSection) {
+                listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              } else {
+                // If no listings section exists, could navigate to a listings page
+                // For now, just log or handle as needed
+                console.log('Navigate to local listings');
+              }
+            }}
+          >
+            Local Listings
+          </button>
+        </div>
+      </div>
+      )}
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={isRatingModalOpen}
+        onClose={handleCloseRatingModal}
+        vehicleName={vehicleName}
+        onRate={handleSubmitRating}
+      />
+
+      {/* Write Review Modal */}
+      <WriteReviewModal
+        isOpen={isWriteReviewModalOpen}
+        onClose={() => setIsWriteReviewModalOpen(false)}
+        vehicleName={vehicleName}
+        vehicleImage={article.heroImage}
+        onSubmit={(review) => {
+          try {
+            const savedReviewsJson = localStorage.getItem(`reviews_${vehicleName}`);
+            const savedReviews: ReviewData[] = savedReviewsJson ? JSON.parse(savedReviewsJson) : [];
+            savedReviews.push(review);
+            localStorage.setItem(`reviews_${vehicleName}`, JSON.stringify(savedReviews));
+            setCommunityRatingCount(prev => prev + 1);
+          } catch (error) {
+            console.error('Error saving review:', error);
+          }
+        }}
+      />
+    </div>
+  );
+};
+
+export default Article;
+

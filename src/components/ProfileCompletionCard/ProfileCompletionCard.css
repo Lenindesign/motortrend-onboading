@@ -126,7 +126,7 @@
 .profile-completion-card__steps {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .profile-completion-step {
@@ -487,17 +487,19 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-1);
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: var(--font-weight-medium);
+  font-weight: 600;
   font-size: 14px;
-  line-height: 1.286em;
+  line-height: 1em;
   color: var(--color-primary-1);
   background: none;
   border: 1px solid var(--color-primary-1);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
+  height: 36px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .profile-completion-step__add-btn:hover {

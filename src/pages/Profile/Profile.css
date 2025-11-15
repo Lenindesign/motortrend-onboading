@@ -6,10 +6,8 @@
 .profile-page {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-2);
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
   background-color: var(--color-neutrals-8);
   padding-bottom: var(--spacing-4);
 }
@@ -18,8 +16,11 @@
   display: flex;
   flex-direction: row;
   align-self: stretch;
-  gap: 8px;
-  padding: 0 24px;
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-3);
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  width: 100%;
 }
 
 .profile-sidebar {
@@ -30,7 +31,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
   flex: 1;
   max-width: 966px;
 }
@@ -41,11 +42,11 @@
   flex-direction: column;
   justify-content: center;
   align-self: stretch;
-  gap: 24px;
-  padding: 24px;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
   background-color: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-depth-5);
 }
 
@@ -71,7 +72,7 @@
 }
 
 .profile-section--articles {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--form {
@@ -79,28 +80,28 @@
 }
 
 .profile-section--vehicles {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--comparisons {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--videos {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--subscriptions {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--settings {
-  padding: 24px;
+  padding: var(--spacing-3);
 }
 
 .profile-section--connected-accounts {
-  padding: 24px;
-  gap: 24px;
+  padding: var(--spacing-3);
+  gap: var(--spacing-3);
 }
 
 .profile-section__title {
@@ -116,7 +117,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -134,17 +135,19 @@
   align-items: center;
   justify-content: center;
   padding: 12px 24px;
-  background-color: var(--color-neutrals-1);
+  background-color: var(--color-primary-1);
   color: var(--color-white);
   border: none;
-  border-radius: 8px;
-  font-family: 'Poppins', var(--font-heading);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 16px;
   line-height: 1em;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(233, 12, 23, 0.2);
+  height: 44px;
 }
 
 .profile-section__add-btn:hover {
@@ -162,10 +165,19 @@
   height: 19px;
 }
 
+.profile-section__empty {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-neutrals-4);
+  text-align: center;
+  padding: var(--spacing-4);
+  margin: 0;
+}
+
 .profile-articles {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -189,9 +201,14 @@
 .profile-vehicles-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
   text-align: left;
+}
+
+.profile-vehicles-grid .empty-vehicle-section {
+  height: 168px;
+  min-height: 168px;
 }
 
 .profile-section-divider {
@@ -205,7 +222,7 @@
 .profile-comparisons-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -213,7 +230,7 @@
 .profile-videos-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -221,16 +238,39 @@
 .profile-subscriptions-grid {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 918px;
   flex-wrap: wrap;
+}
+
+/* Hide specific subscription items */
+.profile-section--subscriptions:nth-of-type(1) .profile-subscriptions-grid .subscription-item:nth-of-type(4) {
+  display: none;
+}
+
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(2),
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(3) {
+  display: none;
+}
+
+/* Hide badge elements */
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(1) .subscription-item__badge--clickable {
+  display: none;
+}
+
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(1) .subscription-item__badge--clickable svg {
+  display: none;
+}
+
+.profile-section--subscriptions:nth-of-type(2) .profile-subscriptions-grid .subscription-item:nth-of-type(1) .subscription-item__badge--clickable svg circle {
+  display: none;
 }
 
 /* Account Settings Section */
 .profile-settings-fields {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -252,7 +292,7 @@
 .profile-connected-accounts-list {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-3);
   width: 100%;
 }
 
@@ -277,7 +317,7 @@
 .profile-form-header {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 .profile-form-title {
@@ -299,7 +339,7 @@
   padding: 48px;
   background-color: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-7);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-depth-5);
 }
 
@@ -531,7 +571,7 @@
   .profile-section__header-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-2);
   }
 
   .profile-section__add-btn {
@@ -548,15 +588,15 @@
 .privacy-settings-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
 }
 
 .privacy-setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 .privacy-setting-info {
@@ -652,15 +692,15 @@
 .personal-settings-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
 }
 
 .personal-setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 .personal-setting-info {
@@ -712,8 +752,8 @@
 .delete-account-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) 0;
 }
 
 .delete-account-warning {
@@ -767,7 +807,7 @@
 .delete-account-checkbox {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-2);
   cursor: pointer;
 }
 
@@ -851,7 +891,7 @@
   .personal-setting-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--spacing-2);
   }
   
   .privacy-setting-control,
@@ -914,6 +954,7 @@
   padding: 8px 12px;
   cursor: pointer;
   transition: color var(--transition-fast);
+  height: 34px;
 }
 
 .profile-vehicle-search__cancel:hover {

@@ -6,9 +6,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Using new graphics for user types
-const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f669499911d50002cef1a2/buyer2.png';
-const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6694843a62400020366cc/enthusiast2.png';
-const bothImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f814a00a2fc80002ec5f02/both.png';
+const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/69101763c398630002aedb21/buyer.svg';
+const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017650e4b090002079ec0/enthusiast.svg';
+const bothImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017670e4b090002079ec2/both.svg';
 // Step illustration for progress
 const step2Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1855/group1318348098.svg';
 import './OnboardingStep2.css';
@@ -37,6 +37,8 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
     // Store data in localStorage
     const existingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
     localStorage.setItem('onboardingData', JSON.stringify({ ...existingData, userType: selectedUserType }));
+    // Dispatch event to notify other components (like Home page) of the update
+    window.dispatchEvent(new Event('onboardingDataUpdated'));
     navigate('/onboarding/step3');
   };
 
@@ -80,7 +82,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
               />
             </div>
             <div className="user-type-content">
-              <h3 className="user-type-title">Car Buyer</h3>
+              <h3 className="user-type-title">Buyer</h3>
               <p className="user-type-description">
                 Shopping for a new or used car
               </p>
@@ -100,7 +102,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
               />
             </div>
             <div className="user-type-content">
-              <h3 className="user-type-title">Car Enthusiast</h3>
+              <h3 className="user-type-title">Aficionado </h3>
               <p className="user-type-description">
                 Love cars, reviews, and auto culture
               </p>
@@ -136,7 +138,7 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
               onClick={() => navigate('/onboarding/step1')}
             >
               <Icon name="chevron_left" size={20} />
-              <span>Previous</span>
+              <span>Back</span>
             </button>
 
             <button
@@ -144,7 +146,8 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
               onClick={() => navigate('/onboarding/step3')}
               type="button"
             >
-              Skip this step
+              <span className="skip-text-desktop">Skip this step</span>
+              <span className="skip-text-mobile">Skip</span>
             </button>
 
             <button

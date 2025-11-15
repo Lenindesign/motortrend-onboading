@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProfileCompletionCard.css';
 import Icon from '../Icon';
 import { VehicleSearch } from '../VehicleSearch';
 import VehicleCard from '../VehicleCard';
-import { vehicleImageFor } from '../../utils/vehicleImages';
+import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import Button from '../../design-system/components/Button';
 import RatingModal from '../RatingModal';
+import { useRating } from '../../contexts/RatingContext';
 
 export interface OnboardingStatus {
   step1: boolean;
@@ -40,6 +42,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   onUpdateStep4,
   onDismiss 
 }) => {
+  const navigate = useNavigate();
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
   const [localOnboardingData, setLocalOnboardingData] = useState<OnboardingData>({});
   
@@ -70,6 +73,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     vehicleName: '',
     currentRating: 0
   });
+  const { getUserRating, setUserRating } = useRating();
   
   // Vehicle search is always visible in Step 3 now
 
@@ -175,20 +179,32 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
 
   // Rating handlers
   const handleRateVehicle = (vehicleName: string) => {
-    const vehicle = step3Vehicles.find(v => v.name === vehicleName);
+    const globalRating = getUserRating(vehicleName);
     setRatingModal({
       isOpen: true,
       vehicleName,
-      currentRating: vehicle?.rating || 0
+      currentRating: globalRating
     });
   };
 
   const handleRatingSubmit = (rating: number) => {
-    const updatedVehicles = step3Vehicles.map(v => 
-      v.name === ratingModal.vehicleName ? { ...v, rating } : v
-    );
-    setStep3Vehicles(updatedVehicles);
+    setUserRating(ratingModal.vehicleName, rating);
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Submit the rating first
+    setUserRating(ratingModal.vehicleName, rating);
+    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
+    
+    // Navigate to vehicle details page where they can write a review
+    try {
+      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
+      navigate(`/vehicles/${year}/${make}/${model}`);
+    } catch (error) {
+      console.error('Error parsing vehicle name:', error);
+      // If parsing fails, just stay on current page
+    }
   };
 
   const handleRatingModalClose = () => {
@@ -435,9 +451,12 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                               );
                               setStep3Vehicles(updatedVehicles);
                             }}
-                            onViewDetails={() => console.log('View vehicle details:', vehicle.name)}
+                            onViewDetails={() => {
+                              const { year, make, model } = parseVehicleName(vehicle.name);
+                              navigate(`/vehicles/${year}/${make}/${model}`);
+                            }}
                             onRate={() => handleRateVehicle(vehicle.name)}
-                            userRating={vehicle.rating}
+                            userRating={getUserRating(vehicle.name)}
                           />
                         ))}
                       </div>
@@ -464,7 +483,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
                 <div className="profile-completion-step__options profile-completion-step__options--single-column">
                   {[
                     { id: 'motortrend', label: 'Subscribe to MotorTrend Newsletter' },
-                    { id: 'hotrod', label: 'Subscribe to HOT ROD Newsletter' }
+                    { id: 'hotrod', label: 'Subscribe to HOT ROD Newsletter' },
+                    { id: 'events', label: 'Subscribe to Our Events Newsletter' }
                   ].map((newsletter) => (
                     <label key={newsletter.id} className="profile-option">
                       <input
@@ -495,6 +515,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
         onRate={handleRatingSubmit}
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
+        onRateAndReview={handleRateAndReview}
       />
     </div>
   );

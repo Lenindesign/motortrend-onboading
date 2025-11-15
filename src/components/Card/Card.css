@@ -6,14 +6,14 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 16px 16px 16px;
-  background: #FCFCFD;
-  border: 1px solid #E6E8EC;
-  border-radius: 12px;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2);
+  background: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
   width: 100%;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-depth-5);
+  transition: all var(--transition-fast);
   align-self: space-between;
   align-items: stretch;
   justify-content: space-between;
@@ -21,26 +21,26 @@
 }
 
 .card:hover {
-  box-shadow: var(--shadow-depth-3);
+  box-shadow: var(--shadow-depth-5);
   transform: translateY(-1px);
 }
 
 .card--compact {
-  padding: 12px;
-  gap: 8px;
+  padding: var(--spacing-2);
+  gap: var(--spacing-1);
 }
 
 .card__top-row {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-2);
 }
 
 .card__image-container {
   position: relative;
-  width: 153.5px;
-  height: 86.34px; /* 16:9 aspect ratio: 153.5 / 16 * 9 = 86.34px */
+  width: 150px;
+  height: 100px; /* 3:2 aspect ratio for vehicle cards */
   flex-shrink: 0;
 }
 
@@ -48,7 +48,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .card__bookmark-btn {
@@ -63,10 +63,10 @@
   padding: 4px;
   background: rgba(0, 0, 0, 0.4);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   backdrop-filter: blur(4px);
 }
 
@@ -113,34 +113,31 @@
 
 .card__title {
   font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 1.25em;
-  color: var(--color-neutrals-2);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-weight: var(--font-weight-bold);
+  font-size: 18px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  margin: 0 0 var(--spacing-1) 0;
 }
 
 .card__subtitle {
   font-family: var(--font-body);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.29em;
   color: var(--color-neutrals-3);
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .card__type {
   font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 12px;
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
   line-height: 1.33em;
   color: var(--color-neutrals-4);
   margin: 0;
@@ -158,7 +155,7 @@
 /* Vehicle ownership section */
 .card__ownership {
   display: flex;
-  gap: 24px;
+  gap: var(--spacing-3);
   align-items: center;
   margin-top: 12px;
 }
@@ -180,14 +177,14 @@
 .card__bottom-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 16px;
+  align-items: center;
+  gap: var(--spacing-2);
   min-height: 34px;
 }
 
 .card__ratings {
   display: flex;
-  gap: 16px;
+  gap: var(--spacing-1);
   align-items: center;
 }
 
@@ -196,30 +193,63 @@
   align-items: center;
   gap: 4px;
   font-family: var(--font-body);
+  font-weight: var(--font-weight-bold);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+}
+
+.card__rating span:not(.card__rating-label):not(.card__rating-value) {
+  font-size: 14px;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+}
+
+.card__rating-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+}
+
+.card__rating-label {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-weight: normal;
+  font-size: 12px;
+  color: var(--color-neutrals-2);
+}
+
+.card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
   font-weight: 600;
   font-size: 14px;
   color: var(--color-neutrals-2);
 }
 
-.card__rating span {
-  font-size: 14px;
+.card__rating-display .card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
 }
 
-.card__rate-option span {
-  position: relative;
-  top: -2px;
-  left: 3px;
+.card__rating.card__rating--with-tooltip .card__rating-display .card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
 }
 
-.card__rate-option .card__rating-star {
-  position: relative;
-  top: 2px;
+.card__rating-display span.card__rating-value {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.card__rating .card__rate-option span {
+  font-weight: 600;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-size: 12px !important;
 }
 
 .card__rating-star {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .card__rating--with-tooltip {
@@ -234,8 +264,8 @@
   background: var(--color-neutrals-2);
   color: var(--color-white);
   padding: 6px 10px;
-  border-radius: 4px;
-  font-family: var(--font-body);
+  border-radius: var(--border-radius-sm);
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 12px;
   line-height: 1.2;
@@ -245,7 +275,7 @@
   z-index: 1001;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   pointer-events: none;
 }
 
@@ -265,11 +295,18 @@
 }
 
 .card__rate-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
   transition: opacity 0.2s ease;
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-medium);
+  font-size: 12px;
+  color: var(--color-neutrals-2);
 }
 
 .card__rate-option:hover {
@@ -279,18 +316,20 @@
 .card__button {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: var(--color-neutrals-3);
+  gap: 0px;
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--color-neutrals-1);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--border-radius-md);
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   font-size: 14px;
   color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   white-space: nowrap;
+  height: 36px;
+  box-shadow: var(--shadow-depth-5);
 }
 
 .card__button:hover {
@@ -303,9 +342,30 @@
 }
 
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card__image-container {
+    width: 150px;
+    height: 100px;
+  }
+
+  .card__title {
+    font-size: 16px;
+  }
+
+  .card__type {
+    font-size: 12px;
+  }
+
+  .card__button {
+    font-size: 12px;
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+}
+
 /* Compact variant adjustments */
 .card--compact .card__title {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .card--compact .card__subtitle {
@@ -326,11 +386,11 @@
   .card {
     padding: 12px;
     gap: 10px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-md);
   }
   
   .card__top-row {
-    gap: 12px;
+    gap: var(--spacing-2);
   }
   
   .card__image-container {
@@ -362,7 +422,7 @@
   }
   
   .card__ownership {
-    gap: 16px;
+    gap: var(--spacing-2);
     margin-top: 8px;
   }
   
@@ -407,7 +467,7 @@
   }
   
   .card__ownership {
-    gap: 12px;
+    gap: var(--spacing-2);
     margin-top: 6px;
   }
   

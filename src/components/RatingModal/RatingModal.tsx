@@ -3,7 +3,7 @@
  * Modal overlay for rating vehicles with 1-10 star selection
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RatingModal.css';
 import Icon from '../Icon';
 
@@ -13,6 +13,8 @@ export interface RatingModalProps {
   onRate: (rating: number) => void;
   vehicleName: string;
   currentRating?: number;
+  onRateAndReview?: (rating: number) => void;
+  onClear?: () => void;
 }
 
 export const RatingModal: React.FC<RatingModalProps> = ({
@@ -20,10 +22,19 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   onClose,
   onRate,
   vehicleName,
-  currentRating = 0
+  currentRating = 0,
+  onRateAndReview,
+  onClear
 }) => {
   const [selectedRating, setSelectedRating] = useState(currentRating);
   const [hoveredRating, setHoveredRating] = useState(0);
+
+  // Sync selectedRating with currentRating when modal opens or currentRating changes
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedRating(currentRating);
+    }
+  }, [isOpen, currentRating]);
 
   const ratingLabels = {
     1: "Awful – Never again",
@@ -51,7 +62,25 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   };
 
   const handleSubmit = () => {
-    onRate(selectedRating);
+    // If there's an existing rating, clear it
+    if (currentRating > 0 && onClear) {
+      onClear();
+      setSelectedRating(0);
+      onClose();
+    } else if (selectedRating > 0) {
+      // Submit a new rating
+      onRate(selectedRating);
+      onClose();
+    }
+  };
+
+  const handleRateAndReview = () => {
+    if (onRateAndReview) {
+      onRateAndReview(selectedRating);
+    } else {
+      // Default behavior: just submit the rating if handler not provided
+      onRate(selectedRating);
+    }
     onClose();
   };
 
@@ -136,9 +165,16 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           <button 
             className="rating-modal__btn rating-modal__btn--submit"
             onClick={handleSubmit}
+            disabled={selectedRating === 0 && currentRating === 0}
+          >
+            {currentRating > 0 ? 'CLEAR RATING' : 'RATE'}
+          </button>
+          <button 
+            className="rating-modal__btn rating-modal__btn--rate-and-review"
+            onClick={handleRateAndReview}
             disabled={selectedRating === 0}
           >
-            RATE
+            WRITE A REVIEW
           </button>
         </div>
       </div>

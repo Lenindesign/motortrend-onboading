@@ -1,0 +1,13 @@
+/**
+ * River Styles
+ * Horizontal card list for news content
+ */
+
+.river {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+
+
