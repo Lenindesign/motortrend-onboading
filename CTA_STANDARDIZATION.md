@@ -204,3 +204,9 @@ import { Button } from '@/design-system/components';
 - [ ] Loading states for async actions
 - [ ] Icon integration standards
 - [ ] A/B testing framework for CTA optimization
+
+## 📚 Related Documentation
+
+- **[CURSOR_DESIGN_SYSTEM_RULES.md](./CURSOR_DESIGN_SYSTEM_RULES.md)** - Design system rules (includes CTA guidelines)
+- **[DESIGN_TOKEN_QUICK_REFERENCE.md](./DESIGN_TOKEN_QUICK_REFERENCE.md)** - Quick reference for all tokens
+- **[FIGMA_INTEGRATION.md](./FIGMA_INTEGRATION.md)** - Figma integration guide

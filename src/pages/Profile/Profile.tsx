@@ -356,7 +356,8 @@ export const Profile: React.FC<ProfileProps> = ({
 
   const handleSubmitReview = (review: ReviewData) => {
     // Get vehicle name from review object or modal state
-    const vehicleNameFromReview = (review as any)?._vehicleName;
+    const reviewWithVehicleName = review as ReviewData & { _vehicleName?: string };
+    const vehicleNameFromReview = reviewWithVehicleName._vehicleName;
     const vehicleName = vehicleNameFromReview || writeReviewModal.vehicleName;
     
     if (!vehicleName || vehicleName.trim() === '') {
@@ -365,7 +366,8 @@ export const Profile: React.FC<ProfileProps> = ({
     }
     
     // Remove the _vehicleName property from review before processing
-    const { _vehicleName, ...cleanReview } = review as any;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _vehicleName, ...cleanReview } = reviewWithVehicleName;
     
     // Convert File objects to preview URLs for display
     const reviewWithPreviews: ReviewData = {
@@ -524,7 +526,7 @@ export const Profile: React.FC<ProfileProps> = ({
   // Get vehicles the user has reviewed (where rating > 0)
   const vehiclesIReviewed = useMemo(() => {
     return Object.entries(userRatings)
-      .filter(([_, rating]) => rating > 0)
+      .filter(([, rating]) => rating > 0)
       .map(([vehicleName, rating]) => ({
         name: vehicleName,
         rating: rating,

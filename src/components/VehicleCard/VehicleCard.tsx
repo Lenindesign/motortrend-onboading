@@ -26,7 +26,6 @@ export interface VehicleCardProps {
 export const VehicleCard: React.FC<VehicleCardProps> = ({ 
   image, 
   name, 
-  type: _type, 
   rating1,
   rating2,
   hasMultipleRatings = false,

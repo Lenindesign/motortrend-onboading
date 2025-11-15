@@ -3,20 +3,22 @@
  * Full article detail page based on MotorTrend article structure
  */
 
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import { UserReviews } from '../../components/UserReviews';
 import WriteReviewModal from '../../components/WriteReviewModal';
 import RatingModal from '../../components/RatingModal';
+import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
+import SavedModal from '../../components/SavedModal';
 import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
 import { RatingDistributionTooltip } from '../../components/RatingDistributionTooltip';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
 import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
-import { getArticleBySlug, getDefaultArticle } from '../../utils/articles';
+import { getArticleBySlug, getDefaultArticle, articles } from '../../utils/articles';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { vehicleImageFor } from '../../utils/vehicleImages';
@@ -43,16 +45,30 @@ export const Article: React.FC = () => {
   const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
+  const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [communityRatingCount, setCommunityRatingCount] = useState(252);
+  const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
   const communityRatingRef = useRef<HTMLDivElement>(null);
   const staffRatingRef = useRef<HTMLDivElement>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
-  const { getUserRating, setUserRating } = useRating();
+  const justSavedReviewRef = useRef<boolean>(false);
+  const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
+  const { getUserRating, setUserRating, clearRating } = useRating();
+  
+  // Photo gallery state
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Lazy load articles state
+  const [articlesToShow, setArticlesToShow] = useState(5);
   
   // Load article data based on slug
   const articleData = useMemo(() => {
@@ -63,23 +79,93 @@ export const Article: React.FC = () => {
     }
     return loadedArticle;
   }, [slug]);
+  
+  // Get all article images for gallery
+  const articleImages = useMemo(() => {
+    return articleData.images || [];
+  }, [articleData]);
+  
+  // Gallery handlers
+  const handleImageClick = useCallback((index: number) => {
+    setCurrentImageIndex(index);
+    setGalleryOpen(true);
+    document.body.style.overflow = 'hidden';
+  }, []);
+  
+  const handleCloseGallery = useCallback(() => {
+    setGalleryOpen(false);
+    document.body.style.overflow = '';
+  }, []);
+  
+  const handleGalleryNext = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev + 1) % articleImages.length);
+  }, [articleImages.length]);
+  
+  const handleGalleryPrev = useCallback(() => {
+    setCurrentImageIndex((prev) => (prev - 1 + articleImages.length) % articleImages.length);
+  }, [articleImages.length]);
+  
+  const handleGalleryGoTo = useCallback((index: number) => {
+    if (index >= 0 && index < articleImages.length) {
+      setCurrentImageIndex(index);
+    }
+  }, [articleImages.length]);
+  
+  // Keyboard navigation for gallery
+  useEffect(() => {
+    if (!galleryOpen) return;
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleCloseGallery();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        handleGalleryPrev();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        handleGalleryNext();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [galleryOpen, handleCloseGallery, handleGalleryPrev, handleGalleryNext]);
 
   // Vehicle name for reviews (extracted from motortrendScore or article title)
+  // Normalize to ensure consistent format (spaces, not dashes) to match VehicleDetails page
   const vehicleName = useMemo(() => {
+    let name = '';
     if (articleData.motortrendScore?.vehicleName) {
-      return articleData.motortrendScore.vehicleName;
+      name = articleData.motortrendScore.vehicleName;
+    } else {
+      // Try to extract vehicle name from title (e.g., "2026 Hyundai Ioniq 6 N First Drive" -> "2026 Hyundai Ioniq 6 N")
+      const titleMatch = articleData.title.match(/^(\d{4}\s+[\w\s]+?)(?:\s+(?:First Drive|Review|Yearlong|Verdict))/i);
+      if (titleMatch) {
+        name = titleMatch[1].trim();
+      } else {
+        // Fallback: use first part of title before colon
+        const colonIndex = articleData.title.indexOf(':');
+        if (colonIndex > 0) {
+          name = articleData.title.substring(0, colonIndex).trim();
+        } else {
+          name = articleData.title;
+        }
+      }
     }
-    // Try to extract vehicle name from title (e.g., "2026 Hyundai Ioniq 6 N First Drive" -> "2026 Hyundai Ioniq 6 N")
-    const titleMatch = articleData.title.match(/^(\d{4}\s+[\w\s]+?)(?:\s+(?:First Drive|Review|Yearlong|Verdict))/i);
-    if (titleMatch) {
-      return titleMatch[1].trim();
+    // Normalize: replace dashes with spaces in the model part to match VehicleDetails format
+    // This ensures "2026 Hyundai Ioniq-6-N" becomes "2026 Hyundai Ioniq 6 N"
+    const parts = name.split(/\s+/);
+    const yearIndex = parts.findIndex(part => /^\d{4}$/.test(part));
+    if (yearIndex !== -1 && parts.length > yearIndex + 1) {
+      const year = parts[yearIndex];
+      const make = parts[yearIndex + 1];
+      const modelParts = parts.slice(yearIndex + 2);
+      // Replace dashes with spaces in model parts
+      const normalizedModel = modelParts.join(' ').replace(/-/g, ' ');
+      return `${year} ${make} ${normalizedModel}`.trim();
     }
-    // Fallback: use first part of title before colon
-    const colonIndex = articleData.title.indexOf(':');
-    if (colonIndex > 0) {
-      return articleData.title.substring(0, colonIndex).trim();
-    }
-    return articleData.title;
+    // If no year found, just replace dashes with spaces
+    return name.replace(/-/g, ' ').trim();
   }, [articleData]);
   
   // Parse vehicle name to get year, make, and model for navigation
@@ -90,6 +176,13 @@ export const Article: React.FC = () => {
   }, [vehicleName]);
   
   const userRating = getUserRating(vehicleName);
+
+  // Check if user has an existing review and get it
+  const existingUserReview = useMemo(() => {
+    return reviews.find(review => review.reviewerName === 'You') || null;
+  }, [reviews]);
+  
+  const hasExistingReview = existingUserReview !== null;
 
   // Article data - using loaded article
   const article = articleData;
@@ -124,6 +217,9 @@ export const Article: React.FC = () => {
           imageUrl: article.heroImage,
           slug: slug
         };
+        
+        // Show saved modal
+        setIsSavedModalOpen(true);
       } else {
         // Remove article from saved list
         const index = savedArticles.indexOf(slug);
@@ -181,23 +277,36 @@ export const Article: React.FC = () => {
     };
   }, [article, vehicleName]);
 
-  // Generate user reviews for the vehicle
-  const reviews = useMemo(() => {
+  // Load user reviews for the vehicle
+  useEffect(() => {
+    // Skip reloading if we just saved a review (to prevent overwriting the state we just set)
+    if (justSavedReviewRef.current) {
+      console.log('Article: Skipping review reload - just saved a review');
+      justSavedReviewRef.current = false;
+      return;
+    }
+    
     try {
-      const savedReviewsJson = localStorage.getItem(`reviews_${vehicleName}`);
+      // Use the same key format as VehicleDetails page for consistency
+      const savedReviewsKey = `vehicleReviews_${vehicleName}`;
+      const savedReviewsJson = localStorage.getItem(savedReviewsKey);
       if (savedReviewsJson) {
         const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
         if (savedReviews && savedReviews.length > 0) {
           const generatedReviews = generateUserReviews(vehicleName);
           const generatedIds = new Set(generatedReviews.map(r => r.id));
           const uniqueSavedReviews = savedReviews.filter(r => !generatedIds.has(r.id));
-          return [...uniqueSavedReviews, ...generatedReviews];
+          setReviews([...uniqueSavedReviews, ...generatedReviews]);
+        } else {
+          setReviews(generateUserReviews(vehicleName));
         }
+      } else {
+        setReviews(generateUserReviews(vehicleName));
       }
     } catch (error) {
       console.error('Error loading saved reviews from localStorage:', error);
+      setReviews(generateUserReviews(vehicleName));
     }
-    return generateUserReviews(vehicleName);
   }, [vehicleName]);
 
   // Generate community rating and staff rating
@@ -240,6 +349,53 @@ export const Article: React.FC = () => {
     setIsRatingModalOpen(false);
   };
 
+  const handleClearRating = () => {
+    // Clear the rating
+    clearRating(vehicleName);
+    
+    // Remove the user's review from localStorage
+    try {
+      const savedReviewsKey = `vehicleReviews_${vehicleName}`;
+      const savedReviewsJson = localStorage.getItem(savedReviewsKey);
+      if (savedReviewsJson) {
+        const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
+        // Filter out reviews where reviewerName is 'You'
+        const filteredReviews = savedReviews.filter(review => review.reviewerName !== 'You');
+        
+        // Update localStorage
+        if (filteredReviews.length > 0) {
+          localStorage.setItem(savedReviewsKey, JSON.stringify(filteredReviews));
+        } else {
+          // If no reviews left, remove the key entirely
+          localStorage.removeItem(savedReviewsKey);
+        }
+        
+        // Update local state
+        const generatedReviews = generateUserReviews(vehicleName);
+        const generatedIds = new Set(generatedReviews.map(r => r.id));
+        const uniqueSavedReviews = filteredReviews.filter(r => !generatedIds.has(r.id));
+        setReviews([...uniqueSavedReviews, ...generatedReviews]);
+      }
+    } catch (error) {
+      console.error('Error removing review:', error);
+    }
+    
+    setIsRatingModalOpen(false);
+  };
+
+  const handleRateAndReview = (rating: number) => {
+    // Save the rating first
+    setUserRating(vehicleName, rating);
+    // Store the rating to pass directly to write review modal
+    setReviewModalRating(rating);
+    // Close rating modal and open write review modal
+    setIsRatingModalOpen(false);
+    // Use a small delay to ensure state is updated
+    setTimeout(() => {
+      setIsWriteReviewModalOpen(true);
+    }, 50);
+  };
+
   // Handlers for tooltips
   const handleTooltipMouseEnter = () => {
     setIsTooltipVisible(true);
@@ -272,14 +428,47 @@ export const Article: React.FC = () => {
     }
   };
 
+  // Toast handlers
+  const handleCloseToast = () => {
+    setIsToastVisible(false);
+  };
+
+  const handleViewReview = () => {
+    // Set reviews tab to be active
+    setReviewsTabActive(true);
+    
+    // Scroll to reviews section
+    const reviewsSection = document.getElementById('community-ratings');
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+    setIsToastVisible(false);
+    
+    // Reset after a delay to allow normal tab switching
+    setTimeout(() => {
+      setReviewsTabActive(undefined);
+    }, 1000);
+  };
+
   // Handle review update
   const handleUpdateReview = (reviewId: string, updatedReview: ReviewData) => {
     try {
-      const savedReviewsJson = localStorage.getItem(`reviews_${vehicleName}`);
+      // Use the same key format as VehicleDetails page for consistency
+      const savedReviewsKey = `vehicleReviews_${vehicleName}`;
+      const savedReviewsJson = localStorage.getItem(savedReviewsKey);
       if (savedReviewsJson) {
         const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
         const updatedReviews = savedReviews.map(r => r.id === reviewId ? updatedReview : r);
-        localStorage.setItem(`reviews_${vehicleName}`, JSON.stringify(updatedReviews));
+        localStorage.setItem(savedReviewsKey, JSON.stringify(updatedReviews));
+        
+        // Update local state
+        const generatedReviews = generateUserReviews(vehicleName);
+        const generatedIds = new Set(generatedReviews.map(r => r.id));
+        const uniqueSavedReviews = updatedReviews.filter(r => !generatedIds.has(r.id));
+        setReviews([...uniqueSavedReviews, ...generatedReviews]);
       }
     } catch (error) {
       console.error('Error updating review:', error);
@@ -345,6 +534,62 @@ export const Article: React.FC = () => {
   const handleRelatedArticleClick = (slug: string) => {
     navigate(`/articles/${slug}`);
   };
+
+  // Get all articles excluding current one for lazy loading
+  const allArticles = useMemo(() => {
+    const articleEntries = Object.entries(articles);
+    return articleEntries
+      .filter(([articleSlug]) => articleSlug !== slug)
+      .map(([articleSlug, article]) => ({
+        slug: articleSlug,
+        title: article.title,
+        imageUrl: article.heroImage,
+        author: article.author,
+        date: article.date,
+        excerpt: article.excerpt,
+      }))
+      .sort((a, b) => {
+        // Sort by date descending (newest first)
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA;
+      });
+  }, [slug]);
+
+  // Lazy loaded articles (first N articles)
+  const lazyLoadedArticles = useMemo(() => {
+    return allArticles.slice(0, articlesToShow);
+  }, [allArticles, articlesToShow]);
+
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    if (!loadMoreArticlesRef.current) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && articlesToShow < allArticles.length) {
+          // Load 5 more articles
+          setArticlesToShow(prev => Math.min(prev + 5, allArticles.length));
+        }
+      },
+      {
+        rootMargin: '200px', // Start loading 200px before reaching the element
+        threshold: 0.1,
+      }
+    );
+
+    const currentRef = loadMoreArticlesRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [articlesToShow, allArticles.length]);
 
   // Check if rating bar should be hidden for this article
   const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car';
@@ -429,11 +674,6 @@ export const Article: React.FC = () => {
               onMouseLeave={handleStaffTooltipMouseLeave}
             >
               <span className="article__rating-label">MotorTrend</span>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                alt="MotorTrend Rating Star" 
-                className="article__rating-icon article__rating-icon--staff" 
-              />
               <span className="article__rating-value">{staffRating}</span>
               <StaffRatingTooltip
                 overallRating={staffRating}
@@ -515,6 +755,34 @@ export const Article: React.FC = () => {
         <div className="article__layout">
           {/* Left Column: Content (2/3) */}
           <div className="article__content-column">
+            {/* Article Header */}
+            <div className="article__header">
+              <h1 className="article__title">{article.title}</h1>
+              <p className="article__excerpt">{article.excerpt}</p>
+            </div>
+
+            {/* Byline Row */}
+            <div className="article__byline-row">
+              <div className="article__byline-content">
+                <span className="article__byline-author">
+                  <span className="article__author-label">By</span>
+                  <span className="article__author-name">{article.author}</span>
+                </span>
+                <span className="article__byline-separator">|</span>
+                <span className="article__byline-date">{article.date}</span>
+                <span className="article__byline-separator">|</span>
+                <span className="article__byline-section">{article.category}</span>
+              </div>
+              <button 
+                className={`article__save-btn ${isSaved ? 'saved' : ''}`}
+                onClick={handleBookmark}
+                aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
+              >
+                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                <span>{isSaved ? 'Saved!' : 'Save'}</span>
+              </button>
+            </div>
+
             {/* Hero Section */}
             <div className="article__hero-wrapper">
               <div className="article__hero">
@@ -522,16 +790,10 @@ export const Article: React.FC = () => {
                   <img 
                     src={article.heroImage} 
                     alt={article.title}
-                    className="article__hero-image"
+                    className="article__hero-image article__image-clickable"
+                    onClick={() => handleImageClick(0)}
+                    style={{ cursor: 'pointer' }}
                   />
-                  <button 
-                    className={`article__save-btn ${isSaved ? 'saved' : ''}`}
-                    onClick={handleBookmark}
-                    aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
-                  >
-                    <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
-                    <span>{isSaved ? 'Saved!' : 'Save'}</span>
-                  </button>
                   <div className="article__hero-overlay">
                     <button 
                       className="article__share-btn"
@@ -542,20 +804,6 @@ export const Article: React.FC = () => {
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Article Header */}
-            <div className="article__header">
-              <div className="article__meta">
-                <span className="article__category">{article.category}</span>
-                <span className="article__date">{article.date}</span>
-              </div>
-              <h1 className="article__title">{article.title}</h1>
-              <p className="article__excerpt">{article.excerpt}</p>
-              <div className="article__author">
-                <span className="article__author-label">By</span>
-                <span className="article__author-name">{article.author}</span>
               </div>
             </div>
 
@@ -600,12 +848,15 @@ export const Article: React.FC = () => {
 
                         // Add an image after the heading if available
                         if (imageIndex < contentImages.length) {
+                          const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
                           elements.push(
                             <div key={`image-after-${index}`} className="article__image-wrapper">
                               <img 
                                 src={contentImages[imageIndex]} 
                                 alt={`${article.title} - Image ${imageIndex + 2}`}
-                                className="article__image"
+                                className="article__image article__image-clickable"
+                                onClick={() => handleImageClick(galleryIndex)}
+                                style={{ cursor: 'pointer' }}
                               />
                             </div>
                           );
@@ -650,12 +901,6 @@ export const Article: React.FC = () => {
                                 <div className="article__score-content">
                                   <div className="article__overall-score">
                                     <div className="article__score-circle">
-                                      <img 
-                                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                                        alt="Star" 
-                                        width={48} 
-                                        height={48}
-                                      />
                                       <span className="article__score-number">{motortrendScore.overallRating}</span>
                                       <span className="article__score-label">MotorTrend Rating</span>
                                     </div>
@@ -857,6 +1102,39 @@ export const Article: React.FC = () => {
                 </div>
               )}
 
+            {/* Photo Gallery Bento Module */}
+            {articleImages.length > 1 && (
+              <div className="article__photo-gallery-bento">
+                <div className="article__photo-gallery-header">
+                  <h3 className="article__photo-gallery-title">Photo Gallery</h3>
+                  <button
+                    className="article__photo-gallery-view-all cta cta--ghost cta--default"
+                    onClick={() => handleImageClick(0)}
+                  >
+                    View All Photos
+                  </button>
+                </div>
+                <div className="article__photo-gallery-grid">
+                  {articleImages.slice(0, 6).map((image, index) => (
+                    <div
+                      key={index}
+                      className={`article__photo-gallery-item article__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
+                      onClick={() => handleImageClick(index)}
+                    >
+                      <img 
+                        src={image} 
+                        alt={`${article.title} - Photo ${index + 1}`}
+                        className="article__photo-gallery-thumb"
+                      />
+                      <div className="article__photo-gallery-overlay">
+                        <Icon name="open_in_full" size={24} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
               {/* Author Bio */}
               <div className="article__author-bio">
                 <h3 className="article__author-bio-title">{article.author}</h3>
@@ -877,6 +1155,7 @@ export const Article: React.FC = () => {
                   onWriteReview={() => setIsWriteReviewModalOpen(true)}
                   onUpdateReview={handleUpdateReview}
                   defaultTab="comments"
+                  activeTab={reviewsTabActive === true ? 'reviews' : reviewsTabActive === false ? 'comments' : undefined}
                 />
               </div>
 
@@ -917,9 +1196,75 @@ export const Article: React.FC = () => {
                   )}
                 </div>
               </div>
+
+              {/* Lazy Loaded Articles Section */}
+              {lazyLoadedArticles.length > 0 && (
+                <div className="article__lazy-articles">
+                  <h2 className="article__lazy-articles-title">More Articles</h2>
+                  <div className="article__lazy-articles-grid">
+                    {lazyLoadedArticles.map((article) => (
+                      <Link
+                        key={article.slug}
+                        to={`/articles/${article.slug}`}
+                        className="article__lazy-article-card"
+                      >
+                        <div className="article__lazy-article-image">
+                          <img src={article.imageUrl} alt={article.title} />
+                        </div>
+                        <div className="article__lazy-article-content">
+                          <h3 className="article__lazy-article-title">{article.title}</h3>
+                          <p className="article__lazy-article-excerpt">{article.excerpt}</p>
+                          <p className="article__lazy-article-meta">
+                            {article.author} | {article.date}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  {/* Intersection Observer target */}
+                  {articlesToShow < allArticles.length && (
+                    <div ref={loadMoreArticlesRef} className="article__lazy-load-trigger">
+                      <div className="article__lazy-load-spinner">Loading more articles...</div>
+                    </div>
+                  )}
+                </div>
+              )}
                 </div>
               </div>
             </div>
+
+            {/* Photo Gallery Bento Module */}
+            {articleImages.length > 1 && (
+              <div className="article__photo-gallery-bento">
+                <div className="article__photo-gallery-header">
+                  <h3 className="article__photo-gallery-title">Photo Gallery</h3>
+                  <button
+                    className="article__photo-gallery-view-all cta cta--ghost cta--default"
+                    onClick={() => handleImageClick(0)}
+                  >
+                    View All Photos
+                  </button>
+                </div>
+                <div className="article__photo-gallery-grid">
+                  {articleImages.slice(0, 6).map((image, index) => (
+                    <div
+                      key={index}
+                      className={`article__photo-gallery-item article__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
+                      onClick={() => handleImageClick(index)}
+                    >
+                      <img 
+                        src={image} 
+                        alt={`${article.title} - Photo ${index + 1}`}
+                        className="article__photo-gallery-thumb"
+                      />
+                      <div className="article__photo-gallery-overlay">
+                        <Icon name="open_in_full" size={24} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column: Sidebar (1/3) */}
@@ -984,11 +1329,6 @@ export const Article: React.FC = () => {
               onClick={handleScrollToStaffRating}
             >
               <span className="article__sticky-rating-label">MotorTrend</span>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                alt="MotorTrend Rating Star" 
-                className="article__sticky-rating-icon" 
-              />
               <span className="article__sticky-rating-value">{staffRating}</span>
             </div>
             <div 
@@ -1053,25 +1393,242 @@ export const Article: React.FC = () => {
         onClose={handleCloseRatingModal}
         vehicleName={vehicleName}
         onRate={handleSubmitRating}
+        onRateAndReview={handleRateAndReview}
+        onClear={handleClearRating}
+        currentRating={userRating}
+        hasExistingReview={hasExistingReview}
       />
 
       {/* Write Review Modal */}
       <WriteReviewModal
+        key={`${vehicleName}-write-review-${hasExistingReview ? 'edit' : 'new'}`}
         isOpen={isWriteReviewModalOpen}
-        onClose={() => setIsWriteReviewModalOpen(false)}
+        onClose={() => {
+          setIsWriteReviewModalOpen(false);
+          // Don't clear reviewModalRating immediately - let it persist until next submission
+          // This prevents the key from changing and causing remounts
+        }}
         vehicleName={vehicleName}
         vehicleImage={article.heroImage}
+        initialRating={reviewModalRating}
+        existingReview={existingUserReview}
+        isEditMode={hasExistingReview}
         onSubmit={(review) => {
+          console.log('Article: onSubmit called with review:', review);
+          console.log('Article: vehicleName:', vehicleName);
+          console.log('Article: isEditMode:', hasExistingReview, 'existingReview:', existingUserReview);
+          
+          if (!vehicleName || vehicleName.trim() === '') {
+            console.error('Article: Cannot save review - vehicleName is empty');
+            return;
+          }
+          
           try {
-            const savedReviewsJson = localStorage.getItem(`reviews_${vehicleName}`);
+            // Remove the _vehicleName helper property from review before processing
+            const reviewWithVehicleName = review as ReviewData & { _vehicleName?: string };
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _vehicleName, ...cleanReview } = reviewWithVehicleName;
+            
+            console.log('Article: Processing review, cleanReview:', cleanReview);
+            
+            // Convert File objects to preview URLs for display
+            const reviewWithPreviews: ReviewData = {
+              ...cleanReview,
+              mediaPreviews: cleanReview.mediaFiles?.map((file: File) => URL.createObjectURL(file)) || []
+            };
+            
+            // Use the same key format as VehicleDetails page for consistency
+            const savedReviewsKey = `vehicleReviews_${vehicleName}`;
+            console.log('Article: Using localStorage key:', savedReviewsKey);
+            
+            // Get existing reviews
+            const savedReviewsJson = localStorage.getItem(savedReviewsKey);
             const savedReviews: ReviewData[] = savedReviewsJson ? JSON.parse(savedReviewsJson) : [];
-            savedReviews.push(review);
-            localStorage.setItem(`reviews_${vehicleName}`, JSON.stringify(savedReviews));
-            setCommunityRatingCount(prev => prev + 1);
+            console.log('Article: Found', savedReviews.length, 'existing reviews');
+            
+            // If editing, update the existing review; otherwise add a new one
+            let updatedReviews: ReviewData[];
+            if (hasExistingReview && existingUserReview) {
+              // Update existing review - preserve original date, add updatedDate
+              const reviewToUpdate: ReviewData = {
+                ...reviewWithPreviews,
+                id: existingUserReview.id, // Keep original ID
+                date: existingUserReview.date, // Keep original date
+                updatedDate: new Date().toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })
+              };
+              updatedReviews = savedReviews.map(r => 
+                r.id === existingUserReview.id ? reviewToUpdate : r
+              );
+              console.log('Article: Updated existing review with ID:', existingUserReview.id);
+            } else {
+              // Add the new review at the beginning
+              updatedReviews = [reviewWithPreviews, ...savedReviews];
+              console.log('Article: Added new review, total reviews:', updatedReviews.length);
+            }
+            
+            // Save to localStorage (convert File objects to strings for storage)
+            // Note: File objects can't be serialized, so we only save the preview URLs
+            const reviewsToSave = updatedReviews.map(r => ({
+              ...r,
+              mediaFiles: undefined, // Remove File objects as they can't be serialized
+              mediaPreviews: r.mediaPreviews || [] // Keep preview URLs
+            }));
+            
+            localStorage.setItem(savedReviewsKey, JSON.stringify(reviewsToSave));
+            console.log('Article: Successfully saved review to localStorage for:', vehicleName);
+            
+            // Verify the save worked
+            const verifySave = localStorage.getItem(savedReviewsKey);
+            if (verifySave) {
+              const verifyReviews = JSON.parse(verifySave);
+              console.log('Article: Verified save -', verifyReviews.length, 'reviews in localStorage');
+            } else {
+              console.error('Article: Save verification failed - no data found in localStorage');
+            }
+            
+            // Mark that we just saved a review to prevent useEffect from overwriting
+            justSavedReviewRef.current = true;
+            
+            // Update local state IMMEDIATELY using functional update to prevent race conditions
+            // This ensures the new review appears right away, even if useEffect runs
+            setReviews(() => {
+              // Get generated reviews (these are static, so we can compute them)
+              const generatedReviews = generateUserReviews(vehicleName);
+              const generatedIds = new Set(generatedReviews.map(r => r.id));
+              
+              // Filter out any generated reviews from our updated list
+              const uniqueSavedReviews = updatedReviews.filter(r => !generatedIds.has(r.id));
+              
+              // Combine: saved reviews (with our new one) + generated reviews
+              const newReviewsList = [...uniqueSavedReviews, ...generatedReviews];
+              
+              console.log('Article: Updated local reviews state, total reviews:', newReviewsList.length);
+              console.log('Article: New review ID:', reviewWithPreviews.id);
+              console.log('Article: New review title:', reviewWithPreviews.title);
+              
+              return newReviewsList;
+            });
+            
+            // Only increment count if it's a new review, not an edit
+            if (!hasExistingReview) {
+              setCommunityRatingCount(prev => prev + 1);
+            }
+            
+            // Close modal immediately after successful save
+            setIsWriteReviewModalOpen(false);
+            console.log('Article: Modal closed after successful save');
+            
+            // Show success toast after a brief delay
+            setTimeout(() => {
+              setIsToastVisible(true);
+              console.log('Article: Showing success toast');
+            }, 300);
+            
+            // Clear rating and reset flag after everything is done
+            setTimeout(() => {
+              setReviewModalRating(undefined);
+              justSavedReviewRef.current = false;
+            }, 1500);
           } catch (error) {
-            console.error('Error saving review:', error);
+            console.error('Article: Error saving review:', error);
+            alert('Failed to save review. Please try again.');
           }
         }}
+      />
+
+      {/* Review Submitted Modal */}
+      <ReviewSubmittedToast
+        isVisible={isToastVisible}
+        onClose={handleCloseToast}
+        onViewReview={handleViewReview}
+        vehicleName={vehicleName}
+      />
+
+      {/* Photo Gallery Modal */}
+      {galleryOpen && articleImages.length > 0 && (
+        <div className="article__gallery-modal" onClick={handleCloseGallery}>
+          <div className="article__gallery-content" onClick={(e) => e.stopPropagation()}>
+            {/* Close Button */}
+            <button
+              className="article__gallery-close-btn"
+              onClick={handleCloseGallery}
+              aria-label="Close gallery"
+            >
+              <Icon name="close" size={24} />
+            </button>
+
+            {/* Navigation Buttons */}
+            {articleImages.length > 1 && (
+              <>
+                <button
+                  className="article__gallery-nav article__gallery-nav--prev"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleGalleryPrev();
+                  }}
+                  aria-label="Previous image"
+                >
+                  <Icon name="chevron_left" size={24} />
+                </button>
+                <button
+                  className="article__gallery-nav article__gallery-nav--next"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleGalleryNext();
+                  }}
+                  aria-label="Next image"
+                >
+                  <Icon name="chevron_right" size={24} />
+                </button>
+              </>
+            )}
+
+            {/* Gallery Image */}
+            <div className="article__gallery-image-wrapper">
+              <img 
+                src={articleImages[currentImageIndex]} 
+                alt={`${article.title} - Image ${currentImageIndex + 1}`}
+                className="article__gallery-image"
+              />
+            </div>
+
+            {/* Image Counter */}
+            {articleImages.length > 1 && (
+              <div className="article__gallery-counter">
+                {currentImageIndex + 1} / {articleImages.length}
+              </div>
+            )}
+
+            {/* Gallery Dots */}
+            {articleImages.length > 1 && (
+              <div className="article__gallery-dots">
+                {articleImages.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`article__gallery-dot ${index === currentImageIndex ? 'article__gallery-dot--active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleGalleryGoTo(index);
+                    }}
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Saved Modal */}
+      <SavedModal
+        isOpen={isSavedModalOpen}
+        onClose={() => setIsSavedModalOpen(false)}
+        itemTitle={article.title}
+        itemType="article"
       />
     </div>
   );

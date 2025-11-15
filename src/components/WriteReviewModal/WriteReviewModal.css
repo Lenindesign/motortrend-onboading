@@ -19,7 +19,7 @@
 }
 
 .write-review-modal {
-  width: 360px;
+  width: 400px;
   height: 100%;
   background-color: var(--color-neutrals-7);
   display: flex;
@@ -264,6 +264,10 @@
   line-height: 1.429em;
   color: var(--color-neutrals-2);
   margin-bottom: var(--spacing-1);
+}
+
+.write-review-modal__section-group:nth-of-type(4) .write-review-modal__field-label {
+  display: none;
 }
 
 /* Main Section Headlines */

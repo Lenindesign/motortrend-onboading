@@ -48,6 +48,7 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
     { label: 'Review System Docs', path: '/docs/review-system' },
     { label: 'Onboarding Docs', path: '/docs/onboarding' },
     { label: 'Profile Docs', path: '/docs/profile' },
+    { label: 'Design System', path: '/design-system' },
   ];
 
   const magazineLinks = [

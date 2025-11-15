@@ -72,6 +72,7 @@ export const RatingProvider: React.FC<RatingProviderProps> = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useRating = (): RatingContextType => {
   const context = useContext(RatingContext);
   if (context === undefined) {

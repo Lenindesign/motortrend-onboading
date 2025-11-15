@@ -106,7 +106,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         // New review - prioritize initialRating prop, then load from context
         // Use initialRating if provided and > 0, otherwise get from context
         let ratingToUse = 0;
-        console.log('WriteReviewModal: Checking initialRating:', initialRating, 'type:', typeof initialRating, 'value:', initialRating, 'isNaN:', isNaN(initialRating as any));
+        console.log('WriteReviewModal: Checking initialRating:', initialRating, 'type:', typeof initialRating, 'value:', initialRating, 'isNaN:', isNaN(Number(initialRating)));
         if (initialRating !== undefined && initialRating !== null && !isNaN(initialRating) && initialRating > 0) {
           ratingToUse = initialRating;
           console.log('WriteReviewModal: Modal opened - Using initialRating:', initialRating);
@@ -127,6 +127,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         console.log('WriteReviewModal: Set rating to', ratingToUse, 'isManualRating:', shouldBeManual);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, vehicleName, getUserRating, isEditMode, existingReview, initialRating]);
 
   // Reset state when modal closes (only if it stays closed)
@@ -536,55 +537,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </div>
             </div>
 
-            {/* Your Experience Section */}
-            <div className="write-review-modal__section-group">
-              <div className="write-review-modal__section-group-header">
-                <h3 className="write-review-modal__section-group-title">Your Experience</h3>
-                <p className="write-review-modal__section-group-subtitle">Tell us about your relationship with this vehicle</p>
-              </div>
-              
-              {/* Vehicle Relationship Section */}
-              <div className="write-review-modal__field">
-                <label className="write-review-modal__field-label">
-                  Your experience with this vehicle
-                </label>
-                <select
-                  className="write-review-modal__select"
-                  value={vehicleRelationship}
-                  onChange={(e) => setVehicleRelationship(e.target.value as VehicleRelationship | '')}
-                >
-                  <option value="">Select experience</option>
-                  <option value="own">I currently own this vehicle</option>
-                  <option value="previously_owned">I previously owned this vehicle</option>
-                  <option value="leased">I leased this vehicle</option>
-                  <option value="rented">I rented this vehicle</option>
-                  <option value="test_drove">I test drove this vehicle</option>
-                  <option value="passenger">I was a passenger</option>
-                </select>
-              </div>
-
-              {/* Experience Duration Section */}
-              {vehicleRelationship && (
-                <div className="write-review-modal__field">
-                  <label className="write-review-modal__field-label">
-                    {vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
-                     vehicleRelationship === 'previously_owned' ? 'How long did you own this vehicle?' :
-                     vehicleRelationship === 'leased' ? 'How long did you lease this vehicle?' :
-                     vehicleRelationship === 'rented' ? 'How long did you rent this vehicle?' :
-                     vehicleRelationship === 'test_drove' ? 'When did you test drive this vehicle?' :
-                     'How long have you experienced this vehicle?'}
-                  </label>
-                  <input
-                    type="text"
-                    className="write-review-modal__input"
-                    placeholder={vehicleRelationship === 'test_drove' ? 'e.g., Last month, 2 weeks ago, January 2025' : 'e.g., 2 years, 6 months, 1 week, 500 miles'}
-                    value={experienceDuration}
-                    onChange={(e) => setExperienceDuration(e.target.value)}
-                  />
-                </div>
-              )}
-            </div>
-
             {/* Review Form */}
             <div className="write-review-modal__section-group">
               <div className="write-review-modal__section-group-header">
@@ -634,6 +586,47 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   rows={4}
                 />
               </div>
+
+              {/* Vehicle Relationship Section - Moved here to be right under Your Review */}
+              <div className="write-review-modal__field">
+                <label className="write-review-modal__field-label">
+                  Your experience with this vehicle
+                </label>
+                <select
+                  className="write-review-modal__select"
+                  value={vehicleRelationship}
+                  onChange={(e) => setVehicleRelationship(e.target.value as VehicleRelationship | '')}
+                >
+                  <option value="">Select experience</option>
+                  <option value="own">I currently own this vehicle</option>
+                  <option value="previously_owned">I previously owned this vehicle</option>
+                  <option value="leased">I leased this vehicle</option>
+                  <option value="rented">I rented this vehicle</option>
+                  <option value="test_drove">I test drove this vehicle</option>
+                  <option value="passenger">I was a passenger</option>
+                </select>
+              </div>
+
+              {/* Experience Duration Section */}
+              {vehicleRelationship && (
+                <div className="write-review-modal__field">
+                  <label className="write-review-modal__field-label">
+                    {vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
+                     vehicleRelationship === 'previously_owned' ? 'How long did you own this vehicle?' :
+                     vehicleRelationship === 'leased' ? 'How long did you lease this vehicle?' :
+                     vehicleRelationship === 'rented' ? 'How long did you rent this vehicle?' :
+                     vehicleRelationship === 'test_drove' ? 'When did you test drive this vehicle?' :
+                     'How long have you experienced this vehicle?'}
+                  </label>
+                  <input
+                    type="text"
+                    className="write-review-modal__input"
+                    placeholder={vehicleRelationship === 'test_drove' ? 'e.g., Last month, 2 weeks ago, January 2025' : 'e.g., 2 years, 6 months, 1 week, 500 miles'}
+                    value={experienceDuration}
+                    onChange={(e) => setExperienceDuration(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Optional Information Section */}
@@ -933,8 +926,15 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         {/* Submit Button */}
         <div className="write-review-modal__footer">
           <button
+            type="button"
             className="write-review-modal__submit-btn"
-            onClick={handleSubmit}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('WriteReviewModal: Submit button clicked');
+              console.log('WriteReviewModal: Current state - rating:', rating, 'title:', reviewTitle, 'content:', reviewContent);
+              handleSubmit();
+            }}
             disabled={rating === 0 || !reviewTitle.trim() || !reviewContent.trim()}
           >
             {isEditMode ? 'Update Review' : 'Submit Your Review'}

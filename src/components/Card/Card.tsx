@@ -117,16 +117,19 @@ export const Card: React.FC<CardProps> = ({
               <>
                 {ratings.map((rating, index) => {
                   const tooltipText = rating.color === '#FFB74D' ? 'MotorTrend Rating' : 'Community Rating (252)';
+                  const isMotorTrendRating = rating.color === '#FFB74D';
                   return (
                     <div key={index} className="card__rating card__rating--with-tooltip">
                       <div className="card__rating-tooltip">
                         {tooltipText}
                       </div>
-                      <img 
-                        src={rating.color === '#FFB74D' ? 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg' : 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg'} 
-                        alt="Star rating" 
-                        className="card__rating-star"
-                      />
+                      {!isMotorTrendRating && (
+                        <img 
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                          alt="Star rating" 
+                          className="card__rating-star"
+                        />
+                      )}
                       <span>{rating.value}</span>
                     </div>
                   );

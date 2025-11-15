@@ -63,6 +63,7 @@ interface UserReviewsProps {
   onWriteReview?: () => void;
   onUpdateReview?: (reviewId: string, updatedReview: ReviewData) => void;
   defaultTab?: 'reviews' | 'comments';
+  activeTab?: 'reviews' | 'comments'; // Controlled active tab
 }
 
 export const UserReviews: React.FC<UserReviewsProps> = ({ 
@@ -74,7 +75,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   reviews,
   onWriteReview,
   onUpdateReview,
-  defaultTab = 'reviews'
+  defaultTab = 'reviews',
+  activeTab: controlledActiveTab
 }) => {
   const [expandedReview, setExpandedReview] = useState<string | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -91,7 +93,18 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const [sortBy, setSortBy] = useState<'best' | 'latest_owners' | 'verified_owners' | 'all'>('best');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
-  const [activeTab, setActiveTab] = useState<'reviews' | 'comments'>(defaultTab);
+  const [internalActiveTab, setInternalActiveTab] = useState<'reviews' | 'comments'>(defaultTab);
+  
+  // Sync internal state when controlledActiveTab changes (allows parent to force tab change)
+  useEffect(() => {
+    if (controlledActiveTab !== undefined) {
+      setInternalActiveTab(controlledActiveTab);
+    }
+  }, [controlledActiveTab]);
+  
+  // Always use internal state (which gets synced when controlledActiveTab changes)
+  const activeTab = internalActiveTab;
+  const setActiveTab = setInternalActiveTab;
   const [comments, setComments] = useState<CommentData[]>([]);
   const [commentText, setCommentText] = useState<string>('');
   const [commentSortBy, setCommentSortBy] = useState<'newest' | 'oldest' | 'most_liked'>('newest');
@@ -566,7 +579,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
       {/* Main Header */}
       <div className="user-reviews__header">
         <h2 className="user-reviews__title">
-          User Reviews
+          Community Feedback
           <div className="user-reviews__info-icon-wrapper">
             <Icon name="info" size={16} className="user-reviews__info-icon" />
             <div className="user-reviews__info-tooltip">

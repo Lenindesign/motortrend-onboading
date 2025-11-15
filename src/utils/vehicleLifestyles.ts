@@ -45,6 +45,13 @@ const vehicleLifestyleMap: Record<string, LifestyleCategory[]> = {
   'maverick': ['Adventure & Off-Road', 'Utility & Work'],
   'silverado': ['Utility & Work', 'Adventure & Off-Road'],
   'ram': ['Utility & Work', 'Adventure & Off-Road'],
+  'tacoma': ['Adventure & Off-Road', 'Utility & Work'],
+  'tundra': ['Utility & Work', 'Adventure & Off-Road'],
+  'frontier': ['Utility & Work', 'Adventure & Off-Road'],
+  'titan': ['Utility & Work', 'Adventure & Off-Road'],
+  'sierra': ['Utility & Work', 'Adventure & Off-Road'],
+  '2500': ['Utility & Work', 'Adventure & Off-Road'],
+  '3500': ['Utility & Work', 'Adventure & Off-Road'],
   'suburban': ['Family & Practical', 'Utility & Work'],
   'wrx': ['Adventure & Off-Road', 'Performance & Enthusiast'],
   'wrx sti': ['Adventure & Off-Road', 'Performance & Enthusiast'],
@@ -100,11 +107,17 @@ const vehicleLifestyleMap: Record<string, LifestyleCategory[]> = {
 export const getVehicleLifestyles = (vehicleName: string): LifestyleCategory[] => {
   // Normalize: lowercase and replace hyphens with spaces for better matching
   const normalizedName = vehicleName.toLowerCase().replace(/-/g, ' ');
+  const normalizedNameWithHyphens = vehicleName.toLowerCase(); // Keep original with hyphens for exact matches
   const lifestyles: Set<LifestyleCategory> = new Set();
   
   // Check each key in the map for matches
+  // First check with hyphens, then without
   for (const [key, categories] of Object.entries(vehicleLifestyleMap)) {
-    if (normalizedName.includes(key)) {
+    const keyWithHyphens = key;
+    const keyWithoutHyphens = key.replace(/-/g, ' ');
+    
+    // Check both normalized versions
+    if (normalizedNameWithHyphens.includes(keyWithHyphens) || normalizedName.includes(keyWithoutHyphens)) {
       categories.forEach(cat => lifestyles.add(cat));
     }
   }

@@ -15,6 +15,7 @@ export interface RatingModalProps {
   currentRating?: number;
   onRateAndReview?: (rating: number) => void;
   onClear?: () => void;
+  hasExistingReview?: boolean; // Whether the user has already written a review
 }
 
 export const RatingModal: React.FC<RatingModalProps> = ({
@@ -24,7 +25,8 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   vehicleName,
   currentRating = 0,
   onRateAndReview,
-  onClear
+  onClear,
+  hasExistingReview = false
 }) => {
   const [selectedRating, setSelectedRating] = useState(currentRating);
   const [hoveredRating, setHoveredRating] = useState(0);
@@ -174,7 +176,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
             onClick={handleRateAndReview}
             disabled={selectedRating === 0}
           >
-            WRITE A REVIEW
+            {hasExistingReview ? 'EDIT YOUR REVIEW' : 'WRITE A REVIEW'}
           </button>
         </div>
       </div>
