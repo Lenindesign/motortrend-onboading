@@ -17,6 +17,7 @@ import { VehicleInventory } from './pages/VehicleInventory';
 import { Home } from './pages/Home';
 import { Article } from './pages/Article';
 import NewCars from './pages/NewCars';
+import RankingsAndAwards from './pages/RankingsAndAwards';
 import Documentation from './pages/Documentation';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
 import ProfileDocumentation from './pages/ProfileDocumentation';
@@ -46,6 +47,9 @@ function App() {
               {/* New Cars Page */}
               <Route path="/new-cars" element={<NewCars />} />
               
+              {/* Rankings & Awards Page */}
+              <Route path="/rankings-awards" element={<RankingsAndAwards />} />
+              
               {/* Onboarding Steps */}
               <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
               <Route path="/onboarding/step2" element={<OnboardingStep2 />} />
@@ -69,6 +73,7 @@ function App() {
               <Route path="/vehicles/:year/:make/:model" element={<VehicleDetails />} />
               
               {/* Article Page */}
+              <Route path="/article/:slug" element={<Article />} />
               <Route path="/articles/:slug" element={<Article />} />
               
               {/* Documentation Pages */}

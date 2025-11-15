@@ -84,6 +84,17 @@
   width: 100%;
 }
 
+.write-review-modal__title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+  position: relative;
+  width: 100%;
+}
+
 .write-review-modal__title {
   font-family: var(--font-heading);
   font-weight: var(--font-weight-bold);
@@ -91,8 +102,89 @@
   line-height: 1.333em;
   color: var(--color-neutrals-1);
   text-align: center;
-  margin-top: var(--spacing-3);
-  margin-bottom: var(--spacing-2);
+  margin: 0;
+}
+
+.write-review-modal__info-icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-left: 4px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+}
+
+.write-review-modal__info-icon-wrapper:hover {
+  background-color: var(--color-neutrals-7);
+}
+
+.write-review-modal__info-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  opacity: 1;
+  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.write-review-modal__info-icon-wrapper:hover .write-review-modal__info-icon {
+  opacity: 0.7;
+}
+
+.write-review-modal__info-tooltip {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--color-neutrals-2);
+  color: var(--color-white);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: normal;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: auto;
+  text-align: left;
+}
+
+.write-review-modal__info-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 16px;
+  border: 6px solid transparent;
+  border-bottom-color: var(--color-neutrals-2);
+}
+
+.write-review-modal__info-icon-wrapper:hover .write-review-modal__info-tooltip,
+.write-review-modal__info-tooltip:hover {
+  opacity: 1;
+  visibility: visible;
+}
+
+.write-review-modal__tooltip-link {
+  color: var(--color-primary-300);
+  text-decoration: underline;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 4px;
+  transition: color var(--transition-fast);
+}
+
+.write-review-modal__tooltip-link:hover {
+  color: var(--color-primary-200);
 }
 
 /* Vehicle Card */

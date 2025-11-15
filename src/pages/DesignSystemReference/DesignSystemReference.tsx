@@ -258,7 +258,7 @@ const DesignSystemReference: React.FC = () => {
               <div className="design-system-reference__color-item">
                 <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-rating-staff)' }} />
                 <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Staff Rating</span>
+                  <span className="design-system-reference__color-name">MotorTrend Rating</span>
                   <span className="design-system-reference__color-value">#FFB74D</span>
                   <code className="design-system-reference__code">--color-rating-staff</code>
                 </div>

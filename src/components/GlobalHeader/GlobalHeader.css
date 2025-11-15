@@ -415,7 +415,7 @@
 
 .global-header__user-avatar-text {
   font-family: var(--font-body);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
   color: #FFFFFF;
   font-style: italic;

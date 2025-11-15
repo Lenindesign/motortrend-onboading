@@ -43,6 +43,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+}
+
+.article-card__image-container:hover .article-card__image {
+  transform: scale(1.03);
 }
 
 .article-card__bookmark-btn {

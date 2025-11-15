@@ -64,7 +64,13 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div className={cardClasses}>
       <div className="card__top-row">
-        <div className="card__image-container">
+        <div 
+          className={`card__image-container ${onAction ? 'card__image-container--clickable' : ''}`}
+          onClick={onAction ? (e) => {
+            e.stopPropagation();
+            onAction();
+          } : undefined}
+        >
           <img src={image} alt={title} className="card__image" />
           {onBookmark && (
             <button 
@@ -75,7 +81,7 @@ export const Card: React.FC<CardProps> = ({
               }}
               aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
             >
-              <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
+              <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={20} />
             </button>
           )}
           {showPlayIcon && (

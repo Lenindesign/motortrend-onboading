@@ -106,7 +106,7 @@
 
 .vehicle-details__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 42px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -276,7 +276,7 @@
 
 .vehicle-details__sticky-vehicle-name {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 20px;
   line-height: 1.2em;
   color: #E0E0E0;
@@ -340,7 +340,7 @@
 .vehicle-details__sticky-rating-value {
   color: #E0E0E0;
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
 }
 
@@ -353,7 +353,7 @@
   border: none;
   border-radius: var(--border-radius-md);
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   color: var(--color-neutrals-8);
   cursor: pointer;
@@ -428,7 +428,7 @@
 .vehicle-details__rating-value {
   color: #E0E0E0;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
 }
 
@@ -544,7 +544,7 @@
 
 .vehicle-details__price-range {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 20px;
   line-height: 1.4em;
   color: var(--color-neutrals-2);
@@ -566,7 +566,7 @@
   border: 1px solid var(--color-neutrals-6);
   border-radius: 8px;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   color: var(--color-neutrals-3);
   cursor: pointer;
@@ -587,7 +587,7 @@
   border: none;
   border-radius: 8px;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   color: var(--color-neutrals-8);
   cursor: pointer;
@@ -638,7 +638,7 @@
 .vehicle-details__pros-header h3,
 .vehicle-details__cons-header h3 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-2);
@@ -674,7 +674,7 @@
 
 .vehicle-details__listings h2 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -690,7 +690,7 @@
 
 .vehicle-details__section-header h2 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -731,7 +731,7 @@
 
 .vehicle-details__listing-price {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   color: var(--color-neutrals-2);
 }
@@ -765,7 +765,7 @@
 
 .vehicle-details__review h2 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -774,7 +774,7 @@
 
 .vehicle-details__review h3 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-2);
@@ -820,7 +820,7 @@
 
 .vehicle-details__motortrend-score h2 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -1059,7 +1059,7 @@
 
 .vehicle-details__review-section-title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -1093,7 +1093,7 @@
 
 .vehicle-details__score-header h3 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-1);
@@ -1142,7 +1142,7 @@
 
 .vehicle-details__score-number {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 42px;
   color: var(--color-white);
   line-height: 1;
@@ -1169,7 +1169,7 @@
 
 .vehicle-details__score-item span:first-child {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   color: var(--color-neutrals-2);
   width: 160px;
@@ -1262,7 +1262,7 @@
 
 .vehicle-details__trims h2 {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -1288,7 +1288,7 @@
   margin-bottom: 8px;
   border-bottom: 1px solid var(--color-neutrals-6);
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   color: var(--color-neutrals-2);
 }
@@ -1314,7 +1314,7 @@
   border: none;
   border-radius: 4px;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   color: var(--color-neutrals-3);
   cursor: pointer;

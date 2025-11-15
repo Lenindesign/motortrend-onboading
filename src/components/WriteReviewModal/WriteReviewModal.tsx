@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useRating } from '../../contexts/RatingContext';
 import { computeOverallRating } from '../../utils/ratingUtils';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
@@ -469,8 +470,31 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         {/* Content */}
         <div className="write-review-modal__content">
           <div className="write-review-modal__main">
-            <div className="write-review-modal__title">
-              {isEditMode ? 'Edit Your Review' : 'Add User Review'}
+            <div className="write-review-modal__title-wrapper">
+              <div className="write-review-modal__title">
+                {isEditMode ? 'Edit Your Review' : 'Add User Review'}
+              </div>
+              {!isEditMode && (
+                <div className="write-review-modal__info-icon-wrapper">
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6918b2a80074bb0002840bac/demography.svg"
+                    alt="Community Guidelines"
+                    className="write-review-modal__info-icon"
+                    onError={(e) => {
+                      console.error('Failed to load community guidelines icon');
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <div className="write-review-modal__info-tooltip">
+                    1–10 Rating Guide<br />
+                    1–2: Poor · 3–4: Below average · 5–6: Average · 7–8: Good · 9–10: Excellent.<br /><br />
+                    Overall ratings reflect factors like review recency, verified ownership, and trust signals — not just simple averages.<br /><br />
+                    <Link to="/article/how-to-rate-vehicles" className="write-review-modal__tooltip-link" onClick={(e) => e.stopPropagation()}>
+                      Read Our Rating Overview
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
             
             {/* Vehicle Selection Card */}

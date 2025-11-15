@@ -72,7 +72,7 @@ const navigationItems = [
       { label: 'New Cars', href: '/new-cars' },
       { label: 'Used Cars', href: '#' },
       { label: 'Car Reviews', href: '#' },
-      { label: 'Rankings & Awards', href: '#' },
+      { label: 'Rankings & Awards', href: '/rankings-awards' },
       { label: 'Compare Vehicles', href: '#' },
       { label: 'EV Hub', href: '#' }
     ]

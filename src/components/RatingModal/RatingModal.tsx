@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './RatingModal.css';
 import Icon from '../Icon';
 
@@ -116,7 +117,28 @@ export const RatingModal: React.FC<RatingModalProps> = ({
                 </span>
               </div>
             </div>
-            <h2 className="rating-modal__title">RATE THIS</h2>
+            <div className="rating-modal__title-wrapper">
+              <h2 className="rating-modal__title">RATE THIS</h2>
+              <div className="rating-modal__info-icon-wrapper">
+                <img 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/6918b2a80074bb0002840bac/demography.svg"
+                  alt="Community Guidelines"
+                  className="rating-modal__info-icon"
+                  onError={(e) => {
+                    console.error('Failed to load community guidelines icon');
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+                <div className="rating-modal__info-tooltip">
+                  1–10 Rating Guide<br />
+                  1–2: Poor · 3–4: Below average · 5–6: Average · 7–8: Good · 9–10: Excellent.<br /><br />
+                  Overall ratings reflect factors like review recency, verified ownership, and trust signals — not just simple averages.<br /><br />
+                  <Link to="/article/how-to-rate-vehicles" className="rating-modal__tooltip-link" onClick={(e) => e.stopPropagation()}>
+                    Read Our Rating Overview
+                  </Link>
+                </div>
+              </div>
+            </div>
             <p className="rating-modal__vehicle-name">{vehicleName}</p>
           </div>
           <button 
