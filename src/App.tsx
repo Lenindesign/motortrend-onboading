@@ -16,9 +16,11 @@ import VehicleDetails from './pages/VehicleDetails';
 import { VehicleInventory } from './pages/VehicleInventory';
 import { Home } from './pages/Home';
 import { Article } from './pages/Article';
+import NewCars from './pages/NewCars';
 import Documentation from './pages/Documentation';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
 import ProfileDocumentation from './pages/ProfileDocumentation';
+import DesignSystemReference from './pages/DesignSystemReference';
 import { RatingProvider } from './contexts/RatingContext';
 import './App.css';
 
@@ -40,6 +42,9 @@ function App() {
               
               {/* Vehicle Inventory */}
               <Route path="/vehicles" element={<VehicleInventory />} />
+              
+              {/* New Cars Page */}
+              <Route path="/new-cars" element={<NewCars />} />
               
               {/* Onboarding Steps */}
               <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
@@ -73,6 +78,8 @@ function App() {
               <Route path="/docs/onboarding" element={<OnboardingDocumentation />} />
               <Route path="/documentation/profile" element={<ProfileDocumentation />} />
               <Route path="/docs/profile" element={<ProfileDocumentation />} />
+              <Route path="/design-system" element={<DesignSystemReference />} />
+              <Route path="/docs/design-system" element={<DesignSystemReference />} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />

@@ -13,7 +13,6 @@ export interface EmptyVehicleSectionProps {
 }
 
 export const EmptyVehicleSection: React.FC<EmptyVehicleSectionProps> = ({
-  type: _type,
   onClick
 }) => {
   const text = "Add Vehicle";

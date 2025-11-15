@@ -87,7 +87,7 @@ Text styles include:
 
 ### Layout
 
-- **Container Max-Width**: 1040px (from design rules)
+- **Container Max-Width**: 1280px
 - **Content Max-Width**: 1280px
 - **Section Spacing**: 32px vertical
 
@@ -266,7 +266,16 @@ The application is ready for:
 
 ---
 
+## 📚 Related Documentation
+
+- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Implementation summary and stats
+- **[CURSOR_DESIGN_SYSTEM_RULES.md](./CURSOR_DESIGN_SYSTEM_RULES.md)** - Design system rules for code generation
+- **[CTA_STANDARDIZATION.md](./CTA_STANDARDIZATION.md)** - CTA/Button system documentation
+- **[DESIGN_TOKEN_QUICK_REFERENCE.md](./DESIGN_TOKEN_QUICK_REFERENCE.md)** - Quick reference for all design tokens
+
+---
+
 **Built with**: React, TypeScript, Vite
 **Design Source**: Figma (via MCP Integration)
-**Last Updated**: October 18, 2025
+**Last Updated**: December 2024
 

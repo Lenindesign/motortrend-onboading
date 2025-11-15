@@ -29,6 +29,73 @@ export const colors = {
   white: '#FFFFFF',
   black: '#000000',
   
+  // Semantic Status Colors
+  semantic: {
+    success: {
+      base: '#34A853',
+      light: '#E8F5E9',
+      dark: '#2E7D32',
+    },
+    warning: {
+      base: '#F59E0B',
+      light: '#FFF3E0',
+      dark: '#D97706',
+    },
+    error: {
+      base: '#EA4335',
+      light: '#FFEBEE',
+      dark: '#C62828',
+    },
+    info: {
+      base: '#186CEA',
+      light: '#E3F2FD',
+      dark: '#1976D2',
+    },
+  },
+  
+  // Rating Colors
+  rating: {
+    motortrend: '#FFB74D',   // MotorTrend rating (orange)
+    community: '#33CCFF',    // Community rating (cyan)
+    staff: '#FFB74D',        // Staff rating (orange)
+  },
+  
+  // State Colors
+  state: {
+    hover: {
+      overlay: 'rgba(0, 0, 0, 0.1)',
+      overlayDark: 'rgba(0, 0, 0, 0.2)',
+    },
+    active: {
+      overlay: 'rgba(0, 0, 0, 0.15)',
+    },
+    disabled: {
+      bg: '#353945',  // neutrals-3
+      text: '#B1B5C3', // neutrals-5
+      opacity: 0.5,
+    },
+  },
+  
+  // Overlay Colors
+  overlay: {
+    light: 'rgba(0, 0, 0, 0.5)',
+    medium: 'rgba(0, 0, 0, 0.7)',
+    dark: 'rgba(0, 0, 0, 0.9)',
+  },
+  
+  // Gradient Overlay Colors
+  gradientOverlay: {
+    start: 'rgba(0, 0, 0, 0.9)',
+    mid: 'rgba(0, 0, 0, 0.7)',
+    end: 'rgba(0, 0, 0, 0)',
+  },
+  
+  // Additional Neutrals (found in components)
+  neutralsExtended: {
+    '2.5': '#282a30',  // Between neutrals-2 and neutrals-3
+    '3.5': '#374151',  // Between neutrals-3 and neutrals-4
+  },
+  
   // Social Brand Colors
   social: {
     google: {

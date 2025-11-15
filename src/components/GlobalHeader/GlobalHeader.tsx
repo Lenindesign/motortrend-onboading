@@ -69,7 +69,7 @@ const navigationItems = [
     label: 'Buy / Research Cars', 
     href: '/vehicles',
     subItems: [
-      { label: 'New Cars', href: '#' },
+      { label: 'New Cars', href: '/new-cars' },
       { label: 'Used Cars', href: '#' },
       { label: 'Car Reviews', href: '#' },
       { label: 'Rankings & Awards', href: '#' },
@@ -442,13 +442,24 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 {activeDropdown === item.label && item.subItems && (
                   <div className="global-header__dropdown">
                     {item.subItems.map((subItem) => (
-                      <a 
-                        key={subItem.label}
-                        href={subItem.href} 
-                        className="global-header__dropdown-item"
-                      >
-                        {subItem.label}
-                      </a>
+                      subItem.href === '#' ? (
+                        <a 
+                          key={subItem.label}
+                          href={subItem.href} 
+                          className="global-header__dropdown-item"
+                        >
+                          {subItem.label}
+                        </a>
+                      ) : (
+                        <Link 
+                          key={subItem.label}
+                          to={subItem.href} 
+                          className="global-header__dropdown-item"
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          {subItem.label}
+                        </Link>
+                      )
                     ))}
                   </div>
                 )}

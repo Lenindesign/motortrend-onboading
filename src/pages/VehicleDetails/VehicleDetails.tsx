@@ -10,6 +10,7 @@ import { UserReviews } from '../../components/UserReviews';
 import { AIInsights } from '../../components/AIInsights';
 import WriteReviewModal from '../../components/WriteReviewModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
+import SavedModal from '../../components/SavedModal';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { generateVehicleReview } from '../../utils/vehicleReviews';
@@ -33,6 +34,7 @@ export const VehicleDetails: React.FC = () => {
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
+  const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
@@ -48,7 +50,9 @@ export const VehicleDetails: React.FC = () => {
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   
   // Parse vehicle name from URL params
-  const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel}`;
+  // Normalize: replace dashes with spaces in model to ensure consistent format
+  // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
+  const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
   
   const getInitialReviews = (): ReviewData[] => {
     // First, load any user-submitted reviews from localStorage
@@ -458,6 +462,18 @@ export const VehicleDetails: React.FC = () => {
         return 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg';
       }
       
+      // Use specific image for 2025 Ford F-150 Lightning
+      const isF150Lightning = (normalizedMake === 'ford' && 
+                              (normalizedModel.includes('f 150 lightning') || 
+                               normalizedModel.includes('f-150 lightning') ||
+                               normalizedModel.includes('f-150-lightning'))) ||
+                              normalizedVehicleName.includes('ford f 150 lightning') ||
+                              normalizedVehicleName.includes('ford f-150 lightning');
+      
+      if (isF150Lightning && decodedYear === '2025') {
+        return 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg';
+      }
+      
       return vehicleImageFor(vehicleName);
     })(),
     pros: reviewData.pros,
@@ -511,6 +527,7 @@ export const VehicleDetails: React.FC = () => {
       setReviews(loadedReviews);
       prevVehicleNameRef.current = vehicleName;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vehicleName]);
 
   // Fetch local listings when vehicle changes
@@ -573,6 +590,8 @@ export const VehicleDetails: React.FC = () => {
             ownership: 'want'
           });
           setIsSaved(true);
+          // Show saved modal
+          setIsSavedModalOpen(true);
         }
       }
 
@@ -795,11 +814,6 @@ export const VehicleDetails: React.FC = () => {
               onClick={handleScrollToStaffRating}
             >
               <span className="vehicle-details__sticky-rating-label">MotorTrend</span>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                alt="MotorTrend Rating Star" 
-                className="vehicle-details__sticky-rating-icon" 
-              />
               <span className="vehicle-details__sticky-rating-value">{vehicleData.staffRating}</span>
             </div>
             <div 
@@ -853,49 +867,55 @@ export const VehicleDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Breadcrumbs and Social Share */}
-      <div className="vehicle-details__top-section">
-        <div className="vehicle-details__breadcrumbs">
-          <Link to="/">Home</Link>
-          <span> / </span>
-          <Link to="/cars">Cars</Link>
-          <span> / </span>
-          <span>{vehicleData.make}</span>
-          <span> / </span>
-          <span>{vehicleData.model}</span>
-          <span> / </span>
-          <span>{vehicleData.year}</span>
-        </div>
-        <div className="vehicle-details__social-share">
-          <button className="vehicle-details__social-btn">
-            <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg" 
-              alt="Facebook" 
-              width={30} 
-              height={30}
-            />
-          </button>
-          <button className="vehicle-details__social-btn">
-            <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg" 
-              alt="X" 
-              width={30} 
-              height={30}
-            />
-          </button>
-        </div>
-      </div>
-
       {/* Content Layout */}
       <div className="vehicle-details__content-layout">
         {/* Left Content */}
         <div className="vehicle-details__left-content">
+          {/* Breadcrumbs, Social Icons, and Save Button */}
+          <div className="vehicle-details__top-section">
+            <div className="vehicle-details__breadcrumbs">
+              <Link to="/">Home</Link>
+              <span> / </span>
+              <Link to="/cars">Cars</Link>
+              <span> / </span>
+              <span>{vehicleData.make}</span>
+              <span> / </span>
+              <span>{vehicleData.model}</span>
+              <span> / </span>
+              <span>{vehicleData.year}</span>
+            </div>
+            <div className="vehicle-details__top-actions">
+              <button className="vehicle-details__social-btn">
+                <img 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg" 
+                  alt="Facebook" 
+                  width={30} 
+                  height={30}
+                />
+              </button>
+              <button className="vehicle-details__social-btn">
+                <img 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg" 
+                  alt="X" 
+                  width={30} 
+                  height={30}
+                />
+              </button>
+              <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
+                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                <span>{isSaved ? 'Saved!' : 'Save'}</span>
+              </button>
+            </div>
+          </div>
+
           {/* Vehicle Title and Year Selection */}
           <div className="vehicle-details__title-section">
-            <h1 className="vehicle-details__title">
-              {vehicleName}
-              <Icon name="keyboard_arrow_down" size={20} />
-            </h1>
+            <div className="vehicle-details__title-row">
+              <h1 className="vehicle-details__title">
+                {vehicleName}
+                <Icon name="keyboard_arrow_down" size={20} />
+              </h1>
+            </div>
             <div className="vehicle-details__year-award-row">
               <div className="vehicle-details__year-selector">
                 {availableYears.map((y) => (
@@ -934,11 +954,6 @@ export const VehicleDetails: React.FC = () => {
               onMouseLeave={handleStaffTooltipMouseLeave}
             >
               <span className="vehicle-details__rating-label">MotorTrend</span>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                alt="MotorTrend Rating Star" 
-                className="vehicle-details__rating-icon staff" 
-              />
               <span className="vehicle-details__rating-value">{vehicleData.staffRating}</span>
               <StaffRatingTooltip
                 overallRating={vehicleData.staffRating}
@@ -1008,10 +1023,6 @@ export const VehicleDetails: React.FC = () => {
           <div className="vehicle-details__hero">
             <div className="vehicle-details__hero-image">
               <img src={vehicleData.image} alt={vehicleName} />
-              <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
-                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
-                <span>{isSaved ? 'Saved!' : 'Save'}</span>
-              </button>
             </div>
           </div>
 
@@ -1171,12 +1182,6 @@ export const VehicleDetails: React.FC = () => {
               <div className="vehicle-details__score-content">
                 <div className="vehicle-details__overall-score">
                   <div className="vehicle-details__score-circle">
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                      alt="Star" 
-                      width={48} 
-                      height={48}
-                    />
                     <span className="vehicle-details__score-number">{vehicleData.staffRating}</span>
                     <span className="vehicle-details__score-label">MotorTrend</span>
                   </div>
@@ -1555,6 +1560,14 @@ export const VehicleDetails: React.FC = () => {
         onClose={handleCloseToast}
         onViewReview={handleViewReview}
         vehicleName={vehicleName}
+      />
+
+      {/* Saved Modal */}
+      <SavedModal
+        isOpen={isSavedModalOpen}
+        onClose={() => setIsSavedModalOpen(false)}
+        itemTitle={vehicleName}
+        itemType="vehicle"
       />
     </div>
   );

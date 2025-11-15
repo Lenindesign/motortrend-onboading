@@ -3,7 +3,7 @@
  * Section with heading and vehicle cards grid
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { VehicleCard } from '../VehicleCard';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { RatingModal } from '../RatingModal';
 import WriteReviewModal from '../WriteReviewModal';
-import type { ReviewData } from '../UserReviews/UserReviews';
+import { getVehicleBodyStyle, type BodyStyleCategory, BODY_STYLE_CATEGORIES } from '../../utils/vehicleBodyStyles';
 import './VehiclesSection.css';
 
 export interface VehicleItem {
@@ -29,11 +29,15 @@ export interface VehiclesSectionProps {
 export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   title,
   vehicles,
-  onShowMore,
-  showMoreVisible = false,
 }) => {
   const navigate = useNavigate();
   const { getUserRating, setUserRating, clearRating } = useRating();
+  
+  // Pagination state - show 6 initially
+  const [vehiclesToShow, setVehiclesToShow] = useState(6);
+  
+  // State for body style filter
+  const [selectedBodyStyle, setSelectedBodyStyle] = useState<BodyStyleCategory | null>(null);
   
   // State for rating modal
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -45,6 +49,28 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   
   // State for bookmarked vehicles
   const [bookmarkedVehicles, setBookmarkedVehicles] = useState<Set<string>>(new Set());
+  
+  // Available body styles - show all body styles
+  const availableBodyStyles = useMemo(() => {
+    // Return all body styles in a preferred order: SUV, Sedan, Truck, Coupe, Hatchback, Convertible, Wagon
+    return BODY_STYLE_CATEGORIES;
+  }, []);
+  
+  // Filter vehicles by selected body style
+  const filteredVehicles = useMemo(() => {
+    if (!selectedBodyStyle) {
+      return vehicles;
+    }
+    return vehicles.filter(vehicle => {
+      const vehicleStyles = getVehicleBodyStyle(vehicle.name);
+      return vehicleStyles.includes(selectedBodyStyle);
+    });
+  }, [vehicles, selectedBodyStyle]);
+
+  // Reset pagination when filter changes
+  useEffect(() => {
+    setVehiclesToShow(6);
+  }, [selectedBodyStyle]);
 
   const handleViewDetails = (vehicleName: string) => {
     const { year, make, model } = parseVehicleName(vehicleName);
@@ -88,7 +114,7 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
     setRatingVehicle('');
   };
   
-  const handleSubmitReview = (_review: ReviewData) => {
+  const handleSubmitReview = () => {
     // Review is saved in the WriteReviewModal component
     setIsWriteReviewModalOpen(false);
     setReviewModalRating(undefined);
@@ -175,9 +201,32 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
 
   return (
     <section className="vehicles-section">
-      <h2 className="vehicles-section__title">{title}</h2>
+      <div className="vehicles-section__header">
+        <h2 className="vehicles-section__title">{title}</h2>
+        {availableBodyStyles.length > 0 && (
+          <div className="vehicles-section__filters">
+            <button
+              className={`vehicles-section__filter-btn ${selectedBodyStyle === null ? 'vehicles-section__filter-btn--active' : ''}`}
+              onClick={() => setSelectedBodyStyle(null)}
+              type="button"
+            >
+              All
+            </button>
+            {availableBodyStyles.map((bodyStyle) => (
+              <button
+                key={bodyStyle}
+                className={`vehicles-section__filter-btn ${selectedBodyStyle === bodyStyle ? 'vehicles-section__filter-btn--active' : ''}`}
+                onClick={() => setSelectedBodyStyle(selectedBodyStyle === bodyStyle ? null : bodyStyle)}
+                type="button"
+              >
+                {bodyStyle === 'Truck' ? 'Trucks' : bodyStyle === 'Sedan' ? 'Sedans' : bodyStyle === 'SUV' ? 'SUVs' : bodyStyle === 'Coupe' ? 'Coupes' : bodyStyle === 'Hatchback' ? 'Hatchbacks' : bodyStyle === 'Convertible' ? 'Convertibles' : bodyStyle === 'Wagon' ? 'Wagons' : bodyStyle}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       <div className="vehicles-section__grid">
-        {vehicles.map((vehicle) => {
+        {filteredVehicles.slice(0, vehiclesToShow).map((vehicle) => {
           const staffRating = generateStaffRating(vehicle.name);
           const communityRating = generateCommunityRating(vehicle.name);
           const userRating = getUserRating(vehicle.name);
@@ -200,18 +249,31 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
           );
         })}
       </div>
-      {showMoreVisible && onShowMore && (
-        <div className="vehicles-section__show-more">
+      {filteredVehicles.length > vehiclesToShow && (
+        <div className="vehicles-section__display-more">
           <button
-            className="vehicles-section__show-more-btn"
-            onClick={onShowMore}
+            className="vehicles-section__display-more-btn"
+            onClick={() => setVehiclesToShow(prev => prev + 6)}
             type="button"
-            aria-label="Show more vehicles"
+            aria-label="Display more vehicles"
           >
-            <span>Show More</span>
-            <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-              expand_more
-            </span>
+            <span>Display More</span>
+            <svg
+              className="vehicles-section__display-more-chevron"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 7.5L10 12.5L15 7.5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
         </div>
       )}

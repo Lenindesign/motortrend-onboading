@@ -15,6 +15,7 @@ import Icon from '../../components/Icon';
 import RatingModal from '../../components/RatingModal';
 import WriteReviewModal from '../../components/WriteReviewModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
+import SavedModal from '../../components/SavedModal';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
 import './VehicleInventory.css';
@@ -129,6 +130,8 @@ export const VehicleInventory: React.FC = () => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
   const [savedVehicles, setSavedVehicles] = useState<Set<string>>(new Set());
+  const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
+  const [savedVehicleName, setSavedVehicleName] = useState<string>('');
   const { getUserRating, setUserRating } = useRating();
   
   // Use a ref to persist the vehicle name even if state is cleared
@@ -717,6 +720,12 @@ export const VehicleInventory: React.FC = () => {
 
     // Merge with existing vehicles in localStorage (don't overwrite)
     handleBookmarkChange(vehicleName, newBookmarkState);
+    
+    // Show saved modal only when saving (not when unsaving)
+    if (newBookmarkState) {
+      setSavedVehicleName(vehicleName);
+      setIsSavedModalOpen(true);
+    }
   };
 
   return (
@@ -760,7 +769,7 @@ export const VehicleInventory: React.FC = () => {
                         <span>{savedVehicles.has(vehicle.name) ? 'Saved!' : 'Save'}</span>
                       </button>
                       
-                      {/* Vehicle Name and Ratings - Bottom Left */}
+                      {/* Vehicle Name and Ratings Box */}
                       <div className="vehicle-inventory__hero-info-box">
                         <h2 className="vehicle-inventory__hero-name">{vehicle.name}</h2>
                         <div className="vehicle-inventory__hero-ratings-list">
@@ -817,6 +826,15 @@ export const VehicleInventory: React.FC = () => {
                             </div>
                           )}
                         </div>
+                        <button 
+                          className="vehicle-inventory__hero-listing-btn cta cta--primary cta--default"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleVehicleClick(vehicle);
+                          }}
+                        >
+                          See Local Listings
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1163,7 +1181,8 @@ export const VehicleInventory: React.FC = () => {
           // 2. From the ref (most reliable, persists even if state is cleared)
           // 3. From state
           // 4. From reviewedVehicleName
-          const vehicleNameFromReview = (review as any)._vehicleName;
+          const reviewWithVehicleName = review as ReviewData & { _vehicleName?: string };
+          const vehicleNameFromReview = reviewWithVehicleName._vehicleName;
           const vehicleNameFromRef = ratingVehicleRef.current;
           const vehicleNameFromState = ratingVehicle;
           const vehicleNameFromProp = ratingVehicle; // This is the prop passed to WriteReviewModal
@@ -1186,7 +1205,8 @@ export const VehicleInventory: React.FC = () => {
             // Mark that we're submitting to prevent handleCloseWriteReviewModal from clearing state
             setIsSubmittingReview(true);
             // Remove the _vehicleName from review before passing to handleSubmitReview
-            const { _vehicleName, ...cleanReview } = review as any;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _vehicleName, ...cleanReview } = reviewWithVehicleName;
             // Call handleSubmitReview with the captured vehicle name
             handleSubmitReview(cleanReview);
           } else {
@@ -1208,6 +1228,14 @@ export const VehicleInventory: React.FC = () => {
         onClose={handleCloseToast}
         onViewReview={handleViewReview}
         vehicleName={reviewedVehicleName || ratingVehicle || ''}
+      />
+
+      {/* Saved Modal */}
+      <SavedModal
+        isOpen={isSavedModalOpen}
+        onClose={() => setIsSavedModalOpen(false)}
+        itemTitle={savedVehicleName}
+        itemType="vehicle"
       />
     </div>
   );

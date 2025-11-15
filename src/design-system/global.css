@@ -27,6 +27,47 @@
   --color-white: #FFFFFF;
   --color-black: #000000;
   
+  /* Colors - Semantic Status */
+  --color-semantic-success: #34A853;
+  --color-semantic-success-light: #E8F5E9;
+  --color-semantic-success-dark: #2E7D32;
+  --color-semantic-warning: #F59E0B;
+  --color-semantic-warning-light: #FFF3E0;
+  --color-semantic-warning-dark: #D97706;
+  --color-semantic-error: #EA4335;
+  --color-semantic-error-light: #FFEBEE;
+  --color-semantic-error-dark: #C62828;
+  --color-semantic-info: #186CEA;
+  --color-semantic-info-light: #E3F2FD;
+  --color-semantic-info-dark: #1976D2;
+  
+  /* Colors - Rating */
+  --color-rating-motortrend: #FFB74D;
+  --color-rating-community: #33CCFF;
+  --color-rating-staff: #FFB74D;
+  
+  /* Colors - State */
+  --color-hover-overlay: rgba(0, 0, 0, 0.1);
+  --color-hover-overlay-dark: rgba(0, 0, 0, 0.2);
+  --color-active-overlay: rgba(0, 0, 0, 0.15);
+  --color-disabled-bg: var(--color-neutrals-3);
+  --color-disabled-text: var(--color-neutrals-5);
+  --color-disabled-opacity: 0.5;
+  
+  /* Colors - Overlay */
+  --color-overlay-light: rgba(0, 0, 0, 0.5);
+  --color-overlay-medium: rgba(0, 0, 0, 0.7);
+  --color-overlay-dark: rgba(0, 0, 0, 0.9);
+  
+  /* Colors - Gradient Overlay */
+  --color-gradient-overlay-start: rgba(0, 0, 0, 0.9);
+  --color-gradient-overlay-mid: rgba(0, 0, 0, 0.7);
+  --color-gradient-overlay-end: rgba(0, 0, 0, 0);
+  
+  /* Colors - Additional Neutrals */
+  --color-neutrals-2-5: #282a30;
+  --color-neutrals-3-5: #374151;
+  
   /* Typography - Font Families */
   --font-heading: 'Poppins', sans-serif;
   --font-body: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -34,9 +75,9 @@
   /* Typography - Font Weights */
   --font-weight-regular: 400;
   --font-weight-medium: 600;
-  --font-weight-bold: 600;
+  --font-weight-bold: 700;
   
-  /* Spacing */
+  /* Spacing - Base */
   --spacing-0: 0px;
   --spacing-1: 8px;
   --spacing-2: 16px;
@@ -45,6 +86,50 @@
   --spacing-5: 40px;
   --spacing-6: 48px;
   
+  /* Spacing - Component Padding */
+  --spacing-component-xs: 4px;
+  --spacing-component-sm: 8px;
+  --spacing-component-md: 12px;
+  --spacing-component-lg: 16px;
+  --spacing-component-xl: 24px;
+  --spacing-component-xxl: 32px;
+  
+  /* Spacing - Component Gap */
+  --spacing-gap-xs: 4px;
+  --spacing-gap-sm: 8px;
+  --spacing-gap-md: 12px;
+  --spacing-gap-lg: 16px;
+  --spacing-gap-xl: 24px;
+  --spacing-gap-xxl: 32px;
+  
+  /* Spacing - Button Padding */
+  --spacing-button-xs: 6px 12px;
+  --spacing-button-sm: 8px 16px;
+  --spacing-button-md: 12px 24px;
+  --spacing-button-lg: 16px 32px;
+  
+  /* Spacing - Card Padding */
+  --spacing-card-xs: 8px;
+  --spacing-card-sm: 12px;
+  --spacing-card-md: 16px;
+  --spacing-card-lg: 24px;
+  --spacing-card-xl: 32px;
+  
+  /* Spacing - Modal */
+  --spacing-modal-xs: 16px;
+  --spacing-modal-sm: 20px;
+  --spacing-modal-md: 24px;
+  --spacing-modal-lg: 32px;
+  --spacing-modal-xl: 40px;
+  
+  /* Spacing - Grid */
+  --spacing-grid-xs: 8px;
+  --spacing-grid-sm: 12px;
+  --spacing-grid-md: 16px;
+  --spacing-grid-lg: 24px;
+  --spacing-grid-xl: 32px;
+  --spacing-grid-xxl: 48px;
+  
   /* Effects - Border Radius */
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
@@ -52,8 +137,30 @@
   --border-radius-full: 100px;
   --border-radius-circle: 400px;
   
-  /* Effects - Shadows */
+  /* Effects - Shadows (Depth System) */
+  --shadow-depth-0: none;
+  --shadow-depth-1: 0px 1px 2px 0px rgba(20, 20, 22, 0.05);
+  --shadow-depth-2: 0px 2px 4px 0px rgba(20, 20, 22, 0.08);
+  --shadow-depth-3: 0px 4px 8px 0px rgba(20, 20, 22, 0.1);
+  --shadow-depth-4: 0px 4px 12px 0px rgba(20, 20, 22, 0.12);
   --shadow-depth-5: 0px 4px 20px 0px rgba(20, 20, 22, 0.06);
+  --shadow-depth-6: 0px 8px 24px 0px rgba(20, 20, 22, 0.15);
+  --shadow-depth-7: 0px 12px 32px 0px rgba(20, 20, 22, 0.2);
+  
+  /* Effects - Component Shadows */
+  --shadow-card: 0px 4px 8px 0px rgba(20, 20, 22, 0.1);
+  --shadow-card-hover: 0px 4px 12px 0px rgba(20, 20, 22, 0.12);
+  --shadow-button: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-button-hover: 0 4px 8px rgba(233, 12, 23, 0.3);
+  --shadow-button-primary: 0 2px 4px rgba(233, 12, 23, 0.2);
+  --shadow-modal: 0 24px 48px rgba(0, 0, 0, 0.3);
+  --shadow-modal-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+  --shadow-dropdown: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  
+  /* Effects - Text Shadows */
+  --shadow-text-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-text-md: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-text-lg: 0 4px 8px rgba(0, 0, 0, 0.6);
   
   /* Effects - Transitions */
   --transition-fast: 150ms ease-in-out;

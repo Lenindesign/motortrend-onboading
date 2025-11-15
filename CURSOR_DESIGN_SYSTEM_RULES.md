@@ -83,7 +83,7 @@ font-family: Arial, sans-serif;
 /* ✅ CORRECT */
 font-weight: var(--font-weight-regular);  /* 400 */
 font-weight: var(--font-weight-medium);   /* 600 */
-font-weight: var(--font-weight-bold);      /* 600 */
+font-weight: var(--font-weight-bold);      /* 700 */
 
 /* ❌ WRONG */
 font-weight: 400;
@@ -511,8 +511,18 @@ When in doubt, reference these files:
 
 ---
 
+## 📚 Related Documentation
+
+- **[FIGMA_INTEGRATION.md](./FIGMA_INTEGRATION.md)** - Figma integration guide
+- **[CTA_STANDARDIZATION.md](./CTA_STANDARDIZATION.md)** - CTA/Button system documentation
+- **[DESIGN_TOKEN_QUICK_REFERENCE.md](./DESIGN_TOKEN_QUICK_REFERENCE.md)** - Quick reference for all tokens
+- **[DESIGN_SYSTEM_ENHANCEMENTS.md](./DESIGN_SYSTEM_ENHANCEMENTS.md)** - Enhancement recommendations
+- **[DESIGN_SYSTEM_SUMMARY.md](./DESIGN_SYSTEM_SUMMARY.md)** - Executive summary
+
+---
+
 **Document Version:** 1.0  
-**Last Updated:** November 9, 2025  
+**Last Updated:** December 2024  
 **Maintained By:** Design System Team
 
 

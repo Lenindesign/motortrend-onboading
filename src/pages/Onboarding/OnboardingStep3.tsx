@@ -12,7 +12,10 @@ import VehicleCard from '../../components/VehicleCard';
 import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import RatingModal from '../../components/RatingModal';
+import WriteReviewModal from '../../components/WriteReviewModal';
+import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import { useRating } from '../../contexts/RatingContext';
+import type { ReviewData } from '../../components/UserReviews';
 
 // Vehicle list handled by VehicleSearch
 
@@ -36,6 +39,10 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
     vehicleName: '',
     currentRating: 0
   });
+  const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
+  const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
+  const [reviewVehicleName, setReviewVehicleName] = useState<string>('');
+  const [isToastVisible, setIsToastVisible] = useState(false);
   const { getUserRating, setUserRating } = useRating();
 
   // VehicleSearch handles filtering and dropdown behavior
@@ -84,17 +91,17 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
 
   const handleRateAndReview = (rating: number) => {
     // Submit the rating first
-    setUserRating(ratingModal.vehicleName, rating);
+    const vehicleName = ratingModal.vehicleName;
+    setUserRating(vehicleName, rating);
+    // Store the rating and vehicle name to pass to write review modal
+    setReviewModalRating(rating);
+    setReviewVehicleName(vehicleName);
+    // Close rating modal and open write review modal
     setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
-    
-    // Navigate to vehicle details page where they can write a review
-    try {
-      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
-      navigate(`/vehicles/${year}/${make}/${model}`);
-    } catch (error) {
-      console.error('Error parsing vehicle name:', error);
-      // If parsing fails, just stay on current page
-    }
+    // Use a small delay to ensure state is updated
+    setTimeout(() => {
+      setIsWriteReviewModalOpen(true);
+    }, 50);
   };
 
   const handleRatingModalClose = () => {
@@ -259,6 +266,77 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
         vehicleName={ratingModal.vehicleName}
         currentRating={ratingModal.currentRating}
         onRateAndReview={handleRateAndReview}
+      />
+
+      {/* Write Review Modal */}
+      <WriteReviewModal
+        key={`${reviewVehicleName}-write-review`}
+        isOpen={isWriteReviewModalOpen}
+        onClose={() => {
+          setIsWriteReviewModalOpen(false);
+          setReviewModalRating(undefined);
+          setReviewVehicleName('');
+        }}
+        vehicleName={reviewVehicleName}
+        vehicleImage={reviewVehicleName ? vehicleImageFor(reviewVehicleName) : undefined}
+        initialRating={reviewModalRating}
+        onSubmit={(review) => {
+          console.log('OnboardingStep3: Review submitted:', review);
+          // Save review to localStorage
+          try {
+            const reviewWithVehicleName = review as ReviewData & { _vehicleName?: string };
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { _vehicleName, ...cleanReview } = reviewWithVehicleName;
+            const reviewWithPreviews: ReviewData = {
+              ...cleanReview,
+              mediaPreviews: cleanReview.mediaFiles?.map((file: File) => URL.createObjectURL(file)) || []
+            };
+            
+            const savedReviewsKey = `vehicleReviews_${reviewVehicleName}`;
+            const savedReviewsJson = localStorage.getItem(savedReviewsKey);
+            const savedReviews: ReviewData[] = savedReviewsJson ? JSON.parse(savedReviewsJson) : [];
+            
+            const updatedReviews = [reviewWithPreviews, ...savedReviews];
+            const reviewsToSave = updatedReviews.map(r => ({
+              ...r,
+              mediaFiles: undefined,
+              mediaPreviews: r.mediaPreviews || []
+            }));
+            
+            localStorage.setItem(savedReviewsKey, JSON.stringify(reviewsToSave));
+            console.log('OnboardingStep3: Review saved successfully');
+            
+            // Close modal and show success toast
+            setIsWriteReviewModalOpen(false);
+            setTimeout(() => {
+              setIsToastVisible(true);
+            }, 300);
+          } catch (error) {
+            console.error('OnboardingStep3: Error saving review:', error);
+            alert('Failed to save review. Please try again.');
+          }
+        }}
+      />
+
+      {/* Review Submitted Modal */}
+      <ReviewSubmittedToast
+        isVisible={isToastVisible}
+        onClose={() => {
+          setIsToastVisible(false);
+          setReviewVehicleName('');
+        }}
+        onViewReview={() => {
+          setIsToastVisible(false);
+          // Optionally navigate to vehicle details page
+          try {
+            const { year, make, model } = parseVehicleName(reviewVehicleName);
+            navigate(`/vehicles/${year}/${make}/${model}`);
+            setReviewVehicleName('');
+          } catch (error) {
+            console.error('Error parsing vehicle name:', error);
+          }
+        }}
+        vehicleName={reviewVehicleName}
       />
     </div>
   );
