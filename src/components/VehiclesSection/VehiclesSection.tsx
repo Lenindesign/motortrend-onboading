@@ -56,61 +56,54 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
     return BODY_STYLE_CATEGORIES;
   }, []);
   
-  // Load onboarding vehicles data
-  const onboardingVehicles = useMemo(() => {
+  // Get user's "want" vehicles from onboarding
+  const wantedVehicles = useMemo(() => {
     try {
       const onboardingData = localStorage.getItem('onboardingData');
-      if (!onboardingData) return [];
+      if (!onboardingData) return new Set<string>();
       
       const data = JSON.parse(onboardingData);
-      if (!data.vehicles || !Array.isArray(data.vehicles)) return [];
+      if (!data.vehicles || !Array.isArray(data.vehicles)) return new Set<string>();
       
-      return data.vehicles as Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
+      const wanted = new Set<string>();
+      data.vehicles.forEach((v: { name: string; ownership: 'own' | 'want' }) => {
+        if (v.ownership === 'want') {
+          wanted.add(v.name);
+        }
+      });
+      
+      return wanted;
     } catch (error) {
-      console.error('Error loading onboarding vehicles:', error);
-      return [];
+      console.error('Error loading wanted vehicles:', error);
+      return new Set<string>();
     }
   }, []);
 
-  // Create a map of vehicle names to their ownership status for quick lookup
-  const vehicleOwnershipMap = useMemo(() => {
-    const map = new Map<string, 'own' | 'want'>();
-    onboardingVehicles.forEach(v => {
-      map.set(v.name, v.ownership);
-    });
-    return map;
-  }, [onboardingVehicles]);
-
-  // Sort and filter vehicles: prioritize onboarding vehicles first, then others
-  const sortedVehicles = useMemo(() => {
-    const onboardingVehicleNames = new Set(onboardingVehicles.map(v => v.name));
-    
-    // Separate onboarding vehicles from other vehicles
-    const fromOnboarding: VehicleItem[] = [];
-    const others: VehicleItem[] = [];
-    
-    vehicles.forEach(vehicle => {
-      if (onboardingVehicleNames.has(vehicle.name)) {
-        fromOnboarding.push(vehicle);
-      } else {
-        others.push(vehicle);
-      }
-    });
-    
-    // Combine: onboarding vehicles first, then others
-    return [...fromOnboarding, ...others];
-  }, [vehicles, onboardingVehicles]);
-
-  // Filter vehicles by selected body style
+  // Filter and sort vehicles - wanted vehicles first, then body style filter
   const filteredVehicles = useMemo(() => {
-    if (!selectedBodyStyle) {
-      return sortedVehicles;
+    let filtered = vehicles;
+    
+    // Apply body style filter if selected
+    if (selectedBodyStyle) {
+      filtered = vehicles.filter(vehicle => {
+        const vehicleStyles = getVehicleBodyStyle(vehicle.name);
+        return vehicleStyles.includes(selectedBodyStyle);
+      });
     }
-    return sortedVehicles.filter(vehicle => {
-      const vehicleStyles = getVehicleBodyStyle(vehicle.name);
-      return vehicleStyles.includes(selectedBodyStyle);
+    
+    // Sort to prioritize "want" vehicles from onboarding
+    return [...filtered].sort((a, b) => {
+      const aIsWanted = wantedVehicles.has(a.name);
+      const bIsWanted = wantedVehicles.has(b.name);
+      
+      // Wanted vehicles come first
+      if (aIsWanted && !bIsWanted) return -1;
+      if (!aIsWanted && bIsWanted) return 1;
+      
+      // Otherwise maintain original order
+      return 0;
     });
-  }, [sortedVehicles, selectedBodyStyle]);
+  }, [vehicles, selectedBodyStyle, wantedVehicles]);
 
   // Reset pagination when filter changes
   useEffect(() => {
@@ -275,7 +268,6 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
           const staffRating = generateStaffRating(vehicle.name);
           const communityRating = generateCommunityRating(vehicle.name);
           const userRating = getUserRating(vehicle.name);
-          const ownership = vehicleOwnershipMap.get(vehicle.name);
           
           return (
             <VehicleCard
@@ -291,7 +283,6 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
               onViewDetails={() => handleViewDetails(vehicle.name)}
               onRate={() => handleRate(vehicle.name)}
               userRating={userRating}
-              ownership={ownership}
             />
           );
         })}
