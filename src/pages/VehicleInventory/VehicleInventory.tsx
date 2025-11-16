@@ -18,50 +18,8 @@ import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
+import { carDatabase } from '../../utils/vehicleDatabase';
 import './VehicleInventory.css';
-
-// Import vehicle database from VehicleSearch
-const carDatabase = [
-  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2025 Subaru WRX',
-  '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic',
-  '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry',
-  '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang',
-  '2021 Tesla Model 3', '2022 Tesla Model 3', '2023 Tesla Model 3', '2024 Tesla Model 3',
-  '2020 BMW 3 Series', '2021 BMW 3 Series', '2022 BMW 3 Series', '2023 BMW 3 Series', '2024 BMW 3 Series',
-  '2019 Audi A4', '2020 Audi A4', '2021 Audi A4', '2022 Audi A4', '2023 Audi A4', '2024 Audi A4',
-  '2020 Mercedes C-Class', '2021 Mercedes C-Class', '2022 Mercedes C-Class', '2023 Mercedes C-Class', '2024 Mercedes C-Class',
-  '2021 Nissan Altima', '2022 Nissan Altima', '2023 Nissan Altima', '2024 Nissan Altima',
-  '2020 Chevrolet Camaro', '2021 Chevrolet Camaro', '2022 Chevrolet Camaro', '2023 Chevrolet Camaro', '2024 Chevrolet Camaro',
-  '2021 Dodge Challenger', '2022 Dodge Challenger', '2023 Dodge Challenger', '2024 Dodge Challenger',
-  '2020 Lexus IS', '2021 Lexus IS', '2022 Lexus IS', '2023 Lexus IS', '2024 Lexus IS',
-  '2021 Infiniti Q50', '2022 Infiniti Q50', '2023 Infiniti Q50', '2024 Infiniti Q50',
-  '2020 Acura TLX', '2021 Acura TLX', '2022 Acura TLX', '2023 Acura TLX', '2024 Acura TLX',
-  '2021 Genesis G70', '2022 Genesis G70', '2023 Genesis G70', '2024 Genesis G70',
-  '2020 Volvo S60', '2021 Volvo S60', '2022 Volvo S60', '2023 Volvo S60', '2024 Volvo S60',
-  '2021 Cadillac CT4', '2022 Cadillac CT4', '2023 Cadillac CT4', '2024 Cadillac CT4',
-  '2020 Jaguar XE', '2021 Jaguar XE', '2022 Jaguar XE', '2023 Jaguar XE', '2024 Jaguar XE',
-  '2021 Alfa Romeo Giulia', '2022 Alfa Romeo Giulia', '2023 Alfa Romeo Giulia', '2024 Alfa Romeo Giulia',
-  '2020 Kia Stinger', '2021 Kia Stinger', '2022 Kia Stinger', '2023 Kia Stinger', '2024 Kia Stinger',
-  '2021 Hyundai Sonata', '2022 Hyundai Sonata', '2023 Hyundai Sonata', '2024 Hyundai Sonata',
-  '2020 Mazda6', '2021 Mazda6', '2022 Mazda6', '2023 Mazda6', '2024 Mazda6',
-  '2020 Subaru Legacy', '2021 Subaru Legacy', '2022 Subaru Legacy', '2023 Subaru Legacy', '2024 Subaru Legacy',
-  '2020 Subaru Impreza', '2021 Subaru Impreza', '2022 Subaru Impreza', '2023 Subaru Impreza', '2024 Subaru Impreza',
-  '2020 Subaru Outback', '2021 Subaru Outback', '2022 Subaru Outback', '2023 Subaru Outback', '2024 Subaru Outback',
-  '2020 Subaru Forester', '2021 Subaru Forester', '2022 Subaru Forester', '2023 Subaru Forester', '2024 Subaru Forester',
-  '2020 Subaru Ascent', '2021 Subaru Ascent', '2022 Subaru Ascent', '2023 Subaru Ascent', '2024 Subaru Ascent',
-  '2020 Subaru Crosstrek', '2021 Subaru Crosstrek', '2022 Subaru Crosstrek', '2023 Subaru Crosstrek', '2024 Subaru Crosstrek',
-  '2020 Subaru BRZ', '2021 Subaru BRZ', '2022 Subaru BRZ', '2023 Subaru BRZ', '2024 Subaru BRZ',
-  '2020 Subaru WRX STI', '2021 Subaru WRX STI', '2022 Subaru WRX STI', '2023 Subaru WRX STI', '2024 Subaru WRX STI',
-  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150', '2025 Ford F-150', '2026 Ford F-150',
-  '2020 Ford Explorer', '2021 Ford Explorer', '2022 Ford Explorer', '2023 Ford Explorer', '2024 Ford Explorer',
-  '2020 Ford Escape', '2021 Ford Escape', '2022 Ford Escape', '2023 Ford Escape', '2024 Ford Escape',
-  '2020 Ford Edge', '2021 Ford Edge', '2022 Ford Edge', '2023 Ford Edge', '2024 Ford Edge',
-  '2020 Ford Bronco', '2021 Ford Bronco', '2022 Ford Bronco', '2023 Ford Bronco', '2024 Ford Bronco',
-  '2020 Ford Bronco Sport', '2021 Ford Bronco Sport', '2022 Ford Bronco Sport', '2023 Ford Bronco Sport', '2024 Ford Bronco Sport',
-  '2020 Ford Ranger', '2021 Ford Ranger', '2022 Ford Ranger', '2023 Ford Ranger', '2024 Ford Ranger',
-  '2020 Ford Maverick', '2021 Ford Maverick', '2022 Ford Maverick', '2023 Ford Maverick', '2024 Ford Maverick',
-  '2020 Chevrolet Silverado', '2021 Chevrolet Silverado', '2022 Chevrolet Silverado', '2023 Chevrolet Silverado', '2024 Chevrolet Silverado',
-];
 
 interface Vehicle {
   id: string;
@@ -433,25 +391,28 @@ export const VehicleInventory: React.FC = () => {
   }, [vehicles, sortBy, sortOrder, selectedLifestyle, selectedPriceRange, selectedBodyStyle, selectedMake, selectedYear, selectedModel]);
 
   // Get latest 5 vehicles for hero slider based on filtered/sorted vehicles
-  // When userType is "buyer" or "enthusiast", show first 5 from filtered results (already sorted by latest)
-  // When userType is "both" or no filter, show latest 5 overall
-  // Priority: Vehicles from onboarding step 3 are shown first, then fill remaining slots
+  // Priority: Show vehicles marked as "want" from onboarding step 3 first, then fill remaining slots
   const latestVehicles = useMemo(() => {
-    // Get vehicles from onboarding step 3
-    let onboardingVehicles: Vehicle[] = [];
+    // Get "want" vehicles from onboarding step 3 (vehicles Paola might want to buy)
+    let onboardingWantVehicles: Vehicle[] = [];
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       if (onboardingData) {
         const data = JSON.parse(onboardingData);
         if (data.vehicles && Array.isArray(data.vehicles) && data.vehicles.length > 0) {
-          // Find matching vehicles from the vehicles array
-          const onboardingVehicleNames = data.vehicles.map((v: { name: string }) => v.name.trim().toLowerCase());
-          onboardingVehicles = vehicles.filter(v => 
-            onboardingVehicleNames.includes(v.name.trim().toLowerCase())
+          // Filter for only "want" vehicles (vehicles user wants to buy)
+          const wantVehicles = data.vehicles.filter((v: { name: string; ownership?: string }) => 
+            v.ownership === 'want'
           );
           
-          // Sort onboarding vehicles by latest (newest first)
-          onboardingVehicles.sort((a, b) => {
+          // Find matching vehicles from the vehicles array
+          const wantVehicleNames = wantVehicles.map((v: { name: string }) => v.name.trim().toLowerCase());
+          onboardingWantVehicles = vehicles.filter(v => 
+            wantVehicleNames.includes(v.name.trim().toLowerCase())
+          );
+          
+          // Sort "want" vehicles by latest (newest first)
+          onboardingWantVehicles.sort((a, b) => {
             const dateA = a.createdDate?.getTime() || 0;
             const dateB = b.createdDate?.getTime() || 0;
             return dateB - dateA; // Newest first
@@ -459,7 +420,7 @@ export const VehicleInventory: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Error loading onboarding vehicles:', error);
+      console.error('Error loading onboarding want vehicles:', error);
     }
     
     // Get base vehicles to fill remaining slots
@@ -477,14 +438,15 @@ export const VehicleInventory: React.FC = () => {
       });
     }
     
-    // Remove onboarding vehicles from base vehicles to avoid duplicates
-    const onboardingVehicleNames = onboardingVehicles.map(v => v.name.trim().toLowerCase());
+    // Remove "want" vehicles from base vehicles to avoid duplicates
+    const wantVehicleNames = onboardingWantVehicles.map(v => v.name.trim().toLowerCase());
     const remainingVehicles = baseVehicles.filter(v => 
-      !onboardingVehicleNames.includes(v.name.trim().toLowerCase())
+      !wantVehicleNames.includes(v.name.trim().toLowerCase())
     );
     
-    // Combine: onboarding vehicles first, then remaining vehicles
-    const combined = [...onboardingVehicles, ...remainingVehicles];
+    // Combine: "want" vehicles from onboarding first (vehicles Paola wants to buy), 
+    // then remaining vehicles to fill up to 5 slots
+    const combined = [...onboardingWantVehicles, ...remainingVehicles];
     
     // Return first 5 vehicles
     return combined.slice(0, 5);
