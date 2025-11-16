@@ -6,6 +6,18 @@
   padding: 0;
 }
 
+@media (max-width: 1279px) {
+  .documentation-page {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .documentation-page {
+    padding: 0 16px;
+  }
+}
+
 .documentation-sidebar {
   position: fixed;
   left: 0;

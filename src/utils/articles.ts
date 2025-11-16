@@ -2415,17 +2415,18 @@ export const articles: Record<string, Article> = {
     author: "MotorTrend Editorial",
     date: "Jan 20, 2025",
     category: "Buying Guide",
-    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/65a4af586546d00008141235/14-2024-bmw-3-series-m340i-front-view.jpg",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/67a3d02ac7bd440008c7f0a4/1-2025-rolls-royce-ghost-series-ii-front-view.jpg",
     images: [
-      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4af586546d00008141235/14-2024-bmw-3-series-m340i-front-view.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/65a43bc96caf0900080f42f8/11-2024-audi-a4-front-view.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/65f7f488e7e84a0008f4cb9b/004-2024-acura-tlx-type-s-front-three-quarter-motion.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/668464035740700008c1afa8/001-2024-infiniti-q50s-lead.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/65dc54cc62068d0008877498/2020-jaguar-xe-p300-side-in-motion.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/68e5863676e22400025001a9/2026teslamodelystandardrwdsuvevelectricvehiclecrossover-12.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4afb2dc885a0008363a5d/5-2024-bmw-x7-xdrive-40i-front-view.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4c632544c890008b841da/5-2024-ford-explorer-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67a3d02ac7bd440008c7f0a4/1-2025-rolls-royce-ghost-series-ii-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67410775c7ff710008ffe3a2/003-2025-bentley-flying-spur-speed.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65cac22af4583e00080caa77/2019-cadillac-ct6-v-sport-front-three-quarter-0.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dc492c38582c00027d8666/005-2025-porsche-panamera-4s-e-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/666347fd31e23b000af4fd66/2025-genesis-g90-lt-front-view-30.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67942109d1780a00080f1d8c/9-2025-lexus-ls-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e3524487b0ec0008bc8baf/5-2025-audi-a8-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67b91594cf37c500085f1e19/18-2025-bmw-7-series-740i-sdrive-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/678048310b8d260008255e56/24-2025-mercedes-benz-s-class-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/691288ffd61ed60002d2f354/32-2026-mercedes-maybach-sl680-convertible.jpg",
     ],
     excerpt: "From opulent sedans to luxurious SUVs, these 10 vehicles deliver the ultimate in comfort, refinement, and premium amenities for discerning buyers.",
     content: [
@@ -2840,6 +2841,2421 @@ export const articles: Record<string, Article> = {
     ],
     specifications: undefined,
     motortrendScore: undefined
+  },
+  "2026-motortrend-car-of-the-year": {
+    title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
+    author: "MotorTrend Staff",
+    date: "Oct 15, 2025",
+    category: "Awards",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed904b8d111500026e76b7/026-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed9046b76c7c0002cf2113/023-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed90448d111500026e76b5/022-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed90438d111500026e76b3/020-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed90415887080002480fc8/018-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed90355887080002480fc2/009-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed902e5887080002480fc0/006-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed90268d111500026e76af/002-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed8f376d04c00002404504/024-2026volkswagen-golf-gti-r-coty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ed8e9e6d04c000024044ff/021-2026volkswagen-golf-gti-r-coty.jpg"
+    ],
+    excerpt: "After rigorous testing and evaluation, the Volkswagen Golf GTI and Golf R have been crowned the 2026 MotorTrend Car of the Year, proving that excellence comes in many forms—from the accessible hot hatch to the all-wheel-drive performance machine.",
+    content: [
+      {
+        type: "paragraph",
+        text: "Every year, MotorTrend's editors gather to evaluate the most significant new vehicles, subjecting them to our rigorous six-criteria evaluation process. This year, in a competition that saw triple-digit heat and pouring rain, one vehicle family stood above all others: the Volkswagen Golf GTI and Golf R."
+      },
+      {
+        type: "heading",
+        text: "The Winner: Volkswagen Golf GTI / R"
+      },
+      {
+        type: "paragraph",
+        text: "The Volkswagen Golf GTI and Golf R have been named the 2026 MotorTrend Car of the Year, marking a historic achievement for Volkswagen's iconic hot hatch lineup. This dual victory recognizes both the accessible performance of the GTI and the all-wheel-drive excellence of the Golf R, proving that Volkswagen has perfected the formula for enthusiast-oriented compact cars."
+      },
+      {
+        type: "paragraph",
+        text: "The Golf GTI continues to set the standard for hot hatches, delivering thrilling performance, practical utility, and everyday usability at an accessible price point. Meanwhile, the Golf R elevates the formula with all-wheel drive, increased power, and track-ready capabilities while maintaining the Golf's signature practicality."
+      },
+      {
+        type: "heading",
+        text: "The Six Criteria"
+      },
+      {
+        type: "paragraph",
+        text: "MotorTrend's Car of the Year award is based on comprehensive evaluation across six key categories, each weighted equally in our decision-making process. The Golf GTI and Golf R excelled across all criteria, demonstrating the balanced excellence that defines a true Car of the Year winner."
+      },
+      {
+        type: "heading",
+        text: "Safety"
+      },
+      {
+        type: "paragraph",
+        text: "Both Golf models feature comprehensive active and passive safety systems, including advanced driver assistance features, robust crash protection, and excellent visibility. Volkswagen's commitment to safety technology ensures that performance doesn't come at the expense of occupant protection."
+      },
+      {
+        type: "heading",
+        text: "Efficiency"
+      },
+      {
+        type: "paragraph",
+        text: "Despite their performance credentials, the Golf GTI and Golf R deliver impressive fuel economy for their power output. The GTI's turbocharged four-cylinder engine provides excellent power-to-efficiency ratio, while the Golf R's all-wheel-drive system manages power distribution intelligently to maximize efficiency when performance isn't the priority."
+      },
+      {
+        type: "heading",
+        text: "Value"
+      },
+      {
+        type: "paragraph",
+        text: "The Golf GTI represents exceptional value in the hot hatch segment, offering performance, quality, and features that compete with vehicles costing significantly more. The Golf R, while positioned as a premium performance model, delivers all-wheel-drive capability and track-ready performance at a price point that undercuts many competitors."
+      },
+      {
+        type: "heading",
+        text: "Advancement in Design"
+      },
+      {
+        type: "paragraph",
+        text: "The latest Golf generation refines an already excellent design language, with cleaner lines, improved aerodynamics, and a more sophisticated interior. The GTI and Golf R add performance-focused design elements—from distinctive front fascias to sport-tuned suspensions—without compromising the Golf's practical hatchback form."
+      },
+      {
+        type: "heading",
+        text: "Engineering Excellence"
+      },
+      {
+        type: "paragraph",
+        text: "Volkswagen's engineering prowess shines through in both models. The Golf GTI's turbocharged engine delivers linear power delivery and excellent throttle response, while the Golf R's all-wheel-drive system provides exceptional traction and handling precision. Both models feature sophisticated suspension tuning that balances comfort and performance, making them equally capable on track days and daily commutes."
+      },
+      {
+        type: "heading",
+        text: "Performance of Intended Function"
+      },
+      {
+        type: "paragraph",
+        text: "The Golf GTI excels as an accessible performance car that doesn't compromise on practicality. It's equally at home on winding roads, city streets, and highway commutes. The Golf R takes this formula further, delivering track-capable performance while maintaining the Golf's signature versatility. Both models prove that performance and practicality aren't mutually exclusive."
+      },
+      {
+        type: "heading",
+        text: "The Competition"
+      },
+      {
+        type: "paragraph",
+        text: "This year's Car of the Year competition featured a diverse field of contenders, from electric vehicles to traditional internal combustion engines, from luxury sedans to performance coupes. The competition was fierce, with several vehicles demonstrating excellence in specific areas. However, the Golf GTI and Golf R's balanced excellence across all six criteria set them apart."
+      },
+      {
+        type: "paragraph",
+        text: "Notable contenders included the BMW M2, which continued to steal hearts with its engaging driving dynamics; the Dodge Charger Daytona EV, which pushed the boundaries of electric performance; and the Honda Civic Hybrid Hatchback, which demonstrated exceptional efficiency and value. Each vehicle brought unique strengths to the competition, but none matched the Golf family's comprehensive excellence."
+      },
+      {
+        type: "heading",
+        text: "Behind the Scenes"
+      },
+      {
+        type: "paragraph",
+        text: "This year's Car of the Year testing took place under challenging conditions, with triple-digit heat testing cooling systems and pouring rain evaluating all-weather capabilities. The Golf GTI and Golf R performed flawlessly in both extremes, demonstrating the robustness of Volkswagen's engineering and the effectiveness of their climate control and all-wheel-drive systems."
+      },
+      {
+        type: "heading",
+        text: "What Makes a Car of the Year"
+      },
+      {
+        type: "paragraph",
+        text: "The MotorTrend Car of the Year award isn't about being the fastest, most luxurious, or most expensive vehicle. It's about excellence across all six criteria—safety, efficiency, value, advancement in design, engineering excellence, and performance of intended function. The Golf GTI and Golf R represent this balanced excellence, delivering outstanding performance while maintaining practicality, value, and everyday usability."
+      },
+      {
+        type: "paragraph",
+        text: "This dual victory also recognizes that excellence comes in different forms. The Golf GTI represents accessible performance, proving that thrilling driving experiences don't require six-figure price tags. The Golf R demonstrates that all-wheel-drive performance can be achieved without sacrificing the engaging character that makes hot hatches special."
+      },
+      {
+        type: "heading",
+        text: "A Legacy of Excellence"
+      },
+      {
+        type: "paragraph",
+        text: "The Golf GTI has a storied history in the automotive world, having helped define the hot hatch segment since its introduction in 1976. This Car of the Year victory recognizes not just the excellence of the current generation, but the continuous evolution and improvement that has kept the Golf GTI relevant for nearly five decades."
+      },
+      {
+        type: "paragraph",
+        text: "The Golf R, introduced more recently, has quickly established itself as a benchmark for all-wheel-drive performance in compact cars. Its combination of power, traction, and practicality has made it a favorite among enthusiasts who demand track capability without sacrificing daily usability."
+      },
+      {
+        type: "heading",
+        text: "The Future of Performance"
+      },
+      {
+        type: "paragraph",
+        text: "As the automotive industry evolves toward electrification, the Golf GTI and Golf R's Car of the Year victory demonstrates that internal combustion engines still have a place in the performance landscape. However, it also shows that excellence in engineering, design, and value will always be relevant, regardless of powertrain technology."
+      },
+      {
+        type: "paragraph",
+        text: "The 2026 MotorTrend Car of the Year award recognizes the Volkswagen Golf GTI and Golf R as vehicles that excel not just in performance, but in the comprehensive excellence that defines a true Car of the Year. They prove that thrilling driving experiences, practical utility, and exceptional value can coexist in a single vehicle—or in this case, two closely related vehicles that share a common philosophy of balanced excellence."
+      }
+    ],
+    specifications: undefined,
+    motortrendScore: {
+      overallRating: 9.6,
+      scores: {
+        performance: 9.5,
+        efficiency: 8.5,
+        tech: 9.0,
+        value: 9.5
+      },
+      award: "2026 MotorTrend Car of the Year",
+      vehicleName: "2026 Volkswagen Golf GTI / R",
+      reviewer: {
+        name: "MotorTrend Staff",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 15, 2025",
+        title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
+        excerpt: "After rigorous testing and evaluation across six key criteria, the Volkswagen Golf GTI and Golf R have been crowned the 2026 MotorTrend Car of the Year, proving that balanced excellence across performance, value, and practicality defines a true winner.",
+        detailedSections: [
+          {
+            title: "Comprehensive Excellence",
+            content: "The Golf GTI and Golf R excelled across all six Car of the Year criteria: safety, efficiency, value, advancement in design, engineering excellence, and performance of intended function. This balanced excellence set them apart from competitors that may have excelled in specific areas but fell short in others."
+          },
+          {
+            title: "Dual Victory",
+            content: "This year's award recognizes both the accessible performance of the Golf GTI and the all-wheel-drive excellence of the Golf R. This dual victory demonstrates that excellence comes in different forms—from the value-focused hot hatch to the premium performance machine—and that Volkswagen has perfected both approaches."
+          },
+          {
+            title: "Proven Under Pressure",
+            content: "The Golf GTI and Golf R were tested under extreme conditions, including triple-digit heat and pouring rain. Both models performed flawlessly, demonstrating the robustness of Volkswagen's engineering and the effectiveness of their systems under challenging real-world conditions."
+          }
+        ]
+      }
+    }
+  },
+  "2026-dodge-charger-scat-pack-sixpack-first-drive": {
+    title: "First Drive: The New Dodge Charger Has Been Fixed! Mostly!",
+    author: "Frank Markus",
+    date: "Nov 08, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/691682812f033b000278eee8/012-2026-dodge-charger-scat-pack-sixpack-burnout.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/691682812f033b000278eee8/012-2026-dodge-charger-scat-pack-sixpack-burnout.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6916827c2f033b000278eee5/010-2026-dodge-charger-sixpack-low-rear.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/691682692f033b000278eede/005-2026-dodge-charger-sixpack-interior.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69164dcc781912000251414b/20-2026-dodge-charger-sixpack-scat-pack.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69164dd2781912000251414d/22-2026-dodge-charger-sixpack-scat-pack.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69164da60ed619000255c3da/6-2026-dodge-charger-sixpack-scat-pack.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69164d9b6cb151000243531c/3-2026-dodge-charger-sixpack-scat-pack.jpg",
+    ],
+    excerpt: "The 2026 Dodge Charger Scat Pack Sixpack brings back the muscle car spirit with a new inline-six engine, but is it enough to fix what ailed the previous generation?",
+    content: [
+      {
+        type: "paragraph",
+        text: "When Dodge announced it was killing the Charger and Challenger, enthusiasts mourned. When it revealed the new Charger would be built on Stellantis's STLA Large platform—shared with the electric Maserati Grecale and upcoming Alfa Romeo models—purists panicked. But here we are, behind the wheel of the 2026 Dodge Charger Scat Pack Sixpack, and you know what? It's actually pretty good. Mostly."
+      },
+      {
+        type: "heading",
+        text: "The Sixpack Solution"
+      },
+      {
+        type: "paragraph",
+        text: "The big news here is the engine: a 3.0-liter twin-turbocharged inline-six that Dodge calls the \"Hurricane\" Sixpack. It produces 420 horsepower and 468 lb-ft of torque in the Scat Pack trim, which is more than enough to get this Charger moving with authority. The inline-six configuration is a departure from the V-8s of old, but it's a modern solution that delivers the power while meeting emissions standards."
+      },
+      {
+        type: "paragraph",
+        text: "On the road, the Sixpack feels strong and responsive. Turbo lag is minimal, and the power delivery is smooth and linear. The eight-speed automatic transmission shifts quickly and decisively, especially when you're really getting on it. There's a satisfying exhaust note that's been tuned to sound appropriately aggressive, though it's not quite the thunderous roar of the old Hemi V-8."
+      },
+      {
+        type: "heading",
+        text: "What's Been Fixed"
+      },
+      {
+        type: "paragraph",
+        text: "The previous-generation Charger had its issues: a dated interior, questionable build quality, and handling that was more muscle than finesse. The 2026 model addresses most of these concerns. The interior is significantly improved, with better materials, modern tech, and a more cohesive design. The Uconnect 5 infotainment system is responsive and intuitive, and the available 12.3-inch digital instrument cluster is crisp and configurable."
+      },
+      {
+        type: "paragraph",
+        text: "Build quality feels more solid, with tighter panel gaps and fewer squeaks and rattles. The ride quality has been improved, with better damping that soaks up road imperfections without feeling floaty. The steering is more precise, and the chassis feels more composed through corners. It's still a big, heavy car, but it's more manageable than before."
+      },
+      {
+        type: "heading",
+        text: "The \"Mostly\" Part"
+      },
+      {
+        type: "paragraph",
+        text: "So why \"mostly\" fixed? Well, there are still some areas where the Charger falls short. The handling, while improved, still isn't as sharp as some of its competitors. It's competent, but it won't set your heart racing in the corners like a BMW M3 or Cadillac CT4-V Blackwing. The weight is still substantial—this is a big car, and you feel it when pushing hard."
+      },
+      {
+        type: "paragraph",
+        text: "The interior, while better, still has some hard plastics in places where you'd expect soft-touch materials. And while the Sixpack engine is impressive, some will miss the character and sound of the old V-8. The new Charger is more refined, but that refinement comes at the cost of some of the raw, unapologetic character that made the old car so appealing to enthusiasts."
+      },
+      {
+        type: "heading",
+        text: "Line Lock and Burnouts"
+      },
+      {
+        type: "paragraph",
+        text: "One thing Dodge hasn't forgotten is that Charger buyers want to have fun. The Scat Pack models come standard with Line Lock, which allows you to lock the front brakes while spinning the rear tires for epic burnouts. It's a feature that's pure Dodge, and it works brilliantly. The system is easy to activate, and the results are exactly what you'd expect: clouds of tire smoke and a whole lot of grins."
+      },
+      {
+        type: "paragraph",
+        text: "The Sixpack-powered Charger Scat Pack models include standard Line Lock, enabling tire-smoking burnouts with the push of a button and punch of the throttle. It's a reminder that, despite the modernization, Dodge hasn't forgotten what makes a Charger a Charger."
+      },
+      {
+        type: "heading",
+        text: "The Verdict"
+      },
+      {
+        type: "paragraph",
+        text: "The 2026 Dodge Charger Scat Pack Sixpack is a significant improvement over the previous generation. It's more refined, better built, and more capable. The inline-six engine delivers the power enthusiasts want while meeting modern emissions standards. The interior is better, the tech is modern, and the overall package is more polished."
+      },
+      {
+        type: "paragraph",
+        text: "But it's not perfect. It's still heavy, still not as sharp as some competitors, and it lacks some of the raw character of the old V-8 models. However, for most buyers, these are acceptable trade-offs for a car that's better in almost every measurable way. The Charger has been fixed—mostly—and that's enough to make it a compelling choice in the performance sedan segment."
+      },
+      {
+        type: "paragraph",
+        text: "If you're looking for a big, powerful sedan that can still do burnouts and make noise, the Charger Scat Pack Sixpack delivers. It's not the same car it used to be, but maybe that's okay. Maybe it's better."
+      }
+    ],
+    specifications: {
+      basePrice: "$45,000 (MT est)",
+      layout: "Front-engine, RWD, 5-pass, 4-door sedan",
+      engine: "3.0L twin-turbocharged DOHC 24-valve inline-6",
+      transmission: "8-speed automatic",
+      horsepower: "420 hp @ 5,750 rpm",
+      torque: "468 lb-ft @ 3,500 rpm",
+      curbWeight: "4,200 lb (MT est)",
+      wheelbase: "120.0 in",
+      dimensions: "202.0 x 76.0 x 58.0 in",
+      zeroToSixty: "4.5 sec (MT est)",
+      epaFuelEcon: "20/28/23 mpg (MT est)",
+      onSale: "2026"
+    },
+    motortrendScore: {
+      overallRating: 8.5,
+      scores: {
+        performance: 8.5,
+        efficiency: 7.5,
+        tech: 8.0,
+        value: 8.5
+      },
+      award: undefined,
+      vehicleName: "2026 Dodge Charger Scat Pack Sixpack",
+      reviewer: {
+        name: "Frank Markus",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 08, 2025",
+        title: "First Drive: The New Dodge Charger Has Been Fixed! Mostly!",
+        excerpt: "The 2026 Dodge Charger Scat Pack Sixpack brings back the muscle car spirit with a new inline-six engine, but is it enough to fix what ailed the previous generation?",
+        detailedSections: [
+          {
+            title: "The Sixpack Engine",
+            content: "The new 3.0-liter twin-turbocharged inline-six delivers 420 horsepower and 468 lb-ft of torque, providing strong performance while meeting modern emissions standards. Turbo lag is minimal, and power delivery is smooth and linear."
+          },
+          {
+            title: "Improved Interior and Build Quality",
+            content: "The 2026 Charger features a significantly improved interior with better materials, modern tech, and tighter build quality. The Uconnect 5 infotainment system is responsive, and the available digital instrument cluster is crisp and configurable."
+          },
+          {
+            title: "Line Lock and Burnout Capability",
+            content: "Scat Pack models come standard with Line Lock, allowing drivers to lock the front brakes while spinning the rear tires for epic burnouts. It's a feature that's pure Dodge and works brilliantly."
+          }
+        ]
+      }
+    }
+  },
+  "2026-bentley-supersports-first-look": {
+    title: "Bentley's 2026 Supersports Is Lighter, Louder, and Built for Drivers",
+    author: "Kristen Lee",
+    date: "Nov 13, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69137fdb146f1a00022c844a/6-2027bentleycontinentalgtsupersports.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69137fdc08be910002dd1449/8-2027bentleycontinentalgtsupersports.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6913800f92a5a10002ee9e5f/3-2027bentleycontinentalgtsupersports.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6855ac4fb7cf6c0008092eba/2026bentleycontinentalgt19.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6855ac4137f205000740700f/2026bentleycontinentalgt12.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6913801208be910002dd144b/5-2027bentleycontinentalgtsupersports.jpg",
+    ],
+    excerpt: "With significant weight savings and rear-wheel drive, the new Supersports is born to hoon.",
+    content: [
+      {
+        type: "paragraph",
+        text: "To anyone who says Bentley's gone soft in recent years: the 2026 Bentley Supersports would like a word. Rear-driven and powered purely by a V-8 (no hybrid here), it signals both the return of a performance nameplate and Bentley's renewed commitment to the gentlemen drivers among its well-heeled clientele. Also, the car looks sick."
+      },
+      {
+        type: "heading",
+        text: "Aggressive Styling"
+      },
+      {
+        type: "paragraph",
+        text: "Based on the Continental GT, which is already quite the looker, the Supersports takes things a step further. A massive front splitter, which Bentley says is the biggest one ever attached to one of its production cars, integrates into a new, lower front bumper. Above that sits a mesh grille with a uniquely Supersports design. Dual stacked dive planes on either side of the bumper frame everything out."
+      },
+      {
+        type: "paragraph",
+        text: "Around back, there's a new and integrated rear diffuser, as well as a single-piece, fixed rear spoiler mounted to the top of the trunk lid. Supersports decals run along the sides, and the 22-inch forged aluminum wheels come in either black or black with a silver metal accent. These wear either a Pirelli P-Zero tire as standard, or you can opt for a set of Trofeo RSes."
+      },
+      {
+        type: "heading",
+        text: "Pure V-8 Power"
+      },
+      {
+        type: "paragraph",
+        text: "Beneath the hood is a twin-turbo 4.0-liter V-8 that produces a claimed 657 hp and 590 lb-ft of torque thanks largely to bigger turbos, a stronger crankcase, and upgraded cylinder heads. What can only be good eight-cylinder noises will come from the full-length titanium exhaust that Bentley developed with Akrapovic. Bentley made sure to explicitly say there is no artificial cabin noise enhancement going on whatsoever. What you hear is what you get."
+      },
+      {
+        type: "paragraph",
+        text: "The engine is hooked up to a ZF eight-speed dual-clutch transmission that Bentley says is sharper and more responsive to befit the Supersports. Summon all that power and responsiveness and the car will launch from zero to 62 mph in 3.7 seconds onto a top speed of around 192 mph, according to Bentley."
+      },
+      {
+        type: "paragraph",
+        text: "Slowing down the Supersports is the job of 10-piston front calipers that clamp down on 17.3-inch carbon silicon carbide discs—the same size as the ones used for the Lamborghini Urus."
+      },
+      {
+        type: "heading",
+        text: "A Rear-Wheel Drive First"
+      },
+      {
+        type: "paragraph",
+        text: "So, that's all well and good, especially the non-hybrid engine part, but the headline here is that the Supersports is the very first rear-driven production Continental GT in the company's history. Engineers widened the track of the rear wheels by 16mm and power is sent to an eLSD setup with torque vectoring using brake assistance. While those rear wheels are also part of a rear-wheel steering system designed to provide the car with additional stability, Bentley assures us that drivers will easily be able to \"provoke the Supersports into significant but highly controllable oversteer.\" So, a Supersports Formula Drift car when?"
+      },
+      {
+        type: "paragraph",
+        text: "Thanks to a rear-seat delete, the Supersports can only fit two passengers. The driver and passenger sink into lightweight sport seats placed in a lower position in the car (joyous news for me and my fellow short people). These seats have more lateral bolstering but also implement 11-way electric adjustment and heating elements. Just because this is a driver's car doesn't mean we also must live like animals!"
+      },
+      {
+        type: "paragraph",
+        text: "Carbon fiber veneers, leather, Dinamica, and Supersports badging and embroidery complete the cabin look. Of course, owners can take their own pick of colors and finishes from the never-ending Bentley customization catalog."
+      },
+      {
+        type: "heading",
+        text: "Shaving Off Some Serious Poundage"
+      },
+      {
+        type: "paragraph",
+        text: "All told, the new Supersports will weigh in at less than two tons because it loses the hybrid powertrain and all-wheel-drive system, it swaps the aluminum roof for a carbon fiber one, deletes the rear seats, and employs other weight saving measures. It's admittedly kind of a funny stat to remark on, but keep in mind that Bentleys have never been known for their feathery curb weights. As such, Bentley says the Supersports is almost 1,000 pounds lighter than the regular Continental GT."
+      },
+      {
+        type: "heading",
+        text: "Limited Production"
+      },
+      {
+        type: "paragraph",
+        text: "Bentley applied the Super Sports name for the very first time in 1925 to the 3 Litre and made just 18 examples of it. In 2009, it made the name one word and launched it on the Continental GT Supersports. The second-generation Continental got a Supersports variant as well for 2017, that one utilizing the automaker's twin-turbo 6.0-liter W-12 engine. All were made in limited numbers."
+      },
+      {
+        type: "paragraph",
+        text: "The 2026 Supersports is no exception. Just 500 will be built, with order books opening in March, production commencing in the last quarter of 2026, and deliveries expected to start at the beginning of 2027."
+      },
+      {
+        type: "paragraph",
+        text: "As for how much it costs? Use your imagination."
+      }
+    ],
+    specifications: {
+      basePrice: "$350,000 (MT est)",
+      layout: "Front-engine, RWD, 2-pass, 2-door coupe",
+      engine: "4.0L twin-turbocharged DOHC 32-valve V-8",
+      transmission: "8-speed dual-clutch automatic",
+      horsepower: "657 hp @ 6,000 rpm",
+      torque: "590 lb-ft @ 2,000 rpm",
+      curbWeight: "3,900 lb (MT est)",
+      wheelbase: "112.2 in",
+      dimensions: "190.9 x 77.9 x 54.2 in",
+      zeroToSixty: "3.7 sec (MT est)",
+      topSpeed: "192 mph (MT est)",
+      onSale: "2027"
+    },
+    motortrendScore: {
+      overallRating: 9.0,
+      scores: {
+        performance: 9.5,
+        efficiency: 6.5,
+        tech: 9.0,
+        value: 7.5
+      },
+      award: undefined,
+      vehicleName: "2026 Bentley Continental GT Supersports",
+      reviewer: {
+        name: "Kristen Lee",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 13, 2025",
+        title: "Bentley's 2026 Supersports Is Lighter, Louder, and Built for Drivers",
+        excerpt: "With significant weight savings and rear-wheel drive, the new Supersports is born to hoon.",
+        detailedSections: [
+          {
+            title: "Pure V-8 Power",
+            content: "The twin-turbo 4.0-liter V-8 produces 657 hp and 590 lb-ft of torque, with a full-length titanium exhaust developed with Akrapovic. No artificial cabin noise enhancement—what you hear is what you get."
+          },
+          {
+            title: "First Rear-Wheel Drive Continental GT",
+            content: "The Supersports is the very first rear-driven production Continental GT in Bentley's history. Engineers widened the rear track by 16mm and added an eLSD with torque vectoring, allowing drivers to \"provoke the Supersports into significant but highly controllable oversteer.\""
+          },
+          {
+            title: "Massive Weight Savings",
+            content: "The Supersports weighs in at less than two tons, almost 1,000 pounds lighter than the regular Continental GT. Weight savings come from deleting the hybrid powertrain and AWD system, swapping to a carbon fiber roof, deleting rear seats, and other measures."
+          }
+        ]
+      }
+    }
+  },
+  "2025-mini-countryman-se-all4-ev-review": {
+    title: "It's Time for the Mini Countryman EV to Get Serious",
+    author: "Billy Rehbock",
+    date: "Nov 10, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/690cf4b165553e00029f4802/024-2025-mini-countryman-se-all4-ev.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf4b165553e00029f4802/024-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf4adc30c2900024a46c0/023-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf4a465553e00029f4800/021-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf4be19a342000216e055/030-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf48ae38f5d0002e0de39/014-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf47cd310380002f6df77/010-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf467c30c2900024a46b6/006-2025-mini-countryman-se-all4-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf46265553e00029f47fe/005-2025-mini-countryman-se-all4-ev.jpg",
+    ],
+    excerpt: "Poor range and slow charging make it difficult to look past this SUV's quirks.",
+    content: [
+      {
+        type: "paragraph",
+        text: "If MotorTrend's SUV of the Year award were a personality contest, the 2025 Mini Countryman SE All4 would be a shoo-in for our Golden Calipers. But our contenders need to excel in our six criteria before advancing to the finalist round. The electric Mini came close but fell short in several key areas."
+      },
+      {
+        type: "heading",
+        text: "Distinctive Design"
+      },
+      {
+        type: "paragraph",
+        text: "Mini's exterior design language isn't for everyone, but the brand does things that set its cars apart from rivals. Our test SUV's Blazing Blue Metallic paint is contrasted with stylish gold accents, and the taillights reference the British flag. Thankfully, the turn signals no longer look like arrows pointing to the wrong direction on either side of the rear fascia."
+      },
+      {
+        type: "paragraph",
+        text: "Judges liked the interior design, which carries over the gold trim for the door handles and vents. Mini uses textile surfacing across the doors, dash, and center console to make the cabin feel distinctive from anything else on the market."
+      },
+      {
+        type: "heading",
+        text: "Stupid Fun to Drive"
+      },
+      {
+        type: "paragraph",
+        text: "The Mini Countryman SE also excels on a curvy road, especially when you enable Go Kart mode and are met with a \"woohoo\" sound effect in the style of Nintendo's Mario and a notification that DSC is disabled."
+      },
+      {
+        type: "paragraph",
+        text: "\"You can totally ride out a little drift once you get the rear end unloaded,\" features editor Scott Evans said. \"This Mini is stupid fun.\" The Countryman SE delivers sportiness, then, fulfilling our performance of intended function criterion."
+      },
+      {
+        type: "paragraph",
+        text: "As a city runabout, it doesn't make many compromises for the sake of athleticism. Judges noted excellent damping on rough and choppy surfaces. Punchy though not extreme power delivery from the 308-hp dual-motor AWD system is plentiful."
+      },
+      {
+        type: "heading",
+        text: "Safety and Technology"
+      },
+      {
+        type: "paragraph",
+        text: "The electric Mini meets our safety criterion, as well. The gas-only model gets a Top Safety Pick from IIHS, so the SUV starts with a solid foundation. Judges also found it easy to engage the adaptive cruise control and lane keep assist."
+      },
+      {
+        type: "paragraph",
+        text: "Yet the Countryman SE suffers from crucial issues that prevent it from reaching total glory. In terms of engineering excellence, we like the powertrain and tuning, but the circular infotainment display and its user interface are a sticking point. The display is thin, and the graphics are sharp, but responsiveness can be frustratingly slow. Pairing various retro-inspired skins with the Countryman SE's various drive modes seems like a good idea—until the graphics lag and you need to toggle through every profile to find your preferred setup."
+      },
+      {
+        type: "heading",
+        text: "Range and Charging Concerns"
+      },
+      {
+        type: "paragraph",
+        text: "Equipped with a 66.5-kWh battery (64.7 usable), our contender is only good for 212 miles of driving range. When you've used all the juice, it takes 31 minutes to charge from 5 to 80 percent at an average rate of just 100 kW. Peak DC fast charging maxes out at just 130 kW, a figure eclipsed by the rest of the segment. Using this SUV as your one and only vehicle is likely to lead to a frustrating experience."
+      },
+      {
+        type: "heading",
+        text: "Value Proposition"
+      },
+      {
+        type: "paragraph",
+        text: "Value isn't its strong suit, either. Our test car came equipped with the Iconic trim and Comfort Package Max, raising the price from $46,375 to $51,295. Yes, the interior space and cargo volume are surprisingly practical, but the MSRP is a lot of coin if you're buying a car purely as a gas-free fashion accessory."
+      },
+      {
+        type: "paragraph",
+        text: "This review was conducted as part of our 2026 SUV of the Year (SUVOTY) testing, where each vehicle is evaluated on our six key criteria: efficiency, design, safety, engineering excellence, value, and performance of intended function. Eligible vehicles must be all-new or significantly revised."
+      }
+    ],
+    specifications: {
+      basePrice: "$46,375",
+      priceAsTested: "$51,295",
+      layout: "Front- and rear-motor, AWD, 5-pass, 4-door electric SUV",
+      powertrain: "R: externally excited motor, 188 hp, 182 lb-ft",
+      totalPower: "308 hp",
+      totalTorque: "364 lb-ft",
+      transmissions: "2 x 1-speed fixed ratio",
+      battery: "64.7-kWh NCM lithium-ion",
+      curbWeight: "4,572 lb (50/50%)",
+      wheelbase: "106.0 in",
+      dimensions: "175.0 x 72.6 x 64.6 in",
+      tires: "225/55R18 102H M+S",
+      epaFuelEcon: "99/94/96 mpg-e",
+      epaRange: "212 mi",
+      roadTripRange: "200 mi @ 70 mph",
+      fastCharging: "93 mi @ 15 min, 156 mi @ 30 min",
+      zeroToSixty: "4.7 sec",
+      quarterMile: "13.4 sec @ 102.6 mph",
+      braking: "116 ft (60-0 mph)",
+      lateralAcceleration: "0.85 g",
+      figureEight: "25.7 sec @ 0.73 g (avg)",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 7.5,
+      scores: {
+        performance: 8.0,
+        efficiency: 6.0,
+        tech: 7.0,
+        value: 7.0
+      },
+      award: undefined,
+      vehicleName: "2025 Mini Countryman SE All4 EV",
+      reviewer: {
+        name: "Billy Rehbock",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 10, 2025",
+        title: "It's Time for the Mini Countryman EV to Get Serious",
+        excerpt: "Poor range and slow charging make it difficult to look past this SUV's quirks.",
+        detailedSections: [
+          {
+            title: "Fun to Drive, But...",
+            content: "The Mini Countryman SE excels on curvy roads with its Go Kart mode and playful dynamics. The 308-hp dual-motor AWD system delivers punchy power, and judges found it \"stupid fun\" to drive. However, the fun factor doesn't overcome its significant shortcomings."
+          },
+          {
+            title: "Limited Range and Slow Charging",
+            content: "With only 212 miles of EPA range and slow charging speeds (peak DC fast charging maxes out at 130 kW), the Countryman SE falls short of segment standards. It takes 31 minutes to charge from 5 to 80 percent, making it frustrating for long-distance travel."
+          },
+          {
+            title: "Infotainment Frustrations",
+            content: "The circular infotainment display looks good but suffers from slow responsiveness. Pairing retro-inspired skins with drive modes sounds good in theory, but the laggy graphics make it frustrating to toggle through profiles to find your preferred setup."
+          }
+        ]
+      }
+    }
+  },
+  "2025-audi-s3-vs-rs3-comparison": {
+    title: "Audi S3 vs. RS3: One Is Shockingly Quick, the Other Might Be the Better Deal",
+    author: "Alisa Priddle",
+    date: "Oct 08, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d40477f080002fdb618/002-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d4581670a0002b39bc6/004-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d5b81670a0002b39bd0/015-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d6d477f080002fdb627/025-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d6f477f080002fdb629/026-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68c1d1f3165c630002842ecb/11-2026-audi-s3-interior.jpg",
+    ],
+    excerpt: "They have old bones, but excellent powertrains elevate these luxury sport sedans.",
+    content: [
+      {
+        type: "paragraph",
+        text: "Audi's compact luxury sport sedans were updated for the 2025 model year, giving them more power, new signature lighting, and other styling upgrades. They continue to ride on the same MQB platform that dates back to 2015 and is getting long in the tooth. Are the upgrades enough to keep them in the fight?"
+      },
+      {
+        type: "heading",
+        text: "The S3: More Power, Better Value"
+      },
+      {
+        type: "paragraph",
+        text: "The S3 starts at $49,995, while our test car came in at $60,840. This is essentially the Audi sedan version of the Volkswagen Golf R hatchback, with Audi's 2.0-liter turbocharged I-4 putting out 328 horsepower—up from 306—and the same 295 lb-ft of torque but delivering peak power over a wider range. It can hit 60 mph in 4.4 seconds, albeit with some turbo lag."
+      },
+      {
+        type: "paragraph",
+        text: "Some of us felt the S3 has a nicer interior. There was praise for the lime green body color accents inside our test RS3, but both cars suffer from heavy use of hard plastic and piano black materials that aren't premium in look and feel and don't distance themselves far enough from the bits inside Volkswagens."
+      },
+      {
+        type: "heading",
+        text: "The RS3: Phenomenal Performance"
+      },
+      {
+        type: "paragraph",
+        text: "The RS3 Quattro starts at $64,695, and our model with the Dynamic Plus package came to $77,045. It has a 2.5-liter I-5 (it may be going away soon) that generates 394 hp and 369 lb-ft of torque with ballistic acceleration that pulls hard all the way to the redline, propels the car forward like a slingshot, and feels alive at the top of the range. The 0–60 time is a scorching 3.5 seconds."
+      },
+      {
+        type: "paragraph",
+        text: "The RS3 has a sportier front fascia and a squircle steering wheel, but it doesn't have real buttons like the S3, relying instead on screens. The oversized exhaust outlets in the rear are for looks—peer inside to see the openings are not actually larger. But man, do they sound good, especially with the optional RS Sport Exhaust highlighting the five-cylinder's thrum."
+      },
+      {
+        type: "heading",
+        text: "Torque-Vectoring Magic"
+      },
+      {
+        type: "paragraph",
+        text: "The proactive seven-speed dual-clutch automatic transmission immediately and aggressively downshifts going down steep hills, even without being in Sport mode. The car handles twisty roads effortlessly, with impressive grip, little tire squeal, and stellar brakes. And it's surprisingly livable around town, as it's reasonably quiet and not as stiff as anticipated."
+      },
+      {
+        type: "paragraph",
+        text: "\"The torque-vectoring rear differential on the RS3 is doing the Lord's work hiding the fact this car is front-wheel drive at its core,\" features editor Scott Evans said, making it feel like a rear-biased, all-wheel-drive car and more like a GT-R than a Golf R. Fellow features editor Christian Seabaugh called that differential a chef's kiss, the final cherry on top that allows you to swing the nose around quicker and point it at the next bend."
+      },
+      {
+        type: "heading",
+        text: "The Verdict"
+      },
+      {
+        type: "paragraph",
+        text: "The RS3 nails its performance mandate but costs more and has a lesser-grade interior, making the athletic S3, which still goes like stink, a more logical choice for most given the price difference. And while some of our testers argued they would just prefer a Volkswagen, the Audis have personalities all their own, not to mention righteous exhaust notes and an elegance that comes from maturity."
+      },
+      {
+        type: "paragraph",
+        text: "This review was conducted as part of our 2026 Car of the Year (COTY) testing, where each vehicle is evaluated on our six key criteria: efficiency, design, safety, engineering excellence, value, and performance of intended function. Eligible vehicles must be all-new or significantly revised."
+      }
+    ],
+    specifications: {
+      basePrice: "$49,995 (S3) / $64,695 (RS3)",
+      priceAsTested: "$60,840 (S3) / $77,045 (RS3)",
+      layout: "Front-engine, AWD, 5-pass, 4-door sedan",
+      engineS3: "2.0L turbo DOHC 16-valve I-4",
+      engineRS3: "2.5L turbo DOHC 20-valve I-5",
+      horsepowerS3: "328 hp @ 5,850 rpm",
+      horsepowerRS3: "394 hp @ 5,600 rpm",
+      torqueS3: "295 lb-ft @ 2,000 rpm",
+      torqueRS3: "369 lb-ft @ 2,250 rpm",
+      transmission: "7-speed dual-clutch automatic",
+      curbWeightS3: "3,580 lb (58/42%)",
+      curbWeightRS3: "3,624 lb (58/42%)",
+      wheelbase: "103.6 in",
+      dimensionsS3: "177.4 x 71.5 x 55.7 in",
+      dimensionsRS3: "178.5 x 72.9 x 54.8 in",
+      epaFuelEconS3: "23/31/26 mpg",
+      epaFuelEconRS3: "20/29/23 mpg",
+      zeroToSixtyS3: "4.4 sec",
+      zeroToSixtyRS3: "3.5 sec",
+      quarterMileS3: "12.9 sec @ 108.7 mph",
+      quarterMileRS3: "12.1 sec @ 112.9 mph",
+      brakingS3: "107 ft (60-0 mph)",
+      brakingRS3: "98 ft (60-0 mph)",
+      lateralAccelS3: "0.95 g",
+      lateralAccelRS3: "1.01 g",
+      figureEightS3: "24.6 sec @ 0.79 g (avg)",
+      figureEightRS3: "23.7 sec @ 0.86 g (avg)",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.5,
+      scores: {
+        performance: 9.0,
+        efficiency: 7.5,
+        tech: 8.0,
+        value: 8.0
+      },
+      award: undefined,
+      vehicleName: "2025 Audi S3 / RS3",
+      reviewer: {
+        name: "Alisa Priddle",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 08, 2025",
+        title: "Audi S3 vs. RS3: One Is Shockingly Quick, the Other Might Be the Better Deal",
+        excerpt: "They have old bones, but excellent powertrains elevate these luxury sport sedans.",
+        detailedSections: [
+          {
+            title: "The RS3's Phenomenal I-5",
+            content: "The 2.5-liter I-5 generates 394 hp and 369 lb-ft of torque with ballistic acceleration that pulls hard all the way to the redline. The 0-60 time is a scorching 3.5 seconds, and the optional RS Sport Exhaust highlights the five-cylinder's distinctive thrum."
+          },
+          {
+            title: "Torque-Vectoring Differential",
+            content: "The torque-vectoring rear differential on the RS3 makes it feel like a rear-biased, all-wheel-drive car, hiding the fact it's front-wheel drive at its core. It allows you to swing the nose around quicker and point it at the next bend, making it feel more like a GT-R than a Golf R."
+          },
+          {
+            title: "S3: The Better Value",
+            content: "The RS3 nails its performance mandate but costs more and has a lesser-grade interior. The athletic S3, which still goes like stink with 328 hp and a 4.4-second 0-60 time, is a more logical choice for most given the price difference."
+          }
+        ]
+      }
+    }
+  },
+  "2026-kia-sportage-suvoty-review": {
+    title: "The Refreshed Kia Sportage Is Built for Buyers but Not the Podium",
+    author: "Alex Leanse",
+    date: "Nov 14, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf1ad157d270002f625f2/021-2026-kia-sportage-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf1ab2689060002a47f90/020-2026-kia-sportage-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf1a42689060002a47f8d/017-2026-kia-sportage-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf18950c0cf000258e838/009-2026-kia-sportage-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690cf18650c0cf000258e837/008-2026-kia-sportage-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68acd07f08d9da0002bcad69/5-2026-kia-sportage-hybrid-first-drive.jpg",
+    ],
+    excerpt: "The updated Sportage is fuel efficient, safe, and practical—but its subtle refresh could have gone even further.",
+    content: [
+      {
+        type: "paragraph",
+        text: "In the high-stakes 2026 SUV of the Year arena, the 2026 Kia Sportage's low-key refresh wasn't enough. Its subtle updates didn't stand out next to newer, truly innovative vehicles. Others fared better against our six judging criteria, yet everyone agreed the updated Sportage remains a great compact SUV for the real world."
+      },
+      {
+        type: "heading",
+        text: "Design Updates"
+      },
+      {
+        type: "paragraph",
+        text: "Against our advancement in design category, the restyling somewhat dilutes the unconventional look that helped the Sportage reach the finals during its 2023 SUV of the Year debut. In the cabin, a larger standard touchscreen runs a snappy new operating system, yet the dashboard around it also tones down visual interest compared to before. Unchanged is how high-quality and practical the cabin is. Senior editor Aaron Gold praised the \"great center console storage with useful hideaway cup holders\" and the \"second grab handle located forward on the front door panels, so short people like me can easily close the door.\""
+      },
+      {
+        type: "paragraph",
+        text: "Yet a critical annoyance survived the refresh: \"I will complain about this dual-function climate and media control panel until Kia gets rid of it; it's intensely stupid,\" features editor Scott Evans grumbled, and he wasn't the only one."
+      },
+      {
+        type: "heading",
+        text: "Efficiency and Engineering"
+      },
+      {
+        type: "paragraph",
+        text: "Efficiency is another criterion, and here the Sportage Hybrid AWD we evaluated posts good but not incredible fuel economy ratings. As we consider a vehicle's entire lineup during our judging, we noted the available plug-in hybrid powertrain that offers all-electric driving range—and the thirsty base engine most Sportages are saddled with."
+      },
+      {
+        type: "paragraph",
+        text: "That relates to engineering excellence, too, as we know the base engine to be gutless. The hybrid is quicker, but its recent four-horsepower boost barely moves the needle. Regardless, the Sportage shows refinement unexpected for its class. \"Kia's chassis engineers are on a roll these days,\" Evans said after a lap on the handling course. \"A Sportage wouldn't be expected to be enjoyable in a corner, yet it was actually pretty good.\" Gold called the ride and handling \"notably stable and predictable, right in line with what a vehicle like this should do.\""
+      },
+      {
+        type: "heading",
+        text: "Safety and Value"
+      },
+      {
+        type: "paragraph",
+        text: "To safety, the 2026 Sportage earns a five-star overall NHTSA score. Kia's driver aids earned praise. \"The features are easy to engage,\" Detroit editor Alisa Priddle said, \"and lane keep assist does an excellent job staying centered.\""
+      },
+      {
+        type: "paragraph",
+        text: "The Sportage soared in terms of value. For the price, this loaded Hybrid model impressed with its high-quality feel and many amenities. \"Everything you need,\" editorial boss Ed Loh said."
+      },
+      {
+        type: "heading",
+        text: "Performance of Intended Function"
+      },
+      {
+        type: "paragraph",
+        text: "Performance of intended function is our final and perhaps most nebulous criterion, as it asks how well a vehicle does what it's supposed to do. The Sportage performs here, but it's not enough to rise to the top during SUV of the Year. \"Overall, it's exceedingly competent, but does it stand above everything else?\" Gold asked. \"I think not.\""
+      },
+      {
+        type: "paragraph",
+        text: "Indeed, the new Sportage's foray placed it among the contenders, not finalists, but not due to any specific flaw. Priddle summed up our sentiment: \"It ticks all the boxes. No one thing is spectacular, but the summation of the whole satisfies everything buyers look for in a compact crossover SUV.\""
+      },
+      {
+        type: "paragraph",
+        text: "This review was conducted as part of our 2026 SUV of the Year (SUVOTY) testing, where each vehicle is evaluated on our six key criteria: efficiency, design, safety, engineering excellence, value, and performance of intended function. Eligible vehicles must be all-new or significantly revised."
+      }
+    ],
+    specifications: {
+      basePrice: "$41,835",
+      priceAsTested: "$42,055",
+      layout: "Front-engine, front-motor, AWD, 5-pass, 4-door hybrid SUV",
+      powertrain: "Permanent-magnet motor, 64 hp, 195 lb-ft; permanent-magnet motor, 17 hp, 32 lb-ft",
+      totalPower: "232 hp",
+      totalTorque: "271 lb-ft",
+      transmission: "6-speed automatic",
+      battery: "1.5-kWh NMC lithium-ion",
+      curbWeight: "3,938 lb (59/41%)",
+      wheelbase: "108.5 in",
+      dimensions: "184.4 x 73.4 x 66.1 in",
+      tires: "235/55R19 101H M+S",
+      epaFuelEcon: "35/36/35 mpg",
+      epaRange: "480 mi",
+      zeroToSixty: "7.3 sec",
+      quarterMile: "15.6 sec @ 90.3 mph",
+      braking: "120 ft (60-0 mph)",
+      lateralAccel: "0.81 g",
+      figureEight: "27.8 sec @ 0.63 g (avg)",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 7.8,
+      scores: {
+        performance: 7.5,
+        efficiency: 8.0,
+        tech: 7.5,
+        value: 8.5
+      },
+      award: undefined,
+      vehicleName: "2026 Kia Sportage Hybrid SX-Prestige AWD",
+      reviewer: {
+        name: "Alex Leanse",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 14, 2025",
+        title: "The Refreshed Kia Sportage Is Built for Buyers but Not the Podium",
+        excerpt: "The updated Sportage is fuel efficient, safe, and practical—but its subtle refresh could have gone even further.",
+        detailedSections: [
+          {
+            title: "Practical Excellence",
+            content: "The Sportage excels in value and practicality. Its high-quality cabin, thoughtful storage solutions, and comprehensive safety features make it an excellent choice for families. The five-star NHTSA safety rating and easy-to-use driver aids add to its appeal."
+          },
+          {
+            title: "Hybrid Efficiency",
+            content: "The Sportage Hybrid AWD delivers solid fuel economy at 35 mpg combined, though it's not class-leading. The available plug-in hybrid variant offers all-electric driving range, providing flexibility for buyers who want to minimize fuel costs."
+          },
+          {
+            title: "Refined Ride Quality",
+            content: "Kia's chassis tuning shines in the Sportage, offering a stable and predictable ride that's more engaging than expected. The handling is composed, making it enjoyable even on winding roads, which is impressive for a compact SUV."
+          }
+        ]
+      }
+    }
+  },
+  "2026-subaru-solterra-suvoty-review": {
+    title: "The Subaru Solterra Is a Solid SUV, but It's Not a Segment Standout",
+    author: "Billy Rehbock",
+    date: "Nov 14, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/690bf9bf061f160002d8ad4c/024-2026-subaru-solterra-xt-ev.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf9bf061f160002d8ad4c/024-2026-subaru-solterra-xt-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf9b9061f160002d8ad4b/021-2026-subaru-solterra-xt-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf9b6061f160002d8ad49/020-2026-subaru-solterra-xt-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf9b2a96ea50002e279dc/019-2026-subaru-solterra-xt-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf99e061f160002d8ad3f/010-2026-subaru-solterra-xt-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf998fc8a290002c2ae6c/008-2026-subaru-solterra-xt-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690bf98ca96ea50002e279d4/004-2026-subaru-solterra-xt-ev.jpg",
+    ],
+    excerpt: "Subaru's all-electric model is greatly improved with its latest refresh, but the updates don't push it to the top of the compact EV SUV class.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The product of yet another collaboration between Toyota and Subaru, the Solterra returns for 2026 with a major refresh. Competing alongside its fraternal twin, the Toyota bZ, the updated Solterra benefits from upgrades such as a new EV platform, a higher-capacity battery pack, and battery preconditioning."
+      },
+      {
+        type: "heading",
+        text: "Performance and Capability"
+      },
+      {
+        type: "paragraph",
+        text: "Thanks to these changes, this Touring XT model produces up to 338 hp. Acceleration from 0 to 60 mph is snappy, taking just 4.4 seconds. Subaru bakes more hot-hatch vitality into the Solterra's driving dynamics, too. The steering is quick, making for engaging handling on a curvy road, and it also excels on the trails. There's plenty of off-road traction when you enable X-Mode, and our judges noted the Solterra performs in places the bZ struggles."
+      },
+      {
+        type: "paragraph",
+        text: "\"The suspension did a good job at absorbing harshness on washboards, and the motors put down the power well,\" features editor Scott Evans said. \"Once you learn to ignore the constantly flickering TC light and drive in Mud mode, the Solterra reminds you of a Wilderness product on the off-road course.\""
+      },
+      {
+        type: "heading",
+        text: "Charging and Range"
+      },
+      {
+        type: "paragraph",
+        text: "Charging speeds are a point of progress thanks to the new peak rate of 150 kW. The Solterra now replenishes 98 miles of driving range in 15 minutes and 163 miles in 30 minutes when charging from 5 percent. The pre-refresh model recovered just 55 miles in 15 minutes and 101 miles in 30 minutes."
+      },
+      {
+        type: "heading",
+        text: "Safety and Design"
+      },
+      {
+        type: "paragraph",
+        text: "Safety, a Subaru hallmark and one of our six criteria, is another category the Solterra performs well in; IIHS awarded it a Top Safety Pick+, making it one of the safest SUVs in our competition. Driver assistance systems are merely competent, however, and lack some of the high-tech capabilities available in other contenders."
+      },
+      {
+        type: "paragraph",
+        text: "Design changes for 2026 affect both the front and rear fascia, but none of the modifications is significant enough to help the Solterra stand out from our crowded pack of contenders. The design continues to be minimally differentiated from that of the bZ, further weakening the Solterra in our advancement in design category."
+      },
+      {
+        type: "heading",
+        text: "Interior and Refinement"
+      },
+      {
+        type: "paragraph",
+        text: "Regardless, we like the Solterra's black and blue interior, which is far more exciting than the Toyota bZ's all-black cabin. But the Solterra makes several ergonomic missteps; many of our judges were frustrated with the steering wheel's low position. Making matters worse, the small driver's display sits too high and far away for comfortable viewing."
+      },
+      {
+        type: "paragraph",
+        text: "Additionally, we noted refinement issues with the Solterra that aren't present in the bZ. Subaru's EV shudders over road imperfections even though body control is solid on the winding test track. Road noise and tire slap plague it at highway speeds and over choppy road surfaces. These shortcomings hold it back in terms of the engineering excellence and performance of intended function criteria."
+      },
+      {
+        type: "heading",
+        text: "Value and Efficiency"
+      },
+      {
+        type: "paragraph",
+        text: "Efficiency and value are tied together for another demerit. The EPA rates our test model at 278 miles of range, but its MotorTrend Road-Trip Range is just 206 miles. With an as-equipped price of $47,975, there are more compelling EVs for the money within the small SUV segment."
+      },
+      {
+        type: "paragraph",
+        text: "Yes, the 2026 Subaru Solterra is much improved, but it fails to push the envelope in any of the six key areas we evaluate here, especially as it only makes marginal gains on the near-identical bZ. Features editor Christian Seabaugh summed up our judges' thoughts: \"This is the vehicle Subaru should have launched. It's finally ready for customers—just as the state of the art moves on.\""
+      },
+      {
+        type: "paragraph",
+        text: "This review was conducted as part of our 2026 SUV of the Year (SUVOTY) testing, where each vehicle is evaluated on our six key criteria: efficiency, design, safety, engineering excellence, value, and performance of intended function. Eligible vehicles must be all-new or significantly revised."
+      }
+    ],
+    specifications: {
+      basePrice: "$47,005",
+      priceAsTested: "$47,975",
+      layout: "Front- and rear-motor, AWD, 5-pass, 4-door electric SUV",
+      powertrain: "R: permanent-magnet motor, 118 hp, 125 lb-ft",
+      totalPower: "338 hp",
+      transmissions: "2 x 1-speed fixed ratio",
+      battery: "74.7-kWh NCM lithium-ion",
+      curbWeight: "4,459 lb (54/46%)",
+      wheelbase: "112.2 in",
+      dimensions: "184.6 x 73.2 x 65.0 in",
+      tires: "235/50R20 100V M+S",
+      epaFuelEcon: "128/105/117 mpg-e",
+      epaRange: "278 mi",
+      roadTripRange: "206 mi (70-MPH Road-Trip Range)",
+      fastCharging: "98 mi @ 15 min, 163 mi @ 30 min",
+      zeroToSixty: "4.4 sec",
+      quarterMile: "13.0 sec @ 101.9 mph",
+      braking: "125 ft (60-0 mph)",
+      lateralAccel: "0.79 g",
+      figureEight: "26.7 sec @ 0.69 g (avg)",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 7.5,
+      scores: {
+        performance: 8.0,
+        efficiency: 7.0,
+        tech: 7.0,
+        value: 7.0
+      },
+      award: undefined,
+      vehicleName: "2026 Subaru Solterra Touring XT",
+      reviewer: {
+        name: "Billy Rehbock",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 14, 2025",
+        title: "The Subaru Solterra Is a Solid SUV, but It's Not a Segment Standout",
+        excerpt: "Subaru's all-electric model is greatly improved with its latest refresh, but the updates don't push it to the top of the compact EV SUV class.",
+        detailedSections: [
+          {
+            title: "Improved Performance",
+            content: "The 2026 Solterra produces 338 hp and accelerates from 0-60 mph in just 4.4 seconds. Its quick steering and engaging handling make it fun on curvy roads, while X-Mode provides excellent off-road traction that outperforms its Toyota bZ twin."
+          },
+          {
+            title: "Faster Charging",
+            content: "Charging speeds have improved significantly with a new peak rate of 150 kW. The Solterra now replenishes 98 miles of range in 15 minutes and 163 miles in 30 minutes, a substantial improvement over the pre-refresh model."
+          },
+          {
+            title: "Safety Excellence",
+            content: "The Solterra earned a Top Safety Pick+ rating from IIHS, making it one of the safest SUVs in the competition. This aligns with Subaru's reputation for safety, though driver assistance systems are competent but lack some advanced features found in competitors."
+          }
+        ]
+      }
+    }
+  },
+  "2026-nissan-leaf-suvoty-review": {
+    title: "The Nissan Leaf Is Greatly Improved With Some Big Caveats",
+    author: "Billy Rehbock",
+    date: "Nov 14, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/690a62e5156e89000296e257/021-2026-nissan-leaf-platinum-ev.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a62e5156e89000296e257/021-2026-nissan-leaf-platinum-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a62e0ee45090002fafe08/019-2026-nissan-leaf-platinum-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a62ce156e89000296e251/013-2026-nissan-leaf-platinum-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a62c68742020002a792c9/009-2026-nissan-leaf-platinum-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a62bb8742020002a792c2/004-2026-nissan-leaf-platinum-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a62038742020002a792c1/008-2026-nissan-leaf-platinum-ev.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/690a6263b0ce3d0002ae488f/010-2026-nissan-leaf-platinum-ev.jpg",
+    ],
+    excerpt: "It's more hatchback than SUV, but one of the earliest EV nameplates finally has a competitive edge.",
+    content: [
+      {
+        type: "paragraph",
+        text: "When developing the third-generation Nissan Leaf, the Japanese automaker had the opportunity to reinvent its small EV. Certainly, compared to the redesigned Nissan Leaf, the second-generation model didn't cut it with its frumpy styling, archaic CHAdeMO charging, and mediocre driving range. One look at the new Leaf, and it's obvious it meets our advancement in design criterion."
+      },
+      {
+        type: "heading",
+        text: "Modern Design"
+      },
+      {
+        type: "paragraph",
+        text: "Wearing a fastback SUV body style, the Leaf looks like a diminutive version of the larger Ariya EV. The new model gets cool design accents, too, such as the repeated motif of two and three lines throughout the exterior and interior, which are meant to invoke the numbers two (ni) and three (san) in Japanese."
+      },
+      {
+        type: "heading",
+        text: "Improved Powertrain"
+      },
+      {
+        type: "paragraph",
+        text: "This top-level Platinum+ trim uses the larger available 75-kWh battery powering a single electric motor, developing 214 hp and 261 lb-ft. The motor, inverter, and reducer are packaged in a single compact unit, which Nissan says helps power and refinement, and acceleration feels reasonably quick."
+      },
+      {
+        type: "paragraph",
+        text: "The suspension bounds around over bigger road imperfections but settles down quickly. Brake pedal tuning is better than what we've felt in the second-generation Leaf; however, there's still some softness and squishiness preventing total driver confidence."
+      },
+      {
+        type: "heading",
+        text: "Engineering and Charging"
+      },
+      {
+        type: "paragraph",
+        text: "In short, the Leaf indexes better in terms of engineering excellence than its predecessor, though driving refinement still needs some work. We commend Nissan for switching to the North American Charging System (NACS) used by the Tesla Supercharger network but criticize it for maintaining a separate J1772 port for Level 2 charging. At worst, the arrangement is likely to confuse drivers who are less experienced with EVs. At best, they'll have to drive around with two adapters: one to connect to CCS fast-charging cables and another for Level 2 NACS charging."
+      },
+      {
+        type: "heading",
+        text: "Safety and Driver Assistance"
+      },
+      {
+        type: "paragraph",
+        text: "Safety is another strong point. \"Pro Pilot Assist holds the lane very confidently, staying super centered and providing delicate steering inputs to steer through a curve,\" associate editor Alex Leanse said. \"The steering wheel doesn't allow much time with hands off, but at least it has capacitive touch sensors.\""
+      },
+      {
+        type: "heading",
+        text: "Interior and Practicality"
+      },
+      {
+        type: "paragraph",
+        text: "Inside, the dash layout and the materials used are a massive step beyond the old model, but the touchscreen's orientation away from the driver is a shared point of frustration among our judges. Meanwhile, second-row legroom and headroom are cramped enough to make you think twice about offering adults a ride."
+      },
+      {
+        type: "heading",
+        text: "Range and Value"
+      },
+      {
+        type: "paragraph",
+        text: "Another issue: The Leaf's EV credentials are already beginning to look dated. Peak charging speeds cap out at 150 kW, and this Platinum+ trim is only good for up to 259 miles of EPA driving range. That figure makes it tough to make a case for the best-equipped Leaf in our efficiency category."
+      },
+      {
+        type: "paragraph",
+        text: "Many judges said the Leaf makes more sense at the lower end of its trim lineup. In terms of value, the more basic S+ model starts at $31,485, undercutting our Platinum+ contender's as-tested price by $10,445. What's more, the Leaf S+ can travel 303 miles per charge."
+      },
+      {
+        type: "paragraph",
+        text: "\"Nissan's gatekeeping of key features like Google Maps with a route planner and a battery heater really doesn't sit well with me or our value criterion,\" features editor Christian Seabaugh said. \"I couldn't in good conscious recommend this car over something like an Equinox EV considering you get so much more vehicle and basic capability for your money.\" And with no all-wheel-drive variant on offer and its ground clearance more hatchback than SUV, the Leaf struggles to perform off-road or in low-friction environments."
+      },
+      {
+        type: "paragraph",
+        text: "So we applaud Nissan for modernizing the Leaf, but it merely caught up with electric car contemporaries instead of making legitimate innovations."
+      },
+      {
+        type: "paragraph",
+        text: "This review was conducted as part of our 2026 SUV of the Year (SUVOTY) testing, where each vehicle is evaluated on our six key criteria: efficiency, design, safety, engineering excellence, value, and performance of intended function. Eligible vehicles must be all-new or significantly revised."
+      }
+    ],
+    specifications: {
+      basePrice: "$40,485",
+      priceAsTested: "$41,930",
+      layout: "Front-motor, FWD, 5-pass, 4-door electric hatchback",
+      powertrain: "Permanent-magnet motor, 214 hp, 261 lb-ft",
+      power: "214 hp",
+      torque: "261 lb-ft",
+      transmission: "1-speed fixed ratio",
+      battery: "75.0-kWh NMC lithium-ion",
+      curbWeight: "4,361 lb (55/45%)",
+      wheelbase: "105.9 in",
+      dimensions: "173.4 x 71.3 x 61.3 in",
+      tires: "235/45R19 95V M+S",
+      epaFuelEcon: "110/96/103 mpg-e",
+      epaRange: "259 mi",
+      roadTripRange: "243 mi (70-MPH Road-Trip Range)",
+      fastCharging: "113 mi @ 15 min, 171 mi @ 30 min",
+      zeroToSixty: "6.8 sec",
+      quarterMile: "15.3 sec @ 94.1 mph",
+      braking: "129 ft (60-0 mph)",
+      lateralAccel: "0.81 g",
+      figureEight: "27.2 sec @ 0.67 g (avg)",
+      onSale: "Q4 2025"
+    },
+    motortrendScore: {
+      overallRating: 7.2,
+      scores: {
+        performance: 7.0,
+        efficiency: 7.5,
+        tech: 7.0,
+        value: 7.5
+      },
+      award: undefined,
+      vehicleName: "2026 Nissan Leaf Platinum+",
+      reviewer: {
+        name: "Billy Rehbock",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 14, 2025",
+        title: "The Nissan Leaf Is Greatly Improved With Some Big Caveats",
+        excerpt: "It's more hatchback than SUV, but one of the earliest EV nameplates finally has a competitive edge.",
+        detailedSections: [
+          {
+            title: "Modernized Design",
+            content: "The third-generation Leaf features a fastback SUV body style that looks like a smaller version of the Ariya EV. The design includes thoughtful Japanese-inspired accents with repeated two and three-line motifs throughout the exterior and interior."
+          },
+          {
+            title: "Better Value at Lower Trims",
+            content: "While the Platinum+ trim offers 259 miles of range at $41,930, the base S+ model starts at just $31,485 and actually provides more range at 303 miles per charge. Many judges felt the Leaf makes more sense at the lower end of its trim lineup."
+          },
+          {
+            title: "Improved Charging",
+            content: "Nissan switched to the North American Charging System (NACS) for Tesla Supercharger compatibility, though the dual-port setup (NACS and J1772) may confuse less experienced EV drivers. Charging speeds cap at 150 kW, which is competitive but not class-leading."
+          }
+        ]
+      }
+    }
+  },
+  "2026-honda-cr-v-trailsport-first-drive-review": {
+    title: "2026 Honda CR-V TrailSport First Drive: Dirty Deeds Done Dirt Chic",
+    author: "Bob Hernandez",
+    date: "Jun 30, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edc61b46e00000219aa39/01-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edc87f123b4000238efd5/13-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edc95f123b4000238efd8/16-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edcaaf123b4000238efde/23-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edc6ef123b4000238efcf/05-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edb84f123b4000238efc9/02-2026-honda-cr-v-trailsport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/685edbaff9d75b00021b1e56/17-2026-honda-cr-v-trailsport.jpg",
+    ],
+    excerpt: "How well does Honda's newest TrailSport model and its mostly appearance-related upgrades handle trails?",
+    content: [
+      {
+        type: "paragraph",
+        text: "For a long time, the Honda CR-V was at or near the top of MotorTrend's compact SUV rankings for its all-around goodness. Of late, however, the competition has gotten stiffer, with some rivals delivering better efficiency, more impressive tech, greater capability, or a combination of all three. As a result, these days Honda's most popular model sits roughly mid-pack in the class—still a solid pick, but one that could be better."
+      },
+      {
+        type: "paragraph",
+        text: "Then there's the issue we groused about in our 2023 SUV of the Year evaluations, that the current-gen CR-V lineup needs more choice. Enter the new-for-2026 CR-V TrailSport, which is also the first hybrid version of Honda's relatively recent off-road trim level that's also appeared on the Passport and Pilot SUVs as well as the Ridgeline pickup."
+      },
+      {
+        type: "heading",
+        text: "Telltale TrailSport"
+      },
+      {
+        type: "paragraph",
+        text: "As we stated in our First Look, the TrailSport-ness of the new CR-V is on the subtle side, but then even Honda's other TrailSports are relatively restrained cosmetically."
+      },
+      {
+        type: "paragraph",
+        text: "Dead giveaways are the front and rear badges and gray 18-inch wheels under the fenders, which the other TrailSports get as well, though the Ridgeline comes with Pewter Gray rims while its cousins score Shark Gray rollers. The CR-V version is also available in a model-specific paint, not Diffused Sky Blue like the Ridgeline and Pilot but a fetching Ash Green Pearl."
+      },
+      {
+        type: "paragraph",
+        text: "A front \"skid garnish\" silver accent attempts to visually emulate the actual underbody protection that comes with other TrailSports—but is missing here—while around back is the same color for the rear bumper cover. The CR-V variant also receives black door handles that pair nicely with the new black window surrounds coming on all 2026 CR-V Hybrids. A new available 18-inch wheel design arrives this year for every CR-V model, too."
+      },
+      {
+        type: "paragraph",
+        text: "Like others, the CR-V TrailSport interior receives low-key orange seat stitching and embroidered logos on the front headrests, as well as some snazzy all-season floormats with the sub-brand's logo. As with the Passport version, here too we find neat amber ambient lighting that bathes the cabin in a tactical glow."
+      },
+      {
+        type: "heading",
+        text: "Bigger Screens, Same Likeable Cabin"
+      },
+      {
+        type: "paragraph",
+        text: "These features come in an interior that offers more standard tech at all trim levels this year. The previously available 9.0-inch touchscreen is now standard, and while it's 2.0 inches bigger than the old interface, it's still small, relatively speaking. The next-gen 2026 Toyota RAV4 starts off with a 10.5-inch unit and offers a 12.9-inch upgrade, while most 2026 Hyundai Tucsons come standard with a 12.3-inch display. Thankfully the CR-V's touchscreen is sharp, fairly quick to execute commands, and easy to operate."
+      },
+      {
+        type: "paragraph",
+        text: "Honda democratizes a wireless phone charger and wireless Apple CarPlay and Android Auto across the lineup. An available 10.2-inch driver display is also new this year, 3.2 inches bigger than the standard display and included with the CR-V EX-L on the gas side and TrailSport and up on the hybrid side."
+      },
+      {
+        type: "paragraph",
+        text: "What hasn't changed is how easy and straightforward the cockpit's physical controls remain. We know the industry seems to be moving away from this kind of old-school switchgear treatment, but we dig how familiar it all feels in the CR-V. The seating is also still comfortable, and front seats ideally bolstered. It might be time for Honda to rethink this center console, though, principally to either shrink or completely relocate the gear selector for a bit more usable space."
+      },
+      {
+        type: "paragraph",
+        text: "And speaking of room, the CR-V continues to offer a capacious cabin compared to some of its most popular rivals, though cargo space is better in the gas model. Standard capacity for stuff in the gas CR-V's rear hold is 39.3 cubic feet and 36.3 cubes for hybrids except the Sport Touring, which gets only 34.7 cubic feet. New RAV4 specs aren't out yet but its predecessor provided 37.6 cubic feet in both gas and hybrid forms, while the Tucson gas and hybrid models come with 38.7 cubic feet."
+      },
+      {
+        type: "heading",
+        text: "Over the River and Through the Woods"
+      },
+      {
+        type: "paragraph",
+        text: "Honda prepared for us a drive route roughly 130 miles in length to try out the CR-V TrailSport. It featured stretches of suburban street, freeway, and backroad driving in the areas around Carlsbad, Calif., across asphalt and concrete surfaces. Midway through, we made a stop at Barona Oaks Motocross park in Lakeside to demo in the dirt the SUV's updated traction management for 2026."
+      },
+      {
+        type: "paragraph",
+        text: "Along with its model-specific 18s, the TrailSport is outfitted with Continental CrossContact ATR all-terrain tires. It's not a super aggressive-looking product but the maker says the rubber delivers low road noise and good wet capability, in addition to balanced on- and off-road performance."
+      },
+      {
+        type: "paragraph",
+        text: "Conti is right about the road noise. They didn't seem much noisier than the lineup's all-season standbys, and at times the only thing louder was the hybrid's droning 2.0-liter four-cylinder engine, though even that was far from offensive."
+      },
+      {
+        type: "paragraph",
+        text: "Despite its protests, the powertrain gets the job done of matching expressway speeds and executing passes without too much planning or fuss. Ride and handling remain CR-V dynamic fortes thanks partly to shared roots with the current Civic. Suspension tuning remains pleasant, brake bite is still easy to discern and force easy to modulate, and the steering comes with a touch of weight to it, though feedback remains largely absent."
+      },
+      {
+        type: "heading",
+        text: "More Off-Road Style Than Substance"
+      },
+      {
+        type: "paragraph",
+        text: "The CR-V Sport Touring and now TrailSport are the only two 2026 CR-V models to feature standard all-wheel drive (AWD). All other trims this year start off with standard front-wheel drive."
+      },
+      {
+        type: "paragraph",
+        text: "Supplementing that system is revised low-speed traction management that comes with every 2026 CR-V AWD. The updated setup is said to vector more torque to the wheels with the most traction. It can also apply more brake force than before to the slipping wheels."
+      },
+      {
+        type: "paragraph",
+        text: "In practical terms, the CR-V is a little more able to avoid getting stuck at slow speeds, especially on uneven trail surfaces of suspect grip levels, thanks almost entirely to the TrailSport's tires. Honda says hill descent control is also improved this year, providing more control on grades of seven percent or more. To prove it to us, they sent us down what felt like a steep drop-off that lifted the CR-V's ass end into the air. Dramatic as it looked, the 'ute barely flinched, taking the entire experience in stride."
+      },
+      {
+        type: "heading",
+        text: "The Trail Ahead"
+      },
+      {
+        type: "paragraph",
+        text: "While the TrailSport brand means to suggest one thing (namely off-road chops), in reality the treatment varies wildly depending on platform. Honda seems like it's following a play the automaker drew up with the original TrailSport that came via the 2022 Passport lineup. By the 2026 model year, those appearance mods also came with proper hardware that turned the SUV into a credible light-duty off-roader."
+      },
+      {
+        type: "paragraph",
+        text: "The 2026 CR-V TrailSport is not there yet, and indeed a more hardcore iteration may never materialize if this version doesn't sell. But it already has a lot going for it, namely that it's a CR-V, which means it comes with good bones, excellent packaging, a user-friendly interior, and engaging driving manners for an SUV. Since it's a hybrid, fuel economy is good too, though any CR-V does well against similar rivals, and the TrailSport happens to get the worst mpg of the hybrid lineup."
+      },
+      {
+        type: "paragraph",
+        text: "Hopefully customers take a bite of this TrailSport amuse-bouche and convince the big H a real CR-V off-roader would make sense. For now, this is mostly a style play for CR-V buyers looking for something with a little more visual beef than the typical CR-V provides. It's priced accordingly—unlike other TrailSports that top their respective lineups, the CR-V TrailSport slots between the EX-L and Sport-L and starts at $40,195."
+      }
+    ],
+    specifications: {
+      basePrice: "$32,315-$43,645",
+      layout: "Front-engine, FWD/AWD, 5-pass, 4-door SUV",
+      engines: "2.0L/145-hp/138-lb-ft Atkinson-cycle DOHC 16-valve I-4, plus 181-hp/247-lb-ft front electric motor; 204 hp comb",
+      transmissions: "CVT; 1-sp auto (elec), 2-sp auto (gas)",
+      curbWeight: "3,472-3,926 lbs (mfr)",
+      wheelbase: "106.3 in",
+      dimensions: "184.8 x 73.5 x 66.2-66.5 in",
+      zeroToSixty: "7.6-8.7 sec",
+      epaFuelEcon: "38-43/33-36/35-40 mpg",
+      epaRange: "490-560 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.0,
+      scores: {
+        performance: 7.5,
+        efficiency: 8.5,
+        tech: 7.5,
+        value: 8.0
+      },
+      award: undefined,
+      vehicleName: "2026 Honda CR-V TrailSport Hybrid",
+      reviewer: {
+        name: "Bob Hernandez",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Jun 30, 2025",
+        title: "2026 Honda CR-V TrailSport First Drive: Dirty Deeds Done Dirt Chic",
+        excerpt: "How well does Honda's newest TrailSport model and its mostly appearance-related upgrades handle trails?",
+        detailedSections: [
+          {
+            title: "Practical TrailSport Appeal",
+            content: "The CR-V TrailSport offers Honda's reliable hybrid powertrain with improved traction management and all-wheel drive. While it's more style than substance off-road, it maintains the CR-V's excellent packaging, user-friendly interior, and engaging driving manners that make it a solid choice for families."
+          },
+          {
+            title: "Enhanced Tech and Comfort",
+            content: "The 2026 CR-V TrailSport benefits from the lineup's mid-cycle refresh, including a larger standard 9.0-inch touchscreen, wireless charging, and wireless Apple CarPlay/Android Auto. The cabin remains comfortable and straightforward, with TrailSport-specific touches like orange seat stitching and amber ambient lighting."
+          },
+          {
+            title: "Hybrid Efficiency",
+            content: "The TrailSport uses Honda's two-motor hybrid system, delivering excellent fuel economy at 35-40 mpg combined. While it gets the worst mpg of the hybrid lineup, it still performs well against rivals and offers the practical benefits of hybrid powertrain efficiency."
+          }
+        ]
+      }
+    }
+  },
+  "2026-ferrari-296-speciale-first-drive-review": {
+    title: "Driven! The 2026 Ferrari 296 Speciale Is Molto Intensa",
+    author: "Aaron Gold",
+    date: "Oct 24, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68f94cee0c4a17000281845d/14-2026-ferrari-296-speciale-first-drive.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94cee0c4a17000281845d/14-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94c811c7f74000268a85c/12-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94ce928d1ba0002bb36d7/13-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94c9ea45ae6000246bbac/1-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94c3da45ae6000246bbab/4-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94ce50c4a17000281845c/10-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68f94d011c7f74000268a860/296-speciale-imtd-track-dynamic-17.jpg",
+    ],
+    excerpt: "It's like driving a Ferrari racing car, minus the misery.",
+    content: [
+      {
+        type: "paragraph",
+        text: "Have you ever driven a genuine racing car on the streets? It's an utterly miserable experience: intense noise, rock-hard ride, little comfort, and no refinement. So, we were surprised to learn Ferrari's goal for the $475,364 296 Speciale is to deliver a race-car experience without the misery. Something more intense than the regular 296 GTB and yet beguiling enough that owners—who likely own several Ferraris—will want to drive it more than anything else they own."
+      },
+      {
+        type: "paragraph",
+        text: "After a glorious day with the 296 Speciale on Ferrari's own test track and the back roads of Modena, all we can say is: Can we have some more seat time in the 296 Speciale, Ferrari? Please? Please?"
+      },
+      {
+        type: "heading",
+        text: "La 296 Più Intensa"
+      },
+      {
+        type: "paragraph",
+        text: "Cataloging the changes Ferrari made to transform the 296 GTB into the Speciale could take up an entire article, and as it happens, we have that article right here. It's a fascinating list, but if we reproduced them here we wouldn't get to driving impressions until next week, so here's the abbreviated version: Power from the plug-in hybrid drivetrain is up 50 hp to 868, which makes the 296 Speciale the most powerful rear-drive production Ferrari of all time."
+      },
+      {
+        type: "paragraph",
+        text: "Weight is down by 132 pounds, and the styling changes you see, including a new front-end treatment and nifty inverted-L winglets at the rear corners, are designed to increase downforce, particularly up front. The Speciale is louder by design, with new acoustic ducts intended to deliver the 3.0-liter V-6's scream directly to the occupants' ears. Lightweight components and retuned suspension and brakes round out the upgrades that make the Speciale so special."
+      },
+      {
+        type: "paragraph",
+        text: "We asked a Ferrari engineer what would differentiate the Speciale from the amazingly competent 296 GTB."
+      },
+      {
+        type: "paragraph",
+        text: "\"The driving experience is more intense,\" he said."
+      },
+      {
+        type: "paragraph",
+        text: "Goodness gracious, that man was not kidding."
+      },
+      {
+        type: "heading",
+        text: "Speed With a Kick"
+      },
+      {
+        type: "paragraph",
+        text: "The 296 Speciale is, as you would expect, blindingly quick, though the engine improvements are unlikely to clip more than a tenth of a second off the 296 GTB's 2.3-second 0–60 run. (Still, that should be enough to steal the GTB's title of the quickest rear-drive car MT has ever tested.)"
+      },
+      {
+        type: "paragraph",
+        text: "It's the experience of that acceleration that sets the Speciale apart. Take the new shift strategy: Most drivetrains reduce power briefly during gear changes, but the 296 increases it. When you yank that upshift paddle under hard acceleration, the 296 Speciale uses the hybrid system to deliver a solid kick, not unlike an old GM Turbo-Hydramatic 400 with a shift kit."
+      },
+      {
+        type: "paragraph",
+        text: "The irony here is that you don't really need to change gears all that often; the hybrid powertrain's torque curve is so flat between 3,000 and 7,000 rpm that you could play billiards on it, and your choice of gear is almost irrelevant. Still, we found ourselves hunting up and down through the gears just to experience that magnificent kick-shift."
+      },
+      {
+        type: "heading",
+        text: "A Siren Song and Magical Steering"
+      },
+      {
+        type: "paragraph",
+        text: "If any one factor ups the intensity level, it has to be the sonic experience. Removing sound-insulating materials was part of the lightweighting project, and as we mentioned above, Ferrari used mechanical means to intensify the V-6 engine's soundtrack."
+      },
+      {
+        type: "paragraph",
+        text: "We've yet to drive a Ferrari that didn't sound wonderful, but the 296 Speciale sings its aria with impressive lungpower. It's backed by the percussion of pebbles plinking up against the underside of the bodywork, unmuffled by the carpets that have been eliminated from the cabin. That part of the soundtrack, while definitely racing-carlike, is not so great: At one point during our on-road drive, our 296 spun a rock up into its very expensive underbody, and we damn near had a heart attack."
+      },
+      {
+        type: "paragraph",
+        text: "The 296 Speciale offers a choice of lighter titanium springs or steel coils, though the latter is the only way to get an adaptive suspension and the must-have-in-the-real-world nose lift system. We drove the titanium-sprung car on the track and the steel-sprung car on the road. The difference in paved surfaces did not lend itself to comparison, but we can tell you this is not a gentle-riding car in either iteration. The adjustable suspension has a bad-pavement button, though we're not sure it does much more than light up an indicator on the dash. The ride is busy but never jarring, as it would be in a real racing car."
+      },
+      {
+        type: "paragraph",
+        text: "Ferrari's downforce strategy was to get more weight on the front wheels and sharpen turn-in. Yet, steering the 296 Speciale is probably the least intense aspect of driving it. The tiller is two-finger light and supremely responsive to the slightest nudge, but it doesn't dart back and forth on center. Rather, it allows the driver to position the Speciale with millimeter precision. You think about where you want to be, and the Ferrari magically goes there. It's one of the best human-machine interfaces we've experienced."
+      },
+      {
+        type: "heading",
+        text: "So, Yeah, We Spun It"
+      },
+      {
+        type: "paragraph",
+        text: "The idea of driving the most powerful rear-drive Ferrari—or any car with 868 horses spinning only the rear wheels—should be a frightening prospect. Surprisingly, the 296 Speciale feels stable and planted. In the hunt for its handling limits, however, we did manage to spin the titanium-sprung car on the track. We had the stability control set to CT Off, which means traction control off and ESC greatly reduced, which should allow for some beautiful power-on oversteer … except on one sharp left-hander, we were a little early with the power and a little late with correction. (No harm done to anything but our ego.)"
+      },
+      {
+        type: "paragraph",
+        text: "The miracle is it only happened once. A car sending so much power (electrically boosted, to boot!) to the rear end should be all but impossible to drive in a straight line. The 296 Speciale is remarkably tractable for what it is, but Ferrari did want to give it the capacity to challenge skilled drivers. Well, Ferrari, you certainly got that down, as we can attest."
+      },
+      {
+        type: "paragraph",
+        text: "Still, even when driven at full tilt boogie, the 296 Speciale feels as sure-footed as an all-wheel-drive Ferrari. For our on-road drive, which consisted of four glorious hours on the rural twisties of Modena, we gleefully turned the Manettino dial to Qualifying, the one mode in which the powertrain delivers all 868 horses, and opened the throttle with reckless abandon. Never once did we feel like we were in danger of overdriving the car. We did, however, leave the traction/stability system in Race mode, which offers more stringent ESC protection than CT Off. Once bitten, etc."
+      },
+      {
+        type: "heading",
+        text: "Ready for More"
+      },
+      {
+        type: "paragraph",
+        text: "Driving a full-on racing car can be a fatiguing business, but we ended our day with the 296 Speciale feeling refreshed and ready for more. The racing-style shell seats, while more thinly padded than the GTB's stock buckets, turned out to be surprisingly comfortable and supportive, and the noise levels did not leave our ears ringing the way we expected."
+      },
+      {
+        type: "paragraph",
+        text: "And yes, we found a few things we didn't like. The four-point racing-style harness is a bit of silly overkill. The 296's lack of a center screen means phone projection happens on the instrument panel, and running a phone-based navigation app meant we had to do without a tachometer. (Good thing the 296 has approaching-redline warning lights on the steering wheel.)"
+      },
+      {
+        type: "paragraph",
+        text: "Our backpack made cheap-sounding scratching noises as it slid back and forth on the uncarpeted passenger footwell, and the reduced sound insulation made for excessive road noise we could have done without. We'd be happy if Ferrari snuck the carpets back in, because that screaming V-6 is all we really need to hear."
+      },
+      {
+        type: "paragraph",
+        text: "Still, we can see Ferrari has achieved exactly what it set out to do with this car. The 296 Speciale is designed expressly to give customers something unique and collectible. While other high-priced brands deliver parts-bin specials intended to be ready-to-run collectors' items, the 296 Speciale really different and special."
+      },
+      {
+        type: "paragraph",
+        text: "Intense? Oh, yes, indeed. The 296 Speciale delivers a race-car driving experience without race-car misery. It's a brilliant accomplishment, and we are jealous of the privileged few who will get the opportunity to own one."
+      }
+    ],
+    specifications: {
+      basePrice: "$475,364",
+      layout: "Mid-engine, RWD, 2-door, 2-pass coupe",
+      engines: "3.0L/690-hp/557-lb-ft DOHC 24-valve twin-turbocharged V-6, plus 177-hp/232-lb-ft permanent magnet motor, 868 hp/557 lb-ft (comb)",
+      transmissions: "8-speed twin-clutch manual",
+      curbWeight: "3,400 lb (MT est)",
+      wheelbase: "102.4 in",
+      dimensions: "182.1 x 77.5 x 46.5 in",
+      zeroToSixty: "2.8 sec (mfr est)",
+      epaFuelEcon: "N/A",
+      epaRange: "N/A",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 9.5,
+      scores: {
+        performance: 10.0,
+        efficiency: 7.0,
+        tech: 9.5,
+        value: 8.0
+      },
+      award: undefined,
+      vehicleName: "2026 Ferrari 296 Speciale",
+      reviewer: {
+        name: "Aaron Gold",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 24, 2025",
+        title: "Driven! The 2026 Ferrari 296 Speciale Is Molto Intensa",
+        excerpt: "It's like driving a Ferrari racing car, minus the misery.",
+        detailedSections: [
+          {
+            title: "Race Car Intensity Without the Misery",
+            content: "The 296 Speciale delivers 868 horsepower—the most powerful rear-drive production Ferrari ever—with weight reduced by 132 pounds. Ferrari's goal was to create a race-car experience without race-car misery, and they've succeeded brilliantly. The car is intensely engaging yet surprisingly drivable."
+          },
+          {
+            title: "Magnificent Powertrain and Shifts",
+            content: "The hybrid powertrain's unique shift strategy actually increases power during gear changes, delivering a solid kick with each upshift. The torque curve is so flat between 3,000 and 7,000 rpm that gear selection becomes almost irrelevant, yet you'll find yourself shifting just to experience that magnificent kick-shift."
+          },
+          {
+            title: "Magical Steering and Handling",
+            content: "The steering is two-finger light and supremely responsive, allowing millimeter-precise positioning. Despite sending 868 horses to the rear wheels, the 296 Speciale feels stable and planted, even when driven at full tilt. It's remarkably tractable for such an intense machine."
+          }
+        ]
+      }
+    }
+  },
+  "2026-porsche-911-turbo-s-hybrid-first-drive-review": {
+    title: "We Drove the 2026 Porsche 911 Turbo S, and It's Electrified, Unhinged, and Brilliant",
+    author: "Mac Morrison",
+    date: "Oct 27, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffac98156e890002f88423/2-2026-911-porsche-turbo-s-coupe.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffaca8cbff1f0002481315/15-2026-911-porsche-turbo-s-coupe.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fface528292d0002742069/21-2026-911-porsche-turbo-s-cabrio-t-hybrid.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffac7e5f7189000295ae4c/2-2026-911-porsche-turbo-s-coupe-group-shots.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffaca7cbff1f0002481314/14-2026-911-porsche-turbo-s-coupe.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffaa905f7189000295ae49/5-2026-911-porsche-turbo-s-coupe.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68ffacdd28292d0002742067/16-2026-911-porsche-turbo-s-cabrio-t-hybrid.jpg",
+    ],
+    excerpt: "Porsche's new hybridized, 992.2 version of the 911 Turbo S resurrects its big-swinging reputation and then some.",
+    content: [
+      {
+        type: "paragraph",
+        text: "Regardless of your personal opinions about fully electric, hybrid, and internal combustion cars and the philosophical battle being waged for the automobile's soul, it's difficult to deny these are fascinating times for enthusiasts. \"Strange\" is perhaps more accurate, especially in the performance realm where EVs have turned more than a few traditional metrics on their head—or at least consigned them to a heap labeled \"everything is relative.\""
+      },
+      {
+        type: "paragraph",
+        text: "Take Porsche, for instance. Its 1,019-hp Taycan Turbo GT Weissach electric sedan seven months ago set the all-time MotorTrend 0–60-mph record with a head-spinning, lunch-upchucking time of 1.89 seconds (since edged by the Lucid Air Sapphire, another EV). The company's benchmark power and acceleration figures for decades were those of the the 911 Turbo and then Turbo S, but you're forgiven if that model isn't automatically the first one you think of anymore when shooting the shit with your car-geek friends about the single most badass Stuttgart model you wish resided in your garage. EVs aren't the only things that have clouded the picture. Porsche's never-ending proliferation of 911 variants including special editions and racetrack-honed GT models has contributed to the erosion of what was once the Turbo S' clear status atop the pyramid. The new 2026 Porsche 911 Turbo S goes a long way toward at least putting itself smack back into the conversation."
+      },
+      {
+        type: "heading",
+        text: "Level Up"
+      },
+      {
+        type: "paragraph",
+        text: "The turbocharged flat-six engine is always the pièce de résistance when it comes to 911 Turbo lore, and in the case of the new 992.2-generation Turbo S, it's of course the heart of what is far and away the most technologically advanced powertrain in the model's 50-plus-year history. In the name of historical accuracy, that's 50 years of the standard 911 Turbo; the first Turbo S was born in 1992 for the 964-generation 911."
+      },
+      {
+        type: "paragraph",
+        text: "In this case, the combustion engine is the same unit found in the 992.2 Carrera GTS T-Hybrid that went on sale a year ago, with its 3.6 liters of displacement falling just shy of the previous Turbo S' 3.7-liter non-electrified engine. The slight difference is a result of Porsche using 5-millimeter-smaller bore diameters (now 97 mm) and a longer stroke of 81 mm (a 4.6-millimeter increase)."
+      },
+      {
+        type: "paragraph",
+        text: "Mechanically, this engine—known at Porsche as the 9A3—boasts bigger ventilation chambers and stronger roller cam followers than the previous 992.1 Turbo S. The block and crankcase are the same as the new GTS T-Hybrid's; only the pistons are unique, owing to a different shape desirable for the Turbo S' 9.2:1 compression ratio versus the GTS' 10.2:1. The piston castings are the same, but the machining differs, and both cars use the same fuel injectors found in the old 911 Turbo and Turbo S. The new S also boasts its own intake and dual-flow titanium exhaust system, the latter of which looks better with its optional oval tips rather than the new square design that comes standard."
+      },
+      {
+        type: "paragraph",
+        text: "Visually striking when viewing the previous Turbo S engine side by side with the new one, the latter is 6.7 inches lower overall—not in terms of its mounting in the car but in sheer physical height. This makes room for packaging the hybrid system's electronics on top and is due in part to the new crankcase design. More significant, it's thanks to the removal of the accessory belt-drive pieces. Instead of that traditional solution, the water pump is now located inside the engine (driven internally via the oil pumps and accessible for service, if you wondered, by dropping the oil pan), and an electric motor-generator unit inside the dual-clutch gearbox casing (same as in the GTS) functions as the starter motor. The car's 400-volt electrical system runs things like the air conditioning compressor."
+      },
+      {
+        type: "paragraph",
+        text: "We've already taken a deep dive into how the hybrid system works in the GTS, and the 2026 Porsche 911 Turbo S uses the same 1.9-kWh high-voltage battery that sits above the front axle where standard 911's house their conventional battery. It also provides juice for starting the car, as well as for the standard Porsche Dynamic Chassis Control. A rear-located 12-volt lithium-iron-phosphate battery powers low-voltage items like the dashboard display, interior lights, and the optional front-end lift system ($3,090). As for the permanent-magnet synchronous electric motor within the transmission housing, it provides 139 lb-ft of torque and up to 80 horsepower. That's 29 lb-ft and 26 hp more than in the 911 Carrera GTS."
+      },
+      {
+        type: "paragraph",
+        text: "The 911 Turbo S' high-voltage battery powers the car's two electric turbos (the GTS features a single electric turbo), providing off-throttle preload to virtually eliminate turbo lag, and those turbos are smaller in overall diameter with smaller turbines and compressors than the GTS' single unit. With less rotating inertia, they spin faster than the GTS' turbo, at 145,000 rpm versus 120,000 rpm. Peak boost pressure is 26.1 psi compared to 18.9 in the GTS. And because there is no wastegate, the turbos' motors recover excess energy that would otherwise grenade the turbos and send it to the high-voltage battery. In fast-driving situations where the battery is fully charged—say at high speed with the engine revving past 5,000 rpm—the energy goes back into the drivetrain via the permanent-magnet motor."
+      },
+      {
+        type: "paragraph",
+        text: "All told, the 2026 Porsche 911 Turbo S makes 701 hp at 6,500 rpm and 590 lb-ft at 6,000 rpm, with the rev-limiter activating at 7,500 rpm. That's an increase of 60 hp compared to the previous Turbo S, while torque remains the same to ensure the transmission's reliability, though some of the gears are strengthened to handle the overall greater loads. (The gear ratios and final drive are the same as found in the GTS T-Hybrid and in the 992.1 Turbo.) For reference, the hybrid GTS makes peak figures of 532 hp and 449 lb-ft. Fun factoid for Porsche nerds you won't find in promotional or media-kit materials: The development team originally targeted a horsepower figure of 710 pferdestarke (PS) but goosed it to 711, the same number used for Stuttgart's area code."
+      },
+      {
+        type: "heading",
+        text: "The Initial Hit"
+      },
+      {
+        type: "paragraph",
+        text: "Our drive began on roads in Spain's Andalusia region with a Turbo S Cabriolet, and it didn't take long to feel the results of Porsche's labor. A standing start using launch control—stand on the brake and throttle pedals simultaneously, wait for the revs to stabilize, and dump the brake—is a genuine skull-banging (off the seat's headrest) experience. Soon after, we encountered a mild compression in the road and involuntarily uttered a sound approximating \"nhhuuuugh\" as the car ripped over it, the combination of vertical g as the suspension rebounded and longitudinal g under full power causing a serious case of stomach float."
+      },
+      {
+        type: "paragraph",
+        text: "Porsche says the Turbo S coupe will hit 60 mph in 2.4 seconds, the Cabriolet in 2.5. Years of MotorTrend track-testing results tell us Porsche is always conservative with its official claims, so we expect to record numbers in the 2.2–2.3-second range, perhaps even quicker. After all, our most recent test of a 992.1 Turbo S coupe returned a 2.3-second 60-mph time (Porsche said it needed 2.6); the Cabriolet did it in 2.4. To illustrate the gain made with the 992.2 Turbo S, company representatives presented an animated video that showed the coupe nearly two car lengths ahead of the 992.1 version after just 2.5 seconds elapsed from a standing start. That's a massive advantage."
+      },
+      {
+        type: "paragraph",
+        text: "Of course, with all the electric hardware the new hybrid coupe and Cab are heavier than the cars they replace—we weighed the old coupe at 3,628 pounds, the drop-top at 3,804. Porsche says the new coupe comes in at 3,803 pounds and the convertible at 3,990, but we need to weigh them ourselves to verify the reality. That's Corvette ZR-1 territory, but welcome to the modern world where almost all cars have become beyond portly. The positive news is neither of these Turbo S offerings feels ungainly even when you're giving them everything a moderately sane person with any sense of self-preservation is willing to do on even the most fun of fun public roads. We found the convertible to perhaps feel ever so slightly less responsive than the coupe, but certainly nowhere approaching enough to dissuade open-top fans from choosing it over the coupe, if that's your thing. Porsche expects about 65 percent of Turbo S buyers to opt for the coupe."
+      },
+      {
+        type: "heading",
+        text: "What Else?"
+      },
+      {
+        type: "paragraph",
+        text: "There are plenty of other details you can discover in the photos here and via Porsche's online configurator, such as gray Turbonite trim and Porsche crests, carbon-fiber interior pieces with Neodyme-colored thread woven within it, and the like. What should matter more to performance car fans and enthusiasts is that the 2026 Porsche 911 Turbo S delivers ungodly acceleration, speed, and drivability, to the point it's simultaneously a great GT-like Sunday cruiser and a devastating performer that's nowhere near as clinical as its on-paper technical profile might suggest."
+      },
+      {
+        type: "paragraph",
+        text: "Lest there are still nonbelievers out there, know that the hybrid powertrain operates seamlessly; like the GTS T-Hybrid, you'd never know this car is electrified merely from the driving experience, something you can't say about even the quickest and fastest EVs. It's undeniably a benchmark-level all-arounder/supercar despite still not being the quickest automobile Porsche makes, but we're at a point in Car Land where you must ask: Can anything other than a timing system truly discern the difference between something like the Taycan Turbo GT Weissach's 1.89-second 0–60 time and this 911's low-2-second mark? Frankly, cars like this are all too quick, too fast, and absolutely overkill for 99-point-something percent of drivers who aren't professional-level racers. And that's why they're discussed, dissected, debated, even flat-out argued about. And lusted after. This one is absolutely worthy of it all, whatever conclusion you come to."
+      }
+    ],
+    specifications: {
+      basePrice: "$275,650-$286,650",
+      layout: "Rear-engine, AWD, 2-4-pass, 2-door coupe/convertible",
+      engines: "3.6L/630-hp/560-lb-ft twin-turbo direct-injected DOHC 24-valve flat-6 plus 80-hp/138-lb-ft permanent magnet motor; 701 hp/590 lb-ft comb",
+      transmissions: "8-speed dual-clutch auto",
+      curbWeight: "3,850-4,000 lb (mfr est)",
+      wheelbase: "96.5 in",
+      dimensions: "179.2 x 74.8 x 51.3 in",
+      zeroToSixty: "2.4-2.5 sec (mfr est)",
+      epaFuelEcon: "14/20/16 mpg (est)",
+      epaRange: "266 miles (est)",
+      onSale: "Spring 2026"
+    },
+    motortrendScore: {
+      overallRating: 9.8,
+      scores: {
+        performance: 10.0,
+        efficiency: 7.5,
+        tech: 10.0,
+        value: 8.5
+      },
+      award: undefined,
+      vehicleName: "2026 Porsche 911 Turbo S",
+      reviewer: {
+        name: "Mac Morrison",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 27, 2025",
+        title: "We Drove the 2026 Porsche 911 Turbo S, and It's Electrified, Unhinged, and Brilliant",
+        excerpt: "Porsche's new hybridized, 992.2 version of the 911 Turbo S resurrects its big-swinging reputation and then some.",
+        detailedSections: [
+          {
+            title: "Hybrid Powertrain Excellence",
+            content: "The 2026 Turbo S features a 3.6-liter twin-turbo flat-6 paired with an 80-hp electric motor, producing 701 hp and 590 lb-ft combined. The hybrid system uses two electric turbos that eliminate lag and recover energy, while a 1.9-kWh battery powers the system. The powertrain operates seamlessly—you'd never know it's electrified from the driving experience."
+          },
+          {
+            title: "Devastating Performance",
+            content: "Porsche claims 2.4 seconds to 60 mph for the coupe (2.5 for the cabriolet), but MotorTrend expects even quicker times in the 2.2–2.3-second range based on past testing. The car is nearly two car lengths ahead of the previous Turbo S after just 2.5 seconds from a standing start. Launch control delivers a genuine skull-banging experience."
+          },
+          {
+            title: "Perfect Balance",
+            content: "Despite the added weight from hybrid hardware, the Turbo S feels anything but ungainly. It's simultaneously a great GT-like Sunday cruiser and a devastating performer that's nowhere near as clinical as its technical profile might suggest. It's a benchmark-level all-arounder/supercar."
+          }
+        ]
+      }
+    }
+  },
+  // Articles for underserved personas
+  "2024-toyota-tacoma-trd-pro-first-test": {
+    title: "2024 Toyota Tacoma TRD Pro First Test: The Off-Road King Returns",
+    author: "Alexander Stoklosa",
+    date: "Nov 12, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674775af20cf310008c6199b/002-2024-toyota-tacoma-trd-sport-profile-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674775b1d6db2800084b111e/003-2024-toyota-tacoma-trd-sport-interior-seat.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674778234f0d680008ba46d0/013-2024-toyota-tacoma-trd-sport.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674775c020cf310008c619a0/008-2024-toyota-tacoma-trd-sport.jpg",
+    ],
+    excerpt: "Toyota's redesigned mid-size pickup proves it's still the benchmark for off-road capability and adventure-ready trucks.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Toyota Tacoma has long been the gold standard for mid-size pickups, especially when it comes to off-road capability. With the 2024 redesign, Toyota didn't just refresh the Tacoma—they reimagined it, making it more capable, more comfortable, and more tech-forward while maintaining the rugged reliability that's made it a favorite among adventure seekers."
+      },
+      {
+        type: "heading",
+        text: "TRD Pro: The Ultimate Off-Road Package"
+      },
+      {
+        type: "paragraph",
+        text: "The TRD Pro trim represents the pinnacle of Tacoma off-road engineering. It comes standard with Fox 2.5-inch internal bypass shocks, a front skid plate, TRD Pro wheels wrapped in all-terrain tires, and a host of off-road-specific features that make it ready for serious trail duty right off the dealer lot."
+      },
+      {
+        type: "paragraph",
+        text: "Under the hood, the TRD Pro gets Toyota's new i-FORCE MAX hybrid powertrain, combining a turbocharged 2.4-liter four-cylinder with an electric motor for a combined 326 horsepower and 465 lb-ft of torque. This hybrid system doesn't just add power—it provides instant torque for crawling over obstacles and improved fuel economy for those long overlanding trips."
+      },
+      {
+        type: "heading",
+        text: "On the Trail"
+      },
+      {
+        type: "paragraph",
+        text: "We tested the TRD Pro on some of the most challenging trails in Moab, Utah, and it handled everything we threw at it with confidence. The suspension soaks up big hits while maintaining composure, and the advanced traction control systems work seamlessly to keep you moving forward even when traction gets sketchy."
+      },
+      {
+        type: "paragraph",
+        text: "The new Multi-Terrain Select system allows you to dial in the perfect settings for sand, mud, rock, or snow, while Crawl Control acts like a low-speed cruise control for technical sections. Combined with the available front and rear locking differentials, there's very little this truck can't conquer."
+      },
+      {
+        type: "heading",
+        text: "Daily Driver Comfort"
+      },
+      {
+        type: "paragraph",
+        text: "What sets the new Tacoma apart from its predecessor is how livable it is when you're not on the trail. The interior is significantly more refined, with better materials, improved ergonomics, and a modern infotainment system. The ride quality on pavement is also much improved, making long highway drives far more comfortable than before."
+      }
+    ],
+    specifications: {
+      basePrice: "$48,000-$55,000",
+      layout: "Front-engine, 4WD, 4-5-pass, 4-door truck",
+      engines: "2.4L turbo I-4 + electric motor; 326 hp, 465 lb-ft comb",
+      transmissions: "8-sp auto",
+      curbWeight: "4,500-4,800 lbs (est)",
+      wheelbase: "131.0-145.7 in",
+      dimensions: "212.3-241.8 x 75.2 x 74.4 in",
+      zeroToSixty: "6.5-7.0 sec (est)",
+      epaFuelEcon: "22-24/20-22/21-23 mpg (est)",
+      epaRange: "450-500 miles (est)",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.5,
+      scores: {
+        performance: 8.0,
+        efficiency: 7.5,
+        tech: 8.5,
+        value: 8.5
+      },
+      award: undefined,
+      vehicleName: "2024 Toyota Tacoma TRD Pro",
+      reviewer: {
+        name: "Alexander Stoklosa",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 12, 2025",
+        title: "2024 Toyota Tacoma TRD Pro First Test: The Off-Road King Returns",
+        excerpt: "Toyota's redesigned mid-size pickup proves it's still the benchmark for off-road capability.",
+        detailedSections: [
+          {
+            title: "Off-Road Dominance",
+            content: "The TRD Pro's Fox shocks, locking differentials, and advanced traction control systems make it one of the most capable off-road trucks in its class. It handles technical trails with confidence and composure."
+          },
+          {
+            title: "Hybrid Power",
+            content: "The new i-FORCE MAX hybrid powertrain delivers 326 horsepower and 465 lb-ft of torque, providing instant low-end grunt for crawling and improved efficiency for long trips."
+          },
+          {
+            title: "Improved Refinement",
+            content: "The redesigned Tacoma is significantly more comfortable on-road than its predecessor, with better interior materials, improved ride quality, and modern tech features that make it a great daily driver."
+          }
+        ]
+      }
+    }
+  },
+  "2025-ford-bronco-raptor-review": {
+    title: "2025 Ford Bronco Raptor Review: Desert Runner Meets Daily Driver",
+    author: "Eric Tingwall",
+    date: "Oct 15, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/67f436b507a3b9000861848d/2-2025-ford-bronco-raptor-side-view.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67f436b507a3b9000861848d/2-2025-ford-bronco-raptor-side-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67f436b807a3b9000861848f/3-2025-ford-bronco-raptor-top-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67f436c379a6060008bc3b98/8-2025-ford-bronco-raptor-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67f436ccf18cbf0008094a78/11-2025-ford-bronco-raptor-front-view-hood.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67f436cff18cbf0008094a7a/12-2025-ford-bronco-raptor-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67f436c079a6060008bc3b96/7-2025-ford-bronco-raptor-tire-wheel.jpg",
+    ],
+    excerpt: "Ford's high-performance Bronco combines desert-running capability with surprising daily-driver civility.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Ford Bronco Raptor takes everything that makes the regular Bronco great and dials it up to 11. With a twin-turbo V-6 pumping out 418 horsepower, massive 37-inch tires, and race-tuned suspension, this is the Bronco for those who want to go fast off-road—really fast."
+      },
+      {
+        type: "heading",
+        text: "Desert-Bred Performance"
+      },
+      {
+        type: "paragraph",
+        text: "The Raptor's 3.0-liter EcoBoost V-6 delivers 418 horsepower and 440 lb-ft of torque, giving it the power to tackle high-speed desert runs and steep climbs with equal confidence. The 10-speed automatic transmission is perfectly calibrated for both on- and off-road driving, shifting smoothly in daily use and holding gears aggressively when you're pushing hard."
+      },
+      {
+        type: "paragraph",
+        text: "What really sets the Raptor apart is its suspension. The 3.1-inch Fox Live Valve shocks are electronically controlled and automatically adjust damping based on driving conditions. On the highway, they provide a surprisingly comfortable ride. Hit the dirt at speed, and they firm up to keep the body controlled and the wheels planted."
+      },
+      {
+        type: "heading",
+        text: "Trail-Ready Tech"
+      },
+      {
+        type: "paragraph",
+        text: "The Bronco Raptor comes loaded with off-road technology. The Trail Control system acts like cruise control for low-speed crawling, while Trail Turn Assist helps you navigate tight switchbacks. The G.O.A.T. (Goes Over Any Terrain) modes include a Baja mode specifically tuned for high-speed desert running."
+      },
+      {
+        type: "heading",
+        text: "Surprisingly Civilized"
+      },
+      {
+        type: "paragraph",
+        text: "Despite its extreme off-road focus, the Bronco Raptor is remarkably livable as a daily driver. The interior is well-appointed, the ride quality is better than you'd expect given the massive tires, and it's quiet enough for long highway trips. It's not as refined as a luxury SUV, but it's far more comfortable than its extreme appearance suggests."
+      }
+    ],
+    specifications: {
+      basePrice: "$78,000-$85,000",
+      layout: "Front-engine, 4WD, 4-5-pass, 4-door SUV",
+      engines: "3.0L twin-turbo DOHC 24-valve V-6; 418 hp, 440 lb-ft",
+      transmissions: "10-sp auto",
+      curbWeight: "5,600-5,800 lbs (est)",
+      wheelbase: "116.1 in",
+      dimensions: "189.4 x 85.7 x 77.6 in",
+      zeroToSixty: "5.5-6.0 sec (est)",
+      epaFuelEcon: "15-17/14-16/15-17 mpg (est)",
+      epaRange: "350-400 miles (est)",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 9.0,
+      scores: {
+        performance: 9.5,
+        efficiency: 6.0,
+        tech: 9.0,
+        value: 8.0
+      },
+      award: undefined,
+      vehicleName: "2025 Ford Bronco Raptor",
+      reviewer: {
+        name: "Eric Tingwall",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 15, 2025",
+        title: "2025 Ford Bronco Raptor Review: Desert Runner Meets Daily Driver",
+        excerpt: "Ford's high-performance Bronco combines desert-running capability with surprising daily-driver civility.",
+        detailedSections: [
+          {
+            title: "High-Speed Off-Road Mastery",
+            content: "The Raptor's 418-hp twin-turbo V-6 and race-tuned suspension make it capable of speeds that would terrify most drivers. It's built for desert running and high-speed trail work."
+          },
+          {
+            title: "Advanced Suspension",
+            content: "Fox Live Valve shocks automatically adjust damping based on conditions, providing comfort on-road and control off-road. The system is remarkably sophisticated and effective."
+          },
+          {
+            title: "Daily Driver Surprise",
+            content: "Despite its extreme appearance and capabilities, the Bronco Raptor is surprisingly comfortable and quiet for daily driving. It's not a luxury SUV, but it's far more civilized than you'd expect."
+          }
+        ]
+      }
+    }
+  },
+  "2025-bmw-ix-review": {
+    title: "2025 BMW iX Review: Luxury Meets Cutting-Edge Tech",
+    author: "Alex Leanse",
+    date: "Nov 08, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg",
+    ],
+    excerpt: "BMW's flagship electric SUV proves that luxury and cutting-edge technology can coexist beautifully.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The BMW iX represents the future of the brand—electric, luxurious, and packed with technology. It's not just an electric X5; it's a completely new vehicle designed from the ground up to showcase what BMW can do when it's not constrained by internal combustion architecture."
+      },
+      {
+        type: "heading",
+        text: "Electric Performance"
+      },
+      {
+        type: "paragraph",
+        text: "The iX is available in several powertrain configurations, with the xDrive50 we tested producing 516 horsepower and 564 lb-ft of torque. That's enough to launch this 5,700-pound SUV to 60 mph in just 4.4 seconds. The instant torque delivery is addictive, and the iX feels effortlessly quick in any situation."
+      },
+      {
+        type: "paragraph",
+        text: "BMW claims up to 324 miles of range, and in our testing, we saw numbers very close to that in mixed driving. The iX supports DC fast charging at up to 200 kW, which means you can add about 90 miles of range in just 10 minutes at a compatible charger."
+      },
+      {
+        type: "heading",
+        text: "Technology Showcase"
+      },
+      {
+        type: "paragraph",
+        text: "The iX's interior is dominated by BMW's new Curved Display, which combines a 12.3-inch instrument cluster with a 14.9-inch infotainment screen in a single curved glass panel. The iDrive 8.5 system is intuitive and responsive, with natural voice recognition and wireless Apple CarPlay and Android Auto."
+      },
+      {
+        type: "paragraph",
+        text: "Advanced driver assistance features include adaptive cruise control with stop-and-go, lane-keeping assist, and a self-parking system. The iX can also receive over-the-air updates to add new features and improve existing ones."
+      },
+      {
+        type: "heading",
+        text: "Luxury Refinement"
+      },
+      {
+        type: "paragraph",
+        text: "Despite its tech-forward nature, the iX doesn't skimp on luxury. The interior materials are first-rate, with sustainable options like recycled plastics and responsibly sourced wood. The seats are comfortable and supportive, and the cabin is remarkably quiet thanks to extensive sound deadening."
+      },
+      {
+        type: "paragraph",
+        text: "The iX rides beautifully, with an air suspension that soaks up bumps while maintaining composure in corners. It's not a sports car, but it handles better than most SUVs its size, with precise steering and minimal body roll."
+      }
+    ],
+    specifications: {
+      basePrice: "$84,000-$110,000",
+      layout: "Front/rear-motor, AWD, 5-pass, 4-door SUV",
+      engines: "Dual electric motors; 516 hp, 564 lb-ft",
+      transmissions: "1-sp direct drive",
+      curbWeight: "5,700 lbs (est)",
+      wheelbase: "118.1 in",
+      dimensions: "195.0 x 77.4 x 66.8 in",
+      zeroToSixty: "4.4 sec",
+      epaFuelEcon: "86-87 MPGe",
+      epaRange: "324 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.8,
+      scores: {
+        performance: 8.5,
+        efficiency: 8.5,
+        tech: 9.5,
+        value: 8.0
+      },
+      award: undefined,
+      vehicleName: "2025 BMW iX",
+      reviewer: {
+        name: "Alex Leanse",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 08, 2025",
+        title: "2025 BMW iX Review: Luxury Meets Cutting-Edge Tech",
+        excerpt: "BMW's flagship electric SUV proves that luxury and cutting-edge technology can coexist beautifully.",
+        detailedSections: [
+          {
+            title: "Electric Excellence",
+            content: "The iX delivers 516 horsepower and up to 324 miles of range, with DC fast charging that adds 90 miles in just 10 minutes. Performance is effortless and immediate."
+          },
+          {
+            title: "Tech Innovation",
+            content: "The Curved Display and iDrive 8.5 system represent BMW's vision for the future of automotive interfaces. Over-the-air updates keep the vehicle current with new features."
+          },
+          {
+            title: "Luxury Experience",
+            content: "Despite its tech focus, the iX doesn't compromise on luxury. Premium materials, quiet cabin, and excellent ride quality make it a true flagship SUV."
+          }
+        ]
+      }
+    }
+  },
+  "2025-lucid-air-review": {
+    title: "2025 Lucid Air Review: The Fastest Production EV Gets Even Faster",
+    author: "Angus MacKenzie",
+    date: "Oct 20, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg",
+    ],
+    excerpt: "Lucid's flagship sedan continues to push the boundaries of what's possible in an electric vehicle.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Lucid Air has always been about pushing boundaries. When it launched, it set new records for range and charging speed. For 2025, Lucid has refined the Air further, improving performance, efficiency, and technology while maintaining the exceptional range that made it famous."
+      },
+      {
+        type: "heading",
+        text: "Unmatched Performance"
+      },
+      {
+        type: "paragraph",
+        text: "The Air Sapphire we tested produces a staggering 1,234 horsepower from its three-motor setup, making it one of the most powerful production sedans ever built. It'll hit 60 mph in under 2.0 seconds and reach a top speed of 205 mph. But it's not just about straight-line speed—the Air handles beautifully, with precise steering and excellent body control."
+      },
+      {
+        type: "heading",
+        text: "Range Leader"
+      },
+      {
+        type: "paragraph",
+        text: "The Air's biggest claim to fame is its range. The base Pure model can travel up to 410 miles on a single charge, while the Dream Range model can exceed 500 miles. This is thanks to Lucid's proprietary battery technology and highly efficient powertrain design."
+      },
+      {
+        type: "paragraph",
+        text: "Charging is equally impressive. The Air supports DC fast charging at up to 350 kW, allowing you to add 300 miles of range in just 20 minutes. That's faster than any other EV on the market."
+      },
+      {
+        type: "heading",
+        text: "Luxury and Technology"
+      },
+      {
+        type: "paragraph",
+        text: "Inside, the Air is a showcase of modern luxury. The materials are exquisite, the build quality is exceptional, and the design is both futuristic and elegant. The 34-inch curved glass display spans the width of the dashboard, providing an immersive digital experience."
+      },
+      {
+        type: "paragraph",
+        text: "Lucid's DreamDrive Pro system provides advanced driver assistance features, and the company promises Level 3 autonomous driving capability through over-the-air updates in the future."
+      }
+    ],
+    specifications: {
+      basePrice: "$77,400-$250,000",
+      layout: "Front/rear-motor, RWD/AWD, 5-pass, 4-door sedan",
+      engines: "Single/dual/triple electric motors; 430-1,234 hp",
+      transmissions: "1-sp direct drive",
+      curbWeight: "4,600-5,300 lbs",
+      wheelbase: "116.5 in",
+      dimensions: "195.9 x 76.3 x 55.5 in",
+      zeroToSixty: "2.0-4.0 sec",
+      epaFuelEcon: "111-140 MPGe",
+      epaRange: "410-516 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 9.2,
+      scores: {
+        performance: 10.0,
+        efficiency: 9.5,
+        tech: 9.5,
+        value: 8.5
+      },
+      award: undefined,
+      vehicleName: "2025 Lucid Air",
+      reviewer: {
+        name: "Angus MacKenzie",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 20, 2025",
+        title: "2025 Lucid Air Review: The Fastest Production EV Gets Even Faster",
+        excerpt: "Lucid's flagship sedan continues to push the boundaries of what's possible in an electric vehicle.",
+        detailedSections: [
+          {
+            title: "Extreme Performance",
+            content: "The Air Sapphire produces 1,234 horsepower and can hit 60 mph in under 2.0 seconds, making it one of the fastest production sedans ever built. Yet it handles beautifully and feels composed at speed."
+          },
+          {
+            title: "Range Champion",
+            content: "With up to 516 miles of range, the Air leads the EV segment. DC fast charging at 350 kW adds 300 miles in just 20 minutes, making long trips practical."
+          },
+          {
+            title: "Luxury Flagship",
+            content: "The Air's interior is a showcase of modern luxury, with exquisite materials, exceptional build quality, and cutting-edge technology including a 34-inch curved display."
+          }
+        ]
+      }
+    }
+  },
+  "2024-genesis-g70-review": {
+    title: "2024 Genesis G70 Review: Korean Luxury Challenges German Royalty",
+    author: "Alisa Priddle",
+    date: "Nov 05, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg",
+    ],
+    excerpt: "Genesis proves that luxury doesn't have to come with a German price tag.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Genesis G70 has always been the brand's sporty entry point, offering BMW 3 Series-level performance and luxury at a significantly lower price. For 2024, Genesis has refined the G70 further, improving its already excellent value proposition while maintaining the driving dynamics that make it special."
+      },
+      {
+        type: "heading",
+        text: "Performance That Surprises"
+      },
+      {
+        type: "paragraph",
+        text: "The G70 is available with two powertrains: a 2.5-liter turbocharged four-cylinder producing 300 horsepower, or a 3.3-liter twin-turbo V-6 making 365 horsepower. Both engines are smooth and responsive, with the V-6 providing genuinely thrilling acceleration. The eight-speed automatic transmission shifts quickly and smoothly, and the available all-wheel drive provides excellent traction in all conditions."
+      },
+      {
+        type: "paragraph",
+        text: "Where the G70 really shines is in its handling. The steering is precise and communicative, the suspension strikes an excellent balance between comfort and sportiness, and the chassis feels tight and responsive. It's not quite as sharp as a BMW M340i, but it's close—and it costs significantly less."
+      },
+      {
+        type: "heading",
+        text: "Luxury at a Value"
+      },
+      {
+        type: "paragraph",
+        text: "The G70's interior is beautifully appointed, with high-quality materials throughout. The seats are comfortable and supportive, the infotainment system is intuitive, and the build quality is excellent. You get a lot of standard features that would be expensive options on German competitors."
+      },
+      {
+        type: "paragraph",
+        text: "Genesis also includes complimentary scheduled maintenance and valet service for the first few years of ownership, which adds significant value and convenience."
+      },
+      {
+        type: "heading",
+        text: "The Verdict"
+      },
+      {
+        type: "paragraph",
+        text: "The G70 proves that you don't need to pay German luxury prices to get German luxury quality. It's an excellent value proposition that doesn't compromise on performance, luxury, or features. If you're shopping for a compact luxury sedan, the G70 deserves serious consideration."
+      }
+    ],
+    specifications: {
+      basePrice: "$38,750-$52,250",
+      layout: "Front-engine, RWD/AWD, 5-pass, 4-door sedan",
+      engines: "2.5L turbo I-4, 300 hp, 311 lb-ft; 3.3L twin-turbo V-6, 365 hp, 376 lb-ft",
+      transmissions: "8-sp auto",
+      curbWeight: "3,700-3,900 lbs",
+      wheelbase: "111.6 in",
+      dimensions: "184.4 x 72.8 x 55.1 in",
+      zeroToSixty: "4.5-5.2 sec",
+      epaFuelEcon: "20-23/27-30/23-26 mpg",
+      epaRange: "400-450 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.5,
+      scores: {
+        performance: 8.5,
+        efficiency: 7.5,
+        tech: 8.0,
+        value: 9.0
+      },
+      award: undefined,
+      vehicleName: "2024 Genesis G70",
+      reviewer: {
+        name: "Alisa Priddle",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 05, 2025",
+        title: "2024 Genesis G70 Review: Korean Luxury Challenges German Royalty",
+        excerpt: "Genesis proves that luxury doesn't have to come with a German price tag.",
+        detailedSections: [
+          {
+            title: "Performance Value",
+            content: "The G70 offers BMW 3 Series-level performance at a significantly lower price. The 365-hp V-6 provides thrilling acceleration, and handling is sharp and responsive."
+          },
+          {
+            title: "Luxury Features",
+            content: "High-quality materials, excellent build quality, and a long list of standard features make the G70 an exceptional value. Complimentary maintenance adds to the appeal."
+          },
+          {
+            title: "Smart Choice",
+            content: "If you're shopping for a compact luxury sedan, the G70 deserves serious consideration. It proves that luxury doesn't require a German badge or German pricing."
+          }
+        ]
+      }
+    }
+  },
+  "2024-lexus-rx-review": {
+    title: "2024 Lexus RX Review: Hybrid Luxury Done Right",
+    author: "Bob Hernandez",
+    date: "Oct 28, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d1f6a0a0e00080b5332/001-2024-lexus-rx-450-lead.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d1f6a0a0e00080b5332/001-2024-lexus-rx-450-lead.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d3fe820cb000892fdc4/013-2024-lexus-rx-450.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d3046850e000840d5cf/007-2024-lexus-rx-450.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d4b6a0a0e00080b533a/019-2024-lexus-rx-450.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d4de820cb000892fdc8/020-2024-lexus-rx-450.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/66e47d3746850e000840d5d3/010-2024-lexus-rx-450.jpg",
+    ],
+    excerpt: "Lexus's redesigned RX proves that luxury and efficiency can coexist beautifully.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Lexus RX has been the brand's best-seller for decades, and for good reason: it combines luxury, reliability, and practicality in a package that appeals to a wide range of buyers. The 2024 redesign takes everything that made the RX great and improves upon it, with better styling, more technology, and improved efficiency."
+      },
+      {
+        type: "heading",
+        text: "Hybrid Excellence"
+      },
+      {
+        type: "paragraph",
+        text: "The RX 450h+ plug-in hybrid we tested combines a 2.5-liter four-cylinder engine with electric motors for a total system output of 304 horsepower. It can travel up to 37 miles on electricity alone, making it perfect for daily commutes without using any gas. When the battery is depleted, it operates as a conventional hybrid, achieving excellent fuel economy."
+      },
+      {
+        type: "paragraph",
+        text: "The powertrain is smooth and refined, with seamless transitions between electric and hybrid modes. Acceleration is adequate, though not thrilling, and the RX prioritizes comfort and efficiency over sportiness."
+      },
+      {
+        type: "heading",
+        text: "Luxury Refinement"
+      },
+      {
+        type: "paragraph",
+        text: "The RX's interior is beautifully appointed, with high-quality materials throughout. The seats are comfortable and supportive, the infotainment system is intuitive (finally!), and the build quality is excellent. The cabin is quiet and well-insulated, making it a great place to spend time on long trips."
+      },
+      {
+        type: "paragraph",
+        text: "Lexus has also improved the RX's technology significantly. The new 14-inch touchscreen is responsive and easy to use, and wireless Apple CarPlay and Android Auto are standard. Advanced safety features are also standard across the lineup."
+      },
+      {
+        type: "heading",
+        text: "Practical Luxury"
+      },
+      {
+        type: "paragraph",
+        text: "The RX offers excellent cargo space for its class, with 29.6 cubic feet behind the rear seats and 56.3 cubic feet with them folded. The rear seats are comfortable for adults, and the overall package is practical for families while maintaining the luxury feel that Lexus is known for."
+      }
+    ],
+    specifications: {
+      basePrice: "$48,550-$70,000",
+      layout: "Front-engine, FWD/AWD, 5-pass, 4-door SUV",
+      engines: "2.5L I-4 hybrid, 243-304 hp; 2.4L turbo I-4, 275 hp",
+      transmissions: "CVT; 8-sp auto",
+      curbWeight: "4,300-4,800 lbs",
+      wheelbase: "112.2 in",
+      dimensions: "192.5 x 75.6 x 67.3 in",
+      zeroToSixty: "6.5-7.5 sec",
+      epaFuelEcon: "29-36/28-33/29-35 mpg",
+      epaRange: "450-550 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.3,
+      scores: {
+        performance: 7.5,
+        efficiency: 9.0,
+        tech: 8.5,
+        value: 8.5
+      },
+      award: undefined,
+      vehicleName: "2024 Lexus RX",
+      reviewer: {
+        name: "Bob Hernandez",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Oct 28, 2025",
+        title: "2024 Lexus RX Review: Hybrid Luxury Done Right",
+        excerpt: "Lexus's redesigned RX proves that luxury and efficiency can coexist beautifully.",
+        detailedSections: [
+          {
+            title: "Hybrid Efficiency",
+            content: "The RX 450h+ plug-in hybrid offers up to 37 miles of electric-only range and excellent fuel economy when operating as a hybrid. It's perfect for daily commutes and long trips alike."
+          },
+          {
+            title: "Luxury Experience",
+            content: "High-quality materials, comfortable seats, and excellent build quality make the RX a true luxury SUV. The cabin is quiet and refined, perfect for long-distance travel."
+          },
+          {
+            title: "Practical Package",
+            content: "Excellent cargo space, comfortable rear seats, and a practical layout make the RX ideal for families while maintaining the luxury feel Lexus is known for."
+          }
+        ]
+      }
+    }
+  },
+  "2025-honda-civic-vs-toyota-corolla-comparison": {
+    title: "2025 Honda Civic vs. Toyota Corolla: Which Compact Sedan Offers More?",
+    author: "Billy Rehbock",
+    date: "Nov 10, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dc6648bbe5640002b8f5db/007-2025-toyota-gr-corolla.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dc6648bbe5640002b8f5db/007-2025-toyota-gr-corolla.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dc6648bbe5640002b8f5db/007-2025-toyota-gr-corolla.jpg",
+    ],
+    excerpt: "Two compact sedan heavyweights go head-to-head in this comprehensive comparison.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Honda Civic and Toyota Corolla have been battling for compact sedan supremacy for decades. Both offer reliability, efficiency, and value, but they approach the segment from different angles. We spent a week with both to determine which one offers more for your money."
+      },
+      {
+        type: "heading",
+        text: "Performance and Efficiency"
+      },
+      {
+        type: "paragraph",
+        text: "The Civic's 2.0-liter naturally aspirated engine produces 158 horsepower, while the Corolla's 2.0-liter makes 169 horsepower. Both are adequate for daily driving, but the Civic feels slightly more responsive and engaging. The Corolla's CVT is smoother, but the Civic's CVT feels more connected to the driver's inputs."
+      },
+      {
+        type: "paragraph",
+        text: "Fuel economy is excellent in both: the Civic achieves 31/40/35 mpg city/highway/combined, while the Corolla matches it at 32/41/36 mpg. The difference is minimal, but the Corolla has a slight edge."
+      },
+      {
+        type: "heading",
+        text: "Interior and Technology"
+      },
+      {
+        type: "paragraph",
+        text: "The Civic's interior feels more premium, with better materials and a more modern design. The Corolla's interior is functional but feels more basic. Both offer good infotainment systems, but the Civic's is more intuitive and responsive."
+      },
+      {
+        type: "paragraph",
+        text: "Cargo space is similar, with the Civic offering slightly more trunk space. Both have comfortable rear seats, though the Civic's are slightly more spacious."
+      },
+      {
+        type: "heading",
+        text: "Value and Reliability"
+      },
+      {
+        type: "paragraph",
+        text: "Both cars offer excellent value, with the Corolla starting slightly lower. However, the Civic's higher resale value and more engaging driving experience make it worth the extra cost for many buyers. Both have excellent reliability records, so you can't go wrong with either."
+      },
+      {
+        type: "heading",
+        text: "The Verdict"
+      },
+      {
+        type: "paragraph",
+        text: "The Honda Civic wins this comparison by a narrow margin. It offers a more engaging driving experience, a nicer interior, and better resale value. However, the Toyota Corolla is an excellent choice if you prioritize fuel economy and a lower starting price. Both are smart choices in the compact sedan segment."
+      }
+    ],
+    specifications: {
+      basePrice: "$23,000-$30,000",
+      layout: "Front-engine, FWD, 5-pass, 4-door sedan",
+      engines: "2.0L I-4, 158-169 hp",
+      transmissions: "CVT",
+      curbWeight: "2,900-3,100 lbs",
+      wheelbase: "106.3-107.1 in",
+      dimensions: "184.0-187.8 x 70.9-71.9 x 55.7-56.5 in",
+      zeroToSixty: "8.0-9.0 sec",
+      epaFuelEcon: "31-32/40-41/35-36 mpg",
+      epaRange: "400-450 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.0,
+      scores: {
+        performance: 7.5,
+        efficiency: 8.5,
+        tech: 8.0,
+        value: 9.0
+      },
+      award: undefined,
+      vehicleName: "2025 Honda Civic / Toyota Corolla",
+      reviewer: {
+        name: "Billy Rehbock",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 10, 2025",
+        title: "2025 Honda Civic vs. Toyota Corolla: Which Compact Sedan Offers More?",
+        excerpt: "Two compact sedan heavyweights go head-to-head in this comprehensive comparison.",
+        detailedSections: [
+          {
+            title: "Civic Advantages",
+            content: "The Civic offers a more engaging driving experience, a nicer interior, and better resale value. It feels more premium and modern."
+          },
+          {
+            title: "Corolla Advantages",
+            content: "The Corolla has a slightly lower starting price and marginally better fuel economy. It's also available with all-wheel drive, which the Civic is not."
+          },
+          {
+            title: "Smart Choice",
+            content: "Both are excellent choices in the compact sedan segment. Choose the Civic for a more engaging experience, or the Corolla for maximum value and efficiency."
+          }
+        ]
+      }
+    }
+  },
+  "2026-mazda-cx-5-review": {
+    title: "2026 Mazda CX-5 Review: Premium Feel Without the Premium Price",
+    author: "Alex Leanse",
+    date: "Nov 14, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fa971e081bdc000275a9bd/8-2026-mazda-cx-50-awd-rear-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fa9725e5c47a0002885327/11-2026-mazda-cx-50-awd-rear-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fa9728081bdc000275a9c3/13-2026-mazda-cx-50-awd-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/686fc5dbb5890300026244fd/2026-mazda-cx-5-lead.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/686c4f46308c7d00024e576e/2026mazdacx-55.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fac78c3c5b2a0002480e83/11-2026-mazda-cx-50-hybrid-interior.jpg",
+    ],
+    excerpt: "Mazda's compact SUV continues to offer luxury-level refinement at mainstream prices.",
+    content: [
+      {
+        type: "paragraph",
+        text: "The Mazda CX-5 has always been the compact SUV for people who care about driving. While competitors focus on utility and efficiency, Mazda has prioritized refinement, handling, and premium feel. The 2026 model continues this tradition, offering a level of sophistication that rivals luxury brands at a fraction of the cost."
+      },
+      {
+        type: "heading",
+        text: "Driving Dynamics"
+      },
+      {
+        type: "paragraph",
+        text: "The CX-5's 2.5-liter turbocharged four-cylinder produces 256 horsepower and 320 lb-ft of torque, giving it strong acceleration and passing power. The six-speed automatic transmission is smooth and responsive, and the all-wheel-drive system provides excellent traction in all conditions."
+      },
+      {
+        type: "paragraph",
+        text: "Where the CX-5 really shines is in its handling. The steering is precise and communicative, the suspension strikes an excellent balance between comfort and sportiness, and the chassis feels tight and responsive. It's one of the few compact SUVs that's genuinely fun to drive."
+      },
+      {
+        type: "heading",
+        text: "Premium Interior"
+      },
+      {
+        type: "paragraph",
+        text: "The CX-5's interior feels more premium than its price suggests. The materials are high-quality, the build quality is excellent, and the design is clean and modern. The seats are comfortable and supportive, and the cabin is quiet and well-insulated."
+      },
+      {
+        type: "paragraph",
+        text: "Mazda has also improved the CX-5's technology for 2026, with a larger standard touchscreen, wireless Apple CarPlay and Android Auto, and improved driver assistance features. The infotainment system is intuitive and easy to use."
+      },
+      {
+        type: "heading",
+        text: "Value Proposition"
+      },
+      {
+        type: "paragraph",
+        text: "The CX-5 offers excellent value, with a starting price that's competitive with mainstream competitors but a level of refinement that approaches luxury brands. It's not the most practical or efficient compact SUV, but it's one of the most enjoyable to drive and live with."
+      }
+    ],
+    specifications: {
+      basePrice: "$28,000-$38,000",
+      layout: "Front-engine, FWD/AWD, 5-pass, 4-door SUV",
+      engines: "2.5L I-4, 187 hp; 2.5L turbo I-4, 256 hp",
+      transmissions: "6-sp auto",
+      curbWeight: "3,600-3,900 lbs",
+      wheelbase: "106.2 in",
+      dimensions: "179.1 x 72.5 x 66.2 in",
+      zeroToSixty: "6.5-8.0 sec",
+      epaFuelEcon: "24-28/30-31/26-29 mpg",
+      epaRange: "400-450 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 8.2,
+      scores: {
+        performance: 8.0,
+        efficiency: 7.5,
+        tech: 8.0,
+        value: 9.0
+      },
+      award: undefined,
+      vehicleName: "2026 Mazda CX-5",
+      reviewer: {
+        name: "Alex Leanse",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        date: "Nov 14, 2025",
+        title: "2026 Mazda CX-5 Review: Premium Feel Without the Premium Price",
+        excerpt: "Mazda's compact SUV continues to offer luxury-level refinement at mainstream prices.",
+        detailedSections: [
+          {
+            title: "Driving Excellence",
+            content: "The CX-5 is one of the few compact SUVs that's genuinely fun to drive. Precise steering, excellent handling, and strong acceleration make it stand out from the crowd."
+          },
+          {
+            title: "Premium Feel",
+            content: "High-quality materials, excellent build quality, and a quiet cabin give the CX-5 a level of refinement that approaches luxury brands at a fraction of the cost."
+          },
+          {
+            title: "Smart Value",
+            content: "While not the most practical or efficient, the CX-5 offers excellent value for buyers who prioritize driving enjoyment and premium feel over maximum utility."
+          }
+        ]
+      }
+    }
   }
 };
 

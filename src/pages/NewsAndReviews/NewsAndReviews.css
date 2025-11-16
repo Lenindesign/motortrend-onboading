@@ -1,90 +1,90 @@
 /**
- * New Cars Page Styles
+ * News & Reviews Page Styles
  */
 
-.new-cars {
+.news-reviews {
   background-color: var(--color-neutrals-8);
   min-height: 100vh;
   padding: var(--spacing-3) 0;
 }
 
-.new-cars__container {
+.news-reviews__container {
   max-width: var(--max-width-container);
   margin: 0 auto;
   padding: 0;
 }
 
 @media (max-width: 1279px) {
-  .new-cars__container {
+  .news-reviews__container {
     padding: 0 16px;
   }
 }
 
 @media (max-width: 1023px) {
-  .new-cars__container {
+  .news-reviews__container {
     padding: 0 16px;
   }
 }
 
-.new-cars__section {
+.news-reviews__section {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: var(--spacing-4);
   margin-bottom: var(--section-spacing-vertical);
 }
 
-.new-cars__left-column {
+.news-reviews__left-column {
   width: 100%;
 }
 
-.new-cars__right-column {
+.news-reviews__right-column {
   width: 100%;
 }
 
 /* Responsive - Mobile First */
 /* Tablet and below */
 @media (max-width: 1024px) {
-  .new-cars__section {
+  .news-reviews__section {
     grid-template-columns: 1fr;
     gap: var(--spacing-3);
   }
 
-  .new-cars__right-column {
+  .news-reviews__right-column {
     display: none;
   }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .new-cars {
+  .news-reviews {
     padding: var(--spacing-2) 0;
   }
 
-  .new-cars__container {
+  .news-reviews__container {
     padding: 0 16px;
   }
 
-  .new-cars__section {
+  .news-reviews__section {
     margin-bottom: var(--spacing-3);
     gap: var(--spacing-2);
   }
 
-  .new-cars__left-column {
+  .news-reviews__left-column {
     width: 100%;
   }
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
-  .new-cars {
+  .news-reviews {
     padding: var(--spacing-2) 0;
   }
 
-  .new-cars__container {
+  .news-reviews__container {
     padding: 0 16px;
   }
 
-  .new-cars__section {
+  .news-reviews__section {
     margin-bottom: var(--spacing-2);
     gap: var(--spacing-2);
   }

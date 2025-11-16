@@ -15,6 +15,18 @@
   padding: 0;
 }
 
+@media (max-width: 1279px) {
+  .rankings-awards__container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .rankings-awards__container {
+    padding: 0 16px;
+  }
+}
+
 /* Hero Section */
 .rankings-awards__hero {
   text-align: center;
@@ -50,7 +62,7 @@
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  margin-top: var(--spacing-6);
+  margin-top: var(--spacing-3);
   margin-bottom: var(--spacing-6);
   padding: 0;
   cursor: pointer;
@@ -254,7 +266,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .rankings-awards__container {
-    padding: 0;
+    padding: 0 16px;
   }
 
   .rankings-awards__title {

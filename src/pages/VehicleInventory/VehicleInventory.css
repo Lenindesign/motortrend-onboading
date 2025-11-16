@@ -5,7 +5,7 @@
 
 .vehicle-inventory {
   min-height: calc(100vh - 160px);
-  padding: var(--spacing-4) 0;
+  padding: var(--spacing-3) 0;
   background-color: var(--color-white);
 }
 
@@ -13,6 +13,20 @@
   max-width: var(--max-width-container);
   padding-left: 0;
   padding-right: 0;
+}
+
+@media (max-width: 1279px) {
+  .vehicle-inventory .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .vehicle-inventory .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 /* Hero Slider Section */
@@ -90,6 +104,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 32px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .vehicle-inventory__hero-name {
@@ -110,6 +126,9 @@
   gap: 24px;
   flex: 1;
   justify-content: flex-end;
+  min-width: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .vehicle-inventory__hero-listing-btn {
@@ -158,6 +177,10 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
+  min-width: 0;
+  flex-shrink: 0;
+  height: fit-content;
+  align-self: flex-start;
 }
 
 .vehicle-inventory__hero-rating-label-wrapper {
@@ -192,12 +215,27 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+  min-width: 0;
+  height: fit-content;
+  align-self: flex-start;
 }
 
 .vehicle-inventory__hero-rating-icon {
   flex-shrink: 0;
   width: 42px;
   height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  max-width: 42px;
+  max-height: 42px;
+  object-fit: contain;
+  display: block;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
 }
 
 .vehicle-inventory__hero-rating-icon.staff,
@@ -205,6 +243,18 @@
 .vehicle-inventory__hero-rating-icon.add-rate {
   width: 42px;
   height: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  max-width: 42px;
+  max-height: 42px;
+  object-fit: contain;
+  display: block;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
 }
 
 .vehicle-inventory__hero-rating-value {
@@ -497,6 +547,8 @@
     flex-direction: row;
     align-items: center;
     gap: 16px;
+    min-width: 0;
+    overflow: hidden;
     flex-wrap: wrap;
   }
 
@@ -513,6 +565,56 @@
   .vehicle-inventory__hero-rating-icon {
     width: 32px;
     height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    object-fit: contain;
+    display: block;
+    vertical-align: middle;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .vehicle-inventory__hero-rating-icon.staff,
+  .vehicle-inventory__hero-rating-icon.community,
+  .vehicle-inventory__hero-rating-icon.add-rate {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    max-width: 32px;
+    max-height: 32px;
+    object-fit: contain;
+    display: block;
+    vertical-align: middle;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .vehicle-inventory__hero-rating-value-wrapper {
+    min-width: 0;
+    height: fit-content;
+    align-self: flex-start;
+  }
+
+  .vehicle-inventory__hero-rating-item {
+    min-width: 0;
+    flex-shrink: 0;
+    height: fit-content;
+    align-self: flex-start;
+  }
+
+  .vehicle-inventory__hero-ratings-list {
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow: hidden;
   }
 
   .vehicle-inventory__hero-listing-btn {
@@ -579,7 +681,7 @@
 
 @media (max-width: 480px) {
   .vehicle-inventory {
-    padding: var(--spacing-4) 0;
+    padding: var(--spacing-3) 0;
   }
 
   .vehicle-inventory__grid {

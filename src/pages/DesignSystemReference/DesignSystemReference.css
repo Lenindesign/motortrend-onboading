@@ -11,7 +11,19 @@
 .design-system-reference__container {
   max-width: var(--max-width-container);
   margin: 0 auto;
-  padding: 0 var(--section-spacing-horizontal);
+  padding: 0;
+}
+
+@media (max-width: 1279px) {
+  .design-system-reference__container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .design-system-reference__container {
+    padding: 0 16px;
+  }
 }
 
 .design-system-reference__header {

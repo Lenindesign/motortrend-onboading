@@ -5,10 +5,22 @@
 .membership-page {
   min-height: 100vh;
   background-color: var(--color-neutrals-1);
-  padding: 40px 20px;
+  padding: 40px 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 1279px) {
+  .membership-page {
+    padding: 40px 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .membership-page {
+    padding: 40px 16px;
+  }
 }
 
 .membership-page__container {

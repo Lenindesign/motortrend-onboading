@@ -118,7 +118,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
               </div>
             </div>
             <div className="rating-modal__title-wrapper">
-              <h2 className="rating-modal__title">RATE THIS</h2>
+            <h2 className="rating-modal__title">RATE THIS</h2>
               <div className="rating-modal__info-icon-wrapper">
                 <img 
                   src="https://d2kde5ohu8qb21.cloudfront.net/files/6918b2a80074bb0002840bac/demography.svg"

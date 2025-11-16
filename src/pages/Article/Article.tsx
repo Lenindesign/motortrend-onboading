@@ -38,7 +38,8 @@ export const Article: React.FC = () => {
     'top-10-performance-enthusiast',
     'top-10-eco-future-ready',
     'top-10-luxury-comfort',
-    'top-10-utility-work'
+    'top-10-utility-work',
+    '2026-motortrend-car-of-the-year'
   ];
   const isPremiumArticle = slug ? premiumArticles.includes(slug) : false;
   
@@ -96,22 +97,6 @@ export const Article: React.FC = () => {
     return loadedArticle;
   }, [slug]);
   
-  // Extract #1 vehicle name for Top 10 articles (for hero image)
-  const topVehicleName = useMemo(() => {
-    if (!isPremiumArticle || !articleData.content) return null;
-    
-    // Find the first heading that matches "1. [Vehicle Name]" pattern
-    for (const block of articleData.content) {
-      if (block.type === "heading" && block.text) {
-        const match = block.text.match(/^1\.\s*(.+)$/);
-        if (match) {
-          return match[1].trim();
-        }
-      }
-    }
-    return null;
-  }, [isPremiumArticle, articleData.content]);
-
   // Get all article images for gallery
   const articleImages = useMemo(() => {
     return articleData.images || [];
@@ -350,7 +335,13 @@ export const Article: React.FC = () => {
 
   // Generate community rating and staff rating
   const communityRating = useMemo(() => generateCommunityRating(vehicleName), [vehicleName]);
-  const staffRating = useMemo(() => generateStaffRating(vehicleName), [vehicleName]);
+  // Use motortrendScore.overallRating if available, otherwise generate from vehicle name
+  const staffRating = useMemo(() => {
+    if (motortrendScore.overallRating && article.motortrendScore) {
+      return motortrendScore.overallRating;
+    }
+    return generateStaffRating(vehicleName);
+  }, [motortrendScore, article.motortrendScore, vehicleName]);
   
   // Generate scores for staff rating tooltip
   const scores = useMemo(() => ({
@@ -683,7 +674,8 @@ export const Article: React.FC = () => {
   }, [articlesToShow, allArticles.length]);
 
   // Check if rating bar should be hidden for this article
-  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || isPremiumArticle;
+  // Car of the Year article should show rating bar even though it's premium
+  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || (isPremiumArticle && slug !== '2026-motortrend-car-of-the-year');
 
   // Scroll detection for sticky rate bar
   useEffect(() => {
@@ -759,12 +751,15 @@ export const Article: React.FC = () => {
           <div className="article__ratings-center">
             <div 
               ref={staffRatingRef}
-              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip" 
+              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--staff" 
               onClick={handleScrollToStaffRating}
               onMouseEnter={handleStaffTooltipMouseEnter}
               onMouseLeave={handleStaffTooltipMouseLeave}
             >
-              <span className="article__rating-label">MotorTrend</span>
+              <div className="article__rating-label-wrapper">
+                <span className="article__rating-label-top">MotorTrend</span>
+                <span className="article__rating-label-bottom">Rating</span>
+              </div>
               <span className="article__rating-value">{staffRating}</span>
               <StaffRatingTooltip
                 overallRating={staffRating}
@@ -778,12 +773,15 @@ export const Article: React.FC = () => {
             </div>
             <div 
               ref={communityRatingRef}
-              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip" 
+              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--community" 
               onClick={handleScrollToCommunityRatings}
               onMouseEnter={handleTooltipMouseEnter}
               onMouseLeave={handleTooltipMouseLeave}
             >
-              <span className="article__rating-label">Community ({communityRatingCount})</span>
+              <div className="article__rating-label-wrapper">
+                <span className="article__rating-label-top">Community</span>
+                <span className="article__rating-label-bottom">Rating ({communityRatingCount})</span>
+              </div>
               <img 
                 src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
                 alt="Community Rating Star" 
@@ -804,20 +802,29 @@ export const Article: React.FC = () => {
                 onRequestClose={() => setIsTooltipVisible(false)}
               />
             </div>
-            <button className="article__rate-btn" onClick={handleOpenRatingModal}>
-              <span className="article__rating-label">
-                {userRating > 0 ? 'Yours' : 'Rate Your Car'}
-              </span>
-              <img 
-                src={userRating > 0 
-                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
-                }
-                alt="Add Rating Star" 
-                className="article__rating-icon article__rating-icon--add-rate" 
-              />
-              {userRating > 0 && (
-                <span className="article__rating-value">{userRating}</span>
+            <button className="article__rate-btn article__rate-btn--mobile-hide" onClick={handleOpenRatingModal}>
+              {userRating > 0 ? (
+                <>
+                  <div className="article__rating-label-wrapper">
+                    <span className="article__rating-label-top">Your</span>
+                    <span className="article__rating-label-bottom">Rating</span>
+                  </div>
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                    alt="Your Rating Star" 
+                    className="article__rating-icon article__rating-icon--add-rate" 
+                  />
+                  <span className="article__rating-value">{userRating}</span>
+                </>
+              ) : (
+                <>
+                  <span className="article__rating-label">Rate Your Car</span>
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                    alt="Add Rating Star" 
+                    className="article__rating-icon article__rating-icon--add-rate" 
+                  />
+                </>
               )}
             </button>
           </div>
@@ -879,8 +886,8 @@ export const Article: React.FC = () => {
               <div className="article__hero">
                 <div className="article__hero-image-wrapper">
                   <img 
-                    src={topVehicleName ? vehicleImageFor(topVehicleName) : article.heroImage} 
-                    alt={topVehicleName || article.title}
+                    src={article.heroImage} 
+                    alt={article.title}
                     className="article__hero-image article__image-clickable"
                     onClick={() => handleImageClick(0)}
                     style={{ cursor: 'pointer' }}
@@ -949,95 +956,12 @@ export const Article: React.FC = () => {
                         // Use vehicle-specific image if available, otherwise fall back to index-based
                         const imageToUse = vehicleImageUrl || (imageIndex < contentImages.length ? contentImages[imageIndex] : null);
                         
-                        // Check if next block is a paragraph - if so, render image first, then heading, then paragraph
+                        // Check if next block is a paragraph - for listicles, render heading first, then image, then paragraph
                         const nextBlock = article.content[index + 1];
-                        const shouldMoveHeadingAfterImage = isPremiumArticle && imageToUse && nextBlock?.type === "paragraph";
+                        const isListicleItem = isPremiumArticle && imageToUse && nextBlock?.type === "paragraph";
                         
-                        if (shouldMoveHeadingAfterImage) {
-                          // Render image first
-                          if (imageToUse) {
-                            const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
-                            
-                            elements.push(
-                              <div 
-                                key={`image-after-${index}`} 
-                                className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
-                              >
-                                {rankingNumber && (
-                                  <div className="article__image-ranking-badge" data-number={`#${rankingNumber}`}>
-                                  </div>
-                                )}
-                                <img 
-                                  src={imageToUse} 
-                                  alt={vehicleNameForImage || `${article.title} - Image ${imageIndex + 2}`}
-                                  className={`article__image article__image-clickable ${isPremiumArticle ? 'article__image--premium' : ''}`}
-                                  onClick={() => {
-                                    if (vehicleNameForImage) {
-                                      // Navigate to vehicle page if vehicle name exists
-                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
-                                      navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
-                                    } else {
-                                      // Otherwise open gallery
-                                      handleImageClick(galleryIndex);
-                                    }
-                                  }}
-                                  style={{ cursor: 'pointer' }}
-                                />
-                                {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
-                                  <div className="article__image-score-overlay">
-                                    <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
-                                    <div className="article__image-score-ratings-list">
-                                      <div className="article__image-score-rating-item">
-                                        <div className="article__image-score-rating-label-wrapper">
-                                          <span className="article__image-score-rating-label-top">MotorTrend</span>
-                                          <span className="article__image-score-rating-label-bottom">Rating</span>
-                                        </div>
-                                        <div className="article__image-score-rating-value-wrapper">
-                                          <span className="article__image-score-rating-value">
-                                            {motortrendScoreForImage.toFixed(1)}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <div className="article__image-score-rating-item">
-                                        <div className="article__image-score-rating-label-wrapper">
-                                          <span className="article__image-score-rating-label-top">Community</span>
-                                          <span className="article__image-score-rating-label-bottom">
-                                            Rating <span className="article__image-score-rating-count">(252)</span>
-                                          </span>
-                                        </div>
-                                        <div className="article__image-score-rating-value-wrapper">
-                                          <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                                            alt="Community Rating Star" 
-                                            className="article__image-score-rating-icon community" 
-                                          />
-                                          <span className="article__image-score-rating-value">
-                                            {userScoreForImage.toFixed(1)}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <button 
-                                      className="article__image-score-cta cta cta--primary cta--default"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
-                                        navigate(`/vehicles/${year}/${make}/${model}`);
-                                      }}
-                                    >
-                                      See Local Listings
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                            // Only increment imageIndex if we used the index-based image
-                            if (!vehicleImageUrl) {
-                              imageIndex++;
-                            }
-                          }
-                          
-                          // Render heading after image/overlay
+                        if (isListicleItem) {
+                          // Render heading first (above photo)
                           elements.push(
                             <h2 
                               key={`heading-${index}`}
@@ -1047,6 +971,89 @@ export const Article: React.FC = () => {
                               {block.text}
                             </h2>
                           );
+                          
+                          // Render image after heading
+                        if (imageToUse) {
+                          const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
+                          
+                          elements.push(
+                            <div 
+                              key={`image-after-${index}`} 
+                              className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
+                            >
+                              {rankingNumber && (
+                                <div className="article__image-ranking-badge" data-number={`#${rankingNumber}`}>
+                                </div>
+                              )}
+                              <img 
+                                src={imageToUse} 
+                                alt={vehicleNameForImage || `${article.title} - Image ${imageIndex + 2}`}
+                                className={`article__image article__image-clickable ${isPremiumArticle ? 'article__image--premium' : ''}`}
+                                onClick={() => {
+                                  if (vehicleNameForImage) {
+                                    // Navigate to vehicle page if vehicle name exists
+                                    const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                    navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
+                                  } else {
+                                    // Otherwise open gallery
+                                    handleImageClick(galleryIndex);
+                                  }
+                                }}
+                                style={{ cursor: 'pointer' }}
+                              />
+                              {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
+                                <div className="article__image-score-overlay">
+                                  <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
+                                  <div className="article__image-score-ratings-list">
+                                    <div className="article__image-score-rating-item">
+                                      <div className="article__image-score-rating-label-wrapper">
+                                        <span className="article__image-score-rating-label-top">MotorTrend</span>
+                                        <span className="article__image-score-rating-label-bottom">Rating</span>
+                                      </div>
+                                      <div className="article__image-score-rating-value-wrapper">
+                                        <span className="article__image-score-rating-value">
+                                          {motortrendScoreForImage.toFixed(1)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div className="article__image-score-rating-item">
+                                      <div className="article__image-score-rating-label-wrapper">
+                                        <span className="article__image-score-rating-label-top">Community</span>
+                                        <span className="article__image-score-rating-label-bottom">
+                                          Rating <span className="article__image-score-rating-count">(252)</span>
+                                        </span>
+                                      </div>
+                                      <div className="article__image-score-rating-value-wrapper">
+                                        <img 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                          alt="Community Rating Star" 
+                                          className="article__image-score-rating-icon community" 
+                                        />
+                                        <span className="article__image-score-rating-value">
+                                          {userScoreForImage.toFixed(1)}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button 
+                                    className="article__image-score-cta cta cta--primary cta--default"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                      navigate(`/vehicles/${year}/${make}/${model}`);
+                                    }}
+                                  >
+                                    See Local Listings
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                          // Only increment imageIndex if we used the index-based image
+                          if (!vehicleImageUrl) {
+                            imageIndex++;
+                            }
+                          }
                         } else {
                           // Original behavior: render heading first, then image
                           // Render the heading
@@ -1597,17 +1604,23 @@ export const Article: React.FC = () => {
           )}
           <div className="article__sticky-ratings">
             <div 
-              className="article__sticky-rating-item" 
+              className="article__sticky-rating-item article__sticky-rating-item--staff" 
               onClick={handleScrollToStaffRating}
             >
-              <span className="article__sticky-rating-label">MotorTrend</span>
+              <div className="article__sticky-rating-label-wrapper">
+                <span className="article__sticky-rating-label-top">MotorTrend</span>
+                <span className="article__sticky-rating-label-bottom">Rating</span>
+              </div>
               <span className="article__sticky-rating-value">{staffRating}</span>
             </div>
             <div 
-              className="article__sticky-rating-item" 
+              className="article__sticky-rating-item article__sticky-rating-item--community" 
               onClick={handleScrollToCommunityRatings}
             >
-              <span className="article__sticky-rating-label">Community ({communityRatingCount})</span>
+              <div className="article__sticky-rating-label-wrapper">
+                <span className="article__sticky-rating-label-top">Community</span>
+                <span className="article__sticky-rating-label-bottom">Rating ({communityRatingCount})</span>
+              </div>
               <img 
                 src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
                 alt="Community Rating Star" 
@@ -1620,22 +1633,31 @@ export const Article: React.FC = () => {
               </span>
             </div>
             <button 
-              className="article__sticky-rating-item article__sticky-rate-btn" 
+              className="article__sticky-rating-item article__sticky-rate-btn article__sticky-rate-btn--mobile-hide" 
               onClick={handleOpenRatingModal}
             >
-              <span className="article__sticky-rating-label">
-                {userRating > 0 ? 'Yours' : 'Rate Your Car'}
-              </span>
-              <img 
-                src={userRating > 0 
-                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
-                } 
-                alt="Add Rating Star" 
-                className="article__sticky-rating-icon" 
-              />
-              {userRating > 0 && (
-                <span className="article__sticky-rating-value">{userRating}</span>
+              {userRating > 0 ? (
+                <>
+                  <div className="article__sticky-rating-label-wrapper">
+                    <span className="article__sticky-rating-label-top">Your</span>
+                    <span className="article__sticky-rating-label-bottom">Rating</span>
+                  </div>
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                    alt="Your Rating Star" 
+                    className="article__sticky-rating-icon" 
+                  />
+                  <span className="article__sticky-rating-value">{userRating}</span>
+                </>
+              ) : (
+                <>
+                  <span className="article__sticky-rating-label">Rate Your Car</span>
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                    alt="Add Rating Star" 
+                    className="article__sticky-rating-icon" 
+                  />
+                </>
               )}
             </button>
           </div>

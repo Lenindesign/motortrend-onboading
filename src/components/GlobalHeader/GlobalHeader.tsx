@@ -70,19 +70,19 @@ const navigationItems = [
     href: '/vehicles',
     subItems: [
       { label: 'New Cars', href: '/new-cars' },
-      { label: 'Used Cars', href: '#' },
-      { label: 'Car Reviews', href: '#' },
+      { label: 'Used Cars', href: '/used-cars' },
+      { label: 'Car Reviews', href: '/car-reviews' },
       { label: 'Rankings & Awards', href: '/rankings-awards' },
-      { label: 'Compare Vehicles', href: '#' },
-      { label: 'EV Hub', href: '#' }
+      { label: 'Compare Vehicles', href: '/compare-vehicles' },
+      { label: 'EV Hub', href: '/ev-hub' }
     ]
   },
   { 
     label: 'News & Reviews', 
-    href: '#',
+    href: '/news-reviews',
     subItems: [
-      { label: 'Latest News', href: '#' },
-      { label: 'Expert Reviews', href: '#' },
+      { label: 'Latest News', href: '/latest-news' },
+      { label: 'Expert Reviews', href: '/car-reviews' },
       { label: 'First Drives', href: '#' },
       { label: 'Long-Term Tests', href: '#' },
       { label: 'Industry Trends', href: '#' }
@@ -90,9 +90,9 @@ const navigationItems = [
   },
   { 
     label: 'Videos', 
-    href: '#',
+    href: '/videos',
     subItems: [
-      { label: 'Latest Videos', href: '#' },
+      { label: 'Latest Videos', href: '/videos' },
       { label: 'Editorial Features', href: '#' },
       { label: 'Car Walkarounds & Reviews', href: '#' },
       { label: 'How-To & Explainers', href: '#' },
@@ -101,9 +101,9 @@ const navigationItems = [
   },
   { 
     label: 'Community', 
-    href: '#',
+    href: '/community',
     subItems: [
-      { label: 'Forums', href: '#' },
+      { label: 'Forums', href: '/community' },
       { label: 'Contests', href: '#' },
       { label: 'Car Clubs', href: '#' },
       { label: 'Events Calendar', href: '#' }
@@ -116,6 +116,57 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const location = useLocation();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  // Check if a section is active based on current pathname
+  const isSectionActive = (item: typeof navigationItems[0]): boolean => {
+    const pathname = location.pathname;
+    
+    // Check if current path matches the section's main href
+    if (item.href !== '#' && pathname === item.href) {
+      return true;
+    }
+    
+    // For "Buy / Research Cars" section, also check vehicle detail pages
+    if (item.href === '/vehicles' && pathname.startsWith('/vehicles/')) {
+      // Exclude paths that belong to other sections
+      const excludedPaths = ['/vehicles/new-cars', '/vehicles/used-cars'];
+      if (!excludedPaths.some(excluded => pathname.startsWith(excluded))) {
+        return true;
+      }
+    }
+    
+    // Check if current path matches any subItem href
+    if (item.subItems) {
+      return item.subItems.some(subItem => {
+        if (subItem.href === '#') return false;
+        // Exact match
+        if (pathname === subItem.href) return true;
+        return false;
+      });
+    }
+    
+    return false;
+  };
+
+  // Check if a subItem is active
+  const isSubItemActive = (subItemHref: string): boolean => {
+    const pathname = location.pathname;
+    if (subItemHref === '#') return false;
+    
+    // Exact match
+    if (pathname === subItemHref) return true;
+    
+    // For vehicle details pages (/vehicles/:year/:make/:model), check if subItem is /vehicles
+    if (subItemHref === '/vehicles' && pathname.startsWith('/vehicles/')) {
+      // Only match if it's a vehicle detail page (has 3 path segments after /vehicles/)
+      const pathSegments = pathname.split('/').filter(Boolean);
+      if (pathSegments.length === 4 && pathSegments[0] === 'vehicles') {
+        return true;
+      }
+    }
+    
+    return false;
+  };
   const [userData, setUserData] = useState<{
     name: string;
     avatar?: string;
@@ -425,46 +476,50 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             />
           </Link>
           <nav className="global-header__nav" ref={navMenuRef}>
-            {navigationItems.map((item) => (
-              <div 
-                key={item.label} 
-                className="global-header__nav-item"
-                onMouseEnter={() => handleNavHover(item.label)}
-                onMouseLeave={handleNavLeave}
-              >
-                <a 
-                  href={item.href} 
-                  className="global-header__nav-link"
+            {navigationItems.map((item) => {
+              const isActive = isSectionActive(item);
+              return (
+                <div 
+                  key={item.label} 
+                  className={`global-header__nav-item ${isActive ? 'global-header__nav-item--active' : ''}`}
+                  onMouseEnter={() => handleNavHover(item.label)}
+                  onMouseLeave={handleNavLeave}
                 >
-                  {item.label}
-                  <Icon name="keyboard_arrow_down" size={16} />
-                </a>
-                {activeDropdown === item.label && item.subItems && (
-                  <div className="global-header__dropdown">
-                    {item.subItems.map((subItem) => (
-                      subItem.href === '#' ? (
-                        <a 
-                          key={subItem.label}
-                          href={subItem.href} 
-                          className="global-header__dropdown-item"
-                        >
-                          {subItem.label}
-                        </a>
-                      ) : (
-                        <Link 
-                          key={subItem.label}
-                          to={subItem.href} 
-                          className="global-header__dropdown-item"
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          {subItem.label}
-                        </Link>
-                      )
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+                  <a 
+                    href={item.href} 
+                    className={`global-header__nav-link ${isActive ? 'global-header__nav-link--active' : ''}`}
+                  >
+                    {item.label}
+                    <Icon name="keyboard_arrow_down" size={16} />
+                  </a>
+                  {activeDropdown === item.label && item.subItems && (
+                    <div className="global-header__dropdown">
+                      {item.subItems.map((subItem) => {
+                        const isSubActive = isSubItemActive(subItem.href);
+                        return subItem.href === '#' ? (
+                          <a 
+                            key={subItem.label}
+                            href={subItem.href} 
+                            className={`global-header__dropdown-item ${isSubActive ? 'global-header__dropdown-item--active' : ''}`}
+                          >
+                            {subItem.label}
+                          </a>
+                        ) : (
+                          <Link 
+                            key={subItem.label}
+                            to={subItem.href} 
+                            className={`global-header__dropdown-item ${isSubActive ? 'global-header__dropdown-item--active' : ''}`}
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            {subItem.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </nav>
         </div>
 

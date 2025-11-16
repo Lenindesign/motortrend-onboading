@@ -1,0 +1,129 @@
+/**
+ * Compare Vehicles Page Styles
+ */
+
+.compare-vehicles {
+  background-color: var(--color-neutrals-8);
+  min-height: 100vh;
+  padding: var(--spacing-3) 0;
+}
+
+.compare-vehicles__container {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media (max-width: 1279px) {
+  .compare-vehicles__container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .compare-vehicles__container {
+    padding: 0 16px;
+  }
+}
+
+.compare-vehicles__section {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-4);
+  margin-bottom: var(--section-spacing-vertical);
+}
+
+.compare-vehicles__left-column {
+  width: 100%;
+}
+
+.compare-vehicles__right-column {
+  width: 100%;
+}
+
+.compare-vehicles__comparisons {
+  width: 100%;
+}
+
+.compare-vehicles__section-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 32px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  margin: 0 0 var(--spacing-4) 0;
+}
+
+.compare-vehicles__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: var(--spacing-4);
+}
+
+/* Responsive - Mobile First */
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .compare-vehicles__section {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  .compare-vehicles__right-column {
+    display: none;
+  }
+
+  .compare-vehicles__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .compare-vehicles {
+    padding: var(--spacing-2) 0;
+  }
+
+  .compare-vehicles__container {
+    padding: 0 16px;
+  }
+
+  .compare-vehicles__section {
+    margin-bottom: var(--spacing-3);
+    gap: var(--spacing-2);
+  }
+
+  .compare-vehicles__left-column {
+    width: 100%;
+  }
+
+  .compare-vehicles__section-title {
+    font-size: 24px;
+    margin-bottom: var(--spacing-3);
+  }
+
+  .compare-vehicles__grid {
+    gap: var(--spacing-3);
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .compare-vehicles {
+    padding: var(--spacing-2) 0;
+  }
+
+  .compare-vehicles__container {
+    padding: 0 16px;
+  }
+
+  .compare-vehicles__section {
+    margin-bottom: var(--spacing-2);
+    gap: var(--spacing-2);
+  }
+
+  .compare-vehicles__section-title {
+    font-size: 20px;
+    margin-bottom: var(--spacing-2);
+  }
+}
+

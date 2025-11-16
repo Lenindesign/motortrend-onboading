@@ -11,8 +11,9 @@ import { VehiclesSection, type VehicleItem } from '../../components/VehiclesSect
 import { AdContainer } from '../../components/AdContainer';
 import Icon from '../../components/Icon';
 import type { RiverItem } from '../../components/River';
-import { sortContentByUserType, type ContentCategory } from '../../utils/contentFiltering';
+import { sortContentForPersonalization, type ContentCategory } from '../../utils/contentFiltering';
 import { getVehicleLifestyles, type LifestyleCategory } from '../../utils/vehicleLifestyles';
+import { getPersonaFromOnboarding, getPersona } from '../../utils/personas';
 import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
@@ -228,39 +229,451 @@ export const Home: React.FC = () => {
     };
   }, []);
 
-  // Vertical cards with navigation
-  const verticalCards = useMemo(() => [
-    {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
-      title: "I Lived with a Kia EV9 for a Year. There's Only One Thing I Would Change.",
-      type: 'Article' as const,
-      categories: ['Family & Practical'] as ContentCategory[],
+  // Get persona for personalization
+  const personaName = useMemo(() => getPersonaFromOnboarding(), []);
+  const persona = useMemo(() => personaName ? getPersona(personaName) : null, [personaName]);
+
+  // Compute hero and vertical cards together to avoid duplicates
+  const { heroData, verticalCards } = useMemo(() => {
+    // Default hero (when no persona)
+    const defaultHero = {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      title: '2026 Hyundai Ioniq 6 N First Drive: Watch Out, BMW M3, C63 AMG!',
+      categories: ['Performance & Enthusiast'] as ContentCategory[],
       onClick: () => {
-        navigate('/articles/2024-kia-ev9-yearlong-review-verdict');
+        navigate('/articles/2026-hyundai-ioniq-6-n-first-drive-review');
+      },
+    };
+
+    const defaultCards = [
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
+        title: "I Lived with a Kia EV9 for a Year. There's Only One Thing I Would Change.",
+        type: 'Article' as const,
+        categories: ['Family & Practical'] as ContentCategory[],
+        onClick: () => {
+          navigate('/articles/2024-kia-ev9-yearlong-review-verdict');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
+        title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
+        type: 'Article' as const,
+        categories: ['Family & Practical'] as ContentCategory[],
+        onClick: () => {
+          navigate('/articles/new-details-2026-rivian-r2-ev-suv-battery-charging');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+        title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
+        type: 'Article' as const,
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        onClick: () => {
+          navigate('/article/2026-motortrend-car-of-the-year');
+        },
+      },
+    ];
+
+    // If no persona, return default
+    if (!persona) {
+      return { heroData: defaultHero, verticalCards: defaultCards };
+    }
+
+    // All available content items
+    const allContent = [
+      // Performance & Enthusiast content (for Greg, Carl)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg',
+        title: 'Bentley\'s 2026 Supersports Is Lighter, Louder, and Built for Drivers',
+        categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-bentley-supersports-first-look');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/691682812f033b000278eee8/012-2026-dodge-charger-scat-pack-sixpack-burnout.jpg',
+        title: 'First Drive: The New Dodge Charger Has Been Fixed! Mostly!',
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-dodge-charger-scat-pack-sixpack-first-drive');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+        title: '2026 Hyundai Ioniq 6 N First Drive: Watch Out, BMW M3, C63 AMG!',
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/articles/2026-hyundai-ioniq-6-n-first-drive-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+        title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Awards',
+        onClick: () => {
+          navigate('/article/2026-motortrend-car-of-the-year');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+        title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/articles/2025-subaru-wrx-ts-first-test-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+        title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
+        categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-porsche-911-turbo-s-hybrid-first-drive-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+        title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Awards',
+        onClick: () => {
+          navigate('/article/2026-motortrend-car-of-the-year');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
+        title: 'This 1,973-Pound Electric Sports Car Nails What Tesla Still Can\'t',
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | First-Look',
+        onClick: () => {
+          navigate('/articles/longbow-speedster-electric-sports-car');
+        },
+      },
+      // Family & Practical content (for Paula, Dan)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
+        title: '2026 Honda CR-V TrailSport First Drive: Dirty Deeds Done Dirt Chic',
+        categories: ['Family & Practical', 'Adventure & Off-Road', 'Daily Commute'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-honda-cr-v-trailsport-first-drive-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
+        title: 'The Refreshed Kia Sportage Is Built for Buyers but Not the Podium',
+        categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-kia-sportage-suvoty-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bf9bf061f160002d8ad4c/024-2026-subaru-solterra-xt-ev.jpg',
+        title: 'The Subaru Solterra Is a Solid SUV, but It\'s Not a Segment Standout',
+        categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-subaru-solterra-suvoty-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a62e5156e89000296e257/021-2026-nissan-leaf-platinum-ev.jpg',
+        title: 'The Nissan Leaf Is Greatly Improved With Some Big Caveats',
+        categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-nissan-leaf-suvoty-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
+        title: "I Lived with a Kia EV9 for a Year. There's Only One Thing I Would Change.",
+        categories: ['Family & Practical'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/articles/2024-kia-ev9-yearlong-review-verdict');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+        title: 'The Honda Passport RTL Is the One You Need, Not the One You Want',
+        categories: ['Family & Practical'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/articles/2026-honda-passport-rtl-first-test-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+        title: 'The Tesla Model Y Premium RWD Is a Better Computer Than It Is a Car',
+        categories: ['Family & Practical', 'Eco & Future-Ready'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/articles/2025-tesla-model-y-first-test-review');
+        },
+      },
+      // Eco & Future-Ready content (for Theo, Casey)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
+        title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
+        categories: ['Eco & Future-Ready', 'Family & Practical'] as ContentCategory[],
+        category: 'MotorTrend | News',
+        onClick: () => {
+          navigate('/articles/new-details-2026-rivian-r2-ev-suv-battery-charging');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
+        title: 'We Drove the New 519-HP Cadillac Optiq-V to See If It\'s a *Real* V',
+        categories: ['Performance & Enthusiast', 'Eco & Future-Ready'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/articles/2026-cadillac-optiq-v-first-drive');
+        },
+      },
+      // Adventure & Off-Road content (for Jayden)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebd54273cc000294e6cb/2026fordf-150lightningstxevelectricvehiclepickuptruck-11.jpg',
+        title: 'Report: Ford Might Kill the F-150 Lightning Electric Pickup Truck',
+        categories: ['Utility & Work', 'Eco & Future-Ready'] as ContentCategory[],
+        category: 'MotorTrend | News',
+        onClick: () => {
+          navigate('/articles/report-ford-f150-lightning-electric-truck-maybe-discontinued');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg',
+        title: '2024 Toyota Tacoma TRD Pro First Test: The Off-Road King Returns',
+        categories: ['Adventure & Off-Road', 'Utility & Work'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2024-toyota-tacoma-trd-pro-first-test');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67f436b507a3b9000861848d/2-2025-ford-bronco-raptor-side-view.jpg',
+        title: '2025 Ford Bronco Raptor Review: Desert Runner Meets Daily Driver',
+        categories: ['Adventure & Off-Road', 'Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2025-ford-bronco-raptor-review');
+        },
+      },
+      // Technology & EV content (for Theo, Casey)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg',
+        title: '2025 BMW iX Review: Luxury Meets Cutting-Edge Tech',
+        categories: ['Eco & Future-Ready', 'Luxury & Comfort'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2025-bmw-ix-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg',
+        title: '2025 Lucid Air Review: The Fastest Production EV Gets Even Faster',
+        categories: ['Eco & Future-Ready', 'Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2025-lucid-air-review');
+        },
+      },
+      // Luxury content (for Leo, Carl)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg',
+        title: '2024 Genesis G70 Review: Korean Luxury Challenges German Royalty',
+        categories: ['Luxury & Comfort', 'Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2024-genesis-g70-review');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg',
+        title: '2024 Lexus RX Review: Hybrid Luxury Done Right',
+        categories: ['Luxury & Comfort', 'Eco & Future-Ready', 'Family & Practical'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2024-lexus-rx-review');
+        },
+      },
+      // Value content (for Dan, Paula)
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
+        title: '2025 Honda Civic vs. Toyota Corolla: Which Compact Sedan Offers More?',
+        categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2025-honda-civic-vs-toyota-corolla-comparison');
+        },
+      },
+      {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg',
+        title: '2026 Mazda CX-5 Review: Premium Feel Without the Premium Price',
+        categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2026-mazda-cx-5-review');
+        },
+      },
+    ];
+
+    // Filter out stories based on persona
+    const filteredContent = (() => {
+      if (persona?.name === 'Practical Paula') {
+        return allContent.filter(item => 
+          !(item.title.includes('Bentley') && item.title.includes('Supersports')) &&
+          !item.title.includes('Subaru WRX tS') &&
+          !(item.title.includes('Dodge Charger') && item.title.includes('Has Been Fixed')) &&
+          !(item.title.includes('Audi S3') && item.title.includes('RS3')) &&
+          !(item.title.includes('Porsche 911 Turbo S') || item.title.includes('911 Turbo S'))
+        );
+      }
+      if (persona?.name === 'Gearhead Greg') {
+        const filtered = allContent.filter(item => 
+          !(item.title.includes('Honda CR-V TrailSport') || item.title.includes('CR-V TrailSport')) &&
+          !(item.title.includes('Kia Sportage') && item.title.includes('Built for Buyers')) &&
+          !(item.title.includes('Cadillac Optiq-V') || item.title.includes('Optiq-V')) &&
+          !(item.title.includes('Ford Bronco Raptor') && item.title.includes('Desert Runner Meets Daily Driver'))
+        );
+        
+        // Add Honda Electric Sports Car story for Greg
+        filtered.push({
+          imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+          title: 'Yes! Honda\'s Electric Sports Car Is Real, but Timing Remains Uncertain',
+          categories: ['Performance & Enthusiast', 'Eco & Future-Ready'] as ContentCategory[],
+          category: 'MotorTrend | News',
+          onClick: () => {
+            navigate('/article/honda-electric-sports-car-timing-uncertain');
+          },
+        });
+        
+        return filtered;
+      }
+      return allContent;
+    })();
+
+    // Sort all content by persona preferences
+    let sortedContent = sortContentForPersonalization(filteredContent, userType);
+    
+    // For Greg, prioritize Bentley Supersports story in hero position
+    if (persona?.name === 'Gearhead Greg') {
+      const bentleyArticle = sortedContent.find(item => 
+        item.title.includes('Bentley') && item.title.includes('Supersports')
+      );
+      if (bentleyArticle) {
+        // Remove Bentley from current position and place it first
+        sortedContent = sortedContent.filter(item => 
+          !(item.title.includes('Bentley') && item.title.includes('Supersports'))
+        );
+        sortedContent.unshift(bentleyArticle);
+      }
+    }
+    
+    // Select hero (first item)
+    const selectedHero = sortedContent[0] || defaultHero;
+    
+    // Filter out hero from cards (compare by title to avoid duplicates)
+    const cardsWithoutHero = sortedContent
+      .filter(item => item.title !== selectedHero.title)
+      .slice(0, 3)
+      .map(item => ({
+        ...item,
+        type: 'Article' as const,
+      }));
+
+    return {
+      heroData: selectedHero,
+      verticalCards: cardsWithoutHero.length > 0 ? cardsWithoutHero : defaultCards,
+    };
+  }, [navigate, persona, userType]);
+
+  // News items with navigation
+  const newsItems = useMemo(() => [
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg',
+      title: 'Audi S3 vs. RS3: One Is Shockingly Quick, the Other Might Be the Better Deal',
+      author: 'Alisa Priddle',
+      date: 'Oct 08, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Performance & Enthusiast'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2025-audi-s3-vs-rs3-comparison');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
+      title: '2026 Honda CR-V TrailSport First Drive: Dirty Deeds Done Dirt Chic',
+      author: 'Bob Hernandez',
+      date: 'Jun 30, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Family & Practical', 'Adventure & Off-Road', 'Daily Commute'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-honda-cr-v-trailsport-first-drive-review');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
+      title: 'The Refreshed Kia Sportage Is Built for Buyers but Not the Podium',
+      author: 'Alex Leanse',
+      date: 'Nov 14, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-kia-sportage-suvoty-review');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bf9bf061f160002d8ad4c/024-2026-subaru-solterra-xt-ev.jpg',
+      title: 'The Subaru Solterra Is a Solid SUV, but It\'s Not a Segment Standout',
+      author: 'Billy Rehbock',
+      date: 'Nov 14, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-subaru-solterra-suvoty-review');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a62e5156e89000296e257/021-2026-nissan-leaf-platinum-ev.jpg',
+      title: 'The Nissan Leaf Is Greatly Improved With Some Big Caveats',
+      author: 'Billy Rehbock',
+      date: 'Nov 14, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-nissan-leaf-suvoty-review');
       },
     },
     {
       imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
       title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
-      type: 'Article' as const,
-      categories: ['Family & Practical'] as ContentCategory[],
+      author: 'Justin Banner',
+      date: 'Nov 06, 2025',
+      category: 'MotorTrend | News',
+      categories: ['Eco & Future-Ready', 'Family & Practical'] as ContentCategory[],
       onClick: () => {
-        navigate('/articles/new-details-2026-rivian-r2-ev-suv-battery-charging');
+        navigate('/article/new-details-2026-rivian-r2-ev-suv-battery-charging');
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68389425ec9fbe00084291e8/005-2025-acura-adx-first-test.jpg',
-      title: "Luxury on Training Wheels? Our Yearlong Test of the 2025 Acura ADX Begins",
-      type: 'Article' as const,
-      categories: ['Family & Practical', 'Luxury & Comfort'] as ContentCategory[],
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf4b165553e00029f4802/024-2025-mini-countryman-se-all4-ev.jpg',
+      title: 'It\'s Time for the Mini Countryman EV to Get Serious',
+      author: 'Billy Rehbock',
+      date: 'Nov 10, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Eco & Future-Ready', 'Performance & Enthusiast'] as ContentCategory[],
       onClick: () => {
-        navigate('/articles/2025-acura-adx-awd-yearlong-review-arrival');
+        navigate('/article/2025-mini-countryman-se-all4-ev-review');
       },
     },
-  ], [navigate]);
-
-  // News items with navigation
-  const newsItems = useMemo(() => [
     {
       imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
       title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
@@ -305,6 +718,98 @@ export const Home: React.FC = () => {
         navigate('/articles/2026-cadillac-optiq-v-first-drive');
       },
     },
+    // Adventure & Off-Road content (for Jayden)
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg',
+      title: '2024 Toyota Tacoma TRD Pro First Test: The Off-Road King Returns',
+      author: 'Alexander Stoklosa',
+      date: 'Nov 12, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Adventure & Off-Road', 'Utility & Work'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2024-toyota-tacoma-trd-pro-first-test');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67f436b279a6060008bc3b95/1-2025-ford-bronco-raptor-front-view.jpg',
+      title: '2025 Ford Bronco Raptor Review: Desert Runner Meets Daily Driver',
+      author: 'Eric Tingwall',
+      date: 'Oct 15, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Adventure & Off-Road', 'Performance & Enthusiast'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2025-ford-bronco-raptor-review');
+      },
+    },
+    // Technology & EV content (for Theo, Casey)
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg',
+      title: '2025 BMW iX Review: Luxury Meets Cutting-Edge Tech',
+      author: 'Alex Leanse',
+      date: 'Nov 08, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Eco & Future-Ready', 'Luxury & Comfort'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2025-bmw-ix-review');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg',
+      title: '2025 Lucid Air Review: The Fastest Production EV Gets Even Faster',
+      author: 'Angus MacKenzie',
+      date: 'Oct 20, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Eco & Future-Ready', 'Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2025-lucid-air-review');
+      },
+    },
+    // Luxury content (for Leo, Carl)
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg',
+      title: '2024 Genesis G70 Review: Korean Luxury Challenges German Royalty',
+      author: 'Alisa Priddle',
+      date: 'Nov 05, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Luxury & Comfort', 'Performance & Enthusiast'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2024-genesis-g70-review');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg',
+      title: '2024 Lexus RX Review: Hybrid Luxury Done Right',
+      author: 'Bob Hernandez',
+      date: 'Oct 28, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Luxury & Comfort', 'Eco & Future-Ready', 'Family & Practical'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2024-lexus-rx-review');
+      },
+    },
+    // Value content (for Dan, Paula)
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
+      title: '2025 Honda Civic vs. Toyota Corolla: Which Compact Sedan Offers More?',
+      author: 'Billy Rehbock',
+      date: 'Nov 10, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2025-honda-civic-vs-toyota-corolla-comparison');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686c4f52a5f0070002f31f87/2026mazdacx-517.jpg',
+      title: '2026 Mazda CX-5 Review: Premium Feel Without the Premium Price',
+      author: 'Alex Leanse',
+      date: 'Nov 14, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-mazda-cx-5-review');
+      },
+    },
     {
       imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
       title: 'Yes! Honda\'s Electric Sports Car Is Real, but Timing Remains Uncertain',
@@ -317,14 +822,25 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
-      title: '2026 BMW M2 CS Track Drive: The Ultimate M2 Gets Even Better',
-      author: 'Frank Markus',
-      date: 'Nov 05, 2025',
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+      title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
+      author: 'Mac Morrison',
+      date: 'Oct 27, 2025',
       category: 'MotorTrend | Reviews',
+      categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-porsche-911-turbo-s-hybrid-first-drive-review');
+      },
+    },
+    {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+      title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
+      author: 'MotorTrend Staff',
+      date: 'Oct 15, 2025',
+      category: 'MotorTrend | Awards',
       categories: ['Performance & Enthusiast'] as ContentCategory[],
       onClick: () => {
-        navigate('/articles/2026-bmw-m2-cs-track-drive-review');
+        navigate('/article/2026-motortrend-car-of-the-year');
       },
     },
     {
@@ -351,16 +867,45 @@ export const Home: React.FC = () => {
     },
   ] as (RiverItem & { categories?: ContentCategory[] })[], [navigate]);
 
-  // Sort content based on user type
-  const sortedVerticalCards = useMemo(() => {
-    return sortContentByUserType(verticalCards, userType);
-  }, [userType, verticalCards]);
+  // verticalCards are already sorted by persona in their useMemo
+  const sortedVerticalCards = verticalCards;
 
   const sortedNewsItems = useMemo(() => {
-    return sortContentByUserType(newsItems, userType);
-  }, [userType, newsItems]);
+    // Filter out stories based on persona
+    const filteredNewsItems = (() => {
+      if (persona?.name === 'Practical Paula') {
+        return newsItems.filter(item => 
+          !(item.title.includes('Bentley') && item.title.includes('Supersports')) &&
+          !item.title.includes('Subaru WRX tS') &&
+          !(item.title.includes('Dodge Charger') && item.title.includes('Has Been Fixed')) &&
+          !(item.title.includes('Audi S3') && item.title.includes('RS3')) &&
+          !(item.title.includes('Porsche 911 Turbo S') || item.title.includes('911 Turbo S'))
+        );
+      }
+      if (persona?.name === 'Gearhead Greg') {
+        return newsItems.filter(item => 
+          !(item.title.includes('Honda CR-V TrailSport') || item.title.includes('CR-V TrailSport')) &&
+          !(item.title.includes('Kia Sportage') && item.title.includes('Built for Buyers')) &&
+          !(item.title.includes('Cadillac Optiq-V') || item.title.includes('Optiq-V'))
+        );
+      }
+      return newsItems;
+    })();
+    
+    // Filter out stories that appear in hero or vertical cards to avoid duplicates
+    const heroAndCardsTitles = new Set([
+      heroData.title,
+      ...verticalCards.map(card => card.title)
+    ]);
+    
+    const withoutHeroAndCards = filteredNewsItems.filter(item => 
+      !heroAndCardsTitles.has(item.title)
+    );
+    
+    return sortContentForPersonalization(withoutHeroAndCards, userType).slice(0, 5);
+  }, [userType, newsItems, persona, heroData, verticalCards]);
 
-  // Rankings & Awards articles for first river
+  // Rankings & Awards articles for first river - personalized based on persona
   const rankingsArticles = useMemo(() => {
     const rankingSlugs = [
       'top-10-daily-commute',
@@ -373,7 +918,7 @@ export const Home: React.FC = () => {
       'top-10-utility-work'
     ];
 
-    return rankingSlugs
+    const articles = rankingSlugs
       .map(slug => {
         const article = getArticleBySlug(slug);
         if (!article) return null;
@@ -384,21 +929,47 @@ export const Home: React.FC = () => {
           author: article.author,
           date: article.date,
           category: 'MotorTrend | Rankings',
+          // Map article slugs to content categories for personalization
+          categories: slug.includes('daily-commute') ? ['Daily Commute'] as ContentCategory[] :
+                      slug.includes('family-practical') ? ['Family & Practical'] as ContentCategory[] :
+                      slug.includes('adventure-off-road') ? ['Adventure & Off-Road'] as ContentCategory[] :
+                      slug.includes('urban-style') ? ['Urban & Style'] as ContentCategory[] :
+                      slug.includes('performance-enthusiast') ? ['Performance & Enthusiast'] as ContentCategory[] :
+                      slug.includes('eco-future-ready') ? ['Eco & Future-Ready'] as ContentCategory[] :
+                      slug.includes('luxury-comfort') ? ['Luxury & Comfort'] as ContentCategory[] :
+                      slug.includes('utility-work') ? ['Utility & Work'] as ContentCategory[] :
+                      [] as ContentCategory[],
           onClick: () => {
             navigate(`/article/${slug}`);
           },
-        } as RiverItem;
+        } as RiverItem & { categories?: ContentCategory[] };
       })
-      .filter((item): item is RiverItem => item !== null);
-  }, [navigate]);
+      .filter((item): item is RiverItem & { categories?: ContentCategory[] } => item !== null);
+    
+    // Sort by persona preferences if user is signed in
+    return sortContentForPersonalization(articles, userType);
+  }, [navigate, userType]);
 
 
-  // Filter vehicles based on user type using vehicle lifestyles
+  // Filter and prioritize vehicles based on persona (if signed in) or user type using vehicle lifestyles
   const filteredVehicleItems = useMemo(() => {
     let result: VehicleItem[] = [];
 
-    // If no userType, return all vehicles sorted by latest
-    if (!userType) {
+    // Helper function to score vehicles by persona match
+    const scoreVehicleForPersona = (vehicle: VehicleItem): number => {
+      if (!persona) return 0;
+      
+      const vehicleLifestyles = getVehicleLifestyles(vehicle.name);
+      const matchingCategories = persona.priorityCategories.filter(cat => 
+        vehicleLifestyles.includes(cat as LifestyleCategory)
+      );
+      
+      // Score based on how many persona categories match
+      return matchingCategories.length / persona.priorityCategories.length;
+    };
+
+    // If no userType and no persona, return all vehicles sorted by latest
+    if (!userType && !persona) {
       // Get latest year vehicles first
       result = [...allVehicleItems].sort((a, b) => {
         const yearA = parseInt(a.name.match(/\d{4}/)?.[0] || '0');
@@ -406,13 +977,22 @@ export const Home: React.FC = () => {
         return yearB - yearA; // Latest first
       });
     } else {
-      const filterCategories: LifestyleCategory[] = userType === 'buyer' 
-        ? ['Family & Practical', 'Daily Commute', 'Utility & Work', 'Adventure & Off-Road']
-        : userType === 'enthusiast'
-        ? ['Performance & Enthusiast', 'Adventure & Off-Road']
-        : userType === 'both'
-        ? ['Family & Practical', 'Performance & Enthusiast', 'Utility & Work', 'Adventure & Off-Road']
-        : [];
+      // Use persona categories if available, otherwise use userType categories
+      let filterCategories: LifestyleCategory[] = [];
+      
+      if (persona) {
+        // Map persona priority categories to lifestyle categories
+        filterCategories = persona.priorityCategories as LifestyleCategory[];
+      } else {
+        // Fall back to userType-based categories
+        filterCategories = userType === 'buyer' 
+          ? ['Family & Practical', 'Daily Commute', 'Utility & Work', 'Adventure & Off-Road']
+          : userType === 'enthusiast'
+          ? ['Performance & Enthusiast', 'Adventure & Off-Road']
+          : userType === 'both'
+          ? ['Family & Practical', 'Performance & Enthusiast', 'Utility & Work', 'Adventure & Off-Road']
+          : [];
+      }
 
       if (filterCategories.length === 0) {
         // Get latest year vehicles first
@@ -428,11 +1008,22 @@ export const Home: React.FC = () => {
           return filterCategories.some(cat => vehicleLifestyles.includes(cat));
         });
 
-        // Sort by year (latest first)
+        // Sort by persona match score (if persona exists), then by year (latest first)
         result = filtered.sort((a, b) => {
+          if (persona) {
+            const scoreA = scoreVehicleForPersona(a);
+            const scoreB = scoreVehicleForPersona(b);
+            
+            // Higher scores come first
+            if (Math.abs(scoreA - scoreB) > 0.01) {
+              return scoreB - scoreA;
+            }
+          }
+          
+          // Then sort by year (latest first)
           const yearA = parseInt(a.name.match(/\d{4}/)?.[0] || '0');
           const yearB = parseInt(b.name.match(/\d{4}/)?.[0] || '0');
-          return yearB - yearA; // Latest first
+          return yearB - yearA;
         });
       }
     }
@@ -449,7 +1040,7 @@ export const Home: React.FC = () => {
     });
 
     return unique;
-  }, [userType]);
+  }, [userType, persona]);
 
 
   // Prepare vehicles for carousel (10 best SUVs)
@@ -921,15 +1512,6 @@ export const Home: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fullscreenVehicle, fullscreenIndex]);
 
-  // Hero data with navigation
-  const heroData = useMemo(() => ({
-    imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
-    title: '2026 Hyundai Ioniq 6 N First Drive: Watch Out, BMW M3, C63 AMG!',
-    categories: ['Performance & Enthusiast'] as ContentCategory[],
-    onClick: () => {
-      navigate('/articles/2026-hyundai-ioniq-6-n-first-drive-review');
-    },
-  }), [navigate]);
 
   return (
     <div className="home">
@@ -1477,8 +2059,8 @@ export const Home: React.FC = () => {
                   <Icon name="close_fullscreen" size={24} />
                 </button>
 
-                {/* Navigation Buttons */}
-                {hasMultipleVehicles && (
+                {/* Navigation Buttons - Hidden in fullscreen view */}
+                {false && hasMultipleVehicles && (
                   <>
                     <button
                       className="home__fullscreen-nav home__fullscreen-nav--prev"

@@ -17,6 +17,7 @@ const RankingsAndAwards: React.FC = () => {
   const rankingArticles = [
     'top-10-daily-commute',
     'top-10-family-practical',
+    '2026-motortrend-car-of-the-year',
     'top-10-adventure-off-road',
     'top-10-urban-style',
     'top-10-performance-enthusiast',

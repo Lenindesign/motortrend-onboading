@@ -436,13 +436,33 @@ export const VehicleDetails: React.FC = () => {
   // Generate comprehensive review data for all vehicles
   const reviewData = generateVehicleReview(decodedYear, decodedMake, decodedModel, vehicleName);
   
+  // Check if there's an article with a motortrendScore for this vehicle
+  const articleStaffRating = useMemo(() => {
+    // Check all articles for a motortrendScore matching this vehicle
+    for (const article of Object.values(articles)) {
+      if (article.motortrendScore?.vehicleName) {
+        // Normalize vehicle names for comparison (handle variations like "GTI / R" vs "GTI/R")
+        const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
+        const currentVehicleName = vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
+        
+        // Check if vehicle names match (exact match or contains match)
+        if (articleVehicleName === currentVehicleName || 
+            articleVehicleName.includes(currentVehicleName) || 
+            currentVehicleName.includes(articleVehicleName)) {
+          return article.motortrendScore.overallRating;
+        }
+      }
+    }
+    return null;
+  }, [vehicleName]);
+  
   // Mock data - in production this would come from an API
   const vehicleData = {
     name: vehicleName,
     year: decodedYear,
     make: decodedMake,
     model: decodedModel,
-    staffRating: generateStaffRating(vehicleName),
+    staffRating: articleStaffRating ?? generateStaffRating(vehicleName),
     communityRating: generateCommunityRating(vehicleName),
     communityRatingCount: 252,
     priceRange: reviewData.priceRange,

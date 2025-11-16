@@ -17,6 +17,14 @@ import { VehicleInventory } from './pages/VehicleInventory';
 import { Home } from './pages/Home';
 import { Article } from './pages/Article';
 import NewCars from './pages/NewCars';
+import UsedCars from './pages/UsedCars';
+import CarReviews from './pages/CarReviews';
+import CompareVehicles from './pages/CompareVehicles';
+import EVHub from './pages/EVHub';
+import NewsAndReviews from './pages/NewsAndReviews';
+import LatestNews from './pages/LatestNews';
+import Videos from './pages/Videos';
+import Community from './pages/Community';
 import RankingsAndAwards from './pages/RankingsAndAwards';
 import Documentation from './pages/Documentation';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
@@ -46,6 +54,30 @@ function App() {
               
               {/* New Cars Page */}
               <Route path="/new-cars" element={<NewCars />} />
+              
+              {/* Used Cars Page */}
+              <Route path="/used-cars" element={<UsedCars />} />
+              
+              {/* Car Reviews Page */}
+              <Route path="/car-reviews" element={<CarReviews />} />
+              
+              {/* Compare Vehicles Page */}
+              <Route path="/compare-vehicles" element={<CompareVehicles />} />
+              
+              {/* EV Hub Page */}
+              <Route path="/ev-hub" element={<EVHub />} />
+              
+              {/* News & Reviews Page */}
+              <Route path="/news-reviews" element={<NewsAndReviews />} />
+              
+              {/* Latest News Page */}
+              <Route path="/latest-news" element={<LatestNews />} />
+              
+              {/* Videos Page */}
+              <Route path="/videos" element={<Videos />} />
+              
+              {/* Community Page */}
+              <Route path="/community" element={<Community />} />
               
               {/* Rankings & Awards Page */}
               <Route path="/rankings-awards" element={<RankingsAndAwards />} />

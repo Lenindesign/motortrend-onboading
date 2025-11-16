@@ -191,35 +191,6 @@
   color: var(--color-neutrals-3);
 }
 
-/* Vehicle ownership badge (display only) */
-.card__ownership-badge {
-  margin-top: 12px;
-}
-
-.card__ownership-badge-label {
-  display: inline-block;
-  padding: 4px 12px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1.4;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.card__ownership-badge-label--want {
-  background-color: rgba(51, 204, 255, 0.1);
-  color: var(--color-blue, #33CCFF);
-  border: 1px solid rgba(51, 204, 255, 0.3);
-}
-
-.card__ownership-badge-label--own {
-  background-color: rgba(225, 29, 46, 0.1);
-  color: var(--color-red, #E11D2E);
-  border: 1px solid rgba(225, 29, 46, 0.3);
-}
-
 .card__bottom-row {
   display: flex;
   justify-content: space-between;
@@ -502,15 +473,6 @@
     font-size: 14px;
   }
   
-  .card__ownership-badge {
-    margin-top: 8px;
-  }
-  
-  .card__ownership-badge-label {
-    font-size: 12px;
-    padding: 3px 10px;
-  }
-  
   .card__rating {
     font-size: 12px;
   }
@@ -565,14 +527,5 @@
   
   .card__ownership-option {
     font-size: 13px;
-  }
-  
-  .card__ownership-badge {
-    margin-top: 6px;
-  }
-  
-  .card__ownership-badge-label {
-    font-size: 11px;
-    padding: 2px 8px;
   }
 }

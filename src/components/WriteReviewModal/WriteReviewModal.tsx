@@ -471,8 +471,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         <div className="write-review-modal__content">
           <div className="write-review-modal__main">
             <div className="write-review-modal__title-wrapper">
-              <div className="write-review-modal__title">
-                {isEditMode ? 'Edit Your Review' : 'Add User Review'}
+            <div className="write-review-modal__title">
+              {isEditMode ? 'Edit Your Review' : 'Add User Review'}
               </div>
               {!isEditMode && (
                 <div className="write-review-modal__info-icon-wrapper">

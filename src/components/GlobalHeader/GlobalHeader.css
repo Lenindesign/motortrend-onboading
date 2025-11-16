@@ -81,6 +81,11 @@
   background-color: var(--color-neutrals-3);
 }
 
+.global-header__nav-link--active {
+  color: var(--color-neutrals-8);
+  font-weight: var(--font-weight-bold);
+}
+
 .global-header__nav-link svg {
   transition: transform var(--transition-fast);
 }
@@ -129,6 +134,16 @@
 .global-header__dropdown-item:hover {
   background-color: #374151;
   color: #FFFFFF;
+}
+
+.global-header__dropdown-item--active {
+  background-color: #374151;
+  color: #FFFFFF;
+  font-weight: var(--font-weight-bold);
+}
+
+.global-header__dropdown-item--active:hover {
+  background-color: #4B5563;
 }
 
 /* Right Section */
