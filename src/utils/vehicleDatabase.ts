@@ -5,7 +5,7 @@
 
 export const carDatabase = [
   '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2025 Subaru WRX',
-  '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic', '2025 Honda Civic',
+  '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic', '2025 Honda Civic', '2026 Honda Civic',
   '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry', '2025 Toyota Camry',
   '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang', '2025 Ford Mustang',
   '2021 Tesla Model 3', '2022 Tesla Model 3', '2023 Tesla Model 3', '2024 Tesla Model 3', '2025 Tesla Model 3',
@@ -49,8 +49,11 @@ export const carDatabase = [
   '2021 Honda CR-V', '2022 Honda CR-V', '2023 Honda CR-V', '2024 Honda CR-V', '2025 Honda CR-V', '2026 Honda CR-V',
   '2021 Mazda CX-5', '2022 Mazda CX-5', '2023 Mazda CX-5', '2024 Mazda CX-5', '2025 Mazda CX-5', '2026 Mazda CX-5',
   '2021 Toyota Corolla', '2022 Toyota Corolla', '2023 Toyota Corolla', '2024 Toyota Corolla', '2025 Toyota Corolla',
-  '2021 Honda Accord', '2022 Honda Accord', '2023 Honda Accord', '2024 Honda Accord', '2025 Honda Accord',
+  '2021 Honda Accord', '2022 Honda Accord', '2023 Honda Accord', '2024 Honda Accord', '2025 Honda Accord', '2026 Honda Accord',
   '2021 Honda Passport', '2022 Honda Passport', '2023 Honda Passport', '2024 Honda Passport', '2025 Honda Passport', '2026 Honda Passport',
+  '2021 Honda Pilot', '2022 Honda Pilot', '2023 Honda Pilot', '2024 Honda Pilot', '2025 Honda Pilot', '2026 Honda Pilot',
+  '2021 Honda Ridgeline', '2022 Honda Ridgeline', '2023 Honda Ridgeline', '2024 Honda Ridgeline', '2025 Honda Ridgeline', '2026 Honda Ridgeline',
+  '2021 Honda HR-V', '2022 Honda HR-V', '2023 Honda HR-V', '2024 Honda HR-V', '2025 Honda HR-V', '2026 Honda HR-V',
   '2021 Nissan Sentra', '2022 Nissan Sentra', '2023 Nissan Sentra', '2024 Nissan Sentra', '2025 Nissan Sentra',
   '2021 Kia Forte', '2022 Kia Forte', '2023 Kia Forte', '2024 Kia Forte', '2025 Kia K4',
   '2021 Volkswagen Jetta', '2022 Volkswagen Jetta', '2023 Volkswagen Jetta', '2024 Volkswagen Jetta', '2025 Volkswagen Jetta',
