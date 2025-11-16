@@ -56,16 +56,61 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
     return BODY_STYLE_CATEGORIES;
   }, []);
   
+  // Load onboarding vehicles data
+  const onboardingVehicles = useMemo(() => {
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      if (!onboardingData) return [];
+      
+      const data = JSON.parse(onboardingData);
+      if (!data.vehicles || !Array.isArray(data.vehicles)) return [];
+      
+      return data.vehicles as Array<{name: string, ownership: 'own' | 'want', rating?: number}>;
+    } catch (error) {
+      console.error('Error loading onboarding vehicles:', error);
+      return [];
+    }
+  }, []);
+
+  // Create a map of vehicle names to their ownership status for quick lookup
+  const vehicleOwnershipMap = useMemo(() => {
+    const map = new Map<string, 'own' | 'want'>();
+    onboardingVehicles.forEach(v => {
+      map.set(v.name, v.ownership);
+    });
+    return map;
+  }, [onboardingVehicles]);
+
+  // Sort and filter vehicles: prioritize onboarding vehicles first, then others
+  const sortedVehicles = useMemo(() => {
+    const onboardingVehicleNames = new Set(onboardingVehicles.map(v => v.name));
+    
+    // Separate onboarding vehicles from other vehicles
+    const fromOnboarding: VehicleItem[] = [];
+    const others: VehicleItem[] = [];
+    
+    vehicles.forEach(vehicle => {
+      if (onboardingVehicleNames.has(vehicle.name)) {
+        fromOnboarding.push(vehicle);
+      } else {
+        others.push(vehicle);
+      }
+    });
+    
+    // Combine: onboarding vehicles first, then others
+    return [...fromOnboarding, ...others];
+  }, [vehicles, onboardingVehicles]);
+
   // Filter vehicles by selected body style
   const filteredVehicles = useMemo(() => {
     if (!selectedBodyStyle) {
-      return vehicles;
+      return sortedVehicles;
     }
-    return vehicles.filter(vehicle => {
+    return sortedVehicles.filter(vehicle => {
       const vehicleStyles = getVehicleBodyStyle(vehicle.name);
       return vehicleStyles.includes(selectedBodyStyle);
     });
-  }, [vehicles, selectedBodyStyle]);
+  }, [sortedVehicles, selectedBodyStyle]);
 
   // Reset pagination when filter changes
   useEffect(() => {
@@ -230,6 +275,7 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
           const staffRating = generateStaffRating(vehicle.name);
           const communityRating = generateCommunityRating(vehicle.name);
           const userRating = getUserRating(vehicle.name);
+          const ownership = vehicleOwnershipMap.get(vehicle.name);
           
           return (
             <VehicleCard
@@ -245,6 +291,7 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
               onViewDetails={() => handleViewDetails(vehicle.name)}
               onRate={() => handleRate(vehicle.name)}
               userRating={userRating}
+              ownership={ownership}
             />
           );
         })}

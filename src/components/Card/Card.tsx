@@ -112,6 +112,15 @@ export const Card: React.FC<CardProps> = ({
               </label>
             </div>
           )}
+          
+          {/* Vehicle ownership badge (display only) */}
+          {ownership && !onOwnershipChange && (
+            <div className="card__ownership-badge">
+              <span className={`card__ownership-badge-label card__ownership-badge-label--${ownership}`}>
+                {ownership === 'own' ? 'Own' : 'Want'}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
