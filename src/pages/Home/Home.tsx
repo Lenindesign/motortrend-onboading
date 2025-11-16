@@ -598,6 +598,17 @@ export const Home: React.FC = () => {
   // News items with navigation
   const newsItems = useMemo(() => [
     {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cee0c4a17000281845d/14-2026-ferrari-296-speciale-first-drive.jpg',
+      title: 'Driven! The 2026 Ferrari 296 Speciale Is Molto Intensa',
+      author: 'Angus MacKenzie',
+      date: 'Nov 15, 2025',
+      category: 'MotorTrend | Reviews',
+      categories: ['Performance & Enthusiast'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-ferrari-296-speciale-first-drive-review');
+      },
+    },
+    {
       imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg',
       title: 'Audi S3 vs. RS3: One Is Shockingly Quick, the Other Might Be the Better Deal',
       author: 'Alisa Priddle',
@@ -879,7 +890,8 @@ export const Home: React.FC = () => {
           !item.title.includes('Subaru WRX tS') &&
           !(item.title.includes('Dodge Charger') && item.title.includes('Has Been Fixed')) &&
           !(item.title.includes('Audi S3') && item.title.includes('RS3')) &&
-          !(item.title.includes('Porsche 911 Turbo S') || item.title.includes('911 Turbo S'))
+          !(item.title.includes('Porsche 911 Turbo S') || item.title.includes('911 Turbo S')) &&
+          !item.title.includes('Ferrari 296 Speciale')
         );
       }
       if (persona?.name === 'Gearhead Greg') {
@@ -901,6 +913,19 @@ export const Home: React.FC = () => {
     const withoutHeroAndCards = filteredNewsItems.filter(item => 
       !heroAndCardsTitles.has(item.title)
     );
+    
+    // For Gearhead Greg, prioritize Ferrari 296 Speciale as the first story
+    if (persona?.name === 'Gearhead Greg') {
+      const ferrariStory = withoutHeroAndCards.find(item => 
+        item.title.includes('Ferrari 296 Speciale')
+      );
+      if (ferrariStory) {
+        const otherStories = withoutHeroAndCards.filter(item => 
+          !item.title.includes('Ferrari 296 Speciale')
+        );
+        return [ferrariStory, ...otherStories];
+      }
+    }
     
     return sortContentForPersonalization(withoutHeroAndCards, userType).slice(0, 5);
   }, [userType, newsItems, persona, heroData, verticalCards]);
