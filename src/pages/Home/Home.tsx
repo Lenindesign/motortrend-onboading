@@ -927,8 +927,13 @@ export const Home: React.FC = () => {
       }
     }
     
-    return sortContentForPersonalization(withoutHeroAndCards, userType).slice(0, 5);
+    return sortContentForPersonalization(withoutHeroAndCards, userType);
   }, [userType, newsItems, persona, heroData, verticalCards]);
+
+  // Split news items into sets of 6 for each river
+  const sortedNewsItemsRiver1 = useMemo(() => sortedNewsItems.slice(0, 6), [sortedNewsItems]);
+  const sortedNewsItemsRiver2 = useMemo(() => sortedNewsItems.slice(6, 12), [sortedNewsItems]);
+  const sortedNewsItemsRiver3 = useMemo(() => sortedNewsItems.slice(12, 18), [sortedNewsItems]);
 
   // Rankings & Awards articles for first river - personalized based on persona
   const rankingsArticles = useMemo(() => {
@@ -1560,12 +1565,12 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Latest From MotorTrend Section - Right after Hero */}
+        {/* Latest From MotorTrend Section - Right after Hero (River 1: First 6 stories) */}
         <div className="home__section">
           <div className="home__left-column">
             <NewsSection
               title="The Latest From MotorTrend"
-              items={sortedNewsItems}
+              items={sortedNewsItemsRiver1}
             />
           </div>
           <div className="home__right-column">
@@ -1755,24 +1760,26 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Additional News Section (River) */}
-        <div className="home__section">
-          <div className="home__left-column">
-            <NewsSection
-              title="The Latest From MotorTrend"
-              items={sortedNewsItems}
-            />
+        {/* Additional News Section (River 2: Stories 7-12) */}
+        {sortedNewsItemsRiver2.length > 0 && (
+          <div className="home__section">
+            <div className="home__left-column">
+              <NewsSection
+                title="The Latest From MotorTrend"
+                items={sortedNewsItemsRiver2}
+              />
+            </div>
+            <div className="home__right-column">
+              <AdContainer
+                width={300}
+                height={600}
+                label="SVOD 200 x 420"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+              />
+            </div>
           </div>
-          <div className="home__right-column">
-            <AdContainer
-              width={300}
-              height={600}
-              label="SVOD 200 x 420"
-              position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
-            />
-          </div>
-        </div>
+        )}
 
         {/* Sedan Carousel Section - Full width */}
         {sedanCarouselVehicles.length > 0 && (
@@ -1911,24 +1918,26 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Additional News Section (River) */}
-        <div className="home__section">
-          <div className="home__left-column">
-            <NewsSection
-              title="The Latest From MotorTrend"
-              items={sortedNewsItems}
-            />
+        {/* Additional News Section (River 3: Stories 13-18) */}
+        {sortedNewsItemsRiver3.length > 0 && (
+          <div className="home__section">
+            <div className="home__left-column">
+              <NewsSection
+                title="The Latest From MotorTrend"
+                items={sortedNewsItemsRiver3}
+              />
+            </div>
+            <div className="home__right-column">
+              <AdContainer
+                width={300}
+                height={600}
+                label="SVOD 200 x 420"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+              />
+            </div>
           </div>
-          <div className="home__right-column">
-            <AdContainer
-              width={300}
-              height={600}
-              label="SVOD 200 x 420"
-              position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
-            />
-          </div>
-        </div>
+        )}
 
         {/* Truck Carousel Section - Full width */}
         {truckCarouselVehicles.length > 0 && (
