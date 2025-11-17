@@ -69,6 +69,17 @@ const vehicleLifestyleMap: Record<string, LifestyleCategory[]> = {
   '911': ['Performance & Enthusiast', 'Luxury & Comfort'],
   'giulia': ['Performance & Enthusiast', 'Urban & Style'],
   'stinger': ['Performance & Enthusiast'],
+  'ferrari': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  '296 speciale': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  '296-speciale': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'continental gt supersports': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'continental-gt-supersports': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'm2': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'm3': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'bmw m2': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'bmw m3': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'panamera': ['Performance & Enthusiast', 'Luxury & Comfort'],
+  'taycan': ['Performance & Enthusiast', 'Luxury & Comfort', 'Eco & Future-Ready'],
   
   // Eco & Future-Ready - Electric and hybrid vehicles
   'model 3': ['Eco & Future-Ready', 'Daily Commute'],
@@ -97,6 +108,25 @@ const vehicleLifestyleMap: Record<string, LifestyleCategory[]> = {
   'xe': ['Luxury & Comfort', 'Urban & Style'],
   'jaguar xjs': ['Luxury & Comfort', 'Performance & Enthusiast'],
   'xjs': ['Luxury & Comfort', 'Performance & Enthusiast'],
+  
+  // Ultra-Luxury - Bentley, Rolls-Royce, Maybach
+  'bentley': ['Luxury & Comfort'],
+  'flying spur': ['Luxury & Comfort'],
+  'flying-spur': ['Luxury & Comfort'],
+  'rolls-royce': ['Luxury & Comfort'],
+  'rolls royce': ['Luxury & Comfort'],
+  'ghost': ['Luxury & Comfort'],
+  'maybach': ['Luxury & Comfort'],
+  'mercedes maybach': ['Luxury & Comfort'],
+  'mercedes-maybach': ['Luxury & Comfort'],
+  's-class': ['Luxury & Comfort'],
+  's class': ['Luxury & Comfort'],
+  '7 series': ['Luxury & Comfort'],
+  'g90': ['Luxury & Comfort'],
+  'ls': ['Luxury & Comfort'],
+  'lexus ls': ['Luxury & Comfort'],
+  'a8': ['Luxury & Comfort'],
+  'audi a8': ['Luxury & Comfort'],
 };
 
 /**

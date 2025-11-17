@@ -3,7 +3,7 @@
  * Based on Figma Community design system
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Using SVG illustration from URL
 const step4Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f5600ea481f700027e1851/group1318348096.svg';
@@ -43,6 +43,21 @@ const newsletterOptions = [
 export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
   const navigate = useNavigate();
   const [selectedNewsletters, setSelectedNewsletters] = useState<string[]>([]);
+
+  // Load existing newsletter selections from localStorage
+  useEffect(() => {
+    const existingData = localStorage.getItem('onboardingData');
+    if (existingData) {
+      try {
+        const parsed = JSON.parse(existingData);
+        if (parsed.newsletters && Array.isArray(parsed.newsletters)) {
+          setSelectedNewsletters(parsed.newsletters);
+        }
+      } catch (error) {
+        console.error('Error loading onboarding data:', error);
+      }
+    }
+  }, []);
 
   const toggleNewsletter = (id: string) => {
     setSelectedNewsletters((prev) =>

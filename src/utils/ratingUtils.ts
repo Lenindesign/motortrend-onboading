@@ -4,29 +4,25 @@
  */
 export function computeOverallRating(
   categoryRatings: {
-    comfort?: number;
     reliability?: number;
-    interior?: number;
-    value?: number;
-    safety?: number;
+    driverExperience?: number;
+    budgetFriendly?: number;
+    manufacturerWarranty?: number;
   }
 ): number {
   const ratings: number[] = [];
   
-  if (categoryRatings.comfort && categoryRatings.comfort > 0) {
-    ratings.push(categoryRatings.comfort);
-  }
   if (categoryRatings.reliability && categoryRatings.reliability > 0) {
     ratings.push(categoryRatings.reliability);
   }
-  if (categoryRatings.interior && categoryRatings.interior > 0) {
-    ratings.push(categoryRatings.interior);
+  if (categoryRatings.driverExperience && categoryRatings.driverExperience > 0) {
+    ratings.push(categoryRatings.driverExperience);
   }
-  if (categoryRatings.value && categoryRatings.value > 0) {
-    ratings.push(categoryRatings.value);
+  if (categoryRatings.budgetFriendly && categoryRatings.budgetFriendly > 0) {
+    ratings.push(categoryRatings.budgetFriendly);
   }
-  if (categoryRatings.safety && categoryRatings.safety > 0) {
-    ratings.push(categoryRatings.safety);
+  if (categoryRatings.manufacturerWarranty && categoryRatings.manufacturerWarranty > 0) {
+    ratings.push(categoryRatings.manufacturerWarranty);
   }
   
   if (ratings.length === 0) {

@@ -222,12 +222,12 @@
 
 .vehicle-inventory__hero-rating-icon {
   flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  max-width: 28px;
+  max-height: 28px;
   object-fit: contain;
   display: block;
   vertical-align: middle;
@@ -238,15 +238,33 @@
   border: none;
 }
 
-.vehicle-inventory__hero-rating-icon.staff,
 .vehicle-inventory__hero-rating-icon.community,
 .vehicle-inventory__hero-rating-icon.add-rate {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  min-height: 42px;
-  max-width: 42px;
-  max-height: 42px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  max-width: 28px;
+  max-height: 28px;
+  object-fit: contain;
+  display: block;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+/* MT logo smaller than blue stars */
+.vehicle-inventory__hero-rating-icon.staff,
+.vehicle-inventory__hero-rating-icon[src*="mt-rating"] {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 20px;
+  max-height: 20px;
   object-fit: contain;
   display: block;
   vertical-align: middle;
@@ -563,12 +581,12 @@
   }
 
   .vehicle-inventory__hero-rating-icon {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    max-width: 32px;
-    max-height: 32px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-width: 24px;
+    max-height: 24px;
     object-fit: contain;
     display: block;
     vertical-align: middle;
@@ -579,15 +597,33 @@
     border: none;
   }
 
-  .vehicle-inventory__hero-rating-icon.staff,
   .vehicle-inventory__hero-rating-icon.community,
   .vehicle-inventory__hero-rating-icon.add-rate {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    min-height: 32px;
-    max-width: 32px;
-    max-height: 32px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+    object-fit: contain;
+    display: block;
+    vertical-align: middle;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  /* MT logo smaller on mobile */
+  .vehicle-inventory__hero-rating-icon.staff,
+  .vehicle-inventory__hero-rating-icon[src*="mt-rating"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    max-width: 18px;
+    max-height: 18px;
     object-fit: contain;
     display: block;
     vertical-align: middle;

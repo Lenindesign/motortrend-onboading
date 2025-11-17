@@ -15,6 +15,14 @@ const vehicleImageMap: Record<string, string> = {
   '2023 dodge challenger': 'https://d2kde5ohu8qb21.cloudfront.net/files/660c96337d393d00087e73b6/022-2024-dodge-demon-challenger.jpg',
   '2022 dodge challenger': 'https://d2kde5ohu8qb21.cloudfront.net/files/660c96337d393d00087e73b6/022-2024-dodge-demon-challenger.jpg',
   '2021 dodge challenger': 'https://d2kde5ohu8qb21.cloudfront.net/files/660c96337d393d00087e73b6/022-2024-dodge-demon-challenger.jpg',
+  // Dodge Charger
+  '2026 dodge charger scat pack sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
+  '2026 dodge charger-scat-pack-sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
+  '2026 charger scat pack sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
+  '2026 charger-scat-pack-sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
+  'dodge charger scat pack sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
+  'charger scat pack sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
+  'charger-scat-pack-sixpack': 'https://d2kde5ohu8qb21.cloudfront.net/files/6916828af93a630002c7ebe4/014-2026-dodge-charger-sixpack-scat-pack-front-left.jpg',
   '2025 toyota supra': 'https://d2kde5ohu8qb21.cloudfront.net/files/66cf9fe3818d95000860c4e9/2025-toyota-gr-supra-gt4-evo2-17.jpg',
   '2025 supra': 'https://d2kde5ohu8qb21.cloudfront.net/files/66cf9fe3818d95000860c4e9/2025-toyota-gr-supra-gt4-evo2-17.jpg',
   'toyota supra': 'https://d2kde5ohu8qb21.cloudfront.net/files/66cf9fe3818d95000860c4e9/2025-toyota-gr-supra-gt4-evo2-17.jpg',
@@ -40,6 +48,10 @@ const vehicleImageMap: Record<string, string> = {
   '2022 subaru brz': 'https://d2kde5ohu8qb21.cloudfront.net/files/6691c38848a17500082a8c35/002-2024-subaru-brz-ts-front-three-quarter-action.jpg',
   '2021 subaru brz': 'https://d2kde5ohu8qb21.cloudfront.net/files/6691c38848a17500082a8c35/002-2024-subaru-brz-ts-front-three-quarter-action.jpg',
   '2020 subaru brz': 'https://d2kde5ohu8qb21.cloudfront.net/files/6691c38848a17500082a8c35/002-2024-subaru-brz-ts-front-three-quarter-action.jpg',
+  '2026 subaru solterra touring xt': 'https://d2kde5ohu8qb21.cloudfront.net/files/68acee31b249ff000249afa2/19-2026-subaru-solterra-first-drive.jpg',
+  '2026 subaru solterra': 'https://d2kde5ohu8qb21.cloudfront.net/files/68acee31b249ff000249afa2/19-2026-subaru-solterra-first-drive.jpg',
+  'subaru solterra': 'https://d2kde5ohu8qb21.cloudfront.net/files/68acee31b249ff000249afa2/19-2026-subaru-solterra-first-drive.jpg',
+  'solterra': 'https://d2kde5ohu8qb21.cloudfront.net/files/68acee31b249ff000249afa2/19-2026-subaru-solterra-first-drive.jpg',
   'm3': 'https://d2kde5ohu8qb21.cloudfront.net/files/68e820187f1963000225fdd9/2026bmwm2turbodesigneditioncoupesportscar-26.jpg',
   'm2': 'https://d2kde5ohu8qb21.cloudfront.net/files/68e82006a5c8280002858a69/2026bmwm2turbodesigneditioncoupesportscar-12.jpg',
   'bmw m2': 'https://d2kde5ohu8qb21.cloudfront.net/files/68e82006a5c8280002858a69/2026bmwm2turbodesigneditioncoupesportscar-12.jpg',
@@ -114,6 +126,16 @@ const vehicleImageMap: Record<string, string> = {
   '2020 porsche panamera': 'https://d2kde5ohu8qb21.cloudfront.net/files/68dc492c38582c00027d8666/005-2025-porsche-panamera-4s-e-hybrid.jpg',
   'porsche panamera': 'https://d2kde5ohu8qb21.cloudfront.net/files/68dc492c38582c00027d8666/005-2025-porsche-panamera-4s-e-hybrid.jpg',
   'panamera': 'https://d2kde5ohu8qb21.cloudfront.net/files/68dc492c38582c00027d8666/005-2025-porsche-panamera-4s-e-hybrid.jpg',
+  
+  // Ferrari
+  '2026 ferrari 296 speciale': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg',
+  '2026 ferrari 296-speciale': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg',
+  'ferrari 296 speciale': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg',
+  'ferrari 296-speciale': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg',
+  '296 speciale': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg',
+  '296-speciale': 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cc828d1ba0002bb36d1/3-2026-ferrari-296-speciale-first-drive.jpg',
+  
+  // Jaguar
   'xjs': 'https://d2kde5ohu8qb21.cloudfront.net/files/66311be1044cdd0008784ea2/2024jaguarxjstwrperformancesupercatsuper-gt-11.jpg',
   '2024 jaguar xjs': 'https://d2kde5ohu8qb21.cloudfront.net/files/66311be1044cdd0008784ea2/2024jaguarxjstwrperformancesupercatsuper-gt-11.jpg',
   '2024 jaguar xj s': 'https://d2kde5ohu8qb21.cloudfront.net/files/66311be1044cdd0008784ea2/2024jaguarxjstwrperformancesupercatsuper-gt-11.jpg',
@@ -778,6 +800,12 @@ const vehicleImageMap: Record<string, string> = {
   'bentley flying spur': 'https://d2kde5ohu8qb21.cloudfront.net/files/67410775c7ff710008ffe3a2/003-2025-bentley-flying-spur-speed.jpg',
   'bentley flying-spur': 'https://d2kde5ohu8qb21.cloudfront.net/files/67410775c7ff710008ffe3a2/003-2025-bentley-flying-spur-speed.jpg',
   'flying spur': 'https://d2kde5ohu8qb21.cloudfront.net/files/67410775c7ff710008ffe3a2/003-2025-bentley-flying-spur-speed.jpg',
+  '2026 bentley continental gt supersports': 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg',
+  '2026 bentley continental-gt-supersports': 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg',
+  'bentley continental gt supersports': 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg',
+  'bentley continental-gt-supersports': 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg',
+  'continental gt supersports': 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg',
+  'continental-gt-supersports': 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg',
   
   // Cadillac
   '2025 cadillac ct6': 'https://d2kde5ohu8qb21.cloudfront.net/files/65caa9930b94520008716341/2018-cadillac-ct6-with-super-cruise-22.jpg',

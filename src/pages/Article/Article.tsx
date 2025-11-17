@@ -5,6 +5,7 @@
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { MessageCircle } from 'lucide-react';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import { UserReviews } from '../../components/UserReviews';
@@ -22,6 +23,7 @@ import { getArticleBySlug, getDefaultArticle, articles } from '../../utils/artic
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { vehicleImageFor } from '../../utils/vehicleImages';
+import { ArticleReactions } from '../../components/ArticleReactions';
 import './Article.css';
 
 export const Article: React.FC = () => {
@@ -63,12 +65,15 @@ export const Article: React.FC = () => {
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
-  const [communityRatingCount, setCommunityRatingCount] = useState(252);
+  const [communityRatingCount, setCommunityRatingCount] = useState(25);
+  const [isVehicleAccordionOpen, setIsVehicleAccordionOpen] = useState(false);
   const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isScoreInfoTooltipVisible, setIsScoreInfoTooltipVisible] = useState(false);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+  const [isCommentTooltipVisible, setIsCommentTooltipVisible] = useState(false);
+  const [commentTooltipPosition, setCommentTooltipPosition] = useState({ top: 0, left: 0 });
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
@@ -76,6 +81,7 @@ export const Article: React.FC = () => {
   const staffRatingRef = useRef<HTMLDivElement>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
   const scoreInfoRef = useRef<HTMLDivElement>(null);
+  const commentIconRef = useRef<HTMLSpanElement>(null);
   const justSavedReviewRef = useRef<boolean>(false);
   const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
   const { getUserRating, setUserRating, clearRating } = useRating();
@@ -95,6 +101,12 @@ export const Article: React.FC = () => {
       return getDefaultArticle();
     }
     return loadedArticle;
+  }, [slug]);
+  
+  // Generate consistent comment count based on article slug
+  const commentCount = useMemo(() => {
+    const hash = (slug || 'default').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return Math.floor((hash % 50) + 10); // Random count between 10-59
   }, [slug]);
   
   // Get all article images for gallery
@@ -192,12 +204,22 @@ export const Article: React.FC = () => {
     return name.replace(/-/g, ' ').trim();
   }, [articleData]);
   
+  // Check if this is a comparison article with multiple vehicles
+  const comparisonVehicles = useMemo(() => {
+    return articleData.comparisonVehicles || [];
+  }, [articleData]);
+  
+  const isComparisonArticle = comparisonVehicles.length > 1;
+  const primaryVehicle = isComparisonArticle ? comparisonVehicles[0] : vehicleName;
+  const additionalVehicles = isComparisonArticle ? comparisonVehicles.slice(1) : [];
+  
   // Parse vehicle name to get year, make, and model for navigation
   const vehiclePath = useMemo(() => {
-    if (!vehicleName) return null;
-    const { year, make, model } = parseVehicleName(vehicleName);
+    const targetVehicle = isComparisonArticle ? primaryVehicle : vehicleName;
+    if (!targetVehicle) return null;
+    const { year, make, model } = parseVehicleName(targetVehicle);
     return `/vehicles/${year}/${make}/${model}`;
-  }, [vehicleName]);
+  }, [vehicleName, isComparisonArticle, primaryVehicle]);
   
   const userRating = getUserRating(vehicleName);
 
@@ -713,12 +735,12 @@ export const Article: React.FC = () => {
         const parsed = parseVehicleName(vehicleName);
         const yearNum = parseInt(parsed.year) || new Date().getFullYear();
         const fetchedListings = await fetchVehicleListings(yearNum, parsed.make, parsed.model, 4);
-        // Set images for listings using vehicleImageFor
+        // Set images for listings using vehicleImageFor only as fallback
         const listingsWithImages = fetchedListings.map((listing) => {
           const listingVehicleName = `${listing.year} ${listing.make} ${listing.model}`;
           return {
             ...listing,
-            image: vehicleImageFor(listingVehicleName)
+            image: listing.image || vehicleImageFor(listingVehicleName)
           };
         });
         setListings(listingsWithImages);
@@ -742,10 +764,33 @@ export const Article: React.FC = () => {
           <div className="article__ratings-left">
             {vehiclePath ? (
               <Link to={vehiclePath} className="article__vehicle-name">
-                {vehicleName}
+                {primaryVehicle}
               </Link>
             ) : (
-              <div className="article__vehicle-name">{vehicleName}</div>
+              <div className="article__vehicle-name">{primaryVehicle}</div>
+            )}
+            {isComparisonArticle && (
+              <button 
+                className={`article__vehicle-accordion-toggle ${isVehicleAccordionOpen ? 'article__vehicle-accordion-toggle--open' : ''}`}
+                onClick={() => setIsVehicleAccordionOpen(!isVehicleAccordionOpen)}
+                aria-label={isVehicleAccordionOpen ? 'Hide other vehicles' : 'Show other vehicles'}
+              >
+                <svg 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 20 20" 
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path 
+                    d="M5 7.5L10 12.5L15 7.5" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
             )}
           </div>
           <div className="article__ratings-center">
@@ -757,10 +802,15 @@ export const Article: React.FC = () => {
               onMouseLeave={handleStaffTooltipMouseLeave}
             >
               <div className="article__rating-label-wrapper">
-                <span className="article__rating-label-top">MotorTrend</span>
+                <span className="article__rating-label-top">Expert</span>
                 <span className="article__rating-label-bottom">Rating</span>
               </div>
-              <span className="article__rating-value">{staffRating}</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                alt="MotorTrend" 
+                className="article__rating-icon article__rating-icon--staff" 
+              />
+              <span className="article__rating-value">{typeof staffRating === 'number' ? Math.round(staffRating * 10) : staffRating}</span>
               <StaffRatingTooltip
                 overallRating={staffRating}
                 scores={scores}
@@ -788,9 +838,7 @@ export const Article: React.FC = () => {
                 className="article__rating-icon article__rating-icon--community" 
               />
               <span className="article__rating-value">
-                {communityRating % 1 === 0 
-                  ? communityRating 
-                  : communityRating.toFixed(1)}
+                {Math.round(communityRating * 10)}
               </span>
               <RatingDistributionTooltip
                 distribution={ratingDistribution}
@@ -818,9 +866,11 @@ export const Article: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <span className="article__rating-label">Rate Your Car</span>
+                  <span className="article__rating-label">
+                    Rate<br />This Car
+                  </span>
                   <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                     alt="Add Rating Star" 
                     className="article__rating-icon article__rating-icon--add-rate" 
                   />
@@ -848,6 +898,116 @@ export const Article: React.FC = () => {
           </div>
         </div>
         )}
+        
+        {/* Vehicle Accordion - Additional Vehicles */}
+        {isComparisonArticle && isVehicleAccordionOpen && (
+          <div className="article__vehicle-accordion">
+            {additionalVehicles.map((vehicle, index) => {
+              const vehiclePathForItem = (() => {
+                try {
+                  const { year, make, model } = parseVehicleName(vehicle);
+                  return `/vehicles/${year}/${make}/${model}`;
+                } catch {
+                  return null;
+                }
+              })();
+              const staffRatingForVehicle = generateStaffRating(vehicle);
+              const communityRatingForVehicle = generateCommunityRating(vehicle);
+              const userRatingForVehicle = getUserRating(vehicle);
+              
+              return (
+                <div key={index} className="article__vehicle-accordion-item">
+                  <div className="article__vehicle-accordion-left">
+                    {vehiclePathForItem ? (
+                      <Link to={vehiclePathForItem} className="article__vehicle-accordion-name">
+                        {vehicle}
+                      </Link>
+                    ) : (
+                      <div className="article__vehicle-accordion-name">{vehicle}</div>
+                    )}
+                  </div>
+                  <div className="article__vehicle-accordion-center">
+                    <div className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--staff">
+                      <div className="article__rating-label-wrapper">
+                        <span className="article__rating-label-top">Expert</span>
+                        <span className="article__rating-label-bottom">Rating</span>
+                      </div>
+                      <img 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                        alt="MotorTrend" 
+                        className="article__rating-icon article__rating-icon--staff" 
+                      />
+                      <span className="article__rating-value">{typeof staffRatingForVehicle === 'number' ? Math.round(staffRatingForVehicle * 10) : staffRatingForVehicle}</span>
+                    </div>
+                    <div className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--community">
+                      <div className="article__rating-label-wrapper">
+                        <span className="article__rating-label-top">Community</span>
+                        <span className="article__rating-label-bottom">Rating ({communityRatingCount})</span>
+                      </div>
+                      <img 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                        alt="Community Rating Star" 
+                        className="article__rating-icon article__rating-icon--community" 
+                      />
+                      <span className="article__rating-value">
+                        {Math.round(communityRatingForVehicle * 10)}
+                      </span>
+                    </div>
+                    <button 
+                      className="article__rate-btn article__rate-btn--mobile-hide" 
+                      onClick={() => {
+                        setUserRating(vehicle, 0);
+                        setIsRatingModalOpen(true);
+                      }}
+                    >
+                      {userRatingForVehicle > 0 ? (
+                        <>
+                          <div className="article__rating-label-wrapper">
+                            <span className="article__rating-label-top">Your</span>
+                            <span className="article__rating-label-bottom">Rating</span>
+                          </div>
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                            alt="Your Rating Star" 
+                            className="article__rating-icon article__rating-icon--add-rate" 
+                          />
+                          <span className="article__rating-value">{userRatingForVehicle}</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="article__rating-label-wrapper">
+                            <span className="article__rating-label-top">Rate</span>
+                            <span className="article__rating-label-bottom">This Car</span>
+                          </div>
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
+                            alt="Add Rating Star" 
+                            className="article__rating-icon article__rating-icon--add-rate" 
+                          />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <div className="article__vehicle-accordion-right">
+                    <button 
+                      className="article__cta"
+                      onClick={() => {
+                        const listingsSection = document.querySelector('.article__listings');
+                        if (listingsSection) {
+                          listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                          console.log('Navigate to local listings');
+                        }
+                      }}
+                    >
+                      Local Listings
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Main Layout: 2/3 content, 1/3 sidebar */}
         <div className={`article__layout ${isPremiumArticle ? 'article__layout--premium' : ''}`}>
@@ -869,7 +1029,34 @@ export const Article: React.FC = () => {
                 <span className="article__byline-separator">|</span>
                 <span className="article__byline-date">{article.date}</span>
                 <span className="article__byline-separator">|</span>
-                <span className="article__byline-section">{article.category}</span>
+                <span 
+                  ref={commentIconRef}
+                  className="article__byline-section article__byline-section--clickable"
+                  onClick={() => {
+                    const commentsSection = document.getElementById('community-ratings');
+                    if (commentsSection) {
+                      commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  onMouseEnter={() => {
+                    if (commentIconRef.current) {
+                      const rect = commentIconRef.current.getBoundingClientRect();
+                      setCommentTooltipPosition({
+                        top: rect.top - 40, // Position above the icon
+                        left: rect.left + rect.width / 2
+                      });
+                      setIsCommentTooltipVisible(true);
+                    }
+                  }}
+                  onMouseLeave={() => setIsCommentTooltipVisible(false)}
+                >
+                  <MessageCircle size={18} />
+                </span>
+                <span className="article__byline-separator">|</span>
+                <ArticleReactions 
+                  articleSlug={slug || 'default'} 
+                  vehicleName={primaryVehicle || vehicleName || undefined} 
+                />
               </div>
               <button 
                 className={`article__save-btn ${isSaved ? 'saved' : ''}`}
@@ -982,7 +1169,11 @@ export const Article: React.FC = () => {
                               className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                             >
                               {rankingNumber && (
-                                <div className="article__image-ranking-badge" data-number={`#${rankingNumber}`}>
+                                <div className="article__image-ranking-badge">
+                                  <span className="article__ranking-content">
+                                    <span className="article__ranking-hash">#</span>
+                                    <span className="article__ranking-number">{rankingNumber}</span>
+                                  </span>
                                 </div>
                               )}
                               <img 
@@ -1007,12 +1198,17 @@ export const Article: React.FC = () => {
                                   <div className="article__image-score-ratings-list">
                                     <div className="article__image-score-rating-item">
                                       <div className="article__image-score-rating-label-wrapper">
-                                        <span className="article__image-score-rating-label-top">MotorTrend</span>
+                                        <span className="article__image-score-rating-label-top">Expert</span>
                                         <span className="article__image-score-rating-label-bottom">Rating</span>
                                       </div>
                                       <div className="article__image-score-rating-value-wrapper">
+                                        <img 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                                          alt="MotorTrend" 
+                                          className="article__image-score-rating-icon staff" 
+                                        />
                                         <span className="article__image-score-rating-value">
-                                          {motortrendScoreForImage.toFixed(1)}
+                                          {Math.round(motortrendScoreForImage * 10)}
                                         </span>
                                       </div>
                                     </div>
@@ -1020,7 +1216,7 @@ export const Article: React.FC = () => {
                                       <div className="article__image-score-rating-label-wrapper">
                                         <span className="article__image-score-rating-label-top">Community</span>
                                         <span className="article__image-score-rating-label-bottom">
-                                          Rating <span className="article__image-score-rating-count">(252)</span>
+                                          Rating <span className="article__image-score-rating-count">(25)</span>
                                         </span>
                                       </div>
                                       <div className="article__image-score-rating-value-wrapper">
@@ -1030,7 +1226,7 @@ export const Article: React.FC = () => {
                                           className="article__image-score-rating-icon community" 
                                         />
                                         <span className="article__image-score-rating-value">
-                                          {userScoreForImage.toFixed(1)}
+                                          {Math.round(userScoreForImage * 10)}
                                         </span>
                                       </div>
                                     </div>
@@ -1077,7 +1273,11 @@ export const Article: React.FC = () => {
                                 className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                               >
                                 {rankingNumber && (
-                                  <div className="article__image-ranking-badge" data-number={`#${rankingNumber}`}>
+                                  <div className="article__image-ranking-badge">
+                                    <span className="article__ranking-content">
+                                      <span className="article__ranking-hash">#</span>
+                                      <span className="article__ranking-number">{rankingNumber}</span>
+                                    </span>
                                   </div>
                                 )}
                                 <img 
@@ -1106,8 +1306,13 @@ export const Article: React.FC = () => {
                                           <span className="article__image-score-rating-label-bottom">Rating</span>
                                         </div>
                                         <div className="article__image-score-rating-value-wrapper">
+                                          <img 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                                            alt="MotorTrend" 
+                                            className="article__image-score-rating-icon staff" 
+                                          />
                                           <span className="article__image-score-rating-value">
-                                            {motortrendScoreForImage.toFixed(1)}
+                                            {Math.round(motortrendScoreForImage * 10)}
                                           </span>
                                         </div>
                                       </div>
@@ -1115,7 +1320,7 @@ export const Article: React.FC = () => {
                                         <div className="article__image-score-rating-label-wrapper">
                                           <span className="article__image-score-rating-label-top">Community</span>
                                           <span className="article__image-score-rating-label-bottom">
-                                            Rating <span className="article__image-score-rating-count">(252)</span>
+                                            Rating <span className="article__image-score-rating-count">(25)</span>
                                           </span>
                                         </div>
                                         <div className="article__image-score-rating-value-wrapper">
@@ -1125,7 +1330,7 @@ export const Article: React.FC = () => {
                                             className="article__image-score-rating-icon community" 
                                           />
                                           <span className="article__image-score-rating-value">
-                                            {userScoreForImage.toFixed(1)}
+                                            {Math.round(userScoreForImage * 10)}
                                           </span>
                                         </div>
                                       </div>
@@ -1211,8 +1416,8 @@ export const Article: React.FC = () => {
                                 <div className="article__score-content">
                                   <div className="article__overall-score">
                                     <div className="article__score-circle">
-                                      <span className="article__score-number">{typeof motortrendScore.overallRating === 'number' ? motortrendScore.overallRating.toFixed(1) : motortrendScore.overallRating}</span>
-                                      <span className="article__score-label">MotorTrend Rating</span>
+                                      <span className="article__score-number">{typeof motortrendScore.overallRating === 'number' ? Math.round(motortrendScore.overallRating * 10) : motortrendScore.overallRating}</span>
+                                      <span className="article__score-label">Expert Rating</span>
                                     </div>
                                   </div>
                                   <div className="article__score-breakdown">
@@ -1221,28 +1426,28 @@ export const Article: React.FC = () => {
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.performance / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.performance.toFixed(1)}</span>
+                                      <span>{Math.round(motortrendScore.scores.performance * 10)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Efficiency/Range</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.efficiency / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.efficiency.toFixed(1)}</span>
+                                      <span>{Math.round(motortrendScore.scores.efficiency * 10)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Tech/Innovation</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.tech / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.tech.toFixed(1)}</span>
+                                      <span>{Math.round(motortrendScore.scores.tech * 10)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Value</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.value / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.value.toFixed(1)}</span>
+                                      <span>{Math.round(motortrendScore.scores.value * 10)}</span>
                                     </div>
                                   </div>
                                 </div>
@@ -1608,10 +1813,15 @@ export const Article: React.FC = () => {
               onClick={handleScrollToStaffRating}
             >
               <div className="article__sticky-rating-label-wrapper">
-                <span className="article__sticky-rating-label-top">MotorTrend</span>
+                <span className="article__sticky-rating-label-top">Expert</span>
                 <span className="article__sticky-rating-label-bottom">Rating</span>
               </div>
-              <span className="article__sticky-rating-value">{staffRating}</span>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                alt="MotorTrend" 
+                className="article__sticky-rating-icon" 
+              />
+              <span className="article__sticky-rating-value">{typeof staffRating === 'number' ? Math.round(staffRating * 10) : staffRating}</span>
             </div>
             <div 
               className="article__sticky-rating-item article__sticky-rating-item--community" 
@@ -1627,9 +1837,7 @@ export const Article: React.FC = () => {
                 className="article__sticky-rating-icon" 
               />
               <span className="article__sticky-rating-value">
-                {communityRating % 1 === 0 
-                  ? communityRating 
-                  : communityRating.toFixed(1)}
+                {Math.round(communityRating * 10)}
               </span>
             </div>
             <button 
@@ -1651,9 +1859,11 @@ export const Article: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <span className="article__sticky-rating-label">Rate Your Car</span>
+                  <span className="article__sticky-rating-label">
+                    Rate<br />This Car
+                  </span>
                   <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                     alt="Add Rating Star" 
                     className="article__sticky-rating-icon" 
                   />
@@ -1924,6 +2134,22 @@ export const Article: React.FC = () => {
         itemTitle={article.title}
         itemType="article"
       />
+
+      {/* Comment Tooltip */}
+      {isCommentTooltipVisible && (
+        <div 
+          className="article__comment-tooltip"
+          style={{
+            position: 'fixed',
+            top: commentTooltipPosition.top,
+            left: commentTooltipPosition.left,
+            transform: 'translateX(-50%)',
+            zIndex: 99999
+          }}
+        >
+          View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+        </div>
+      )}
     </div>
   );
 };

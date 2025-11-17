@@ -22,6 +22,8 @@ import { RatingDistributionTooltip, type RatingDistributionData } from '../../co
 import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { articles } from '../../utils/articles';
+import { ArticleReactions } from '../../components/ArticleReactions';
+import { PhotoGallery } from '../../components/PhotoGallery';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -44,15 +46,59 @@ export const VehicleDetails: React.FC = () => {
   const hideTooltipTimeout = useRef<number | null>(null);
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
+  const primeHeroRef = useRef<HTMLDivElement>(null);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
-  const [communityRatingCount, setCommunityRatingCount] = useState(252);
+  const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   
   // Parse vehicle name from URL params
   // Normalize: replace dashes with spaces in model to ensure consistent format
   // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
+  
+  // Check if this is a Prime template vehicle
+  const isPrimeTemplate = (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') ||
+                          (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') ||
+                          (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') ||
+                          (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1');
+  
+  // Display name for prime template
+  const displayName = (() => {
+    if (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') {
+      return '2026 Bentley Continental GT';
+    }
+    if (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') {
+      return '2026 Ferrari 296 Speciale';
+    }
+    if (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') {
+      return '2025 Porsche 718 Cayman';
+    }
+    if (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1') {
+      return '2025 Chevrolet Corvette ZR1';
+    }
+    return vehicleName;
+  })();
+  
+  // Get images from article for gallery
+  const galleryImages = useMemo(() => {
+    // Find matching article
+    for (const article of Object.values(articles)) {
+      if (article.motortrendScore?.vehicleName) {
+        const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
+        const currentVehicleName = vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
+        
+        if (articleVehicleName === currentVehicleName || 
+            articleVehicleName.includes(currentVehicleName) || 
+            currentVehicleName.includes(articleVehicleName)) {
+          return article.images || [];
+        }
+      }
+    }
+    // Fallback to hero image if no article found
+    return [vehicleImageFor(vehicleName)];
+  }, [vehicleName]);
   
   const getInitialReviews = (): ReviewData[] => {
     // First, load any user-submitted reviews from localStorage
@@ -464,7 +510,7 @@ export const VehicleDetails: React.FC = () => {
     model: decodedModel,
     staffRating: articleStaffRating ?? generateStaffRating(vehicleName),
     communityRating: generateCommunityRating(vehicleName),
-    communityRatingCount: 252,
+    communityRatingCount: 25,
     priceRange: reviewData.priceRange,
     award: reviewData.award,
     image: (() => {
@@ -557,12 +603,12 @@ export const VehicleDetails: React.FC = () => {
       try {
         const yearNum = parseInt(decodedYear) || new Date().getFullYear();
         const fetchedListings = await fetchVehicleListings(yearNum, decodedMake, decodedModel, 4);
-        // Set images for listings using vehicleImageFor
+        // Set images for listings using vehicleImageFor only as fallback
         const listingsWithImages = fetchedListings.map((listing) => {
           const listingVehicleName = `${listing.year} ${listing.make} ${listing.model}`;
           return {
             ...listing,
-            image: vehicleImageFor(listingVehicleName)
+            image: listing.image || vehicleImageFor(listingVehicleName)
           };
         });
         setListings(listingsWithImages);
@@ -796,12 +842,15 @@ export const VehicleDetails: React.FC = () => {
   // Scroll detection for sticky rate bar
   useEffect(() => {
     const handleScroll = () => {
-      if (!ratingsBarRef.current) return;
-
-      const ratingsBarRect = ratingsBarRef.current.getBoundingClientRect();
+      // For prime template, use the hero ref; for regular template, use the ratings bar ref
+      const scrollRef = isPrimeTemplate ? primeHeroRef.current : ratingsBarRef.current;
       
-      // When the ratings bar reaches or passes the top of the viewport
-      if (ratingsBarRect.top <= 0) {
+      if (!scrollRef) return;
+
+      const scrollRefRect = scrollRef.getBoundingClientRect();
+      
+      // When the reference element reaches or passes the top of the viewport
+      if (scrollRefRect.top <= 0) {
         setIsStickyBarVisible(true);
       } else {
         setIsStickyBarVisible(false);
@@ -814,7 +863,7 @@ export const VehicleDetails: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isPrimeTemplate]);
 
   // Both tooltips now follow their elements on scroll (no hide on scroll)
 
@@ -826,43 +875,53 @@ export const VehicleDetails: React.FC = () => {
       <div className={`vehicle-details__sticky-rate-bar ${isStickyBarVisible ? 'vehicle-details__sticky-rate-bar--visible' : ''}`}>
         <div className="vehicle-details__sticky-rate-bar-content">
           <div className="vehicle-details__sticky-vehicle-name">
-            {vehicleName}
+            {displayName}
           </div>
           <div className="vehicle-details__sticky-ratings">
             <div 
               className="vehicle-details__sticky-rating-item" 
               onClick={handleScrollToStaffRating}
             >
-              <span className="vehicle-details__sticky-rating-label">MotorTrend</span>
-              <span className="vehicle-details__sticky-rating-value">{typeof vehicleData.staffRating === 'number' ? vehicleData.staffRating.toFixed(1) : vehicleData.staffRating}</span>
+              <div className="vehicle-details__sticky-rating-label-wrapper">
+                <span className="vehicle-details__sticky-rating-label-top">Expert</span>
+                <span className="vehicle-details__sticky-rating-label-bottom">Rating</span>
+              </div>
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                alt="MotorTrend" 
+                className="vehicle-details__sticky-rating-icon" 
+              />
+              <span className="vehicle-details__sticky-rating-value">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
             </div>
             <div 
               className="vehicle-details__sticky-rating-item" 
               onClick={handleScrollToCommunityRatings}
             >
-              <span className="vehicle-details__sticky-rating-label">Community ({communityRatingCount})</span>
+              <div className="vehicle-details__sticky-rating-label-wrapper">
+                <span className="vehicle-details__sticky-rating-label-top">Community</span>
+                <span className="vehicle-details__sticky-rating-label-bottom">Rating ({communityRatingCount})</span>
+              </div>
               <img 
                 src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
                 alt="Community Rating Star" 
                 className="vehicle-details__sticky-rating-icon" 
               />
               <span className="vehicle-details__sticky-rating-value">
-                {vehicleData.communityRating % 1 === 0 
-                  ? vehicleData.communityRating 
-                  : vehicleData.communityRating.toFixed(1)}
+                {Math.round(vehicleData.communityRating * 10)}
               </span>
             </div>
             <button 
               className="vehicle-details__sticky-rating-item vehicle-details__sticky-rate-btn" 
               onClick={handleOpenRatingModal}
             >
-              <span className="vehicle-details__sticky-rating-label">
-                {userRating > 0 ? 'Yours' : 'Add Your Rating'}
-              </span>
+              <div className="vehicle-details__sticky-rating-label-wrapper">
+                <span className="vehicle-details__sticky-rating-label-top">Rate</span>
+                <span className="vehicle-details__sticky-rating-label-bottom">This Car</span>
+              </div>
               <img 
                 src={userRating > 0 
                   ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                  : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                 } 
                 alt="Add Rating Star" 
                 className="vehicle-details__sticky-rating-icon" 
@@ -887,164 +946,293 @@ export const VehicleDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Content Layout */}
-      <div className="vehicle-details__content-layout">
-        {/* Left Content */}
-        <div className="vehicle-details__left-content">
-          {/* Breadcrumbs, Social Icons, and Save Button */}
-          <div className="vehicle-details__top-section">
-            <div className="vehicle-details__breadcrumbs">
-              <Link to="/">Home</Link>
-              <span> / </span>
-              <Link to="/cars">Cars</Link>
-              <span> / </span>
-              <span>{vehicleData.make}</span>
-              <span> / </span>
-              <span>{vehicleData.model}</span>
-              <span> / </span>
-              <span>{vehicleData.year}</span>
-            </div>
-            <div className="vehicle-details__top-actions">
-              <button className="vehicle-details__social-btn">
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg" 
-                  alt="Facebook" 
-                  width={30} 
-                  height={30}
-                />
-              </button>
-              <button className="vehicle-details__social-btn">
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg" 
-                  alt="X" 
-                  width={30} 
-                  height={30}
-                />
-              </button>
-              <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
-                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
-                <span>{isSaved ? 'Saved!' : 'Save'}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Vehicle Title and Year Selection */}
-          <div className="vehicle-details__title-section">
-            <div className="vehicle-details__title-row">
-              <h1 className="vehicle-details__title">
-                {vehicleName}
-                <Icon name="keyboard_arrow_down" size={20} />
-              </h1>
-            </div>
-            <div className="vehicle-details__year-award-row">
-              <div className="vehicle-details__year-selector">
-                {availableYears.map((y) => (
-                  <button
-                    key={y}
-                    className={`vehicle-details__year-badge ${selectedYear === y ? 'active' : ''}`}
-                    onClick={() => setSelectedYear(y)}
-                  >
-                    {y}
-                  </button>
-                ))}
-                <button className="vehicle-details__more-years">
-                  More
-                  <Icon name="keyboard_arrow_down" size={16} />
-                </button>
-              </div>
-              <div className="vehicle-details__award">
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg" 
-                  alt="Trophy" 
-                  width={20} 
-                  height={20}
-                />
-                <span>{vehicleData.award}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Ratings Section */}
-          <div ref={ratingsBarRef} className="vehicle-details__ratings">
+      {/* Prime Template: Full-width hero with score overlay */}
+      {isPrimeTemplate && (
+        <>
+          <div ref={primeHeroRef} className="vehicle-details__prime-hero">
             <div 
-              ref={staffRatingRef}
-              className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
-              onClick={handleScrollToStaffRating}
-              onMouseEnter={handleStaffTooltipMouseEnter}
-              onMouseLeave={handleStaffTooltipMouseLeave}
+              className="vehicle-details__prime-hero-image"
+              onClick={() => setIsGalleryOpen(true)}
+              style={{ cursor: 'pointer' }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setIsGalleryOpen(true);
+                }
+              }}
+              aria-label="Open photo gallery"
             >
-              <span className="vehicle-details__rating-label">MotorTrend</span>
-              <span className="vehicle-details__rating-value">{typeof vehicleData.staffRating === 'number' ? vehicleData.staffRating.toFixed(1) : vehicleData.staffRating}</span>
-              <StaffRatingTooltip
-                overallRating={vehicleData.staffRating}
-                scores={vehicleData.scores}
-                isVisible={isStaffTooltipVisible}
-                triggerRef={staffRatingRef}
-                onMouseEnter={handleStaffTooltipMouseEnter}
-                onMouseLeave={handleStaffTooltipMouseLeave}
-                onRequestClose={() => setIsStaffTooltipVisible(false)}
-              />
-            </div>
-            <div 
-              ref={communityRatingRef}
-              className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
-              onClick={handleScrollToCommunityRatings}
-              onMouseEnter={handleTooltipMouseEnter}
-              onMouseLeave={handleTooltipMouseLeave}
-            >
-              <span className="vehicle-details__rating-label">Community Rating ({communityRatingCount})</span>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                alt="Community Rating Star" 
-                className="vehicle-details__rating-icon community" 
-              />
-              <span className="vehicle-details__rating-value">
-                {vehicleData.communityRating % 1 === 0 
-                  ? vehicleData.communityRating 
-                  : vehicleData.communityRating.toFixed(1)}
-              </span>
-              <RatingDistributionTooltip
-                distribution={vehicleData.ratingDistribution}
-                totalReviews={communityRatingCount}
-                isVisible={isTooltipVisible}
-                triggerRef={communityRatingRef}
-                onMouseEnter={handleTooltipMouseEnter}
-                onMouseLeave={handleTooltipMouseLeave}
-                onRequestClose={() => setIsTooltipVisible(false)}
-              />
-            </div>
-            <button className="vehicle-details__rate-btn" onClick={handleOpenRatingModal}>
-              <span className="vehicle-details__rating-label">
-                {userRating > 0 ? 'Your Rating' : 'Add Your Rating'}
-              </span>
-              <img 
-                src={userRating > 0 
-                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                  : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
-                } 
-                alt="Add Rating Star" 
-                className="vehicle-details__rating-icon add-rate" 
-              />
-              {userRating > 0 && (
-                <>
-                  <span className="vehicle-details__rating-value">{userRating}</span>
-                  {ownsCar && (
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c93e2c176500024c4f41/garage-check-icon.svg" 
-                      alt="Verified Owner" 
-                      className="vehicle-details__verified-icon"
-                    />
-                  )}
-                </>
-              )}
-            </button>
-          </div>
-          {/* Hero Image */}
-          <div className="vehicle-details__hero">
-            <div className="vehicle-details__hero-image">
               <img src={vehicleData.image} alt={vehicleName} />
             </div>
+            
+            {/* Top Section Overlay (Breadcrumbs + Actions) */}
+            <div className="vehicle-details__prime-top-overlay">
+              <div className="vehicle-details__breadcrumbs">
+                <Link to="/">Home</Link>
+                <span> / </span>
+                <Link to="/cars">Cars</Link>
+                <span> / </span>
+                <span>{vehicleData.make}</span>
+                <span> / </span>
+                <span>{vehicleData.model}</span>
+                <span> / </span>
+                <span>{vehicleData.year}</span>
+              </div>
+              <div className="vehicle-details__top-actions">
+                <button 
+                  className="vehicle-details__rate-star-btn"
+                  onClick={handleOpenRatingModal}
+                  aria-label="Rate This Car"
+                >
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg" 
+                    alt="Rate" 
+                    className="vehicle-details__rate-star-icon"
+                  />
+                  <span className="vehicle-details__rate-star-tooltip">Rate This Car</span>
+                </button>
+                <ArticleReactions 
+                  articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
+                  vehicleName={vehicleName}
+                  showTooltipsBelow={true}
+                />
+                <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
+                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                  <span>{isSaved ? 'Saved!' : 'Save'}</span>
+                </button>
+              </div>
+            </div>
+            
+            {/* Score Overlay (Listicle Style) */}
+            <div className="vehicle-details__prime-score-overlay">
+              <span className="vehicle-details__prime-vehicle-name">{displayName}</span>
+              <div className="vehicle-details__prime-ratings-list">
+                <div className="vehicle-details__prime-rating-item">
+                  <div className="vehicle-details__prime-rating-label-wrapper">
+                    <span className="vehicle-details__prime-rating-label-top">Expert</span>
+                    <span className="vehicle-details__prime-rating-label-bottom">Rating</span>
+                  </div>
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                    alt="MotorTrend" 
+                    className="vehicle-details__prime-rating-icon" 
+                  />
+                  <span className="vehicle-details__prime-rating-value">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
+                </div>
+                <div className="vehicle-details__prime-rating-item vehicle-details__prime-rating-item--community">
+                  <div className="vehicle-details__prime-rating-label-wrapper">
+                    <span className="vehicle-details__prime-rating-label-top">Community</span>
+                    <span className="vehicle-details__prime-rating-label-bottom">Rating ({communityRatingCount})</span>
+                  </div>
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                    alt="Community Rating Star" 
+                    className="vehicle-details__prime-rating-icon" 
+                  />
+                  <span className="vehicle-details__prime-rating-value">
+                    {Math.round(vehicleData.communityRating * 10)}
+                  </span>
+                </div>
+              </div>
+              <button 
+                className="vehicle-details__prime-cta"
+                onClick={() => {
+                  const listingsSection = document.querySelector('.vehicle-details__listings');
+                  if (listingsSection) {
+                    listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
+                See Local Listings
+              </button>
+            </div>
           </div>
+
+        </>
+      )}
+
+      {/* Content Layout */}
+      <div className={`vehicle-details__content-layout ${isPrimeTemplate ? 'vehicle-details__content-layout--prime' : ''}`}>
+        {/* Left Content */}
+        <div className="vehicle-details__left-content">
+          {/* Breadcrumbs, Social Icons, and Save Button (hidden for prime template) */}
+          {!isPrimeTemplate && (
+            <div className="vehicle-details__top-section">
+              <div className="vehicle-details__breadcrumbs">
+                <Link to="/">Home</Link>
+                <span> / </span>
+                <Link to="/cars">Cars</Link>
+                <span> / </span>
+                <span>{vehicleData.make}</span>
+                <span> / </span>
+                <span>{vehicleData.model}</span>
+                <span> / </span>
+                <span>{vehicleData.year}</span>
+              </div>
+              <div className="vehicle-details__top-actions">
+                <button className="vehicle-details__social-btn">
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg" 
+                    alt="Facebook" 
+                    width={30} 
+                    height={30}
+                  />
+                </button>
+                <button className="vehicle-details__social-btn">
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg" 
+                    alt="X" 
+                    width={30} 
+                    height={30}
+                  />
+                </button>
+                <ArticleReactions 
+                  articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
+                  vehicleName={vehicleName}
+                />
+                <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
+                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                  <span>{isSaved ? 'Saved!' : 'Save'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Vehicle Title and Year Selection (hidden for prime template) */}
+          {!isPrimeTemplate && (
+            <div className="vehicle-details__title-section">
+              <div className="vehicle-details__title-row">
+                <h1 className="vehicle-details__title">
+                  {displayName}
+                  <Icon name="keyboard_arrow_down" size={20} />
+                </h1>
+              </div>
+              <div className="vehicle-details__year-award-row">
+                <div className="vehicle-details__year-selector">
+                  {availableYears.map((y) => (
+                    <button
+                      key={y}
+                      className={`vehicle-details__year-badge ${selectedYear === y ? 'active' : ''}`}
+                      onClick={() => setSelectedYear(y)}
+                    >
+                      {y}
+                    </button>
+                  ))}
+                  <button className="vehicle-details__more-years">
+                    More
+                    <Icon name="keyboard_arrow_down" size={16} />
+                  </button>
+                </div>
+                <div className="vehicle-details__award">
+                  <img 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg" 
+                    alt="Trophy" 
+                    width={20} 
+                    height={20}
+                  />
+                  <span>{vehicleData.award}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Ratings Section (hidden for prime template since ratings show on hero) */}
+          {!isPrimeTemplate && (
+            <div ref={ratingsBarRef} className="vehicle-details__ratings">
+              <div 
+                ref={staffRatingRef}
+                className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
+                onClick={handleScrollToStaffRating}
+                onMouseEnter={handleStaffTooltipMouseEnter}
+                onMouseLeave={handleStaffTooltipMouseLeave}
+              >
+                <div className="vehicle-details__rating-label-wrapper">
+                  <span className="vehicle-details__rating-label-top">Expert</span>
+                  <span className="vehicle-details__rating-label-bottom">Rating</span>
+                </div>
+                <img 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                  alt="MotorTrend" 
+                  className="vehicle-details__rating-icon staff" 
+                />
+                <span className="vehicle-details__rating-value">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
+                <StaffRatingTooltip
+                  overallRating={vehicleData.staffRating}
+                  scores={vehicleData.scores}
+                  isVisible={isStaffTooltipVisible}
+                  triggerRef={staffRatingRef}
+                  onMouseEnter={handleStaffTooltipMouseEnter}
+                  onMouseLeave={handleStaffTooltipMouseLeave}
+                  onRequestClose={() => setIsStaffTooltipVisible(false)}
+                />
+              </div>
+              <div 
+                ref={communityRatingRef}
+                className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
+                onClick={handleScrollToCommunityRatings}
+                onMouseEnter={handleTooltipMouseEnter}
+                onMouseLeave={handleTooltipMouseLeave}
+              >
+                <div className="vehicle-details__rating-label-wrapper">
+                  <span className="vehicle-details__rating-label-top">Community</span>
+                  <span className="vehicle-details__rating-label-bottom">Rating ({communityRatingCount})</span>
+                </div>
+                <img 
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                  alt="Community Rating Star" 
+                  className="vehicle-details__rating-icon community" 
+                />
+                <span className="vehicle-details__rating-value">
+                  {Math.round(vehicleData.communityRating * 10)}
+                </span>
+                <RatingDistributionTooltip
+                  distribution={vehicleData.ratingDistribution}
+                  totalReviews={communityRatingCount}
+                  isVisible={isTooltipVisible}
+                  triggerRef={communityRatingRef}
+                  onMouseEnter={handleTooltipMouseEnter}
+                  onMouseLeave={handleTooltipMouseLeave}
+                  onRequestClose={() => setIsTooltipVisible(false)}
+                />
+              </div>
+              <button className="vehicle-details__rate-btn" onClick={handleOpenRatingModal}>
+                <div className="vehicle-details__rating-label-wrapper">
+                  <span className="vehicle-details__rating-label-top">Rate</span>
+                  <span className="vehicle-details__rating-label-bottom">This Car</span>
+                </div>
+                <img 
+                  src={userRating > 0 
+                    ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                    : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
+                  } 
+                  alt="Add Rating Star" 
+                  className="vehicle-details__rating-icon add-rate" 
+                />
+                {userRating > 0 && (
+                  <>
+                    <span className="vehicle-details__rating-value">{userRating}</span>
+                    {ownsCar && (
+                      <img 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c93e2c176500024c4f41/garage-check-icon.svg" 
+                        alt="Verified Owner" 
+                        className="vehicle-details__verified-icon"
+                      />
+                    )}
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+          {/* Hero Image (hidden for prime template) */}
+          {!isPrimeTemplate && (
+            <div className="vehicle-details__hero">
+              <div className="vehicle-details__hero-image">
+                <img src={vehicleData.image} alt={vehicleName} />
+              </div>
+            </div>
+          )}
 
           {/* Price and Actions */}
           <div className="vehicle-details__price-section">
@@ -1053,18 +1241,23 @@ export const VehicleDetails: React.FC = () => {
               <Icon name="keyboard_arrow_down" size={20} />
             </div>
             <div className="vehicle-details__actions">
-              <button className="vehicle-details__action-btn">
+              <button 
+                className="vehicle-details__action-btn"
+                onClick={() => setIsGalleryOpen(true)}
+              >
                 <Icon name="photo_library" size={20} />
-                <span>28 Photos</span>
+                <span>{galleryImages.length} Photos</span>
               </button>
               <button className="vehicle-details__action-btn">
                 <Icon name="list" size={20} />
                 <span>Specs</span>
               </button>
-              <button className="vehicle-details__cta-primary">
-                <Icon name="search" size={20} />
-                <span>See Local Listings</span>
-              </button>
+              {!isPrimeTemplate && (
+                <button className="vehicle-details__cta-primary">
+                  <Icon name="search" size={20} />
+                  <span>See Local Listings</span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -1104,6 +1297,39 @@ export const VehicleDetails: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Photo Gallery Bento (Prime Template Only) */}
+          {isPrimeTemplate && galleryImages.length > 1 && (
+            <div className="vehicle-details__photo-gallery-bento">
+              <div className="vehicle-details__photo-gallery-header">
+                <h3 className="vehicle-details__photo-gallery-title">Photo Gallery</h3>
+                <button
+                  className="vehicle-details__photo-gallery-view-all cta cta--ghost cta--default"
+                  onClick={() => setIsGalleryOpen(true)}
+                >
+                  View All Photos
+                </button>
+              </div>
+              <div className="vehicle-details__photo-gallery-grid">
+                {galleryImages.slice(0, 6).map((image, index) => (
+                  <div
+                    key={index}
+                    className={`vehicle-details__photo-gallery-item vehicle-details__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
+                    onClick={() => setIsGalleryOpen(true)}
+                  >
+                    <img 
+                      src={image} 
+                      alt={`${displayName} - Photo ${index + 1}`}
+                      className="vehicle-details__photo-gallery-thumb"
+                    />
+                    <div className="vehicle-details__photo-gallery-overlay">
+                      <Icon name="open_in_full" size={24} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Local Listings */}
           <div className="vehicle-details__listings">
@@ -1202,8 +1428,8 @@ export const VehicleDetails: React.FC = () => {
               <div className="vehicle-details__score-content">
                 <div className="vehicle-details__overall-score">
                   <div className="vehicle-details__score-circle">
-                    <span className="vehicle-details__score-number">{typeof vehicleData.staffRating === 'number' ? vehicleData.staffRating.toFixed(1) : vehicleData.staffRating}</span>
-                    <span className="vehicle-details__score-label">MotorTrend</span>
+                    <span className="vehicle-details__score-number">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
+                    <span className="vehicle-details__score-label">Expert</span>
                   </div>
                 </div>
                 <div className="vehicle-details__score-breakdown">
@@ -1212,28 +1438,28 @@ export const VehicleDetails: React.FC = () => {
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.performance / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.performance.toFixed(1)}</span>
+                  <span>{Math.round(vehicleData.scores.performance * 10)}</span>
                 </div>
                 <div className="vehicle-details__score-item">
                   <span>Efficiency/Range</span>
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.efficiency / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.efficiency.toFixed(1)}</span>
+                  <span>{Math.round(vehicleData.scores.efficiency * 10)}</span>
                 </div>
                 <div className="vehicle-details__score-item">
                   <span>Tech/Innovation</span>
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.tech / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.tech.toFixed(1)}</span>
+                  <span>{Math.round(vehicleData.scores.tech * 10)}</span>
                 </div>
                 <div className="vehicle-details__score-item">
                   <span>Value</span>
                   <div className="vehicle-details__score-bar">
                     <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.value / 10) * 100}%` }}></div>
                   </div>
-                  <span>{vehicleData.scores.value.toFixed(1)}</span>
+                  <span>{Math.round(vehicleData.scores.value * 10)}</span>
                 </div>
                 </div>
               </div>
@@ -1588,6 +1814,15 @@ export const VehicleDetails: React.FC = () => {
         onClose={() => setIsSavedModalOpen(false)}
         itemTitle={vehicleName}
         itemType="vehicle"
+      />
+
+      {/* Photo Gallery */}
+      <PhotoGallery
+        images={galleryImages}
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        initialIndex={0}
+        vehicleName={displayName}
       />
     </div>
   );

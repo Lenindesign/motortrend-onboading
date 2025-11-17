@@ -30,6 +30,7 @@ import Documentation from './pages/Documentation';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
 import ProfileDocumentation from './pages/ProfileDocumentation';
 import DesignSystemReference from './pages/DesignSystemReference';
+import Sitemap from './pages/Sitemap';
 import { RatingProvider } from './contexts/RatingContext';
 import './App.css';
 
@@ -117,6 +118,9 @@ function App() {
               <Route path="/docs/profile" element={<ProfileDocumentation />} />
               <Route path="/design-system" element={<DesignSystemReference />} />
               <Route path="/docs/design-system" element={<DesignSystemReference />} />
+              
+              {/* Sitemap */}
+              <Route path="/sitemap" element={<Sitemap />} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />

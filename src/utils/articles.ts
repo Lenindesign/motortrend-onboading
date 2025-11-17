@@ -57,6 +57,7 @@ export interface Article {
   content: ArticleContent[];
   specifications?: ArticleSpecifications;
   motortrendScore?: MotorTrendScore;
+  comparisonVehicles?: string[]; // For comparison articles with multiple vehicles
 }
 
 export const articles: Record<string, Article> = {
@@ -3165,9 +3166,9 @@ export const articles: Record<string, Article> = {
     author: "Kristen Lee",
     date: "Nov 13, 2025",
     category: "Reviews",
-    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg",
     images: [
-      "https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69137fd708be910002dd1447/2-2027bentleycontinentalgtsupersports.jpg",
       "https://d2kde5ohu8qb21.cloudfront.net/files/69137fdb146f1a00022c844a/6-2027bentleycontinentalgtsupersports.jpg",
       "https://d2kde5ohu8qb21.cloudfront.net/files/69137fdc08be910002dd1449/8-2027bentleycontinentalgtsupersports.jpg",
       "https://d2kde5ohu8qb21.cloudfront.net/files/6913800f92a5a10002ee9e5f/3-2027bentleycontinentalgtsupersports.jpg",
@@ -5065,6 +5066,7 @@ export const articles: Record<string, Article> = {
       "https://d2kde5ohu8qb21.cloudfront.net/files/68dc6648bbe5640002b8f5db/007-2025-toyota-gr-corolla.jpg",
     ],
     excerpt: "Two compact sedan heavyweights go head-to-head in this comprehensive comparison.",
+    comparisonVehicles: ["2025 Honda Civic", "2025 Toyota Corolla"],
     content: [
       {
         type: "paragraph",
@@ -5252,6 +5254,178 @@ export const articles: Record<string, Article> = {
           {
             title: "Smart Value",
             content: "While not the most practical or efficient, the CX-5 offers excellent value for buyers who prioritize driving enjoyment and premium feel over maximum utility."
+          }
+        ]
+      }
+    }
+  },
+  "2025-chevrolet-corvette-zr1-first-drive-review": {
+    title: "Driven! The 1,064-HP Chevrolet Corvette ZR1 Is Patently Absurd",
+    author: "Mac Morrison",
+    date: "May 30, 2025",
+    category: "Reviews",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5a90c3c77000200a0ac/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-3.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5a90c3c77000200a0ac/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5b0b6d64f0002a3dc4b/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-8.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5b1b6d64f0002a3dc4c/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-9.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5abb6d64f0002a3dc47/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-4.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5adb6d64f0002a3dc4a/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-6.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5a80c3c77000200a0ab/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-2.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6892b5afbf3cec0002af0442/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-7.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6838cdebc39fd8000854a4d6/014-2026-chevrolet-corvette-zr1.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6838cdc216443f0008e84478/003-2026-chevrolet-corvette-zr1-front-three-quarter-action.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6838cc937ec5d900083daa4e/033-2026-chevrolet-corvette-zr1.jpg"
+    ],
+    excerpt: "1,000-plus hp, $175,000: Is the most powerful production Corvette of all time the handful you might expect?",
+    content: [
+      {
+        type: "paragraph",
+        text: "The decreasing-radius S curves. The blind-entry, Turn 10 kink. The fast triple-apex corner complex comprised of Turns 16, 17, and 18. The deceptively fast Turn 19. These are the big challenges Circuit of the Americas (COTA) throws at a driver."
+      },
+      {
+        type: "paragraph",
+        text: "Make no mistake, COTA is a satisfyingly special place to drive any quick and capable car, but when Chevrolet told us it was holding the official first drive event for the 2025 Corvette ZR1 at the flowing 3.41-mile, 20-turn Texas home of the Formula 1 United States Grand Prix? There was a moment of pause and outright uncertainty."
+      },
+      {
+        type: "heading",
+        text: "But Those Numbers!"
+      },
+      {
+        type: "paragraph",
+        text: "It's not that Corvettes in general haven't become incredibly capable road-course cars, especially over the span of the previous 20 years. But ZR1s have always felt more like poster children for big American horsepower bragging rights with each successive and even bigger-horsepower generation."
+      },
+      {
+        type: "paragraph",
+        text: "The previous C7 ZR1 and its 755 hp at times scared the bejeezus out of our judges during MotorTrend's 2018 Best Driver's Car competition, inspiring comments like: 'Nerve wracking.' 'Everyone complained about overpowering the rear tires.' 'Even the ultra-savvy traction-control system was utterly overwhelmed.' Not exactly a confidence-inspiring track record."
+      },
+      {
+        type: "paragraph",
+        text: "No wonder we could feel the sweats coming on at the prospect of tackling a fast F1 track in the 2025 Chevrolet Corvette ZR1. Its much-touted engine output: 1,064 hp and 828 lb-ft of torque, a seismic leap of 309 hp with additional 113 lb-ft for good measure."
+      },
+      {
+        type: "heading",
+        text: "What an Engine"
+      },
+      {
+        type: "paragraph",
+        text: "The ZR1 model was planned from the beginning of the mid-engine C8 Corvette's development, a decade ago, and its LT7 twin-turbo V-8 was likewise designed alongside the Z06's naturally aspirated 670-hp LT6 to create a pairing known as the Gemini twins."
+      },
+      {
+        type: "paragraph",
+        text: "The LT7 ups the game with dished rather than domed pistons and shorter, redesigned titanium connecting rods, giving it a turbo-friendly lower compression ratio of 9.8:1 versus 12.5:1. Its flat-plane crank features more machining work on its counterweights, and the engine employs different camshafts and cylinder head castings with bigger combustion chambers."
+      },
+      {
+        type: "paragraph",
+        text: "With a total of 16 fuel injectors, all of which activate at full throttle, the ZR1 will suck down 2 gallons every minute its gas pedal is stapled to the floor. As for the two ball-bearing turbochargers, they can move so much air volume, they could aspirate an entire Olympic-size swimming pool in four minutes."
+      },
+      {
+        type: "paragraph",
+        text: "The twin-turbo setup and its compressor wheels normally provide up to 20 psi of boost but can extend it to 24 psi to ensure consistent power output in hot conditions. The electrically controlled wastegates are tied to an anti-lag system that maintains some turbo-boost pressure even when you hit the brakes for a corner, meaning the blowers are preloaded so the LT7 is already set to provide the juice again immediately when you go back to the throttle."
+      },
+      {
+        type: "heading",
+        text: "Open the Floodgates"
+      },
+      {
+        type: "paragraph",
+        text: "Our first solo laps happened in a standard ZR1 equipped with the optional $8,495 Carbon Aero package and rolling on Michelin PS4 tires measuring 275/30R20 in front, 345/25R21 in back."
+      },
+      {
+        type: "paragraph",
+        text: "Armed with some confidence about the car's baseline behavior from the lead-follow sessions, we focused first on rolling into the power off corners and onto COTA's front and back straights as quickly as seemed prudent, and an unexpected thing occurred: zero notable drama, save for big speed."
+      },
+      {
+        type: "paragraph",
+        text: "Hit the hammer too abruptly, and the ZR1's tail dances and slides a bit, but it's easily catchable. This controllability was revelatory, considering how the previous ZR1 tended to pay the driving aids little mind. Suddenly the engine's output wasn't incomprehensibly untamable."
+      },
+      {
+        type: "paragraph",
+        text: "Within a lap and a half—and this still sounds a bit ridiculous to say—we mostly forgot about the LT7's on-paper numbers and moved on to reveling in them. With the torque peaking at 6,000 rpm (and nearly there by 3,000 rpm), the horsepower doing the same at 7,000 (redline is 8,000), you have nothing but accessible power everywhere."
+      },
+      {
+        type: "heading",
+        text: "The ZTK Package"
+      },
+      {
+        type: "paragraph",
+        text: "After several laps in the standard ZR1, we switched to a car equipped with the $14,995 ZTK Performance Package. This adds Michelin Cup 2 R tires sized 285/30R20 front and 345/25R21 rear, recalibrated Magnetic Ride Control 4.0 dampers and springs, a front-splitter wicker bill, and additional underbody aero pieces."
+      },
+      {
+        type: "paragraph",
+        text: "The ZTK-equipped cars also included the Carbon Aero pack, adding up to $23,490 in options atop the standard car's $174,995 base price. The Cup 2 Rs are far grippier than the PS4s, and while we were still restricted to PTM-on driving, it became clear with time that the ZTK is in its own league."
+      },
+      {
+        type: "paragraph",
+        text: "The incredible difference compared to previous generations is how you don't find yourself ever thinking the car is the problem. Instead of wanting to park it and get out as soon as possible, you crave more and more laps because you know there's more to extract from yourself let alone the machine you're piloting."
+      },
+      {
+        type: "heading",
+        text: "Its Own Kind of Thing"
+      },
+      {
+        type: "paragraph",
+        text: "For all the ZR1's capabilities, also know this: Although we climbed out of it with a fair amount of sweat on our face, Chevy intends the new ZR1 to be a gonzo-performance all-arounder. It's meant to be usable and livable in daily life, not a strictly track-use special."
+      },
+      {
+        type: "paragraph",
+        text: "The engine makes the car's portly weight compared to something like a Porsche GT3 RS, a McLaren 750 or 765 LT, or even the Z06, a nonfactor when it comes to feeling like you've been strapped to an RPG as you hurtle down straightaways and out of corners."
+      },
+      {
+        type: "paragraph",
+        text: "Something like the GT3 RS almost certainly will pull more lateral g through fast transitions. The ZR1 is more deliberate in its responses and requires more patience, relatively speaking, when searching out its dynamic limits. It'll throw down quicker lap times than those types of cars on all but the tightest low-speed road courses, but it's going to get you that lap time in a different and raw-power-based way."
+      },
+      {
+        type: "paragraph",
+        text: "The Corvette team has patently changed what 'ZR1' means in the Corvette and supercar pantheon, and that alone deserves commendation. There are no Igloos here, but you're going to wish you had one loaded with cold drinks after driving it."
+      }
+    ],
+    specifications: {
+      basePrice: "$174,995",
+      layout: "Mid-engine, RWD, 2-pass, 2-door hatchback",
+      engine: "5.5L/1,064-hp/828-lb-ft twin-turbo, port- and direct-injected DOHC V-8",
+      transmission: "8-speed twin-clutch automatic",
+      curbWeight: "3,900 lb (MT est)",
+      wheelbase: "107.0 in",
+      dimensions: "185.9 x 79.7 x 48.6 in",
+      zeroToSixty: "2.3 sec (mfr)",
+      quarterMile: "9.6 sec @ 150 mph (mfr)",
+      epaFuelEcon: "12/18/14 mpg",
+      epaRange: "259 miles",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 9.3,
+      scores: {
+        performance: 10.0,
+        efficiency: 6.5,
+        tech: 9.5,
+        value: 9.0
+      },
+      award: "2025 Best Driver's Car Finalist",
+      vehicleName: "2025 Chevrolet Corvette ZR1",
+      reviewer: {
+        name: "Mac Morrison",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/default-avatar.jpg",
+        date: "May 30, 2025",
+        title: "2025 Chevrolet Corvette ZR1: A New Breed of American Supercar",
+        excerpt: "The most powerful production Corvette ever built redefines what ZR1 means, delivering 1,064 horsepower with surprising refinement and control. This isn't just raw power—it's a sophisticated, track-ready machine that can also be driven daily.",
+        detailedSections: [
+          {
+            title: "Astonishing Performance",
+            content: "With 1,064 hp and 828 lb-ft from its twin-turbo LT7 V-8, the ZR1 rockets to 60 mph in just 2.3 seconds. Unlike previous ZR1s that overwhelmed their chassis, this mid-engine masterpiece delivers controllable, exploitable performance that inspires confidence rather than fear on track."
+          },
+          {
+            title: "Engineering Marvel",
+            content: "The LT7 engine is a technical tour de force with 16 fuel injectors, anti-lag turbo system, and the ability to consume 2 gallons of fuel per minute at full throttle. The turbos can move enough air to aspirate an Olympic swimming pool in four minutes. This isn't just a boosted engine—it's a purpose-built supercar powerplant."
+          },
+          {
+            title: "Track-Focused Excellence",
+            content: "The optional ZTK Performance Package with Michelin Cup 2 R tires transforms the ZR1 into a circuit weapon. Despite weighing more than rivals like the Porsche GT3 RS, the ZR1's immense power and sophisticated chassis dynamics deliver faster lap times through sheer force and refined control."
+          },
+          {
+            title: "Daily Usability",
+            content: "Unlike track-only specials, Chevrolet designed the ZR1 to be livable for daily driving. The mid-engine layout, advanced traction management, and comfortable ride quality when cruising make this 1,064-hp supercar surprisingly accessible for real-world use."
           }
         ]
       }

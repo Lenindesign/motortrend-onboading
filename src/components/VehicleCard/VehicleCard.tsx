@@ -38,8 +38,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   userRating
 }) => {
   const ratings = [];
-  if (rating1) ratings.push({ value: rating1, color: '#FFB74D' });
-  if (rating2) ratings.push({ value: rating2, color: '#33CCFF' });
+  if (rating1) ratings.push({ value: typeof rating1 === 'number' ? Math.round(rating1 * 10) : rating1, color: '#FFB74D' });
+  if (rating2) ratings.push({ value: typeof rating2 === 'number' ? Math.round(rating2 * 10) : rating2, color: '#33CCFF' });
 
   // Get body style from vehicle name
   const bodyStyles = getVehicleBodyStyle(name);

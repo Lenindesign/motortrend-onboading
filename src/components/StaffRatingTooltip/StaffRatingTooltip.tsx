@@ -88,7 +88,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
               style={{ width: `${percentage}%` }}
             />
           </div>
-          <div className="staff-rating-tooltip__score">{score.toFixed(1)}</div>
+          <div className="staff-rating-tooltip__score">{Math.round(score * 10)}</div>
         </div>
       );
     }
@@ -110,7 +110,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     >
       <div className="staff-rating-tooltip__header">
         <div className="staff-rating-tooltip__title">MotorTrend</div>
-        <div className="staff-rating-tooltip__total">{typeof overallRating === 'number' ? overallRating.toFixed(1) : overallRating}/10</div>
+        <div className="staff-rating-tooltip__total">{typeof overallRating === 'number' ? Math.round(overallRating * 10) : overallRating}/100</div>
       </div>
       <div className="staff-rating-tooltip__content">
         {ratingBars}

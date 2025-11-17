@@ -1,0 +1,190 @@
+/* Sitemap Page Styles */
+
+.sitemap {
+  width: 100%;
+  background-color: var(--color-neutrals-9);
+  min-height: 100vh;
+  padding: var(--spacing-6) 0;
+}
+
+.sitemap__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+}
+
+.sitemap__header {
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-4);
+  border-bottom: 1px solid var(--color-neutrals-7);
+}
+
+.sitemap__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 1.1em;
+  color: var(--color-neutrals-2);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.sitemap__description {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6em;
+  color: var(--color-neutrals-4);
+  margin: 0;
+}
+
+.sitemap__section {
+  margin-bottom: var(--spacing-6);
+}
+
+.sitemap__section-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-2);
+  margin: 0 0 var(--spacing-4) 0;
+  padding-bottom: var(--spacing-2);
+  border-bottom: 2px solid var(--color-primary-2);
+}
+
+/* Grid Layout for Main Pages */
+.sitemap__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.sitemap__link {
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-7);
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-neutrals-2);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.sitemap__link:hover {
+  background-color: var(--color-neutrals-7);
+  border-color: var(--color-primary-2);
+  color: var(--color-primary-2);
+  transform: translateY(-2px);
+}
+
+/* List Layout for Articles */
+.sitemap__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.sitemap__article-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-8);
+  border: 1px solid var(--color-neutrals-7);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.sitemap__article-link:hover {
+  background-color: var(--color-neutrals-7);
+  border-color: var(--color-primary-2);
+  transform: translateX(4px);
+}
+
+.sitemap__article-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.4em;
+  color: var(--color-neutrals-2);
+}
+
+.sitemap__article-link:hover .sitemap__article-title {
+  color: var(--color-primary-2);
+}
+
+.sitemap__article-meta {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-4);
+}
+
+/* Vehicle Sections */
+.sitemap__make-section {
+  margin-bottom: var(--spacing-5);
+  padding: var(--spacing-4);
+  background-color: var(--color-neutrals-8);
+  border-radius: 12px;
+}
+
+.sitemap__make-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-2);
+  margin: 0 0 var(--spacing-3) 0;
+  padding-bottom: var(--spacing-2);
+  border-bottom: 1px solid var(--color-neutrals-7);
+}
+
+.sitemap__vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-2);
+}
+
+.sitemap__vehicle-link {
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-neutrals-9);
+  border: 1px solid var(--color-neutrals-7);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-3);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.sitemap__vehicle-link:hover {
+  background-color: var(--color-neutrals-7);
+  border-color: var(--color-primary-2);
+  color: var(--color-primary-2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sitemap__title {
+    font-size: 36px;
+  }
+
+  .sitemap__section-title {
+    font-size: 24px;
+  }
+
+  .sitemap__grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .sitemap__vehicle-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .sitemap__make-title {
+    font-size: 20px;
+  }
+}
+

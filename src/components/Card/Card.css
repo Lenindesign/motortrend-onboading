@@ -169,7 +169,7 @@
   margin: 0;
 }
 
-/* Vehicle ownership section */
+/* Vehicle ownership section with emojis */
 .card__ownership {
   display: flex;
   gap: var(--spacing-3);
@@ -180,15 +180,51 @@
 .card__ownership-option {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--font-body);
   font-size: 16px;
+  font-weight: 400;
   color: var(--color-neutrals-2);
   cursor: pointer;
+  transition: opacity var(--transition-fast);
 }
 
-.card__ownership-icon {
-  color: var(--color-neutrals-3);
+.card__ownership-option:hover {
+  opacity: 0.8;
+}
+
+.card__ownership-radio {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--color-neutrals-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.card__ownership-radio--active {
+  border-color: var(--color-neutrals-1);
+  background-color: transparent;
+}
+
+.card__ownership-radio-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-neutrals-1);
+}
+
+.card__ownership-emoji {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.card__ownership-label {
+  font-weight: 400;
 }
 
 .card__bottom-row {
@@ -197,15 +233,17 @@
   align-items: center;
   gap: var(--spacing-2);
   min-height: 34px;
+  overflow: visible;
+  position: relative;
 }
 
 .card__ratings {
   display: flex;
-  gap: var(--spacing-1);
+  gap: var(--spacing-2);
   align-items: center;
   min-width: 0;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .card__rating {
@@ -220,6 +258,8 @@
   flex-shrink: 0;
   height: fit-content;
   align-self: flex-start;
+  overflow: visible;
+  position: relative;
 }
 
 .card__rating span:not(.card__rating-label):not(.card__rating-value) {
@@ -273,6 +313,23 @@
 }
 
 .card__rating-star {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  object-fit: contain;
+  display: block;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  flex-shrink: 0;
+}
+
+.card__rating-mt-logo {
   width: 20px;
   height: 20px;
   min-width: 20px;
@@ -291,6 +348,10 @@
 
 .card__rating--with-tooltip {
   position: relative;
+}
+
+.card__rating.card__rating--with-tooltip:nth-of-type(2) {
+  gap: 0px;
 }
 
 .card__rating-tooltip {
@@ -329,6 +390,61 @@
 .card__rating--with-tooltip:hover .card__rating-tooltip {
   opacity: 1;
   visibility: visible;
+}
+
+/* Design system tooltip for rate star button (matching premium template) */
+.card__rate-star-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.2s ease;
+  overflow: visible;
+}
+
+.card__rate-star-btn:hover {
+  transform: scale(1.1);
+}
+
+.card__rate-star-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background-color: var(--color-neutrals-1);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
+  z-index: 10000;
+}
+
+.card__rate-star-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--color-neutrals-1);
+}
+
+.card__rate-star-btn:hover .card__rate-star-tooltip {
+  opacity: 1;
 }
 
 .card__rate-option {
@@ -478,6 +594,22 @@
   }
   
   .card__rating-star {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    max-width: 16px;
+    max-height: 16px;
+    object-fit: contain;
+    display: block;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+  
+  .card__rating-mt-logo {
     width: 16px;
     height: 16px;
     min-width: 16px;

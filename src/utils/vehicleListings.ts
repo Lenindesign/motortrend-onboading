@@ -45,6 +45,12 @@ function generateRealisticPrice(year: number, make: string, model: string): numb
     'Jeep': 32000,
     'Dodge': 29000,
     'Tesla': 55000,
+    'Bentley': 230000,
+    'Rolls-Royce': 370000,
+    'Ferrari': 475000,
+    'Porsche': 100000,
+    'Rivian': 75000,
+    'Land Rover': 60000,
   };
   
   // Model multipliers (some models are more expensive)
@@ -53,6 +59,10 @@ function generateRealisticPrice(year: number, make: string, model: string): numb
     'Mustang': 1.3,
     'Camaro': 1.3,
     'Challenger': 1.2,
+    'Corvette': 2.8,
+    'Corvette Z06': 4.5,
+    'Corvette ZR1': 6.5,
+    'Corvette-ZR1': 6.5,
     'Model 3': 1.1,
     'Model S': 1.8,
     'Model Y': 1.4,
@@ -60,6 +70,16 @@ function generateRealisticPrice(year: number, make: string, model: string): numb
     'C-Class': 1.3,
     'A4': 1.2,
     'IS': 1.2,
+    'Ghost': 1.0,
+    'Flying Spur': 1.0,
+    'Continental GT Supersports': 1.4,
+    'Maybach': 1.1,
+    '911': 1.2,
+    'Taycan': 0.9,
+    'Panamera': 1.0,
+    'R1T': 1.0,
+    'F-150 Lightning': 0.85,
+    'Defender': 1.0,
   };
   
   const basePrice = makeBasePrices[make] || 25000;
@@ -89,12 +109,51 @@ function generateRealisticMileage(year: number): number {
   const currentYear = new Date().getFullYear();
   const age = currentYear - year;
   
-  // Average 12,000 miles per year
+  // For current year vehicles (especially high-end sports cars), use very low mileage
+  if (age === 0) {
+    // Brand new or dealer demo: 0-500 miles
+    return Math.round(Math.random() * 500);
+  }
+  
+  // For 1-year-old vehicles, use lower mileage
+  if (age === 1) {
+    // Low mileage: 500-15000 miles
+    return Math.round(500 + Math.random() * 14500);
+  }
+  
+  // Average 12,000 miles per year for older vehicles
   const baseMileage = age * 12000;
   
   // Add randomness (±30%)
   const randomFactor = 0.7 + Math.random() * 0.6;
   return Math.round(baseMileage * randomFactor);
+}
+
+/**
+ * Vehicle-specific listing images
+ * Maps vehicle identifier to array of image URLs for local listings
+ */
+const vehicleListingImages: Record<string, string[]> = {
+  '2026-bentley-continental-gt-supersports': [
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd34bc179600027d188e/f78d2e19ba9d9ab1093200e441e1948ax.avif',
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd15eea5d80002ef4f36/d3c368dd4db34a71991a03465fd97a9bx.avif',
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd0c7be8e500020c5075/2e0a2b261a27534a358d319b45fe8de4x.avif',
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd0a7be8e500020c5074/1b215920f0bed0292fa2a366f6b7c86bx.avif',
+  ],
+  '2025-chevrolet-corvette-zr1': [
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691b05142301ef0002f28cba/37180202a3bfcd82497cb69f5964317c.jpg',
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691b050a0ff7fc0002b26229/0a6cc2c939b1e4c8bdb5c3d623836425x.jpg',
+    'https://d2kde5ohu8qb21.cloudfront.net/files/691b050c0ff7fc0002b2622b/32f5340298ccc772c9b2bee261b0c352x.jpg',
+  ],
+};
+
+/**
+ * Get listing images for a specific vehicle
+ */
+function getListingImagesForVehicle(year: number, make: string, model: string): string[] {
+  const vehicleKey = `${year}-${make}-${model}`.toLowerCase().replace(/\s+/g, ' ');
+  return vehicleListingImages[vehicleKey] || [];
 }
 
 /**
@@ -155,6 +214,9 @@ export async function fetchVehicleListings(
   // For now, generate realistic listings based on vehicle data
   const listings: VehicleListing[] = [];
   
+  // Get specific listing images if available
+  const listingImages = getListingImagesForVehicle(year, make, model);
+  
   for (let i = 0; i < limit; i++) {
     const price = generateRealisticPrice(year, make, model);
     const mileage = generateRealisticMileage(year);
@@ -172,19 +234,30 @@ export async function fetchVehicleListings(
     const formattedMileage = `${mileage.toLocaleString('en-US')} miles`;
     
     // Generate vehicle name
-    const trimOptions = ['Base', 'S', 'SE', 'SX', 'Limited', 'Premium', 'Sport'];
-    const trim = trimOptions[Math.floor(Math.random() * trimOptions.length)];
-    const bodyStyle = model.includes('SUV') || model.includes('Truck') 
-      ? 'SUV' 
-      : model.includes('Sedan') 
-        ? 'Sedan' 
-        : '4 dr Sedan';
+    let trimOptions = ['Base', 'S', 'SE', 'SX', 'Limited', 'Premium', 'Sport'];
+    let bodyStyle = '4 dr Sedan';
     
+    // Special handling for Corvette models
+    if (model.includes('Corvette')) {
+      trimOptions = ['Base', 'Premium', 'Limited', 'SX'];
+      bodyStyle = Math.random() > 0.5 ? 'Coupe' : 'Convertible';
+    } else if (model.includes('SUV') || model.includes('Truck')) {
+      bodyStyle = 'SUV';
+    } else if (model.includes('Sedan')) {
+      bodyStyle = 'Sedan';
+    }
+    
+    const trim = trimOptions[Math.floor(Math.random() * trimOptions.length)];
     const vehicleName = `${listingYearBounded} ${make} ${model} ${trim} ${bodyStyle}`;
+    
+    // Use specific listing image if available, cycling through the array
+    const listingImage = listingImages.length > 0 
+      ? listingImages[i % listingImages.length] 
+      : '';
     
     listings.push({
       id: `listing-${year}-${make}-${model}-${i}`,
-      image: '', // Will be set by the component using vehicleImageFor
+      image: listingImage, // Use vehicle-specific image if available
       price: formattedPrice,
       name: vehicleName,
       mileage: formattedMileage,

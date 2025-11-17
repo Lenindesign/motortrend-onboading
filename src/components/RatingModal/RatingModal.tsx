@@ -174,7 +174,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
                     aria-label={`Rate ${starNumber} star${starNumber > 1 ? 's' : ''}`}
                   >
                     <img 
-                      src={isActive ? 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg' : 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg'}
+                      src={isActive ? 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg' : 'https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg'}
                       alt={`${starNumber} star rating`}
                       className="rating-modal__star-icon"
                     />

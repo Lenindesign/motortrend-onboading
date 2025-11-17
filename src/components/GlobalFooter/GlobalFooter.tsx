@@ -39,10 +39,11 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
     'Ad Choices',
     'California Privacy Notice',
     'Do Not Sell or Share My Personal Information',
-    'Site Map',
     'Reprints/Permissions',
     'Warner Bros. Discovery Inc.',
   ];
+  
+  const sitemapLink = { label: 'Site Map', path: '/sitemap' };
 
   const documentationLinks = [
     { label: 'Review System Docs', path: '/docs/review-system' },
@@ -73,12 +74,15 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
               className="global-footer__logo"
             />
             <p className="global-footer__links">
-              {footerLinks.map((link, index) => (
+              {footerLinks.map((link) => (
                 <React.Fragment key={link}>
                   <a href="#" className="global-footer__link">{link}</a>
-                  {index < footerLinks.length - 1 && '   |   '}
+                  {'   |   '}
                 </React.Fragment>
               ))}
+              <Link to={sitemapLink.path} className="global-footer__link">
+                {sitemapLink.label}
+              </Link>
             </p>
             <p className="global-footer__links global-footer__links--documentation">
               <span className="global-footer__docs-label">Documentation: </span>

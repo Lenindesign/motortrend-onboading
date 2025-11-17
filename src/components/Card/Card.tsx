@@ -99,16 +99,22 @@ export const Card: React.FC<CardProps> = ({
             {metadata && <p className="card__metadata">{metadata}</p>}
           </div>
           
-          {/* Vehicle ownership section */}
+          {/* Vehicle ownership section with emojis */}
           {ownership && onOwnershipChange && (
             <div className="card__ownership">
               <label className="card__ownership-option" onClick={() => onOwnershipChange('own')}>
-                <Icon name={ownership === 'own' ? 'radio_button_checked' : 'radio_button_unchecked'} size={20} className="card__ownership-icon" style={{ color: ownership === 'own' ? 'var(--color-red, #E11D2E)' : 'var(--color-neutrals-3)' }} />
-                <span>Own</span>
+                <div className={`card__ownership-radio ${ownership === 'own' ? 'card__ownership-radio--active' : ''}`}>
+                  {ownership === 'own' && <div className="card__ownership-radio-dot" />}
+                </div>
+                <span className="card__ownership-emoji">🔑</span>
+                <span className="card__ownership-label">Own</span>
               </label>
               <label className="card__ownership-option" onClick={() => onOwnershipChange('want')}>
-                <Icon name={ownership === 'want' ? 'radio_button_checked' : 'radio_button_unchecked'} size={20} className="card__ownership-icon" style={{ color: ownership === 'want' ? 'var(--color-red, #E11D2E)' : 'var(--color-neutrals-3)' }} />
-                <span>Want</span>
+                <div className={`card__ownership-radio ${ownership === 'want' ? 'card__ownership-radio--active' : ''}`}>
+                  {ownership === 'want' && <div className="card__ownership-radio-dot" />}
+                </div>
+                <span className="card__ownership-emoji">😍</span>
+                <span className="card__ownership-label">Want</span>
               </label>
             </div>
           )}
@@ -122,14 +128,20 @@ export const Card: React.FC<CardProps> = ({
             {hasMultipleRatings && ratings.length > 0 && (
               <>
                 {ratings.map((rating, index) => {
-                  const tooltipText = rating.color === '#FFB74D' ? 'MotorTrend Rating' : 'Community Rating (252)';
+                  const tooltipText = rating.color === '#FFB74D' ? 'Expert Rating' : 'Community Rating (25)';
                   const isMotorTrendRating = rating.color === '#FFB74D';
                   return (
                     <div key={index} className="card__rating card__rating--with-tooltip">
                       <div className="card__rating-tooltip">
                         {tooltipText}
                       </div>
-                      {!isMotorTrendRating && (
+                      {isMotorTrendRating ? (
+                        <img 
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                          alt="MotorTrend" 
+                          className="card__rating-mt-logo"
+                        />
+                      ) : (
                         <img 
                           src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
                           alt="Star rating" 
@@ -143,16 +155,12 @@ export const Card: React.FC<CardProps> = ({
               </>
             )}
             {onRate && (
-              <div className="card__rating card__rating--with-tooltip">
-                <div className="card__rating-tooltip">
-                  {userRating ? 'Your Rating' : 'Add Your Rating'}
-                </div>
+              <div className="card__rating">
                 {userRating ? (
                   <button className="card__rate-option" onClick={(e) => {
                     e.stopPropagation();
                     onRate();
                   }}>
-                    <span className="card__rating-label">Your Rating</span>
                     <img 
                       src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
                       alt="User rated star" 
@@ -161,16 +169,16 @@ export const Card: React.FC<CardProps> = ({
                     <span className="card__rating-value">{userRating.toString()}</span>
                   </button>
                 ) : (
-                  <button className="card__rate-option" onClick={(e) => {
+                  <button className="card__rate-star-btn" onClick={(e) => {
                     e.stopPropagation();
                     onRate();
                   }}>
                     <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg" 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg" 
                       alt="Rate star" 
                       className="card__rating-star"
                     />
-                    <span>Rate Your Car</span>
+                    <span className="card__rate-star-tooltip">Rate This Car</span>
                   </button>
                 )}
               </div>

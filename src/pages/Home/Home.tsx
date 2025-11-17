@@ -284,6 +284,15 @@ export const Home: React.FC = () => {
     const allContent = [
       // Performance & Enthusiast content (for Greg, Carl)
       {
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/6892b5a90c3c77000200a0ac/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-3.jpg',
+        title: 'Driven! The 1,064-HP Chevrolet Corvette ZR1 Is Patently Absurd',
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
+        category: 'MotorTrend | Reviews',
+        onClick: () => {
+          navigate('/article/2025-chevrolet-corvette-zr1-first-drive-review');
+        },
+      },
+      {
         imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg',
         title: 'Bentley\'s 2026 Supersports Is Lighter, Louder, and Built for Drivers',
         categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
@@ -375,21 +384,21 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bf9bf061f160002d8ad4c/024-2026-subaru-solterra-xt-ev.jpg',
-        title: 'The Subaru Solterra Is a Solid SUV, but It\'s Not a Segment Standout',
-        categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+        title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
+        categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
         onClick: () => {
-          navigate('/article/2026-subaru-solterra-suvoty-review');
+          navigate('/article/2026-porsche-911-turbo-s-hybrid-first-drive-review');
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a62e5156e89000296e257/021-2026-nissan-leaf-platinum-ev.jpg',
-        title: 'The Nissan Leaf Is Greatly Improved With Some Big Caveats',
-        categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+        title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
+        categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
         onClick: () => {
-          navigate('/article/2026-nissan-leaf-suvoty-review');
+          navigate('/articles/2025-subaru-wrx-ts-first-test-review');
         },
       },
       {
@@ -642,25 +651,25 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bf9bf061f160002d8ad4c/024-2026-subaru-solterra-xt-ev.jpg',
-      title: 'The Subaru Solterra Is a Solid SUV, but It\'s Not a Segment Standout',
-      author: 'Billy Rehbock',
-      date: 'Nov 14, 2025',
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+      title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
+      author: 'Frank Markus',
+      date: 'Nov 22, 2025',
       category: 'MotorTrend | Reviews',
-      categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+      categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
       onClick: () => {
-        navigate('/article/2026-subaru-solterra-suvoty-review');
+        navigate('/article/2026-porsche-911-turbo-s-hybrid-first-drive-review');
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a62e5156e89000296e257/021-2026-nissan-leaf-platinum-ev.jpg',
-      title: 'The Nissan Leaf Is Greatly Improved With Some Big Caveats',
-      author: 'Billy Rehbock',
-      date: 'Nov 14, 2025',
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+      title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
+      author: 'Alexander Stoklosa',
+      date: 'Jan 21, 2025',
       category: 'MotorTrend | Reviews',
-      categories: ['Family & Practical', 'Eco & Future-Ready', 'Daily Commute'] as ContentCategory[],
+      categories: ['Performance & Enthusiast'] as ContentCategory[],
       onClick: () => {
-        navigate('/article/2026-nissan-leaf-suvoty-review');
+        navigate('/articles/2025-subaru-wrx-ts-first-test-review');
       },
     },
     {
@@ -1664,12 +1673,12 @@ export const Home: React.FC = () => {
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">MotorTrend</span>
+                                <span className="home__carousel-rating-label-top">Expert</span>
                                 <span className="home__carousel-rating-label-bottom">Rating</span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
                                 <span className="home__carousel-rating-value">
-                                  {vehicle.staffRating % 1 === 0 ? vehicle.staffRating : vehicle.staffRating.toFixed(1)}
+                                  {Math.round(vehicle.staffRating * 10)}
                                 </span>
                               </div>
                             </div>
@@ -1677,7 +1686,7 @@ export const Home: React.FC = () => {
                               <div className="home__carousel-rating-label-wrapper">
                                 <span className="home__carousel-rating-label-top">Community</span>
                                 <span className="home__carousel-rating-label-bottom">
-                                  Rating <span className="home__carousel-rating-count">(252)</span>
+                                  Rating <span className="home__carousel-rating-count">(25)</span>
                                 </span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
@@ -1687,7 +1696,7 @@ export const Home: React.FC = () => {
                                   className="home__carousel-rating-icon community" 
                                 />
                                 <span className="home__carousel-rating-value">
-                                  {vehicle.communityRating % 1 === 0 ? vehicle.communityRating : vehicle.communityRating.toFixed(1)}
+                                  {Math.round(vehicle.communityRating * 10)}
                                 </span>
                               </div>
                             </div>
@@ -1822,12 +1831,12 @@ export const Home: React.FC = () => {
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">MotorTrend</span>
+                                <span className="home__carousel-rating-label-top">Expert</span>
                                 <span className="home__carousel-rating-label-bottom">Rating</span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
                                 <span className="home__carousel-rating-value">
-                                  {vehicle.staffRating % 1 === 0 ? vehicle.staffRating : vehicle.staffRating.toFixed(1)}
+                                  {Math.round(vehicle.staffRating * 10)}
                                 </span>
                               </div>
                             </div>
@@ -1835,7 +1844,7 @@ export const Home: React.FC = () => {
                               <div className="home__carousel-rating-label-wrapper">
                                 <span className="home__carousel-rating-label-top">Community</span>
                                 <span className="home__carousel-rating-label-bottom">
-                                  Rating <span className="home__carousel-rating-count">(252)</span>
+                                  Rating <span className="home__carousel-rating-count">(25)</span>
                                 </span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
@@ -1845,7 +1854,7 @@ export const Home: React.FC = () => {
                                   className="home__carousel-rating-icon community" 
                                 />
                                 <span className="home__carousel-rating-value">
-                                  {vehicle.communityRating % 1 === 0 ? vehicle.communityRating : vehicle.communityRating.toFixed(1)}
+                                  {Math.round(vehicle.communityRating * 10)}
                                 </span>
                               </div>
                             </div>
@@ -1980,12 +1989,12 @@ export const Home: React.FC = () => {
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">MotorTrend</span>
+                                <span className="home__carousel-rating-label-top">Expert</span>
                                 <span className="home__carousel-rating-label-bottom">Rating</span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
                                 <span className="home__carousel-rating-value">
-                                  {vehicle.staffRating % 1 === 0 ? vehicle.staffRating : vehicle.staffRating.toFixed(1)}
+                                  {Math.round(vehicle.staffRating * 10)}
                                 </span>
                               </div>
                             </div>
@@ -1993,7 +2002,7 @@ export const Home: React.FC = () => {
                               <div className="home__carousel-rating-label-wrapper">
                                 <span className="home__carousel-rating-label-top">Community</span>
                                 <span className="home__carousel-rating-label-bottom">
-                                  Rating <span className="home__carousel-rating-count">(252)</span>
+                                  Rating <span className="home__carousel-rating-count">(25)</span>
                                 </span>
                               </div>
                               <div className="home__carousel-rating-value-wrapper">
@@ -2003,7 +2012,7 @@ export const Home: React.FC = () => {
                                   className="home__carousel-rating-icon community" 
                                 />
                                 <span className="home__carousel-rating-value">
-                                  {vehicle.communityRating % 1 === 0 ? vehicle.communityRating : vehicle.communityRating.toFixed(1)}
+                                  {Math.round(vehicle.communityRating * 10)}
                                 </span>
                               </div>
                             </div>
@@ -2214,12 +2223,12 @@ export const Home: React.FC = () => {
                 <div className="home__fullscreen-ratings">
                   <div className="home__fullscreen-rating-item">
                     <div className="home__fullscreen-rating-label-wrapper">
-                      <span className="home__fullscreen-rating-label-top">MotorTrend</span>
+                      <span className="home__fullscreen-rating-label-top">Expert</span>
                       <span className="home__fullscreen-rating-label-bottom">Rating</span>
                     </div>
                     <div className="home__fullscreen-rating-value-wrapper">
                       <span className="home__fullscreen-rating-value">
-                        {fullscreenVehicle.staffRating % 1 === 0 ? fullscreenVehicle.staffRating : fullscreenVehicle.staffRating.toFixed(1)}
+                        {Math.round(fullscreenVehicle.staffRating * 10)}
                       </span>
                     </div>
                   </div>
@@ -2227,7 +2236,7 @@ export const Home: React.FC = () => {
                     <div className="home__fullscreen-rating-label-wrapper">
                       <span className="home__fullscreen-rating-label-top">Community</span>
                       <span className="home__fullscreen-rating-label-bottom">
-                        Rating <span className="home__fullscreen-rating-count">(252)</span>
+                        Rating <span className="home__fullscreen-rating-count">(25)</span>
                       </span>
                     </div>
                     <div className="home__fullscreen-rating-value-wrapper">
@@ -2237,7 +2246,7 @@ export const Home: React.FC = () => {
                         className="home__fullscreen-rating-icon community" 
                       />
                       <span className="home__fullscreen-rating-value">
-                        {fullscreenVehicle.communityRating % 1 === 0 ? fullscreenVehicle.communityRating : fullscreenVehicle.communityRating.toFixed(1)}
+                        {Math.round(fullscreenVehicle.communityRating * 10)}
                       </span>
                     </div>
                   </div>

@@ -13,11 +13,10 @@ interface ReviewTemplate {
   vehicleModel: string;
   thumbsUpCount: number;
   categoryRatings: {
-    comfort: number;
     reliability: number;
-    interior: number;
-    value: number;
-    safety: number;
+    driverExperience: number;
+    budgetFriendly: number;
+    manufacturerWarranty: number;
   };
   verificationLevel: VerificationLevel;
   vehicleRelationship: VehicleRelationship;
@@ -151,11 +150,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(1),
         thumbsUpCount: 24 + Math.floor(Math.random() * 10),
         categoryRatings: {
-          comfort: 7.5,
           reliability: 9,
-          interior: 7,
-          value: 8.5,
-          safety: 9
+          driverExperience: 7.5,
+          budgetFriendly: 8.5,
+          manufacturerWarranty: 9
         },
         verificationLevel: 'verified_documents',
         vehicleRelationship: 'own',
@@ -171,11 +169,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(1),
         thumbsUpCount: 32 + Math.floor(Math.random() * 15),
         categoryRatings: {
-          comfort: 7,
           reliability: 8.5,
-          interior: 8,
-          value: 8.5,
-          safety: 8
+          driverExperience: 7,
+          budgetFriendly: 8.5,
+          manufacturerWarranty: 8
         },
         verificationLevel: 'verified_documents',
         vehicleRelationship: 'own',
@@ -191,11 +188,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(1),
         thumbsUpCount: 28 + Math.floor(Math.random() * 12),
         categoryRatings: {
-          comfort: 7,
           reliability: 8.5,
-          interior: 7.5,
-          value: 8,
-          safety: 8.5
+          driverExperience: 7,
+          budgetFriendly: 8,
+          manufacturerWarranty: 8.5
         },
         verificationLevel: 'verified_documents',
         vehicleRelationship: 'own',
@@ -212,11 +208,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(1),
       thumbsUpCount: 35 + Math.floor(Math.random() * 15),
       categoryRatings: {
-        comfort: 9,
         reliability: 8.5,
-        interior: 9,
-        value: 8,
-        safety: 9.5
+        driverExperience: 9,
+        budgetFriendly: 8,
+        manufacturerWarranty: 9.5
       },
       verificationLevel: 'verified_documents',
       vehicleRelationship: 'own',
@@ -232,11 +227,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(1),
       thumbsUpCount: 42 + Math.floor(Math.random() * 18),
       categoryRatings: {
-        comfort: 8,
         reliability: 9,
-        interior: 8.5,
-        value: 8.5,
-        safety: 9
+        driverExperience: 8,
+        budgetFriendly: 8.5,
+        manufacturerWarranty: 9
       },
       verificationLevel: 'verified_documents',
       vehicleRelationship: 'own',
@@ -253,11 +247,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(1),
         thumbsUpCount: 38 + Math.floor(Math.random() * 15),
         categoryRatings: {
-          comfort: 8.5,
           reliability: 9.5,
-          interior: 8,
-          value: 8.5,
-          safety: 9.5
+          driverExperience: 8.5,
+          budgetFriendly: 8.5,
+          manufacturerWarranty: 9.5
         },
         verificationLevel: 'verified_documents',
         vehicleRelationship: 'own',
@@ -273,11 +266,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(1),
         thumbsUpCount: 32 + Math.floor(Math.random() * 12),
         categoryRatings: {
-          comfort: 8.5,
           reliability: 9,
-          interior: 8,
-          value: 8,
-          safety: 9
+          driverExperience: 8.5,
+          budgetFriendly: 8,
+          manufacturerWarranty: 9
         },
         verificationLevel: 'verified_documents',
         vehicleRelationship: 'own',
@@ -294,11 +286,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(1),
       thumbsUpCount: 45 + Math.floor(Math.random() * 20),
       categoryRatings: {
-        comfort: 9,
         reliability: 9,
-        interior: 9,
-        value: 8.5,
-        safety: 9.5
+        driverExperience: 9,
+        budgetFriendly: 8.5,
+        manufacturerWarranty: 9.5
       },
       verificationLevel: 'verified_documents',
       vehicleRelationship: 'own',
@@ -314,11 +305,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(1),
       thumbsUpCount: 28 + Math.floor(Math.random() * 12),
       categoryRatings: {
-        comfort: 8,
         reliability: 9,
-        interior: 7.5,
-        value: 9,
-        safety: 8.5
+        driverExperience: 8,
+        budgetFriendly: 9,
+        manufacturerWarranty: 8.5
       },
       verificationLevel: 'verified_documents',
       vehicleRelationship: 'own',
@@ -338,11 +328,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(0),
         thumbsUpCount: 18 + Math.floor(Math.random() * 10),
         categoryRatings: {
-          comfort: 6.5,
           reliability: 8,
-          interior: 6.5,
-          value: 7.5,
-          safety: 8.5
+          driverExperience: 6.5,
+          budgetFriendly: 7.5,
+          manufacturerWarranty: 8.5
         },
         verificationLevel: 'verified',
         vehicleRelationship: 'own',
@@ -358,11 +347,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(0),
         thumbsUpCount: 25 + Math.floor(Math.random() * 12),
         categoryRatings: {
-          comfort: 6.5,
           reliability: 8,
-          interior: 7.5,
-          value: 7.5,
-          safety: 7.5
+          driverExperience: 6.5,
+          budgetFriendly: 7.5,
+          manufacturerWarranty: 7.5
         },
         verificationLevel: 'verified',
         vehicleRelationship: 'own',
@@ -378,11 +366,10 @@ const generateReviewTemplates = (
         vehicleModel: getTrimModel(0),
         thumbsUpCount: 22 + Math.floor(Math.random() * 10),
         categoryRatings: {
-          comfort: 6.5,
           reliability: 8,
-          interior: 7,
-          value: 7.5,
-          safety: 8
+          driverExperience: 6.5,
+          budgetFriendly: 7.5,
+          manufacturerWarranty: 8
         },
         verificationLevel: 'verified',
         vehicleRelationship: 'own',
@@ -399,11 +386,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(0),
       thumbsUpCount: 28 + Math.floor(Math.random() * 12),
       categoryRatings: {
-        comfort: 9,
         reliability: 7.5,
-        interior: 8.5,
-        value: 7,
-        safety: 9
+        driverExperience: 9,
+        budgetFriendly: 7,
+        manufacturerWarranty: 9
       },
       verificationLevel: 'verified',
       vehicleRelationship: 'own',
@@ -419,11 +405,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(0),
       thumbsUpCount: 35 + Math.floor(Math.random() * 15),
       categoryRatings: {
-        comfort: 7.5,
         reliability: 9,
-        interior: 8,
-        value: 7.5,
-        safety: 8.5
+        driverExperience: 7.5,
+        budgetFriendly: 7.5,
+        manufacturerWarranty: 8.5
       },
       verificationLevel: 'verified',
       vehicleRelationship: 'own',
@@ -439,11 +424,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(0),
       thumbsUpCount: 30 + Math.floor(Math.random() * 12),
       categoryRatings: {
-        comfort: 8,
         reliability: 9,
-        interior: 7.5,
-        value: 8,
-        safety: 9
+        driverExperience: 8,
+        budgetFriendly: 8,
+        manufacturerWarranty: 9
       },
       verificationLevel: 'verified',
       vehicleRelationship: 'own',
@@ -459,11 +443,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(0),
       thumbsUpCount: 38 + Math.floor(Math.random() * 15),
       categoryRatings: {
-        comfort: 8.5,
         reliability: 8.5,
-        interior: 8.5,
-        value: 7.5,
-        safety: 9
+        driverExperience: 8.5,
+        budgetFriendly: 7.5,
+        manufacturerWarranty: 9
       },
       verificationLevel: 'verified',
       vehicleRelationship: 'own',
@@ -479,11 +462,10 @@ const generateReviewTemplates = (
       vehicleModel: getTrimModel(0),
       thumbsUpCount: 24 + Math.floor(Math.random() * 10),
       categoryRatings: {
-        comfort: 7.5,
         reliability: 9,
-        interior: 7,
-        value: 8.5,
-        safety: 8
+        driverExperience: 7.5,
+        budgetFriendly: 8.5,
+        manufacturerWarranty: 8
       },
       verificationLevel: 'verified',
       vehicleRelationship: 'own',

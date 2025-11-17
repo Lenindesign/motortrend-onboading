@@ -183,8 +183,8 @@
 }
 
 .user-reviews__star-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
 }
 
@@ -751,9 +751,9 @@
 }
 
 .user-reviews__category-name {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 16px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
   line-height: 1.375em;
   color: var(--color-neutrals-1);
   min-width: 0;

@@ -35,7 +35,53 @@ export const getVehicleSpecs = (vehicleName: string): VehicleSpecs => {
   let drivetrain = 'AWD';
   
   // Price adjustments based on make/model
-  if (normalizedName.includes('bmw') || normalizedName.includes('mercedes') || normalizedName.includes('audi')) {
+  // Ultra-Luxury Vehicles
+  if (normalizedName.includes('rolls') && normalizedName.includes('royce') && normalizedName.includes('ghost')) {
+    basePrice = 370000;
+    mpg = '14/21/17';
+    zeroToSixty = '4.6';
+    horsepower = '563';
+    torque = '627 lb-ft';
+    engine = '6.75L Twin-Turbocharged V12';
+    transmission = '8-Speed Automatic';
+    drivetrain = 'RWD';
+  } else if (normalizedName.includes('bentley') && normalizedName.includes('continental') && normalizedName.includes('supersports')) {
+    basePrice = 325000;
+    mpg = '15/24/18';
+    zeroToSixty = '3.7';
+    horsepower = '657';
+    torque = '590 lb-ft';
+    engine = '4.0L Twin-Turbocharged V8';
+    transmission = '8-Speed Dual-Clutch';
+    drivetrain = 'RWD';
+  } else if (normalizedName.includes('bentley') && normalizedName.includes('flying spur')) {
+    basePrice = 230000;
+    mpg = '15/24/18';
+    zeroToSixty = '3.7';
+    horsepower = '626';
+    torque = '664 lb-ft';
+    engine = '6.0L Twin-Turbocharged W12';
+    transmission = '8-Speed Dual-Clutch';
+    drivetrain = 'AWD';
+  } else if (normalizedName.includes('mercedes') && normalizedName.includes('maybach') && normalizedName.includes('sl')) {
+    basePrice = 260000;
+    mpg = '16/23/19';
+    zeroToSixty = '4.1';
+    horsepower = '577';
+    torque = '590 lb-ft';
+    engine = '4.0L Twin-Turbocharged V8';
+    transmission = '9-Speed Automatic';
+    drivetrain = 'AWD';
+  } else if (normalizedName.includes('ferrari') && normalizedName.includes('296') && normalizedName.includes('speciale')) {
+    basePrice = 475000;
+    mpg = '18/22/20';
+    zeroToSixty = '2.7';
+    horsepower = '819';
+    torque = '546 lb-ft';
+    engine = '3.0L Twin-Turbocharged V6 + Electric Motor';
+    transmission = '8-Speed Dual-Clutch';
+    drivetrain = 'RWD';
+  } else if (normalizedName.includes('bmw') || normalizedName.includes('mercedes') || normalizedName.includes('audi')) {
     basePrice = 45000;
     mpg = '23/32/26';
     zeroToSixty = '5.2';

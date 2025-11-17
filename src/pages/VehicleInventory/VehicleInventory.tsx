@@ -737,17 +737,17 @@ export const VehicleInventory: React.FC = () => {
                         <div className="vehicle-inventory__hero-ratings-list">
                         <div className="vehicle-inventory__hero-rating-item">
                             <div className="vehicle-inventory__hero-rating-label-wrapper">
-                              <span className="vehicle-inventory__hero-rating-label-top">MotorTrend</span>
+                              <span className="vehicle-inventory__hero-rating-label-top">Expert</span>
                               <span className="vehicle-inventory__hero-rating-label-bottom">Rating</span>
                             </div>
                             <div className="vehicle-inventory__hero-rating-value-wrapper">
                           <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c075d4ae300022a2b0c/staryellowsolid.svg" 
-                            alt="MotorTrend Rating Star" 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                            alt="MotorTrend" 
                             className="vehicle-inventory__hero-rating-icon staff" 
                           />
                           <span className="vehicle-inventory__hero-rating-value">
-                            {vehicle.staffRating % 1 === 0 ? vehicle.staffRating : vehicle.staffRating.toFixed(1)}
+                            {Math.round(vehicle.staffRating * 10)}
                           </span>
                             </div>
                         </div>
@@ -755,7 +755,7 @@ export const VehicleInventory: React.FC = () => {
                             <div className="vehicle-inventory__hero-rating-label-wrapper">
                               <span className="vehicle-inventory__hero-rating-label-top">Community</span>
                               <span className="vehicle-inventory__hero-rating-label-bottom">
-                                Rating <span className="vehicle-inventory__hero-rating-count">(252)</span>
+                                Rating <span className="vehicle-inventory__hero-rating-count">(25)</span>
                               </span>
                             </div>
                             <div className="vehicle-inventory__hero-rating-value-wrapper">
@@ -765,7 +765,7 @@ export const VehicleInventory: React.FC = () => {
                             className="vehicle-inventory__hero-rating-icon community" 
                           />
                           <span className="vehicle-inventory__hero-rating-value">
-                            {vehicle.communityRating % 1 === 0 ? vehicle.communityRating : vehicle.communityRating.toFixed(1)}
+                            {Math.round(vehicle.communityRating * 10)}
                           </span>
                         </div>
                           </div>

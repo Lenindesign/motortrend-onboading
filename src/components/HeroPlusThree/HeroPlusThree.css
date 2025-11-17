@@ -1,6 +1,6 @@
 /**
  * Hero Plus Three Styles
- * Hero card with 3 vertical cards below
+ * Hero card with 3 vertical cards below, with optional vehicle sliders
  */
 
 .hero-plus-three {
@@ -21,11 +21,28 @@
   width: 100%;
 }
 
+.hero-plus-three__vehicle-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  width: 100%;
+  margin-top: var(--spacing-4);
+}
+
+.hero-plus-three__vehicle-slider {
+  width: 100%;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .hero-plus-three__cards {
     grid-template-columns: 1fr;
     gap: var(--spacing-2);
+  }
+  
+  .hero-plus-three__vehicle-sliders {
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-3);
   }
 }
 

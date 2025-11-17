@@ -60,11 +60,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   
   // Category ratings
   const [categoryRatings, setCategoryRatings] = useState({
-    comfort: 0,
     reliability: 0,
-    interior: 0,
-    value: 0,
-    safety: 0
+    driverExperience: 0,
+    budgetFriendly: 0,
+    manufacturerWarranty: 0
   });
 
   // Track if user manually set the overall rating
@@ -91,11 +90,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         setVinNumber(existingReview.vinNumber || '');
         if (existingReview.categoryRatings) {
           setCategoryRatings({
-            comfort: existingReview.categoryRatings.comfort || 0,
             reliability: existingReview.categoryRatings.reliability || 0,
-            interior: existingReview.categoryRatings.interior || 0,
-            value: existingReview.categoryRatings.value || 0,
-            safety: existingReview.categoryRatings.safety || 0
+            driverExperience: existingReview.categoryRatings.driverExperience || 0,
+            budgetFriendly: existingReview.categoryRatings.budgetFriendly || 0,
+            manufacturerWarranty: existingReview.categoryRatings.manufacturerWarranty || 0
           });
         }
         // Keep existing media previews if available
@@ -146,11 +144,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         setReviewContent('');
         setVehicleModel('');
         setCategoryRatings({
-          comfort: 0,
           reliability: 0,
-          interior: 0,
-          value: 0,
-          safety: 0
+          driverExperience: 0,
+          budgetFriendly: 0,
+          manufacturerWarranty: 0
         });
         setIsManualRating(false);
       }, 200);
@@ -346,11 +343,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       }),
       mediaFiles: mediaFiles.length > 0 ? mediaFiles : undefined,
       categoryRatings: {
-        comfort: categoryRatings.comfort > 0 ? categoryRatings.comfort : undefined,
         reliability: categoryRatings.reliability > 0 ? categoryRatings.reliability : undefined,
-        interior: categoryRatings.interior > 0 ? categoryRatings.interior : undefined,
-        value: categoryRatings.value > 0 ? categoryRatings.value : undefined,
-        safety: categoryRatings.safety > 0 ? categoryRatings.safety : undefined
+        driverExperience: categoryRatings.driverExperience > 0 ? categoryRatings.driverExperience : undefined,
+        budgetFriendly: categoryRatings.budgetFriendly > 0 ? categoryRatings.budgetFriendly : undefined,
+        manufacturerWarranty: categoryRatings.manufacturerWarranty > 0 ? categoryRatings.manufacturerWarranty : undefined
       },
       verificationLevel,
       vinNumber: vinNumber.trim().length > 0 ? vinNumber.trim() : undefined,
@@ -387,11 +383,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     setVehicleModel('');
     setIsManualRating(false);
     setCategoryRatings({
-      comfort: 0,
       reliability: 0,
-      interior: 0,
-      value: 0,
-      safety: 0
+      driverExperience: 0,
+      budgetFriendly: 0,
+      manufacturerWarranty: 0
     });
     
     // Clean up media previews
@@ -415,11 +410,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       setVehicleModel('');
       setIsManualRating(false);
       setCategoryRatings({
-        comfort: 0,
         reliability: 0,
-        interior: 0,
-        value: 0,
-        safety: 0
+        driverExperience: 0,
+        budgetFriendly: 0,
+        manufacturerWarranty: 0
       });
       
       mediaPreviews.forEach((url) => URL.revokeObjectURL(url));
@@ -536,9 +530,9 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             {/* Rating Section */}
             <div className="write-review-modal__rating-section">
               <div className="write-review-modal__rating-header">
-                <span className="write-review-modal__rating-label">Rate Your Experience (1-10)</span>
+                <span className="write-review-modal__rating-label">Rate Your Experience (1-100)</span>
                 <span className="write-review-modal__rating-value">
-                  {rating > 0 ? (rating % 1 === 0 ? rating : rating.toFixed(1)) : '?'}/10
+                  {rating > 0 ? Math.round(rating * 10) : '?'}/100
                 </span>
               </div>
               <div className="write-review-modal__stars">
@@ -551,7 +545,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     <img 
                       src={star <= rating 
                         ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                        : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                        : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                       }
                       alt="Star" 
                       className="write-review-modal__star-icon"
@@ -768,15 +762,15 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 <p className="write-review-modal__experience-subtitle">Rate specific aspects of your experience with this vehicle</p>
               </div>
               
-              {/* Comfort */}
+              {/* Driver Experience */}
               <div className="write-review-modal__category-card">
                 <div className="write-review-modal__category-header">
                   <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Comfort</h4>
-                    <p className="write-review-modal__category-description">Ride quality, seats, and cabin quietness</p>
+                    <h4 className="write-review-modal__category-title">Driver Experience</h4>
+                    <p className="write-review-modal__category-description">Handling, comfort, and overall driving feel</p>
                   </div>
                   <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.comfort > 0 ? `${categoryRatings.comfort}/10` : '?/10'}
+                    {categoryRatings.driverExperience > 0 ? `${categoryRatings.driverExperience}/10` : '?/10'}
                   </span>
                 </div>
                 <div className="write-review-modal__category-stars">
@@ -784,16 +778,16 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     <button
                       key={star}
                       type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.comfort ? 'active' : ''}`}
+                      className={`write-review-modal__category-star ${star <= categoryRatings.driverExperience ? 'active' : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleCategoryRatingClick('comfort', star);
+                        handleCategoryRatingClick('driverExperience', star);
                       }}
                     >
                       <img 
-                        src={star <= categoryRatings.comfort 
+                        src={star <= categoryRatings.driverExperience 
                           ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                         }
                         alt="Star" 
                         className="write-review-modal__category-star-icon"
@@ -828,7 +822,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                       <img 
                         src={star <= categoryRatings.reliability 
                           ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                         }
                         alt="Star" 
                         className="write-review-modal__category-star-icon"
@@ -838,15 +832,15 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 </div>
               </div>
 
-              {/* Interior */}
+              {/* Budget Friendly */}
               <div className="write-review-modal__category-card">
                 <div className="write-review-modal__category-header">
                   <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Interior</h4>
-                    <p className="write-review-modal__category-description">Design, materials, and tech features</p>
+                    <h4 className="write-review-modal__category-title">Budget Friendly</h4>
+                    <p className="write-review-modal__category-description">Cost of ownership and overall value</p>
                   </div>
                   <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.interior > 0 ? `${categoryRatings.interior}/10` : '?/10'}
+                    {categoryRatings.budgetFriendly > 0 ? `${categoryRatings.budgetFriendly}/10` : '?/10'}
                   </span>
                 </div>
                 <div className="write-review-modal__category-stars">
@@ -854,16 +848,16 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     <button
                       key={star}
                       type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.interior ? 'active' : ''}`}
+                      className={`write-review-modal__category-star ${star <= categoryRatings.budgetFriendly ? 'active' : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleCategoryRatingClick('interior', star);
+                        handleCategoryRatingClick('budgetFriendly', star);
                       }}
                     >
                       <img 
-                        src={star <= categoryRatings.interior 
+                        src={star <= categoryRatings.budgetFriendly 
                           ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                         }
                         alt="Star" 
                         className="write-review-modal__category-star-icon"
@@ -873,15 +867,15 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 </div>
               </div>
 
-              {/* Value */}
+              {/* Manufacturer Warranty */}
               <div className="write-review-modal__category-card">
                 <div className="write-review-modal__category-header">
                   <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Value</h4>
-                    <p className="write-review-modal__category-description">Worth compared to price and competitors</p>
+                    <h4 className="write-review-modal__category-title">Manufacturer Warranty</h4>
+                    <p className="write-review-modal__category-description">Coverage quality and support experience</p>
                   </div>
                   <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.value > 0 ? `${categoryRatings.value}/10` : '?/10'}
+                    {categoryRatings.manufacturerWarranty > 0 ? `${categoryRatings.manufacturerWarranty}/10` : '?/10'}
                   </span>
                 </div>
                 <div className="write-review-modal__category-stars">
@@ -889,51 +883,16 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     <button
                       key={star}
                       type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.value ? 'active' : ''}`}
+                      className={`write-review-modal__category-star ${star <= categoryRatings.manufacturerWarranty ? 'active' : ''}`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleCategoryRatingClick('value', star);
+                        handleCategoryRatingClick('manufacturerWarranty', star);
                       }}
                     >
                       <img 
-                        src={star <= categoryRatings.value 
+                        src={star <= categoryRatings.manufacturerWarranty 
                           ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
-                        }
-                        alt="Star" 
-                        className="write-review-modal__category-star-icon"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Safety */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Safety</h4>
-                    <p className="write-review-modal__category-description">Driver-assistance tech and crash confidence</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.safety > 0 ? `${categoryRatings.safety}/10` : '?/10'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.safety ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCategoryRatingClick('safety', star);
-                      }}
-                    >
-                      <img 
-                        src={star <= categoryRatings.safety 
-                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
                         }
                         alt="Star" 
                         className="write-review-modal__category-star-icon"

@@ -317,8 +317,9 @@
 /* Welcome Actions */
 .welcome-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: stretch;
+  justify-content: space-between;
   gap: 12px;
   width: 100%;
   margin-top: var(--spacing-2);

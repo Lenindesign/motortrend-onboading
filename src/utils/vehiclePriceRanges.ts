@@ -83,6 +83,29 @@ const vehiclePriceRangeMap: Record<string, PriceRangeCategory[]> = {
   '911': ['$80,000 - $100,000', 'Over $100,000'],
   'model s': ['$80,000 - $100,000'],
   'model y': ['$80,000 - $100,000'],
+  
+  // Over $100,000 - Ultra-luxury and exotic vehicles
+  'ferrari': ['Over $100,000'],
+  '296 speciale': ['Over $100,000'],
+  '296-speciale': ['Over $100,000'],
+  'bentley': ['Over $100,000'],
+  'continental gt supersports': ['Over $100,000'],
+  'continental gt': ['Over $100,000'],
+  'flying spur': ['Over $100,000'],
+  'rolls-royce': ['Over $100,000'],
+  'rolls royce': ['Over $100,000'],
+  'ghost': ['Over $100,000'],
+  'maybach': ['Over $100,000'],
+  'panamera': ['$80,000 - $100,000', 'Over $100,000'],
+  'taycan': ['$80,000 - $100,000', 'Over $100,000'],
+  'porsche': ['$80,000 - $100,000', 'Over $100,000'],
+  'corvette z06': ['Over $100,000'],
+  'z06': ['Over $100,000'],
+  'rivian r1t': ['$60,000 - $80,000', '$80,000 - $100,000'],
+  'r1t': ['$60,000 - $80,000', '$80,000 - $100,000'],
+  'f-150 lightning': ['$60,000 - $80,000', '$80,000 - $100,000'],
+  'defender': ['$60,000 - $80,000', '$80,000 - $100,000'],
+  'land rover': ['$60,000 - $80,000', '$80,000 - $100,000'],
 };
 
 /**

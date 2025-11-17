@@ -1,12 +1,20 @@
 /**
  * Hero Plus Three Component
- * Hero card with 3 vertical cards below
+ * Hero card with 3 vertical cards below, with optional vehicle sliders
  */
 
 import React from 'react';
 import { HeroCard } from '../HeroCard';
 import { VerticalCard } from '../VerticalCard';
+import { VehiclesSection } from '../VehiclesSection';
 import './HeroPlusThree.css';
+
+export interface VehicleSlider {
+  title: string;
+  vehicles: Array<{ name: string }>;
+  showMoreVisible?: boolean;
+  onShowMore?: () => void;
+}
 
 export interface HeroPlusThreeProps {
   hero: {
@@ -20,11 +28,13 @@ export interface HeroPlusThreeProps {
     type?: 'Video' | 'Article';
     onClick?: () => void;
   }>;
+  vehicleSliders?: VehicleSlider[];
 }
 
 export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({
   hero,
   cards,
+  vehicleSliders = [],
 }) => {
   return (
     <div className="hero-plus-three">
@@ -46,6 +56,22 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({
           />
         ))}
       </div>
+      
+      {/* Vehicle Sliders */}
+      {vehicleSliders.length > 0 && (
+        <div className="hero-plus-three__vehicle-sliders">
+          {vehicleSliders.map((slider, index) => (
+            <div key={index} className="hero-plus-three__vehicle-slider">
+              <VehiclesSection
+                title={slider.title}
+                vehicles={slider.vehicles}
+                showMoreVisible={slider.showMoreVisible}
+                onShowMore={slider.onShowMore}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
