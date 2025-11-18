@@ -144,8 +144,8 @@ export const Profile: React.FC<ProfileProps> = ({
   });
   
   const [magazineSubscriptions, setMagazineSubscriptions] = useState({
-    'MotorTrend': true,
-    'Car and Driver': true
+    'MotorTrend': true
+    // 'Car and Driver': true // Hidden
   });
   
   // Load onboarding data from localStorage
@@ -1172,18 +1172,21 @@ export const Profile: React.FC<ProfileProps> = ({
                       logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64d7a3a12db0002cab19f/mtmag.png"
                       isActive={magazineSubscriptions['MotorTrend']}
                       onToggleSubscription={handleMagazineToggle}
+                      href="https://secure.motortrend.com/"
                     />
-                    <SubscriptionItem
+                    {/* Car and Driver magazine hidden */}
+                    {/* <SubscriptionItem
                       name="Car and Driver"
                       logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64d793a12db0002cab19d/caranddrivermagazine.png"
                       isActive={magazineSubscriptions['Car and Driver']}
                       onToggleSubscription={handleMagazineToggle}
-                    />
-                    <SubscriptionItem
+                    /> */}
+                    {/* Find More option hidden */}
+                    {/* <SubscriptionItem
                       name="Find More"
                       isFindMore={true}
                       onClick={() => console.log('Find more magazines')}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
