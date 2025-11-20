@@ -1,16 +1,14 @@
 .comparison-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
   background: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-7);
   border-radius: 8px;
-  width: 419px;
-  height: 100%;
+  width: 100%;
+  max-width: 650px;
   box-shadow: 0px 4px 20px 0px rgba(20, 20, 22, 0.06);
   transition: all 0.2s ease;
+  overflow: hidden;
 }
 
 .comparison-card:hover {
@@ -21,54 +19,40 @@
 .comparison-card__content {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  height: 109px;
-  width: 100%;
+  gap: 20px;
+  padding: 16px;
 }
 
-.comparison-card__vehicle {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 153.5px;
-  min-width: 0;
-}
-
-.comparison-card__image-container {
+.comparison-card__image-wrapper {
   position: relative;
-  width: 154px;
-  height: 86px;
-  border-radius: 4px;
+  width: 240px;
+  height: 160px;
+  flex-shrink: 0;
+  border-radius: 8px;
   overflow: hidden;
-  padding: 4px;
 }
 
 .comparison-card__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: center center;
 }
 
-.comparison-card__image-container:hover .comparison-card__image {
-  transform: scale(1.03);
+.comparison-card__image-wrapper:hover .comparison-card__image {
+  transform: scale(1.05);
 }
 
 .comparison-card__bookmark-btn {
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 12px;
+  left: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 4px;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
   background: rgba(35, 38, 47, 0.8);
   border: none;
   border-radius: 4px;
@@ -76,11 +60,12 @@
   cursor: pointer;
   transition: all 0.2s ease;
   backdrop-filter: blur(4px);
+  z-index: 1;
 }
 
 .comparison-card__bookmark-btn:hover {
   background: rgba(0, 0, 0, 0.6);
-  transform: translateX(-50%) scale(1.05);
+  transform: scale(1.05);
 }
 
 .comparison-card__bookmark-btn--active {
@@ -91,106 +76,55 @@
   background: rgba(0, 0, 0, 0.7);
 }
 
-.comparison-card__name {
-  font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1.14em;
-  color: var(--color-neutrals-2);
-  margin: 0;
-  text-align: left;
-}
-
-.comparison-card__vs {
+.comparison-card__info {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  gap: 16px;
-  height: 109px;
-  flex-shrink: 0;
-  position: relative;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
-.comparison-card__vs-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  background: var(--color-neutrals-2);
-  border-radius: 100px;
+.comparison-card__title {
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 18px;
-  line-height: 1.33em;
-  color: var(--color-white);
+  line-height: 1.3;
+  color: var(--color-neutrals-1);
+  margin: 0;
 }
 
-.comparison-card__actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+.comparison-card__label {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-neutrals-3);
+  margin: 0;
 }
 
 .comparison-card__button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  gap: 8px;
-  padding: 6px 16px;
-  background: #353945;
-  border: none;
-  border-radius: var(--border-radius-sm);
-  font-family: Arial;
-  font-weight: 600;
-  font-size: 14px;
-  color: var(--color-neutrals-8);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  height: 34px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.comparison-card__button:hover {
-  background: var(--color-neutrals-2);
-  transform: translateY(-1px);
-}
-
-.comparison-card__button:active {
-  transform: translateY(0);
+  margin-top: 12px;
+  align-self: flex-start;
 }
 
 @media (max-width: 768px) {
   .comparison-card {
-    width: 100%;
-    height: auto;
-    max-width: 419px;
+    max-width: 100%;
   }
   
   .comparison-card__content {
     flex-direction: column;
     gap: 16px;
-    height: auto;
   }
   
-  .comparison-card__vehicle {
+  .comparison-card__image-wrapper {
     width: 100%;
-    max-width: 153.5px;
+    height: 200px;
   }
   
-  .comparison-card__image-container {
+  .comparison-card__button {
     width: 100%;
-    max-width: 154px;
-  }
-  
-  .comparison-card__vs {
-    height: auto;
-    gap: 8px;
   }
 }
 

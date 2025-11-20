@@ -129,6 +129,7 @@
   min-width: 0;
   flex-wrap: nowrap;
   overflow: hidden;
+  position: relative;
 }
 
 .vehicle-inventory__hero-listing-btn {
@@ -180,7 +181,31 @@
   min-width: 0;
   flex-shrink: 0;
   height: fit-content;
-  align-self: flex-start;
+  align-self: center;
+}
+
+/* Expert Rating - column layout */
+.vehicle-inventory__hero-rating-item:first-child {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+  min-width: 0;
+  overflow: visible;
+  position: relative;
+  padding-right: 24px;
+}
+
+/* Separator between rating items */
+.vehicle-inventory__hero-rating-item:first-child::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background-color: #FFFFFF;
 }
 
 .vehicle-inventory__hero-rating-label-wrapper {
@@ -258,13 +283,13 @@
 
 /* MT logo smaller than blue stars */
 .vehicle-inventory__hero-rating-icon.staff,
-.vehicle-inventory__hero-rating-icon[src*="mt-rating"] {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  min-height: 20px;
-  max-width: 20px;
-  max-height: 20px;
+.vehicle-inventory__hero-rating-icon[src*="group1318348068"] {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
   object-fit: contain;
   display: block;
   vertical-align: middle;
@@ -281,6 +306,157 @@
   font-weight: 600;
   font-family: var(--font-heading);
   line-height: 1;
+}
+
+/* New rating format styles - Expert Rating */
+.vehicle-inventory__hero-rating-score-large {
+  color: #FFFFFF;
+  font-size: 32px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.vehicle-inventory__hero-rating-score-max {
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.vehicle-inventory__hero-rating-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: nowrap;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.vehicle-inventory__hero-rating-mt-badge {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.vehicle-inventory__hero-rating-label-row .vehicle-inventory__hero-rating-mt-badge {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  flex-shrink: 0 !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+.vehicle-inventory__hero-rating-motortrend-text {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* New rating format styles - Community Rating */
+.vehicle-inventory__hero-rating-item--community {
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  justify-content: center;
+  padding-left: 0px;
+}
+
+.vehicle-inventory__hero-rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.vehicle-inventory__hero-star-wrapper {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.vehicle-inventory__hero-star-wrapper--half {
+  /* Half star styling handled by half-fill div */
+}
+
+.vehicle-inventory__hero-star {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.vehicle-inventory__hero-star--outline {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.vehicle-inventory__hero-star--filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.vehicle-inventory__hero-star-half-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.vehicle-inventory__hero-star-half-fill svg {
+  width: 18px;
+  height: 18px;
+}
+
+.vehicle-inventory__hero-rating-text {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.vehicle-inventory__hero-rating-highlight {
+  color: #FFFFFF;
+  font-weight: 500;
 }
 
 /* Slider Navigation */
@@ -617,7 +793,7 @@
 
   /* MT logo smaller on mobile */
   .vehicle-inventory__hero-rating-icon.staff,
-  .vehicle-inventory__hero-rating-icon[src*="mt-rating"] {
+  .vehicle-inventory__hero-rating-icon[src*="group1318348068"] {
     width: 18px;
     height: 18px;
     min-width: 18px;

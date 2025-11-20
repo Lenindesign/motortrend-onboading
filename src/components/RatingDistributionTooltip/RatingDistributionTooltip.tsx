@@ -59,9 +59,9 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
   console.log('Tooltip render:', { isVisible, totalReviews, distribution });
   if (!isVisible) return null;
 
-  // Generate rating distribution data for 1-10 stars
+  // Generate rating distribution data for 1-5 stars
   const ratingBars = [];
-  for (let rating = 10; rating >= 1; rating--) {
+  for (let rating = 5; rating >= 1; rating--) {
     const percentage = distribution[rating] || 0;
     
     ratingBars.push(
@@ -87,7 +87,7 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
         top: position.top,
         left: position.left,
         transform: 'translateX(-50%)',
-        zIndex: 99999
+        zIndex: 999999
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

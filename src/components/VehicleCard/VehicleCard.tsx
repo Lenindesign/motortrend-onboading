@@ -23,9 +23,9 @@ export interface VehicleCardProps {
   userRating?: number;
 }
 
-export const VehicleCard: React.FC<VehicleCardProps> = ({ 
-  image, 
-  name, 
+export const VehicleCard: React.FC<VehicleCardProps> = ({
+  image,
+  name,
   rating1,
   rating2,
   hasMultipleRatings = false,
@@ -38,8 +38,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   userRating
 }) => {
   const ratings = [];
-  if (rating1) ratings.push({ value: typeof rating1 === 'number' ? Math.round(rating1 * 10) : rating1, color: '#FFB74D' });
-  if (rating2) ratings.push({ value: typeof rating2 === 'number' ? Math.round(rating2 * 10) : rating2, color: '#33CCFF' });
+  if (rating1) ratings.push({ value: typeof rating1 === 'number' ? rating1.toFixed(1) : rating1, color: '#FFB74D' });
+  if (rating2) ratings.push({ value: typeof rating2 === 'number' ? (rating2 / 2).toFixed(1) : rating2, color: '#33C4FF' });
 
   // Get body style from vehicle name
   const bodyStyles = getVehicleBodyStyle(name);

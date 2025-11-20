@@ -25,7 +25,7 @@ const REACTION_OPTIONS: Omit<Reaction, 'count'>[] = [
   { id: 'want-it', emoji: '😍', label: 'Want It' },
   { id: 'own-it', emoji: '🔑', label: 'Own It' },
   { id: 'like-it', emoji: '👍', label: 'Like It' },
-  { id: 'respect-it', emoji: '🔧', label: 'Respect It' },
+  { id: 'respect-it', emoji: '💪', label: 'Respect It' },
   { id: 'hot-ride', emoji: '🔥', label: 'Hot Ride' },
 ];
 
@@ -52,7 +52,14 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({ articleSlug,
           setUserReaction(data.userReaction);
         }
         if (data.reactions) {
-          setReactions(data.reactions);
+          // Merge saved counts with current REACTION_OPTIONS to ensure emojis are always up-to-date
+          setReactions(REACTION_OPTIONS.map(option => {
+            const savedReaction = data.reactions.find((r: Reaction) => r.id === option.id);
+            return {
+              ...option,
+              count: savedReaction ? savedReaction.count : Math.floor(Math.random() * 50) + 10,
+            };
+          }));
         }
       }
     } catch (error) {

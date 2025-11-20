@@ -1551,6 +1551,52 @@ export const Home: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fullscreenVehicle, fullscreenIndex]);
 
+  // Helper function to render star rating (0-10 scale, displays as 0-5 stars)
+  const renderStarRating = (ratingValue: number) => {
+    // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
+    const normalizedRating = ratingValue / 2;
+    
+    return (
+      <div className="home__carousel-rating-stars">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFilled = star < Math.ceil(normalizedRating);
+          const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
+          
+          return (
+            <div key={star} className={`home__carousel-star-wrapper ${isHalf ? 'home__carousel-star-wrapper--half' : ''}`}>
+              {/* Outline star */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="home__carousel-star home__carousel-star--outline">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="none"
+                  stroke="#33C4FF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {/* Filled star (full or half) */}
+              {isFilled && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="home__carousel-star home__carousel-star--filled">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                    fill="#33C4FF"
+                  />
+                </svg>
+              )}
+              {isHalf && (
+                <div className="home__carousel-star-half-fill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="home__carousel-star">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                      fill="#33C4FF"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   return (
     <div className="home">
@@ -1672,32 +1718,27 @@ export const Home: React.FC = () => {
                           <h2 className="home__carousel-name">{vehicle.name}</h2>
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
-                              <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Expert</span>
-                                <span className="home__carousel-rating-label-bottom">Rating</span>
+                              <div className="home__carousel-rating-score-large">
+                                {vehicle.staffRating.toFixed(1)}
+                                <span className="home__carousel-rating-score-max">/10</span>
                               </div>
-                              <div className="home__carousel-rating-value-wrapper">
-                                <span className="home__carousel-rating-value">
-                                  {Math.round(vehicle.staffRating * 10)}
-                                </span>
+                              <div className="home__carousel-rating-label-row">
+                                <img 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                  alt="MotorTrend" 
+                                  className="home__carousel-rating-mt-badge" 
+                                  loading="eager"
+                                  onError={(e) => {
+                                    console.error('Failed to load MT rating icon:', e);
+                                  }}
+                                />
+                                <span className="home__carousel-rating-motortrend-text">MotorTrend Rating</span>
                               </div>
                             </div>
-                            <div className="home__carousel-rating-item">
-                              <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Community</span>
-                                <span className="home__carousel-rating-label-bottom">
-                                  Rating <span className="home__carousel-rating-count">(25)</span>
-                                </span>
-                              </div>
-                              <div className="home__carousel-rating-value-wrapper">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                                  alt="Community Rating Star" 
-                                  className="home__carousel-rating-icon community" 
-                                />
-                                <span className="home__carousel-rating-value">
-                                  {Math.round(vehicle.communityRating * 10)}
-                                </span>
+                            <div className="home__carousel-rating-item home__carousel-rating-item--community">
+                              {renderStarRating(vehicle.communityRating)}
+                              <div className="home__carousel-rating-text">
+                                User Reviews <span className="home__carousel-rating-highlight">({(vehicle.communityRating / 2).toFixed(1)}/5)</span>
                               </div>
                             </div>
                             {getUserRating(vehicle.name) > 0 && (
@@ -1708,9 +1749,13 @@ export const Home: React.FC = () => {
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
                                   <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                                     alt="Your Rating Star" 
                                     className="home__carousel-rating-icon add-rate" 
+                                    loading="eager"
+                                    onError={(e) => {
+                                      console.error('Failed to load star icon:', e);
+                                    }}
                                   />
                                   <span className="home__carousel-rating-value">
                                     {getUserRating(vehicle.name)}
@@ -1830,32 +1875,27 @@ export const Home: React.FC = () => {
                           <h2 className="home__carousel-name">{vehicle.name}</h2>
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
-                              <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Expert</span>
-                                <span className="home__carousel-rating-label-bottom">Rating</span>
+                              <div className="home__carousel-rating-score-large">
+                                {vehicle.staffRating.toFixed(1)}
+                                <span className="home__carousel-rating-score-max">/10</span>
                               </div>
-                              <div className="home__carousel-rating-value-wrapper">
-                                <span className="home__carousel-rating-value">
-                                  {Math.round(vehicle.staffRating * 10)}
-                                </span>
+                              <div className="home__carousel-rating-label-row">
+                                <img 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                  alt="MotorTrend" 
+                                  className="home__carousel-rating-mt-badge" 
+                                  loading="eager"
+                                  onError={(e) => {
+                                    console.error('Failed to load MT rating icon:', e);
+                                  }}
+                                />
+                                <span className="home__carousel-rating-motortrend-text">MotorTrend Rating</span>
                               </div>
                             </div>
-                            <div className="home__carousel-rating-item">
-                              <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Community</span>
-                                <span className="home__carousel-rating-label-bottom">
-                                  Rating <span className="home__carousel-rating-count">(25)</span>
-                                </span>
-                              </div>
-                              <div className="home__carousel-rating-value-wrapper">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                                  alt="Community Rating Star" 
-                                  className="home__carousel-rating-icon community" 
-                                />
-                                <span className="home__carousel-rating-value">
-                                  {Math.round(vehicle.communityRating * 10)}
-                                </span>
+                            <div className="home__carousel-rating-item home__carousel-rating-item--community">
+                              {renderStarRating(vehicle.communityRating)}
+                              <div className="home__carousel-rating-text">
+                                User Reviews <span className="home__carousel-rating-highlight">({(vehicle.communityRating / 2).toFixed(1)}/5)</span>
                               </div>
                             </div>
                             {getUserRating(vehicle.name) > 0 && (
@@ -1866,9 +1906,13 @@ export const Home: React.FC = () => {
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
                                   <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                                     alt="Your Rating Star" 
                                     className="home__carousel-rating-icon add-rate" 
+                                    loading="eager"
+                                    onError={(e) => {
+                                      console.error('Failed to load star icon:', e);
+                                    }}
                                   />
                                   <span className="home__carousel-rating-value">
                                     {getUserRating(vehicle.name)}
@@ -1988,32 +2032,27 @@ export const Home: React.FC = () => {
                           <h2 className="home__carousel-name">{vehicle.name}</h2>
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
-                              <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Expert</span>
-                                <span className="home__carousel-rating-label-bottom">Rating</span>
+                              <div className="home__carousel-rating-score-large">
+                                {vehicle.staffRating.toFixed(1)}
+                                <span className="home__carousel-rating-score-max">/10</span>
                               </div>
-                              <div className="home__carousel-rating-value-wrapper">
-                                <span className="home__carousel-rating-value">
-                                  {Math.round(vehicle.staffRating * 10)}
-                                </span>
+                              <div className="home__carousel-rating-label-row">
+                                <img 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                  alt="MotorTrend" 
+                                  className="home__carousel-rating-mt-badge" 
+                                  loading="eager"
+                                  onError={(e) => {
+                                    console.error('Failed to load MT rating icon:', e);
+                                  }}
+                                />
+                                <span className="home__carousel-rating-motortrend-text">MotorTrend Rating</span>
                               </div>
                             </div>
-                            <div className="home__carousel-rating-item">
-                              <div className="home__carousel-rating-label-wrapper">
-                                <span className="home__carousel-rating-label-top">Community</span>
-                                <span className="home__carousel-rating-label-bottom">
-                                  Rating <span className="home__carousel-rating-count">(25)</span>
-                                </span>
-                              </div>
-                              <div className="home__carousel-rating-value-wrapper">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                                  alt="Community Rating Star" 
-                                  className="home__carousel-rating-icon community" 
-                                />
-                                <span className="home__carousel-rating-value">
-                                  {Math.round(vehicle.communityRating * 10)}
-                                </span>
+                            <div className="home__carousel-rating-item home__carousel-rating-item--community">
+                              {renderStarRating(vehicle.communityRating)}
+                              <div className="home__carousel-rating-text">
+                                User Reviews <span className="home__carousel-rating-highlight">({(vehicle.communityRating / 2).toFixed(1)}/5)</span>
                               </div>
                             </div>
                             {getUserRating(vehicle.name) > 0 && (
@@ -2024,9 +2063,13 @@ export const Home: React.FC = () => {
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
                                   <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                                     alt="Your Rating Star" 
                                     className="home__carousel-rating-icon add-rate" 
+                                    loading="eager"
+                                    onError={(e) => {
+                                      console.error('Failed to load star icon:', e);
+                                    }}
                                   />
                                   <span className="home__carousel-rating-value">
                                     {getUserRating(vehicle.name)}
@@ -2223,12 +2266,12 @@ export const Home: React.FC = () => {
                 <div className="home__fullscreen-ratings">
                   <div className="home__fullscreen-rating-item">
                     <div className="home__fullscreen-rating-label-wrapper">
-                      <span className="home__fullscreen-rating-label-top">Expert</span>
+                      <span className="home__fullscreen-rating-label-top">MotorTrend</span>
                       <span className="home__fullscreen-rating-label-bottom">Rating</span>
                     </div>
                     <div className="home__fullscreen-rating-value-wrapper">
                       <span className="home__fullscreen-rating-value">
-                        {Math.round(fullscreenVehicle.staffRating * 10)}
+                        {fullscreenVehicle.staffRating.toFixed(1)}
                       </span>
                     </div>
                   </div>
@@ -2241,12 +2284,12 @@ export const Home: React.FC = () => {
                     </div>
                     <div className="home__fullscreen-rating-value-wrapper">
                       <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                         alt="Community Rating Star" 
                         className="home__fullscreen-rating-icon community" 
                       />
                       <span className="home__fullscreen-rating-value">
-                        {Math.round(fullscreenVehicle.communityRating * 10)}
+                        {(fullscreenVehicle.communityRating / 2) % 1 === 0 ? fullscreenVehicle.communityRating / 2 : (fullscreenVehicle.communityRating / 2).toFixed(1)}
                       </span>
                     </div>
                   </div>
@@ -2258,7 +2301,7 @@ export const Home: React.FC = () => {
                       </div>
                       <div className="home__fullscreen-rating-value-wrapper">
                         <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" 
                           alt="Your Rating Star" 
                           className="home__fullscreen-rating-icon add-rate" 
                         />
@@ -2344,4 +2387,6 @@ export const Home: React.FC = () => {
 };
 
 export default Home;
+
+
 

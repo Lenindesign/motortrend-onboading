@@ -26,7 +26,7 @@ export const SavedModal: React.FC<SavedModalProps> = ({
 
   const handleViewSavedItems = () => {
     onClose();
-    navigate('/profile?tab=saved-items');
+    navigate('/my-account/saved-items');
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {

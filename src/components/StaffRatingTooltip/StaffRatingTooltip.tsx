@@ -59,6 +59,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     };
   }, [isVisible, triggerRef]);
 
+  console.log('StaffRatingTooltip render:', { isVisible, overallRating, hasScores: !!scores });
   if (!isVisible) return null;
 
   // Category labels mapping
@@ -88,7 +89,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
               style={{ width: `${percentage}%` }}
             />
           </div>
-          <div className="staff-rating-tooltip__score">{Math.round(score * 10)}</div>
+          <div className="staff-rating-tooltip__score">{score.toFixed(1)}</div>
         </div>
       );
     }
@@ -103,14 +104,14 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
         top: position.top,
         left: position.left,
         transform: 'translateX(-50%)',
-        zIndex: 99999
+        zIndex: 999999
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div className="staff-rating-tooltip__header">
         <div className="staff-rating-tooltip__title">MotorTrend</div>
-        <div className="staff-rating-tooltip__total">{typeof overallRating === 'number' ? Math.round(overallRating * 10) : overallRating}/100</div>
+        <div className="staff-rating-tooltip__total">{typeof overallRating === 'number' ? overallRating.toFixed(1) : overallRating}/10</div>
       </div>
       <div className="staff-rating-tooltip__content">
         {ratingBars}

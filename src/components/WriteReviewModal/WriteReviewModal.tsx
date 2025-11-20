@@ -60,8 +60,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   
   // Category ratings
   const [categoryRatings, setCategoryRatings] = useState({
-    reliability: 0,
     driverExperience: 0,
+    reliability: 0,
     budgetFriendly: 0,
     manufacturerWarranty: 0
   });
@@ -90,10 +90,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         setVinNumber(existingReview.vinNumber || '');
         if (existingReview.categoryRatings) {
           setCategoryRatings({
+            driverExperience: existingReview.categoryRatings.driverExperience || existingReview.categoryRatings.comfort || 0,
             reliability: existingReview.categoryRatings.reliability || 0,
-            driverExperience: existingReview.categoryRatings.driverExperience || 0,
-            budgetFriendly: existingReview.categoryRatings.budgetFriendly || 0,
-            manufacturerWarranty: existingReview.categoryRatings.manufacturerWarranty || 0
+            budgetFriendly: existingReview.categoryRatings.budgetFriendly || existingReview.categoryRatings.value || 0,
+            manufacturerWarranty: existingReview.categoryRatings.manufacturerWarranty || existingReview.categoryRatings.interior || 0
           });
         }
         // Keep existing media previews if available
@@ -144,8 +144,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         setReviewContent('');
         setVehicleModel('');
         setCategoryRatings({
-          reliability: 0,
           driverExperience: 0,
+          reliability: 0,
           budgetFriendly: 0,
           manufacturerWarranty: 0
         });
@@ -343,8 +343,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       }),
       mediaFiles: mediaFiles.length > 0 ? mediaFiles : undefined,
       categoryRatings: {
-        reliability: categoryRatings.reliability > 0 ? categoryRatings.reliability : undefined,
         driverExperience: categoryRatings.driverExperience > 0 ? categoryRatings.driverExperience : undefined,
+        reliability: categoryRatings.reliability > 0 ? categoryRatings.reliability : undefined,
         budgetFriendly: categoryRatings.budgetFriendly > 0 ? categoryRatings.budgetFriendly : undefined,
         manufacturerWarranty: categoryRatings.manufacturerWarranty > 0 ? categoryRatings.manufacturerWarranty : undefined
       },
@@ -383,8 +383,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     setVehicleModel('');
     setIsManualRating(false);
     setCategoryRatings({
-      reliability: 0,
       driverExperience: 0,
+      reliability: 0,
       budgetFriendly: 0,
       manufacturerWarranty: 0
     });
@@ -410,8 +410,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       setVehicleModel('');
       setIsManualRating(false);
       setCategoryRatings({
-        reliability: 0,
         driverExperience: 0,
+        reliability: 0,
         budgetFriendly: 0,
         manufacturerWarranty: 0
       });
@@ -480,8 +480,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     }}
                   />
                   <div className="write-review-modal__info-tooltip">
-                    1–10 Rating Guide<br />
-                    1–2: Poor · 3–4: Below average · 5–6: Average · 7–8: Good · 9–10: Excellent.<br /><br />
+                    1–5 Rating Guide<br />
+                    1: Poor · 2: Below average · 3: Average · 4: Good · 5: Excellent.<br /><br />
                     Overall ratings reflect factors like review recency, verified ownership, and trust signals — not just simple averages.<br /><br />
                     <Link to="/article/how-to-rate-vehicles" className="write-review-modal__tooltip-link" onClick={(e) => e.stopPropagation()}>
                       Read Our Rating Overview
@@ -530,28 +530,58 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             {/* Rating Section */}
             <div className="write-review-modal__rating-section">
               <div className="write-review-modal__rating-header">
-                <span className="write-review-modal__rating-label">Rate Your Experience (1-100)</span>
+                <span className="write-review-modal__rating-label">Rate Your Experience (1-5)</span>
                 <span className="write-review-modal__rating-value">
-                  {rating > 0 ? Math.round(rating * 10) : '?'}/100
+                  {rating > 0 ? (rating / 20).toFixed(1) : '?'}/5
                 </span>
               </div>
               <div className="write-review-modal__stars">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                  <button
-                    key={star}
-                    className={`write-review-modal__star ${star <= rating ? 'active' : ''}`}
-                    onClick={() => handleRatingClick(star)}
-                  >
-                    <img 
-                      src={star <= rating 
-                        ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                        : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                      }
-                      alt="Star" 
-                      className="write-review-modal__star-icon"
-                    />
-                  </button>
-                ))}
+                {Array.from({ length: 5 }, (_, index) => {
+                  const starPosition = index + 1;
+                  const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
+                  const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
+                  
+                  const isOddSelected = oddRating <= rating;
+                  const isEvenSelected = evenRating <= rating;
+                  const showHalfStar = isOddSelected && !isEvenSelected;
+                  const showFullStar = isEvenSelected;
+                  
+                  return (
+                    <div key={starPosition} className="write-review-modal__star-wrapper">
+                      <div className="write-review-modal__star-visual">
+                        {showHalfStar ? (
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                            alt={`${oddRating} star rating`}
+                            className="write-review-modal__star-icon"
+                          />
+                        ) : showFullStar ? (
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                            alt={`${evenRating} star rating`}
+                            className="write-review-modal__star-icon"
+                          />
+                        ) : (
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                            alt="Empty star"
+                            className="write-review-modal__star-icon"
+                          />
+                        )}
+                      </div>
+                      <button
+                        className={`write-review-modal__star-click write-review-modal__star-click--left ${isOddSelected ? 'active' : ''}`}
+                        onClick={() => handleRatingClick(oddRating)}
+                        aria-label={`Rate ${oddRating} out of 100`}
+                      />
+                      <button
+                        className={`write-review-modal__star-click write-review-modal__star-click--right ${isEvenSelected ? 'active' : ''}`}
+                        onClick={() => handleRatingClick(evenRating)}
+                        aria-label={`Rate ${evenRating} out of 100`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -645,6 +675,293 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   />
                 </div>
               )}
+            </div>
+
+            {/* Experience Rating Section */}
+            <div className="write-review-modal__experience-section">
+              <div className="write-review-modal__section-group-header">
+                <h3 className="write-review-modal__experience-title">
+                  Rate Your Experience
+                  <span className="write-review-modal__optional-badge">(Optional)</span>
+                </h3>
+                <p className="write-review-modal__experience-subtitle">Rate specific aspects of your experience with this vehicle</p>
+              </div>
+              
+              {/* Driver Experience */}
+              <div className="write-review-modal__category-card">
+                <div className="write-review-modal__category-header">
+                  <div className="write-review-modal__category-info">
+                    <h4 className="write-review-modal__category-title">Driver Experience</h4>
+                    <p className="write-review-modal__category-description">Handling, comfort, and overall driving feel</p>
+                  </div>
+                  <span className="write-review-modal__category-rating-value">
+                    {categoryRatings.driverExperience > 0 ? `${(categoryRatings.driverExperience / 20).toFixed(1)}/5` : '?/5'}
+                  </span>
+                </div>
+                <div className="write-review-modal__category-stars">
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const starPosition = index + 1;
+                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
+                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
+                    
+                    const isOddSelected = oddRating <= categoryRatings.driverExperience;
+                    const isEvenSelected = evenRating <= categoryRatings.driverExperience;
+                    const showHalfStar = isOddSelected && !isEvenSelected;
+                    const showFullStar = isEvenSelected;
+                    
+                    return (
+                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
+                        <div className="write-review-modal__category-star-visual">
+                          {showHalfStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                              alt={`${oddRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : showFullStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                              alt={`${evenRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                              alt="Empty star"
+                              className="write-review-modal__category-star-icon"
+                            />
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('driverExperience', oddRating);
+                          }}
+                          aria-label={`Rate ${oddRating} out of 100`}
+                        />
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('driverExperience', evenRating);
+                          }}
+                          aria-label={`Rate ${evenRating} out of 100`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Reliability */}
+              <div className="write-review-modal__category-card">
+                <div className="write-review-modal__category-header">
+                  <div className="write-review-modal__category-info">
+                    <h4 className="write-review-modal__category-title">Reliability</h4>
+                    <p className="write-review-modal__category-description">Performance over time, dependability</p>
+                  </div>
+                  <span className="write-review-modal__category-rating-value">
+                    {categoryRatings.reliability > 0 ? `${(categoryRatings.reliability / 20).toFixed(1)}/5` : '?/5'}
+                  </span>
+                </div>
+                <div className="write-review-modal__category-stars">
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const starPosition = index + 1;
+                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
+                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
+                    
+                    const isOddSelected = oddRating <= categoryRatings.reliability;
+                    const isEvenSelected = evenRating <= categoryRatings.reliability;
+                    const showHalfStar = isOddSelected && !isEvenSelected;
+                    const showFullStar = isEvenSelected;
+                    
+                    return (
+                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
+                        <div className="write-review-modal__category-star-visual">
+                          {showHalfStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                              alt={`${oddRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : showFullStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                              alt={`${evenRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                              alt="Empty star"
+                              className="write-review-modal__category-star-icon"
+                            />
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('reliability', oddRating);
+                          }}
+                          aria-label={`Rate ${oddRating} out of 100`}
+                        />
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('reliability', evenRating);
+                          }}
+                          aria-label={`Rate ${evenRating} out of 100`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Manufacturer Warranty */}
+              <div className="write-review-modal__category-card">
+                <div className="write-review-modal__category-header">
+                  <div className="write-review-modal__category-info">
+                    <h4 className="write-review-modal__category-title">Manufacturer Warranty</h4>
+                    <p className="write-review-modal__category-description">Coverage quality and support experience</p>
+                  </div>
+                  <span className="write-review-modal__category-rating-value">
+                    {categoryRatings.manufacturerWarranty > 0 ? `${(categoryRatings.manufacturerWarranty / 20).toFixed(1)}/5` : '?/5'}
+                  </span>
+                </div>
+                <div className="write-review-modal__category-stars">
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const starPosition = index + 1;
+                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
+                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
+                    
+                    const isOddSelected = oddRating <= categoryRatings.manufacturerWarranty;
+                    const isEvenSelected = evenRating <= categoryRatings.manufacturerWarranty;
+                    const showHalfStar = isOddSelected && !isEvenSelected;
+                    const showFullStar = isEvenSelected;
+                    
+                    return (
+                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
+                        <div className="write-review-modal__category-star-visual">
+                          {showHalfStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                              alt={`${oddRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : showFullStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                              alt={`${evenRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                              alt="Empty star"
+                              className="write-review-modal__category-star-icon"
+                            />
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('manufacturerWarranty', oddRating);
+                          }}
+                          aria-label={`Rate ${oddRating} out of 100`}
+                        />
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('manufacturerWarranty', evenRating);
+                          }}
+                          aria-label={`Rate ${evenRating} out of 100`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Budget Friendly */}
+              <div className="write-review-modal__category-card">
+                <div className="write-review-modal__category-header">
+                  <div className="write-review-modal__category-info">
+                    <h4 className="write-review-modal__category-title">Budget Friendly</h4>
+                    <p className="write-review-modal__category-description">Cost of ownership and overall value</p>
+                  </div>
+                  <span className="write-review-modal__category-rating-value">
+                    {categoryRatings.budgetFriendly > 0 ? `${(categoryRatings.budgetFriendly / 20).toFixed(1)}/5` : '?/5'}
+                  </span>
+                </div>
+                <div className="write-review-modal__category-stars">
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const starPosition = index + 1;
+                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
+                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
+                    
+                    const isOddSelected = oddRating <= categoryRatings.budgetFriendly;
+                    const isEvenSelected = evenRating <= categoryRatings.budgetFriendly;
+                    const showHalfStar = isOddSelected && !isEvenSelected;
+                    const showFullStar = isEvenSelected;
+                    
+                    return (
+                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
+                        <div className="write-review-modal__category-star-visual">
+                          {showHalfStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                              alt={`${oddRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : showFullStar ? (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                              alt={`${evenRating} star rating`}
+                              className="write-review-modal__category-star-icon"
+                            />
+                          ) : (
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                              alt="Empty star"
+                              className="write-review-modal__category-star-icon"
+                            />
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('budgetFriendly', oddRating);
+                          }}
+                          aria-label={`Rate ${oddRating} out of 100`}
+                        />
+                        <button
+                          type="button"
+                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCategoryRatingClick('budgetFriendly', evenRating);
+                          }}
+                          aria-label={`Rate ${evenRating} out of 100`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
 
             {/* Optional Information Section */}
@@ -748,157 +1065,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     <path d="M12 8v4M12 16h.01"/>
                   </svg>
                   <span>Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Experience Rating Section */}
-            <div className="write-review-modal__experience-section">
-              <div className="write-review-modal__section-group-header">
-                <h3 className="write-review-modal__experience-title">
-                  Rate Your Experience
-                  <span className="write-review-modal__optional-badge">(Optional)</span>
-                </h3>
-                <p className="write-review-modal__experience-subtitle">Rate specific aspects of your experience with this vehicle</p>
-              </div>
-              
-              {/* Driver Experience */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Driver Experience</h4>
-                    <p className="write-review-modal__category-description">Handling, comfort, and overall driving feel</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.driverExperience > 0 ? `${categoryRatings.driverExperience}/10` : '?/10'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.driverExperience ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCategoryRatingClick('driverExperience', star);
-                      }}
-                    >
-                      <img 
-                        src={star <= categoryRatings.driverExperience 
-                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                        }
-                        alt="Star" 
-                        className="write-review-modal__category-star-icon"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Reliability */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Reliability</h4>
-                    <p className="write-review-modal__category-description">Performance over time, dependability</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.reliability > 0 ? `${categoryRatings.reliability}/10` : '?/10'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.reliability ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCategoryRatingClick('reliability', star);
-                      }}
-                    >
-                      <img 
-                        src={star <= categoryRatings.reliability 
-                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                        }
-                        alt="Star" 
-                        className="write-review-modal__category-star-icon"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Budget Friendly */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Budget Friendly</h4>
-                    <p className="write-review-modal__category-description">Cost of ownership and overall value</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.budgetFriendly > 0 ? `${categoryRatings.budgetFriendly}/10` : '?/10'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.budgetFriendly ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCategoryRatingClick('budgetFriendly', star);
-                      }}
-                    >
-                      <img 
-                        src={star <= categoryRatings.budgetFriendly 
-                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                        }
-                        alt="Star" 
-                        className="write-review-modal__category-star-icon"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Manufacturer Warranty */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Manufacturer Warranty</h4>
-                    <p className="write-review-modal__category-description">Coverage quality and support experience</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.manufacturerWarranty > 0 ? `${categoryRatings.manufacturerWarranty}/10` : '?/10'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      className={`write-review-modal__category-star ${star <= categoryRatings.manufacturerWarranty ? 'active' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCategoryRatingClick('manufacturerWarranty', star);
-                      }}
-                    >
-                      <img 
-                        src={star <= categoryRatings.manufacturerWarranty 
-                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                        }
-                        alt="Star" 
-                        className="write-review-modal__category-star-icon"
-                      />
-                    </button>
-                  ))}
                 </div>
               </div>
             </div>

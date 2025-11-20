@@ -24,6 +24,7 @@ import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleLi
 import { articles } from '../../utils/articles';
 import { ArticleReactions } from '../../components/ArticleReactions';
 import { PhotoGallery } from '../../components/PhotoGallery';
+import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -38,32 +39,35 @@ export const VehicleDetails: React.FC = () => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
+  const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
-  const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
-  const communityRatingRef = useRef<HTMLDivElement>(null);
-  const staffRatingRef = useRef<HTMLDivElement>(null);
   const hideTooltipTimeout = useRef<number | null>(null);
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
+  const communityRatingRef = useRef<HTMLDivElement>(null);
+  const staffRatingRef = useRef<HTMLDivElement>(null);
   const primeHeroRef = useRef<HTMLDivElement>(null);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+  const [isStickyBarSticky, setIsStickyBarSticky] = useState(false);
+  const [stickyBarHeight, setStickyBarHeight] = useState(0);
+  const stickyRateBarRef = useRef<HTMLDivElement>(null);
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  
+
   // Parse vehicle name from URL params
   // Normalize: replace dashes with spaces in model to ensure consistent format
   // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
-  
+
   // Check if this is a Prime template vehicle
   const isPrimeTemplate = (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') ||
-                          (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') ||
-                          (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') ||
-                          (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1');
-  
+    (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') ||
+    (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') ||
+    (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1');
+
   // Display name for prime template
   const displayName = (() => {
     if (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') {
@@ -80,7 +84,7 @@ export const VehicleDetails: React.FC = () => {
     }
     return vehicleName;
   })();
-  
+
   // Get images from article for gallery
   const galleryImages = useMemo(() => {
     // Find matching article
@@ -88,10 +92,10 @@ export const VehicleDetails: React.FC = () => {
       if (article.motortrendScore?.vehicleName) {
         const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
         const currentVehicleName = vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
-        
-        if (articleVehicleName === currentVehicleName || 
-            articleVehicleName.includes(currentVehicleName) || 
-            currentVehicleName.includes(articleVehicleName)) {
+
+        if (articleVehicleName === currentVehicleName ||
+          articleVehicleName.includes(currentVehicleName) ||
+          currentVehicleName.includes(articleVehicleName)) {
           return article.images || [];
         }
       }
@@ -99,7 +103,7 @@ export const VehicleDetails: React.FC = () => {
     // Fallback to hero image if no article found
     return [vehicleImageFor(vehicleName)];
   }, [vehicleName]);
-  
+
   const getInitialReviews = (): ReviewData[] => {
     // First, load any user-submitted reviews from localStorage
     try {
@@ -120,10 +124,10 @@ export const VehicleDetails: React.FC = () => {
     } catch (error) {
       console.error('VehicleDetails: Error loading saved reviews from localStorage:', error);
     }
-    
+
     // Generate reviews for all vehicles using the utility function
     return generateUserReviews(vehicleName);
-    
+
     // Keep the original hardcoded reviews for reference (commented out)
     /*
     if (is2021SubaruWRX) {
@@ -434,54 +438,15 @@ export const VehicleDetails: React.FC = () => {
     ];
     */
   };
-  
+
   const [reviews, setReviews] = useState<ReviewData[]>(getInitialReviews());
   const { getUserRating, setUserRating, clearRating } = useRating();
   const userRating = getUserRating(vehicleName);
 
-  // Check if user owns the car (from "Cars I Own" list)
-  const ownsCar = useMemo(() => {
-    // Only show icon if user has a rating
-    if (userRating === 0) {
-      return false;
-    }
-    
-    try {
-      // Check if vehicle is in "Cars I Own" list
-      const onboardingData = localStorage.getItem('onboardingData');
-      if (!onboardingData || onboardingData === '{}' || onboardingData.trim() === '') {
-        return false;
-      }
-      
-      const data = JSON.parse(onboardingData);
-      
-      // Verify data structure is valid
-      if (!data || typeof data !== 'object' || !data.vehicles || !Array.isArray(data.vehicles)) {
-        return false;
-      }
-      
-      const ownedVehicles = data.vehicles.filter(
-        (v: { name: string; ownership: string }) => 
-          v && v.ownership === 'own' && v.name && typeof v.name === 'string'
-      );
-      
-      // Check if exact vehicle name matches
-      const ownsVehicle = ownedVehicles.some((v: { name: string }) => 
-        v.name && v.name.trim() === vehicleName.trim()
-      );
-      
-      // Only return true if we have a definitive match
-      return ownsVehicle === true;
-    } catch (error) {
-      console.error('Error checking vehicle ownership:', error);
-      return false;
-    }
-  }, [vehicleName, userRating]);
-
 
   // Generate comprehensive review data for all vehicles
   const reviewData = generateVehicleReview(decodedYear, decodedMake, decodedModel, vehicleName);
-  
+
   // Check if there's an article with a motortrendScore for this vehicle
   const articleStaffRating = useMemo(() => {
     // Check all articles for a motortrendScore matching this vehicle
@@ -490,19 +455,82 @@ export const VehicleDetails: React.FC = () => {
         // Normalize vehicle names for comparison (handle variations like "GTI / R" vs "GTI/R")
         const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
         const currentVehicleName = vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
-        
+
         // Check if vehicle names match (exact match or contains match)
-        if (articleVehicleName === currentVehicleName || 
-            articleVehicleName.includes(currentVehicleName) || 
-            currentVehicleName.includes(articleVehicleName)) {
+        if (articleVehicleName === currentVehicleName ||
+          articleVehicleName.includes(currentVehicleName) ||
+          currentVehicleName.includes(articleVehicleName)) {
           return article.motortrendScore.overallRating;
         }
       }
     }
     return null;
   }, [vehicleName]);
-  
-  // Mock data - in production this would come from an API
+
+  // Helper to format scores (ensures 0-10 scale)
+  const formatScore = (score: number | undefined) => {
+    if (score === undefined) return '0.0';
+    // If score is > 10, assume it's on 0-100 scale and normalize to 0-10
+    const normalized = score > 10 ? score / 10 : score;
+    return normalized.toFixed(1);
+  };
+
+  // Tooltip handlers for community rating
+  const handleTooltipMouseEnter = () => {
+    console.log('Community tooltip mouse enter');
+    if (hideTooltipTimeout.current) {
+      clearTimeout(hideTooltipTimeout.current);
+      hideTooltipTimeout.current = null;
+    }
+    setIsTooltipVisible(true);
+  };
+
+  const handleTooltipMouseLeave = () => {
+    console.log('Community tooltip mouse leave');
+    hideTooltipTimeout.current = window.setTimeout(() => {
+      setIsTooltipVisible(false);
+    }, 100);
+  };
+
+  // Tooltip handlers for staff rating
+  const handleStaffTooltipMouseEnter = () => {
+    console.log('Staff tooltip mouse enter');
+    if (hideStaffTooltipTimeout.current) {
+      clearTimeout(hideStaffTooltipTimeout.current);
+      hideStaffTooltipTimeout.current = null;
+    }
+    setIsStaffTooltipVisible(true);
+  };
+
+  const handleStaffTooltipMouseLeave = () => {
+    console.log('Staff tooltip mouse leave');
+    hideStaffTooltipTimeout.current = window.setTimeout(() => {
+      setIsStaffTooltipVisible(false);
+    }, 100);
+  };
+
+  // Generate rating distribution based on community rating (0-10 scale converted to 1-5)
+  const generateRatingDistribution = (avgRating: number): RatingDistributionData => {
+    const distribution: RatingDistributionData = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 };
+    const rating5Scale = Math.round(avgRating / 2); // Convert 0-10 to 1-5
+    
+    // Create a bell curve distribution centered around the average rating
+    for (let i = 1; i <= 5; i++) {
+      const distance = Math.abs(i - rating5Scale);
+      if (distance === 0) {
+        distribution[i] = 45; // Peak at average
+      } else if (distance === 1) {
+        distribution[i] = 25; // Adjacent ratings
+      } else if (distance === 2) {
+        distribution[i] = 10; // Two away
+      } else {
+        distribution[i] = 5; // Far away
+      }
+    }
+    
+    return distribution;
+  };
+
   const vehicleData = {
     name: vehicleName,
     year: decodedYear,
@@ -519,27 +547,27 @@ export const VehicleDetails: React.FC = () => {
       const normalizedMake = decodedMake.toLowerCase();
       const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
       const isKiaEV9 = (normalizedMake === 'kia' && normalizedModel.includes('ev9')) ||
-                      normalizedVehicleName.includes('kia ev9') ||
-                      normalizedModel === 'ev9' ||
-                      normalizedModel === 'ev9 land' ||
-                      decodedModel.toLowerCase() === 'ev9-land';
-      
+        normalizedVehicleName.includes('kia ev9') ||
+        normalizedModel === 'ev9' ||
+        normalizedModel === 'ev9 land' ||
+        decodedModel.toLowerCase() === 'ev9-land';
+
       if (isKiaEV9) {
         return 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg';
       }
-      
+
       // Use specific image for 2025 Ford F-150 Lightning
-      const isF150Lightning = (normalizedMake === 'ford' && 
-                              (normalizedModel.includes('f 150 lightning') || 
-                               normalizedModel.includes('f-150 lightning') ||
-                               normalizedModel.includes('f-150-lightning'))) ||
-                              normalizedVehicleName.includes('ford f 150 lightning') ||
-                              normalizedVehicleName.includes('ford f-150 lightning');
-      
+      const isF150Lightning = (normalizedMake === 'ford' &&
+        (normalizedModel.includes('f 150 lightning') ||
+          normalizedModel.includes('f-150 lightning') ||
+          normalizedModel.includes('f-150-lightning'))) ||
+        normalizedVehicleName.includes('ford f 150 lightning') ||
+        normalizedVehicleName.includes('ford f-150 lightning');
+
       if (isF150Lightning && decodedYear === '2025') {
         return 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg';
       }
-      
+
       return vehicleImageFor(vehicleName);
     })(),
     pros: reviewData.pros,
@@ -551,7 +579,8 @@ export const VehicleDetails: React.FC = () => {
       content: reviewData.content,
       detailedSections: reviewData.detailedSections
     },
-    ratingDistribution: {
+    ratingDistribution: generateRatingDistribution(generateCommunityRating(vehicleName)),
+    oldDistribution: {
       1: 2,
       2: 1,
       3: 3,
@@ -619,7 +648,7 @@ export const VehicleDetails: React.FC = () => {
         setIsLoadingListings(false);
       }
     };
-    
+
     loadListings();
   }, [decodedYear, decodedMake, decodedModel]);
 
@@ -627,14 +656,14 @@ export const VehicleDetails: React.FC = () => {
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       const data = onboardingData ? JSON.parse(onboardingData) : {};
-      
+
       if (!data.vehicles || !Array.isArray(data.vehicles)) {
         data.vehicles = [];
       }
 
       // Normalize vehicle name (trim and ensure consistent format)
       const normalizedVehicleName = vehicleName.trim();
-      
+
       const existingVehicleIndex = data.vehicles.findIndex(
         (v: { name: string }) => v && v.name && v.name.trim().toLowerCase() === normalizedVehicleName.toLowerCase()
       );
@@ -649,7 +678,7 @@ export const VehicleDetails: React.FC = () => {
         const isDuplicate = data.vehicles.some(
           (v: { name: string }) => v && v.name && v.name.trim().toLowerCase() === normalizedVehicleName.toLowerCase()
         );
-        
+
         if (!isDuplicate) {
           data.vehicles.push({
             name: normalizedVehicleName,
@@ -662,10 +691,10 @@ export const VehicleDetails: React.FC = () => {
       }
 
       localStorage.setItem('onboardingData', JSON.stringify(data));
-      
+
       // Dispatch event to notify other components (like Profile page)
       // Use CustomEvent to ensure proper event handling
-      window.dispatchEvent(new CustomEvent('onboardingDataUpdated', { 
+      window.dispatchEvent(new CustomEvent('onboardingDataUpdated', {
         detail: { vehicles: data.vehicles }
       }));
     } catch (error) {
@@ -711,33 +740,33 @@ export const VehicleDetails: React.FC = () => {
       ...newReview,
       mediaPreviews: newReview.mediaFiles?.map((file: File) => URL.createObjectURL(file)) || []
     };
-    
+
     // Update local state
     setReviews(prev => [reviewWithPreviews, ...prev]);
     setCommunityRatingCount(prev => prev + 1);
-    
+
     // Save review to localStorage so it persists across page reloads
     try {
       const savedReviewsKey = `vehicleReviews_${vehicleName}`;
       const existingReviewsJson = localStorage.getItem(savedReviewsKey);
       const existingReviews: ReviewData[] = existingReviewsJson ? JSON.parse(existingReviewsJson) : [];
-      
+
       // Add the new review at the beginning
       const updatedReviews = [reviewWithPreviews, ...existingReviews];
-      
+
       // Save to localStorage (convert File objects to strings for storage)
       const reviewsToSave = updatedReviews.map(review => ({
         ...review,
         mediaFiles: undefined, // Remove File objects as they can't be serialized
         mediaPreviews: review.mediaPreviews || [] // Keep preview URLs
       }));
-      
+
       localStorage.setItem(savedReviewsKey, JSON.stringify(reviewsToSave));
       console.log('VehicleDetails: Saved review to localStorage for:', vehicleName);
     } catch (error) {
       console.error('VehicleDetails: Error saving review to localStorage:', error);
     }
-    
+
     setIsWriteReviewModalOpen(false);
     // Show toast notification
     setIsToastVisible(true);
@@ -747,7 +776,7 @@ export const VehicleDetails: React.FC = () => {
     // Scroll to reviews section
     const reviewsSection = document.getElementById('community-ratings');
     if (reviewsSection) {
-      reviewsSection.scrollIntoView({ 
+      reviewsSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
@@ -765,8 +794,8 @@ export const VehicleDetails: React.FC = () => {
       ...updatedReview,
       mediaPreviews: updatedReview.mediaFiles?.map((file: File) => URL.createObjectURL(file)) || updatedReview.mediaPreviews || []
     };
-    
-    setReviews(prev => prev.map(review => 
+
+    setReviews(prev => prev.map(review =>
       review.id === reviewId ? reviewWithPreviews : review
     ));
     setIsWriteReviewModalOpen(false);
@@ -775,7 +804,7 @@ export const VehicleDetails: React.FC = () => {
   const handleScrollToCommunityRatings = () => {
     const communityRatingsSection = document.getElementById('community-ratings');
     if (communityRatingsSection) {
-      communityRatingsSection.scrollIntoView({ 
+      communityRatingsSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
@@ -785,48 +814,14 @@ export const VehicleDetails: React.FC = () => {
   const handleScrollToStaffRating = () => {
     const staffRatingSection = document.getElementById('staff-rating');
     if (staffRatingSection) {
-      staffRatingSection.scrollIntoView({ 
+      staffRatingSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
     }
   };
 
-  const handleTooltipMouseEnter = () => {
-    if (hideTooltipTimeout.current !== null) {
-      window.clearTimeout(hideTooltipTimeout.current);
-      hideTooltipTimeout.current = null;
-    }
-    setIsTooltipVisible(true);
-  };
 
-  const handleTooltipMouseLeave = () => {
-    if (hideTooltipTimeout.current !== null) {
-      window.clearTimeout(hideTooltipTimeout.current);
-    }
-    hideTooltipTimeout.current = window.setTimeout(() => {
-      setIsTooltipVisible(false);
-      hideTooltipTimeout.current = null;
-    }, 150);
-  };
-
-  const handleStaffTooltipMouseEnter = () => {
-    if (hideStaffTooltipTimeout.current !== null) {
-      window.clearTimeout(hideStaffTooltipTimeout.current);
-      hideStaffTooltipTimeout.current = null;
-    }
-    setIsStaffTooltipVisible(true);
-  };
-
-  const handleStaffTooltipMouseLeave = () => {
-    if (hideStaffTooltipTimeout.current !== null) {
-      window.clearTimeout(hideStaffTooltipTimeout.current);
-    }
-    hideStaffTooltipTimeout.current = window.setTimeout(() => {
-      setIsStaffTooltipVisible(false);
-      hideStaffTooltipTimeout.current = null;
-    }, 150);
-  };
 
   useEffect(() => {
     return () => {
@@ -839,20 +834,54 @@ export const VehicleDetails: React.FC = () => {
     };
   }, []);
 
+  // Measure sticky bar height on mount and when it changes
+  useEffect(() => {
+    if (!stickyRateBarRef.current) return;
+
+    const measureBarHeight = () => {
+      if (stickyRateBarRef.current) {
+        // Get the computed height including margins
+        const rect = stickyRateBarRef.current.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(stickyRateBarRef.current);
+        const marginBottom = parseFloat(computedStyle.marginBottom) || 0;
+        const totalHeight = rect.height + marginBottom;
+
+        if (totalHeight > 0) {
+          setStickyBarHeight(totalHeight);
+        }
+      }
+    };
+
+    // Measure on mount with a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(measureBarHeight, 0);
+
+    // Also measure on resize
+    window.addEventListener('resize', measureBarHeight);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', measureBarHeight);
+    };
+  }, []);
+
   // Scroll detection for sticky rate bar
   useEffect(() => {
     const handleScroll = () => {
-      // For prime template, use the hero ref; for regular template, use the ratings bar ref
-      const scrollRef = isPrimeTemplate ? primeHeroRef.current : ratingsBarRef.current;
-      
-      if (!scrollRef) return;
+      if (!stickyRateBarRef.current) return;
 
-      const scrollRefRect = scrollRef.getBoundingClientRect();
-      
-      // When the reference element reaches or passes the top of the viewport
-      if (scrollRefRect.top <= 0) {
+      const scrollY = window.scrollY || window.pageYOffset;
+
+      // Get header element to calculate its actual height
+      const header = document.querySelector('.global-header');
+      const headerHeight = header ? header.getBoundingClientRect().height : 56;
+
+      // When user scrolls past where the static bar would be (header height), switch to sticky mode
+      if (scrollY >= headerHeight) {
+        setIsStickyBarSticky(true);
         setIsStickyBarVisible(true);
       } else {
+        // When scrolled back to top, switch back to static mode
+        setIsStickyBarSticky(false);
         setIsStickyBarVisible(false);
       }
     };
@@ -863,94 +892,73 @@ export const VehicleDetails: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [isPrimeTemplate]);
+  }, []);
 
   // Both tooltips now follow their elements on scroll (no hide on scroll)
 
   const availableYears = ['2025', '2024', '2023', '2022', '2021'];
 
+  // Prepare ratings for StickyRateBar component
+  const stickyRatings: RatingItem[] = [
+    {
+      type: 'motortrend',
+      value: parseFloat(formatScore(vehicleData.staffRating)), // Pass as number 0-10
+      onClick: handleScrollToStaffRating,
+      iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg',
+      iconAlt: 'MT',
+      format: 'vehicle-details'
+    },
+    {
+      type: 'user-reviews',
+      value: vehicleData.communityRating, // 0-10 scale
+      onClick: handleScrollToCommunityRatings,
+      label: 'User Reviews',
+      showStars: true,
+      showHalfStars: true
+    },
+    {
+      type: 'your-rating',
+      value: userRating, // 0-100 scale
+      onClick: handleOpenRatingModal,
+      showStars: true,
+      showHalfStars: true
+    }
+  ];
+
   return (
     <div className="vehicle-details">
-      {/* Sticky Rate Bar - appears when scrolled */}
-      <div className={`vehicle-details__sticky-rate-bar ${isStickyBarVisible ? 'vehicle-details__sticky-rate-bar--visible' : ''}`}>
-        <div className="vehicle-details__sticky-rate-bar-content">
-          <div className="vehicle-details__sticky-vehicle-name">
-            {displayName}
-          </div>
-          <div className="vehicle-details__sticky-ratings">
-            <div 
-              className="vehicle-details__sticky-rating-item" 
-              onClick={handleScrollToStaffRating}
-            >
-              <div className="vehicle-details__sticky-rating-label-wrapper">
-                <span className="vehicle-details__sticky-rating-label-top">Expert</span>
-                <span className="vehicle-details__sticky-rating-label-bottom">Rating</span>
-              </div>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                alt="MotorTrend" 
-                className="vehicle-details__sticky-rating-icon" 
-              />
-              <span className="vehicle-details__sticky-rating-value">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
-            </div>
-            <div 
-              className="vehicle-details__sticky-rating-item" 
-              onClick={handleScrollToCommunityRatings}
-            >
-              <div className="vehicle-details__sticky-rating-label-wrapper">
-                <span className="vehicle-details__sticky-rating-label-top">Community</span>
-                <span className="vehicle-details__sticky-rating-label-bottom">Rating ({communityRatingCount})</span>
-              </div>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                alt="Community Rating Star" 
-                className="vehicle-details__sticky-rating-icon" 
-              />
-              <span className="vehicle-details__sticky-rating-value">
-                {Math.round(vehicleData.communityRating * 10)}
-              </span>
-            </div>
-            <button 
-              className="vehicle-details__sticky-rating-item vehicle-details__sticky-rate-btn" 
-              onClick={handleOpenRatingModal}
-            >
-              <div className="vehicle-details__sticky-rating-label-wrapper">
-                <span className="vehicle-details__sticky-rating-label-top">Rate</span>
-                <span className="vehicle-details__sticky-rating-label-bottom">This Car</span>
-              </div>
-              <img 
-                src={userRating > 0 
-                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                  : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                } 
-                alt="Add Rating Star" 
-                className="vehicle-details__sticky-rating-icon" 
-              />
-              {userRating > 0 && (
-                <span className="vehicle-details__sticky-rating-value">{userRating}</span>
-              )}
-            </button>
-          </div>
-          <button 
-            className="vehicle-details__sticky-cta"
-            onClick={() => {
-              // Scroll to local listings section
-              const listingsSection = document.querySelector('.vehicle-details__listings');
-              if (listingsSection) {
-                listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }}
-          >
-            See Local Listings
-          </button>
-        </div>
-      </div>
+      {/* Sticky Rate Bar - appears below header on load, becomes sticky when scrolling */}
+      <StickyRateBar
+        vehicleName={displayName}
+        ratings={stickyRatings}
+        ctaText="Local Listings"
+        ctaOnClick={() => {
+          const listingsSection = document.querySelector('.vehicle-details__listings');
+          if (listingsSection) {
+            listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }}
+        isVisible={isStickyBarVisible || !isStickyBarSticky}
+        isSticky={isStickyBarSticky}
+        barRef={stickyRateBarRef}
+        staffRatingScores={vehicleData.scores}
+        ratingDistribution={vehicleData.ratingDistribution}
+        totalReviews={vehicleData.communityRatingCount}
+      />
+      {/* Spacer to prevent content jump when bar becomes sticky */}
+      <div
+        style={{
+          height: isStickyBarSticky && stickyBarHeight > 0 ? `${stickyBarHeight}px` : '0px',
+          transition: 'height 0s'
+        }}
+        aria-hidden="true"
+      />
 
       {/* Prime Template: Full-width hero with score overlay */}
       {isPrimeTemplate && (
         <>
           <div ref={primeHeroRef} className="vehicle-details__prime-hero">
-            <div 
+            <div
               className="vehicle-details__prime-hero-image"
               onClick={() => setIsGalleryOpen(true)}
               style={{ cursor: 'pointer' }}
@@ -966,7 +974,7 @@ export const VehicleDetails: React.FC = () => {
             >
               <img src={vehicleData.image} alt={vehicleName} />
             </div>
-            
+
             {/* Top Section Overlay (Breadcrumbs + Actions) */}
             <div className="vehicle-details__prime-top-overlay">
               <div className="vehicle-details__breadcrumbs">
@@ -981,19 +989,19 @@ export const VehicleDetails: React.FC = () => {
                 <span>{vehicleData.year}</span>
               </div>
               <div className="vehicle-details__top-actions">
-                <button 
+                <button
                   className="vehicle-details__rate-star-btn"
                   onClick={handleOpenRatingModal}
                   aria-label="Rate This Car"
                 >
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg" 
-                    alt="Rate" 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                    alt="Rate"
                     className="vehicle-details__rate-star-icon"
                   />
                   <span className="vehicle-details__rate-star-tooltip">Rate This Car</span>
                 </button>
-                <ArticleReactions 
+                <ArticleReactions
                   articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
                   vehicleName={vehicleName}
                   showTooltipsBelow={true}
@@ -1004,39 +1012,39 @@ export const VehicleDetails: React.FC = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* Score Overlay (Listicle Style) */}
             <div className="vehicle-details__prime-score-overlay">
               <span className="vehicle-details__prime-vehicle-name">{displayName}</span>
               <div className="vehicle-details__prime-ratings-list">
                 <div className="vehicle-details__prime-rating-item">
                   <div className="vehicle-details__prime-rating-label-wrapper">
-                    <span className="vehicle-details__prime-rating-label-top">Expert</span>
+                    <span className="vehicle-details__prime-rating-label-top">MotorTrend</span>
                     <span className="vehicle-details__prime-rating-label-bottom">Rating</span>
                   </div>
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                    alt="MotorTrend" 
-                    className="vehicle-details__prime-rating-icon" 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde55c063170002980a16/group1318348068.svg"
+                    alt="MotorTrend"
+                    className="vehicle-details__prime-rating-icon"
                   />
-                  <span className="vehicle-details__prime-rating-value">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
+                  <span className="vehicle-details__prime-rating-value">{formatScore(vehicleData.staffRating)}</span>
                 </div>
                 <div className="vehicle-details__prime-rating-item vehicle-details__prime-rating-item--community">
                   <div className="vehicle-details__prime-rating-label-wrapper">
-                    <span className="vehicle-details__prime-rating-label-top">Community</span>
-                    <span className="vehicle-details__prime-rating-label-bottom">Rating ({communityRatingCount})</span>
+                    <span className="vehicle-details__prime-rating-label-top">Rating</span>
+                    <span className="vehicle-details__prime-rating-label-bottom">Reviews</span>
                   </div>
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                    alt="Community Rating Star" 
-                    className="vehicle-details__prime-rating-icon" 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                    alt="Community Rating Star"
+                    className="vehicle-details__prime-rating-icon"
                   />
                   <span className="vehicle-details__prime-rating-value">
-                    {Math.round(vehicleData.communityRating * 10)}
+                    {(vehicleData.communityRating).toFixed(1)}
                   </span>
                 </div>
               </div>
-              <button 
+              <button
                 className="vehicle-details__prime-cta"
                 onClick={() => {
                   const listingsSection = document.querySelector('.vehicle-details__listings');
@@ -1073,29 +1081,25 @@ export const VehicleDetails: React.FC = () => {
               </div>
               <div className="vehicle-details__top-actions">
                 <button className="vehicle-details__social-btn">
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg" 
-                    alt="Facebook" 
-                    width={30} 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg"
+                    alt="Facebook"
+                    width={30}
                     height={30}
                   />
                 </button>
                 <button className="vehicle-details__social-btn">
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg" 
-                    alt="X" 
-                    width={30} 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg"
+                    alt="X"
+                    width={30}
                     height={30}
                   />
                 </button>
-                <ArticleReactions 
+                <ArticleReactions
                   articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
                   vehicleName={vehicleName}
                 />
-                <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
-                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
-                  <span>{isSaved ? 'Saved!' : 'Save'}</span>
-                </button>
               </div>
             </div>
           )}
@@ -1126,10 +1130,10 @@ export const VehicleDetails: React.FC = () => {
                   </button>
                 </div>
                 <div className="vehicle-details__award">
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg" 
-                    alt="Trophy" 
-                    width={20} 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg"
+                    alt="Trophy"
+                    width={20}
                     height={20}
                   />
                   <span>{vehicleData.award}</span>
@@ -1140,89 +1144,131 @@ export const VehicleDetails: React.FC = () => {
 
           {/* Ratings Section (hidden for prime template since ratings show on hero) */}
           {!isPrimeTemplate && (
-            <div ref={ratingsBarRef} className="vehicle-details__ratings">
+            <div ref={ratingsBarRef} className="vehicle-details__rating-bar">
+              {/* 1. MotorTrend Rating */}
               <div 
                 ref={staffRatingRef}
-                className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
+                className="vehicle-details__rating-section vehicle-details__rating-section--motortrend" 
                 onClick={handleScrollToStaffRating}
                 onMouseEnter={handleStaffTooltipMouseEnter}
                 onMouseLeave={handleStaffTooltipMouseLeave}
               >
-                <div className="vehicle-details__rating-label-wrapper">
-                  <span className="vehicle-details__rating-label-top">Expert</span>
-                  <span className="vehicle-details__rating-label-bottom">Rating</span>
+                <div className="vehicle-details__rating-score-large">
+                  {formatScore(vehicleData.staffRating)}
+                  <span className="vehicle-details__rating-score-max">/10</span>
                 </div>
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                  alt="MotorTrend" 
-                  className="vehicle-details__rating-icon staff" 
-                />
-                <span className="vehicle-details__rating-value">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
-                <StaffRatingTooltip
-                  overallRating={vehicleData.staffRating}
-                  scores={vehicleData.scores}
-                  isVisible={isStaffTooltipVisible}
-                  triggerRef={staffRatingRef}
-                  onMouseEnter={handleStaffTooltipMouseEnter}
-                  onMouseLeave={handleStaffTooltipMouseLeave}
-                  onRequestClose={() => setIsStaffTooltipVisible(false)}
-                />
+                <div className="vehicle-details__rating-label-row">
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                    alt="MT"
+                    className="vehicle-details__rating-mt-logo"
+                  />
+                  <span>MotorTrend Rating</span>
+                </div>
               </div>
+
+              {/* 2. User Reviews */}
               <div 
                 ref={communityRatingRef}
-                className="vehicle-details__rating-item vehicle-details__rating-item--clickable vehicle-details__rating-item--with-tooltip" 
+                className="vehicle-details__rating-section vehicle-details__rating-section--community" 
                 onClick={handleScrollToCommunityRatings}
                 onMouseEnter={handleTooltipMouseEnter}
                 onMouseLeave={handleTooltipMouseLeave}
               >
-                <div className="vehicle-details__rating-label-wrapper">
-                  <span className="vehicle-details__rating-label-top">Community</span>
-                  <span className="vehicle-details__rating-label-bottom">Rating ({communityRatingCount})</span>
+                <div className="vehicle-details__rating-stars">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const userRatingValue = vehicleData.communityRating / 2;
+                    const isFilled = star < Math.ceil(userRatingValue);
+                    const isHalf = star === Math.ceil(userRatingValue) && userRatingValue % 1 !== 0;
+                    return (
+                      <div key={star} className={`vehicle-details__rating-star-wrapper ${isHalf ? 'vehicle-details__rating-star-wrapper--half' : ''}`}>
+                        {/* Outline star */}
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--outline">
+                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                            fill="none"
+                            stroke="#33C4FF"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        {/* Filled star (full or half) */}
+                        {isFilled && (
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--filled">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                              fill="#33C4FF"
+                            />
+                          </svg>
+                        )}
+                        {isHalf && (
+                          <div className="vehicle-details__rating-star-half-fill">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                fill="#33C4FF"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                  alt="Community Rating Star" 
-                  className="vehicle-details__rating-icon community" 
-                />
-                <span className="vehicle-details__rating-value">
-                  {Math.round(vehicleData.communityRating * 10)}
-                </span>
-                <RatingDistributionTooltip
-                  distribution={vehicleData.ratingDistribution}
-                  totalReviews={communityRatingCount}
-                  isVisible={isTooltipVisible}
-                  triggerRef={communityRatingRef}
-                  onMouseEnter={handleTooltipMouseEnter}
-                  onMouseLeave={handleTooltipMouseLeave}
-                  onRequestClose={() => setIsTooltipVisible(false)}
-                />
+                <div className="vehicle-details__rating-text">
+                  User Reviews <span className="vehicle-details__rating-highlight">({(vehicleData.communityRating / 2) % 1 === 0 ? vehicleData.communityRating / 2 : (vehicleData.communityRating / 2).toFixed(1)}/5)</span>
+                </div>
               </div>
-              <button className="vehicle-details__rate-btn" onClick={handleOpenRatingModal}>
-                <div className="vehicle-details__rating-label-wrapper">
-                  <span className="vehicle-details__rating-label-top">Rate</span>
-                  <span className="vehicle-details__rating-label-bottom">This Car</span>
+
+              {/* 3. Your Rating */}
+              <div className="vehicle-details__rating-section vehicle-details__rating-section--user">
+                <div className="vehicle-details__rating-stars vehicle-details__rating-stars--interactive">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const userRatingValue = userRating / 20;
+                    const isFilled = star < Math.ceil(userRatingValue);
+                    const isHalf = star === Math.ceil(userRatingValue) && userRatingValue % 1 !== 0;
+                    return (
+                      <button
+                        key={star}
+                        className="vehicle-details__star-btn"
+                        onClick={() => handleOpenRatingModal()}
+                        aria-label={`Rate ${star} stars`}
+                      >
+                        <div className={`vehicle-details__rating-star-wrapper ${isHalf ? 'vehicle-details__rating-star-wrapper--half' : ''}`}>
+                          {/* Outline star */}
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--outline">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                              fill="none"
+                              stroke="#33C4FF"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          {/* Filled star (full or half) */}
+                          {isFilled && (
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--filled">
+                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                fill="#33C4FF"
+                              />
+                            </svg>
+                          )}
+                          {isHalf && (
+                            <div className="vehicle-details__rating-star-half-fill">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                  fill="#33C4FF"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-                <img 
-                  src={userRating > 0 
-                    ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                    : "https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                  } 
-                  alt="Add Rating Star" 
-                  className="vehicle-details__rating-icon add-rate" 
-                />
-                {userRating > 0 && (
-                  <>
-                    <span className="vehicle-details__rating-value">{userRating}</span>
-                    {ownsCar && (
-                      <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c93e2c176500024c4f41/garage-check-icon.svg" 
-                        alt="Verified Owner" 
-                        className="vehicle-details__verified-icon"
-                      />
-                    )}
-                  </>
-                )}
-              </button>
+                <div className="vehicle-details__rating-text">
+                  Rate This Vehicle{userRating > 0 && <span className="vehicle-details__rating-highlight"> ({(userRating / 20) % 1 === 0 ? (userRating / 20) : (userRating / 20).toFixed(1)}/5)</span>}
+                </div>
+              </div>
             </div>
           )}
           {/* Hero Image (hidden for prime template) */}
@@ -1241,7 +1287,7 @@ export const VehicleDetails: React.FC = () => {
               <Icon name="keyboard_arrow_down" size={20} />
             </div>
             <div className="vehicle-details__actions">
-              <button 
+              <button
                 className="vehicle-details__action-btn"
                 onClick={() => setIsGalleryOpen(true)}
               >
@@ -1252,6 +1298,10 @@ export const VehicleDetails: React.FC = () => {
                 <Icon name="list" size={20} />
                 <span>Specs</span>
               </button>
+              <button className={`vehicle-details__action-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
+                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                <span>{isSaved ? 'Saved!' : 'Save'}</span>
+              </button>
               {!isPrimeTemplate && (
                 <button className="vehicle-details__cta-primary">
                   <Icon name="search" size={20} />
@@ -1261,14 +1311,186 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
+          {/* MotorTrend Score */}
+          <div id="staff-rating" className="vehicle-details__motortrend-score">
+            <div className="vehicle-details__motortrend-header">
+              <h2>MotorTrend Review</h2>
+              <img
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg"
+                alt="MotorTrend Logo"
+                className="vehicle-details__motortrend-logo"
+              />
+            </div>
+            <div className="vehicle-details__score-card">
+              <div className="vehicle-details__score-header">
+                <h3>{vehicleName}</h3>
+                <div className="vehicle-details__score-award">
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg"
+                    alt="Trophy"
+                    width={24}
+                    height={24}
+                  />
+                  <span>{vehicleData.award}</span>
+                  <Icon name="keyboard_arrow_down" size={16} />
+                </div>
+              </div>
+              <div className="vehicle-details__score-content">
+                <div className="vehicle-details__overall-score">
+                  <div className="vehicle-details__score-circle">
+                    <span className="vehicle-details__score-number">{formatScore(vehicleData.staffRating)}</span>
+                    <div className="vehicle-details__score-label-row">
+                      <img 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                        alt="MotorTrend" 
+                        className="vehicle-details__score-mt-badge" 
+                      />
+                      <span className="vehicle-details__score-label">MotorTrend Rating</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="vehicle-details__score-breakdown">
+                  <div className="vehicle-details__score-item">
+                    <span>Performance</span>
+                    <div className="vehicle-details__score-bar">
+                      <div className="vehicle-details__score-bar-fill" style={{ width: `${(parseFloat(formatScore(vehicleData.scores.performance)) / 10) * 100}%` }}></div>
+                    </div>
+                    <span>{formatScore(vehicleData.scores.performance)}</span>
+                  </div>
+                  <div className="vehicle-details__score-item">
+                    <span>Efficiency/Range</span>
+                    <div className="vehicle-details__score-bar">
+                      <div className="vehicle-details__score-bar-fill" style={{ width: `${(parseFloat(formatScore(vehicleData.scores.efficiency)) / 10) * 100}%` }}></div>
+                    </div>
+                    <span>{formatScore(vehicleData.scores.efficiency)}</span>
+                  </div>
+                  <div className="vehicle-details__score-item">
+                    <span>Tech/Innovation</span>
+                    <div className="vehicle-details__score-bar">
+                      <div className="vehicle-details__score-bar-fill" style={{ width: `${(parseFloat(formatScore(vehicleData.scores.tech)) / 10) * 100}%` }}></div>
+                    </div>
+                    <span>{formatScore(vehicleData.scores.tech)}</span>
+                  </div>
+                  <div className="vehicle-details__score-item">
+                    <span>Value</span>
+                    <div className="vehicle-details__score-bar">
+                      <div className="vehicle-details__score-bar-fill" style={{ width: `${(parseFloat(formatScore(vehicleData.scores.value)) / 10) * 100}%` }}></div>
+                    </div>
+                    <span>{formatScore(vehicleData.scores.value)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Staff Review - appears for all vehicles */}
+              <div className="vehicle-details__score-review">
+                {/* Reviewer Avatar Section */}
+                <div className="vehicle-details__reviewer-section">
+                  <div className="vehicle-details__reviewer-avatar-group">
+                    <img
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png"
+                      alt="Reviewer avatar"
+                      className="vehicle-details__reviewer-avatar"
+                      width={43}
+                      height={43}
+                    />
+                  </div>
+                  <div className="vehicle-details__reviewer-info">
+                    <div className="vehicle-details__reviewer-header">
+                      <div className="vehicle-details__reviewer-name-group">
+                        <span className="vehicle-details__reviewer-name">Zach Gale</span>
+                        <div className="vehicle-details__reviewer-badge--with-tooltip">
+                          <img
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                            alt="MT badge"
+                            className="vehicle-details__reviewer-badge"
+                            width={16}
+                            height={16}
+                          />
+                          <div className="vehicle-details__reviewer-badge-tooltip">
+                            MotorTrend Director, Buyers Guide
+                          </div>
+                        </div>
+                      </div>
+                      <div className="vehicle-details__reviewer-meta">
+                        <span className="vehicle-details__reviewer-date">Driven, tested | May 20, 2025</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <h3>{vehicleData.staffReview.title}</h3>
+                <p>{vehicleData.staffReview.content}</p>
+
+                {/* Read Full Review Accordion CTA */}
+                <div className="vehicle-details__review-accordion">
+                  <button
+                    className="vehicle-details__review-accordion-button"
+                    onClick={() => setIsReviewAccordionOpen(!isReviewAccordionOpen)}
+                    aria-expanded={isReviewAccordionOpen}
+                  >
+                    <span>Read Full Review</span>
+                    <svg
+                      className={`vehicle-details__review-accordion-chevron ${isReviewAccordionOpen ? 'vehicle-details__review-accordion-chevron--open' : ''}`}
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5 7.5L10 12.5L15 7.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  {isReviewAccordionOpen && (
+                    <div className="vehicle-details__review-accordion-content">
+                      <div className="vehicle-details__review-accordion-text">
+                        {vehicleData.staffReview.detailedSections ? (
+                          vehicleData.staffReview.detailedSections.map((section, index) => (
+                            <div key={index} className="vehicle-details__review-section">
+                              <h4 className="vehicle-details__review-section-title">{section.title}</h4>
+                              {section.content.split('\n\n').map((paragraph, pIndex) => (
+                                <p key={pIndex}>{paragraph}</p>
+                              ))}
+                            </div>
+                          ))
+                        ) : (
+                          <>
+                            <h4>Detailed Review</h4>
+                            <p>
+                              {vehicleData.staffReview.content} The vehicle has been thoroughly tested across various conditions,
+                              from daily commuting to extended highway journeys. Performance metrics have been evaluated
+                              including acceleration, braking, handling, and overall driving dynamics. The interior quality,
+                              technology integration, and overall value proposition have been carefully assessed to provide
+                              a comprehensive evaluation.
+                            </p>
+                            <p>
+                              In-depth testing reveals how this vehicle performs in real-world scenarios, with particular
+                              attention to fuel efficiency, comfort over long distances, and reliability. Our testing
+                              protocol includes extended drives, various weather conditions, and comparisons with key
+                              competitors in the segment.
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Pros and Cons */}
           <div className="vehicle-details__pros-cons">
             <div className="vehicle-details__pros-cons-inner">
               <div className="vehicle-details__pros">
                 <div className="vehicle-details__pros-header">
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690689ed9108fa000230136f/recommend.svg" 
-                    alt="Pros" 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690689ed9108fa000230136f/recommend.svg"
+                    alt="Pros"
                     className="vehicle-details__pros-icon"
                   />
                   <h3>Pros</h3>
@@ -1282,9 +1504,9 @@ export const VehicleDetails: React.FC = () => {
               <div className="vehicle-details__divider"></div>
               <div className="vehicle-details__cons">
                 <div className="vehicle-details__cons-header">
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690689eb9108fa000230136e/recommend-1.svg" 
-                    alt="Cons" 
+                  <img
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690689eb9108fa000230136e/recommend-1.svg"
+                    alt="Cons"
                     className="vehicle-details__cons-icon"
                   />
                   <h3>Cons</h3>
@@ -1317,8 +1539,8 @@ export const VehicleDetails: React.FC = () => {
                     className={`vehicle-details__photo-gallery-item vehicle-details__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
                     onClick={() => setIsGalleryOpen(true)}
                   >
-                    <img 
-                      src={image} 
+                    <img
+                      src={image}
                       alt={`${displayName} - Photo ${index + 1}`}
                       className="vehicle-details__photo-gallery-thumb"
                     />
@@ -1401,171 +1623,6 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* MotorTrend Score */}
-          <div id="staff-rating" className="vehicle-details__motortrend-score">
-            <div className="vehicle-details__motortrend-header">
-              <h2>MotorTrend Review</h2>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg" 
-                alt="MotorTrend Logo" 
-                className="vehicle-details__motortrend-logo"
-              />
-            </div>
-            <div className="vehicle-details__score-card">
-              <div className="vehicle-details__score-header">
-                <h3>{vehicleName}</h3>
-                <div className="vehicle-details__score-award">
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg" 
-                    alt="Trophy" 
-                    width={24} 
-                    height={24}
-                  />
-                  <span>{vehicleData.award}</span>
-                  <Icon name="keyboard_arrow_down" size={16} />
-                </div>
-              </div>
-              <div className="vehicle-details__score-content">
-                <div className="vehicle-details__overall-score">
-                  <div className="vehicle-details__score-circle">
-                    <span className="vehicle-details__score-number">{typeof vehicleData.staffRating === 'number' ? Math.round(vehicleData.staffRating * 10) : vehicleData.staffRating}</span>
-                    <span className="vehicle-details__score-label">Expert</span>
-                  </div>
-                </div>
-                <div className="vehicle-details__score-breakdown">
-                <div className="vehicle-details__score-item">
-                  <span>Performance</span>
-                  <div className="vehicle-details__score-bar">
-                    <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.performance / 10) * 100}%` }}></div>
-                  </div>
-                  <span>{Math.round(vehicleData.scores.performance * 10)}</span>
-                </div>
-                <div className="vehicle-details__score-item">
-                  <span>Efficiency/Range</span>
-                  <div className="vehicle-details__score-bar">
-                    <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.efficiency / 10) * 100}%` }}></div>
-                  </div>
-                  <span>{Math.round(vehicleData.scores.efficiency * 10)}</span>
-                </div>
-                <div className="vehicle-details__score-item">
-                  <span>Tech/Innovation</span>
-                  <div className="vehicle-details__score-bar">
-                    <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.tech / 10) * 100}%` }}></div>
-                  </div>
-                  <span>{Math.round(vehicleData.scores.tech * 10)}</span>
-                </div>
-                <div className="vehicle-details__score-item">
-                  <span>Value</span>
-                  <div className="vehicle-details__score-bar">
-                    <div className="vehicle-details__score-bar-fill" style={{ width: `${(vehicleData.scores.value / 10) * 100}%` }}></div>
-                  </div>
-                  <span>{Math.round(vehicleData.scores.value * 10)}</span>
-                </div>
-                </div>
-              </div>
-
-              {/* Staff Review - appears for all vehicles */}
-              <div className="vehicle-details__score-review">
-                {/* Reviewer Avatar Section */}
-                <div className="vehicle-details__reviewer-section">
-                  <div className="vehicle-details__reviewer-avatar-group">
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png" 
-                      alt="Reviewer avatar" 
-                      className="vehicle-details__reviewer-avatar"
-                      width={43}
-                      height={43}
-                    />
-                  </div>
-                  <div className="vehicle-details__reviewer-info">
-                    <div className="vehicle-details__reviewer-header">
-                      <div className="vehicle-details__reviewer-name-group">
-                        <span className="vehicle-details__reviewer-name">Zach Gale</span>
-                        <div className="vehicle-details__reviewer-badge--with-tooltip">
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
-                            alt="MT badge" 
-                            className="vehicle-details__reviewer-badge"
-                            width={16}
-                            height={16}
-                          />
-                          <div className="vehicle-details__reviewer-badge-tooltip">
-                            MotorTrend Director, Buyers Guide
-                          </div>
-                        </div>
-                      </div>
-                      <div className="vehicle-details__reviewer-meta">
-                        <span className="vehicle-details__reviewer-date">Driven, tested | May 20, 2025</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <h3>{vehicleData.staffReview.title}</h3>
-                <p>{vehicleData.staffReview.content}</p>
-                
-                {/* Read Full Review Accordion CTA */}
-                <div className="vehicle-details__review-accordion">
-                  <button
-                    className="vehicle-details__review-accordion-button"
-                    onClick={() => setIsReviewAccordionOpen(!isReviewAccordionOpen)}
-                    aria-expanded={isReviewAccordionOpen}
-                  >
-                    <span>Read Full Review</span>
-                    <svg
-                      className={`vehicle-details__review-accordion-chevron ${isReviewAccordionOpen ? 'vehicle-details__review-accordion-chevron--open' : ''}`}
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 7.5L10 12.5L15 7.5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                  {isReviewAccordionOpen && (
-                    <div className="vehicle-details__review-accordion-content">
-                      <div className="vehicle-details__review-accordion-text">
-                        {vehicleData.staffReview.detailedSections ? (
-                          vehicleData.staffReview.detailedSections.map((section, index) => (
-                            <div key={index} className="vehicle-details__review-section">
-                              <h4 className="vehicle-details__review-section-title">{section.title}</h4>
-                              {section.content.split('\n\n').map((paragraph, pIndex) => (
-                                <p key={pIndex}>{paragraph}</p>
-                              ))}
-                            </div>
-                          ))
-                        ) : (
-                          <>
-                            <h4>Detailed Review</h4>
-                            <p>
-                              {vehicleData.staffReview.content} The vehicle has been thoroughly tested across various conditions, 
-                              from daily commuting to extended highway journeys. Performance metrics have been evaluated 
-                              including acceleration, braking, handling, and overall driving dynamics. The interior quality, 
-                              technology integration, and overall value proposition have been carefully assessed to provide 
-                              a comprehensive evaluation.
-                            </p>
-                            <p>
-                              In-depth testing reveals how this vehicle performs in real-world scenarios, with particular 
-                              attention to fuel efficiency, comfort over long distances, and reliability. Our testing 
-                              protocol includes extended drives, various weather conditions, and comparisons with key 
-                              competitors in the segment.
-                            </p>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* User Reviews */}
           <div id="community-ratings">
             <UserReviews
@@ -1609,9 +1666,9 @@ export const VehicleDetails: React.FC = () => {
         <div className="vehicle-details__sidebar">
           {/* Ad Space 1 */}
           <div className="vehicle-details__ad">
-            <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg" 
-              alt="Advertisement" 
+            <img
+              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+              alt="Advertisement"
               className="vehicle-details__ad-image"
             />
           </div>
@@ -1623,64 +1680,64 @@ export const VehicleDetails: React.FC = () => {
               {(() => {
                 const relatedArticles: React.ReactElement[] = [];
                 const addedSlugs = new Set<string>();
-                
+
                 // Normalize current vehicle info for matching
                 const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
                 const normalizedMake = decodedMake.toLowerCase();
                 const normalizedYear = decodedYear.toLowerCase();
-                
+
                 // Helper function to normalize vehicle name for comparison
                 const normalizeForComparison = (name: string): string => {
                   return name.toLowerCase().replace(/-/g, ' ').trim();
                 };
-                
+
                 // Helper function to check if two vehicle names match
                 const vehiclesMatch = (articleVehicleName: string, currentYear: string, currentMake: string, currentModel: string): boolean => {
                   const normalizedArticleName = normalizeForComparison(articleVehicleName);
-                  
+
                   // Extract year, make, model from article vehicle name
                   const parts = normalizedArticleName.split(/\s+/);
                   const yearIndex = parts.findIndex(part => /^\d{4}$/.test(part));
-                  
+
                   if (yearIndex === -1) {
                     // No year found, try to match by make and model only
                     const articleMake = parts[0] || '';
                     const articleModel = parts.slice(1).join(' ');
-                    return normalizeForComparison(currentMake) === articleMake && 
-                           normalizeForComparison(currentModel).includes(articleModel) ||
-                           articleModel.includes(normalizeForComparison(currentModel));
+                    return normalizeForComparison(currentMake) === articleMake &&
+                      normalizeForComparison(currentModel).includes(articleModel) ||
+                      articleModel.includes(normalizeForComparison(currentModel));
                   }
-                  
+
                   const articleYear = parts[yearIndex];
                   const articleMake = parts[yearIndex + 1] || '';
                   const articleModel = parts.slice(yearIndex + 2).join(' ');
-                  
+
                   // Match by year, make, and model (flexible matching)
                   const yearMatch = articleYear === normalizeForComparison(currentYear);
                   const makeMatch = normalizeForComparison(currentMake) === articleMake;
                   const modelMatch = normalizeForComparison(currentModel).includes(articleModel) ||
-                                    articleModel.includes(normalizeForComparison(currentModel)) ||
-                                    normalizedArticleName.includes(normalizeForComparison(currentModel));
-                  
+                    articleModel.includes(normalizeForComparison(currentModel)) ||
+                    normalizedArticleName.includes(normalizeForComparison(currentModel));
+
                   // Also check if the full vehicle name contains key parts
                   const fullNameMatch = normalizedArticleName.includes(normalizeForComparison(currentMake)) &&
-                                       normalizedArticleName.includes(normalizeForComparison(currentModel));
-                  
+                    normalizedArticleName.includes(normalizeForComparison(currentModel));
+
                   return (yearMatch && makeMatch && modelMatch) || fullNameMatch;
                 };
-                
+
                 // Find articles that match the current vehicle
                 Object.entries(articles).forEach(([slug, article]) => {
                   if (relatedArticles.length >= 3) return;
-                  
+
                   const articleVehicleName = article.motortrendScore?.vehicleName;
                   if (!articleVehicleName) return;
-                  
+
                   // Check if this article's vehicle matches the current vehicle
                   if (vehiclesMatch(articleVehicleName, normalizedYear, normalizedMake, normalizedModel)) {
                     addedSlugs.add(slug);
                     relatedArticles.push(
-                      <Link 
+                      <Link
                         key={slug}
                         to={`/articles/${slug}`}
                         className="vehicle-details__sidebar-article"
@@ -1698,7 +1755,7 @@ export const VehicleDetails: React.FC = () => {
                     );
                   }
                 });
-                
+
                 // Add default articles if we don't have enough
                 // Try to load from articles data first, then fall back to hardcoded defaults
                 if (relatedArticles.length < 3) {
@@ -1707,18 +1764,18 @@ export const VehicleDetails: React.FC = () => {
                     'new-details-2026-rivian-r2-ev-suv-battery-charging',
                     '2025-acura-adx-awd-yearlong-review-arrival'
                   ];
-                  
+
                   defaultArticleSlugs.forEach((slug) => {
                     if (relatedArticles.length >= 3) return;
-                    
+
                     // Skip if already added as a matching article
                     if (addedSlugs.has(slug)) return;
-                    
+
                     const article = articles[slug];
                     if (article) {
                       addedSlugs.add(slug);
                       relatedArticles.push(
-                        <Link 
+                        <Link
                           key={slug}
                           to={`/articles/${slug}`}
                           className="vehicle-details__sidebar-article"
@@ -1737,7 +1794,7 @@ export const VehicleDetails: React.FC = () => {
                     }
                   });
                 }
-                
+
                 return relatedArticles.slice(0, 3);
               })()}
             </div>
@@ -1745,9 +1802,9 @@ export const VehicleDetails: React.FC = () => {
 
           {/* Ad Space 2 */}
           <div className="vehicle-details__ad">
-            <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg" 
-              alt="Advertisement" 
+            <img
+              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+              alt="Advertisement"
               className="vehicle-details__ad-image"
             />
           </div>
@@ -1766,9 +1823,9 @@ export const VehicleDetails: React.FC = () => {
 
           {/* Ad Space 3 */}
           <div className="vehicle-details__ad">
-            <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg" 
-              alt="Advertisement" 
+            <img
+              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+              alt="Advertisement"
               className="vehicle-details__ad-image"
             />
           </div>
@@ -1823,6 +1880,28 @@ export const VehicleDetails: React.FC = () => {
         onClose={() => setIsGalleryOpen(false)}
         initialIndex={0}
         vehicleName={displayName}
+      />
+
+      {/* Staff Rating Tooltip */}
+      <StaffRatingTooltip
+        overallRating={vehicleData.staffRating}
+        scores={vehicleData.scores}
+        isVisible={isStaffTooltipVisible}
+        triggerRef={staffRatingRef}
+        onMouseEnter={handleStaffTooltipMouseEnter}
+        onMouseLeave={handleStaffTooltipMouseLeave}
+        onRequestClose={() => setIsStaffTooltipVisible(false)}
+      />
+
+      {/* Rating Distribution Tooltip */}
+      <RatingDistributionTooltip
+        distribution={vehicleData.ratingDistribution}
+        totalReviews={vehicleData.communityRatingCount}
+        isVisible={isTooltipVisible}
+        triggerRef={communityRatingRef}
+        onMouseEnter={handleTooltipMouseEnter}
+        onMouseLeave={handleTooltipMouseLeave}
+        onRequestClose={() => setIsTooltipVisible(false)}
       />
     </div>
   );

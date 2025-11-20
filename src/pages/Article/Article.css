@@ -7,8 +7,12 @@
   width: 100%;
   min-height: 100vh;
   background-color: var(--color-neutrals-8);
-  padding-top: var(--spacing-3); /* 24px padding between nav and article */
   position: relative;
+}
+
+/* Sticky Rate Bar margin on article page */
+.article .sticky-rate-bar {
+  margin-bottom: 24px;
 }
 
 .article__container {
@@ -477,6 +481,7 @@
   min-width: 0;
   flex-wrap: nowrap;
   overflow: hidden;
+  position: relative;
 }
 
 .article__image-score-rating-item {
@@ -492,6 +497,30 @@
   flex-shrink: 0;
   height: fit-content;
   align-self: center;
+}
+
+/* Expert Rating - column layout */
+.article__image-score-rating-item:first-child {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+  min-width: 0;
+  overflow: visible;
+  position: relative;
+  padding-right: 24px;
+}
+
+/* Separator between rating items */
+.article__image-score-rating-item:first-child::after {
+  content: '';
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background-color: #FFFFFF;
 }
 
 .article__image-score-rating-label-wrapper {
@@ -566,13 +595,13 @@
 
 /* MT logo smaller than blue stars in image score overlay */
 .article__image-score-rating-icon.staff,
-.article__image-score-rating-icon[src*="mt-rating"] {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  min-height: 20px;
-  max-width: 20px;
-  max-height: 20px;
+.article__image-score-rating-icon[src*="group1318348068"] {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
 }
 
 .article__image-score-rating-value {
@@ -581,6 +610,157 @@
   font-weight: 600;
   font-family: var(--font-heading);
   line-height: 1;
+}
+
+/* New rating format styles - Expert Rating */
+.article__image-score-rating-score-large {
+  color: #FFFFFF;
+  font-size: 32px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.article__image-score-rating-score-max {
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.article__image-score-rating-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: nowrap;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.article__image-score-rating-mt-badge {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.article__image-score-rating-label-row .article__image-score-rating-mt-badge {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  flex-shrink: 0 !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+}
+
+.article__image-score-rating-motortrend-text {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* New rating format styles - Community Rating */
+.article__image-score-rating-item--community {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding-left: 0;
+}
+
+.article__image-score-rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.article__image-score-star-wrapper {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.article__image-score-star-wrapper--half {
+  /* Half star styling handled by half-fill div */
+}
+
+.article__image-score-star {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.article__image-score-star--outline {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.article__image-score-star--filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.article__image-score-star-half-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.article__image-score-star-half-fill svg {
+  width: 18px;
+  height: 18px;
+}
+
+.article__image-score-rating-text {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.article__image-score-rating-highlight {
+  color: #FFFFFF;
+  font-weight: 500;
 }
 
 .article__image-score-cta {
@@ -962,7 +1142,7 @@
   justify-content: center;
   width: 189px;
   height: 160px;
-  background-color: #282a30;
+  background-color: #141416;
   border-radius: 8px;
   gap: 4px;
   position: relative;
@@ -976,10 +1156,29 @@
   line-height: 1;
 }
 
+.article__score-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.article__score-mt-badge {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+}
+
 .article__score-label {
   font-family: var(--font-body);
   font-size: 12px;
   color: var(--color-white);
+  white-space: nowrap;
 }
 
 .article__score-breakdown {
@@ -1515,9 +1714,13 @@
 }
 
 /* MT logo smaller than blue stars in sticky bar */
-.article__sticky-rating-icon[src*="mt-rating"] {
-  width: 18px;
-  height: 18px;
+.article__sticky-rating-icon[src*="group1318348068"] {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
 }
 
 .article__sticky-rating-value {
@@ -1622,7 +1825,7 @@
   }
 
   /* MT logo smaller on mobile */
-  .article__sticky-rating-icon[src*="mt-rating"] {
+  .article__sticky-rating-icon[src*="group1318348068"] {
     width: 16px;
     height: 16px;
   }
@@ -2325,7 +2528,7 @@
   }
 
   /* MT logo smaller on larger mobile */
-  .article__sticky-rating-icon[src*="mt-rating"] {
+  .article__sticky-rating-icon[src*="group1318348068"] {
     width: 16px;
     height: 16px;
   }

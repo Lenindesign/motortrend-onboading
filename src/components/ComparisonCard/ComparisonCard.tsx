@@ -1,6 +1,6 @@
 /**
  * Comparison Card Component
- * Now using universal Card styling following atomic design principles
+ * Simplified design with single image and title
  */
 
 import React from 'react';
@@ -28,45 +28,35 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   isBookmarked = false,
   onViewComparison
 }) => {
+  // Create combined title
+  const comparisonTitle = `${vehicle1.name} / ${vehicle2.name}`;
+  
   return (
     <div className="comparison-card">
       <div className="comparison-card__content">
-        <div className="comparison-card__vehicle">
-          <div className="comparison-card__image-container">
-            <img src={vehicle1.image} alt={vehicle1.name} className="comparison-card__image" />
-          </div>
-          <h4 className="comparison-card__name">{vehicle1.name}</h4>
-        </div>
-        
-        <div className="comparison-card__vs">
+        <div className="comparison-card__image-wrapper">
+          <img src={vehicle1.image} alt={comparisonTitle} className="comparison-card__image" />
           {onBookmark && (
             <button 
               className={`comparison-card__bookmark-btn ${isBookmarked ? 'comparison-card__bookmark-btn--active' : ''}`}
               onClick={onBookmark}
               aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
             >
-              <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={16} />
+              <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={20} />
             </button>
           )}
-          <span className="comparison-card__vs-text">VS</span>
         </div>
         
-        <div className="comparison-card__vehicle">
-          <div className="comparison-card__image-container">
-            <img src={vehicle2.image} alt={vehicle2.name} className="comparison-card__image" />
-          </div>
-          <h4 className="comparison-card__name">{vehicle2.name}</h4>
+        <div className="comparison-card__info">
+          <h3 className="comparison-card__title">{comparisonTitle}</h3>
+          <p className="comparison-card__label">Comparison</p>
+          {onViewComparison && (
+            <button className="comparison-card__button cta cta--secondary cta--default" onClick={onViewComparison}>
+              View Comparison
+            </button>
+          )}
         </div>
       </div>
-      
-      {onViewComparison && (
-        <div className="comparison-card__actions">
-          <button className="comparison-card__button" onClick={onViewComparison}>
-            View Comparison
-            <Icon name="chevron_right" size={18} />
-          </button>
-        </div>
-      )}
     </div>
   );
 };

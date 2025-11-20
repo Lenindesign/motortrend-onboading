@@ -8,6 +8,7 @@ export interface SubscriptionItemProps {
   isFindMore?: boolean;
   onClick?: () => void;
   onToggleSubscription?: (name: string, isActive: boolean) => void;
+  href?: string;
 }
 
 export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({ 
@@ -16,7 +17,8 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
   isActive = false,
   isFindMore = false,
   onClick,
-  onToggleSubscription
+  onToggleSubscription,
+  href
 }) => {
   const handleBadgeClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the main onClick
@@ -25,8 +27,18 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
     }
   };
 
-  return (
-    <div className="subscription-item" onClick={onClick}>
+  const handleClick = () => {
+    if (href) {
+      // If href is provided, let the link handle navigation
+      return;
+    }
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const content = (
+    <>
       <div className="subscription-item__logo-container">
         {logo ? (
           <img src={logo} alt={name} className="subscription-item__logo" />
@@ -68,6 +80,26 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
         )}
       </div>
       <p className="subscription-item__name">{name}</p>
+    </>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="subscription-item subscription-item--link"
+        onClick={handleClick}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <div className="subscription-item" onClick={handleClick}>
+      {content}
     </div>
   );
 };

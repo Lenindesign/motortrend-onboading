@@ -101,12 +101,12 @@ export const OnboardingStep2: React.FC<OnboardingStep2Props> = () => {
                 className="user-type-img"
               />
             </div>
-            <div className="user-type-content">
-              <h3 className="user-type-title">Aficionado </h3>
-              <p className="user-type-description">
-                Love cars, reviews, and auto culture
-              </p>
-            </div>
+                    <div className="user-type-content">
+                      <h3 className="user-type-title">Enthusiast</h3>
+                      <p className="user-type-description">
+                        Love cars, reviews, and auto culture
+                      </p>
+                    </div>
           </button>
           
           <button

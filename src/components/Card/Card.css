@@ -40,7 +40,8 @@
 .card__image-container {
   position: relative;
   width: 150px;
-  height: 100px; /* 3:2 aspect ratio for vehicle cards */
+  height: 100px;
+  /* 3:2 aspect ratio for vehicle cards */
   flex-shrink: 0;
   overflow: hidden;
   border-radius: var(--border-radius-md);
@@ -241,6 +242,10 @@
   display: flex;
   gap: var(--spacing-2);
   align-items: center;
+  padding: 4px 8px;
+  background: transparent;
+  border-radius: 4px;
+  color: var(--color-neutrals-2);
   min-width: 0;
   flex-wrap: nowrap;
   overflow: visible;
@@ -265,6 +270,7 @@
 .card__rating span:not(.card__rating-label):not(.card__rating-value) {
   font-size: 14px;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  color: var(--color-neutrals-2);
 }
 
 .card__rating-display {
@@ -310,6 +316,7 @@
   font-weight: 600;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-size: 12px !important;
+  padding-left: 4px;
 }
 
 .card__rating-star {
@@ -351,7 +358,7 @@
 }
 
 .card__rating.card__rating--with-tooltip:nth-of-type(2) {
-  gap: 0px;
+  gap: 4px;
 }
 
 .card__rating-tooltip {
@@ -513,7 +520,8 @@
   .card__button {
     font-size: 13px;
     padding: var(--spacing-2) var(--spacing-3);
-    min-height: 44px; /* Touch-friendly target */
+    min-height: 44px;
+    /* Touch-friendly target */
     width: 100%;
     justify-content: center;
   }
@@ -544,55 +552,57 @@
     gap: 10px;
     border-radius: var(--border-radius-md);
   }
-  
+
   .card__top-row {
     gap: var(--spacing-2);
   }
-  
+
   .card__image-container {
     width: 120px;
-    height: 67.5px; /* Maintain 16:9 aspect ratio */
+    height: 67.5px;
+    /* Maintain 16:9 aspect ratio */
   }
-  
+
   .card__title {
     font-size: 14px;
     line-height: 1.3em;
   }
-  
+
   .card__subtitle {
     font-size: 12px;
     line-height: 1.3em;
   }
-  
+
   .card__type {
     font-size: 11px;
   }
-  
+
   .card__metadata {
     font-size: 11px;
   }
-  
+
   .card__button {
     padding: var(--spacing-2) var(--spacing-3);
     font-size: 13px;
-    min-height: 44px; /* Touch-friendly target */
+    min-height: 44px;
+    /* Touch-friendly target */
     width: 100%;
     justify-content: center;
   }
-  
+
   .card__ownership {
     gap: var(--spacing-2);
     margin-top: 8px;
   }
-  
+
   .card__ownership-option {
     font-size: 14px;
   }
-  
+
   .card__rating {
     font-size: 12px;
   }
-  
+
   .card__rating-star {
     width: 16px;
     height: 16px;
@@ -608,7 +618,7 @@
     background: transparent;
     border: none;
   }
-  
+
   .card__rating-mt-logo {
     width: 16px;
     height: 16px;
@@ -631,32 +641,33 @@
     padding: 10px;
     gap: 8px;
   }
-  
+
   .card__image-container {
     width: 100px;
-    height: 56.25px; /* Maintain 16:9 aspect ratio */
+    height: 56.25px;
+    /* Maintain 16:9 aspect ratio */
   }
-  
+
   .card__title {
     font-size: 13px;
     line-height: 1.3em;
   }
-  
+
   .card__subtitle {
     font-size: 11px;
     line-height: 1.3em;
   }
-  
+
   .card__button {
     padding: 6px 10px;
     font-size: 11px;
   }
-  
+
   .card__ownership {
     gap: var(--spacing-2);
     margin-top: 6px;
   }
-  
+
   .card__ownership-option {
     font-size: 13px;
   }

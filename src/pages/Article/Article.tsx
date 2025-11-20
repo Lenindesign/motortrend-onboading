@@ -13,8 +13,6 @@ import WriteReviewModal from '../../components/WriteReviewModal';
 import RatingModal from '../../components/RatingModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
-import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
-import { RatingDistributionTooltip } from '../../components/RatingDistributionTooltip';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
 import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
 import { useRating } from '../../contexts/RatingContext';
@@ -24,6 +22,7 @@ import { parseVehicleName } from '../../utils/vehicleImages';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { ArticleReactions } from '../../components/ArticleReactions';
+import StickyRateBar from '../../components/StickyRateBar';
 import './Article.css';
 
 export const Article: React.FC = () => {
@@ -66,20 +65,18 @@ export const Article: React.FC = () => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
-  const [isVehicleAccordionOpen, setIsVehicleAccordionOpen] = useState(false);
+  const [isVehicleAccordionOpen] = useState(false);
   const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-  const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isScoreInfoTooltipVisible, setIsScoreInfoTooltipVisible] = useState(false);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+  const [isStickyBarSticky, setIsStickyBarSticky] = useState(false);
+  const [stickyBarHeight, setStickyBarHeight] = useState(0);
+  const stickyRateBarRef = useRef<HTMLDivElement>(null);
   const [isCommentTooltipVisible, setIsCommentTooltipVisible] = useState(false);
   const [commentTooltipPosition, setCommentTooltipPosition] = useState({ top: 0, left: 0 });
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
-  const communityRatingRef = useRef<HTMLDivElement>(null);
-  const staffRatingRef = useRef<HTMLDivElement>(null);
-  const ratingsBarRef = useRef<HTMLDivElement>(null);
   const scoreInfoRef = useRef<HTMLDivElement>(null);
   const commentIconRef = useRef<HTMLSpanElement>(null);
   const justSavedReviewRef = useRef<boolean>(false);
@@ -92,6 +89,53 @@ export const Article: React.FC = () => {
   
   // Lazy load articles state
   const [articlesToShow, setArticlesToShow] = useState(5);
+
+  // Helper function to render star rating (0-10 scale, displays as 0-5 stars)
+  const renderStarRating = (ratingValue: number) => {
+    // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
+    const normalizedRating = ratingValue / 2;
+    
+    return (
+      <div className="article__image-score-rating-stars">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFilled = star < Math.ceil(normalizedRating);
+          const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
+          
+          return (
+            <div key={star} className={`article__image-score-star-wrapper ${isHalf ? 'article__image-score-star-wrapper--half' : ''}`}>
+              {/* Outline star */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__image-score-star article__image-score-star--outline">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="none"
+                  stroke="#33C4FF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {/* Filled star (full or half) */}
+              {isFilled && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__image-score-star article__image-score-star--filled">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                    fill="#33C4FF"
+                  />
+                </svg>
+              )}
+              {isHalf && (
+                <div className="article__image-score-star-half-fill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__image-score-star">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                      fill="#33C4FF"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
   
   // Load article data based on slug
   const articleData = useMemo(() => {
@@ -366,7 +410,7 @@ export const Article: React.FC = () => {
   }, [motortrendScore, article.motortrendScore, vehicleName]);
   
   // Generate scores for staff rating tooltip
-  const scores = useMemo(() => ({
+  const staffRatingScores = useMemo(() => ({
     performance: motortrendScore.scores.performance,
     efficiency: motortrendScore.scores.efficiency,
     tech: motortrendScore.scores.tech,
@@ -468,39 +512,6 @@ export const Article: React.FC = () => {
     };
   }, []);
 
-  const handleTooltipMouseEnter = () => {
-    // Clear any pending hide timeout
-    if (tooltipHideTimeoutRef.current) {
-      clearTimeout(tooltipHideTimeoutRef.current);
-      tooltipHideTimeoutRef.current = null;
-    }
-    setIsTooltipVisible(true);
-  };
-
-  const handleTooltipMouseLeave = () => {
-    // Add a small delay before hiding to allow moving mouse to tooltip
-    tooltipHideTimeoutRef.current = setTimeout(() => {
-      setIsTooltipVisible(false);
-      tooltipHideTimeoutRef.current = null;
-    }, 150);
-  };
-
-  const handleStaffTooltipMouseEnter = () => {
-    // Clear any pending hide timeout
-    if (staffTooltipHideTimeoutRef.current) {
-      clearTimeout(staffTooltipHideTimeoutRef.current);
-      staffTooltipHideTimeoutRef.current = null;
-    }
-    setIsStaffTooltipVisible(true);
-  };
-
-  const handleStaffTooltipMouseLeave = () => {
-    // Add a small delay before hiding to allow moving mouse to tooltip
-    staffTooltipHideTimeoutRef.current = setTimeout(() => {
-      setIsStaffTooltipVisible(false);
-      staffTooltipHideTimeoutRef.current = null;
-    }, 150);
-  };
 
   const handleScoreInfoTooltipMouseEnter = () => {
     if (scoreInfoTooltipHideTimeoutRef.current) {
@@ -699,20 +710,57 @@ export const Article: React.FC = () => {
   // Car of the Year article should show rating bar even though it's premium
   const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || (isPremiumArticle && slug !== '2026-motortrend-car-of-the-year');
 
+  // Measure sticky bar height on mount and when it changes
+  useEffect(() => {
+    if (shouldHideRatingBar || !stickyRateBarRef.current) return;
+
+    const measureBarHeight = () => {
+      if (stickyRateBarRef.current) {
+        // Get the computed height including margins
+        const rect = stickyRateBarRef.current.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(stickyRateBarRef.current);
+        const marginBottom = parseFloat(computedStyle.marginBottom) || 0;
+        const totalHeight = rect.height + marginBottom;
+        
+        if (totalHeight > 0) {
+          setStickyBarHeight(totalHeight);
+        }
+      }
+    };
+
+    // Measure on mount with a small delay to ensure DOM is ready
+    const timeoutId = setTimeout(measureBarHeight, 0);
+
+    // Also measure on resize
+    window.addEventListener('resize', measureBarHeight);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', measureBarHeight);
+    };
+  }, [shouldHideRatingBar]);
+
   // Scroll detection for sticky rate bar
   useEffect(() => {
     // Don't set up scroll detection if rating bar is hidden
     if (shouldHideRatingBar) return;
 
     const handleScroll = () => {
-      if (!ratingsBarRef.current) return;
+      if (!stickyRateBarRef.current) return;
 
-      const ratingsBarRect = ratingsBarRef.current.getBoundingClientRect();
+      const scrollY = window.scrollY || window.pageYOffset;
       
-      // When the ratings bar reaches or passes the top of the viewport
-      if (ratingsBarRect.top <= 0) {
+      // Get header element to calculate its actual height
+      const header = document.querySelector('.global-header');
+      const headerHeight = header ? header.getBoundingClientRect().height : 56;
+      
+      // When user scrolls past where the static bar would be (header height), switch to sticky mode
+      if (scrollY >= headerHeight) {
+        setIsStickyBarSticky(true);
         setIsStickyBarVisible(true);
       } else {
+        // When scrolled back to top, switch back to static mode
+        setIsStickyBarSticky(false);
         setIsStickyBarVisible(false);
       }
     };
@@ -757,148 +805,64 @@ export const Article: React.FC = () => {
 
   return (
     <div className="article">
+      {/* Sticky Rate Bar - appears below header on load, becomes sticky when scrolling */}
+      {!shouldHideRatingBar && (
+        <>
+          <StickyRateBar
+            vehicleName={vehicleName}
+            vehiclePath={vehiclePath || undefined}
+            ratings={[
+              {
+                type: 'motortrend',
+                value: staffRating,
+                onClick: handleScrollToStaffRating,
+                iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg',
+                iconAlt: 'MT',
+                format: 'vehicle-details'
+              },
+              {
+                type: 'user-reviews',
+                value: communityRating, // 0-10 scale
+                onClick: handleScrollToCommunityRatings,
+                label: 'User Reviews',
+                showStars: true,
+                showHalfStars: true
+              },
+              {
+                type: 'your-rating',
+                value: userRating, // 0-100 scale
+                onClick: handleOpenRatingModal,
+                showStars: true,
+                showHalfStars: true
+              }
+            ]}
+            ctaText="Local Listings"
+            ctaOnClick={() => {
+              const listingsSection = document.querySelector('.article__listings');
+              if (listingsSection) {
+                listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              } else {
+                console.log('Navigate to local listings');
+              }
+            }}
+            isVisible={isStickyBarVisible || !isStickyBarSticky}
+            isSticky={isStickyBarSticky}
+            barRef={stickyRateBarRef as React.RefObject<HTMLDivElement>}
+            staffRatingScores={staffRatingScores}
+            ratingDistribution={ratingDistribution}
+            totalReviews={communityRatingCount}
+          />
+          {/* Spacer to prevent content jump when bar becomes sticky */}
+          <div 
+            style={{ 
+              height: isStickyBarSticky && stickyBarHeight > 0 ? `${stickyBarHeight}px` : '0px',
+              transition: 'height 0s'
+            }} 
+            aria-hidden="true" 
+          />
+        </>
+      )}
       <div className="article__container">
-        {/* Ratings Bar - Full Width */}
-        {!shouldHideRatingBar && (
-        <div ref={ratingsBarRef} className="article__ratings">
-          <div className="article__ratings-left">
-            {vehiclePath ? (
-              <Link to={vehiclePath} className="article__vehicle-name">
-                {primaryVehicle}
-              </Link>
-            ) : (
-              <div className="article__vehicle-name">{primaryVehicle}</div>
-            )}
-            {isComparisonArticle && (
-              <button 
-                className={`article__vehicle-accordion-toggle ${isVehicleAccordionOpen ? 'article__vehicle-accordion-toggle--open' : ''}`}
-                onClick={() => setIsVehicleAccordionOpen(!isVehicleAccordionOpen)}
-                aria-label={isVehicleAccordionOpen ? 'Hide other vehicles' : 'Show other vehicles'}
-              >
-                <svg 
-                  width="20" 
-                  height="20" 
-                  viewBox="0 0 20 20" 
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path 
-                    d="M5 7.5L10 12.5L15 7.5" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            )}
-          </div>
-          <div className="article__ratings-center">
-            <div 
-              ref={staffRatingRef}
-              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--staff" 
-              onClick={handleScrollToStaffRating}
-              onMouseEnter={handleStaffTooltipMouseEnter}
-              onMouseLeave={handleStaffTooltipMouseLeave}
-            >
-              <div className="article__rating-label-wrapper">
-                <span className="article__rating-label-top">Expert</span>
-                <span className="article__rating-label-bottom">Rating</span>
-              </div>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                alt="MotorTrend" 
-                className="article__rating-icon article__rating-icon--staff" 
-              />
-              <span className="article__rating-value">{typeof staffRating === 'number' ? Math.round(staffRating * 10) : staffRating}</span>
-              <StaffRatingTooltip
-                overallRating={staffRating}
-                scores={scores}
-                isVisible={isStaffTooltipVisible}
-                triggerRef={staffRatingRef}
-                onMouseEnter={handleStaffTooltipMouseEnter}
-                onMouseLeave={handleStaffTooltipMouseLeave}
-                onRequestClose={() => setIsStaffTooltipVisible(false)}
-              />
-            </div>
-            <div 
-              ref={communityRatingRef}
-              className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--community" 
-              onClick={handleScrollToCommunityRatings}
-              onMouseEnter={handleTooltipMouseEnter}
-              onMouseLeave={handleTooltipMouseLeave}
-            >
-              <div className="article__rating-label-wrapper">
-                <span className="article__rating-label-top">Community</span>
-                <span className="article__rating-label-bottom">Rating ({communityRatingCount})</span>
-              </div>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                alt="Community Rating Star" 
-                className="article__rating-icon article__rating-icon--community" 
-              />
-              <span className="article__rating-value">
-                {Math.round(communityRating * 10)}
-              </span>
-              <RatingDistributionTooltip
-                distribution={ratingDistribution}
-                totalReviews={communityRatingCount}
-                isVisible={isTooltipVisible}
-                triggerRef={communityRatingRef}
-                onMouseEnter={handleTooltipMouseEnter}
-                onMouseLeave={handleTooltipMouseLeave}
-                onRequestClose={() => setIsTooltipVisible(false)}
-              />
-            </div>
-            <button className="article__rate-btn article__rate-btn--mobile-hide" onClick={handleOpenRatingModal}>
-              {userRating > 0 ? (
-                <>
-                  <div className="article__rating-label-wrapper">
-                    <span className="article__rating-label-top">Your</span>
-                    <span className="article__rating-label-bottom">Rating</span>
-                  </div>
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                    alt="Your Rating Star" 
-                    className="article__rating-icon article__rating-icon--add-rate" 
-                  />
-                  <span className="article__rating-value">{userRating}</span>
-                </>
-              ) : (
-                <>
-                  <span className="article__rating-label">
-                    Rate<br />This Car
-                  </span>
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                    alt="Add Rating Star" 
-                    className="article__rating-icon article__rating-icon--add-rate" 
-                  />
-                </>
-              )}
-            </button>
-          </div>
-          <div className="article__ratings-right">
-            <button 
-              className="article__cta"
-              onClick={() => {
-                // Scroll to local listings section or handle navigation
-                const listingsSection = document.querySelector('.article__listings');
-                if (listingsSection) {
-                  listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                  // If no listings section exists, could navigate to a listings page
-                  // For now, just log or handle as needed
-                  console.log('Navigate to local listings');
-                }
-              }}
-            >
-              Local Listings
-            </button>
-          </div>
-        </div>
-        )}
-        
         {/* Vehicle Accordion - Additional Vehicles */}
         {isComparisonArticle && isVehicleAccordionOpen && (
           <div className="article__vehicle-accordion">
@@ -929,15 +893,15 @@ export const Article: React.FC = () => {
                   <div className="article__vehicle-accordion-center">
                     <div className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--staff">
                       <div className="article__rating-label-wrapper">
-                        <span className="article__rating-label-top">Expert</span>
+                        <span className="article__rating-label-top">MotorTrend</span>
                         <span className="article__rating-label-bottom">Rating</span>
                       </div>
                       <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde55c063170002980a16/group1318348068.svg" 
                         alt="MotorTrend" 
                         className="article__rating-icon article__rating-icon--staff" 
                       />
-                      <span className="article__rating-value">{typeof staffRatingForVehicle === 'number' ? Math.round(staffRatingForVehicle * 10) : staffRatingForVehicle}</span>
+                                      <span className="article__rating-value">{typeof staffRatingForVehicle === 'number' ? staffRatingForVehicle.toFixed(1) : staffRatingForVehicle}</span>
                     </div>
                     <div className="article__rating-item article__rating-item--clickable article__rating-item--with-tooltip article__rating-item--community">
                       <div className="article__rating-label-wrapper">
@@ -945,12 +909,12 @@ export const Article: React.FC = () => {
                         <span className="article__rating-label-bottom">Rating ({communityRatingCount})</span>
                       </div>
                       <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                         alt="Community Rating Star" 
                         className="article__rating-icon article__rating-icon--community" 
                       />
                       <span className="article__rating-value">
-                        {Math.round(communityRatingForVehicle * 10)}
+                        {communityRatingForVehicle.toFixed(1)}
                       </span>
                     </div>
                     <button 
@@ -967,7 +931,7 @@ export const Article: React.FC = () => {
                             <span className="article__rating-label-bottom">Rating</span>
                           </div>
                           <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
                             alt="Your Rating Star" 
                             className="article__rating-icon article__rating-icon--add-rate" 
                           />
@@ -980,7 +944,7 @@ export const Article: React.FC = () => {
                             <span className="article__rating-label-bottom">This Car</span>
                           </div>
                           <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
                             alt="Add Rating Star" 
                             className="article__rating-icon article__rating-icon--add-rate" 
                           />
@@ -1197,37 +1161,23 @@ export const Article: React.FC = () => {
                                   <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
                                   <div className="article__image-score-ratings-list">
                                     <div className="article__image-score-rating-item">
-                                      <div className="article__image-score-rating-label-wrapper">
-                                        <span className="article__image-score-rating-label-top">Expert</span>
-                                        <span className="article__image-score-rating-label-bottom">Rating</span>
+                                      <div className="article__image-score-rating-score-large">
+                                        {motortrendScoreForImage.toFixed(1)}
+                                        <span className="article__image-score-rating-score-max">/10</span>
                                       </div>
-                                      <div className="article__image-score-rating-value-wrapper">
+                                      <div className="article__image-score-rating-label-row">
                                         <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
                                           alt="MotorTrend" 
-                                          className="article__image-score-rating-icon staff" 
+                                          className="article__image-score-rating-mt-badge" 
                                         />
-                                        <span className="article__image-score-rating-value">
-                                          {Math.round(motortrendScoreForImage * 10)}
-                                        </span>
+                                        <span className="article__image-score-rating-motortrend-text">MotorTrend Rating</span>
                                       </div>
                                     </div>
-                                    <div className="article__image-score-rating-item">
-                                      <div className="article__image-score-rating-label-wrapper">
-                                        <span className="article__image-score-rating-label-top">Community</span>
-                                        <span className="article__image-score-rating-label-bottom">
-                                          Rating <span className="article__image-score-rating-count">(25)</span>
-                                        </span>
-                                      </div>
-                                      <div className="article__image-score-rating-value-wrapper">
-                                        <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                                          alt="Community Rating Star" 
-                                          className="article__image-score-rating-icon community" 
-                                        />
-                                        <span className="article__image-score-rating-value">
-                                          {Math.round(userScoreForImage * 10)}
-                                        </span>
+                                    <div className="article__image-score-rating-item article__image-score-rating-item--community">
+                                      {renderStarRating(userScoreForImage)}
+                                      <div className="article__image-score-rating-text">
+                                        User Reviews <span className="article__image-score-rating-highlight">({(userScoreForImage / 2).toFixed(1)}/5)</span>
                                       </div>
                                     </div>
                                   </div>
@@ -1307,12 +1257,12 @@ export const Article: React.FC = () => {
                                         </div>
                                         <div className="article__image-score-rating-value-wrapper">
                                           <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde55c063170002980a16/group1318348068.svg" 
                                             alt="MotorTrend" 
                                             className="article__image-score-rating-icon staff" 
                                           />
                                           <span className="article__image-score-rating-value">
-                                            {Math.round(motortrendScoreForImage * 10)}
+                                            {motortrendScoreForImage.toFixed(1)}
                                           </span>
                                         </div>
                                       </div>
@@ -1325,25 +1275,25 @@ export const Article: React.FC = () => {
                                         </div>
                                         <div className="article__image-score-rating-value-wrapper">
                                           <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                                             alt="Community Rating Star" 
                                             className="article__image-score-rating-icon community" 
                                           />
                                           <span className="article__image-score-rating-value">
-                                            {Math.round(userScoreForImage * 10)}
+                                            {userScoreForImage.toFixed(1)}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                     <button 
-                                      className="article__image-score-cta cta cta--primary cta--default"
+                                      className="article__image-score-cta cta cta--primary cta--small"
                                       onClick={(e) => {
                                         e.stopPropagation();
                                         const { year, make, model } = parseVehicleName(vehicleNameForImage);
                                         navigate(`/vehicles/${year}/${make}/${model}`);
                                       }}
                                     >
-                                      See Local Listings
+                                      Local Listings
                                     </button>
                                   </div>
                                 )}
@@ -1416,8 +1366,15 @@ export const Article: React.FC = () => {
                                 <div className="article__score-content">
                                   <div className="article__overall-score">
                                     <div className="article__score-circle">
-                                      <span className="article__score-number">{typeof motortrendScore.overallRating === 'number' ? Math.round(motortrendScore.overallRating * 10) : motortrendScore.overallRating}</span>
-                                      <span className="article__score-label">Expert Rating</span>
+                                      <span className="article__score-number">{typeof motortrendScore.overallRating === 'number' ? motortrendScore.overallRating.toFixed(1) : motortrendScore.overallRating}</span>
+                                      <div className="article__score-label-row">
+                                        <img 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                          alt="MotorTrend" 
+                                          className="article__score-mt-badge" 
+                                        />
+                                        <span className="article__score-label">MotorTrend Rating</span>
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="article__score-breakdown">
@@ -1426,28 +1383,28 @@ export const Article: React.FC = () => {
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.performance / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{Math.round(motortrendScore.scores.performance * 10)}</span>
+                                      <span>{motortrendScore.scores.performance.toFixed(1)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Efficiency/Range</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.efficiency / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{Math.round(motortrendScore.scores.efficiency * 10)}</span>
+                                      <span>{motortrendScore.scores.efficiency.toFixed(1)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Tech/Innovation</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.tech / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{Math.round(motortrendScore.scores.tech * 10)}</span>
+                                      <span>{motortrendScore.scores.tech.toFixed(1)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Value</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.value / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{Math.round(motortrendScore.scores.value * 10)}</span>
+                                      <span>{motortrendScore.scores.value.toFixed(1)}</span>
                                     </div>
                                   </div>
                                 </div>
@@ -1794,103 +1751,6 @@ export const Article: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Rate Bar - appears when scrolled */}
-      {!shouldHideRatingBar && (
-      <div className={`article__sticky-rate-bar ${isStickyBarVisible ? 'article__sticky-rate-bar--visible' : ''}`}>
-        <div className="article__sticky-rate-bar-content">
-          {vehiclePath ? (
-            <Link to={vehiclePath} className="article__sticky-vehicle-name">
-              {vehicleName}
-            </Link>
-          ) : (
-            <div className="article__sticky-vehicle-name">
-              {vehicleName}
-            </div>
-          )}
-          <div className="article__sticky-ratings">
-            <div 
-              className="article__sticky-rating-item article__sticky-rating-item--staff" 
-              onClick={handleScrollToStaffRating}
-            >
-              <div className="article__sticky-rating-label-wrapper">
-                <span className="article__sticky-rating-label-top">Expert</span>
-                <span className="article__sticky-rating-label-bottom">Rating</span>
-              </div>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                alt="MotorTrend" 
-                className="article__sticky-rating-icon" 
-              />
-              <span className="article__sticky-rating-value">{typeof staffRating === 'number' ? Math.round(staffRating * 10) : staffRating}</span>
-            </div>
-            <div 
-              className="article__sticky-rating-item article__sticky-rating-item--community" 
-              onClick={handleScrollToCommunityRatings}
-            >
-              <div className="article__sticky-rating-label-wrapper">
-                <span className="article__sticky-rating-label-top">Community</span>
-                <span className="article__sticky-rating-label-bottom">Rating ({communityRatingCount})</span>
-              </div>
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                alt="Community Rating Star" 
-                className="article__sticky-rating-icon" 
-              />
-              <span className="article__sticky-rating-value">
-                {Math.round(communityRating * 10)}
-              </span>
-            </div>
-            <button 
-              className="article__sticky-rating-item article__sticky-rate-btn article__sticky-rate-btn--mobile-hide" 
-              onClick={handleOpenRatingModal}
-            >
-              {userRating > 0 ? (
-                <>
-                  <div className="article__sticky-rating-label-wrapper">
-                    <span className="article__sticky-rating-label-top">Your</span>
-                    <span className="article__sticky-rating-label-bottom">Rating</span>
-                  </div>
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                    alt="Your Rating Star" 
-                    className="article__sticky-rating-icon" 
-                  />
-                  <span className="article__sticky-rating-value">{userRating}</span>
-                </>
-              ) : (
-                <>
-                  <span className="article__sticky-rating-label">
-                    Rate<br />This Car
-                  </span>
-                  <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg"
-                    alt="Add Rating Star" 
-                    className="article__sticky-rating-icon" 
-                  />
-                </>
-              )}
-            </button>
-          </div>
-          <button 
-            className="article__sticky-cta"
-            onClick={() => {
-              // Scroll to local listings section or handle navigation
-              const listingsSection = document.querySelector('.article__listings');
-              if (listingsSection) {
-                listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              } else {
-                // If no listings section exists, could navigate to a listings page
-                // For now, just log or handle as needed
-                console.log('Navigate to local listings');
-              }
-            }}
-          >
-            Local Listings
-          </button>
-        </div>
-      </div>
-      )}
-
       {/* Rating Modal */}
       <RatingModal
         isOpen={isRatingModalOpen}
@@ -2155,4 +2015,5 @@ export const Article: React.FC = () => {
 };
 
 export default Article;
+
 

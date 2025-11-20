@@ -690,6 +690,53 @@ export const VehicleInventory: React.FC = () => {
     }
   };
 
+  // Helper function to render star rating (0-10 scale, displays as 0-5 stars)
+  const renderStarRating = (ratingValue: number) => {
+    // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
+    const normalizedRating = ratingValue / 2;
+    
+    return (
+      <div className="vehicle-inventory__hero-rating-stars">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFilled = star < Math.ceil(normalizedRating);
+          const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
+          
+          return (
+            <div key={star} className={`vehicle-inventory__hero-star-wrapper ${isHalf ? 'vehicle-inventory__hero-star-wrapper--half' : ''}`}>
+              {/* Outline star */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-inventory__hero-star vehicle-inventory__hero-star--outline">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="none"
+                  stroke="#33C4FF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {/* Filled star (full or half) */}
+              {isFilled && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-inventory__hero-star vehicle-inventory__hero-star--filled">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                    fill="#33C4FF"
+                  />
+                </svg>
+              )}
+              {isHalf && (
+                <div className="vehicle-inventory__hero-star-half-fill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-inventory__hero-star">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                      fill="#33C4FF"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="vehicle-inventory">
       <div className="container">
@@ -735,59 +782,45 @@ export const VehicleInventory: React.FC = () => {
                       <div className="vehicle-inventory__hero-info-box">
                         <h2 className="vehicle-inventory__hero-name">{vehicle.name}</h2>
                         <div className="vehicle-inventory__hero-ratings-list">
-                        <div className="vehicle-inventory__hero-rating-item">
+                          <div className="vehicle-inventory__hero-rating-item">
+                            <div className="vehicle-inventory__hero-rating-score-large">
+                              {vehicle.staffRating.toFixed(1)}
+                              <span className="vehicle-inventory__hero-rating-score-max">/10</span>
+                            </div>
+                            <div className="vehicle-inventory__hero-rating-label-row">
+                              <img 
+                                src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                alt="MotorTrend" 
+                                className="vehicle-inventory__hero-rating-mt-badge" 
+                              />
+                              <span className="vehicle-inventory__hero-rating-motortrend-text">MotorTrend Rating</span>
+                            </div>
+                          </div>
+                          <div className="vehicle-inventory__hero-rating-item vehicle-inventory__hero-rating-item--community">
+                            {renderStarRating(vehicle.communityRating)}
+                            <div className="vehicle-inventory__hero-rating-text">
+                              User Reviews <span className="vehicle-inventory__hero-rating-highlight">({(vehicle.communityRating / 2) % 1 === 0 ? vehicle.communityRating / 2 : (vehicle.communityRating / 2).toFixed(1)}/5)</span>
+                            </div>
+                          </div>
+                        </div>
+                        {getUserRating(vehicle.name) > 0 && (
+                          <div className="vehicle-inventory__hero-rating-item">
                             <div className="vehicle-inventory__hero-rating-label-wrapper">
-                              <span className="vehicle-inventory__hero-rating-label-top">Expert</span>
+                              <span className="vehicle-inventory__hero-rating-label-top">Your</span>
                               <span className="vehicle-inventory__hero-rating-label-bottom">Rating</span>
                             </div>
                             <div className="vehicle-inventory__hero-rating-value-wrapper">
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                            alt="MotorTrend" 
-                            className="vehicle-inventory__hero-rating-icon staff" 
-                          />
-                          <span className="vehicle-inventory__hero-rating-value">
-                            {Math.round(vehicle.staffRating * 10)}
-                          </span>
-                            </div>
-                        </div>
-                        <div className="vehicle-inventory__hero-rating-item">
-                            <div className="vehicle-inventory__hero-rating-label-wrapper">
-                              <span className="vehicle-inventory__hero-rating-label-top">Community</span>
-                              <span className="vehicle-inventory__hero-rating-label-bottom">
-                                Rating <span className="vehicle-inventory__hero-rating-count">(25)</span>
+                              <img 
+                                src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
+                                alt="Your Rating Star" 
+                                className="vehicle-inventory__hero-rating-icon add-rate" 
+                              />
+                              <span className="vehicle-inventory__hero-rating-value">
+                                {getUserRating(vehicle.name)}
                               </span>
                             </div>
-                            <div className="vehicle-inventory__hero-rating-value-wrapper">
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                            alt="Community Rating Star" 
-                            className="vehicle-inventory__hero-rating-icon community" 
-                          />
-                          <span className="vehicle-inventory__hero-rating-value">
-                            {Math.round(vehicle.communityRating * 10)}
-                          </span>
-                        </div>
                           </div>
-                          {getUserRating(vehicle.name) > 0 && (
-                            <div className="vehicle-inventory__hero-rating-item">
-                              <div className="vehicle-inventory__hero-rating-label-wrapper">
-                                <span className="vehicle-inventory__hero-rating-label-top">Your</span>
-                                <span className="vehicle-inventory__hero-rating-label-bottom">Rating</span>
-                              </div>
-                              <div className="vehicle-inventory__hero-rating-value-wrapper">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                                  alt="Your Rating Star" 
-                            className="vehicle-inventory__hero-rating-icon add-rate" 
-                          />
-                            <span className="vehicle-inventory__hero-rating-value">
-                              {getUserRating(vehicle.name)}
-                            </span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                        )}
                         <button 
                           className="vehicle-inventory__hero-listing-btn cta cta--primary cta--default"
                           onClick={(e) => {

@@ -15,19 +15,22 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 16px;
   min-width: 280px;
-  z-index: 99999;
+  z-index: 999999;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
 }
 
 .staff-rating-tooltip.staff-rating-tooltip--visible {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .staff-rating-tooltip--portal {
   position: fixed !important;
+  z-index: 999999 !important;
 }
 
 .staff-rating-tooltip::before {

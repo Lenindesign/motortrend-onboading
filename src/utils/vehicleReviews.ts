@@ -274,7 +274,7 @@ const generateDetailedSections = (
     : `The ${year} ${make} ${model} delivers solid, predictable performance that suits everyday driving needs. Acceleration is adequate for confident merging and passing, while the handling is composed and easy to manage. The suspension tuning prioritizes comfort, effectively absorbing road imperfections. The steering is light and precise, making it easy to maneuver in tight spaces. While it won't excite performance enthusiasts, it excels as a practical and reliable daily driver.`;
   
   sections.push({
-    title: `Performance — ${Math.round(scores.performance * 10)}/100`,
+    title: `Performance — ${scores.performance.toFixed(1)}/10`,
     content: performanceContent
   });
   
@@ -292,7 +292,7 @@ const generateDetailedSections = (
     : `The ${year} ${make} ${model} delivers impressive fuel economy for its segment, typically achieving 25-30 mpg combined depending on engine choice and driving conditions. The efficient powertrain helps keep operating costs low, while the fuel tank provides excellent range for both city and highway driving. Real-world testing shows these EPA numbers are achievable with normal driving habits, making it an economical choice for daily commuting and longer trips.`;
   
   sections.push({
-    title: `Efficiency / Range — ${Math.round(scores.efficiency * 10)}/100`,
+    title: `Efficiency / Range — ${scores.efficiency.toFixed(1)}/10`,
     content: efficiencyContent
   });
   
@@ -306,7 +306,7 @@ const generateDetailedSections = (
     : `The ${year} ${make} ${model} offers modern technology that's well-integrated and user-friendly. The infotainment system features an intuitive touchscreen with responsive controls, supporting Apple CarPlay and Android Auto. Standard safety features include forward collision warning, automatic emergency braking, and lane-keeping assist. Higher trims add advanced driver-assistance features like adaptive cruise control and blind-spot monitoring. The technology suite provides a good balance of features and value, making modern connectivity and safety accessible.`;
   
   sections.push({
-    title: `Tech / Innovation — ${Math.round(scores.tech * 10)}/100`,
+    title: `Tech / Innovation — ${scores.tech.toFixed(1)}/10`,
     content: techContent
   });
   
@@ -322,7 +322,7 @@ const generateDetailedSections = (
     : `The ${year} ${make} ${model} offers good value across its trim range, with base models providing a well-equipped vehicle with modern features. Stepping up to higher trims adds premium amenities and advanced technology. Resale value is competitive for the segment, and ownership costs are reasonable. The combination of features, reliability, and long-term value makes it a solid choice for budget-conscious buyers.`;
   
   sections.push({
-    title: `Value — ${Math.round(scores.value * 10)}/100`,
+    title: `Value — ${scores.value.toFixed(1)}/10`,
     content: valueContent
   });
   
@@ -330,7 +330,7 @@ const generateDetailedSections = (
   const overallContent = `The ${year} ${make} ${model} continues to be a compelling choice in its segment, offering a winning combination of ${segment === 'performance' ? 'performance, handling, and technology' : segment === 'luxury' ? 'luxury, technology, and refinement' : segment === 'truck' ? 'capability, technology, and comfort' : segment === 'suv' ? 'versatility, comfort, and capability' : segment === 'electric' ? 'electric innovation, performance, and technology' : 'performance, efficiency, and technology'}. While it may not excel in every single category, its overall package provides excellent value and a satisfying ownership experience. Whether you prioritize ${segment === 'performance' ? 'driving excitement' : segment === 'luxury' ? 'luxury and refinement' : segment === 'truck' ? 'towing and hauling capability' : segment === 'suv' ? 'versatility and space' : segment === 'electric' ? 'eco-friendly technology' : 'practicality and efficiency'}, the ${model} delivers with confidence and style.`;
   
   sections.push({
-    title: `Overall Impression — ${Math.round(staffRating * 10)} MotorTrend Rating`,
+    title: `Overall Impression — ${staffRating.toFixed(1)} MotorTrend Rating`,
     content: overallContent
   });
   

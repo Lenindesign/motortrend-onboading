@@ -163,13 +163,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 189px;
   height: 173px;
   background-color: #282a30;
   border-radius: 8px;
-  padding: 4px 8px;
-  gap: 4px;
+  padding: 20px 12px 12px 12px;
+  gap: 0;
   position: relative;
 }
 
@@ -177,29 +177,37 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 16px;
   flex: 1;
   justify-content: center;
+  padding: 0;
+}
+
+.user-reviews__rating-stars-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .user-reviews__star-icon {
-  width: 44px;
-  height: 44px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .user-reviews__rating-info {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
 .user-reviews__rating-score {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 42px;
-  line-height: 1.2em;
+  font-size: 48px;
+  line-height: 1;
   color: var(--color-white);
   text-align: center;
 }
@@ -229,12 +237,12 @@
 .user-reviews__add-rate {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-family: var(--font-body);
   font-size: 12px;
   line-height: 1.3333333333333333em;
   color: var(--color-white);
-  padding: 0 16px 4px 16px;
+  padding: 6px 12px;
   border-radius: 4px;
   background: none;
   border: none;

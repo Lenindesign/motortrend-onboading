@@ -8,6 +8,10 @@ import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import Button from '../../design-system/components/Button';
 import RatingModal from '../RatingModal';
 import { useRating } from '../../contexts/RatingContext';
+// Using new graphics for user types
+const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/69101763c398630002aedb21/buyer.svg';
+const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017650e4b090002079ec0/enthusiast.svg';
+const bothImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017670e4b090002079ec2/both.svg';
 
 export interface OnboardingStatus {
   step1: boolean;
@@ -63,7 +67,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   const [step1Name, setStep1Name] = useState('');
   const [step1Location, setStep1Location] = useState('');
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
-  const [step2Interests, setStep2Interests] = useState<string[]>([]);
+  const [step2UserType, setStep2UserType] = useState<string>('');
   const [step3Vehicles, setStep3Vehicles] = useState<Array<{name: string, ownership: 'own' | 'want', rating?: number}>>([]);
   const [step4Newsletters, setStep4Newsletters] = useState<string[]>([]);
 
@@ -82,16 +86,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     if (localOnboardingData.name !== undefined) {
       setStep1Name(localOnboardingData.name || '');
       setStep1Location(localOnboardingData.location || '');
-      
-      // Auto-select Car Buyer or Car Enthusiast based on onboarding choice
-      let interests = localOnboardingData.interests || [];
-      if (localOnboardingData.userType === 'buyer' && !interests.includes('Car Buyer')) {
-        interests = [...interests, 'Car Buyer'];
-      } else if (localOnboardingData.userType === 'enthusiast' && !interests.includes('Car Enthusiast')) {
-        interests = [...interests, 'Car Enthusiast'];
-      }
-      
-      setStep2Interests(interests);
+      setStep2UserType(localOnboardingData.userType || '');
       setStep3Vehicles(localOnboardingData.vehicles || []);
       setStep4Newsletters(localOnboardingData.newsletters || []);
     }
@@ -99,7 +94,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
 
   // Calculate completion status based on actual data
   const step1Completed = !!(step1Name && step1Name.trim() !== '');
-  const step2Completed = step2Interests.length > 0;
+  const step2Completed = !!step2UserType;
   const step3Completed = step3Vehicles.length > 0;
   const step4Completed = step4Newsletters.length > 0;
 
@@ -127,8 +122,21 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   };
 
   const handleSaveStep2 = () => {
-    if (step2Interests.length > 0 && onUpdateStep2) {
-      onUpdateStep2({ interests: step2Interests });
+    if (step2UserType && onUpdateStep2) {
+      // Convert userType to interests array for backward compatibility
+      const interests: string[] = [];
+      if (step2UserType === 'buyer') {
+        interests.push('Car Buyer');
+      } else if (step2UserType === 'enthusiast') {
+        interests.push('Car Enthusiast');
+      } else if (step2UserType === 'both') {
+        interests.push('Car Buyer', 'Car Enthusiast');
+      }
+      onUpdateStep2({ interests });
+      // Also update userType in localStorage
+      const updatedData = { ...localOnboardingData, userType: step2UserType };
+      setLocalOnboardingData(updatedData);
+      localStorage.setItem('onboardingData', JSON.stringify(updatedData));
       setExpandedStep(null);
     }
   };
@@ -161,12 +169,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     setStep3Vehicles(step3Vehicles.filter(vehicle => vehicle.name !== vehicleName));
   };
 
-  const toggleInterest = (interest: string) => {
-    setStep2Interests(prev => 
-      prev.includes(interest) 
-        ? prev.filter(i => i !== interest)
-        : [...prev, interest]
-    );
+  const handleUserTypeSelect = (userType: string) => {
+    setStep2UserType(userType);
   };
 
   const toggleNewsletter = (newsletter: string) => {
@@ -379,33 +383,73 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
 
             {expandedStep === step.number && step.number === 2 && (
               <div className="profile-completion-step__form">
-                <h4 className="profile-completion-step__form-title">Tell Us Your Interests</h4>
-                <p className="profile-completion-step__form-subtitle">So we can help you on your journey?</p>
-                <div className="profile-completion-step__options">
-                  {[
-                    'Car Buyer',
-                    'Car Enthusiast',
-                    'Vehicle Reviews',
-                    'Automotive News',
-                    'Car Comparisons',
-                    'Buying Guides',
-                    'Maintenance Tips',
-                    'Racing & Sports'
-                  ].map((interest) => (
-                    <label key={interest} className="profile-option">
-                      <input
-                        type="checkbox"
-                        checked={step2Interests.includes(interest)}
-                        onChange={() => toggleInterest(interest)}
+                <h4 className="profile-completion-step__form-title">What describes you best?</h4>
+                <p className="profile-completion-step__form-subtitle">Choose the option that best fits your automotive interests</p>
+                <div className="user-type-selection">
+                  <button
+                    className={`user-type-option ${step2UserType === 'buyer' ? 'user-type-option--selected' : ''}`}
+                    onClick={() => handleUserTypeSelect('buyer')}
+                    type="button"
+                  >
+                    <div className="user-type-image">
+                      <img 
+                        src={buyerImage} 
+                        alt="Car Buyer" 
+                        className="user-type-img"
                       />
-                      <span className="profile-option__label">{interest}</span>
-                    </label>
-                  ))}
+                    </div>
+                    <div className="user-type-content">
+                      <h3 className="user-type-title">Buyer</h3>
+                      <p className="user-type-description">
+                        Shopping for a new or used car
+                      </p>
+                    </div>
+                  </button>
+                  
+                  <button
+                    className={`user-type-option ${step2UserType === 'enthusiast' ? 'user-type-option--selected' : ''}`}
+                    onClick={() => handleUserTypeSelect('enthusiast')}
+                    type="button"
+                  >
+                    <div className="user-type-image">
+                      <img 
+                        src={enthusiastImage} 
+                        alt="Car Enthusiast" 
+                        className="user-type-img"
+                      />
+                    </div>
+                    <div className="user-type-content">
+                      <h3 className="user-type-title">Enthusiast</h3>
+                      <p className="user-type-description">
+                        Love cars, reviews, and auto culture
+                      </p>
+                    </div>
+                  </button>
+                  
+                  <button
+                    className={`user-type-option ${step2UserType === 'both' ? 'user-type-option--selected' : ''}`}
+                    onClick={() => handleUserTypeSelect('both')}
+                    type="button"
+                  >
+                    <div className="user-type-image">
+                      <img 
+                        src={bothImage} 
+                        alt="Both" 
+                        className="user-type-img"
+                      />
+                    </div>
+                    <div className="user-type-content">
+                      <h3 className="user-type-title">Both</h3>
+                      <p className="user-type-description">
+                        Car lover always eyeing the next ride
+                      </p>
+                    </div>
+                  </button>
                 </div>
                 <button 
                   className="profile-completion-step__save-btn"
                   onClick={handleSaveStep2}
-                  disabled={step2Interests.length === 0}
+                  disabled={!step2UserType}
                 >
                   Save Changes
                 </button>

@@ -39,17 +39,17 @@ export const RatingModal: React.FC<RatingModalProps> = ({
     }
   }, [isOpen, currentRating]);
 
-  const ratingLabels = {
-    1: "Awful – Never again",
-    2: "Poor – Major regrets", 
-    3: "Below Average – Disappointed",
-    4: "Fair – Just okay",
-    5: "Average – Meets basic needs",
-    6: "Decent – Would consider again",
-    7: "Good – Happy overall",
-    8: "Very Good – Impressive value",
-    9: "Excellent – Love this car",
-    10: "Perfect – Dream car!"
+  const ratingLabels: { [key: number]: string } = {
+    10: "Awful – Never again",
+    20: "Poor – Major regrets",
+    30: "Below Average – Disappointed",
+    40: "Fair – Just okay",
+    50: "Average – Meets basic needs",
+    60: "Decent – Would consider again",
+    70: "Good – Happy overall",
+    80: "Very Good – Impressive value",
+    90: "Excellent – Love this car",
+    100: "Perfect – Dream car!"
   };
 
   const handleStarClick = (rating: number) => {
@@ -107,20 +107,20 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           <div className="rating-modal__title-section">
             <div className="rating-modal__main-rating">
               <div className="rating-modal__score-star">
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
+                <img
+                  src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
                   alt="Rating star"
                   className="rating-modal__score-star-icon"
                 />
                 <span className="rating-modal__rating-number-large">
-                  {selectedRating > 0 ? selectedRating : '0'}
+                  {hoveredRating > 0 ? hoveredRating / 20 : (selectedRating > 0 ? selectedRating / 20 : '0')}
                 </span>
               </div>
             </div>
             <div className="rating-modal__title-wrapper">
-            <h2 className="rating-modal__title">RATE THIS</h2>
+              <h2 className="rating-modal__title">RATE THIS</h2>
               <div className="rating-modal__info-icon-wrapper">
-                <img 
+                <img
                   src="https://d2kde5ohu8qb21.cloudfront.net/files/6918b2a80074bb0002840bac/demography.svg"
                   alt="Community Guidelines"
                   className="rating-modal__info-icon"
@@ -130,8 +130,8 @@ export const RatingModal: React.FC<RatingModalProps> = ({
                   }}
                 />
                 <div className="rating-modal__info-tooltip">
-                  1–10 Rating Guide<br />
-                  1–2: Poor · 3–4: Below average · 5–6: Average · 7–8: Good · 9–10: Excellent.<br /><br />
+                  1–5 Rating Guide<br />
+                  0.5–1: Poor · 1.5–2: Below average · 2.5–3: Average · 3.5–4: Good · 4.5–5: Excellent.<br /><br />
                   Overall ratings reflect factors like review recency, verified ownership, and trust signals — not just simple averages.<br /><br />
                   <Link to="/article/how-to-rate-vehicles" className="rating-modal__tooltip-link" onClick={(e) => e.stopPropagation()}>
                     Read Our Rating Overview
@@ -141,7 +141,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
             </div>
             <p className="rating-modal__vehicle-name">{vehicleName}</p>
           </div>
-          <button 
+          <button
             className="rating-modal__close-btn"
             onClick={handleCancel}
             aria-label="Close rating modal"
@@ -152,33 +152,77 @@ export const RatingModal: React.FC<RatingModalProps> = ({
 
         <div className="rating-modal__content">
           <div className="rating-modal__stars">
-            {Array.from({ length: 10 }, (_, index) => {
-              const starNumber = index + 1;
-              const isSelected = starNumber <= selectedRating;
-              const isHovered = starNumber <= hoveredRating;
-              const isActive = isSelected || (hoveredRating > 0 && isHovered);
-              const showTooltip = hoveredRating > 0 && starNumber === hoveredRating;
+            {Array.from({ length: 5 }, (_, index) => {
+              const starPosition = index + 1;
+              const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
+              const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
+
+              // Determine if this star should show as full, half, or empty
+              const isOddSelected = oddRating <= selectedRating;
+              const isEvenSelected = evenRating <= selectedRating;
+              const isOddHovered = oddRating <= hoveredRating;
+              const isEvenHovered = evenRating <= hoveredRating;
+
+              // Show half star if odd is selected/hovered but even is not
+              const showHalfStar = (isOddSelected && !isEvenSelected) || (hoveredRating > 0 && isOddHovered && !isEvenHovered && !isEvenSelected);
+              // Show full star if even is selected, or if hovering over even (and odd is already selected or we're hovering over even)
+              const showFullStar = isEvenSelected || (hoveredRating > 0 && isEvenHovered);
+
+              const showTooltipOdd = hoveredRating > 0 && hoveredRating === oddRating;
+              const showTooltipEven = hoveredRating > 0 && hoveredRating === evenRating;
 
               return (
-                <div key={starNumber} className="rating-modal__star-container">
-                  {showTooltip && (
-                    <div className={`rating-modal__tooltip ${starNumber <= 3 ? 'rating-modal__tooltip--left' : starNumber >= 8 ? 'rating-modal__tooltip--right' : ''}`}>
-                      {ratingLabels[starNumber as keyof typeof ratingLabels]}
+                <div key={starPosition} className="rating-modal__star-container">
+                  {showTooltipOdd && (
+                    <div className={`rating-modal__tooltip ${starPosition <= 2 ? 'rating-modal__tooltip--left' : starPosition >= 4 ? 'rating-modal__tooltip--right' : ''}`}>
+                      {ratingLabels[oddRating]}
                     </div>
                   )}
-                  <button
-                    className={`rating-modal__star ${isActive ? 'rating-modal__star--active' : ''}`}
-                    onClick={() => handleStarClick(starNumber)}
-                    onMouseEnter={() => handleStarHover(starNumber)}
-                    onMouseLeave={handleStarLeave}
-                    aria-label={`Rate ${starNumber} star${starNumber > 1 ? 's' : ''}`}
-                  >
-                    <img 
-                      src={isActive ? 'https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg' : 'https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg'}
-                      alt={`${starNumber} star rating`}
-                      className="rating-modal__star-icon"
+                  {showTooltipEven && (
+                    <div className={`rating-modal__tooltip ${starPosition <= 2 ? 'rating-modal__tooltip--left' : starPosition >= 4 ? 'rating-modal__tooltip--right' : ''}`}>
+                      {ratingLabels[evenRating]}
+                    </div>
+                  )}
+                  <div className="rating-modal__star-wrapper">
+                    {/* Visual star display */}
+                    <div className="rating-modal__star-visual">
+                      {showHalfStar ? (
+                        <img
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                          alt={`${oddRating} star rating`}
+                          className="rating-modal__star-icon"
+                        />
+                      ) : showFullStar ? (
+                        <img
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                          alt={`${evenRating} star rating`}
+                          className="rating-modal__star-icon"
+                        />
+                      ) : (
+                        <img
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                          alt="Empty star"
+                          className="rating-modal__star-icon"
+                        />
+                      )}
+                    </div>
+                    {/* Left half clickable area for odd rating */}
+                    <button
+                      className={`rating-modal__star-click rating-modal__star-click--left ${isOddSelected || (hoveredRating > 0 && isOddHovered) ? 'rating-modal__star--active' : ''}`}
+                      onClick={() => handleStarClick(oddRating)}
+                      onMouseEnter={() => handleStarHover(oddRating)}
+                      onMouseLeave={handleStarLeave}
+                      aria-label={`Rate ${oddRating} out of 100`}
                     />
-                  </button>
+                    {/* Right half clickable area for even rating */}
+                    <button
+                      className={`rating-modal__star-click rating-modal__star-click--right ${isEvenSelected || (hoveredRating > 0 && isEvenHovered) ? 'rating-modal__star--active' : ''}`}
+                      onClick={() => handleStarClick(evenRating)}
+                      onMouseEnter={() => handleStarHover(evenRating)}
+                      onMouseLeave={handleStarLeave}
+                      aria-label={`Rate ${evenRating} out of 100`}
+                    />
+                  </div>
                 </div>
               );
             })}
@@ -186,14 +230,14 @@ export const RatingModal: React.FC<RatingModalProps> = ({
         </div>
 
         <div className="rating-modal__footer">
-          <button 
+          <button
             className="rating-modal__btn rating-modal__btn--submit"
             onClick={handleSubmit}
             disabled={selectedRating === 0 && currentRating === 0}
           >
             {currentRating > 0 ? 'CLEAR RATING' : 'RATE'}
           </button>
-          <button 
+          <button
             className="rating-modal__btn rating-modal__btn--rate-and-review"
             onClick={handleRateAndReview}
             disabled={selectedRating === 0}

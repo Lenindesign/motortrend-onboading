@@ -40,8 +40,13 @@ export interface ReviewData {
   isThumbsUp?: boolean;
   replies?: ReplyData[];
   categoryRatings?: {
-    comfort?: number;
+    // New category names
+    driverExperience?: number;
     reliability?: number;
+    budgetFriendly?: number;
+    manufacturerWarranty?: number;
+    // Legacy category names (for backward compatibility)
+    comfort?: number;
     interior?: number;
     value?: number;
     safety?: number;
@@ -290,11 +295,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     }
 
     const categories = [
-      { key: 'comfort', label: 'Comfort' },
+      { key: 'driverExperience', label: 'Driver Experience' },
       { key: 'reliability', label: 'Reliability' },
-      { key: 'interior', label: 'Interior' },
-      { key: 'value', label: 'Value' },
-      { key: 'safety', label: 'Safety' }
+      { key: 'budgetFriendly', label: 'Budget Friendly' },
+      { key: 'manufacturerWarranty', label: 'Manufacturer Warranty' }
     ] as const;
 
     const categoryRatings = review.categoryRatings;
@@ -310,28 +314,35 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
           const rating = categoryRatings[category.key];
           if (!rating || rating === 0) return null;
 
+          // Convert from 0-100 scale to 0-5 scale
+          const normalizedRating = rating / 20;
+
           return (
             <div key={category.key} className="user-reviews__category-rating">
               <span className="user-reviews__category-name">{category.label}</span>
               <div className="user-reviews__category-stars">
-                {Array.from({ length: 10 }, (_, index) => {
-                  const starNumber = index + 1;
-                  const isFilled = starNumber <= rating;
+                {Array.from({ length: 5 }, (_, index) => {
+                  const starPosition = index + 1;
+                  const isFilled = starPosition <= Math.floor(normalizedRating);
+                  const isHalf = starPosition === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
+                  
                   return (
                     <img
-                      key={starNumber}
+                      key={starPosition}
                       src={
                         isFilled
-                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                          : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                          : isHalf
+                          ? "https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                          : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
                       }
-                      alt={`Star ${starNumber}`}
+                      alt={`Star ${starPosition}`}
                       className="user-reviews__category-star"
                     />
                   );
                 })}
               </div>
-              <span className="user-reviews__category-score">{rating}</span>
+              <span className="user-reviews__category-score">{normalizedRating % 1 === 0 ? normalizedRating : normalizedRating.toFixed(1)}</span>
             </div>
           );
         })}
@@ -636,14 +647,31 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
           <div className="user-reviews__community-rating">
             <div className="user-reviews__rating-card">
               <div className="user-reviews__rating-content">
-                <img 
-                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                  alt="Star" 
-                  className="user-reviews__star-icon"
-                />
+                <div className="user-reviews__rating-stars-display">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const ratingValue = communityRating / 2; // Convert 0-10 to 0-5
+                    const isFilled = star <= Math.floor(ratingValue);
+                    const isHalf = star === Math.ceil(ratingValue) && ratingValue % 1 !== 0;
+                    
+                    return (
+                      <img
+                        key={star}
+                        src={
+                          isFilled
+                            ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                            : isHalf
+                            ? "https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                            : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                        }
+                        alt={`Star ${star}`}
+                        className="user-reviews__star-icon"
+                      />
+                    );
+                  })}
+                </div>
                 <div className="user-reviews__rating-info">
                   <div className="user-reviews__rating-score">
-                    {communityRating % 1 === 0 ? communityRating : communityRating.toFixed(1)}
+                    {(communityRating / 2) % 1 === 0 ? communityRating / 2 : (communityRating / 2).toFixed(1)}
                   </div>
                   <div className="user-reviews__rating-label">
                     <span className="user-reviews__rating-label-text">Community Rating</span>
@@ -657,13 +685,13 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
               >
                 <img 
                   src={userRating > 0 
-                    ? "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                    : "https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b10/starbluenotsolid.svg"
+                    ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                    : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
                   }
                   alt="Add Rating" 
                   className="user-reviews__add-rate-star"
                 />
-                {userRating > 0 ? `Your Rating: ${userRating}` : 'Add Your Rating'}
+                {userRating > 0 ? `Your Rating: ${(userRating / 20) % 1 === 0 ? userRating / 20 : (userRating / 20).toFixed(1)}` : 'Add Your Rating'}
               </button>
             </div>
           </div>
@@ -671,7 +699,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
           {/* Rating Distribution Chart */}
           <div className="user-reviews__distribution">
             <div className="user-reviews__distribution-chart">
-              {ratingDistribution.map((count, index) => (
+              {ratingDistribution.slice(0, 5).map((count, index) => (
                 <div 
                   key={index} 
                   className="user-reviews__distribution-bar"
@@ -679,7 +707,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                   onMouseLeave={handleBarMouseLeave}
                 >
                   <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                     alt="Star" 
                     className="user-reviews__bar-star"
                   />
@@ -809,12 +837,12 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       <div className="user-reviews__review-rating-row">
                         <div className="user-reviews__review-rating-group">
                           <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
                             alt="Rating" 
                             className="user-reviews__review-star"
                           />
                           <span className="user-reviews__review-rating">
-                            {review.rating % 1 === 0 ? review.rating : review.rating.toFixed(1)}
+                            {(review.rating / 2) % 1 === 0 ? review.rating / 2 : (review.rating / 2).toFixed(1)}
                           </span>
                         </div>
                       </div>

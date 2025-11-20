@@ -13,12 +13,12 @@ export interface CardProps {
   title: string;
   subtitle?: string;
   type?: string;
-  
+
   // Optional content sections
   metadata?: string; // For author/date info
-  ratings?: Array<{ value: number; color: string }>;
+  ratings?: Array<{ value: number | string; color: string }>;
   hasMultipleRatings?: boolean;
-  
+
   // Interactive elements
   onBookmark?: () => void;
   isBookmarked?: boolean;
@@ -26,14 +26,14 @@ export interface CardProps {
   actionText?: string;
   onRate?: () => void; // New prop for the "Rate" action
   userRating?: number; // User's rating for the vehicle
-  
+
   // Vehicle-specific props (optional)
   ownership?: 'own' | 'want';
   onOwnershipChange?: (value: 'own' | 'want') => void;
-  
+
   // Video-specific props (optional)
   showPlayIcon?: boolean;
-  
+
   // Custom styling
   className?: string;
   variant?: 'default' | 'compact';
@@ -64,7 +64,7 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div className={cardClasses}>
       <div className="card__top-row">
-        <div 
+        <div
           className={`card__image-container ${onAction ? 'card__image-container--clickable' : ''}`}
           onClick={onAction ? (e) => {
             e.stopPropagation();
@@ -73,7 +73,7 @@ export const Card: React.FC<CardProps> = ({
         >
           <img src={image} alt={title} className="card__image" />
           {onBookmark && (
-            <button 
+            <button
               className={`card__bookmark-btn ${isBookmarked ? 'card__bookmark-btn--active' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -90,7 +90,7 @@ export const Card: React.FC<CardProps> = ({
             </div>
           )}
         </div>
-        
+
         <div className="card__content">
           <div className="card__info">
             <h4 className="card__title">{title}</h4>
@@ -98,7 +98,7 @@ export const Card: React.FC<CardProps> = ({
             {type && <p className="card__type">{type}</p>}
             {metadata && <p className="card__metadata">{metadata}</p>}
           </div>
-          
+
           {/* Vehicle ownership section with emojis */}
           {ownership && onOwnershipChange && (
             <div className="card__ownership">
@@ -128,7 +128,7 @@ export const Card: React.FC<CardProps> = ({
             {hasMultipleRatings && ratings.length > 0 && (
               <>
                 {ratings.map((rating, index) => {
-                  const tooltipText = rating.color === '#FFB74D' ? 'Expert Rating' : 'Community Rating (25)';
+                  const tooltipText = rating.color === '#FFB74D' ? 'MotorTrend Rating' : 'Community Rating (25)';
                   const isMotorTrendRating = rating.color === '#FFB74D';
                   return (
                     <div key={index} className="card__rating card__rating--with-tooltip">
@@ -136,15 +136,15 @@ export const Card: React.FC<CardProps> = ({
                         {tooltipText}
                       </div>
                       {isMotorTrendRating ? (
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691b33a319d4b50002408402/mt-rating.svg" 
-                          alt="MotorTrend" 
+                        <img
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                          alt="MotorTrend"
                           className="card__rating-mt-logo"
                         />
                       ) : (
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg" 
-                          alt="Star rating" 
+                        <img
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                          alt="Star rating"
                           className="card__rating-star"
                         />
                       )}
@@ -161,21 +161,21 @@ export const Card: React.FC<CardProps> = ({
                     e.stopPropagation();
                     onRate();
                   }}>
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f66c095d4ae300022a2b0e/starbluesolid.svg"
-                      alt="User rated star" 
+                    <img
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                      alt="User rated star"
                       className="card__rating-star"
                     />
-                    <span className="card__rating-value">{userRating.toString()}</span>
+                    <span className="card__rating-value">{(userRating / 20).toFixed(1)}/5</span>
                   </button>
                 ) : (
                   <button className="card__rate-star-btn" onClick={(e) => {
                     e.stopPropagation();
                     onRate();
                   }}>
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/691b47c61d356000022d5f14/star-stroke.svg" 
-                      alt="Rate star" 
+                    <img
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                      alt="Rate star"
                       className="card__rating-star"
                     />
                     <span className="card__rate-star-tooltip">Rate This Car</span>
@@ -185,10 +185,10 @@ export const Card: React.FC<CardProps> = ({
             )}
           </div>
         ) : null}
-        
+
         {/* Spacer when no ratings or rate option */}
         {!((hasMultipleRatings && ratings.length > 0) || onRate) && <div></div>}
-        
+
         {/* Action button */}
         {onAction && (
           <button className="card__button" onClick={(e) => {
