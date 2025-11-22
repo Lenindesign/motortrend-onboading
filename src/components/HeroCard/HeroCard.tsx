@@ -1,10 +1,12 @@
 /**
  * Hero Card Component
  * Large hero card for featured content
+ * Now uses CardShell atom for consistent card wrapper styling
  */
 
 import React from 'react';
 import './HeroCard.css';
+import { CardShell } from '../atoms/CardShell/CardShell';
 
 export interface HeroCardProps {
   imageUrl: string;
@@ -18,19 +20,17 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   onClick,
 }) => {
   return (
-    <div 
-      className="hero-card"
+    <CardShell
+      padding="none"
+      hasHover={true}
+      hasShadow={true}
+      borderRadius="md"
+      background="neutral-lighter"
       onClick={onClick}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={onClick ? (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      } : undefined}
+      className="hero-card"
     >
-      <div className="hero-card__image-container">
+      <div className="hero-card__inner">
+        <div className="hero-card__image-container">
         <img 
           src={imageUrl} 
           alt={title} 
@@ -40,7 +40,8 @@ export const HeroCard: React.FC<HeroCardProps> = ({
       <div className="hero-card__content">
         <h3 className="hero-card__title">{title}</h3>
       </div>
-    </div>
+      </div>
+    </CardShell>
   );
 };
 

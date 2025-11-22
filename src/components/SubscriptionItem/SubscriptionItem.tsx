@@ -1,5 +1,6 @@
 import React from 'react';
 import './SubscriptionItem.css';
+import { CardShell } from '../atoms/CardShell/CardShell';
 
 export interface SubscriptionItemProps {
   name: string;
@@ -85,22 +86,39 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
 
   if (href) {
     return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
+      <CardShell
+        padding="none"
+        hasHover={true}
+        hasShadow={false}
+        borderRadius="md"
+        background="transparent"
         className="subscription-item subscription-item--link"
-        onClick={handleClick}
       >
-        {content}
-      </a>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="subscription-item__link"
+          onClick={handleClick}
+        >
+          {content}
+        </a>
+      </CardShell>
     );
   }
 
   return (
-    <div className="subscription-item" onClick={handleClick}>
+    <CardShell
+      padding="none"
+      hasHover={true}
+      hasShadow={false}
+      borderRadius="md"
+      background="transparent"
+      onClick={handleClick}
+      className="subscription-item"
+    >
       {content}
-    </div>
+    </CardShell>
   );
 };
 

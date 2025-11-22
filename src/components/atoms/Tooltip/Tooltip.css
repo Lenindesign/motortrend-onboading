@@ -1,0 +1,185 @@
+/**
+ * Tooltip Atom Styles
+ * Accessible tooltip styling using design tokens
+ */
+
+/* Trigger wrapper */
+.tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+}
+
+/* Tooltip container */
+.tooltip {
+  background-color: var(--color-neutrals-2);
+  color: var(--color-white);
+  padding: var(--spacing-component-sm) var(--spacing-component-md);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  box-shadow: var(--shadow-tooltip);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), visibility var(--transition-fast);
+  pointer-events: none;
+}
+
+.tooltip--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.tooltip__content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Arrow indicator */
+.tooltip__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  z-index: 0;
+}
+
+/* Arrow positioning for top placement */
+.tooltip--top.tooltip--with-arrow .tooltip__arrow {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-color: var(--color-neutrals-2) transparent transparent transparent;
+}
+
+/* Arrow positioning for bottom placement */
+.tooltip--bottom.tooltip--with-arrow .tooltip__arrow {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent var(--color-neutrals-2) transparent;
+}
+
+/* Arrow positioning for left placement */
+.tooltip--left.tooltip--with-arrow .tooltip__arrow {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-color: transparent transparent transparent var(--color-neutrals-2);
+}
+
+/* Arrow positioning for right placement */
+.tooltip--right.tooltip--with-arrow .tooltip__arrow {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 6px 6px 0;
+  border-color: transparent var(--color-neutrals-2) transparent transparent;
+}
+
+/* Animation variants */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltip--visible.tooltip--top {
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+.tooltip--visible.tooltip--bottom {
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .tooltip {
+    border: 2px solid var(--color-white);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .tooltip {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .tooltip {
+    background-color: var(--color-neutrals-1);
+    box-shadow: var(--shadow-tooltip), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .tooltip--top.tooltip--with-arrow .tooltip__arrow {
+    border-color: var(--color-neutrals-1) transparent transparent transparent;
+  }
+  
+  .tooltip--bottom.tooltip--with-arrow .tooltip__arrow {
+    border-color: transparent transparent var(--color-neutrals-1) transparent;
+  }
+  
+  .tooltip--left.tooltip--with-arrow .tooltip__arrow {
+    border-color: transparent transparent transparent var(--color-neutrals-1);
+  }
+  
+  .tooltip--right.tooltip--with-arrow .tooltip__arrow {
+    border-color: transparent var(--color-neutrals-1) transparent transparent;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tooltip {
+    font-size: 13px;
+    padding: 6px 10px;
+    max-width: 250px !important;
+  }
+  
+  .tooltip__arrow {
+    border-width: 5px;
+  }
+  
+  .tooltip--top.tooltip--with-arrow .tooltip__arrow {
+    bottom: -5px;
+    border-width: 5px 5px 0 5px;
+  }
+  
+  .tooltip--bottom.tooltip--with-arrow .tooltip__arrow {
+    top: -5px;
+    border-width: 0 5px 5px 5px;
+  }
+  
+  .tooltip--left.tooltip--with-arrow .tooltip__arrow {
+    right: -5px;
+    border-width: 5px 0 5px 5px;
+  }
+  
+  .tooltip--right.tooltip--with-arrow .tooltip__arrow {
+    left: -5px;
+    border-width: 5px 5px 5px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .tooltip {
+    font-size: 12px;
+    padding: 6px 8px;
+    max-width: 200px !important;
+  }
+}
+

@@ -1,9 +1,11 @@
 /**
  * Photo Gallery Component
  * Full-screen modal photo gallery with navigation
+ * Now uses ModalShell atom for consistent overlay
  */
 
 import React, { useState, useEffect } from 'react';
+import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 import './PhotoGallery.css';
 
@@ -29,14 +31,12 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
 
-  // Handle keyboard navigation
+  // Handle keyboard navigation (arrow keys only, escape handled by ModalShell)
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === 'ArrowLeft') {
+      if (e.key === 'ArrowLeft') {
         handlePrevious();
       } else if (e.key === 'ArrowRight') {
         handleNext();
@@ -46,19 +46,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, currentIndex]);
-
-  // Prevent body scroll when gallery is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
 
   const handleNext = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -72,12 +59,18 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     setCurrentIndex(index);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="photo-gallery">
-      <div className="photo-gallery__overlay" onClick={onClose} />
-      
+    <ModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      overlayVariant="dark"
+      maxWidth="100vw"
+      maxHeight="100vh"
+      closeOnOverlayClick={true}
+      closeOnEscape={true}
+      className="photo-gallery"
+      zIndex={10000}
+    >
       <div className="photo-gallery__content">
         {/* Header */}
         <div className="photo-gallery__header">
@@ -145,10 +138,12 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </ModalShell>
   );
 };
 
 export default PhotoGallery;
+
+
 
 

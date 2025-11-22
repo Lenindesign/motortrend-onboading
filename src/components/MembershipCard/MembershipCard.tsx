@@ -19,13 +19,6 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
   car = '2021 Subaru WRX',
   newsletter
 }) => {
-  // Debug: Log the newsletter prop value
-  console.log('🔍 [MembershipCard] newsletter prop value:', newsletter);
-  console.log('🔍 [MembershipCard] newsletter type:', typeof newsletter);
-  console.log('🔍 [MembershipCard] newsletter is undefined?', newsletter === undefined);
-  console.log('🔍 [MembershipCard] newsletter is null?', newsletter === null);
-  console.log('🔍 [MembershipCard] newsletter is empty string?', newsletter === '');
-  console.log('🔍 [MembershipCard] newsletter display value:', newsletter ?? '');
   
   return (
     <div className="membership-card">

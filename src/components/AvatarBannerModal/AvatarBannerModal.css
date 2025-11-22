@@ -1,38 +1,23 @@
 /* Avatar Banner Modal Styles */
 
-.avatar-banner-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  animation: fadeIn 0.2s ease-in-out;
-}
-
 .avatar-banner-modal {
   background-color: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-depth-5);
-  width: 100%;
-  max-width: 600px;
+}
+
+.avatar-banner-modal__inner {
   max-height: 80vh;
   overflow: hidden;
-  animation: slideUp 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 .avatar-banner-modal__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 24px 0 24px;
+  padding: var(--spacing-3) var(--spacing-4) 0;
   border-bottom: 1px solid var(--color-neutrals-7);
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-3);
 }
 
 .avatar-banner-modal__title {
@@ -65,25 +50,25 @@
 
 .avatar-banner-modal__tabs {
   display: flex;
-  padding: 0 24px;
-  gap: 8px;
-  margin-bottom: 24px;
+  padding: 0 var(--spacing-4);
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
 }
 
 .avatar-banner-modal__tab {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
+  gap: var(--spacing-component-sm);
+  padding: var(--spacing-component-sm) var(--spacing-component-lg);
   background: none;
   border: 1px solid var(--color-neutrals-6);
   border-radius: var(--border-radius-md);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   font-size: 14px;
   color: var(--color-neutrals-4);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
 }
 
 .avatar-banner-modal__tab:hover {
@@ -103,28 +88,28 @@
 }
 
 .avatar-banner-modal__content {
-  padding: 0 24px;
+  padding: 0 var(--spacing-4);
   max-height: 400px;
   overflow-y: auto;
 }
 
 .avatar-banner-modal__section {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-3);
 }
 
 .avatar-banner-modal__section-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   font-size: 18px;
   line-height: 1.3em;
   color: var(--color-neutrals-2);
-  margin: 0 0 16px 0;
+  margin: 0 0 var(--spacing-2);
 }
 
 .avatar-banner-modal__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 16px;
+  gap: var(--spacing-2);
 }
 
 .avatar-banner-modal__grid--banner {
@@ -136,12 +121,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px;
+  gap: var(--spacing-component-sm);
+  padding: var(--spacing-component-sm);
   border: 2px solid var(--color-neutrals-6);
   border-radius: var(--border-radius-md);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
   background-color: var(--color-white);
   box-shadow: var(--shadow-depth-1);
 }
@@ -204,7 +189,7 @@
 
 .avatar-banner-modal__option-name {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 12px;
   line-height: 1.3em;
   color: var(--color-neutrals-3);
@@ -213,15 +198,15 @@
 
 .avatar-banner-modal__option--selected .avatar-banner-modal__option-name {
   color: var(--color-neutrals-2);
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
 }
 
 .avatar-banner-modal__option-check {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 20px;
-  height: 20px;
+  top: var(--spacing-component-xs);
+  right: var(--spacing-component-xs);
+  width: 24px;
+  height: 24px;
   background-color: var(--color-neutrals-2);
   border-radius: 50%;
   display: flex;

@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { ModalShell } from '../atoms/ModalShell';
+import { Badge } from '../atoms/Badge/Badge';
+import { Button, TextField } from '../../design-system/components';
 import { useRating } from '../../contexts/RatingContext';
 import { computeOverallRating } from '../../utils/ratingUtils';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
@@ -426,32 +429,18 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     }
   };
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Only close if clicking directly on the overlay, not on the modal content
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  // Handle Escape key to close modal (only if textarea is not expanded)
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen && !isTextareaExpanded) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      window.addEventListener('keydown', handleEscape);
-      return () => window.removeEventListener('keydown', handleEscape);
-    }
-  }, [isOpen, isTextareaExpanded, onClose]);
-
-  if (!isOpen) return null;
-
   return (
-    <div className="write-review-modal-overlay" onClick={handleOverlayClick}>
-      <div className="write-review-modal" onClick={(e) => e.stopPropagation()}>
+    <ModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      position="side-right"
+      animation="slide-right"
+      maxWidth="400px"
+      closeOnEscape={!isTextareaExpanded}
+      closeOnOverlayClick={true}
+      className="write-review-modal"
+    >
+      <div className="write-review-modal__inner">
         {/* Header */}
         <div className="write-review-modal__header">
           <div className="write-review-modal__close-btn" onClick={onClose}>
@@ -593,16 +582,14 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </div>
               
               {/* Review Title */}
-              <div className="write-review-modal__field">
-                <label className="write-review-modal__field-label">Review Title</label>
-                <input
-                  type="text"
-                  className="write-review-modal__input"
-                  placeholder="Give your review a title"
-                  value={reviewTitle}
-                  onChange={(e) => setReviewTitle(e.target.value)}
-                />
-              </div>
+              <TextField
+                label="Review Title"
+                placeholder="Give your review a title"
+                value={reviewTitle}
+                onChange={(e) => setReviewTitle(e.target.value)}
+                fullWidth
+                className="write-review-modal__field"
+              />
 
               {/* Review Content */}
               <div className="write-review-modal__field">
@@ -657,23 +644,19 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
               {/* Experience Duration Section */}
               {vehicleRelationship && (
-                <div className="write-review-modal__field">
-                  <label className="write-review-modal__field-label">
-                    {vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
+                <TextField
+                  label={vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
                      vehicleRelationship === 'previously_owned' ? 'How long did you own this vehicle?' :
                      vehicleRelationship === 'leased' ? 'How long did you lease this vehicle?' :
                      vehicleRelationship === 'rented' ? 'How long did you rent this vehicle?' :
                      vehicleRelationship === 'test_drove' ? 'When did you test drive this vehicle?' :
                      'How long have you experienced this vehicle?'}
-                  </label>
-                  <input
-                    type="text"
-                    className="write-review-modal__input"
-                    placeholder={vehicleRelationship === 'test_drove' ? 'e.g., Last month, 2 weeks ago, January 2025' : 'e.g., 2 years, 6 months, 1 week, 500 miles'}
-                    value={experienceDuration}
-                    onChange={(e) => setExperienceDuration(e.target.value)}
-                  />
-                </div>
+                  placeholder={vehicleRelationship === 'test_drove' ? 'e.g., Last month, 2 weeks ago, January 2025' : 'e.g., 2 years, 6 months, 1 week, 500 miles'}
+                  value={experienceDuration}
+                  onChange={(e) => setExperienceDuration(e.target.value)}
+                  fullWidth
+                  className="write-review-modal__field"
+                />
               )}
             </div>
 
@@ -682,7 +665,9 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               <div className="write-review-modal__section-group-header">
                 <h3 className="write-review-modal__experience-title">
                   Rate Your Experience
-                  <span className="write-review-modal__optional-badge">(Optional)</span>
+                  <Badge variant="info" size="sm" outline={true} className="write-review-modal__optional-badge">
+                    Optional
+                  </Badge>
                 </h3>
                 <p className="write-review-modal__experience-subtitle">Rate specific aspects of your experience with this vehicle</p>
               </div>
@@ -969,7 +954,9 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               <div className="write-review-modal__section-group-header">
                 <h3 className="write-review-modal__section-group-title">
                   Additional Information
-                  <span className="write-review-modal__optional-badge">(Optional)</span>
+                  <Badge variant="info" size="sm" outline={true} className="write-review-modal__optional-badge">
+                    Optional
+                  </Badge>
                 </h3>
                 <p className="write-review-modal__section-group-subtitle">Help others by providing more details</p>
               </div>
@@ -1040,33 +1027,34 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </div>
 
               {/* VIN Verification Section (Optional) */}
-              <div className="write-review-modal__field">
-                <label className="write-review-modal__field-label">
+              <TextField
+                label={
+                  <>
                   Verify Ownership
                   <span className="write-review-modal__field-hint">
                     Enter your Vehicle Identification Number (VIN) for highest verification level
                   </span>
-                </label>
-                <input
-                  type="text"
-                  className="write-review-modal__input write-review-modal__vin-input"
-                  placeholder="Enter VIN (17 characters)"
-                  value={vinNumber}
-                  onChange={(e) => {
-                    // Limit to 17 characters and convert to uppercase
-                    const value = e.target.value.toUpperCase().slice(0, 17);
-                    setVinNumber(value);
-                  }}
-                  maxLength={17}
-                />
-                <div className="write-review-modal__vin-disclaimer">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <path d="M12 8v4M12 16h.01"/>
-                  </svg>
-                  <span>Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.</span>
-                </div>
-              </div>
+                  </>
+                }
+                placeholder="Enter VIN (17 characters)"
+                value={vinNumber}
+                onChange={(e) => {
+                  const value = e.target.value.toUpperCase().slice(0, 17);
+                  setVinNumber(value);
+                }}
+                maxLength={17}
+                fullWidth
+                className="write-review-modal__field write-review-modal__vin-input"
+                helperText={
+                  <div className="write-review-modal__vin-disclaimer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      <path d="M12 8v4M12 16h.01"/>
+                    </svg>
+                    <span>Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.</span>
+                  </div>
+                }
+              />
             </div>
 
           </div>
@@ -1074,9 +1062,10 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
         {/* Submit Button */}
         <div className="write-review-modal__footer">
-          <button
+          <Button
             type="button"
             className="write-review-modal__submit-btn"
+            color="primary"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -1087,7 +1076,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             disabled={rating === 0 || !reviewTitle.trim() || !reviewContent.trim()}
           >
             {isEditMode ? 'Update Review' : 'Submit Your Review'}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -1118,7 +1107,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </ModalShell>
   );
 };
 

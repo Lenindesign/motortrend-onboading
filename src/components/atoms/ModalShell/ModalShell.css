@@ -1,0 +1,102 @@
+/**
+ * ModalShell Atom Styles
+ * Standardized modal wrapper with tokenized overlay and shadows
+ */
+
+/* Base Modal Shell */
+.modal-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  z-index: 1000;
+}
+
+/* Overlay Variants */
+.modal-shell__overlay--medium {
+  background: var(--color-overlay-medium);
+  backdrop-filter: blur(4px);
+}
+
+.modal-shell__overlay--dark {
+  background: var(--color-overlay-dark);
+  backdrop-filter: blur(8px);
+}
+
+/* Position Variants */
+.modal-shell__wrapper--center {
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3);
+}
+
+.modal-shell__wrapper--side-right {
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0;
+}
+
+/* Modal Content */
+.modal-shell__content {
+  position: relative;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Side-right specific styling */
+.modal-shell__wrapper--side-right .modal-shell__content {
+  height: 100%;
+  border-radius: 0;
+  max-width: 400px !important;
+  max-height: 100% !important;
+}
+
+/* Animation Variants */
+.modal-shell__content--fade-slide {
+  animation: modalFadeSlide 0.3s ease-out;
+}
+
+.modal-shell__content--slide-right {
+  animation: modalSlideRight 0.3s ease-out;
+}
+
+/* Animations */
+@keyframes modalFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modalSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-shell__wrapper--center {
+    padding: var(--spacing-2);
+  }
+
+  .modal-shell__wrapper--side-right .modal-shell__content {
+    max-width: 100% !important;
+  }
+}
+

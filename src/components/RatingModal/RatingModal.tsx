@@ -1,10 +1,12 @@
 /**
  * Rating Modal Component
  * Modal overlay for rating vehicles with 1-10 star selection
+ * Now uses ModalShell atom for consistent overlay and shadow
  */
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ModalShell } from '../atoms/ModalShell';
 import './RatingModal.css';
 import Icon from '../Icon';
 
@@ -92,17 +94,14 @@ export const RatingModal: React.FC<RatingModalProps> = ({
     onClose();
   };
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      handleCancel();
-    }
-  };
-
-  if (!isOpen) return null;
-
   return (
-    <div className="rating-modal-overlay" onClick={handleOverlayClick}>
-      <div className="rating-modal">
+    <ModalShell
+      isOpen={isOpen}
+      onClose={handleCancel}
+      maxWidth="560px"
+      className="rating-modal"
+    >
+      <div className="rating-modal__inner">
         <div className="rating-modal__header">
           <div className="rating-modal__title-section">
             <div className="rating-modal__main-rating">
@@ -246,7 +245,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </ModalShell>
   );
 };
 

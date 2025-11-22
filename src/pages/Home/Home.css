@@ -217,7 +217,7 @@
 .home__carousel-name {
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 32px;
+  font-size: 24px;
   line-height: 1.2;
   color: #FFFFFF;
   margin: 0;
@@ -328,7 +328,6 @@
   max-height: 40px;
   object-fit: contain;
   display: block;
-  vertical-align: middle;
   line-height: 1;
   margin: 0;
   padding: 0;
@@ -346,7 +345,6 @@
   max-height: 40px !important;
   object-fit: contain !important;
   object-position: center;
-  vertical-align: middle;
   display: block !important;
   background: transparent;
   border: none;
@@ -389,7 +387,6 @@
   display: block !important;
   margin: 0 !important;
   padding: 0 !important;
-  vertical-align: middle !important;
   line-height: 1 !important;
 }
 
@@ -446,7 +443,6 @@
   display: block;
   margin: 0;
   padding: 0;
-  vertical-align: middle;
   line-height: 1;
   box-sizing: border-box;
 }
@@ -482,9 +478,7 @@
   flex-shrink: 0;
 }
 
-.home__carousel-star-wrapper--half {
-  /* Half star styling handled by half-fill div */
-}
+/* Half star styling handled by half-fill div */
 
 .home__carousel-star {
   width: 18px;

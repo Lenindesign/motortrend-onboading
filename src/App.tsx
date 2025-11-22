@@ -27,10 +27,12 @@ import Videos from './pages/Videos';
 import Community from './pages/Community';
 import RankingsAndAwards from './pages/RankingsAndAwards';
 import Documentation from './pages/Documentation';
+import { BentleyShowcase } from './pages/BentleyShowcase';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
 import ProfileDocumentation from './pages/ProfileDocumentation';
 import DesignSystemReference from './pages/DesignSystemReference';
 import Sitemap from './pages/Sitemap';
+import AtomicDesignAudit from './pages/AtomicDesignAudit';
 import { RatingProvider } from './contexts/RatingContext';
 import './App.css';
 
@@ -117,7 +119,10 @@ function App() {
               <Route path="/documentation/profile" element={<ProfileDocumentation />} />
               <Route path="/docs/profile" element={<ProfileDocumentation />} />
               <Route path="/design-system" element={<DesignSystemReference />} />
+              <Route path="/bentley-showcase" element={<BentleyShowcase />} />
               <Route path="/docs/design-system" element={<DesignSystemReference />} />
+              <Route path="/documentation/atomic-design-audit" element={<AtomicDesignAudit />} />
+              <Route path="/docs/atomic-design-audit" element={<AtomicDesignAudit />} />
               
               {/* Sitemap */}
               <Route path="/sitemap" element={<Sitemap />} />

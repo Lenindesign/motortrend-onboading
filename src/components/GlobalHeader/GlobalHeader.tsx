@@ -9,6 +9,7 @@ import './GlobalHeader.css';
 // Using MotorTrend main logo from URL
 const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg';
 import Icon from '../Icon';
+import { Badge } from '../../design-system/components';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { carDatabase } from '../../utils/vehicleDatabase';
 
@@ -125,7 +126,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     name: string;
     avatar?: string;
   } | null>(null);
-  const [showProfileNotification, setShowProfileNotification] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const navMenuRef = useRef<HTMLDivElement>(null);
   
@@ -191,12 +192,18 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     };
   }, [location.pathname]);
 
-  // Check for profile notification (blinking dot) visibility
+  // Check for notification count
   useEffect(() => {
     const checkNotification = () => {
       const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
       const notificationSeen = localStorage.getItem('profileNotificationSeen') === 'true';
-      setShowProfileNotification(onboardingComplete && !notificationSeen);
+      
+      // Calculate notification count (profile completion + new features)
+      let count = 0;
+      if (onboardingComplete && !notificationSeen) {
+        count += 1; // Profile completion notification
+      }
+      setNotificationCount(count);
     };
 
     // Check on mount
@@ -533,8 +540,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       className="global-header__user-avatar-img"
                     />
                   )}
-                  {showProfileNotification && (
-                    <span className="global-header__profile-notification-dot" aria-label="New profile notification"></span>
+                  {notificationCount > 0 && (
+                    <div className="global-header__notification-badge">
+                      <Badge variant="error" size="sm" aria-label={`${notificationCount} new notification${notificationCount > 1 ? 's' : ''}`}>
+                        {notificationCount}
+                      </Badge>
+                    </div>
                   )}
                 </div>
               </button>

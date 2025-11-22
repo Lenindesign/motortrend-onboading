@@ -1,8 +1,8 @@
 /* Sticky Rate Bar */
 .sticky-rate-bar {
     width: 100%;
-    background-color: #141416;
-    box-shadow: 0px 4px 20px 0px rgba(20, 20, 22, 0.2);
+    background-color: var(--color-neutrals-1);
+    box-shadow: var(--shadow-depth-5);
 }
 
 /* Static state - positioned below header in normal flow */
@@ -13,8 +13,7 @@
     pointer-events: auto;
     transition: none;
     margin-top: 0;
-    margin-bottom: 0px;
-    /* Break out of parent container to span full width */
+    margin-bottom: 0;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-right: calc(-50vw + 50%);
@@ -35,24 +34,23 @@
     opacity: 0;
     pointer-events: none;
     transition: transform var(--transition-normal), opacity var(--transition-normal);
-    /* Ensure same visual appearance as static */
-    background-color: #141416;
-    box-shadow: 0px 4px 20px 0px rgba(20, 20, 22, 0.2);
+    background-color: var(--color-neutrals-1);
+    box-shadow: var(--shadow-depth-5);
 }
 
 .sticky-rate-bar--sticky.sticky-rate-bar--visible {
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
-    /* Ensure same visual appearance as static */
-    background-color: #141416;
-    box-shadow: 0px 4px 20px 0px rgba(20, 20, 22, 0.2);
+    background-color: var(--color-neutrals-1);
+    box-shadow: var(--shadow-depth-5);
 }
 
 .sticky-rate-bar__content {
-    max-width: var(--max-width-container);
+    max-width: var(--max-width-content);
+    width: 100%;
     margin: 0 auto;
-    padding: var(--spacing-2) 0;
+    padding: var(--spacing-2) var(--spacing-3);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -72,26 +70,26 @@
 
 /* Make/Model pages (VehicleDetails) - larger font size for div version */
 div.sticky-rate-bar__vehicle-name {
-    font-size: 32px;
+    font-size: 24px;
 }
 
 /* Make vehicle name look like a CTA when it's a link (Article pages) */
-a.sticky-rate-bar__vehicle-name {
+.sticky-rate-bar__vehicle-name--link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
-    background-color: #23262F;
+    padding: var(--spacing-component-sm) var(--spacing-component-lg);
+    background-color: var(--color-neutrals-3);
     border-radius: var(--border-radius-md);
     color: var(--color-neutrals-8);
     transition: all var(--transition-fast);
-    font-size: 20px; /* Keep Article pages at 20px */
+    font-size: 20px;
 }
 
-a.sticky-rate-bar__vehicle-name:hover {
-    background-color: #2D3038;
+.sticky-rate-bar__vehicle-name--link:hover {
+    background-color: var(--color-neutrals-2);
     transform: translateY(-1px);
-    box-shadow: 0px 4px 8px rgba(35, 38, 47, 0.3);
+    box-shadow: var(--shadow-depth-2);
 }
 
 .sticky-rate-bar__ratings {
@@ -105,7 +103,7 @@ a.sticky-rate-bar__vehicle-name:hover {
 .sticky-rate-bar__rating-separator {
     width: 1px;
     height: 40px;
-    background-color: #2A2A2A;
+    background-color: var(--color-neutrals-3);
     margin: 0 var(--spacing-3);
     flex-shrink: 0;
 }
@@ -113,7 +111,7 @@ a.sticky-rate-bar__vehicle-name:hover {
 .sticky-rate-bar__rating-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--spacing-gap-sm);
     cursor: pointer;
     transition: opacity var(--transition-fast);
     background: none;
@@ -130,12 +128,9 @@ a.sticky-rate-bar__vehicle-name:hover {
 
 .sticky-rate-bar__rating-item--vertical {
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-2);
     align-items: center;
-    padding-top: 0;
-    padding-right: 0px;
-    padding-bottom: 0;
-    padding-left: -1px;
+    padding: 0;
 }
 
 .sticky-rate-bar__rating-item--motortrend {
@@ -148,21 +143,14 @@ a.sticky-rate-bar__vehicle-name:hover {
 .sticky-rate-bar__rating-label-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--spacing-gap-xs);
     flex-shrink: 0;
     align-items: flex-start;
 }
 
-.sticky-rate-bar__rating-label-top {
-    color: #E0E0E0;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1.2;
-    text-decoration: none;
-}
-
+.sticky-rate-bar__rating-label-top,
 .sticky-rate-bar__rating-label-bottom {
-    color: #E0E0E0;
+    color: var(--color-neutrals-8);
     font-size: 12px;
     font-weight: 500;
     line-height: 1.2;
@@ -179,7 +167,6 @@ a.sticky-rate-bar__vehicle-name:hover {
     max-height: 24px;
     object-fit: contain;
     display: block;
-    vertical-align: middle;
     line-height: 1;
     margin: 0;
     padding: 0;
@@ -198,7 +185,7 @@ a.sticky-rate-bar__vehicle-name:hover {
 }
 
 .sticky-rate-bar__rating-value {
-    color: #E0E0E0;
+    color: var(--color-neutrals-8);
     font-size: 32px;
     font-weight: 600;
     font-family: 'Geist', system-ui, -apple-system, sans-serif;
@@ -275,36 +262,33 @@ a.sticky-rate-bar__vehicle-name:hover {
 }
 
 .sticky-rate-bar__rating-text {
-    color: #B0B0B0;
+    color: var(--color-neutrals-4);
     font-size: 14px;
     font-weight: 400;
     line-height: 1.2;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--spacing-gap-xs);
     white-space: nowrap;
 }
 
-.sticky-rate-bar__rating-highlight {
-    color: #E0E0E0;
-    font-weight: 600;
-}
+/* Rating highlight now uses Badge atom - no custom styles needed */
 
 /* MotorTrend Rating specific styles */
 .sticky-rate-bar__rating-score-large {
-    color: #FFFFFF;
+    color: var(--color-neutrals-8);
     font-size: 32px;
     font-weight: 600;
     font-family: var(--font-heading);
     line-height: 1;
     display: flex;
     align-items: baseline;
-    gap: 4px;
+    gap: var(--spacing-gap-xs);
     white-space: nowrap;
 }
 
 .sticky-rate-bar__rating-score-max {
-    color: #B0B0B0;
+    color: var(--color-neutrals-4);
     font-size: 18px;
     font-weight: 400;
     line-height: 1;
@@ -313,7 +297,7 @@ a.sticky-rate-bar__vehicle-name:hover {
 .sticky-rate-bar__rating-label-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--spacing-gap-sm);
 }
 
 .sticky-rate-bar__rating-mt-badge {
@@ -335,7 +319,7 @@ a.sticky-rate-bar__vehicle-name:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
+    padding: var(--spacing-component-sm) var(--spacing-component-lg);
     background-color: var(--color-primary-2);
     border: none;
     border-radius: var(--border-radius-md);
@@ -352,12 +336,20 @@ a.sticky-rate-bar__vehicle-name:hover {
 .sticky-rate-bar__cta:hover {
     background-color: var(--color-primary-1);
     transform: translateY(-1px);
-    box-shadow: 0px 4px 8px rgba(233, 12, 23, 0.3);
+    box-shadow: var(--shadow-button-hover);
+}
+
+/* Remove side padding at 1280px+ since content is constrained by max-width */
+@media (min-width: 1280px) {
+    .sticky-rate-bar__content {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 @media (max-width: 768px) {
     .sticky-rate-bar__content {
-        padding: var(--spacing-2);
+        padding: 8px 12px;
         flex-direction: column;
         gap: var(--spacing-2);
         align-items: stretch;
@@ -375,9 +367,9 @@ a.sticky-rate-bar__vehicle-name:hover {
     }
 
     /* Mobile CTA button styling for link version */
-    a.sticky-rate-bar__vehicle-name {
+    .sticky-rate-bar__vehicle-name--link {
         width: 100%;
-        padding: 10px 16px;
+        padding: var(--spacing-component-sm) var(--spacing-component-md);
         font-size: 16px;
     }
 
@@ -429,5 +421,19 @@ a.sticky-rate-bar__vehicle-name:hover {
 
     .sticky-rate-bar__rate-btn--mobile-hide {
         display: none;
+    }
+}
+
+/* Medium mobile breakpoint */
+@media (max-width: 640px) {
+    .sticky-rate-bar__content {
+        padding: 8px 12px;
+    }
+}
+
+/* Small mobile breakpoint */
+@media (max-width: 480px) {
+    .sticky-rate-bar__content {
+        padding: 6px 8px;
     }
 }

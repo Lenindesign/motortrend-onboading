@@ -1,9 +1,11 @@
 /**
  * Avatar Banner Modal Component
  * Modal for selecting avatar and banner images
+ * Now uses ModalShell atom for consistent overlay and shadow
  */
 
 import React, { useState } from 'react';
+import { ModalShell } from '../atoms/ModalShell';
 import './AvatarBannerModal.css';
 import Icon from '../Icon';
 import { Button } from '../../design-system/components/Button/Button';
@@ -118,17 +120,14 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
     onClose();
   };
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  if (!isVisible) return null;
-
   return (
-    <div className="avatar-banner-modal-overlay" onClick={handleOverlayClick}>
-      <div className="avatar-banner-modal">
+    <ModalShell
+      isOpen={isVisible}
+      onClose={onClose}
+      maxWidth="600px"
+      className="avatar-banner-modal"
+    >
+      <div className="avatar-banner-modal__inner">
         <div className="avatar-banner-modal__header">
           <h2 className="avatar-banner-modal__title">Edit Profile</h2>
           <button className="avatar-banner-modal__close" onClick={onClose}>
@@ -228,7 +227,7 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
           </Button>
         </div>
       </div>
-    </div>
+    </ModalShell>
   );
 };
 

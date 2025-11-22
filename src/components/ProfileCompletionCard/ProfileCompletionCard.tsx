@@ -8,6 +8,7 @@ import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import Button from '../../design-system/components/Button';
 import RatingModal from '../RatingModal';
 import { useRating } from '../../contexts/RatingContext';
+import { CardShell } from '../atoms/CardShell/CardShell';
 // Using new graphics for user types
 const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/69101763c398630002aedb21/buyer.svg';
 const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017650e4b090002079ec0/enthusiast.svg';
@@ -262,8 +263,16 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   };
 
   return (
-    <div className={`profile-completion-card ${isFullyComplete ? 'profile-completion-card--complete' : ''}`}>
-      <div className="profile-completion-card__header">
+    <CardShell
+      padding="md"
+      hasHover={false}
+      hasShadow={true}
+      borderRadius="md"
+      background="white"
+      className={`profile-completion-card ${isFullyComplete ? 'profile-completion-card--complete' : ''}`}
+    >
+      <div className="profile-completion-card__inner">
+        <div className="profile-completion-card__header">
         <div className="profile-completion-card__title-row">
           <div className="profile-completion-card__icon">
             <Icon name="check_circle" size={24} />
@@ -561,7 +570,8 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
         currentRating={ratingModal.currentRating}
         onRateAndReview={handleRateAndReview}
       />
-    </div>
+      </div>
+    </CardShell>
   );
 };
 

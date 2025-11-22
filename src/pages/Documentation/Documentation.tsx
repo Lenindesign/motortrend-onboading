@@ -15,7 +15,7 @@ export const Documentation: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['overview', 'features', 'architecture', 'data-models', 'user-flows', 'design', 'implementation', 'api', 'testing'];
+      const sections = ['overview', 'features', 'architecture', 'data-models', 'user-flows', 'design', 'implementation', 'audit', 'api', 'testing'];
       const scrollPosition = window.scrollY + 150;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -143,6 +143,18 @@ export const Documentation: React.FC = () => {
                   Technical Implementation
                 </a>
               </li>
+            <li>
+              <a 
+                href="#audit" 
+                className={activeSection === 'audit' ? 'active' : ''}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection('audit');
+                }}
+              >
+                Atomic Audit
+              </a>
+            </li>
               <li>
                 <a 
                   href="#api" 
@@ -187,6 +199,14 @@ export const Documentation: React.FC = () => {
                   className="documentation-sidebar-other-docs-link"
                 >
                   Profile Page
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/documentation/atomic-design-audit" 
+                  className="documentation-sidebar-other-docs-link"
+                >
+                  Atomic Design Audit
                 </Link>
               </li>
             </ul>
@@ -635,6 +655,33 @@ export const Documentation: React.FC = () => {
     }
   }
 }`}</code></pre>
+          </div>
+        </section>
+
+        <section id="audit" className="documentation-section">
+          <h2>🔍 Atomic Design Audit</h2>
+          <p>
+            The audit documented under <Link to="/documentation/atomic-design-audit">Atomic Design Inventory</Link> is driving three parallel sprint tracks.
+          </p>
+          <div className="documentation-highlight-box">
+            <h4>In-progress</h4>
+            <ul>
+              <li>Tokenize every molecule so padding/gap values align with the 8px spacing system (`--spacing-card-*`, `--spacing-component-*`, `--spacing-gap-*`).</li>
+              <li>Replace remaining rgba overlays/box-shadows in atoms (e.g., cards, tooltips, badges) with `var(--color-overlay-*)` and shadow tokens.</li>
+              <li>Pull reusable atoms (card shell, badge pill, tooltip) into `src/design-system/components/` so organisms compose them rather than repro them.</li>
+              <li>AIInsights sections now leverage spacing tokens for their grids/padding; document any remaining list gaps that still need a token.</li>
+              <li>StickyRateBar now reuses the CTA and spacing tokens, so its ratings and button surface stay in sync with the system.</li>
+              <li>ArticleReactions popups now use the same spacing/tokenized drop-shadow system as other tooltips.</li>
+              <li>ArticleCard now inherits the tokenized `Card` atom (custom CSS removed), so all previews share the same spacing/shadow surface.</li>
+            </ul>
+          </div>
+          <div className="documentation-highlight-box">
+            <h4>Next sprint</h4>
+            <ul>
+              <li>Snapshot remaining molecules (HeroCard, ArticleCard, AIInsights, Shared Widgets) and capture token gaps inside this documentation page.</li>
+              <li>Schedule a documentation review session that walks through the audit findings, links back to `CURSOR_DESIGN_SYSTEM_RULES`, and prioritizes component fixes.</li>
+              <li>Surface the audit status in the design system reference so design/PM partners know what’s ready to be reused.</li>
+            </ul>
           </div>
         </section>
 

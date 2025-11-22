@@ -1,32 +1,11 @@
 /**
  * Review Submitted Modal Styles
  * Centered modal that appears after submitting a review
+ * Now uses ModalShell atom - overlay and shadow styles removed
  */
 
-.review-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  padding: 20px;
-  animation: fadeIn 0.2s ease;
-}
-
 .review-modal {
-  background-color: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
-  max-width: 480px;
-  width: 100%;
   position: relative;
-  animation: slideUp 0.3s ease-out;
 }
 
 .review-modal__content {

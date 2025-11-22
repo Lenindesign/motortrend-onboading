@@ -11,7 +11,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
+  min-height: calc(var(--spacing-5) * 5);
+  box-shadow: var(--shadow-depth-2);
 }
 
 .ad-container--right-column {
@@ -32,7 +33,7 @@
 
 .ad-container__rectangle {
   width: 100%;
-  max-width: 300px;
+  max-width: 320px;
   aspect-ratio: 300 / 250;
   background-color: var(--color-neutrals-4);
   border-radius: var(--border-radius-sm);

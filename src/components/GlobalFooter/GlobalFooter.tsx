@@ -50,6 +50,7 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
     { label: 'Onboarding Docs', path: '/docs/onboarding' },
     { label: 'Profile Docs', path: '/docs/profile' },
     { label: 'Design System', path: '/design-system' },
+    { label: 'Atomic Design Audit', path: '/documentation/atomic-design-audit' },
   ];
 
   const magazineLinks = [

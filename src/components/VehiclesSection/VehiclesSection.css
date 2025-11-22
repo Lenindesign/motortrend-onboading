@@ -6,6 +6,7 @@
 .vehicles-section {
   width: 100%;
   margin-bottom: var(--section-spacing-vertical);
+  padding: 0;
 }
 
 .vehicles-section__header {
@@ -19,6 +20,7 @@
   line-height: 1.2em;
   color: var(--color-neutrals-1);
   margin: 0 0 var(--spacing-2) 0;
+  text-align: left;
 }
 
 .vehicles-section__filters {

@@ -1,13 +1,13 @@
 .comparison-card {
   display: flex;
   flex-direction: column;
-  background: var(--color-neutrals-8);
+  background: var(--color-white);
   border: 1px solid var(--color-neutrals-7);
-  border-radius: 8px;
+  border-radius: var(--border-radius-lg);
   width: 100%;
   max-width: 650px;
-  box-shadow: 0px 4px 20px 0px rgba(20, 20, 22, 0.06);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-depth-2);
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
   overflow: hidden;
 }
 
@@ -19,8 +19,8 @@
 .comparison-card__content {
   display: flex;
   flex-direction: row;
-  gap: 20px;
-  padding: 16px;
+  gap: var(--spacing-gap-lg);
+  padding: var(--spacing-card-md);
 }
 
 .comparison-card__image-wrapper {
@@ -28,7 +28,7 @@
   width: 240px;
   height: 160px;
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   overflow: hidden;
 }
 
@@ -45,42 +45,42 @@
 
 .comparison-card__bookmark-btn {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: var(--spacing-component-md);
+  left: var(--spacing-component-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 6px;
-  background: rgba(35, 38, 47, 0.8);
+  width: var(--spacing-component-xl);
+  height: var(--spacing-component-xl);
+  padding: var(--spacing-component-sm);
+  background: var(--color-overlay-dark);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-full);
   color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform var(--transition-fast), background var(--transition-fast);
   backdrop-filter: blur(4px);
   z-index: 1;
 }
 
 .comparison-card__bookmark-btn:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--color-overlay-medium);
   transform: scale(1.05);
 }
 
 .comparison-card__bookmark-btn--active {
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-overlay-dark);
 }
 
 .comparison-card__bookmark-btn--active:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--color-overlay-medium);
 }
 
 .comparison-card__info {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
+  gap: var(--spacing-component-sm);
   flex: 1;
   min-width: 0;
 }
@@ -104,7 +104,7 @@
 }
 
 .comparison-card__button {
-  margin-top: 12px;
+  margin-top: var(--spacing-component-md);
   align-self: flex-start;
 }
 
@@ -115,7 +115,7 @@
   
   .comparison-card__content {
     flex-direction: column;
-    gap: 16px;
+    gap: var(--spacing-card-sm);
   }
   
   .comparison-card__image-wrapper {

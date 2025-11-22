@@ -166,7 +166,7 @@
   justify-content: space-between;
   width: 189px;
   height: 173px;
-  background-color: #282a30;
+  background-color: var(--color-neutrals-2-5);
   border-radius: 8px;
   padding: 20px 12px 12px 12px;
   gap: 0;
@@ -299,7 +299,7 @@
 
 .user-reviews__bar-fill {
   width: 100%;
-  background-color: #33CCFF; /* Secondary/2 */
+  background-color: var(--color-rating-community);
   border-radius: 4px;
   min-height: 4px;
   transition: height var(--transition-fast);
@@ -575,42 +575,7 @@
   color: var(--color-neutrals-1);
 }
 
-.user-reviews__verified-badge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 1.333em;
-  white-space: nowrap;
-}
-
-.user-reviews__verified-badge--owner {
-  background-color: var(--color-neutrals-7);
-  border: 1px solid var(--color-neutrals-5);
-  color: var(--color-neutrals-2);
-}
-
-.user-reviews__verified-badge--verified {
-  background-color: #E3F2FD;
-  border: 1px solid #2196F3;
-  color: #1976D2;
-}
-
-.user-reviews__verified-badge--documents {
-  background-color: #E8F5E9;
-  border: 1px solid #4CAF50;
-  color: #2E7D32;
-}
-
-.user-reviews__verified-icon {
-  width: 12px;
-  height: 12px;
-  object-fit: contain;
-}
+/* Verification badges now use Badge atom */
 
 .user-reviews__review-rating-row {
   display: flex;
@@ -675,26 +640,7 @@
   flex-wrap: wrap;
 }
 
-.user-reviews__relationship-badge {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  background-color: var(--color-neutrals-7);
-  border: 1px solid var(--color-neutrals-5);
-  border-radius: 8px;
-  font-family: var(--font-body);
-  font-weight: 500;
-  font-size: 11px;
-  line-height: 1.333em;
-  color: var(--color-neutrals-2);
-}
-
-.user-reviews__relationship-icon {
-  width: 12px;
-  height: 12px;
-  object-fit: contain;
-}
+/* Relationship badges now use Badge atom */
 
 .user-reviews__duration-info {
   font-family: var(--font-body);

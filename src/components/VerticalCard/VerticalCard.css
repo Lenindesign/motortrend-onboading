@@ -1,24 +1,21 @@
 /**
  * Vertical Card Styles
  * Vertical card for video/article content
+ * Now uses CardShell atom - background, border-radius, hover, transition handled by CardShell
  */
 
 .vertical-card {
+  /* CardShell handles: background, border-radius, hover, transition */
+  width: 100%;
+  overflow: hidden; /* Clip image corners to match card radius */
+}
+
+.vertical-card__inner {
   position: relative;
   width: 100%;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform var(--transition-fast);
-  background-color: var(--color-neutrals-8);
-}
-
-.vertical-card:hover {
-  transform: translateY(-2px);
-}
-
-.vertical-card:focus {
-  outline: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .vertical-card__image-container {
@@ -27,15 +24,16 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background-color: var(--color-neutrals-7);
+  /* Removed border-radius to let CardShell handle it via overflow: hidden */
 }
 
 .vertical-card__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 8px;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center center;
+  display: block; /* Remove bottom gap */
 }
 
 .vertical-card:hover .vertical-card__image {
@@ -57,31 +55,42 @@
   transition: transform var(--transition-fast);
 }
 
+.vertical-card__play-icon-circle {
+  fill: var(--color-overlay-dark);
+}
+
 .vertical-card:hover .vertical-card__play-icon {
   transform: scale(1.1);
 }
 
 .vertical-card__content {
-  padding: var(--spacing-2) 0;
+  padding: var(--spacing-3);
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
 }
 
 .vertical-card__title {
   font-family: var(--font-heading);
   font-weight: var(--font-weight-bold);
   font-size: 16px;
-  line-height: 1.3em;
-  color: var(--color-neutrals-2);
+  line-height: 1.4em;
+  color: var(--color-neutrals-1);
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .vertical-card__title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .vertical-card__content {
-    padding: var(--spacing-2) 0;
+    padding: var(--spacing-2);
   }
 }
 

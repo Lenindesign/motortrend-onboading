@@ -19,30 +19,32 @@
 
 .location-icon-btn {
   position: absolute;
-  right: 12px;
-  top: calc(100% - 24px - 12px);
+  top: 50%;
+  right: var(--spacing-component-md);
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: none;
-  border: none;
+  width: var(--spacing-button-sm);
+  height: var(--spacing-button-sm);
+  background: var(--color-neutrals-7);
+  border: 1px solid var(--color-neutrals-6);
   color: var(--color-neutrals-4);
   cursor: pointer;
   transition: var(--transition-fast);
   z-index: 2;
-  border-radius: 50%;
+  border-radius: var(--border-radius-full);
+  box-shadow: var(--shadow-depth-1);
 }
 
 .location-icon-btn:hover:not(:disabled) {
-  color: var(--color-blue);
-  background-color: rgba(59, 130, 246, 0.1);
-  transform: scale(1.1);
+  color: var(--color-primary-1);
+  background-color: var(--color-neutrals-6);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .location-icon-btn:active:not(:disabled) {
-  transform: scale(0.95);
+  transform: translateY(-50%) scale(0.95);
 }
 
 .location-icon-btn:disabled {
@@ -66,7 +68,7 @@
 
 /* Adjust TextField padding to accommodate icon */
 .location-field-container .text-field__input {
-  padding-right: 48px;
+  padding-right: calc(var(--spacing-button-sm) + var(--spacing-component-sm) * 2);
 }
 
 /* Suggestions Dropdown - Clean white styling like vehicle search */
@@ -75,29 +77,29 @@
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: 4px;
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-top: var(--spacing-component-xs);
+  background-color: var(--color-neutrals-1);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-dropdown);
   z-index: 1000;
-  max-height: 240px;
+  max-height: calc(var(--spacing-card-xl) * 3);
   overflow-y: auto;
 }
 
 .location-suggestion-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: var(--spacing-2);
+  padding: var(--spacing-component-sm) var(--spacing-3);
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.5;
-  color: #374151;
+  color: var(--color-neutrals-2);
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
-  border-bottom: 1px solid #f3f4f6;
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--color-neutrals-6);
 }
 
 .location-suggestion-item:last-child {
@@ -105,19 +107,19 @@
 }
 
 .location-suggestion-item:hover {
-  background-color: #f9fafb;
+  background-color: var(--color-neutrals-7);
 }
 
 .location-suggestion-item:hover .location-suggestion-name {
-  color: #374151;
+  color: var(--color-neutrals-2);
 }
 
 .location-suggestion-item:hover .location-suggestion-details {
-  color: #6b7280;
+  color: var(--color-neutrals-4);
 }
 
 .location-suggestion-item--selected {
-  background-color: #F4F5F6;
+  background-color: var(--color-neutrals-3);
 }
 
 .location-suggestion-item--loading {
@@ -135,10 +137,10 @@
 
 .location-suggestion-name {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-medium);
   font-size: 16px;
   line-height: 1.5;
-  color: #374151;
+  color: var(--color-neutrals-2);
   margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -146,51 +148,47 @@
 }
 
 .location-suggestion-item--selected .location-suggestion-name {
-  color: #353945;
+  color: var(--color-neutrals-8);
 }
 
 .location-suggestion-details {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 14px;
   line-height: 1.4;
-  color: #6b7280;
+  color: var(--color-neutrals-4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .location-suggestion-item--selected .location-suggestion-details {
-  color: #353945;
+  color: var(--color-neutrals-8);
 }
 
 .location-suggestion-item svg {
   flex-shrink: 0;
-  color: #ffffff !important;
-}
-
-.location-suggestion-item:hover svg {
-  color: #ffffff !important;
+  color: var(--color-primary-1);
 }
 
 .location-suggestion-item--selected svg {
-  color: #ffffff !important;
+  color: var(--color-neutrals-8);
 }
 
 /* Mobile Responsive - Matching VehicleSearch */
 @media (max-width: 768px) {
   .location-icon-btn {
-    right: 8px;
-    width: 28px;
-    height: 28px;
+    right: var(--spacing-component-sm);
+    width: calc(var(--spacing-button-sm) * 1.15);
+    height: calc(var(--spacing-button-sm) * 1.15);
   }
 
   .location-field-container .text-field__input {
-    padding-right: 44px;
+    padding-right: calc(var(--spacing-button-sm) * 1.5);
   }
 
   .location-suggestion-item {
-    padding: 10px 14px;
+    padding: var(--spacing-component-sm);
     font-size: 15px;
   }
 
@@ -247,14 +245,10 @@
   }
 
   .location-suggestion-item svg {
-    color: #ffffff !important;
-  }
-
-  .location-suggestion-item:hover svg {
-    color: #ffffff !important;
+    color: var(--color-neutrals-8) !important;
   }
 
   .location-suggestion-item--selected svg {
-    color: #ffffff !important;
+    color: var(--color-neutrals-8) !important;
   }
 }

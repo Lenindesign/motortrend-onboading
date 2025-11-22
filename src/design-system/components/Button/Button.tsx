@@ -33,12 +33,13 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const classNames = [
-    'btn',
-    color === 'toast-cancel' || color === 'toast-confirm' ? `btn--${color}` : `btn--${color}`,
-    color === 'toast-cancel' || color === 'toast-confirm' ? '' : `btn--${size}`,
-    color === 'toast-cancel' || color === 'toast-confirm' ? '' : `btn--${variant}`,
-    fullWidth && 'btn--full-width',
-    disabled && 'btn--disabled',
+    'cta',
+    `cta--${color}`,
+    `cta--${size}`,
+    variant !== 'solid' && `cta--${variant}`,
+    fullWidth && 'cta--full-width',
+    // We rely on :disabled pseudo-class from global.css, but keep class for override flexibility if needed
+    disabled && 'cta--disabled', 
     className,
   ]
     .filter(Boolean)
@@ -46,12 +47,11 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button className={classNames} disabled={disabled} {...props}>
-      {icon && iconPosition === 'left' && <span className="btn__icon btn__icon--left">{icon}</span>}
-      <span className="btn__label">{children}</span>
-      {icon && iconPosition === 'right' && <span className="btn__icon btn__icon--right">{icon}</span>}
+      {icon && iconPosition === 'left' && <span className="cta__icon cta__icon--left">{icon}</span>}
+      <span className="cta__label">{children}</span>
+      {icon && iconPosition === 'right' && <span className="cta__icon cta__icon--right">{icon}</span>}
     </button>
   );
 };
 
 export default Button;
-

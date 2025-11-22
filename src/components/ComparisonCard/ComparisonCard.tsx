@@ -6,6 +6,7 @@
 import React from 'react';
 import './ComparisonCard.css';
 import Icon from '../Icon';
+import { Button } from '../../design-system/components';
 
 export interface ComparisonCardProps {
   vehicle1: {
@@ -51,9 +52,13 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
           <h3 className="comparison-card__title">{comparisonTitle}</h3>
           <p className="comparison-card__label">Comparison</p>
           {onViewComparison && (
-            <button className="comparison-card__button cta cta--secondary cta--default" onClick={onViewComparison}>
+            <Button 
+              color="secondary" 
+              className="comparison-card__button" 
+              onClick={onViewComparison}
+            >
               View Comparison
-            </button>
+            </Button>
           )}
         </div>
       </div>

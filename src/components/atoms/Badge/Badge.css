@@ -1,0 +1,228 @@
+/**
+ * Badge Atom Styles
+ * Standardized badge styling using design tokens
+ */
+
+/* Base Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-gap-xs);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  line-height: 1;
+  border: none;
+  cursor: default;
+}
+
+/* Size Variants */
+.badge--sm {
+  padding: 4px 8px;
+  font-size: 11px;
+  gap: 4px;
+}
+
+.badge--md {
+  padding: 6px 12px;
+  font-size: 12px;
+  gap: 4px;
+}
+
+.badge--lg {
+  padding: 8px 16px;
+  font-size: 14px;
+  gap: var(--spacing-gap-xs);
+}
+
+/* Icon Sizing */
+.badge--sm .badge__icon {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+}
+
+.badge--md .badge__icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.badge--lg .badge__icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.badge__text {
+  display: inline-block;
+}
+
+/* Variant: New */
+.badge--new {
+  background-color: #FFB74D;
+  color: var(--color-neutrals-1);
+}
+
+.badge--new.badge--outline {
+  background-color: transparent;
+  color: #FFB74D;
+  border: 1px solid #FFB74D;
+}
+
+/* Variant: Premium */
+.badge--premium {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: var(--color-neutrals-1);
+  font-weight: var(--font-weight-bold);
+}
+
+.badge--premium.badge--outline {
+  background: transparent;
+  color: #FFD700;
+  border: 1px solid #FFD700;
+}
+
+/* Variant: Verified */
+.badge--verified {
+  background-color: var(--color-semantic-success);
+  color: var(--color-white);
+}
+
+.badge--verified.badge--outline {
+  background-color: transparent;
+  color: var(--color-semantic-success);
+  border: 1px solid var(--color-semantic-success);
+}
+
+/* Variant: Info */
+.badge--info {
+  background-color: var(--color-semantic-info);
+  color: var(--color-white);
+}
+
+.badge--info.badge--outline {
+  background-color: transparent;
+  color: var(--color-semantic-info);
+  border: 1px solid var(--color-semantic-info);
+}
+
+/* Variant: Success */
+.badge--success {
+  background-color: var(--color-semantic-success);
+  color: var(--color-white);
+}
+
+.badge--success.badge--outline {
+  background-color: var(--color-semantic-success-light);
+  color: var(--color-semantic-success-dark);
+  border: 1px solid var(--color-semantic-success);
+}
+
+/* Variant: Warning */
+.badge--warning {
+  background-color: var(--color-semantic-warning);
+  color: var(--color-neutrals-1);
+}
+
+.badge--warning.badge--outline {
+  background-color: var(--color-semantic-warning-light);
+  color: var(--color-semantic-warning-dark);
+  border: 1px solid var(--color-semantic-warning);
+}
+
+/* Variant: Error */
+.badge--error {
+  background-color: var(--color-semantic-error);
+  color: var(--color-white);
+}
+
+.badge--error.badge--outline {
+  background-color: var(--color-semantic-error-light);
+  color: var(--color-semantic-error-dark);
+  border: 1px solid var(--color-semantic-error);
+}
+
+/* Variant: Neutral */
+.badge--neutral {
+  background-color: var(--color-neutrals-6);
+  color: var(--color-neutrals-2);
+}
+
+.badge--neutral.badge--outline {
+  background-color: transparent;
+  color: var(--color-neutrals-3);
+  border: 1px solid var(--color-neutrals-5);
+}
+
+/* Clickable State */
+.badge--clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.badge--clickable:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.badge--clickable:active {
+  transform: translateY(0);
+  opacity: 0.8;
+}
+
+.badge--clickable:focus {
+  outline: 2px solid var(--color-primary-1);
+  outline-offset: 2px;
+}
+
+.badge--clickable:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .badge {
+    border: 1px solid currentColor;
+  }
+  
+  .badge--outline {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    transition: none;
+  }
+  
+  .badge--clickable:hover {
+    transform: none;
+  }
+}
+
+/* Dark Mode Support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  .badge--neutral {
+    background-color: var(--color-neutrals-3);
+    color: var(--color-neutrals-7);
+  }
+  
+  .badge--neutral.badge--outline {
+    background-color: transparent;
+    color: var(--color-neutrals-6);
+    border-color: var(--color-neutrals-4);
+  }
+}
+

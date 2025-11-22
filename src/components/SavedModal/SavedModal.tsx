@@ -1,10 +1,12 @@
 /**
  * Saved Modal Component
  * Modal that appears when a user saves an item
+ * Now uses ModalShell atom for consistent overlay and shadow
  */
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 import './SavedModal.css';
 
@@ -22,22 +24,19 @@ export const SavedModal: React.FC<SavedModalProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  if (!isOpen) return null;
-
   const handleViewSavedItems = () => {
     onClose();
     navigate('/my-account/saved-items');
   };
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
   return (
-    <div className="saved-modal-overlay" onClick={handleOverlayClick}>
-      <div className="saved-modal" onClick={(e) => e.stopPropagation()}>
+    <ModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="480px"
+      className="saved-modal"
+    >
+      <div className="saved-modal__inner">
         <h2 className="saved-modal__title">Saved</h2>
         <p className="saved-modal__content">{itemTitle}</p>
         <div className="saved-modal__actions">
@@ -57,7 +56,7 @@ export const SavedModal: React.FC<SavedModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </ModalShell>
   );
 };
 

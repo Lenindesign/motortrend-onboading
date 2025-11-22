@@ -1,32 +1,26 @@
 /**
  * Universal Card Styles
  * Based on VehicleCard structure following atomic design principles
+ * Now uses CardShell atom - padding, background, border, shadow, and hover handled by CardShell
  */
 
 .card {
+  /* CardShell handles: padding, background, border-radius, box-shadow, hover, transition */
+  width: 100%;
+}
+
+.card__inner {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-  padding: var(--spacing-2);
-  background: var(--color-neutrals-8);
-  border: 1px solid var(--color-neutrals-6);
-  border-radius: var(--border-radius-md);
   width: 100%;
-  box-shadow: var(--shadow-depth-5);
-  transition: all var(--transition-fast);
   align-self: space-between;
   align-items: stretch;
   justify-content: space-between;
   text-align: start;
 }
 
-.card:hover {
-  box-shadow: var(--shadow-depth-5);
-  transform: translateY(-1px);
-}
-
-.card--compact {
-  padding: var(--spacing-2);
+.card--compact .card__inner {
   gap: var(--spacing-1);
 }
 
@@ -70,15 +64,15 @@
 
 .card__bookmark-btn {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: var(--spacing-component-md);
+  left: var(--spacing-component-md);
   display: flex;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
   padding: 6px;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--color-overlay-light);
   border: none;
   border-radius: var(--border-radius-sm);
   color: var(--color-white);
@@ -89,16 +83,16 @@
 }
 
 .card__bookmark-btn:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--color-overlay-medium);
   transform: scale(1.05);
 }
 
 .card__bookmark-btn--active {
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-overlay-medium);
 }
 
 .card__bookmark-btn--active:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--color-overlay-dark);
 }
 
 .card__play-icon {
@@ -126,7 +120,7 @@
 .card__info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-gap-xs);
 }
 
 .card__title {
@@ -173,15 +167,15 @@
 /* Vehicle ownership section with emojis */
 .card__ownership {
   display: flex;
-  gap: var(--spacing-3);
+  gap: var(--spacing-gap-sm);
   align-items: center;
-  margin-top: 12px;
+  margin-top: var(--spacing-component-md);
 }
 
 .card__ownership-option {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-gap-sm);
   font-family: var(--font-body);
   font-size: 16px;
   font-weight: 400;
@@ -242,9 +236,9 @@
   display: flex;
   gap: var(--spacing-2);
   align-items: center;
-  padding: 4px 8px;
+  padding: var(--spacing-component-xs) var(--spacing-component-sm);
   background: transparent;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   color: var(--color-neutrals-2);
   min-width: 0;
   flex-wrap: nowrap;
@@ -254,7 +248,7 @@
 .card__rating {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-gap-xs);
   font-family: var(--font-body);
   font-weight: var(--font-weight-bold);
   font-size: 14px;
@@ -316,7 +310,7 @@
   font-weight: 600;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-size: 12px !important;
-  padding-left: 4px;
+  padding-left: var(--spacing-gap-xs);
 }
 
 .card__rating-star {
@@ -358,7 +352,7 @@
 }
 
 .card__rating.card__rating--with-tooltip:nth-of-type(2) {
-  gap: 4px;
+  gap: var(--spacing-gap-xs);
 }
 
 .card__rating-tooltip {
@@ -368,15 +362,15 @@
   transform: translateX(-50%);
   background: var(--color-neutrals-2);
   color: var(--color-white);
-  padding: 6px 10px;
+  padding: var(--spacing-component-xs) var(--spacing-component-sm);
   border-radius: var(--border-radius-sm);
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
   font-weight: 600;
   font-size: 12px;
   line-height: 1.2;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-component-sm);
+  box-shadow: var(--shadow-dropdown);
   z-index: 1001;
   opacity: 0;
   visibility: hidden;
@@ -420,17 +414,17 @@
 
 .card__rate-star-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + var(--spacing-component-sm));
   left: 50%;
   transform: translateX(-50%);
-  padding: 6px 12px;
+  padding: var(--spacing-component-xs) var(--spacing-component-sm);
   background-color: var(--color-neutrals-1);
-  color: var(--color-white);
+  color: var(--color-neutrals-6) !important;
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-  border-radius: 6px;
+  border-radius: var(--border-radius-sm);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--transition-fast);
@@ -457,7 +451,7 @@
 .card__rate-option {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--spacing-gap-xs);
   background: none;
   border: none;
   padding: 0;
@@ -476,7 +470,7 @@
 .card__button {
   display: flex;
   align-items: center;
-  gap: 0px;
+  gap: 0;
   padding: var(--spacing-2) var(--spacing-3);
   background: var(--color-neutrals-1);
   border: none;
@@ -547,10 +541,10 @@
 
 /* Mobile Responsive Enhancements */
 @media (max-width: 768px) {
-  .card {
-    padding: 12px;
-    gap: 10px;
-    border-radius: var(--border-radius-md);
+  /* CardShell handles padding and border-radius */
+  
+  .card__inner {
+    gap: var(--spacing-gap-sm);
   }
 
   .card__top-row {
@@ -591,8 +585,8 @@
   }
 
   .card__ownership {
-    gap: var(--spacing-2);
-    margin-top: 8px;
+    gap: var(--spacing-gap-sm);
+    margin-top: var(--spacing-component-sm);
   }
 
   .card__ownership-option {
@@ -637,8 +631,9 @@
 }
 
 @media (max-width: 480px) {
-  .card {
-    padding: 10px;
+  /* CardShell handles padding */
+  
+  .card__inner {
     gap: 8px;
   }
 

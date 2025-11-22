@@ -2214,7 +2214,7 @@
 .article__sidebar {
   width: 100%;
   position: sticky;
-  top: 0;
+  top: 100px;
   height: fit-content;
   display: flex;
   flex-direction: column;
@@ -3113,4 +3113,419 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+
+/* MotorTrend Score (from VehicleDetails) */
+.article__motortrend-score {
+  margin-bottom: 48px;
+}
+
+.article__motortrend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: var(--spacing-3);
+}
+
+.article__motortrend-logo {
+  height: 24px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.article__motortrend-score h2 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.125em;
+  color: var(--color-neutrals-2);
+  margin: 0;
+}
+
+.article__score-review {
+  margin-top: 24px;
+  padding: 42px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.article__reviewer-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-3);
+}
+
+.article__reviewer-avatar-group {
+  flex-shrink: 0;
+  width: 43px;
+  height: 43px;
+}
+
+.article__reviewer-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.article__reviewer-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.article__reviewer-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.article__reviewer-name-group {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.article__reviewer-name {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.375em;
+  color: var(--color-neutrals-1);
+}
+
+.article__reviewer-badge {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.article__reviewer-badge--with-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.article__reviewer-badge-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-neutrals-2);
+  color: var(--color-white);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 8px;
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.article__reviewer-badge-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: var(--color-neutrals-2);
+}
+
+.article__reviewer-badge--with-tooltip:hover .article__reviewer-badge-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.article__reviewer-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.article__reviewer-date {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 2em;
+  color: var(--color-neutrals-2);
+}
+
+.article__score-review h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.125em;
+  color: var(--color-neutrals-1);
+  margin: 0 0 12px 0;
+}
+
+.article__score-review p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6em;
+  color: var(--color-neutrals-3);
+}
+
+/* Read Full Review Accordion */
+.article__review-accordion {
+  margin-top: 24px;
+}
+
+.article__review-accordion-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  gap: var(--spacing-2);
+}
+
+.article__review-accordion-button:hover {
+  background-color: var(--color-neutrals-7);
+  border-color: var(--color-neutrals-5);
+}
+
+.article__review-accordion-button:active {
+  background-color: var(--color-neutrals-6);
+}
+
+.article__review-accordion-chevron {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutrals-3);
+  transition: transform var(--transition-fast);
+}
+
+.article__review-accordion-chevron--open {
+  transform: rotate(180deg);
+}
+
+.article__review-accordion-content {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-neutrals-6);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.article__review-accordion-text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article__review-accordion-text h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.article__review-accordion-text p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6em;
+  color: var(--color-neutrals-3);
+  margin: 0;
+}
+
+.article__review-section {
+  margin-bottom: 32px;
+}
+
+.article__review-section:last-child {
+  margin-bottom: 0;
+}
+
+.article__review-section-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.2em;
+  color: var(--color-neutrals-1);
+  margin: 0 0 16px 0;
+}
+
+.article__review-section p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6em;
+  color: var(--color-neutrals-3);
+  margin: 0 0 16px 0;
+}
+
+.article__review-section p:last-child {
+  margin-bottom: 0;
+}
+
+.article__score-card {
+  padding: var(--spacing-3);
+  background-color: var(--color-neutrals-7);
+  border-radius: 8px;
+}
+
+.article__score-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-3);
+}
+
+.article__score-header h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.1666666666666667em;
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.article__score-award {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-neutrals-2);
+}
+
+.article__score-award img {
+  width: 24px;
+  height: 24px;
+}
+
+.article__score-content {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.article__overall-score {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.article__score-circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 189px;
+  height: 160px;
+  background-color: #282a30;
+  border-radius: 8px;
+  gap: 4px;
+  position: relative;
+}
+
+.article__score-number {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 42px;
+  color: var(--color-white);
+  line-height: 1;
+}
+
+.article__score-label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.article__score-mt-badge {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+}
+
+.article__score-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+.article__score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.article__score-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.article__score-item span:first-child {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-neutrals-2);
+  width: 160px;
+}
+
+.article__score-bar {
+  flex: 1;
+  height: 8px;
+  background-color: #6E7481;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.article__score-bar-fill {
+  height: 100%;
+  background-color: #ffb74d;
+  border-radius: 4px;
+  transition: width var(--transition-fast);
+}
+
+.article__score-item span:last-child {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-neutrals-2);
+  width: 40px;
+  text-align: right;
 }

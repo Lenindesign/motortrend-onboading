@@ -23,6 +23,7 @@ import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleLi
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { ArticleReactions } from '../../components/ArticleReactions';
 import StickyRateBar from '../../components/StickyRateBar';
+import ArticleHero from '../../components/ArticleHero/ArticleHero';
 import './Article.css';
 
 export const Article: React.FC = () => {
@@ -58,7 +59,6 @@ export const Article: React.FC = () => {
     }
     return false;
   });
-  const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
@@ -67,7 +67,6 @@ export const Article: React.FC = () => {
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [isVehicleAccordionOpen] = useState(false);
   const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
-  const [isScoreInfoTooltipVisible, setIsScoreInfoTooltipVisible] = useState(false);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const [isStickyBarSticky, setIsStickyBarSticky] = useState(false);
   const [stickyBarHeight, setStickyBarHeight] = useState(0);
@@ -77,7 +76,7 @@ export const Article: React.FC = () => {
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
-  const scoreInfoRef = useRef<HTMLDivElement>(null);
+  const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
   const commentIconRef = useRef<HTMLSpanElement>(null);
   const justSavedReviewRef = useRef<boolean>(false);
   const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
@@ -495,7 +494,6 @@ export const Article: React.FC = () => {
   // Handlers for tooltips
   const tooltipHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const staffTooltipHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const scoreInfoTooltipHideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Cleanup timeouts on unmount
   useEffect(() => {
@@ -506,40 +504,39 @@ export const Article: React.FC = () => {
       if (staffTooltipHideTimeoutRef.current) {
         clearTimeout(staffTooltipHideTimeoutRef.current);
       }
-      if (scoreInfoTooltipHideTimeoutRef.current) {
-        clearTimeout(scoreInfoTooltipHideTimeoutRef.current);
-      }
     };
   }, []);
 
-
-  const handleScoreInfoTooltipMouseEnter = () => {
-    if (scoreInfoTooltipHideTimeoutRef.current) {
-      clearTimeout(scoreInfoTooltipHideTimeoutRef.current);
-      scoreInfoTooltipHideTimeoutRef.current = null;
-    }
-    setIsScoreInfoTooltipVisible(true);
-  };
-
-  const handleScoreInfoTooltipMouseLeave = () => {
-    scoreInfoTooltipHideTimeoutRef.current = setTimeout(() => {
-      setIsScoreInfoTooltipVisible(false);
-      scoreInfoTooltipHideTimeoutRef.current = null;
-    }, 150);
-  };
 
   // Scroll handlers
   const handleScrollToStaffRating = () => {
     const staffRatingSection = document.getElementById('motortrend-score');
     if (staffRatingSection) {
-      staffRatingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const headerOffset = 100; // Account for sticky nav bar height
+      const elementPosition = staffRatingSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
   const handleScrollToCommunityRatings = () => {
+    // Force open the Reviews tab
+    setReviewsTabActive(true);
+    
     const communityRatingsSection = document.getElementById('community-ratings');
     if (communityRatingsSection) {
-      communityRatingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const headerOffset = 100; // Account for sticky nav bar height
+      const elementPosition = communityRatingsSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -555,9 +552,13 @@ export const Article: React.FC = () => {
     // Scroll to reviews section
     const reviewsSection = document.getElementById('community-ratings');
     if (reviewsSection) {
-      reviewsSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+      const headerOffset = 100; // Account for sticky nav bar height
+      const elementPosition = reviewsSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
       });
     }
     setIsToastVisible(false);
@@ -840,7 +841,14 @@ export const Article: React.FC = () => {
             ctaOnClick={() => {
               const listingsSection = document.querySelector('.article__listings');
               if (listingsSection) {
-                listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const headerOffset = 100; // Account for sticky nav bar height
+                const elementPosition = listingsSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: 'smooth'
+                });
               } else {
                 console.log('Navigate to local listings');
               }
@@ -958,7 +966,14 @@ export const Article: React.FC = () => {
                       onClick={() => {
                         const listingsSection = document.querySelector('.article__listings');
                         if (listingsSection) {
-                          listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          const headerOffset = 100; // Account for sticky nav bar height
+                          const elementPosition = listingsSection.getBoundingClientRect().top;
+                          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                          window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                          });
                         } else {
                           console.log('Navigate to local listings');
                         }
@@ -999,7 +1014,14 @@ export const Article: React.FC = () => {
                   onClick={() => {
                     const commentsSection = document.getElementById('community-ratings');
                     if (commentsSection) {
-                      commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      const headerOffset = 100; // Account for sticky nav bar height
+                      const elementPosition = commentsSection.getBoundingClientRect().top;
+                      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                      });
                     }
                   }}
                   onMouseEnter={() => {
@@ -1034,26 +1056,12 @@ export const Article: React.FC = () => {
 
             {/* Hero Section */}
             <div className={`article__hero-wrapper ${isPremiumArticle ? 'article__hero-wrapper--premium' : ''}`}>
-              <div className="article__hero">
-                <div className="article__hero-image-wrapper">
-                  <img 
-                    src={article.heroImage} 
-                    alt={article.title}
-                    className="article__hero-image article__image-clickable"
-                    onClick={() => handleImageClick(0)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <div className="article__hero-overlay">
-                    <button 
-                      className="article__share-btn"
-                      onClick={handleShare}
-                      aria-label="Share article"
-                    >
-                      <Icon name="share" size={24} />
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ArticleHero
+                imageUrl={article.heroImage}
+                title={article.title}
+                onShare={handleShare}
+                onImageClick={() => handleImageClick(0)}
+              />
             </div>
 
             {/* Main Content */}
@@ -1307,7 +1315,7 @@ export const Article: React.FC = () => {
                         }
                       } else if (block.type === "paragraph") {
                         paragraphCount++;
-                        
+
                         // Render the paragraph
                         elements.push(
                           <p key={`paragraph-${index}`} className="article__paragraph">
@@ -1316,36 +1324,16 @@ export const Article: React.FC = () => {
                         );
 
                         // Add MotorTrend Score component after the 8th paragraph (skip for premium articles)
-                        if (paragraphCount === 8 && !isPremiumArticle) {
+                        if (paragraphCount === 8 && !isPremiumArticle && motortrendScore) {
+                          const formatScore = (score: number) => score.toFixed(1);
+                          
                           elements.push(
                             <div key="motortrend-score" id="motortrend-score" className="article__motortrend-score">
                               <div className="article__motortrend-header">
-                                <div className="article__motortrend-title-group">
-                                  <h2>MotorTrend Score</h2>
-                                  <div 
-                                    ref={scoreInfoRef}
-                                    className="article__score-info-icon"
-                                    onMouseEnter={handleScoreInfoTooltipMouseEnter}
-                                    onMouseLeave={handleScoreInfoTooltipMouseLeave}
-                                  >
-                                    <Icon name="info" variant="outlined" size={20} />
-                                    {isScoreInfoTooltipVisible && (
-                                      <div 
-                                        className="article__score-info-tooltip"
-                                        onMouseEnter={handleScoreInfoTooltipMouseEnter}
-                                        onMouseLeave={handleScoreInfoTooltipMouseLeave}
-                                      >
-                                        <p>
-                                          MotorTrend scores vehicles based on comprehensive testing of performance, efficiency, technology, and value. Our expert reviewers evaluate each vehicle through rigorous standardized testing procedures to provide objective ratings. 
-                                          <Link to="/article/how-motortrend-tests-cars" className="article__score-info-link">Learn more about how MotorTrend tests cars</Link>.
-                                        </p>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg" 
-                                  alt="MotorTrend Logo" 
+                                <h2>MotorTrend Review</h2>
+                                <img
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg"
+                                  alt="MotorTrend Logo"
                                   className="article__motortrend-logo"
                                 />
                               </div>
@@ -1353,10 +1341,10 @@ export const Article: React.FC = () => {
                                 <div className="article__score-header">
                                   <h3>{motortrendScore.vehicleName}</h3>
                                   <div className="article__score-award">
-                                    <img 
-                                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg" 
-                                      alt="Trophy" 
-                                      width={24} 
+                                    <img
+                                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg"
+                                      alt="Trophy"
+                                      width={24}
                                       height={24}
                                     />
                                     <span>{motortrendScore.award}</span>
@@ -1366,7 +1354,7 @@ export const Article: React.FC = () => {
                                 <div className="article__score-content">
                                   <div className="article__overall-score">
                                     <div className="article__score-circle">
-                                      <span className="article__score-number">{typeof motortrendScore.overallRating === 'number' ? motortrendScore.overallRating.toFixed(1) : motortrendScore.overallRating}</span>
+                                      <span className="article__score-number">{formatScore(motortrendScore.overallRating)}</span>
                                       <div className="article__score-label-row">
                                         <img 
                                           src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
@@ -1383,37 +1371,40 @@ export const Article: React.FC = () => {
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.performance / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.performance.toFixed(1)}</span>
+                                      <span>{formatScore(motortrendScore.scores.performance)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Efficiency/Range</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.efficiency / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.efficiency.toFixed(1)}</span>
+                                      <span>{formatScore(motortrendScore.scores.efficiency)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Tech/Innovation</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.tech / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.tech.toFixed(1)}</span>
+                                      <span>{formatScore(motortrendScore.scores.tech)}</span>
                                     </div>
                                     <div className="article__score-item">
                                       <span>Value</span>
                                       <div className="article__score-bar">
                                         <div className="article__score-bar-fill" style={{ width: `${(motortrendScore.scores.value / 10) * 100}%` }}></div>
                                       </div>
-                                      <span>{motortrendScore.scores.value.toFixed(1)}</span>
+                                      <span>{formatScore(motortrendScore.scores.value)}</span>
                                     </div>
                                   </div>
                                 </div>
+
+                                {/* Staff Review */}
                                 <div className="article__score-review">
+                                  {/* Reviewer Avatar Section */}
                                   <div className="article__reviewer-section">
                                     <div className="article__reviewer-avatar-group">
-                                      <img 
-                                        src={motortrendScore.reviewer.avatar} 
-                                        alt="Reviewer avatar" 
+                                      <img
+                                        src={motortrendScore.reviewer.avatar}
+                                        alt="Reviewer avatar"
                                         className="article__reviewer-avatar"
                                         width={43}
                                         height={43}
@@ -1423,6 +1414,18 @@ export const Article: React.FC = () => {
                                       <div className="article__reviewer-header">
                                         <div className="article__reviewer-name-group">
                                           <span className="article__reviewer-name">{motortrendScore.reviewer.name}</span>
+                                          <div className="article__reviewer-badge--with-tooltip">
+                                            <img
+                                              src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                                              alt="MT badge"
+                                              className="article__reviewer-badge"
+                                              width={16}
+                                              height={16}
+                                            />
+                                            <div className="article__reviewer-badge-tooltip">
+                                              {motortrendScore.reviewer.title}
+                                            </div>
+                                          </div>
                                         </div>
                                         <div className="article__reviewer-meta">
                                           <span className="article__reviewer-date">Driven, tested | {motortrendScore.reviewer.date}</span>
@@ -1432,7 +1435,7 @@ export const Article: React.FC = () => {
                                   </div>
                                   <h3>{motortrendScore.reviewer.title}</h3>
                                   <p>{motortrendScore.reviewer.excerpt}</p>
-                                  
+
                                   {/* Read Full Review Accordion CTA */}
                                   <div className="article__review-accordion">
                                     <button
@@ -1462,8 +1465,8 @@ export const Article: React.FC = () => {
                                       <div className="article__review-accordion-content">
                                         <div className="article__review-accordion-text">
                                           {motortrendScore.reviewer.detailedSections ? (
-                                            motortrendScore.reviewer.detailedSections.map((section, index) => (
-                                              <div key={index} className="article__review-section">
+                                            motortrendScore.reviewer.detailedSections.map((section, sectionIndex) => (
+                                              <div key={sectionIndex} className="article__review-section">
                                                 <h4 className="article__review-section-title">{section.title}</h4>
                                                 {section.content.split('\n\n').map((paragraph, pIndex) => (
                                                   <p key={pIndex}>{paragraph}</p>
@@ -1473,13 +1476,7 @@ export const Article: React.FC = () => {
                                           ) : (
                                             <>
                                               <h4>Detailed Review</h4>
-                                              <p>
-                                                {motortrendScore.reviewer.excerpt} The vehicle has been thoroughly tested across various conditions, 
-                                                from daily commuting to extended highway journeys. Performance metrics have been evaluated 
-                                                including acceleration, braking, handling, and overall driving dynamics. The interior quality, 
-                                                technology integration, and overall value proposition have been carefully assessed to provide 
-                                                a comprehensive evaluation.
-                                              </p>
+                                              <p>Full review content would appear here.</p>
                                             </>
                                           )}
                                         </div>

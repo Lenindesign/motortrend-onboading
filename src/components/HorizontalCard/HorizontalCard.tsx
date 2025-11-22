@@ -1,10 +1,12 @@
 /**
  * Horizontal Card Component
  * Horizontal card for news river layout
+ * Now uses CardShell atom for consistent card wrapper styling
  */
 
 import React from 'react';
 import './HorizontalCard.css';
+import { CardShell } from '../atoms/CardShell/CardShell';
 
 export interface HorizontalCardProps {
   imageUrl: string;
@@ -24,19 +26,17 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   onClick,
 }) => {
   return (
-    <div 
-      className="horizontal-card"
+    <CardShell
+      padding="none"
+      hasHover={true}
+      hasShadow={true}
+      borderRadius="lg"
+      background="neutral-lighter"
       onClick={onClick}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={onClick ? (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick();
-        }
-      } : undefined}
+      className="horizontal-card"
     >
-      <div className="horizontal-card__image-container">
+      <div className="horizontal-card__inner">
+        <div className="horizontal-card__image-container">
         <img 
           src={imageUrl} 
           alt={title} 
@@ -56,7 +56,8 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </CardShell>
   );
 };
 

@@ -1,52 +1,11 @@
 /**
  * Saved Modal Styles
  * Modal that appears when a user saves an item
+ * Now uses ModalShell atom - overlay and shadow styles removed
  */
 
-.saved-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.saved-modal {
-  background-color: var(--color-white);
-  border-radius: var(--border-radius-lg);
+.saved-modal__inner {
   padding: var(--spacing-5);
-  max-width: 480px;
-  width: 90%;
-  box-shadow: var(--shadow-depth-5);
-  animation: slideUp 0.3s ease-out;
-  position: relative;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .saved-modal__title {

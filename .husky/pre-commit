@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🎨 Running design token governance checks..."
+
+# Run CSS token linter
+node scripts/lint-css-tokens.js
+
+# If the linter fails, prevent commit
+if [ $? -ne 0 ]; then
+  echo "❌ Design token violations detected. Please fix before committing."
+  exit 1
+fi
+
+# Run ESLint
+npm run lint
+
+# If ESLint fails, prevent commit
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint errors detected. Please fix before committing."
+  exit 1
+fi
+
+echo "✅ All checks passed!"

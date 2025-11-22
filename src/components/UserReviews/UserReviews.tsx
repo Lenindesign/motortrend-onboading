@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Icon from '../Icon';
 import RatingModal from '../RatingModal';
 import WriteReviewModal from '../WriteReviewModal';
+import { Badge } from '../atoms/Badge/Badge';
 import { useRating } from '../../contexts/RatingContext';
 import './UserReviews.css';
 
@@ -804,34 +805,52 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       <div className="user-reviews__reviewer-name-group">
                         <span className="user-reviews__reviewer-name">{review.reviewerName}</span>
                         {review.verificationLevel === 'owner' && (
-                          <span className="user-reviews__verified-badge user-reviews__verified-badge--owner">
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" 
-                              alt="Owner" 
-                              className="user-reviews__verified-icon"
-                            />
+                          <Badge 
+                            variant="neutral"
+                            size="sm"
+                            icon={
+                              <img 
+                                src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" 
+                                alt="" 
+                                style={{ width: '12px', height: '12px' }}
+                              />
+                            }
+                            aria-label="Owner"
+                          >
                             Owner
-                          </span>
+                          </Badge>
                         )}
                         {review.verificationLevel === 'verified' && (
-                          <span className="user-reviews__verified-badge user-reviews__verified-badge--verified">
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" 
-                              alt="Verified Owner" 
-                              className="user-reviews__verified-icon"
-                            />
+                          <Badge 
+                            variant="verified"
+                            size="sm"
+                            icon={
+                              <img 
+                                src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" 
+                                alt="" 
+                                style={{ width: '12px', height: '12px' }}
+                              />
+                            }
+                            aria-label="Verified Owner"
+                          >
                             Verified Owner
-                          </span>
+                          </Badge>
                         )}
                         {review.verificationLevel === 'verified_documents' && (
-                          <span className="user-reviews__verified-badge user-reviews__verified-badge--documents">
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" 
-                              alt="Documents Verified" 
-                              className="user-reviews__verified-icon"
-                            />
+                          <Badge 
+                            variant="success"
+                            size="sm"
+                            icon={
+                              <img 
+                                src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" 
+                                alt="" 
+                                style={{ width: '12px', height: '12px' }}
+                              />
+                            }
+                            aria-label="Verified Owner with Documents Verified"
+                          >
                             Verified Owner — Documents Verified
-                          </span>
+                          </Badge>
                         )}
                       </div>
                       <div className="user-reviews__review-rating-row">
@@ -857,23 +876,49 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       {(review.vehicleRelationship || review.experienceDuration) && (
                         <span className="user-reviews__reviewer-experience">
                           {review.vehicleRelationship && (
-                            <span className="user-reviews__relationship-badge">
+                            <>
                               {review.vehicleRelationship === 'own' && (
-                                <>
-                                  <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" 
-                                    alt="Current Owner" 
-                                    className="user-reviews__relationship-icon"
-                                  />
+                                <Badge
+                                  variant="neutral"
+                                  size="sm"
+                                  icon={
+                                    <img 
+                                      src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" 
+                                      alt="" 
+                                      style={{ width: '12px', height: '12px' }}
+                                    />
+                                  }
+                                  aria-label="Current Owner"
+                                >
                                   Current Owner
-                                </>
+                                </Badge>
                               )}
-                              {review.vehicleRelationship === 'previously_owned' && 'Previous Owner'}
-                              {review.vehicleRelationship === 'leased' && 'Leased'}
-                              {review.vehicleRelationship === 'rented' && 'Rented'}
-                              {review.vehicleRelationship === 'test_drove' && 'Test Drove'}
-                              {review.vehicleRelationship === 'passenger' && 'Passenger'}
-                            </span>
+                              {review.vehicleRelationship === 'previously_owned' && (
+                                <Badge variant="neutral" size="sm" aria-label="Previous Owner">
+                                  Previous Owner
+                                </Badge>
+                              )}
+                              {review.vehicleRelationship === 'leased' && (
+                                <Badge variant="neutral" size="sm" aria-label="Leased">
+                                  Leased
+                                </Badge>
+                              )}
+                              {review.vehicleRelationship === 'rented' && (
+                                <Badge variant="neutral" size="sm" aria-label="Rented">
+                                  Rented
+                                </Badge>
+                              )}
+                              {review.vehicleRelationship === 'test_drove' && (
+                                <Badge variant="neutral" size="sm" aria-label="Test Drove">
+                                  Test Drove
+                                </Badge>
+                              )}
+                              {review.vehicleRelationship === 'passenger' && (
+                                <Badge variant="neutral" size="sm" aria-label="Passenger">
+                                  Passenger
+                                </Badge>
+                              )}
+                            </>
                           )}
                           {review.experienceDuration && (
                             <span className="user-reviews__duration-info">

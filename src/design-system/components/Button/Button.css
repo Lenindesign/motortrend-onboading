@@ -1,212 +1,103 @@
 /**
  * Standardized Button Styles
- * Unified CTA system across the entire app
+ * Unified CTA system extensions
  * Based on Figma Community design system
+ * NOTE: Base styles, sizes, and standard colors are in global.css
  */
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: none;
-  border-radius: var(--border-radius-sm);
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1em;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Sizes - Standardized CTA system */
-.btn--default {
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font-body);
-  border-radius: var(--border-radius-sm);
-  height: 36px;
-}
-
-.btn--large {
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: var(--font-body);
-  border-radius: var(--border-radius-sm);
-  height: 44px;
-}
-
-.btn--small {
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: var(--font-body);
-  border-radius: var(--border-radius-sm);
-  height: 28px;
-}
-
-/* Full Width */
-.btn--full-width {
-  width: 100%;
-}
-
-/* Primary CTA - Main action buttons */
-.btn--primary.btn--solid {
-  background-color: var(--color-primary-1);
-  color: var(--color-white);
-  box-shadow: 0 2px 4px rgba(233, 12, 23, 0.2);
-}
-
-.btn--primary.btn--solid:hover:not(.btn--disabled) {
-  background-color: var(--color-neutrals-1);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(233, 12, 23, 0.3);
-}
-
-/* Secondary CTA - Secondary actions */
-.btn--secondary.btn--solid {
-  background-color: #353945;
-  color: var(--color-white);
-}
-
-.btn--secondary.btn--solid:hover:not(.btn--disabled) {
-  background-color: #2a2d35;
-  transform: translateY(-1px);
-}
-
-/* Neutral CTA - Subtle actions */
-.btn--neutral.btn--solid {
-  background-color: var(--color-neutrals-5);
-  color: var(--color-white);
-}
-
-.btn--neutral.btn--solid:hover:not(.btn--disabled) {
-  background-color: var(--color-neutrals-4);
-  transform: translateY(-1px);
-}
-
-/* Success CTA - Positive actions */
-.btn--success.btn--solid {
-  background-color: #34A853;
-  color: var(--color-white);
-}
-
-.btn--success.btn--solid:hover:not(.btn--disabled) {
-  background-color: #2d8f47;
-  transform: translateY(-1px);
-}
-
-/* Warning CTA - Caution actions */
-.btn--warning.btn--solid {
-  background-color: #F59E0B;
-  color: var(--color-white);
-}
-
-.btn--warning.btn--solid:hover:not(.btn--disabled) {
-  background-color: #D97706;
-  transform: translateY(-1px);
-}
-
 /* Legacy color support */
-.btn--blue.btn--solid {
+.cta--blue {
   background-color: #353945;
   color: var(--color-white);
 }
 
-.btn--blue.btn--solid:hover:not(.btn--disabled) {
+.cta--blue:hover:not(:disabled) {
   background-color: #2a2d35;
   transform: translateY(-1px);
 }
 
-.btn--red.btn--solid {
+.cta--red {
   background-color: var(--color-primary-1);
   color: var(--color-white);
 }
 
-.btn--red.btn--solid:hover:not(.btn--disabled) {
+.cta--red:hover:not(:disabled) {
   background-color: var(--color-neutrals-1);
   transform: translateY(-1px);
 }
 
-.btn--neutrals3.btn--solid {
+.cta--neutrals3 {
   background-color: #353945;
   color: #FCFCFD;
 }
 
-.btn--neutrals3.btn--solid:hover:not(.btn--disabled) {
+.cta--neutrals3:hover:not(:disabled) {
   background-color: var(--color-neutrals-6);
   color: var(--color-neutrals-2);
   transform: translateY(-1px);
 }
 
 /* Color Variants - Ghost */
-.btn--blue.btn--ghost {
+.cta--blue.cta--ghost {
   background-color: transparent;
   color: var(--color-blue);
 }
 
-.btn--blue.btn--ghost:hover:not(.btn--disabled) {
+.cta--blue.cta--ghost:hover:not(:disabled) {
   background-color: rgba(24, 108, 234, 0.1);
 }
 
-.btn--red.btn--ghost {
+.cta--red.cta--ghost {
   background-color: transparent;
   color: var(--color-primary-2);
 }
 
-.btn--red.btn--ghost:hover:not(.btn--disabled) {
+.cta--red.cta--ghost:hover:not(:disabled) {
   background-color: rgba(233, 12, 23, 0.1);
 }
 
-.btn--neutrals3.btn--ghost {
+.cta--neutrals3.cta--ghost {
   background-color: transparent;
   color: var(--color-neutrals-5);
 }
 
-.btn--neutrals3.btn--ghost:hover:not(.btn--disabled) {
+.cta--neutrals3.cta--ghost:hover:not(:disabled) {
   background-color: var(--color-neutrals-2);
 }
 
 /* Color Variants - Outline */
-.btn--blue.btn--outline {
+.cta--blue.cta--outline {
   background-color: transparent;
   color: var(--color-blue);
   border: 1px solid var(--color-blue);
 }
 
-.btn--blue.btn--outline:hover:not(.btn--disabled) {
+.cta--blue.cta--outline:hover:not(:disabled) {
   background-color: rgba(24, 108, 234, 0.1);
 }
 
-.btn--red.btn--outline {
+.cta--red.cta--outline {
   background-color: transparent;
   color: var(--color-primary-2);
   border: 1px solid var(--color-primary-2);
 }
 
-.btn--red.btn--outline:hover:not(.btn--disabled) {
+.cta--red.cta--outline:hover:not(:disabled) {
   background-color: rgba(233, 12, 23, 0.1);
 }
 
-.btn--neutrals3.btn--outline {
+.cta--neutrals3.cta--outline {
   background-color: transparent;
   color: var(--color-neutrals-5);
   border: 1px solid var(--color-neutrals-5);
 }
 
-.btn--neutrals3.btn--outline:hover:not(.btn--disabled) {
+.cta--neutrals3.cta--outline:hover:not(:disabled) {
   background-color: var(--color-neutrals-2);
 }
 
-/* Toast Modal Button Variants (exact match) */
-.btn--toast-cancel {
+/* Toast Modal Button Variants */
+.cta--toast-cancel {
   background-color: var(--color-neutrals-7);
   color: var(--color-neutrals-2);
   padding: var(--spacing-1) var(--spacing-2);
@@ -216,11 +107,11 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.btn--toast-cancel:hover:not(.btn--disabled) {
+.cta--toast-cancel:hover:not(:disabled) {
   background-color: var(--color-neutrals-6);
 }
 
-.btn--toast-confirm {
+.cta--toast-confirm {
   background-color: var(--color-primary-1);
   color: var(--color-white);
   padding: var(--spacing-1) var(--spacing-2);
@@ -230,18 +121,18 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.btn--toast-confirm:hover:not(.btn--disabled) {
+.cta--toast-confirm:hover:not(:disabled) {
   background-color: var(--color-neutrals-1);
 }
 
-/* Disabled State */
-.btn--disabled {
+/* Explicit Disabled class (if used) */
+.cta--disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Icon */
-.btn__icon {
+.cta__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -250,8 +141,7 @@
 }
 
 /* Label */
-.btn__label {
+.cta__label {
   display: inline-flex;
   align-items: center;
 }
-

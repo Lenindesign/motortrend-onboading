@@ -9,6 +9,8 @@ import { Link } from 'react-router-dom';
 import { useRating } from '../../contexts/RatingContext';
 import { StaffRatingTooltip } from '../StaffRatingTooltip';
 import { RatingDistributionTooltip } from '../RatingDistributionTooltip';
+import { Badge, Button } from '../../design-system/components';
+import { Popover } from '../atoms/Popover';
 import './StickyRateBar.css';
 
 export interface RatingItem {
@@ -55,11 +57,12 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   ratingDistribution,
   totalReviews
 }) => {
+  console.log('[StickyRateBar] Received totalReviews:', totalReviews);
+  console.log('[StickyRateBar] Received ratingDistribution:', ratingDistribution);
   const { getUserRating } = useRating();
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isDistributionTooltipVisible, setIsDistributionTooltipVisible] = useState(false);
-  const staffRatingRef = useRef<HTMLDivElement>(null);
-  const distributionRatingRef = useRef<HTMLDivElement>(null);
+  // Refs removed as Popover handles positioning
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const hideDistributionTooltipTimeout = useRef<number | null>(null);
 
@@ -203,7 +206,10 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
         <>
           {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
           <div className="sticky-rate-bar__rating-text">
-            {rating.label || 'User Reviews'} <span className="sticky-rate-bar__rating-highlight">({Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5)</span>
+            {rating.label || 'User Reviews'}{' '}
+            <Badge variant="info" size="sm">
+              {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
+            </Badge>
           </div>
         </>
       );
@@ -214,7 +220,14 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
         <>
           {renderStarRating(displayRating as number, rating.showHalfStars !== false)}
           <div className="sticky-rate-bar__rating-text">
-            Rate This Vehicle{userRating > 0 && <span className="sticky-rate-bar__rating-highlight"> ({Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5)</span>}
+            Rate This Vehicle{userRating > 0 && (
+              <>
+                {' '}
+                <Badge variant="success" size="sm">
+                  {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
+                </Badge>
+              </>
+            )}
           </div>
         </>
       );
@@ -227,27 +240,71 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       rating.type === 'your-rating' ? 'sticky-rate-bar__rate-btn' : ''
     ].filter(Boolean).join(' ');
 
-    // Add ref and mouse handlers for tooltips
-    const additionalProps: any = {};
+    // Mouse handlers for tooltips
+    const mouseHandlers: React.DOMAttributes<HTMLElement> = {};
+    let tooltipContent: React.ReactNode = null;
+    let isTooltipOpen = false;
+    let onTooltipOpenChange: ((isOpen: boolean) => void) | undefined = undefined;
+    let popoverClass = '';
+
     if (rating.type === 'motortrend' && staffRatingScores) {
-      additionalProps.ref = staffRatingRef;
-      additionalProps.onMouseEnter = handleStaffTooltipMouseEnter;
-      additionalProps.onMouseLeave = handleStaffTooltipMouseLeave;
-    } else if (rating.type === 'user-reviews' && ratingDistribution) {
-      additionalProps.ref = distributionRatingRef;
-      additionalProps.onMouseEnter = handleDistributionTooltipMouseEnter;
-      additionalProps.onMouseLeave = handleDistributionTooltipMouseLeave;
+      mouseHandlers.onMouseEnter = handleStaffTooltipMouseEnter;
+      mouseHandlers.onMouseLeave = handleStaffTooltipMouseLeave;
+      isTooltipOpen = isStaffTooltipVisible;
+      onTooltipOpenChange = setIsStaffTooltipVisible;
+      popoverClass = 'staff-rating-tooltip-popover';
+      tooltipContent = (
+        <StaffRatingTooltip
+          overallRating={ratings.find(r => r.type === 'motortrend')?.value as number || 0}
+          scores={staffRatingScores}
+          onMouseEnter={handleStaffTooltipMouseEnter}
+          onMouseLeave={handleStaffTooltipMouseLeave}
+          onRequestClose={() => setIsStaffTooltipVisible(false)}
+        />
+      );
+    } else if (rating.type === 'user-reviews' && ratingDistribution && totalReviews) {
+      mouseHandlers.onMouseEnter = handleDistributionTooltipMouseEnter;
+      mouseHandlers.onMouseLeave = handleDistributionTooltipMouseLeave;
+      isTooltipOpen = isDistributionTooltipVisible;
+      onTooltipOpenChange = setIsDistributionTooltipVisible;
+      popoverClass = 'rating-tooltip-popover';
+      tooltipContent = (
+        <RatingDistributionTooltip
+          distribution={ratingDistribution}
+          totalReviews={totalReviews}
+          onMouseEnter={handleDistributionTooltipMouseEnter}
+          onMouseLeave={handleDistributionTooltipMouseLeave}
+          onRequestClose={() => setIsDistributionTooltipVisible(false)}
+        />
+      );
     }
+
+    const content = (
+      <Component
+        className={itemClasses}
+        onClick={rating.onClick}
+        {...mouseHandlers}
+      >
+        {ratingDisplay}
+      </Component>
+    );
 
     return (
       <React.Fragment key={index}>
-        <Component
-          className={itemClasses}
-          onClick={rating.onClick}
-          {...additionalProps}
-        >
-          {ratingDisplay}
-        </Component>
+        {tooltipContent ? (
+          <Popover
+            content={tooltipContent}
+            isOpen={isTooltipOpen}
+            onOpenChange={onTooltipOpenChange}
+            trigger="click" // Disabled internal hover logic, managed by state
+            placement="bottom"
+            className={popoverClass}
+          >
+            {content}
+          </Popover>
+        ) : (
+          content
+        )}
         {!isLast && <div className="sticky-rate-bar__rating-separator"></div>}
       </React.Fragment>
     );
@@ -260,7 +317,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     >
       <div className="sticky-rate-bar__content">
         {vehiclePath ? (
-          <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name">
+          <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name sticky-rate-bar__vehicle-name--link">
             {vehicleName}
           </Link>
         ) : (
@@ -272,43 +329,17 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
           {ratings.map((rating, index) => renderRatingItem(rating, index))}
         </div>
         {ctaText && (
-          <button
-            className="sticky-rate-bar__cta cta cta--primary cta--default"
+          <Button
+            className="sticky-rate-bar__cta"
+            color="primary"
             onClick={ctaOnClick}
           >
             {ctaText}
-          </button>
+          </Button>
         )}
       </div>
-
-      {/* Staff Rating Tooltip */}
-      {staffRatingScores && (
-        <StaffRatingTooltip
-          overallRating={ratings.find(r => r.type === 'motortrend')?.value as number || 0}
-          scores={staffRatingScores}
-          isVisible={isStaffTooltipVisible}
-          triggerRef={staffRatingRef}
-          onMouseEnter={handleStaffTooltipMouseEnter}
-          onMouseLeave={handleStaffTooltipMouseLeave}
-          onRequestClose={() => setIsStaffTooltipVisible(false)}
-        />
-      )}
-
-      {/* Rating Distribution Tooltip */}
-      {ratingDistribution && totalReviews && (
-        <RatingDistributionTooltip
-          distribution={ratingDistribution}
-          totalReviews={totalReviews}
-          isVisible={isDistributionTooltipVisible}
-          triggerRef={distributionRatingRef}
-          onMouseEnter={handleDistributionTooltipMouseEnter}
-          onMouseLeave={handleDistributionTooltipMouseLeave}
-          onRequestClose={() => setIsDistributionTooltipVisible(false)}
-        />
-      )}
     </div>
   );
 };
 
 export default StickyRateBar;
-

@@ -1,34 +1,20 @@
 /**
  * Write Review Modal Component Styles
  * Based on Figma Community design system
+ * Now uses ModalShell atom - overlay and shadow styles removed
  */
 
-.write-review-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  z-index: 1000;
-  padding: 0;
+.write-review-modal {
+  background-color: var(--color-neutrals-7);
 }
 
-.write-review-modal {
-  width: 400px;
-  height: 100%;
-  background-color: var(--color-neutrals-7);
+.write-review-modal__inner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 0 40px 0;
-  position: relative;
+  padding: 0 0 var(--spacing-5) 0;
+  height: 100%;
   overflow-y: auto;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Header */
@@ -444,7 +430,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
-  margin-bottom: var(--spacing-2);
+  margin-bottom: 0;
 }
 
 .write-review-modal__section-group-title {
@@ -465,15 +451,9 @@
   margin: 0;
 }
 
+/* Optional badge now uses Badge atom (info variant, outline style) */
 .write-review-modal__optional-badge {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-weight: var(--font-weight-regular);
-  font-size: 12px;
-  line-height: 1.333em;
-  color: var(--color-neutrals-4);
   margin-left: var(--spacing-1);
-  font-style: italic;
 }
 
 .write-review-modal__input,
@@ -677,7 +657,7 @@
   line-height: 1.429em;
   color: var(--color-neutrals-3);
   margin: 0;
-  margin-bottom: var(--spacing-3);
+  margin-bottom: 0;
 }
 
 .write-review-modal__category-card {

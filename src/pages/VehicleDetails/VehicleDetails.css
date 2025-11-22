@@ -855,7 +855,6 @@
   max-height: 24px;
   object-fit: contain;
   display: block;
-  vertical-align: middle;
   line-height: 1;
   margin: 0;
   padding: 0;
@@ -1097,7 +1096,6 @@
   max-height: 20px;
   object-fit: contain;
   display: block;
-  vertical-align: middle;
   line-height: 1;
   margin: 0;
   padding: 0;
@@ -2218,9 +2216,9 @@
   flex-direction: column;
   gap: var(--spacing-3);
   position: sticky;
-  top: 24px;
+  top: 100px;
   align-self: flex-start;
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
 

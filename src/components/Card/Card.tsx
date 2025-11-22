@@ -1,11 +1,13 @@
 /**
  * Universal Card Component
  * Based on VehicleCard structure following atomic design principles
+ * Now uses CardShell atom for consistent card wrapper styling
  */
 
 import React from 'react';
 import './Card.css';
 import Icon from '../Icon';
+import { CardShell } from '../atoms/CardShell/CardShell';
 
 export interface CardProps {
   // Core content
@@ -62,7 +64,15 @@ export const Card: React.FC<CardProps> = ({
   const cardClasses = `card card--${variant} ${className}`.trim();
 
   return (
-    <div className={cardClasses}>
+    <CardShell
+      padding="sm"
+      hasHover={true}
+      hasShadow={true}
+      borderRadius="md"
+      background="neutral-lighter"
+      className={cardClasses}
+    >
+      <div className="card__inner">
       <div className="card__top-row">
         <div
           className={`card__image-container ${onAction ? 'card__image-container--clickable' : ''}`}
@@ -200,7 +210,8 @@ export const Card: React.FC<CardProps> = ({
           </button>
         )}
       </div>
-    </div>
+      </div>
+    </CardShell>
   );
 };
 

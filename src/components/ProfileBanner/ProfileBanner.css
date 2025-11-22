@@ -18,6 +18,7 @@
   margin-right: -50vw;
   overflow: hidden;
   background-color: var(--color-neutrals-7);
+  box-shadow: var(--shadow-depth-2);
 }
 
 /* Hide default background since we're using animated banner */
@@ -109,9 +110,9 @@
   bottom: 0;
   background: linear-gradient(
     to right,
-    rgba(0, 0, 0, 0.9) 0%,
-    rgba(0, 0, 0, 0.7) 60%,
-    rgba(0, 0, 0, 0) 100%
+    var(--color-gradient-overlay-start),
+    var(--color-gradient-overlay-mid),
+    var(--color-gradient-overlay-end)
   );
   z-index: 1;
 }
@@ -121,10 +122,10 @@
   z-index: 2;
   max-width: 1040px;
   margin: 0 auto;
-  padding: 48px 32px 32px;
+  padding: var(--spacing-6) var(--spacing-4) var(--spacing-4);
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-3);
 }
 
 /* ========================================
@@ -133,17 +134,14 @@
 
 .profile-banner__avatar {
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: calc(var(--spacing-6) * 2);
+  height: calc(var(--spacing-6) * 2);
   flex-shrink: 0;
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   overflow: hidden;
-  background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-  /* Improve rendering quality */
+  background: linear-gradient(135deg, var(--color-primary-1), var(--color-primary-2));
+  box-shadow: var(--shadow-depth-3);
+  transition: transform var(--transition-fast);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform: translateZ(0);
@@ -156,9 +154,7 @@
 
 .profile-banner__avatar[style*="cursor: pointer"]:hover {
   transform: scale(1.05);
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.12),
-    0 12px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-depth-4);
 }
 
 .profile-banner__avatar[style*="cursor: pointer"]:active {
@@ -218,20 +214,18 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 0; /* Allow text truncation */
-  height: 70px;
+  gap: var(--spacing-component-sm);
+  min-width: 0;
 }
 
 .profile-banner__name {
   margin: 0;
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   font-size: 32px;
   line-height: 1.2;
   letter-spacing: -0.5px;
   color: var(--color-neutrals-1);
-  /* Text overflow handling */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -240,23 +234,22 @@
 .profile-banner__meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  justify-content: start;
+  gap: var(--spacing-component-sm);
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
 .profile-banner__meta-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-component-xs);
 }
 
 .profile-banner__icon {
   width: 22px;
   height: 22px;
   flex-shrink: 0;
-  color: #ffffff;
-  opacity: 1;
+  color: var(--color-neutrals-1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,21 +257,19 @@
 
 .profile-banner__meta-text {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 15px;
   line-height: 1;
-  color: #ffffff;
+  color: var(--color-neutrals-1);
   white-space: nowrap;
-  opacity: 1;
   display: flex;
   align-items: center;
 }
 
 .profile-banner__meta-separator {
   font-size: 15px;
-  color: #ffffff;
+  color: var(--color-neutrals-1);
   user-select: none;
-  opacity: 1;
 }
 
 /* ========================================

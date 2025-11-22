@@ -353,28 +353,12 @@
   display: inline-block;
 }
 
-.global-header__profile-notification-dot {
+/* Notification badge now uses Badge atom */
+.global-header__notification-badge {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  background-color: #FFFFFF;
-  border-radius: 50%;
-  animation: blink 1.5s ease-in-out infinite;
+  top: -6px;
+  right: -6px;
   z-index: 10;
-  box-shadow: 0 0 0 2px #141416;
-}
-
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.3;
-    transform: scale(0.8);
-  }
 }
 
 
@@ -642,11 +626,9 @@
     height: 28px;
   }
 
-  .global-header__profile-notification-dot {
-    width: 8px;
-    height: 8px;
-    top: -1px;
-    right: -1px;
+  .global-header__notification-badge {
+    top: -4px;
+    right: -4px;
   }
 }
 
@@ -687,11 +669,9 @@
     height: 26px;
   }
 
-  .global-header__profile-notification-dot {
-    width: 8px;
-    height: 8px;
-    top: -1px;
-    right: -1px;
+  .global-header__notification-badge {
+    top: -4px;
+    right: -4px;
   }
 }
 
@@ -751,11 +731,9 @@
     height: 24px;
   }
 
-  .global-header__profile-notification-dot {
-    width: 7px;
-    height: 7px;
-    top: -1px;
-    right: -1px;
+  .global-header__notification-badge {
+    top: -3px;
+    right: -3px;
   }
   
   .global-header__user-dropdown {

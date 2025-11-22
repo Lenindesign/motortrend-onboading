@@ -1,6 +1,6 @@
 /**
  * Empty Vehicles Card Styles
- * Based on Figma Community design system
+ * Based on the shared design system tokens.
  */
 
 .empty-vehicles-card {
@@ -8,11 +8,12 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 200px;
+  min-height: calc(var(--spacing-card-xl) * 6);
   background-color: var(--color-neutrals-7);
   border: 2px dashed var(--color-neutrals-5);
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-6);
+  box-shadow: var(--shadow-depth-1);
 }
 
 .empty-vehicles-card__content {
@@ -22,24 +23,23 @@
   justify-content: center;
   text-align: center;
   gap: var(--spacing-3);
-  max-width: 400px;
+  max-width: calc(var(--spacing-card-xl) * 12.5);
 }
 
 .empty-vehicles-card__icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
+  width: calc(var(--spacing-6) * 1.5);
+  height: calc(var(--spacing-6) * 1.5);
   background-color: var(--color-neutrals-6);
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   margin-bottom: var(--spacing-2);
-  gap: 0px;
 }
 
 .empty-vehicles-card__icon-img {
-  width: 80px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   cursor: pointer;
 }
@@ -60,19 +60,18 @@
   line-height: 1.5em;
   color: var(--color-neutrals-3);
   margin: 0;
-  max-width: 320px;
+  max-width: calc(var(--spacing-card-xl) * 10);
 }
 
 .empty-vehicles-card__search {
   margin-top: var(--spacing-2);
   width: 100%;
-  max-width: 400px;
+  max-width: calc(var(--spacing-card-xl) * 12.5);
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .empty-vehicles-card {
-    min-height: 160px;
+    min-height: calc(var(--spacing-card-xl) * 4);
     padding: var(--spacing-4);
   }
 
@@ -81,14 +80,8 @@
   }
 
   .empty-vehicles-card__icon {
-    width: 64px;
-    height: 64px;
-  }
-
-  .empty-vehicles-card__icon-img {
-    width: 64px;
-    height: 64px;
-    cursor: pointer;
+    width: calc(var(--spacing-6) * 1.25);
+    height: calc(var(--spacing-6) * 1.25);
   }
 
   .empty-vehicles-card__title {
@@ -97,30 +90,19 @@
 
   .empty-vehicles-card__description {
     font-size: 14px;
-    max-width: 280px;
-  }
-
-  .empty-vehicles-card__button {
-    min-width: 180px;
-    width: 100%;
+    max-width: calc(var(--spacing-card-xl) * 8);
   }
 }
 
 @media (max-width: 480px) {
   .empty-vehicles-card {
-    min-height: 140px;
+    min-height: calc(var(--spacing-card-xl) * 3.5);
     padding: var(--spacing-3);
   }
 
   .empty-vehicles-card__icon {
-    width: 56px;
-    height: 56px;
-  }
-
-  .empty-vehicles-card__icon-img {
-    width: 56px;
-    height: 56px;
-    cursor: pointer;
+    width: calc(var(--spacing-6) * 1.15);
+    height: calc(var(--spacing-6) * 1.15);
   }
 
   .empty-vehicles-card__title {
@@ -129,6 +111,6 @@
 
   .empty-vehicles-card__description {
     font-size: 13px;
-    max-width: 240px;
+    max-width: calc(var(--spacing-card-xl) * 6);
   }
 }

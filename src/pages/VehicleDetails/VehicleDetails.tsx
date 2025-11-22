@@ -25,6 +25,7 @@ import { articles } from '../../utils/articles';
 import { ArticleReactions } from '../../components/ArticleReactions';
 import { PhotoGallery } from '../../components/PhotoGallery';
 import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
+import { Popover } from '../../components/atoms/Popover';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -45,8 +46,6 @@ export const VehicleDetails: React.FC = () => {
   const hideTooltipTimeout = useRef<number | null>(null);
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
-  const communityRatingRef = useRef<HTMLDivElement>(null);
-  const staffRatingRef = useRef<HTMLDivElement>(null);
   const primeHeroRef = useRef<HTMLDivElement>(null);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const [isStickyBarSticky, setIsStickyBarSticky] = useState(false);
@@ -509,27 +508,60 @@ export const VehicleDetails: React.FC = () => {
     }, 100);
   };
 
-  // Generate rating distribution based on community rating (0-10 scale converted to 1-5)
-  const generateRatingDistribution = (avgRating: number): RatingDistributionData => {
-    const distribution: RatingDistributionData = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0 };
-    const rating5Scale = Math.round(avgRating / 2); // Convert 0-10 to 1-5
+  // Generate rating counts based on bell curve distribution (25 total reviews)
+  const calculateRatingCounts = (): RatingDistributionData => {
+    // Realistic distribution for 25 reviews centered around high ratings
+    const counts = {
+      1: 1,  // 1 star: 1 review = 4%
+      2: 2,  // 2 stars: 2 reviews = 8%
+      3: 5,  // 3 stars: 5 reviews = 20%
+      4: 10, // 4 stars: 10 reviews = 40%
+      5: 7   // 5 stars: 7 reviews = 28%
+    };
+    // Total: 25 reviews = 100%
     
-    // Create a bell curve distribution centered around the average rating
+    console.log('[VehicleDetails] NEW Rating counts:', counts, 'Total:', Object.values(counts).reduce((a, b) => a + b, 0));
+    return counts;
+  };
+
+  const calculateRatingPercentages = (counts: RatingDistributionData): RatingDistributionData => {
+    const percentages: RatingDistributionData = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    let totalCount = 0;
+    for (let i = 1; i <= 5; i++) totalCount += (counts[i] || 0);
+    
+    console.log('Rating Counts:', counts);
+    console.log('Total Count:', totalCount);
+    
+    if (totalCount === 0) return percentages;
+
+    let currentSum = 0;
+    let maxKey = 1;
+    let maxVal = 0;
+    
     for (let i = 1; i <= 5; i++) {
-      const distance = Math.abs(i - rating5Scale);
-      if (distance === 0) {
-        distribution[i] = 45; // Peak at average
-      } else if (distance === 1) {
-        distribution[i] = 25; // Adjacent ratings
-      } else if (distance === 2) {
-        distribution[i] = 10; // Two away
-      } else {
-        distribution[i] = 5; // Far away
+      const p = Math.round(((counts[i] || 0) / totalCount) * 100);
+      percentages[i] = p;
+      currentSum += p;
+      
+      if (p > maxVal) {
+        maxVal = p;
+        maxKey = i;
       }
     }
     
-    return distribution;
+    // Ensure sum is 100%
+    const diff = 100 - currentSum;
+    if (diff !== 0) {
+      percentages[maxKey] += diff;
+    }
+    
+    console.log('Rating Percentages:', percentages);
+    console.log('Percentage Sum:', Object.values(percentages).reduce((a, b) => a + b, 0));
+    
+    return percentages;
   };
+
+  const ratingCounts = calculateRatingCounts();
 
   const vehicleData = {
     name: vehicleName,
@@ -579,20 +611,12 @@ export const VehicleDetails: React.FC = () => {
       content: reviewData.content,
       detailedSections: reviewData.detailedSections
     },
-    ratingDistribution: generateRatingDistribution(generateCommunityRating(vehicleName)),
-    oldDistribution: {
-      1: 2,
-      2: 1,
-      3: 3,
-      4: 4,
-      5: 8,
-      6: 12,
-      7: 18,
-      8: 25,
-      9: 20,
-      10: 7
-    } as RatingDistributionData
+    ratingDistribution: calculateRatingPercentages(ratingCounts),
+    ratingCounts
   };
+
+  console.log('[VehicleDetails] vehicleData.communityRatingCount:', vehicleData.communityRatingCount);
+  console.log('[VehicleDetails] vehicleData.ratingDistribution:', vehicleData.ratingDistribution);
 
   // Check if vehicle is saved on mount
   useEffect(() => {
@@ -1146,77 +1170,109 @@ export const VehicleDetails: React.FC = () => {
           {!isPrimeTemplate && (
             <div ref={ratingsBarRef} className="vehicle-details__rating-bar">
               {/* 1. MotorTrend Rating */}
-              <div 
-                ref={staffRatingRef}
-                className="vehicle-details__rating-section vehicle-details__rating-section--motortrend" 
-                onClick={handleScrollToStaffRating}
-                onMouseEnter={handleStaffTooltipMouseEnter}
-                onMouseLeave={handleStaffTooltipMouseLeave}
-              >
-                <div className="vehicle-details__rating-score-large">
-                  {formatScore(vehicleData.staffRating)}
-                  <span className="vehicle-details__rating-score-max">/10</span>
-                </div>
-                <div className="vehicle-details__rating-label-row">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
-                    alt="MT"
-                    className="vehicle-details__rating-mt-logo"
+              <Popover
+                content={
+                  <StaffRatingTooltip
+                    overallRating={vehicleData.staffRating}
+                    scores={vehicleData.scores}
+                    onMouseEnter={handleStaffTooltipMouseEnter}
+                    onMouseLeave={handleStaffTooltipMouseLeave}
+                    onRequestClose={() => setIsStaffTooltipVisible(false)}
                   />
-                  <span>MotorTrend Rating</span>
+                }
+                isOpen={isStaffTooltipVisible}
+                onOpenChange={setIsStaffTooltipVisible}
+                trigger="click"
+                placement="bottom"
+                className="staff-rating-tooltip-popover"
+              >
+                <div 
+                  className="vehicle-details__rating-section vehicle-details__rating-section--motortrend" 
+                  onClick={handleScrollToStaffRating}
+                  onMouseEnter={handleStaffTooltipMouseEnter}
+                  onMouseLeave={handleStaffTooltipMouseLeave}
+                >
+                  <div className="vehicle-details__rating-score-large">
+                    {formatScore(vehicleData.staffRating)}
+                    <span className="vehicle-details__rating-score-max">/10</span>
+                  </div>
+                  <div className="vehicle-details__rating-label-row">
+                    <img
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                      alt="MT"
+                      className="vehicle-details__rating-mt-logo"
+                    />
+                    <span>MotorTrend Rating</span>
+                  </div>
                 </div>
-              </div>
+              </Popover>
 
               {/* 2. User Reviews */}
-              <div 
-                ref={communityRatingRef}
-                className="vehicle-details__rating-section vehicle-details__rating-section--community" 
-                onClick={handleScrollToCommunityRatings}
-                onMouseEnter={handleTooltipMouseEnter}
-                onMouseLeave={handleTooltipMouseLeave}
+              <Popover
+                content={
+                  <RatingDistributionTooltip
+                    distribution={vehicleData.ratingDistribution}
+                    totalReviews={vehicleData.communityRatingCount}
+                    onMouseEnter={handleTooltipMouseEnter}
+                    onMouseLeave={handleTooltipMouseLeave}
+                    onRequestClose={() => setIsTooltipVisible(false)}
+                  />
+                }
+                isOpen={isTooltipVisible}
+                onOpenChange={setIsTooltipVisible}
+                trigger="click"
+                placement="bottom"
+                className="rating-tooltip-popover"
               >
-                <div className="vehicle-details__rating-stars">
-                  {[1, 2, 3, 4, 5].map((star) => {
-                    const userRatingValue = vehicleData.communityRating / 2;
-                    const isFilled = star < Math.ceil(userRatingValue);
-                    const isHalf = star === Math.ceil(userRatingValue) && userRatingValue % 1 !== 0;
-                    return (
-                      <div key={star} className={`vehicle-details__rating-star-wrapper ${isHalf ? 'vehicle-details__rating-star-wrapper--half' : ''}`}>
-                        {/* Outline star */}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--outline">
-                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                            fill="none"
-                            stroke="#33C4FF"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        {/* Filled star (full or half) */}
-                        {isFilled && (
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--filled">
+                <div 
+                  className="vehicle-details__rating-section vehicle-details__rating-section--community" 
+                  onClick={handleScrollToCommunityRatings}
+                  onMouseEnter={handleTooltipMouseEnter}
+                  onMouseLeave={handleTooltipMouseLeave}
+                >
+                  <div className="vehicle-details__rating-stars">
+                    {[1, 2, 3, 4, 5].map((star) => {
+                      const userRatingValue = vehicleData.communityRating / 2;
+                      const isFilled = star < Math.ceil(userRatingValue);
+                      const isHalf = star === Math.ceil(userRatingValue) && userRatingValue % 1 !== 0;
+                      return (
+                        <div key={star} className={`vehicle-details__rating-star-wrapper ${isHalf ? 'vehicle-details__rating-star-wrapper--half' : ''}`}>
+                          {/* Outline star */}
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--outline">
                             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                              fill="#33C4FF"
+                              fill="none"
+                              stroke="#33C4FF"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
                             />
                           </svg>
-                        )}
-                        {isHalf && (
-                          <div className="vehicle-details__rating-star-half-fill">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          {/* Filled star (full or half) */}
+                          {isFilled && (
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--filled">
                               <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
                                 fill="#33C4FF"
                               />
                             </svg>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                          )}
+                          {isHalf && (
+                            <div className="vehicle-details__rating-star-half-fill">
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                  fill="#33C4FF"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="vehicle-details__rating-text">
+                    User Reviews <span className="vehicle-details__rating-highlight">({(vehicleData.communityRating / 2) % 1 === 0 ? vehicleData.communityRating / 2 : (vehicleData.communityRating / 2).toFixed(1)}/5)</span>
+                  </div>
                 </div>
-                <div className="vehicle-details__rating-text">
-                  User Reviews <span className="vehicle-details__rating-highlight">({(vehicleData.communityRating / 2) % 1 === 0 ? vehicleData.communityRating / 2 : (vehicleData.communityRating / 2).toFixed(1)}/5)</span>
-                </div>
-              </div>
+              </Popover>
 
               {/* 3. Your Rating */}
               <div className="vehicle-details__rating-section vehicle-details__rating-section--user">
@@ -1629,7 +1685,13 @@ export const VehicleDetails: React.FC = () => {
               vehicleName={vehicleName}
               communityRating={vehicleData.communityRating}
               totalReviews={communityRatingCount}
-              ratingDistribution={[5, 3, 8, 10, 20, 30, 45, 63, 50, 18]}
+              ratingDistribution={[
+                vehicleData.ratingCounts[1],
+                vehicleData.ratingCounts[2],
+                vehicleData.ratingCounts[3],
+                vehicleData.ratingCounts[4],
+                vehicleData.ratingCounts[5]
+              ]}
               vehicleImage={vehicleData.image}
               reviews={reviews}
               onWriteReview={() => setIsWriteReviewModalOpen(true)}
@@ -1882,29 +1944,9 @@ export const VehicleDetails: React.FC = () => {
         vehicleName={displayName}
       />
 
-      {/* Staff Rating Tooltip */}
-      <StaffRatingTooltip
-        overallRating={vehicleData.staffRating}
-        scores={vehicleData.scores}
-        isVisible={isStaffTooltipVisible}
-        triggerRef={staffRatingRef}
-        onMouseEnter={handleStaffTooltipMouseEnter}
-        onMouseLeave={handleStaffTooltipMouseLeave}
-        onRequestClose={() => setIsStaffTooltipVisible(false)}
-      />
-
-      {/* Rating Distribution Tooltip */}
-      <RatingDistributionTooltip
-        distribution={vehicleData.ratingDistribution}
-        totalReviews={vehicleData.communityRatingCount}
-        isVisible={isTooltipVisible}
-        triggerRef={communityRatingRef}
-        onMouseEnter={handleTooltipMouseEnter}
-        onMouseLeave={handleTooltipMouseLeave}
-        onRequestClose={() => setIsTooltipVisible(false)}
-      />
     </div>
   );
 };
 
 export default VehicleDetails;
+

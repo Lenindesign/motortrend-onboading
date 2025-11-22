@@ -4,11 +4,11 @@
  */
 
 .ai-insights {
-  margin-bottom: 48px;
+  margin-bottom: var(--spacing-6);
 }
 
 .ai-insights__header {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-4);
 }
 
 .ai-insights__title {
@@ -22,18 +22,18 @@
 
 .ai-insights__content {
   background-color: var(--color-neutrals-7);
-  border-radius: 8px;
-  padding: 24px;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-4);
 }
 
 .ai-insights__inner-container {
   background-color: var(--color-white);
-  border-radius: 8px;
-  padding: 42px;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-5);
 }
 
 .ai-insights__section {
-  margin-bottom: 32px;
+  margin-bottom: var(--spacing-4);
 }
 
 .ai-insights__section:last-of-type {
@@ -60,8 +60,8 @@
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-2);
-  margin-bottom: 8px;
-  padding-left: 20px;
+  margin-bottom: var(--spacing-gap-sm);
+  padding-left: var(--spacing-component-lg);
   position: relative;
 }
 
@@ -91,8 +91,8 @@
 }
 
 .ai-insights__footer {
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-3);
   border-top: 1px solid var(--color-neutrals-6);
 }
 

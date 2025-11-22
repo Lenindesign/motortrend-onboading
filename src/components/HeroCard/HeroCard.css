@@ -1,24 +1,19 @@
 /**
  * Hero Card Styles
  * Large hero card for featured content
+ * Now uses CardShell atom - background, border-radius, shadow, hover, transition handled by CardShell
  */
 
 .hero-card {
+  /* CardShell handles: background, border-radius, box-shadow, hover, transition */
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-card__inner {
   position: relative;
   width: 100%;
-  border-radius: var(--border-radius-md);
   overflow: hidden;
-  cursor: pointer;
-  transition: transform var(--transition-fast);
-  background-color: var(--color-neutrals-8);
-}
-
-.hero-card:hover {
-  transform: translateY(-2px);
-}
-
-.hero-card:focus {
-  outline: none;
 }
 
 .hero-card__image-container {
@@ -47,7 +42,13 @@
   left: 0;
   right: 0;
   padding: var(--spacing-4);
-  background: linear-gradient(to top, rgba(20, 20, 22, 0.9), transparent);
+  background: linear-gradient(
+    to top,
+    var(--color-gradient-overlay-start),
+    var(--color-gradient-overlay-mid),
+    var(--color-gradient-overlay-end)
+  );
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
 }
 
 .hero-card__title {

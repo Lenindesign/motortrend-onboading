@@ -7,9 +7,9 @@ import React, { useState } from 'react';
 import './TextField.css';
 
 export interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  label?: string;
+  label?: React.ReactNode;
   error?: string;
-  helperText?: string;
+  helperText?: React.ReactNode;
   fullWidth?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
@@ -98,4 +98,3 @@ export const TextField: React.FC<TextFieldProps> = ({
 };
 
 export default TextField;
-
