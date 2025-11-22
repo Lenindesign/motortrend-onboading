@@ -469,7 +469,10 @@ const optimizedComponents = [
   'GlobalFooter',
   'EmptyVehicleSection',
   'MembershipCard',
-  'VerticalCard'
+  'VerticalCard',
+  'RatingDistributionTooltip',
+  'StaffRatingTooltip',
+  'VehicleCard'
 ];
 
 const LocationAutocompletePreview: React.FC = () => {
