@@ -761,3 +761,340 @@
   color: var(--color-primary-2);
   text-decoration: underline;
 }
+
+/* Button & CTA Audit Section */
+.atomic-button-overview {
+  margin-bottom: var(--spacing-5);
+}
+
+.atomic-button-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.atomic-button-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-4);
+  background-color: var(--color-neutrals-7);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.atomic-button-stat-value {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-1);
+  line-height: 1;
+  margin-bottom: var(--spacing-1);
+}
+
+.atomic-button-stat-label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutrals-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.atomic-button-section {
+  margin-bottom: var(--spacing-6);
+  padding: var(--spacing-4);
+  background-color: var(--color-neutrals-8);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.atomic-button-section-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutrals-1);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.atomic-button-section-description {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-neutrals-3);
+  margin: 0 0 var(--spacing-4) 0;
+  line-height: 1.6;
+}
+
+.atomic-button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.atomic-button-sample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.atomic-button-sample-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.atomic-button-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-1);
+  background-color: rgba(233, 12, 23, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.atomic-button-specs {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-neutrals-3);
+  font-weight: var(--font-weight-medium);
+}
+
+.atomic-button-usage {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  line-height: 1.5;
+}
+
+.atomic-button-examples {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-neutrals-4);
+  font-style: italic;
+}
+
+.atomic-button-usage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.atomic-button-usage-card {
+  padding: var(--spacing-3);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.atomic-button-usage-title {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutrals-1);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.atomic-button-usage-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.atomic-button-usage-list li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  line-height: 1.6;
+  padding-left: var(--spacing-3);
+  position: relative;
+}
+
+.atomic-button-usage-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary-1);
+  font-weight: var(--font-weight-bold);
+}
+
+.atomic-button-usage-list li code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background-color: var(--color-neutrals-7);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--color-neutrals-2);
+}
+
+.atomic-button-section--rules {
+  background: linear-gradient(135deg, rgba(233, 12, 23, 0.05) 0%, rgba(53, 57, 69, 0.05) 100%);
+}
+
+.atomic-button-rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.atomic-button-rule {
+  padding: var(--spacing-4);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 2px solid;
+}
+
+.atomic-button-rule--do {
+  border-color: #34A853;
+}
+
+.atomic-button-rule--dont {
+  border-color: #E90C17;
+}
+
+.atomic-button-rule-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+}
+
+.atomic-button-rule-header span {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutrals-1);
+}
+
+.atomic-button-rule ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.atomic-button-rule li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  line-height: 1.6;
+  padding-left: var(--spacing-3);
+  position: relative;
+}
+
+.atomic-button-rule--do li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #34A853;
+  font-weight: var(--font-weight-bold);
+}
+
+.atomic-button-rule--dont li::before {
+  content: '✗';
+  position: absolute;
+  left: 0;
+  color: #E90C17;
+  font-weight: var(--font-weight-bold);
+}
+
+.atomic-button-rule li code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background-color: var(--color-neutrals-7);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--color-neutrals-2);
+}
+
+.atomic-button-migration {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.atomic-button-migration-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.atomic-button-migration-progress {
+  width: 100%;
+  height: 32px;
+  background-color: var(--color-neutrals-7);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.atomic-button-migration-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #34A853 0%, #2d8f47 100%);
+  border-radius: var(--border-radius-full);
+  transition: width 0.6s ease;
+}
+
+.atomic-button-migration-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.atomic-button-migration-percentage {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  color: #34A853;
+}
+
+.atomic-button-migration-text {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-3);
+}
+
+.atomic-button-migration-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-neutrals-6);
+}
+
+.atomic-button-migration-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-neutrals-2);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .atomic-button-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .atomic-button-usage-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .atomic-button-rules {
+    grid-template-columns: 1fr;
+  }
+}

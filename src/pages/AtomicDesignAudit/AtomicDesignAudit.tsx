@@ -1987,6 +1987,338 @@ export const AtomicDesignAudit: React.FC = () => {
         </div>
       </section>
 
+      {/* Button & CTA Audit Section */}
+      <section className="atomic-audit-section" id="buttons">
+        <div className="atomic-audit-section__header">
+          <h2>Button & CTA System Audit</h2>
+          <p>Comprehensive audit of all button patterns and call-to-action elements across the application.</p>
+        </div>
+
+        {/* CTA System Overview */}
+        <div className="atomic-button-overview">
+          <div className="atomic-button-stats">
+            <div className="atomic-button-stat">
+              <span className="atomic-button-stat-value">3</span>
+              <span className="atomic-button-stat-label">Sizes</span>
+            </div>
+            <div className="atomic-button-stat">
+              <span className="atomic-button-stat-value">7</span>
+              <span className="atomic-button-stat-label">Color Variants</span>
+            </div>
+            <div className="atomic-button-stat">
+              <span className="atomic-button-stat-value">3</span>
+              <span className="atomic-button-stat-label">Style Variants</span>
+            </div>
+            <div className="atomic-button-stat">
+              <span className="atomic-button-stat-value">100%</span>
+              <span className="atomic-button-stat-label">Tokenized</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Button Sizes */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Button Sizes</h3>
+          <p className="atomic-button-section-description">Three standardized sizes for different contexts and hierarchy levels.</p>
+          <div className="atomic-button-grid">
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--small">Small Button</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--small</code>
+                <span className="atomic-button-specs">28px height • 12px font</span>
+                <span className="atomic-button-usage">Compact spaces, inline actions</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default">Default Button</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--default</code>
+                <span className="atomic-button-specs">36px height • 14px font</span>
+                <span className="atomic-button-usage">Standard actions, forms</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--large">Large Button</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--large</code>
+                <span className="atomic-button-specs">44px height • 16px font</span>
+                <span className="atomic-button-usage">Primary CTAs, hero sections</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Button Color Variants */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Color Variants</h3>
+          <p className="atomic-button-section-description">Semantic color system for different action types and importance levels.</p>
+          <div className="atomic-button-grid">
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default">Primary</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--primary</code>
+                <span className="atomic-button-usage">Main actions, conversions</span>
+                <span className="atomic-button-examples">Sign In, Submit, Continue</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--secondary cta--default">Secondary</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--secondary</code>
+                <span className="atomic-button-usage">Supporting actions</span>
+                <span className="atomic-button-examples">View Details, Learn More</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--neutral cta--default">Neutral</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--neutral</code>
+                <span className="atomic-button-usage">Tertiary actions</span>
+                <span className="atomic-button-examples">Cancel, Back, Skip</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--success cta--default">Success</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--success</code>
+                <span className="atomic-button-usage">Positive confirmations</span>
+                <span className="atomic-button-examples">Save, Confirm, Accept</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--warning cta--default">Warning</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--warning</code>
+                <span className="atomic-button-usage">Caution actions</span>
+                <span className="atomic-button-examples">Delete, Remove, Clear</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Button Style Variants */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Style Variants</h3>
+          <p className="atomic-button-section-description">Different visual treatments for varying emphasis and context.</p>
+          <div className="atomic-button-grid">
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default">Solid</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--[color]</code>
+                <span className="atomic-button-usage">Default style, highest emphasis</span>
+                <span className="atomic-button-examples">Primary CTAs, form submissions</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default cta--ghost">Ghost</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--ghost</code>
+                <span className="atomic-button-usage">Transparent, text-only</span>
+                <span className="atomic-button-examples">Secondary links, subtle actions</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default cta--outline">Outline</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--outline</code>
+                <span className="atomic-button-usage">Bordered, medium emphasis</span>
+                <span className="atomic-button-examples">Alternative actions, filters</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Button States */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Button States</h3>
+          <p className="atomic-button-section-description">Interactive states and modifiers for different contexts.</p>
+          <div className="atomic-button-grid">
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default">Default</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">:default</code>
+                <span className="atomic-button-usage">Normal resting state</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default" style={{ transform: 'translateY(-1px)', boxShadow: '0 4px 8px rgba(233, 12, 23, 0.3)' }}>Hover</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">:hover</code>
+                <span className="atomic-button-usage">Lift effect + enhanced shadow</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default" disabled>Disabled</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">:disabled</code>
+                <span className="atomic-button-usage">50% opacity, no interaction</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <button className="cta cta--primary cta--default cta--full-width">Full Width</button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">cta--full-width</code>
+                <span className="atomic-button-usage">100% container width</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Button with Icons */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Buttons with Icons</h3>
+          <p className="atomic-button-section-description">Icon integration for enhanced visual communication.</p>
+          <div className="atomic-button-grid">
+            <div className="atomic-button-sample">
+              <Button color="primary" icon={<Icon name="arrow_forward" size={20} />} iconPosition="right">
+                Continue
+              </Button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">iconPosition="right"</code>
+                <span className="atomic-button-usage">Forward actions, next steps</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <Button color="secondary" icon={<Icon name="arrow_back" size={20} />} iconPosition="left">
+                Back
+              </Button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">iconPosition="left"</code>
+                <span className="atomic-button-usage">Back actions, previous steps</span>
+              </div>
+            </div>
+            <div className="atomic-button-sample">
+              <Button color="success" icon={<Icon name="check" size={20} />} iconPosition="left">
+                Save Changes
+              </Button>
+              <div className="atomic-button-sample-info">
+                <code className="atomic-button-code">icon + success</code>
+                <span className="atomic-button-usage">Confirmation actions</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Real-World Usage Examples */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Real-World Usage</h3>
+          <p className="atomic-button-section-description">Where these buttons are used throughout the application.</p>
+          <div className="atomic-button-usage-grid">
+            <div className="atomic-button-usage-card">
+              <h4 className="atomic-button-usage-title">Onboarding Flow</h4>
+              <ul className="atomic-button-usage-list">
+                <li><code>cta--primary cta--large</code> - Continue buttons</li>
+                <li><code>cta--neutral cta--default</code> - Skip buttons</li>
+                <li><code>cta--secondary cta--default</code> - Back navigation</li>
+              </ul>
+            </div>
+            <div className="atomic-button-usage-card">
+              <h4 className="atomic-button-usage-title">Sign In / Sign Up</h4>
+              <ul className="atomic-button-usage-list">
+                <li><code>cta--neutrals3 cta--large</code> - Main submit button</li>
+                <li><code>cta--ghost</code> - Social login buttons</li>
+                <li><code>cta--outline</code> - Alternative sign-in methods</li>
+              </ul>
+            </div>
+            <div className="atomic-button-usage-card">
+              <h4 className="atomic-button-usage-title">Vehicle Details</h4>
+              <ul className="atomic-button-usage-list">
+                <li><code>cta--primary</code> - Rate Your Car, Local Listings</li>
+                <li><code>cta--secondary</code> - View Comparison</li>
+                <li><code>cta--ghost</code> - Secondary actions</li>
+              </ul>
+            </div>
+            <div className="atomic-button-usage-card">
+              <h4 className="atomic-button-usage-title">Modals & Forms</h4>
+              <ul className="atomic-button-usage-list">
+                <li><code>cta--primary</code> - Submit, Confirm actions</li>
+                <li><code>cta--neutral</code> - Cancel, Close actions</li>
+                <li><code>cta--success</code> - Save changes</li>
+              </ul>
+            </div>
+            <div className="atomic-button-usage-card">
+              <h4 className="atomic-button-usage-title">Profile & Settings</h4>
+              <ul className="atomic-button-usage-list">
+                <li><code>cta--success</code> - Save Profile</li>
+                <li><code>cta--warning</code> - Delete Account</li>
+                <li><code>cta--ghost</code> - Edit fields</li>
+              </ul>
+            </div>
+            <div className="atomic-button-usage-card">
+              <h4 className="atomic-button-usage-title">Article Pages</h4>
+              <ul className="atomic-button-usage-list">
+                <li><code>cta--primary</code> - Rate Your Car (sticky bar)</li>
+                <li><code>cta--secondary</code> - Save article</li>
+                <li><code>cta--ghost</code> - Share, comment actions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Design System Rules */}
+        <div className="atomic-button-section atomic-button-section--rules">
+          <h3 className="atomic-button-section-title">Design System Rules</h3>
+          <div className="atomic-button-rules">
+            <div className="atomic-button-rule atomic-button-rule--do">
+              <div className="atomic-button-rule-header">
+                <Icon name="check_circle" size={24} style={{ color: '#34A853' }} />
+                <span>DO</span>
+              </div>
+              <ul>
+                <li>Always use <code>cta</code> classes for all buttons</li>
+                <li>Use <code>Button</code> atom component from design system</li>
+                <li>Choose appropriate size based on context and hierarchy</li>
+                <li>Use semantic colors (primary for main actions, success for confirmations)</li>
+                <li>Include hover states (handled automatically by CTA classes)</li>
+                <li>Use <code>:disabled</code> attribute for disabled states</li>
+                <li>Add icons for directional or confirmation actions</li>
+              </ul>
+            </div>
+            <div className="atomic-button-rule atomic-button-rule--dont">
+              <div className="atomic-button-rule-header">
+                <Icon name="cancel" size={24} style={{ color: '#E90C17' }} />
+                <span>DON'T</span>
+              </div>
+              <ul>
+                <li>Never create custom button styles with inline CSS</li>
+                <li>Don't use hardcoded colors or spacing values</li>
+                <li>Avoid mixing button systems (use CTA classes consistently)</li>
+                <li>Don't override CTA hover/active states with custom CSS</li>
+                <li>Never use generic <code>&lt;button&gt;</code> without CTA classes</li>
+                <li>Don't create custom disabled states (use <code>:disabled</code>)</li>
+                <li>Avoid using multiple primary buttons in the same context</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Migration Status */}
+        <div className="atomic-button-section">
+          <h3 className="atomic-button-section-title">Migration Status</h3>
+          <div className="atomic-button-migration">
+            <div className="atomic-button-migration-stat">
+              <div className="atomic-button-migration-progress">
+                <div className="atomic-button-migration-bar" style={{ width: '95%' }}></div>
+              </div>
+              <div className="atomic-button-migration-label">
+                <span className="atomic-button-migration-percentage">95%</span>
+                <span className="atomic-button-migration-text">Components using Button atom or CTA classes</span>
+              </div>
+            </div>
+            <div className="atomic-button-migration-details">
+              <div className="atomic-button-migration-detail">
+                <Badge variant="success" size="sm">✓ Migrated</Badge>
+                <span>WriteReviewModal, ComparisonCard, StickyRateBar, SignIn, Onboarding Steps, Profile</span>
+              </div>
+              <div className="atomic-button-migration-detail">
+                <Badge variant="warning" size="sm">⚠ Needs Review</Badge>
+                <span>Some custom buttons in legacy components may need standardization</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="atomic-audit-section atomic-audit-section--roadmap" id="roadmap">
         <div className="atomic-audit-section__header">
           <h2>Next steps</h2>
