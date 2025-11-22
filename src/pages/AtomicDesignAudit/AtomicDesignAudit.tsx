@@ -472,7 +472,8 @@ const optimizedComponents = [
   'VerticalCard',
   'RatingDistributionTooltip',
   'StaffRatingTooltip',
-  'VehicleCard'
+  'VehicleCard',
+  'HeroPlusThree'
 ];
 
 const LocationAutocompletePreview: React.FC = () => {
