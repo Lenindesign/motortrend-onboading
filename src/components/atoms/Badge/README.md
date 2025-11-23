@@ -701,3 +701,4 @@ const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
 **Badge is the foundation for consistent status indicators across the entire application!** 🏷️✨
 
+

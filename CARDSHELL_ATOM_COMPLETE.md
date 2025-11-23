@@ -481,3 +481,4 @@ GPU-accelerated transforms with enhanced shadows
 
 **The CardShell atom will be the foundation for consistent card styling across the entire MotorTrend application!** 🎨✨
 
+

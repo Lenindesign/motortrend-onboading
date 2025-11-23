@@ -148,3 +148,4 @@ The ModalShell automatically handles:
 - **Badge**: For status indicators within modals
 - **Tooltip**: For help text within modals
 
+

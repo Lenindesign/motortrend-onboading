@@ -6,23 +6,88 @@
 import React from 'react';
 import './Badge.css';
 
-export type BadgeVariant = 'default' | 'success' | 'warning' | 'info';
+export type BadgeVariant = 'new' | 'premium' | 'verified' | 'info' | 'success' | 'warning' | 'error' | 'neutral';
+export type BadgeSize = 'sm' | 'md' | 'lg';
 
 export interface BadgeProps {
   children: React.ReactNode;
   variant?: BadgeVariant;
+  size?: BadgeSize;
   className?: string;
+  icon?: React.ReactNode;
+  outline?: boolean;
+  onClick?: () => void;
+  'aria-label'?: string;
 }
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
-  variant = 'default',
-  className = ''
+  variant = 'neutral',
+  size = 'md',
+  className = '',
+  icon,
+  outline = false,
+  onClick,
+  'aria-label': ariaLabel
 }) => {
-  const badgeClasses = `badge badge--${variant} ${className}`.trim();
+  const classNames = [
+    'badge',
+    `badge--${variant}`,
+    `badge--${size}`,
+    outline && 'badge--outline',
+    onClick && 'badge--clickable',
+    className
+  ]
+    .filter(Boolean)
+    .join(' ');
 
-  return <span className={badgeClasses}>{children}</span>;
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.stopPropagation();
+      onClick();
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      e.stopPropagation();
+      onClick();
+    }
+  };
+
+  const BadgeContent = (
+    <>
+      {icon && <span className="badge__icon">{icon}</span>}
+      <span className="badge__text">{children}</span>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button
+        className={classNames}
+        onClick={handleClick}
+        onKeyPress={handleKeyPress}
+        aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
+        type="button"
+      >
+        {BadgeContent}
+      </button>
+    );
+  }
+
+  return (
+    <span 
+      className={classNames}
+      aria-label={ariaLabel}
+      role={ariaLabel ? 'status' : undefined}
+    >
+      {BadgeContent}
+    </span>
+  );
 };
 
 export default Badge;
+
 

@@ -68,101 +68,101 @@
   display: inline-block;
 }
 
-/* Variant: New */
+/* Variant: New - Orange/Yellow */
 .badge--new {
-  background-color: #FFB74D;
-  color: var(--color-neutrals-1);
+  background-color: #FFC107;
+  color: #000000;
 }
 
 .badge--new.badge--outline {
   background-color: transparent;
-  color: #FFB74D;
-  border: 1px solid #FFB74D;
+  color: #FFC107;
+  border: 1px solid #FFC107;
 }
 
-/* Variant: Premium */
+/* Variant: Premium - Gold/Yellow */
 .badge--premium {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-  color: var(--color-neutrals-1);
-  font-weight: var(--font-weight-bold);
+  background-color: #FFB300;
+  color: #000000;
 }
 
 .badge--premium.badge--outline {
   background: transparent;
-  color: #FFD700;
-  border: 1px solid #FFD700;
+  color: #FFB300;
+  border: 1px solid #FFB300;
 }
 
-/* Variant: Verified */
+/* Variant: Verified - Green with checkmark */
 .badge--verified {
-  background-color: var(--color-semantic-success);
-  color: var(--color-white);
+  background-color: #4CAF50;
+  color: #FFFFFF;
 }
 
 .badge--verified.badge--outline {
   background-color: transparent;
-  color: var(--color-semantic-success);
-  border: 1px solid var(--color-semantic-success);
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
 }
 
-/* Variant: Info */
+/* Variant: Info - Blue */
 .badge--info {
-  background-color: var(--color-semantic-info);
-  color: var(--color-white);
+  background-color: #2196F3;
+  color: #FFFFFF;
 }
 
 .badge--info.badge--outline {
   background-color: transparent;
-  color: var(--color-semantic-info);
-  border: 1px solid var(--color-semantic-info);
+  color: #2196F3;
+  border: 1px solid #2196F3;
 }
 
-/* Variant: Success */
+/* Variant: Success - Green */
 .badge--success {
-  background-color: var(--color-semantic-success);
-  color: var(--color-white);
+  background-color: #4CAF50;
+  color: #FFFFFF;
 }
 
 .badge--success.badge--outline {
-  background-color: var(--color-semantic-success-light);
-  color: var(--color-semantic-success-dark);
-  border: 1px solid var(--color-semantic-success);
+  background-color: transparent;
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
 }
 
-/* Variant: Warning */
+/* Variant: Warning - Orange */
 .badge--warning {
-  background-color: var(--color-semantic-warning);
-  color: var(--color-neutrals-1);
+  background-color: #FF9800;
+  color: #FFFFFF;
 }
 
 .badge--warning.badge--outline {
-  background-color: var(--color-semantic-warning-light);
-  color: var(--color-semantic-warning-dark);
-  border: 1px solid var(--color-semantic-warning);
+  background-color: transparent;
+  color: #FF9800;
+  border: 1px solid #FF9800;
 }
 
-/* Variant: Error */
+/* Variant: Error - Red */
 .badge--error {
-  background-color: var(--color-semantic-error);
-  color: var(--color-white);
+  background-color: #F44336;
+  color: #FFFFFF;
 }
 
 .badge--error.badge--outline {
-  background-color: var(--color-semantic-error-light);
-  color: var(--color-semantic-error-dark);
-  border: 1px solid var(--color-semantic-error);
+  background-color: transparent;
+  color: #F44336;
+  border: 1px solid #F44336;
 }
 
-/* Variant: Neutral */
+/* Variant: Neutral - Gray outline */
 .badge--neutral {
-  background-color: var(--color-neutrals-6);
-  color: var(--color-neutrals-2);
+  background-color: transparent;
+  color: #757575;
+  border: 1px solid #E0E0E0;
 }
 
 .badge--neutral.badge--outline {
   background-color: transparent;
-  color: var(--color-neutrals-3);
-  border: 1px solid var(--color-neutrals-5);
+  color: #757575;
+  border: 1px solid #E0E0E0;
 }
 
 /* Clickable State */
@@ -225,4 +225,5 @@
     border-color: var(--color-neutrals-4);
   }
 }
+
 

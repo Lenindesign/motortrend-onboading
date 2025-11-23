@@ -2,30 +2,118 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 26px;
-  padding: 0 var(--spacing-component-sm);
+  gap: 4px;
+  padding: 0 12px;
   border-radius: var(--border-radius-full);
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-neutrals-8);
-  background-color: var(--color-neutrals-3);
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  border: none;
+  cursor: default;
 }
 
-.badge--success {
-  background-color: var(--color-semantic-success-light);
-  color: var(--color-semantic-success-dark);
+.badge__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
 }
 
-.badge--warning {
-  background-color: var(--color-semantic-warning-light);
-  color: var(--color-semantic-warning-dark);
+.badge__text {
+  line-height: 1;
 }
 
+/* Sizes */
+.badge--sm {
+  height: 22px;
+  padding: 0 10px;
+  font-size: 11px;
+}
+
+.badge--md {
+  height: 26px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.badge--lg {
+  height: 32px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+/* New - Orange/Yellow */
+.badge--new {
+  background-color: #FFC107;
+  color: #000000;
+}
+
+/* Premium - Gold/Yellow */
+.badge--premium {
+  background-color: #FFB300;
+  color: #000000;
+}
+
+/* Verified - Green with checkmark */
+.badge--verified {
+  background-color: #4CAF50;
+  color: #FFFFFF;
+}
+
+/* Info - Blue */
 .badge--info {
-  background-color: var(--color-semantic-info-light);
-  color: var(--color-semantic-info-dark);
+  background-color: #2196F3;
+  color: #FFFFFF;
 }
+
+/* Success - Green */
+.badge--success {
+  background-color: #4CAF50;
+  color: #FFFFFF;
+}
+
+/* Warning - Orange */
+.badge--warning {
+  background-color: #FF9800;
+  color: #FFFFFF;
+}
+
+/* Error - Red */
+.badge--error {
+  background-color: #F44336;
+  color: #FFFFFF;
+}
+
+/* Neutral - Gray outline */
+.badge--neutral {
+  background-color: transparent;
+  color: #757575;
+  border: 1px solid #E0E0E0;
+}
+
+/* Outline variant */
+.badge--outline {
+  background-color: transparent !important;
+  border: 1px solid currentColor;
+}
+
+/* Clickable badges */
+.badge--clickable {
+  cursor: pointer;
+}
+
+.badge--clickable:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.badge--clickable:active {
+  transform: translateY(0);
+}
+
 

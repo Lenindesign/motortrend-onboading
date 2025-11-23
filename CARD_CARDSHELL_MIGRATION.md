@@ -216,3 +216,4 @@ Each migration will further reduce CSS duplication and improve consistency.
 
 **The Card component now uses CardShell atom, bringing consistent styling and design system compliance to all vehicle and content cards across the application!** 🎉
 
+

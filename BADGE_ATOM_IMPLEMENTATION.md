@@ -380,3 +380,4 @@ For questions about Badge usage, refer to:
 
 **Badge is now the foundation for all status indicators, labels, and tags across the MotorTrend application!** 🏷️✨
 
+

@@ -645,3 +645,4 @@ import { CardShell } from '../../components/atoms/CardShell';
 
 **CardShell is the foundation for consistent card styling across the entire application!** 🎨✨
 
+

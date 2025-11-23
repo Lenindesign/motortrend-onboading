@@ -749,12 +749,12 @@ const atomList = [
       <div className="atomic-component-preview-inline" style={{ gap: 'var(--spacing-1)', flexWrap: 'wrap' }}>
         <Badge variant="new">New</Badge>
         <Badge variant="premium">Premium</Badge>
-        <Badge variant="verified" icon={<Icon name="check" size={12} />}>Verified</Badge>
+        <Badge variant="verified" icon={<span style={{ fontSize: '10px' }}>✓</span>}>Verified</Badge>
         <Badge variant="info">Info</Badge>
         <Badge variant="success">Success</Badge>
         <Badge variant="warning">Warning</Badge>
         <Badge variant="error">Error</Badge>
-        <Badge variant="neutral" outline={true}>Neutral</Badge>
+        <Badge variant="neutral">Neutral</Badge>
       </div>
     )
   },
@@ -794,7 +794,7 @@ const atomList = [
           </div>}
           placement="top"
         >
-          <Badge variant="neutral" outline={true}>Click Me</Badge>
+          <Badge variant="neutral">Click Me</Badge>
         </Popover>
         <Popover 
           trigger="hover"
