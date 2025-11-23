@@ -251,7 +251,8 @@
   display: flex;
   flex-direction: row;
   gap: var(--spacing-3);
-  width: 918px;
+  width: 100%;
+  max-width: 918px;
   flex-wrap: wrap;
 }
 
@@ -382,8 +383,9 @@
   line-height: 1.3em;
   text-align: center;
   color: var(--color-black);
-  width: 526px;
-  height: 16px;
+  width: 100%;
+  max-width: 526px;
+  height: auto;
 }
 
 .profile-form-header-content {
@@ -401,8 +403,9 @@
   text-align: center;
   color: var(--color-neutrals-1);
   margin: 0;
-  width: 564px;
-  height: 32px;
+  width: 100%;
+  max-width: 564px;
+  height: auto;
 }
 
 .profile-form-subtitle {
@@ -419,7 +422,8 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  width: 548px;
+  width: 100%;
+  max-width: 548px;
 }
 
 .profile-form-actions {
