@@ -207,7 +207,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
           {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
           <div className="sticky-rate-bar__rating-text">
             {rating.label || 'User Reviews'}{' '}
-            <Badge variant="info" size="sm">
+            <Badge variant="neutral" size="sm">
               {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
             </Badge>
           </div>
