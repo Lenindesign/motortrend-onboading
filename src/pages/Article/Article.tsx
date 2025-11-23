@@ -1706,16 +1706,14 @@ export const Article: React.FC = () => {
           {/* Right Column: Sidebar (1/3) - Hidden for premium articles */}
           {!isPremiumArticle && (
             <div className="article__sidebar">
-              {/* Ad Container */}
-              <div className="article__sidebar-section">
-                <AdContainer
-                  width={300}
-                  height={600}
-                  label="300 x 600"
-                  position="right-column"
-                  imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
-                />
-              </div>
+              {/* Ad Container - Direct placement for sticky behavior */}
+              <AdContainer
+                width={300}
+                height={600}
+                label="300 x 600"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              />
 
               {/* Related Articles */}
               <div className="article__sidebar-section">

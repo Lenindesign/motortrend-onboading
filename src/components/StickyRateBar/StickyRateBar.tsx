@@ -223,7 +223,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             Rate This Vehicle{userRating > 0 && (
               <>
                 {' '}
-                <Badge variant="success" size="sm">
+                <Badge variant="neutral" size="sm">
                   {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
                 </Badge>
               </>

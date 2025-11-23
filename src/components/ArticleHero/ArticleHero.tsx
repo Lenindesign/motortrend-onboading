@@ -5,11 +5,11 @@ import './ArticleHero.css';
 export interface ArticleHeroProps {
   imageUrl: string;
   title: string;
-  onShare: () => void;
+  onShare?: () => void;
   onImageClick?: () => void;
 }
 
-export const ArticleHero: React.FC<ArticleHeroProps> = ({ imageUrl, title, onShare, onImageClick }) => {
+export const ArticleHero: React.FC<ArticleHeroProps> = ({ imageUrl, title, onImageClick }) => {
   return (
     <div className="article-hero">
       <div className="article-hero__image-wrapper">
@@ -19,11 +19,6 @@ export const ArticleHero: React.FC<ArticleHeroProps> = ({ imageUrl, title, onSha
           className="article-hero__image article-hero__image--clickable"
           onClick={onImageClick}
         />
-        <div className="article-hero__overlay">
-          <button className="article-hero__share-btn" onClick={onShare} aria-label="Share article">
-            <Icon name="share" size={24} />
-          </button>
-        </div>
       </div>
     </div>
   );

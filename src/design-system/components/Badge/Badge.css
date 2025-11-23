@@ -47,7 +47,7 @@
   font-size: 14px;
 }
 
-/* All badges now use neutral gray outline style */
+/* All badges now use neutral style without border and black text */
 .badge--new,
 .badge--premium,
 .badge--verified,
@@ -57,8 +57,8 @@
 .badge--error,
 .badge--neutral {
   background-color: transparent;
-  color: #757575;
-  border: 1px solid #E0E0E0;
+  color: #000000;
+  border: none;
 }
 
 /* Outline variant */

@@ -68,7 +68,7 @@
   display: inline-block;
 }
 
-/* All badge variants now use neutral gray outline style */
+/* All badge variants now use neutral style without border and black text */
 .badge--new,
 .badge--premium,
 .badge--verified,
@@ -78,8 +78,8 @@
 .badge--error,
 .badge--neutral {
   background-color: transparent;
-  color: #757575;
-  border: 1px solid #E0E0E0;
+  color: #000000;
+  border: none;
 }
 
 /* Outline variant (same as default now) */
@@ -92,8 +92,8 @@
 .badge--error.badge--outline,
 .badge--neutral.badge--outline {
   background-color: transparent;
-  color: #757575;
-  border: 1px solid #E0E0E0;
+  color: #000000;
+  border: none;
 }
 
 /* Clickable State */

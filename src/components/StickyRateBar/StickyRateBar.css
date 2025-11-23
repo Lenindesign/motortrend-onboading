@@ -79,7 +79,7 @@ div.sticky-rate-bar__vehicle-name {
     align-items: center;
     justify-content: center;
     padding: var(--spacing-component-sm) var(--spacing-component-lg);
-    background-color: var(--color-neutrals-3);
+    background-color: var(--color-neutrals-2);
     border-radius: var(--border-radius-md);
     color: var(--color-neutrals-8);
     transition: all var(--transition-fast);
@@ -87,7 +87,7 @@ div.sticky-rate-bar__vehicle-name {
 }
 
 .sticky-rate-bar__vehicle-name--link:hover {
-    background-color: var(--color-neutrals-2);
+    background-color: var(--color-neutrals-1);
     transform: translateY(-1px);
     box-shadow: var(--shadow-depth-2);
 }
@@ -262,7 +262,7 @@ div.sticky-rate-bar__vehicle-name {
 }
 
 .sticky-rate-bar__rating-text {
-    color: var(--color-neutrals-4);
+    color: var(--color-neutrals-7);
     font-size: 14px;
     font-weight: 400;
     line-height: 1.2;
