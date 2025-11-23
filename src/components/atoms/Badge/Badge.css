@@ -68,97 +68,28 @@
   display: inline-block;
 }
 
-/* Variant: New - Orange/Yellow */
-.badge--new {
-  background-color: #FFC107;
-  color: #000000;
-}
-
-.badge--new.badge--outline {
-  background-color: transparent;
-  color: #FFC107;
-  border: 1px solid #FFC107;
-}
-
-/* Variant: Premium - Gold/Yellow */
-.badge--premium {
-  background-color: #FFB300;
-  color: #000000;
-}
-
-.badge--premium.badge--outline {
-  background: transparent;
-  color: #FFB300;
-  border: 1px solid #FFB300;
-}
-
-/* Variant: Verified - Green with checkmark */
-.badge--verified {
-  background-color: #4CAF50;
-  color: #FFFFFF;
-}
-
-.badge--verified.badge--outline {
-  background-color: transparent;
-  color: #4CAF50;
-  border: 1px solid #4CAF50;
-}
-
-/* Variant: Info - Blue */
-.badge--info {
-  background-color: #2196F3;
-  color: #FFFFFF;
-}
-
-.badge--info.badge--outline {
-  background-color: transparent;
-  color: #2196F3;
-  border: 1px solid #2196F3;
-}
-
-/* Variant: Success - Green */
-.badge--success {
-  background-color: #4CAF50;
-  color: #FFFFFF;
-}
-
-.badge--success.badge--outline {
-  background-color: transparent;
-  color: #4CAF50;
-  border: 1px solid #4CAF50;
-}
-
-/* Variant: Warning - Orange */
-.badge--warning {
-  background-color: #FF9800;
-  color: #FFFFFF;
-}
-
-.badge--warning.badge--outline {
-  background-color: transparent;
-  color: #FF9800;
-  border: 1px solid #FF9800;
-}
-
-/* Variant: Error - Red */
-.badge--error {
-  background-color: #F44336;
-  color: #FFFFFF;
-}
-
-.badge--error.badge--outline {
-  background-color: transparent;
-  color: #F44336;
-  border: 1px solid #F44336;
-}
-
-/* Variant: Neutral - Gray outline */
+/* All badge variants now use neutral gray outline style */
+.badge--new,
+.badge--premium,
+.badge--verified,
+.badge--info,
+.badge--success,
+.badge--warning,
+.badge--error,
 .badge--neutral {
   background-color: transparent;
   color: #757575;
   border: 1px solid #E0E0E0;
 }
 
+/* Outline variant (same as default now) */
+.badge--new.badge--outline,
+.badge--premium.badge--outline,
+.badge--verified.badge--outline,
+.badge--info.badge--outline,
+.badge--success.badge--outline,
+.badge--warning.badge--outline,
+.badge--error.badge--outline,
 .badge--neutral.badge--outline {
   background-color: transparent;
   color: #757575;

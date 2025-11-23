@@ -47,49 +47,14 @@
   font-size: 14px;
 }
 
-/* New - Orange/Yellow */
-.badge--new {
-  background-color: #FFC107;
-  color: #000000;
-}
-
-/* Premium - Gold/Yellow */
-.badge--premium {
-  background-color: #FFB300;
-  color: #000000;
-}
-
-/* Verified - Green with checkmark */
-.badge--verified {
-  background-color: #4CAF50;
-  color: #FFFFFF;
-}
-
-/* Info - Blue */
-.badge--info {
-  background-color: #2196F3;
-  color: #FFFFFF;
-}
-
-/* Success - Green */
-.badge--success {
-  background-color: #4CAF50;
-  color: #FFFFFF;
-}
-
-/* Warning - Orange */
-.badge--warning {
-  background-color: #FF9800;
-  color: #FFFFFF;
-}
-
-/* Error - Red */
-.badge--error {
-  background-color: #F44336;
-  color: #FFFFFF;
-}
-
-/* Neutral - Gray outline */
+/* All badges now use neutral gray outline style */
+.badge--new,
+.badge--premium,
+.badge--verified,
+.badge--info,
+.badge--success,
+.badge--warning,
+.badge--error,
 .badge--neutral {
   background-color: transparent;
   color: #757575;
