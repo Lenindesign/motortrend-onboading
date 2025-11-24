@@ -46,6 +46,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
+  const [savedVehicles, setSavedVehicles] = useState<Set<string>>(new Set());
   const slideIntervalRef = useRef<number | null>(null);
   
   // Touch/swipe state
@@ -57,6 +58,61 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryVehicleName, setGalleryVehicleName] = useState('');
+
+  // Load saved vehicles from localStorage
+  useEffect(() => {
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      if (onboardingData) {
+        const data = JSON.parse(onboardingData);
+        if (data.vehicles && Array.isArray(data.vehicles)) {
+          const saved = new Set(data.vehicles.map((v: { name: string }) => v.name));
+          setSavedVehicles(saved);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading saved vehicles:', error);
+    }
+  }, []);
+
+  // Handle save/unsave vehicle
+  const handleSaveVehicle = (vehicle: CarouselVehicle) => {
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      let data = onboardingData ? JSON.parse(onboardingData) : { vehicles: [] };
+      
+      if (!data.vehicles) {
+        data.vehicles = [];
+      }
+
+      const vehicleIndex = data.vehicles.findIndex(
+        (v: { name: string }) => v.name === vehicle.name
+      );
+
+      if (vehicleIndex > -1) {
+        // Remove vehicle
+        data.vehicles.splice(vehicleIndex, 1);
+        setSavedVehicles(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(vehicle.name);
+          return newSet;
+        });
+      } else {
+        // Add vehicle
+        data.vehicles.push({
+          name: vehicle.name,
+          year: vehicle.year,
+          make: vehicle.make,
+          model: vehicle.model
+        });
+        setSavedVehicles(prev => new Set(prev).add(vehicle.name));
+      }
+
+      localStorage.setItem('onboardingData', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving vehicle:', error);
+    }
+  };
 
   // Get all vehicles from API (memoized to prevent unnecessary re-renders)
   const allVehicleItems = useMemo(() => {
@@ -472,15 +528,18 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                 
                 {/* Save Button */}
                 <button
-                  className="top-ten-carousel__save-btn"
+                  className={`top-ten-carousel__save-btn ${savedVehicles.has(vehicle.name) ? 'top-ten-carousel__save-btn--active' : ''}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    // Handle save functionality
-                    console.log('Save vehicle:', vehicle.name);
+                    handleSaveVehicle(vehicle);
                   }}
-                  aria-label="Save vehicle"
+                  aria-label={savedVehicles.has(vehicle.name) ? 'Remove from saved' : 'Save vehicle'}
                 >
-                  <Icon name="bookmark" size={24} />
+                  <Icon 
+                    name={savedVehicles.has(vehicle.name) ? 'bookmark' : 'bookmark_border'} 
+                    variant={savedVehicles.has(vehicle.name) ? 'filled' : 'outlined'}
+                    size={24} 
+                  />
                 </button>
                 
                 {/* Expand Button */}

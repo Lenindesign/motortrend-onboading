@@ -152,6 +152,14 @@
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
+.top-ten-carousel__save-btn--active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.top-ten-carousel__save-btn--active:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
 /* Expand Button */
 .top-ten-carousel__expand-btn {
   position: absolute;
