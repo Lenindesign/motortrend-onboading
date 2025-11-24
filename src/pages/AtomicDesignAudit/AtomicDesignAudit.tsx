@@ -703,7 +703,7 @@ const stickySampleRatings: RatingItem[] = [
   {
     type: 'motortrend',
     value: 9.4,
-    iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg',
+    iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
     iconAlt: 'MT',
     labelTop: 'Expert',
     labelBottom: 'Rating',

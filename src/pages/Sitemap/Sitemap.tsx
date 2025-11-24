@@ -6,8 +6,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { articles } from '../../utils/articles';
-import { carDatabase } from '../../utils/vehicleDatabase';
-import { parseVehicleName } from '../../utils/vehicleImages';
+import { getVehicles } from '../../api/vehiclesApi';
 import './Sitemap.css';
 
 export const Sitemap: React.FC = () => {
@@ -24,21 +23,21 @@ export const Sitemap: React.FC = () => {
   // Get all vehicles organized by make
   const vehiclesByMake = useMemo(() => {
     const organized: Record<string, Array<{ name: string; year: string; make: string; model: string; url: string }>> = {};
+    const allVehicles = getVehicles();
     
-    carDatabase.forEach(vehicleName => {
-      const parsed = parseVehicleName(vehicleName);
-      const make = decodeURIComponent(parsed.make);
+    allVehicles.forEach(vehicle => {
+      const make = vehicle.make;
       
       if (!organized[make]) {
         organized[make] = [];
       }
       
       organized[make].push({
-        name: vehicleName,
-        year: decodeURIComponent(parsed.year),
-        make: make,
-        model: decodeURIComponent(parsed.model),
-        url: `/vehicles/${parsed.year}/${parsed.make}/${parsed.model}`
+        name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+        year: vehicle.year,
+        make: vehicle.make,
+        model: vehicle.model,
+        url: `/vehicles/${vehicle.year}/${encodeURIComponent(vehicle.make)}/${encodeURIComponent(vehicle.model)}`
       });
     });
     
@@ -126,7 +125,7 @@ export const Sitemap: React.FC = () => {
         {/* Vehicles by Make */}
         <section className="sitemap__section">
           <h2 className="sitemap__section-title">
-            Vehicles by Make ({carDatabase.length} total)
+            Vehicles by Make ({getVehicles().length} total)
           </h2>
           {sortedMakes.map(make => (
             <div key={make} className="sitemap__make-section">

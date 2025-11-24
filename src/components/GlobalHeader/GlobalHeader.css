@@ -559,7 +559,10 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .global-header {
-    padding: 8px 12px;
+    padding: 12px;
+    height: 56px;
+    display: flex;
+    align-items: center;
   }
   
   .global-header__nav {
@@ -592,8 +595,8 @@
   }
   
   .global-header__logo {
-    max-width: 100px;
-    height: 24px;
+    max-width: 112px;
+    height: 26px;
   }
   
   .global-header__search {
@@ -635,8 +638,8 @@
 /* Medium mobile breakpoint for better responsive design */
 @media (max-width: 640px) {
   .global-header__logo {
-    max-width: 90px;
-    height: 22px;
+    max-width: 112px;
+    height: 26px;
   }
   
   .global-header__search {
@@ -675,70 +678,5 @@
   }
 }
 
-@media (max-width: 480px) {
-  .global-header {
-    padding: 6px 8px;
-  }
-  
-  .global-header__content {
-    gap: 6px;
-    padding-left: 4px;
-    padding-right: 4px;
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .global-header__left {
-    gap: 6px;
-  }
-
-  .global-header__right {
-    gap: 6px;
-  }
-  
-  .global-header__logo {
-    max-width: 80px;
-    height: 20px;
-  }
-  
-  .global-header__search {
-    width: 160px;
-    min-width: 120px;
-  }
-
-  .global-header__search-input {
-    padding: 6px 8px 6px 30px;
-    font-size: 12px;
-  }
-
-  .global-header__search-icon {
-    left: 8px;
-  }
-
-  .global-header__search-icon svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .global-header__user-btn {
-    width: 32px;
-    height: 32px;
-    padding: 2px;
-  }
-
-  .global-header__user-avatar-img {
-    width: 24px;
-    height: 24px;
-  }
-
-  .global-header__notification-badge {
-    top: -3px;
-    right: -3px;
-  }
-  
-  .global-header__user-dropdown {
-    right: -12px;
-    min-width: 160px;
-  }
-}
+/* 480px breakpoint removed - using 768px styles for all mobile devices */
 

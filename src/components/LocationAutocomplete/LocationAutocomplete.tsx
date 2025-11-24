@@ -113,8 +113,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
               >
                 <Icon 
                   name={isDetectingLocation ? "refresh" : "my_location"} 
-                  size={20} 
-                  className={isDetectingLocation ? "spinning" : ""}
+                  size={20}
                 />
               </button>
             )}
@@ -126,7 +125,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           <div className="location-suggestions">
             {isLoading ? (
               <div className="location-suggestion-item location-suggestion-item--loading">
-                <Icon name="refresh" size={16} className="spinning" />
+                <Icon name="refresh" size={16} />
                 <span>Searching locations...</span>
               </div>
             ) : (

@@ -1,10 +1,16 @@
+/**
+ * Badge Component
+ * Two versions: Dark (for light backgrounds) and Light (for dark backgrounds)
+ */
+
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 0 12px;
-  border-radius: var(--border-radius-full);
+  height: 16px;
+  padding: 0 8px;
+  border-radius: 4px;
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
@@ -28,26 +34,28 @@
   line-height: 1;
 }
 
-/* Sizes */
+/* Sizes - all use same 16px height */
 .badge--sm {
-  height: 22px;
-  padding: 0 10px;
-  font-size: 11px;
+  height: 16px;
+  padding: 0 6px;
+  font-size: 10px;
 }
 
 .badge--md {
-  height: 26px;
-  padding: 0 12px;
+  height: 16px;
+  padding: 0 8px;
   font-size: 12px;
 }
 
 .badge--lg {
-  height: 32px;
-  padding: 0 16px;
-  font-size: 14px;
+  height: 16px;
+  padding: 0 10px;
+  font-size: 13px;
 }
 
-/* All badges now use neutral style without border and black text */
+/* ============================================
+   VERSION 1: DARK TEXT ON WHITE (default)
+   ============================================ */
 .badge--new,
 .badge--premium,
 .badge--verified,
@@ -56,15 +64,16 @@
 .badge--warning,
 .badge--error,
 .badge--neutral {
-  background-color: transparent;
-  color: #000000;
-  border: none;
+  background-color: var(--color-neutrals-6);
+  color: var(--color-neutrals-3);
 }
 
-/* Outline variant */
+/* ============================================
+   VERSION 2: WHITE TEXT ON DARK (outline variant)
+   ============================================ */
 .badge--outline {
-  background-color: transparent !important;
-  border: 1px solid currentColor;
+  background-color: var(--color-neutrals-2);
+  color: #FFFFFF;
 }
 
 /* Clickable badges */
@@ -80,5 +89,3 @@
 .badge--clickable:active {
   transform: translateY(0);
 }
-
-

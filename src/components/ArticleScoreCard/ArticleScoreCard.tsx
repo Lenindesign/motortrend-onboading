@@ -43,7 +43,7 @@ export const ArticleScoreCard: React.FC<ArticleScoreCardProps> = ({ score, vehic
           <span className="article-score-card__number">{score.overallRating?.toFixed(1)}</span>
           <div className="article-score-card__label-row">
             <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+              src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
               alt="MotorTrend" 
               className="article-score-card__mt-badge"
             />
@@ -76,7 +76,7 @@ export const ArticleScoreCard: React.FC<ArticleScoreCardProps> = ({ score, vehic
           <div className="article-score-card__reviewer-name">
             {score.reviewer.name}
             <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+              src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
               alt="MotorTrend" 
               className="article-score-card__reviewer-badge"
             />

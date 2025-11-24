@@ -675,8 +675,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                     {(communityRating / 2) % 1 === 0 ? communityRating / 2 : (communityRating / 2).toFixed(1)}
                   </div>
                   <div className="user-reviews__rating-label">
-                    <span className="user-reviews__rating-label-text">Community Rating</span>
-                    <span className="user-reviews__rating-label-count"> ({totalReviews})</span>
+                    <span className="user-reviews__rating-label-text">User Reviews</span>
+                    <Badge variant="info" size="sm">
+                      {(communityRating / 2).toFixed(1)}/5
+                    </Badge>
                   </div>
                 </div>
               </div>

@@ -62,12 +62,21 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .hero-card__title {
-    font-size: 24px;
+  .hero-card__inner {
+    display: flex;
+    flex-direction: column;
   }
 
   .hero-card__content {
-    padding: var(--spacing-3);
+    position: relative;
+    background: transparent;
+    padding: var(--spacing-2);
+    border-radius: 0;
+  }
+
+  .hero-card__title {
+    font-size: 18px;
+    color: var(--color-neutrals-2);
   }
 }
 

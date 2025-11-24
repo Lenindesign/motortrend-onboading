@@ -10,7 +10,7 @@ import { VehiclesSection } from '../../components/VehiclesSection';
 import { AdContainer } from '../../components/AdContainer';
 import type { RiverItem } from '../../components/River';
 import { articles } from '../../utils/articles';
-import { carDatabase as centralCarDatabase } from '../../utils/vehicleDatabase';
+import { getVehicles } from '../../api/vehiclesApi';
 import { getPersonaFromOnboarding, getPersona, type PersonaName } from '../../utils/personas';
 import { filterVehiclesByLifestyle } from '../../utils/vehicleLifestyles';
 import './Community.css';
@@ -43,19 +43,23 @@ const Community: React.FC = () => {
 
   // Get latest vehicles (2024, 2025, 2026 models)
   const latestVehicles = useMemo(() => {
-    return centralCarDatabase
-      .filter(vehicleName => {
-        const yearMatch = vehicleName.match(/^(2024|2025|2026)\s/);
-        return yearMatch !== null;
+    const allVehicles = getVehicles();
+    return allVehicles
+      .filter(vehicle => {
+        const year = parseInt(vehicle.year, 10);
+        return year >= 2024 && year <= 2026;
       })
       .sort((a, b) => {
-        const yearA = parseInt(a.match(/^(\d{4})\s/)?.[1] || '0', 10);
-        const yearB = parseInt(b.match(/^(\d{4})\s/)?.[1] || '0', 10);
+        const yearA = parseInt(a.year, 10);
+        const yearB = parseInt(b.year, 10);
         if (yearB !== yearA) {
           return yearB - yearA; // Newer years first
         }
-        return a.localeCompare(b); // Alphabetical within same year
-      });
+        const nameA = `${a.make} ${a.model}`;
+        const nameB = `${b.make} ${b.model}`;
+        return nameA.localeCompare(nameB); // Alphabetical within same year
+      })
+      .map(v => `${v.year} ${v.make} ${v.model}`);
   }, []);
   
   // Personalized vehicles based on user's persona

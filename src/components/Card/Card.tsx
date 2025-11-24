@@ -147,7 +147,7 @@ export const Card: React.FC<CardProps> = ({
                       </div>
                       {isMotorTrendRating ? (
                         <img
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
                           alt="MotorTrend"
                           className="card__rating-mt-logo"
                         />

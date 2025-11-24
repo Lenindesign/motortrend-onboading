@@ -95,9 +95,9 @@ div.sticky-rate-bar__vehicle-name {
 .sticky-rate-bar__ratings {
     display: flex;
     align-items: center;
-    gap: 0;
+    gap: var(--spacing-4);
     flex: 1;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .sticky-rate-bar__rating-separator {
@@ -111,7 +111,7 @@ div.sticky-rate-bar__vehicle-name {
 .sticky-rate-bar__rating-item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-gap-sm);
+    gap: var(--spacing-2);
     cursor: pointer;
     transition: opacity var(--transition-fast);
     background: none;
@@ -120,6 +120,7 @@ div.sticky-rate-bar__vehicle-name {
     min-width: 0;
     flex-shrink: 0;
     height: fit-content;
+    flex-direction: row;
 }
 
 .sticky-rate-bar__rating-item:hover {
@@ -128,7 +129,7 @@ div.sticky-rate-bar__vehicle-name {
 
 .sticky-rate-bar__rating-item--vertical {
     flex-direction: column;
-    gap: var(--spacing-2);
+    gap: 12px;
     align-items: center;
     padding: 0;
 }
@@ -136,7 +137,7 @@ div.sticky-rate-bar__vehicle-name {
 .sticky-rate-bar__rating-item--motortrend {
     flex-direction: column;
     align-items: center;
-    gap: 0px;
+    gap: 6px;
     padding-right: 0px;
 }
 
@@ -145,7 +146,7 @@ div.sticky-rate-bar__vehicle-name {
     flex-direction: column;
     gap: var(--spacing-gap-xs);
     flex-shrink: 0;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .sticky-rate-bar__rating-label-top,
@@ -175,7 +176,7 @@ div.sticky-rate-bar__vehicle-name {
 }
 
 /* MT logo smaller than blue stars in sticky bar */
-.sticky-rate-bar__rating-icon[src*="group1318348068"] {
+.sticky-rate-bar__rating-icon[src*="mticon"] {
     width: 24px;
     height: 24px;
     min-width: 24px;
@@ -194,7 +195,7 @@ div.sticky-rate-bar__vehicle-name {
 .sticky-rate-bar__rate-btn {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     background: none;
     border: none;
     color: #E0E0E0;
@@ -262,6 +263,7 @@ div.sticky-rate-bar__vehicle-name {
 }
 
 .sticky-rate-bar__rating-text {
+    font-family: 'Geist', sans-serif;
     color: var(--color-neutrals-7);
     font-size: 14px;
     font-weight: 400;
@@ -275,9 +277,15 @@ div.sticky-rate-bar__vehicle-name {
 /* Rating highlight now uses Badge atom - no custom styles needed */
 
 /* MotorTrend Rating specific styles */
+.sticky-rate-bar__rating-score-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
 .sticky-rate-bar__rating-score-large {
     color: var(--color-neutrals-8);
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 600;
     font-family: var(--font-heading);
     line-height: 1;
@@ -298,11 +306,12 @@ div.sticky-rate-bar__vehicle-name {
     display: flex;
     align-items: center;
     gap: var(--spacing-gap-sm);
+    flex-direction: row;
 }
 
 .sticky-rate-bar__rating-mt-badge {
     width: 16px;
-    height: 24px;
+    height: 16px;
     flex-shrink: 0;
     object-fit: contain;
 }
@@ -351,56 +360,83 @@ div.sticky-rate-bar__vehicle-name {
     .sticky-rate-bar__content {
         padding: 8px 12px;
         flex-direction: column;
-        gap: var(--spacing-2);
-        align-items: stretch;
+        gap: 8px;
+        align-items: center;
     }
 
     .sticky-rate-bar__vehicle-name {
-        font-size: 16px;
+        font-size: 15px;
         text-align: center;
         width: 100%;
+        line-height: 1.2;
+        order: 1;
     }
 
     /* Make/Model pages (VehicleDetails) - larger font size on mobile too */
     div.sticky-rate-bar__vehicle-name {
-        font-size: 24px;
+        font-size: 16px;
     }
 
     /* Mobile CTA button styling for link version */
     .sticky-rate-bar__vehicle-name--link {
         width: 100%;
-        padding: var(--spacing-component-sm) var(--spacing-component-md);
-        font-size: 16px;
+        padding: 8px 12px;
+        font-size: 14px;
     }
 
     .sticky-rate-bar__ratings {
         width: 100%;
         justify-content: center;
-        gap: var(--spacing-2);
-        flex-wrap: wrap;
+        gap: 20px;
+        flex-wrap: nowrap;
+        display: flex !important;
+        order: 2;
     }
 
     .sticky-rate-bar__rating-item {
-        font-size: 12px;
-        gap: 4px;
+        font-size: 11px;
+        gap: 3px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0;
+        min-width: 0;
+        display: flex !important;
+    }
+
+    /* Hide only "Rate This Vehicle" (3rd item) on mobile */
+    .sticky-rate-bar__rating-item:nth-child(3) {
+        display: none !important;
     }
 
     .sticky-rate-bar__rating-label {
-        font-size: 12px;
+        font-size: 10px;
+        order: 3;
+        white-space: nowrap;
+    }
+
+    .sticky-rate-bar__rating-value {
+        font-size: 20px;
+        font-weight: 700;
+        order: 2;
+        margin: 0;
     }
 
     .sticky-rate-bar__rating-label-top,
     .sticky-rate-bar__rating-label-bottom {
-        font-size: 10px;
+        font-size: 9px;
+        line-height: 1.2;
     }
 
     .sticky-rate-bar__rating-icon {
         width: 18px;
         height: 18px;
+        order: 1;
+        margin: 0 0 2px 0;
     }
 
     /* MT logo smaller on mobile */
-    .sticky-rate-bar__rating-icon[src*="group1318348068"] {
+    .sticky-rate-bar__rating-icon[src*="mticon"] {
         width: 16px;
         height: 16px;
         min-width: 16px;
@@ -409,31 +445,101 @@ div.sticky-rate-bar__vehicle-name {
         max-height: 16px;
     }
 
-    .sticky-rate-bar__rating-value {
-        font-size: 20px;
+    /* Stars styling for mobile - more compact */
+    .sticky-rate-bar__stars {
+        order: 1;
+        margin: 0 0 2px 0;
+        display: flex !important;
+    }
+
+    .sticky-rate-bar__star {
+        font-size: 14px;
     }
 
     .sticky-rate-bar__cta {
         width: 100%;
-        padding: 10px 16px;
+        padding: 11px 16px;
         font-size: 14px;
+        font-weight: 600;
+        order: 3;
     }
 
     .sticky-rate-bar__rate-btn--mobile-hide {
-        display: none;
+        display: none !important;
     }
 }
 
 /* Medium mobile breakpoint */
 @media (max-width: 640px) {
     .sticky-rate-bar__content {
-        padding: 8px 12px;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+
+    .sticky-rate-bar__vehicle-name {
+        font-size: 15px;
+    }
+
+    div.sticky-rate-bar__vehicle-name {
+        font-size: 16px;
+    }
+
+    .sticky-rate-bar__ratings {
+        gap: 16px;
+    }
+
+    .sticky-rate-bar__rating-value {
+        font-size: 17px;
+    }
+
+    .sticky-rate-bar__rating-label {
+        font-size: 9px;
+    }
+
+    .sticky-rate-bar__cta {
+        padding: 9px 14px;
+        font-size: 13px;
     }
 }
 
 /* Small mobile breakpoint */
 @media (max-width: 480px) {
     .sticky-rate-bar__content {
-        padding: 6px 8px;
+        padding: 8px 8px;
+        gap: 6px;
+    }
+
+    .sticky-rate-bar__vehicle-name {
+        font-size: 14px;
+    }
+
+    div.sticky-rate-bar__vehicle-name {
+        font-size: 15px;
+    }
+
+    .sticky-rate-bar__ratings {
+        gap: 12px;
+    }
+
+    .sticky-rate-bar__rating-value {
+        font-size: 16px;
+    }
+
+    .sticky-rate-bar__rating-label {
+        font-size: 9px;
+    }
+
+    .sticky-rate-bar__rating-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .sticky-rate-bar__star {
+        font-size: 12px;
+    }
+
+    .sticky-rate-bar__cta {
+        padding: 9px 12px;
+        font-size: 13px;
     }
 }

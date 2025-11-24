@@ -499,8 +499,8 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .card__image-container {
-    width: 150px;
-    height: 100px;
+    width: 180px;
+    height: 120px;
   }
 
   .card__title {
@@ -512,7 +512,7 @@
   }
 
   .card__button {
-    font-size: 13px;
+    font-size: 14px;
     padding: var(--spacing-2) var(--spacing-3);
     min-height: 44px;
     /* Touch-friendly target */
@@ -543,6 +543,10 @@
 @media (max-width: 768px) {
   /* CardShell handles padding and border-radius */
   
+  .card {
+    height: 180px;
+  }
+  
   .card__inner {
     gap: var(--spacing-gap-sm);
   }
@@ -552,36 +556,36 @@
   }
 
   .card__image-container {
-    width: 120px;
-    height: 67.5px;
+    width: 160px;
+    height: 100px;
     /* Maintain 16:9 aspect ratio */
   }
 
   .card__title {
-    font-size: 14px;
+    font-size: 20px;
     line-height: 1.3em;
   }
 
   .card__subtitle {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.3em;
   }
 
   .card__type {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .card__metadata {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .card__button {
-    padding: var(--spacing-2) var(--spacing-3);
-    font-size: 13px;
-    min-height: 44px;
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: 12px;
+    min-height: 36px;
     /* Touch-friendly target */
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-start;
   }
 
   .card__ownership {
@@ -630,40 +634,4 @@
   }
 }
 
-@media (max-width: 480px) {
-  /* CardShell handles padding */
-  
-  .card__inner {
-    gap: 8px;
-  }
-
-  .card__image-container {
-    width: 100px;
-    height: 56.25px;
-    /* Maintain 16:9 aspect ratio */
-  }
-
-  .card__title {
-    font-size: 13px;
-    line-height: 1.3em;
-  }
-
-  .card__subtitle {
-    font-size: 11px;
-    line-height: 1.3em;
-  }
-
-  .card__button {
-    padding: 6px 10px;
-    font-size: 11px;
-  }
-
-  .card__ownership {
-    gap: var(--spacing-2);
-    margin-top: 6px;
-  }
-
-  .card__ownership-option {
-    font-size: 13px;
-  }
-}
+/* 480px breakpoint removed - using 768px styles for all mobile devices */

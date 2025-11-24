@@ -73,8 +73,16 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   '4runner': ['SUV'],
   'pilot': ['SUV'],
   'passport': ['SUV'],
-  'ridgeline': ['SUV'],
   'hr-v': ['SUV'],
+  'venue': ['SUV'],
+  'trailblazer': ['SUV'],
+  'kicks': ['SUV'],
+  'soul': ['SUV'],
+  'encore': ['SUV'],
+  'encore gx': ['SUV'],
+  'trax': ['SUV'],
+  'seltos': ['SUV'],
+  'kona': ['SUV'],
   'rogue': ['SUV'],
   'pathfinder': ['SUV'],
   'murano': ['SUV'],
@@ -82,7 +90,6 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'grand cherokee': ['SUV'],
   'cherokee': ['SUV'],
   'compass': ['SUV'],
-  'gladiator': ['SUV'],
   'durango': ['SUV'],
   'x3': ['SUV'],
   'x5': ['SUV'],
@@ -108,6 +115,7 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'xc60': ['SUV'],
   'xc90': ['SUV'],
   'escalade': ['SUV'],
+  'navigator': ['SUV'],
   'xt5': ['SUV'],
   'xt6': ['SUV'],
   'qx60': ['SUV'],
@@ -117,6 +125,8 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'gv70': ['SUV'],
   'gv80': ['SUV'],
   'model y': ['SUV'],
+  'cayenne': ['SUV'],
+  'macan': ['SUV'],
   
   // Trucks
   'f-150': ['Truck'],
@@ -129,6 +139,10 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'frontier': ['Truck'],
   'titan': ['Truck'],
   'sierra': ['Truck'],
+  'ridgeline': ['Truck'],
+  'gladiator': ['Truck'],
+  'colorado': ['Truck'],
+  'canyon': ['Truck'],
   '2500': ['Truck'],
   '3500': ['Truck'],
   
@@ -155,11 +169,27 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
 export const getVehicleBodyStyle = (vehicleName: string): BodyStyleCategory[] => {
   const normalizedName = vehicleName.toLowerCase();
   const styles: Set<BodyStyleCategory> = new Set();
+  const matchedKeys: string[] = [];
   
-  // Check each key in the map for matches
-  for (const [key, categories] of Object.entries(vehicleBodyStyleMap)) {
-    if (normalizedName.includes(key)) {
-      categories.forEach(cat => styles.add(cat));
+  // Sort keys by length (longest first) to match more specific models first
+  // This ensures "q50" is checked before "q5", preventing false matches
+  const sortedKeys = Object.keys(vehicleBodyStyleMap).sort((a, b) => b.length - a.length);
+  
+  for (const key of sortedKeys) {
+    // Skip if we've already matched a longer key that contains this key
+    // For example, if we matched "q50", skip "q5" 
+    if (matchedKeys.some(matched => matched.includes(key))) {
+      continue;
+    }
+    
+    // Check if the key exists as a word in the vehicle name
+    // Use word boundaries: the key should be preceded and followed by space, dash, or string boundaries
+    const keyPattern = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special regex chars
+    const regex = new RegExp(`(^|\\s|-|/)${keyPattern}(\\s|-|/|$)`, 'i');
+    
+    if (regex.test(normalizedName)) {
+      vehicleBodyStyleMap[key].forEach(cat => styles.add(cat));
+      matchedKeys.push(key);
     }
   }
   

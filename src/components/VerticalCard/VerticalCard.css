@@ -85,8 +85,14 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .vertical-card__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
   .vertical-card__title {
-    font-size: 15px;
+    font-size: 18px;
+    color: var(--color-neutrals-2);
   }
 
   .vertical-card__content {

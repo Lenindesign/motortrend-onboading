@@ -817,7 +817,7 @@ export const Article: React.FC = () => {
                 type: 'motortrend',
                 value: staffRating,
                 onClick: handleScrollToStaffRating,
-                iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg',
+                iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
                 iconAlt: 'MT',
                 format: 'vehicle-details'
               },
@@ -905,7 +905,7 @@ export const Article: React.FC = () => {
                         <span className="article__rating-label-bottom">Rating</span>
                       </div>
                       <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde55c063170002980a16/group1318348068.svg" 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                         alt="MotorTrend" 
                         className="article__rating-icon article__rating-icon--staff" 
                       />
@@ -1175,7 +1175,7 @@ export const Article: React.FC = () => {
                                       </div>
                                       <div className="article__image-score-rating-label-row">
                                         <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                                           alt="MotorTrend" 
                                           className="article__image-score-rating-mt-badge" 
                                         />
@@ -1265,7 +1265,7 @@ export const Article: React.FC = () => {
                                         </div>
                                         <div className="article__image-score-rating-value-wrapper">
                                           <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde55c063170002980a16/group1318348068.svg" 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                                             alt="MotorTrend" 
                                             className="article__image-score-rating-icon staff" 
                                           />
@@ -1357,7 +1357,7 @@ export const Article: React.FC = () => {
                                       <span className="article__score-number">{formatScore(motortrendScore.overallRating)}</span>
                                       <div className="article__score-label-row">
                                         <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                                           alt="MotorTrend" 
                                           className="article__score-mt-badge" 
                                         />
@@ -1416,7 +1416,7 @@ export const Article: React.FC = () => {
                                           <span className="article__reviewer-name">{motortrendScore.reviewer.name}</span>
                                           <div className="article__reviewer-badge--with-tooltip">
                                             <img
-                                              src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                                              src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
                                               alt="MT badge"
                                               className="article__reviewer-badge"
                                               width={16}

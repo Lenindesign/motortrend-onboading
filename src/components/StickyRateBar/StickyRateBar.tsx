@@ -176,14 +176,10 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
           </>
         );
       } else {
-        // VehicleDetails format: Large score + Label row
+        // VehicleDetails format: Icon + Score on top, Label below
         ratingDisplay = (
           <>
-            <div className="sticky-rate-bar__rating-score-large">
-              {typeof displayRating === 'number' ? displayRating.toFixed(1) : displayRating}
-              <span className="sticky-rate-bar__rating-score-max">/10</span>
-            </div>
-            <div className="sticky-rate-bar__rating-label-row">
+            <div className="sticky-rate-bar__rating-score-row">
               {rating.iconSrc && (
                 <img
                   src={rating.iconSrc}
@@ -191,8 +187,12 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                   className="sticky-rate-bar__rating-mt-badge"
                 />
               )}
-              <span className="sticky-rate-bar__rating-motortrend-text">MotorTrend Rating</span>
+              <div className="sticky-rate-bar__rating-score-large">
+                {typeof displayRating === 'number' ? displayRating.toFixed(1) : displayRating}
+                <span className="sticky-rate-bar__rating-score-max">/10</span>
+              </div>
             </div>
+            <span className="sticky-rate-bar__rating-motortrend-text">MotorTrend Rating</span>
           </>
         );
       }

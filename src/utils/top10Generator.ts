@@ -3,7 +3,7 @@
  * Uses actual vehicle scores and images
  */
 
-import { carDatabase } from './vehicleDatabase';
+import { getVehicles } from '../api/vehiclesApi';
 import { generateStaffRating } from './vehicleRatings';
 import { getVehicleLifestyles, type LifestyleCategory } from './vehicleLifestyles';
 import { vehicleImageFor } from './vehicleImages';
@@ -21,27 +21,25 @@ export interface Top10Vehicle {
  * Get top 10 vehicles for a lifestyle category sorted by MotorTrend rating
  */
 export const getTop10ForCategory = (category: LifestyleCategory): Top10Vehicle[] => {
+  // Get all vehicles from API
+  const allVehicles = getVehicles();
+  
   // Filter vehicles by category
-  const vehiclesInCategory = carDatabase
-    .map(vehicleName => {
+  const vehiclesInCategory = allVehicles
+    .map(vehicle => {
+      const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
       const lifestyles = getVehicleLifestyles(vehicleName);
       if (!lifestyles.includes(category)) {
         return null;
       }
       
-      // Extract year, make, model
-      const parts = vehicleName.split(' ');
-      const year = parts[0];
-      const make = parts[1];
-      const model = parts.slice(2).join(' ');
-      
       return {
         name: vehicleName,
-        image: vehicleImageFor(vehicleName),
-        rating: generateStaffRating(vehicleName),
-        year,
-        make,
-        model
+        image: vehicle.image || vehicleImageFor(vehicleName),
+        rating: vehicle.staffRating || generateStaffRating(vehicleName),
+        year: vehicle.year,
+        make: vehicle.make,
+        model: vehicle.model
       };
     })
     .filter((v): v is Top10Vehicle => v !== null);

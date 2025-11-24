@@ -11,7 +11,7 @@ const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed2
 import Icon from '../Icon';
 import { Badge } from '../../design-system/components';
 import { parseVehicleName } from '../../utils/vehicleImages';
-import { carDatabase } from '../../utils/vehicleDatabase';
+import { searchVehicles } from '../../api/vehiclesApi';
 
 export interface GlobalHeaderProps {
   onSignInClick?: () => void;
@@ -312,27 +312,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     };
   }, []);
 
-  // Filter cars based on search query
+  // Filter cars based on search query using the API
   useEffect(() => {
     if (searchQuery.length > 0) {
-      const queryLower = searchQuery.toLowerCase().trim();
-      const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
+      const results = searchVehicles(searchQuery, 15);
+      const vehicleNames = results.map(v => `${v.year} ${v.make} ${v.model}`);
       
-      const filtered = carDatabase.filter(car => {
-        const carLower = car.toLowerCase();
-        // Check if all words in the query appear in the vehicle name (order-independent)
-        return queryWords.every(word => carLower.includes(word));
-      })
-      .sort((a, b) => {
-        // Extract year from vehicle name (e.g., "2025 Subaru WRX" -> 2025)
-        const yearA = parseInt(a.match(/\d{4}/)?.[0] || '0');
-        const yearB = parseInt(b.match(/\d{4}/)?.[0] || '0');
-        // Sort by year descending (newest first)
-        return yearB - yearA;
-      })
-      .slice(0, 15); // Limit to 15 results
-      
-      setFilteredCars(filtered);
+      setFilteredCars(vehicleNames);
       setShowSearchDropdown(true);
     } else {
       setFilteredCars([]);

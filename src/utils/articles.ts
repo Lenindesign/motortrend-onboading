@@ -5164,9 +5164,9 @@ export const articles: Record<string, Article> = {
     author: "Alex Leanse",
     date: "Nov 14, 2025",
     category: "Reviews",
-    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/68fa9727081bdc000275a9c1/12-2026-mazda-cx-50-awd-front-view.jpg",
     images: [
-      "https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68fa9727081bdc000275a9c1/12-2026-mazda-cx-50-awd-front-view.jpg",
       "https://d2kde5ohu8qb21.cloudfront.net/files/68fa971e081bdc000275a9bd/8-2026-mazda-cx-50-awd-rear-view.jpg",
       "https://d2kde5ohu8qb21.cloudfront.net/files/68fa9725e5c47a0002885327/11-2026-mazda-cx-50-awd-rear-view.jpg",
       "https://d2kde5ohu8qb21.cloudfront.net/files/68fa9728081bdc000275a9c3/13-2026-mazda-cx-50-awd-front-view.jpg",

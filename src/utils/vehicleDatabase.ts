@@ -1,6 +1,26 @@
 /**
- * Centralized vehicle database
- * Used across the application for consistency
+ * @deprecated This file is deprecated and will be removed in a future version.
+ * 
+ * MIGRATION NOTICE:
+ * All components have been migrated to use the unified vehicle API.
+ * Please use `getVehicles()` from `src/api/vehiclesApi.ts` instead.
+ * 
+ * Example migration:
+ * ```typescript
+ * // Before:
+ * import { carDatabase } from './utils/vehicleDatabase';
+ * const vehicles = carDatabase;
+ * 
+ * // After:
+ * import { getVehicles } from './api/vehiclesApi';
+ * const vehicles = getVehicles().map(v => `${v.year} ${v.make} ${v.model}`);
+ * ```
+ * 
+ * This file is kept temporarily for backward compatibility only.
+ * It will be removed once all legacy code is confirmed to be migrated.
+ * 
+ * Last Updated: November 23, 2025
+ * Status: DEPRECATED - DO NOT USE IN NEW CODE
  */
 
 export const carDatabase = [

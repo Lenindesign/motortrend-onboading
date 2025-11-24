@@ -15,6 +15,7 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { generateVehicleReview } from '../../utils/vehicleReviews';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
+import { getVehicles, type Vehicle } from '../../api/vehiclesApi';
 import RatingModal from '../../components/RatingModal';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
@@ -26,6 +27,8 @@ import { ArticleReactions } from '../../components/ArticleReactions';
 import { PhotoGallery } from '../../components/PhotoGallery';
 import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import { Popover } from '../../components/atoms/Popover';
+import { LocalListingsSidebar } from '../../components/LocalListingsSidebar';
+import { getLocalListings } from '../../utils/localListings';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -55,11 +58,35 @@ export const VehicleDetails: React.FC = () => {
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [apiVehicleData, setApiVehicleData] = useState<Vehicle | null>(null);
 
   // Parse vehicle name from URL params
   // Normalize: replace dashes with spaces in model to ensure consistent format
   // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
+
+  // Generate local listings
+  const [localListings, setLocalListings] = useState<any[]>([]);
+  
+  useEffect(() => {
+    const fetchListings = async () => {
+      const vehicleImage = apiVehicleData?.image || vehicleImageFor(vehicleName);
+      try {
+        const listings = await getLocalListings(
+          decodedYear, 
+          decodedMake, 
+          decodedModel.replace(/-/g, ' '), 
+          vehicleImage
+        );
+        setLocalListings(listings);
+      } catch (error) {
+        console.error('❌ Error fetching listings:', error);
+        setLocalListings([]); // Set empty array on error
+      }
+    };
+    
+    fetchListings();
+  }, [decodedYear, decodedMake, decodedModel, apiVehicleData, vehicleName]);
 
   // Check if this is a Prime template vehicle
   const isPrimeTemplate = (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') ||
@@ -86,7 +113,26 @@ export const VehicleDetails: React.FC = () => {
 
   // Get images from article for gallery
   const galleryImages = useMemo(() => {
-    // Find matching article
+    console.log('🖼️🖼️🖼️ Gallery Images useMemo triggered');
+    console.log('🖼️ apiVehicleData:', apiVehicleData);
+    console.log('🖼️ apiVehicleData?.image:', apiVehicleData?.image);
+    console.log('🖼️ apiVehicleData?.galleryImages:', apiVehicleData?.galleryImages);
+    
+    // PRIORITY 1: Use API gallery images if available
+    if (apiVehicleData?.galleryImages && apiVehicleData.galleryImages.length > 0) {
+      console.log('✅✅✅ Using API gallery images:', apiVehicleData.galleryImages.length);
+      return apiVehicleData.galleryImages;
+    }
+    
+    // PRIORITY 2: Use single API vehicle image if available
+    if (apiVehicleData?.image) {
+      console.log('✅ Using single API image:', apiVehicleData.image);
+      return [apiVehicleData.image];
+    }
+    
+    console.log('⚠️⚠️⚠️ No API vehicle data, checking articles...');
+    
+    // PRIORITY 3: Find matching article
     for (const article of Object.values(articles)) {
       if (article.motortrendScore?.vehicleName) {
         const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
@@ -95,13 +141,15 @@ export const VehicleDetails: React.FC = () => {
         if (articleVehicleName === currentVehicleName ||
           articleVehicleName.includes(currentVehicleName) ||
           currentVehicleName.includes(articleVehicleName)) {
+          console.log('📰 Using article images');
           return article.images || [];
         }
       }
     }
-    // Fallback to hero image if no article found
+    // PRIORITY 4: Fallback to hero image if no article found
+    console.log('🔄 Using fallback vehicleImageFor');
     return [vehicleImageFor(vehicleName)];
-  }, [vehicleName]);
+  }, [vehicleName, apiVehicleData]);
 
   const getInitialReviews = (): ReviewData[] => {
     // First, load any user-submitted reviews from localStorage
@@ -568,13 +616,20 @@ export const VehicleDetails: React.FC = () => {
     year: decodedYear,
     make: decodedMake,
     model: decodedModel,
-    staffRating: articleStaffRating ?? generateStaffRating(vehicleName),
-    communityRating: generateCommunityRating(vehicleName),
-    communityRatingCount: 25,
-    priceRange: reviewData.priceRange,
+    // Use API data if available, otherwise fall back to generated/article data
+    staffRating: apiVehicleData?.staffRating ?? articleStaffRating ?? generateStaffRating(vehicleName),
+    communityRating: apiVehicleData?.communityRating ?? generateCommunityRating(vehicleName),
+    communityRatingCount: apiVehicleData?.reviewCount ?? 25,
+    priceRange: apiVehicleData?.priceRange ?? reviewData.priceRange,
     award: reviewData.award,
     image: (() => {
-      // Use custom image for Kia EV9-Land
+      // PRIORITY 1: Use API image if available
+      if (apiVehicleData?.image) {
+        console.log('🖼️ Using API image for vehicleData:', apiVehicleData.image);
+        return apiVehicleData.image;
+      }
+
+      // PRIORITY 2: Use custom image for Kia EV9-Land
       const normalizedVehicleName = vehicleName.toLowerCase().replace(/-/g, ' ');
       const normalizedMake = decodedMake.toLowerCase();
       const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
@@ -588,7 +643,7 @@ export const VehicleDetails: React.FC = () => {
         return 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg';
       }
 
-      // Use specific image for 2025 Ford F-150 Lightning
+      // PRIORITY 3: Use specific image for 2025 Ford F-150 Lightning
       const isF150Lightning = (normalizedMake === 'ford' &&
         (normalizedModel.includes('f 150 lightning') ||
           normalizedModel.includes('f-150 lightning') ||
@@ -600,6 +655,8 @@ export const VehicleDetails: React.FC = () => {
         return 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg';
       }
 
+      // PRIORITY 4: Fallback to vehicleImageFor
+      console.log('⚠️ Using fallback vehicleImageFor for vehicleData');
       return vehicleImageFor(vehicleName);
     })(),
     pros: reviewData.pros,
@@ -635,6 +692,63 @@ export const VehicleDetails: React.FC = () => {
       console.error('Error checking saved vehicle status:', error);
     }
   }, [vehicleName]);
+
+  // Fetch vehicle data from API
+  useEffect(() => {
+    console.log('🔍 VehicleDetails useEffect triggered - BUILD VERSION: 2024-11-23-v3-MAZDA-FIX');
+    console.log('🔍 URL params:', { decodedYear, decodedMake, decodedModel });
+    console.warn('⚠️ If you see old images, do a HARD REFRESH: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)');
+    
+    try {
+      console.log('📡 Fetching vehicles from API...');
+      const vehicles = getVehicles();
+      console.log('✅ Total vehicles fetched:', vehicles.length);
+      
+      // Normalize both model names for comparison (replace dashes/spaces)
+      const normalizedUrlModel = decodedModel.replace(/-/g, ' ').toLowerCase();
+      console.log('🔎 Looking for:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
+      
+      // Debug: show all vehicles from the current make
+      const makeVehicles = vehicles.filter(v => v.make === decodedMake);
+      console.log(`🚗 Available ${decodedMake} vehicles:`, makeVehicles.map(v => ({
+        year: v.year,
+        make: v.make,
+        model: v.model,
+        modelLower: v.model.toLowerCase(),
+        hasImage: !!v.image,
+        imageUrl: v.image
+      })));
+      
+      const matchingVehicle = vehicles.find(v => {
+        const yearMatch = v.year === decodedYear;
+        const makeMatch = v.make === decodedMake;
+        // Normalize both models: replace dashes/spaces, then compare
+        const normalizedDbModel = v.model.replace(/-/g, ' ').toLowerCase();
+        const modelMatch = normalizedDbModel === normalizedUrlModel;
+        
+        console.log(`Checking ${v.year} ${v.make} ${v.model}:`, { 
+          yearMatch, 
+          makeMatch, 
+          modelMatch,
+          normalizedDbModel,
+          normalizedUrlModel
+        });
+        
+        return yearMatch && makeMatch && modelMatch;
+      });
+      
+      if (matchingVehicle) {
+        console.log('✅✅✅ FOUND matching vehicle from API:', matchingVehicle);
+        console.log('✅ Image URL:', matchingVehicle.image);
+        setApiVehicleData(matchingVehicle);
+      } else {
+        console.log('❌❌❌ NO matching vehicle found in API');
+        console.log('Searched for:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
+      }
+    } catch (error) {
+      console.error('❌ Error fetching vehicle data:', error);
+    }
+  }, [decodedYear, decodedMake, decodedModel]);
 
   // Reload reviews when vehicleName changes to ensure saved reviews are displayed
   // Use a ref to track the previous vehicleName to avoid reloading unnecessarily
@@ -928,7 +1042,7 @@ export const VehicleDetails: React.FC = () => {
       type: 'motortrend',
       value: parseFloat(formatScore(vehicleData.staffRating)), // Pass as number 0-10
       onClick: handleScrollToStaffRating,
-      iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg',
+      iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
       iconAlt: 'MT',
       format: 'vehicle-details'
     },
@@ -955,13 +1069,6 @@ export const VehicleDetails: React.FC = () => {
       <StickyRateBar
         vehicleName={displayName}
         ratings={stickyRatings}
-        ctaText="Local Listings"
-        ctaOnClick={() => {
-          const listingsSection = document.querySelector('.vehicle-details__listings');
-          if (listingsSection) {
-            listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }}
         isVisible={isStickyBarVisible || !isStickyBarSticky}
         isSticky={isStickyBarSticky}
         barRef={stickyRateBarRef}
@@ -1047,7 +1154,7 @@ export const VehicleDetails: React.FC = () => {
                     <span className="vehicle-details__prime-rating-label-bottom">Rating</span>
                   </div>
                   <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde55c063170002980a16/group1318348068.svg"
+                    src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
                     alt="MotorTrend"
                     className="vehicle-details__prime-rating-icon"
                   />
@@ -1198,7 +1305,7 @@ export const VehicleDetails: React.FC = () => {
                   </div>
                   <div className="vehicle-details__rating-label-row">
                     <img
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
                       alt="MT"
                       className="vehicle-details__rating-mt-logo"
                     />
@@ -1397,7 +1504,7 @@ export const VehicleDetails: React.FC = () => {
                     <span className="vehicle-details__score-number">{formatScore(vehicleData.staffRating)}</span>
                     <div className="vehicle-details__score-label-row">
                       <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                        src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                         alt="MotorTrend" 
                         className="vehicle-details__score-mt-badge" 
                       />
@@ -1456,7 +1563,7 @@ export const VehicleDetails: React.FC = () => {
                         <span className="vehicle-details__reviewer-name">Zach Gale</span>
                         <div className="vehicle-details__reviewer-badge--with-tooltip">
                           <img
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg"
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
                             alt="MT badge"
                             className="vehicle-details__reviewer-badge"
                             width={16}
@@ -1576,8 +1683,8 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* Photo Gallery Bento (Prime Template Only) */}
-          {isPrimeTemplate && galleryImages.length > 1 && (
+          {/* Photo Gallery Bento (Show when 3+ photos available) */}
+          {galleryImages.length >= 3 && (
             <div className="vehicle-details__photo-gallery-bento">
               <div className="vehicle-details__photo-gallery-header">
                 <h3 className="vehicle-details__photo-gallery-title">Photo Gallery</h3>
@@ -1589,7 +1696,7 @@ export const VehicleDetails: React.FC = () => {
                 </button>
               </div>
               <div className="vehicle-details__photo-gallery-grid">
-                {galleryImages.slice(0, 6).map((image, index) => (
+                {galleryImages.slice(0, 6).map((image: string, index: number) => (
                   <div
                     key={index}
                     className={`vehicle-details__photo-gallery-item vehicle-details__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
@@ -1679,6 +1786,39 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
+          {/* Photo Gallery Bento (for 2025 Subaru Forester) */}
+          {decodedYear === '2025' && decodedMake === 'Subaru' && decodedModel === 'Forester' && galleryImages.length > 1 && (
+            <div className="vehicle-details__photo-gallery-bento">
+              <div className="vehicle-details__photo-gallery-header">
+                <h3 className="vehicle-details__photo-gallery-title">Photo Gallery</h3>
+                <button
+                  className="vehicle-details__photo-gallery-view-all cta cta--ghost cta--default"
+                  onClick={() => setIsGalleryOpen(true)}
+                >
+                  View All Photos
+                </button>
+              </div>
+              <div className="vehicle-details__photo-gallery-grid">
+                {galleryImages.slice(0, 6).map((image: string, index: number) => (
+                  <div
+                    key={index}
+                    className={`vehicle-details__photo-gallery-item vehicle-details__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
+                    onClick={() => setIsGalleryOpen(true)}
+                  >
+                    <img
+                      src={image}
+                      alt={`${displayName} - Photo ${index + 1}`}
+                      className="vehicle-details__photo-gallery-thumb"
+                    />
+                    <div className="vehicle-details__photo-gallery-overlay">
+                      <Icon name="open_in_full" size={24} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* User Reviews */}
           <div id="community-ratings">
             <UserReviews
@@ -1726,6 +1866,16 @@ export const VehicleDetails: React.FC = () => {
 
         {/* Right Sidebar */}
         <div className="vehicle-details__sidebar">
+          {/* Local Listings Sidebar */}
+          <LocalListingsSidebar
+            vehicleName={`${decodedMake} ${decodedModel.replace(/-/g, ' ')}`}
+            listings={localListings}
+            onViewAllListings={() => {
+              console.log('View all listings clicked');
+              // TODO: Navigate to listings page or open modal
+            }}
+          />
+
           {/* Ad Space 1 */}
           <div className="vehicle-details__ad">
             <img

@@ -10,6 +10,8 @@ import { NewsSection } from '../../components/NewsSection';
 import { VehiclesSection, type VehicleItem } from '../../components/VehiclesSection';
 import { AdContainer } from '../../components/AdContainer';
 import Icon from '../../components/Icon';
+import { Badge } from '../../design-system/components/Badge/Badge';
+import { TopTenCarousel } from '../../components/TopTenCarousel/TopTenCarousel';
 import type { RiverItem } from '../../components/River';
 import { sortContentForPersonalization, type ContentCategory } from '../../utils/contentFiltering';
 import { getVehicleLifestyles, type LifestyleCategory } from '../../utils/vehicleLifestyles';
@@ -20,140 +22,28 @@ import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { useRating } from '../../contexts/RatingContext';
 import { getVehicleSpecs } from '../../utils/vehicleSpecs';
 import { getArticleBySlug } from '../../utils/articles';
+import { getVehicles } from '../../api/vehiclesApi';
 import './Home.css';
 
-// Full vehicle database - same as VehicleInventory
-const carDatabase = [
-  '2015 Subaru WRX', '2021 Subaru WRX', '2018 Subaru WRX', '2017 Subaru WRX', '2024 Subaru WRX', '2022 Subaru WRX', '2025 Subaru WRX',
-  '2020 Honda Civic', '2021 Honda Civic', '2022 Honda Civic', '2023 Honda Civic', '2024 Honda Civic',
-  '2019 Toyota Camry', '2020 Toyota Camry', '2021 Toyota Camry', '2022 Toyota Camry', '2023 Toyota Camry', '2024 Toyota Camry',
-  '2020 Ford Mustang', '2021 Ford Mustang', '2022 Ford Mustang', '2023 Ford Mustang', '2024 Ford Mustang',
-  '2021 Tesla Model 3', '2022 Tesla Model 3', '2023 Tesla Model 3', '2024 Tesla Model 3',
-  '2020 BMW 3 Series', '2021 BMW 3 Series', '2022 BMW 3 Series', '2023 BMW 3 Series', '2024 BMW 3 Series',
-  '2019 Audi A4', '2020 Audi A4', '2021 Audi A4', '2022 Audi A4', '2023 Audi A4', '2024 Audi A4',
-  '2020 Mercedes C-Class', '2021 Mercedes C-Class', '2022 Mercedes C-Class', '2023 Mercedes C-Class', '2024 Mercedes C-Class',
-  '2021 Nissan Altima', '2022 Nissan Altima', '2023 Nissan Altima', '2024 Nissan Altima',
-  '2020 Chevrolet Camaro', '2021 Chevrolet Camaro', '2022 Chevrolet Camaro', '2023 Chevrolet Camaro', '2024 Chevrolet Camaro',
-  '2021 Dodge Challenger', '2022 Dodge Challenger', '2023 Dodge Challenger', '2024 Dodge Challenger',
-  '2020 Lexus IS', '2021 Lexus IS', '2022 Lexus IS', '2023 Lexus IS', '2024 Lexus IS',
-  '2021 Infiniti Q50', '2022 Infiniti Q50', '2023 Infiniti Q50', '2024 Infiniti Q50',
-  '2020 Acura TLX', '2021 Acura TLX', '2022 Acura TLX', '2023 Acura TLX', '2024 Acura TLX',
-  '2021 Genesis G70', '2022 Genesis G70', '2023 Genesis G70', '2024 Genesis G70',
-  '2020 Volvo S60', '2021 Volvo S60', '2022 Volvo S60', '2023 Volvo S60', '2024 Volvo S60',
-  '2021 Cadillac CT4', '2022 Cadillac CT4', '2023 Cadillac CT4', '2024 Cadillac CT4',
-  '2020 Jaguar XE', '2021 Jaguar XE', '2022 Jaguar XE', '2023 Jaguar XE', '2024 Jaguar XE',
-  '2021 Alfa Romeo Giulia', '2022 Alfa Romeo Giulia', '2023 Alfa Romeo Giulia', '2024 Alfa Romeo Giulia',
-  '2020 Kia Stinger', '2021 Kia Stinger', '2022 Kia Stinger', '2023 Kia Stinger', '2024 Kia Stinger',
-  '2021 Hyundai Sonata', '2022 Hyundai Sonata', '2023 Hyundai Sonata', '2024 Hyundai Sonata',
-  '2020 Mazda6', '2021 Mazda6', '2022 Mazda6', '2023 Mazda6', '2024 Mazda6',
-  '2020 Subaru Legacy', '2021 Subaru Legacy', '2022 Subaru Legacy', '2023 Subaru Legacy', '2024 Subaru Legacy',
-  '2020 Subaru Impreza', '2021 Subaru Impreza', '2022 Subaru Impreza', '2023 Subaru Impreza', '2024 Subaru Impreza',
-  '2020 Subaru Outback', '2021 Subaru Outback', '2022 Subaru Outback', '2023 Subaru Outback', '2024 Subaru Outback',
-  '2020 Subaru Forester', '2021 Subaru Forester', '2022 Subaru Forester', '2023 Subaru Forester', '2024 Subaru Forester',
-  '2020 Subaru Ascent', '2021 Subaru Ascent', '2022 Subaru Ascent', '2023 Subaru Ascent', '2024 Subaru Ascent',
-  '2020 Subaru Crosstrek', '2021 Subaru Crosstrek', '2022 Subaru Crosstrek', '2023 Subaru Crosstrek', '2024 Subaru Crosstrek',
-  '2020 Subaru BRZ', '2021 Subaru BRZ', '2022 Subaru BRZ', '2023 Subaru BRZ', '2024 Subaru BRZ',
-  '2020 Subaru WRX STI', '2021 Subaru WRX STI', '2022 Subaru WRX STI', '2023 Subaru WRX STI', '2024 Subaru WRX STI',
-  '2020 Ford F-150', '2021 Ford F-150', '2022 Ford F-150', '2023 Ford F-150', '2024 Ford F-150', '2025 Ford F-150', '2026 Ford F-150',
-  '2020 Ford Explorer', '2021 Ford Explorer', '2022 Ford Explorer', '2023 Ford Explorer', '2024 Ford Explorer',
-  '2020 Ford Escape', '2021 Ford Escape', '2022 Ford Escape', '2023 Ford Escape', '2024 Ford Escape',
-  '2020 Ford Edge', '2021 Ford Edge', '2022 Ford Edge', '2023 Ford Edge', '2024 Ford Edge',
-  '2020 Ford Bronco', '2021 Ford Bronco', '2022 Ford Bronco', '2023 Ford Bronco', '2024 Ford Bronco',
-  '2020 Ford Bronco Sport', '2021 Ford Bronco Sport', '2022 Ford Bronco Sport', '2023 Ford Bronco Sport', '2024 Ford Bronco Sport',
-  '2020 Ford Ranger', '2021 Ford Ranger', '2022 Ford Ranger', '2023 Ford Ranger', '2024 Ford Ranger',
-  '2020 Ford Maverick', '2021 Ford Maverick', '2022 Ford Maverick', '2023 Ford Maverick', '2024 Ford Maverick',
-  '2020 Chevrolet Silverado', '2021 Chevrolet Silverado', '2022 Chevrolet Silverado', '2023 Chevrolet Silverado', '2024 Chevrolet Silverado',
-  '2020 Chevrolet Tahoe', '2021 Chevrolet Tahoe', '2022 Chevrolet Tahoe', '2023 Chevrolet Tahoe', '2024 Chevrolet Tahoe',
-  '2020 Chevrolet Suburban', '2021 Chevrolet Suburban', '2022 Chevrolet Suburban', '2023 Chevrolet Suburban', '2024 Chevrolet Suburban',
-  '2020 Chevrolet Equinox', '2021 Chevrolet Equinox', '2022 Chevrolet Equinox', '2023 Chevrolet Equinox', '2024 Chevrolet Equinox',
-  '2020 Chevrolet Traverse', '2021 Chevrolet Traverse', '2022 Chevrolet Traverse', '2023 Chevrolet Traverse', '2024 Chevrolet Traverse',
-  '2020 Chevrolet Blazer', '2021 Chevrolet Blazer', '2022 Chevrolet Blazer', '2023 Chevrolet Blazer', '2024 Chevrolet Blazer',
-  '2020 Chevrolet Corvette', '2021 Chevrolet Corvette', '2022 Chevrolet Corvette', '2023 Chevrolet Corvette', '2024 Chevrolet Corvette',
-  '2020 Ram 1500', '2021 Ram 1500', '2022 Ram 1500', '2023 Ram 1500', '2024 Ram 1500', '2025 Ram 1500',
-  '2020 Ram 2500', '2021 Ram 2500', '2022 Ram 2500', '2023 Ram 2500', '2024 Ram 2500',
-  '2020 Ram 3500', '2021 Ram 3500', '2022 Ram 3500', '2023 Ram 3500', '2024 Ram 3500',
-  '2020 GMC Sierra', '2021 GMC Sierra', '2022 GMC Sierra', '2023 GMC Sierra', '2024 GMC Sierra',
-  '2020 GMC Yukon', '2021 GMC Yukon', '2022 GMC Yukon', '2023 GMC Yukon', '2024 GMC Yukon',
-  '2020 GMC Acadia', '2021 GMC Acadia', '2022 GMC Acadia', '2023 GMC Acadia', '2024 GMC Acadia',
-  '2020 Toyota RAV4', '2021 Toyota RAV4', '2022 Toyota RAV4', '2023 Toyota RAV4', '2024 Toyota RAV4',
-  '2020 Toyota Highlander', '2021 Toyota Highlander', '2022 Toyota Highlander', '2023 Toyota Highlander', '2024 Toyota Highlander',
-  '2020 Toyota 4Runner', '2021 Toyota 4Runner', '2022 Toyota 4Runner', '2023 Toyota 4Runner', '2024 Toyota 4Runner',
-  '2020 Toyota Tacoma', '2021 Toyota Tacoma', '2022 Toyota Tacoma', '2023 Toyota Tacoma', '2024 Toyota Tacoma',
-  '2020 Toyota Tundra', '2021 Toyota Tundra', '2022 Toyota Tundra', '2023 Toyota Tundra', '2024 Toyota Tundra',
-  '2020 Toyota Corolla', '2021 Toyota Corolla', '2022 Toyota Corolla', '2023 Toyota Corolla', '2024 Toyota Corolla',
-  '2020 Toyota Prius', '2021 Toyota Prius', '2022 Toyota Prius', '2023 Toyota Prius', '2024 Toyota Prius',
-  '2020 Honda Accord', '2021 Honda Accord', '2022 Honda Accord', '2023 Honda Accord', '2024 Honda Accord',
-  '2020 Honda CR-V', '2021 Honda CR-V', '2022 Honda CR-V', '2023 Honda CR-V', '2024 Honda CR-V',
-  '2020 Honda Pilot', '2021 Honda Pilot', '2022 Honda Pilot', '2023 Honda Pilot', '2024 Honda Pilot',
-  '2020 Honda Passport', '2021 Honda Passport', '2022 Honda Passport', '2023 Honda Passport', '2024 Honda Passport',
-  '2020 Honda Ridgeline', '2021 Honda Ridgeline', '2022 Honda Ridgeline', '2023 Honda Ridgeline', '2024 Honda Ridgeline',
-  '2020 Honda HR-V', '2021 Honda HR-V', '2022 Honda HR-V', '2023 Honda HR-V', '2024 Honda HR-V',
-  '2020 Nissan Rogue', '2021 Nissan Rogue', '2022 Nissan Rogue', '2023 Nissan Rogue', '2024 Nissan Rogue',
-  '2020 Nissan Pathfinder', '2021 Nissan Pathfinder', '2022 Nissan Pathfinder', '2023 Nissan Pathfinder', '2024 Nissan Pathfinder',
-  '2020 Nissan Murano', '2021 Nissan Murano', '2022 Nissan Murano', '2023 Nissan Murano', '2024 Nissan Murano',
-  '2020 Nissan Frontier', '2021 Nissan Frontier', '2022 Nissan Frontier', '2023 Nissan Frontier', '2024 Nissan Frontier',
-  '2020 Nissan Titan', '2021 Nissan Titan', '2022 Nissan Titan', '2023 Nissan Titan', '2024 Nissan Titan',
-  '2020 Jeep Wrangler', '2021 Jeep Wrangler', '2022 Jeep Wrangler', '2023 Jeep Wrangler', '2024 Jeep Wrangler',
-  '2020 Jeep Grand Cherokee', '2021 Jeep Grand Cherokee', '2022 Jeep Grand Cherokee', '2023 Jeep Grand Cherokee', '2024 Jeep Grand Cherokee',
-  '2020 Jeep Cherokee', '2021 Jeep Cherokee', '2022 Jeep Cherokee', '2023 Jeep Cherokee', '2024 Jeep Cherokee',
-  '2020 Jeep Compass', '2021 Jeep Compass', '2022 Jeep Compass', '2023 Jeep Compass', '2024 Jeep Compass',
-  '2020 Jeep Gladiator', '2021 Jeep Gladiator', '2022 Jeep Gladiator', '2023 Jeep Gladiator', '2024 Jeep Gladiator',
-  '2020 Dodge Durango', '2021 Dodge Durango', '2022 Dodge Durango', '2023 Dodge Durango', '2024 Dodge Durango',
-  '2020 Dodge Ram 1500', '2021 Dodge Ram 1500', '2022 Dodge Ram 1500', '2023 Dodge Ram 1500', '2024 Dodge Ram 1500',
-  '2020 Dodge Charger', '2021 Dodge Charger', '2022 Dodge Charger', '2023 Dodge Charger', '2024 Dodge Charger',
-  '2020 BMW X3', '2021 BMW X3', '2022 BMW X3', '2023 BMW X3', '2024 BMW X3',
-  '2020 BMW X5', '2021 BMW X5', '2022 BMW X5', '2023 BMW X5', '2024 BMW X5',
-  '2020 BMW X7', '2021 BMW X7', '2022 BMW X7', '2023 BMW X7', '2024 BMW X7',
-  '2020 BMW 5 Series', '2021 BMW 5 Series', '2022 BMW 5 Series', '2023 BMW 5 Series', '2024 BMW 5 Series',
-  '2020 BMW 7 Series', '2021 BMW 7 Series', '2022 BMW 7 Series', '2023 BMW 7 Series', '2024 BMW 7 Series',
-  '2020 Mercedes GLC', '2021 Mercedes GLC', '2022 Mercedes GLC', '2023 Mercedes GLC', '2024 Mercedes GLC',
-  '2020 Mercedes GLE', '2021 Mercedes GLE', '2022 Mercedes GLE', '2023 Mercedes GLE', '2024 Mercedes GLE',
-  '2020 Mercedes GLS', '2021 Mercedes GLS', '2022 Mercedes GLS', '2023 Mercedes GLS', '2024 Mercedes GLS',
-  '2020 Mercedes E-Class', '2021 Mercedes E-Class', '2022 Mercedes E-Class', '2023 Mercedes E-Class', '2024 Mercedes E-Class',
-  '2020 Mercedes S-Class', '2021 Mercedes S-Class', '2022 Mercedes S-Class', '2023 Mercedes S-Class', '2024 Mercedes S-Class',
-  '2020 Audi Q5', '2021 Audi Q5', '2022 Audi Q5', '2023 Audi Q5', '2024 Audi Q5',
-  '2020 Audi Q7', '2021 Audi Q7', '2022 Audi Q7', '2023 Audi Q7', '2024 Audi Q7',
-  '2020 Audi Q8', '2021 Audi Q8', '2022 Audi Q8', '2023 Audi Q8', '2024 Audi Q8',
-  '2020 Audi A6', '2021 Audi A6', '2022 Audi A6', '2023 Audi A6', '2024 Audi A6',
-  '2020 Audi A8', '2021 Audi A8', '2022 Audi A8', '2023 Audi A8', '2024 Audi A8',
-  '2020 Lexus RX', '2021 Lexus RX', '2022 Lexus RX', '2023 Lexus RX', '2024 Lexus RX',
-  '2020 Lexus GX', '2021 Lexus GX', '2022 Lexus GX', '2023 Lexus GX', '2024 Lexus GX',
-  '2020 Lexus LX', '2021 Lexus LX', '2022 Lexus LX', '2023 Lexus LX', '2024 Lexus LX',
-  '2020 Lexus ES', '2021 Lexus ES', '2022 Lexus ES', '2023 Lexus ES', '2024 Lexus ES',
-  '2020 Lexus LS', '2021 Lexus LS', '2022 Lexus LS', '2023 Lexus LS', '2024 Lexus LS',
-  '2020 Tesla Model S', '2021 Tesla Model S', '2022 Tesla Model S', '2023 Tesla Model S', '2024 Tesla Model S',
-  '2020 Tesla Model X', '2021 Tesla Model X', '2022 Tesla Model X', '2023 Tesla Model X', '2024 Tesla Model X',
-  '2020 Tesla Model Y', '2021 Tesla Model Y', '2022 Tesla Model Y', '2023 Tesla Model Y', '2024 Tesla Model Y',
-  '2020 Hyundai Tucson', '2021 Hyundai Tucson', '2022 Hyundai Tucson', '2023 Hyundai Tucson', '2024 Hyundai Tucson',
-  '2020 Hyundai Santa Fe', '2021 Hyundai Santa Fe', '2022 Hyundai Santa Fe', '2023 Hyundai Santa Fe', '2024 Hyundai Santa Fe',
-  '2020 Hyundai Palisade', '2021 Hyundai Palisade', '2022 Hyundai Palisade', '2023 Hyundai Palisade', '2024 Hyundai Palisade',
-  '2020 Kia Sportage', '2021 Kia Sportage', '2022 Kia Sportage', '2023 Kia Sportage', '2024 Kia Sportage',
-  '2020 Kia Sorento', '2021 Kia Sorento', '2022 Kia Sorento', '2023 Kia Sorento', '2024 Kia Sorento',
-  '2020 Kia Telluride', '2021 Kia Telluride', '2022 Kia Telluride', '2023 Kia Telluride', '2024 Kia Telluride',
-  '2020 Mazda CX-5', '2021 Mazda CX-5', '2022 Mazda CX-5', '2023 Mazda CX-5', '2024 Mazda CX-5',
-  '2020 Mazda CX-9', '2021 Mazda CX-9', '2022 Mazda CX-9', '2023 Mazda CX-9', '2024 Mazda CX-9',
-  '2020 Mazda CX-50', '2021 Mazda CX-50', '2022 Mazda CX-50', '2023 Mazda CX-50', '2024 Mazda CX-50',
-  '2020 Volkswagen Tiguan', '2021 Volkswagen Tiguan', '2022 Volkswagen Tiguan', '2023 Volkswagen Tiguan', '2024 Volkswagen Tiguan',
-  '2020 Volkswagen Atlas', '2021 Volkswagen Atlas', '2022 Volkswagen Atlas', '2023 Volkswagen Atlas', '2024 Volkswagen Atlas',
-  '2020 Volkswagen Jetta', '2021 Volkswagen Jetta', '2022 Volkswagen Jetta', '2023 Volkswagen Jetta', '2024 Volkswagen Jetta',
-  '2020 Volvo XC60', '2021 Volvo XC60', '2022 Volvo XC60', '2023 Volvo XC60', '2024 Volvo XC60',
-  '2020 Volvo XC90', '2021 Volvo XC90', '2022 Volvo XC90', '2023 Volvo XC90', '2024 Volvo XC90',
-  '2020 Cadillac Escalade', '2021 Cadillac Escalade', '2022 Cadillac Escalade', '2023 Cadillac Escalade', '2024 Cadillac Escalade',
-  '2020 Cadillac XT5', '2021 Cadillac XT5', '2022 Cadillac XT5', '2023 Cadillac XT5', '2024 Cadillac XT5',
-  '2020 Cadillac XT6', '2021 Cadillac XT6', '2022 Cadillac XT6', '2023 Cadillac XT6', '2024 Cadillac XT6',
-  '2020 Infiniti QX60', '2021 Infiniti QX60', '2022 Infiniti QX60', '2023 Infiniti QX60', '2024 Infiniti QX60',
-  '2020 Infiniti QX80', '2021 Infiniti QX80', '2022 Infiniti QX80', '2023 Infiniti QX80', '2024 Infiniti QX80',
-  '2020 Acura RDX', '2021 Acura RDX', '2022 Acura RDX', '2023 Acura RDX', '2024 Acura RDX',
-  '2020 Acura MDX', '2021 Acura MDX', '2022 Acura MDX', '2023 Acura MDX', '2024 Acura MDX',
-  '2020 Genesis GV70', '2021 Genesis GV70', '2022 Genesis GV70', '2023 Genesis GV70', '2024 Genesis GV70',
-  '2020 Genesis GV80', '2021 Genesis GV80', '2022 Genesis GV80', '2023 Genesis GV80', '2024 Genesis GV80',
-];
+// Get vehicle database from API - NO HARDCODED DATA
+const apiVehicles = getVehicles();
 
-// Sample data - in production, this would come from an API
-// Note: verticalCards and newsItems will be created inside component to use navigate
+// Create a map for quick image lookup by vehicle name
+const vehicleImageMap = new Map<string, string>();
+apiVehicles.forEach(v => {
+  const vehicleName = `${v.year} ${v.make} ${v.model}`;
+  if (v.image) {
+    vehicleImageMap.set(vehicleName, v.image);
+  }
+});
 
-// Convert carDatabase to VehicleItem format
-const allVehicleItems: VehicleItem[] = carDatabase.map(name => ({ name }));
+const carDatabase = apiVehicles.map(v => `${v.year} ${v.make} ${v.model}`);
+
+// Convert API vehicles to VehicleItem format with images - NO HARDCODED DATA
+const allVehicleItems: VehicleItem[] = carDatabase.map(name => ({ 
+  name,
+  image: vehicleImageMap.get(name) // Include API image
+}));
 
 interface Vehicle {
   id: string;
@@ -193,6 +83,13 @@ export const Home: React.FC = () => {
   const [fullscreenVehicle, setFullscreenVehicle] = useState<Vehicle | null>(null);
   const [fullscreenCarouselType, setFullscreenCarouselType] = useState<'suv' | 'sedan' | 'truck' | null>(null);
   const [fullscreenIndex, setFullscreenIndex] = useState(0);
+  
+  // Top Ten carousel filter state
+  type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe';
+  type Subcategory = 'All' | 'Subcompact' | 'Compact' | 'Midsize' | 'Full-Size' | 'Luxury' | 'Performance' | 'Electric' | 'Heavy-Duty';
+  
+  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>('SUV');
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
 
   useEffect(() => {
     const readUserType = () => {
@@ -1082,16 +979,135 @@ export const Home: React.FC = () => {
   }, [userType, persona]);
 
 
-  // Prepare vehicles for carousel (10 best SUVs)
+  // Helper function to get subcategories based on vehicle type
+  const getSubcategoriesForType = (type: VehicleType): Subcategory[] => {
+    switch (type) {
+      case 'SUV':
+        return ['All', 'Subcompact', 'Compact', 'Midsize', 'Full-Size', 'Electric'];
+      case 'Sedan':
+        return ['All', 'Compact', 'Midsize', 'Full-Size', 'Luxury', 'Performance', 'Electric'];
+      case 'Truck':
+        return ['All', 'Midsize', 'Full-Size', 'Electric'];
+      case 'Coupe':
+        return ['All', 'Luxury', 'Performance', 'Electric'];
+      default:
+        return ['All'];
+    }
+  };
+
+  // Helper function to determine vehicle subcategory
+  const getVehicleSubcategory = (vehicleName: string, type: VehicleType): Subcategory => {
+    const name = vehicleName.toLowerCase();
+    
+    // Check for electric vehicles first (applies to all types)
+    const electricKeywords = ['electric', 'ev', 'e-tron', 'taycan', 'model 3', 'model s', 'model x', 'model y', 'i4', 'i8', 'eq', 'ioniq', 'leaf', 'bolt', 'id.4', 'mach-e', 'lightning', 'rivian', 'lucid', 'polestar', 'ariya', 'bz4x'];
+    if (electricKeywords.some(keyword => name.includes(keyword))) return 'Electric';
+    
+    if (type === 'SUV') {
+      // Subcompact SUVs (smallest)
+      const subcompactModels = ['hr-v', 'venue', 'trailblazer', 'ecosport', 'kicks', 'soul', 'encore', 'trax', 'seltos', 'kona', 'crosstrek'];
+      if (subcompactModels.some(model => name.includes(model))) return 'Subcompact';
+      
+      // Full-size SUVs (largest)
+      const fullsizeModels = ['expedition', 'tahoe', 'suburban', 'yukon', 'armada', 'sequoia', 'navigator', 'escalade', 'qx80', 'gls', 'gx', 'lx', 'land cruiser', 'wagoneer', 'grand wagoneer', 'qx56'];
+      if (fullsizeModels.some(model => name.includes(model))) return 'Full-Size';
+      
+      // Midsize SUVs
+      const midsizeModels = ['pilot', 'highlander', 'explorer', 'grand cherokee', 'pathfinder', 'cx-9', 'palisade', 'telluride', 'atlas', 'ascent', 'traverse', 'enclave', 'durango', 'q7', 'x5', 'gle', 'rx', 'mdx', 'passport', 'murano', 'edge', 'blazer', 'santa fe', 'sorento'];
+      if (midsizeModels.some(model => name.includes(model))) return 'Midsize';
+      
+      // Default to Compact for everything else (CR-V, RAV4, Rogue, Tucson, Sportage, CX-5, Forester, Outback, etc.)
+      return 'Compact';
+    }
+    
+    if (type === 'Sedan') {
+      // Luxury Sedans
+      const luxuryModels = ['s-class', 'a8', 'ls', '7 series', 'panamera', 'flying spur', 'continental', 'ghost', 'phantom', 'a7', 'cls', 'e-class', 'gs', 'es', 'q70', 'genesis g90'];
+      if (luxuryModels.some(model => name.includes(model))) return 'Luxury';
+      
+      // Performance Sedans
+      const performanceModels = ['m3', 'm5', 'amg', 'rs3', 'rs4', 'rs5', 'rs6', 'rs7', 'sti', 'wrx', 'type r', 'gt', 's3', 's4', 's5', 's6', 's7', 's8', 'giulia', 'stinger'];
+      if (performanceModels.some(model => name.includes(model))) return 'Performance';
+      
+      // Full-size Sedans
+      const fullsizeModels = ['charger', 'avalon', 'impala', '300', 'taurus', 'maxima', 'azera', 'k900'];
+      if (fullsizeModels.some(model => name.includes(model))) return 'Full-Size';
+      
+      // Compact Sedans
+      const compactModels = ['civic', 'corolla', 'sentra', 'elantra', 'forte', 'impreza', 'mazda3', 'jetta', 'golf'];
+      if (compactModels.some(model => name.includes(model))) return 'Compact';
+      
+      // Default to Midsize (Accord, Camry, Altima, Sonata, Optima, Malibu, Fusion, Passat, Legacy, etc.)
+      return 'Midsize';
+    }
+    
+    if (type === 'Truck') {
+      // Heavy-Duty Trucks
+      const heavyDutyModels = ['2500', '3500', 'f-250', 'f-350', 'f-450', 'silverado 2500', 'silverado 3500', 'sierra 2500', 'sierra 3500', 'ram 2500', 'ram 3500', 'titan xd'];
+      if (heavyDutyModels.some(model => name.includes(model))) return 'Heavy-Duty';
+      
+      // Midsize Trucks (Ranger, Colorado, Tacoma, Frontier, Gladiator, Canyon, Ridgeline)
+      const midsizeModels = ['ranger', 'colorado', 'tacoma', 'frontier', 'gladiator', 'canyon', 'ridgeline'];
+      if (midsizeModels.some(model => name.includes(model))) return 'Midsize';
+      
+      // Compact Trucks (smaller trucks if any)
+      const compactModels = ['maverick', 'santa cruz'];
+      if (compactModels.some(model => name.includes(model))) return 'Compact';
+      
+      // Default to Full-Size (F-150, Silverado 1500, Sierra 1500, Ram 1500, Tundra, Titan, etc.)
+      return 'Full-Size';
+    }
+    
+    if (type === 'Coupe') {
+      // Luxury Coupes
+      const luxuryModels = ['s-class', 'a7', 'a8', 'cls', '8 series', 'lc', 'rc', 'continental'];
+      if (luxuryModels.some(model => name.includes(model))) return 'Luxury';
+      
+      // Performance Coupes
+      const performanceModels = ['m2', 'm4', 'm8', 'amg', 'rs5', 'rs7', 'gt', 'corvette', 'camaro', 'challenger', 'mustang', 'supra', 'z', '370z', '400z', 'gt-r', 'nsx', 'r8'];
+      if (performanceModels.some(model => name.includes(model))) return 'Performance';
+      
+      return 'Luxury';
+    }
+    
+    if (type === 'Wagon') {
+      // Luxury Wagons
+      const luxuryModels = ['e-class', 'a6', 'a4', 'v60', 'v90', '5 series', 'panamera'];
+      if (luxuryModels.some(model => name.includes(model))) return 'Luxury';
+      
+      // Compact Wagons
+      const compactModels = ['golf', 'impreza', 'corolla'];
+      if (compactModels.some(model => name.includes(model))) return 'Compact';
+      
+      // Default to Midsize
+      return 'Midsize';
+    }
+    
+    return 'All';
+  };
+
+  // Reset subcategory when vehicle type changes
+  useEffect(() => {
+    setSelectedSubcategory('All');
+  }, [selectedVehicleType]);
+
+  // Prepare vehicles for carousel (10 best vehicles of selected type)
   const carouselVehicles: Vehicle[] = useMemo(() => {
-    // Filter for SUVs only
-    const suvVehicles = allVehicleItems.filter(vehicle => {
+    // Filter by selected vehicle type
+    let filteredVehicles = allVehicleItems.filter(vehicle => {
       const bodyStyles = getVehicleBodyStyle(vehicle.name);
-      return bodyStyles.includes('SUV');
+      return bodyStyles.includes(selectedVehicleType);
     });
+    
+    // Filter by subcategory if not 'All'
+    if (selectedSubcategory !== 'All') {
+      filteredVehicles = filteredVehicles.filter(vehicle => {
+        return getVehicleSubcategory(vehicle.name, selectedVehicleType) === selectedSubcategory;
+      });
+    }
 
     // Map to Vehicle objects with ratings
-    const suvsWithRatings = suvVehicles.map((vehicleItem, index) => {
+    const vehiclesWithRatings = filteredVehicles.map((vehicleItem, index) => {
       const parsed = parseVehicleName(vehicleItem.name);
       const year = decodeURIComponent(parsed.year);
       const make = decodeURIComponent(parsed.make);
@@ -1117,7 +1133,7 @@ export const Home: React.FC = () => {
         year,
         make,
         model,
-        image: vehicleImageFor(vehicleItem.name),
+        image: vehicleItem.image || vehicleImageFor(vehicleItem.name), // Use API image, fallback to generated
         createdDate,
         staffRating,
         communityRating,
@@ -1127,17 +1143,17 @@ export const Home: React.FC = () => {
     });
 
     // Remove duplicates by make/model (keep latest year)
-    const uniqueSuvs = new Map<string, typeof suvsWithRatings[0]>();
-    suvsWithRatings.forEach(suv => {
-      const key = `${suv.make}-${suv.model}`.toLowerCase();
-      const existing = uniqueSuvs.get(key);
-      if (!existing || suv.vehicleYear > existing.vehicleYear) {
-        uniqueSuvs.set(key, suv);
+    const uniqueVehicles = new Map<string, typeof vehiclesWithRatings[0]>();
+    vehiclesWithRatings.forEach(vehicle => {
+      const key = `${vehicle.make}-${vehicle.model}`.toLowerCase();
+      const existing = uniqueVehicles.get(key);
+      if (!existing || vehicle.vehicleYear > existing.vehicleYear) {
+        uniqueVehicles.set(key, vehicle);
       }
     });
 
     // Sort by combined rating (best first), then by year (latest first)
-    const sortedSuvs = Array.from(uniqueSuvs.values()).sort((a, b) => {
+    const sortedVehicles = Array.from(uniqueVehicles.values()).sort((a, b) => {
       // First sort by combined rating (descending)
       if (Math.abs(a.combinedRating - b.combinedRating) > 0.1) {
         return b.combinedRating - a.combinedRating;
@@ -1146,20 +1162,20 @@ export const Home: React.FC = () => {
       return b.vehicleYear - a.vehicleYear;
     });
 
-    // Take top 10 best SUVs
-    return sortedSuvs.slice(0, 10).map((suv, index) => ({
-      id: `suv-${index}`,
-      name: suv.name,
-      year: suv.year,
-      make: suv.make,
-      model: suv.model,
-      image: suv.image,
-      createdDate: suv.createdDate,
-      staffRating: suv.staffRating,
-      communityRating: suv.communityRating,
+    // Take top 10 best vehicles and reverse order (10 to 1)
+    return sortedVehicles.slice(0, 10).map((vehicle, index) => ({
+      id: `${selectedVehicleType.toLowerCase()}-${index}`,
+      name: vehicle.name,
+      year: vehicle.year,
+      make: vehicle.make,
+      model: vehicle.model,
+      image: vehicle.image,
+      createdDate: vehicle.createdDate,
+      staffRating: vehicle.staffRating,
+      communityRating: vehicle.communityRating,
       rank: index + 1 // Add ranking number (1-10)
-    }));
-  }, []);
+    })).reverse();
+  }, [selectedVehicleType, selectedSubcategory]);
 
   // Prepare vehicles for sedan carousel (10 best sedans)
   const sedanCarouselVehicles: Vehicle[] = useMemo(() => {
@@ -1196,7 +1212,7 @@ export const Home: React.FC = () => {
         year,
         make,
         model,
-        image: vehicleImageFor(vehicleItem.name),
+        image: vehicleItem.image || vehicleImageFor(vehicleItem.name), // Use API image, fallback to generated
         createdDate,
         staffRating,
         communityRating,
@@ -1225,7 +1241,7 @@ export const Home: React.FC = () => {
       return b.vehicleYear - a.vehicleYear;
     });
 
-    // Take top 10 best sedans
+    // Take top 10 best sedans and reverse order (10 to 1)
     return sortedSedans.slice(0, 10).map((sedan, index) => ({
       id: `sedan-${index}`,
       name: sedan.name,
@@ -1237,16 +1253,29 @@ export const Home: React.FC = () => {
       staffRating: sedan.staffRating,
       communityRating: sedan.communityRating,
       rank: index + 1 // Add ranking number (1-10)
-    }));
+    })).reverse();
   }, []);
 
-  // Auto-advance SUV carousel
+  // Auto-advance carousel with subcategory switching
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
     
     if (!isSliderHovered) {
       slideIntervalRef.current = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % carouselVehicles.length);
+        setCurrentSlide((prev) => {
+          const nextSlide = prev + 1;
+          
+          // If we've reached the end of the current subcategory, switch to next subcategory
+          if (nextSlide >= carouselVehicles.length) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const nextIndex = (currentIndex + 1) % subcategories.length;
+            setSelectedSubcategory(subcategories[nextIndex]);
+            return 0; // Start from first slide of new subcategory
+          }
+          
+          return nextSlide;
+        });
       }, 5000);
     } else {
       if (slideIntervalRef.current) {
@@ -1259,7 +1288,7 @@ export const Home: React.FC = () => {
         clearInterval(slideIntervalRef.current);
       }
     };
-  }, [isSliderHovered, carouselVehicles.length]);
+  }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
   // Keyboard navigation for SUV carousel
   useEffect(() => {
@@ -1271,16 +1300,39 @@ export const Home: React.FC = () => {
 
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        setCurrentSlide((prev) => (prev - 1 + carouselVehicles.length) % carouselVehicles.length);
+        setCurrentSlide((prev) => {
+          // If at first slide, go to previous subcategory
+          if (prev === 0) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
+            setSelectedSubcategory(subcategories[prevIndex]);
+            return 0; // Will be set to last slide of new subcategory after vehicles load
+          }
+          return prev - 1;
+        });
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        setCurrentSlide((prev) => (prev + 1) % carouselVehicles.length);
+        setCurrentSlide((prev) => {
+          const nextSlide = prev + 1;
+          
+          // If we've reached the end, switch to next subcategory
+          if (nextSlide >= carouselVehicles.length) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const nextIndex = (currentIndex + 1) % subcategories.length;
+            setSelectedSubcategory(subcategories[nextIndex]);
+            return 0; // Start from first slide of new subcategory
+          }
+          
+          return nextSlide;
+        });
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSliderHovered, carouselVehicles.length]);
+  }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
   // Prepare vehicles for truck carousel (10 best trucks)
   const truckCarouselVehicles: Vehicle[] = useMemo(() => {
@@ -1317,7 +1369,7 @@ export const Home: React.FC = () => {
         year,
         make,
         model,
-        image: vehicleImageFor(vehicleItem.name),
+        image: vehicleItem.image || vehicleImageFor(vehicleItem.name), // Use API image, fallback to generated
         createdDate,
         staffRating,
         communityRating,
@@ -1346,7 +1398,7 @@ export const Home: React.FC = () => {
       return b.vehicleYear - a.vehicleYear;
     });
 
-    // Take top 10 best trucks
+    // Take top 10 best trucks and reverse order (10 to 1)
     return sortedTrucks.slice(0, 10).map((truck, index) => ({
       id: `truck-${index}`,
       name: truck.name,
@@ -1358,7 +1410,7 @@ export const Home: React.FC = () => {
       staffRating: truck.staffRating,
       communityRating: truck.communityRating,
       rank: index + 1 // Add ranking number (1-10)
-    }));
+    })).reverse();
   }, []);
 
   // Auto-advance sedan carousel
@@ -1392,16 +1444,39 @@ export const Home: React.FC = () => {
 
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        setCurrentSlideSedan((prev) => (prev - 1 + sedanCarouselVehicles.length) % sedanCarouselVehicles.length);
+        setCurrentSlideSedan((prev) => {
+          // If at first slide, go to previous subcategory
+          if (prev === 0) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
+            setSelectedSubcategory(subcategories[prevIndex]);
+            return 0;
+          }
+          return prev - 1;
+        });
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        setCurrentSlideSedan((prev) => (prev + 1) % sedanCarouselVehicles.length);
+        setCurrentSlideSedan((prev) => {
+          const nextSlide = prev + 1;
+          
+          // If we've reached the end, switch to next subcategory
+          if (nextSlide >= sedanCarouselVehicles.length) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const nextIndex = (currentIndex + 1) % subcategories.length;
+            setSelectedSubcategory(subcategories[nextIndex]);
+            return 0;
+          }
+          
+          return nextSlide;
+        });
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSliderHoveredSedan, sedanCarouselVehicles.length]);
+  }, [isSliderHoveredSedan, sedanCarouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
   // Auto-advance truck carousel
   useEffect(() => {
@@ -1434,16 +1509,39 @@ export const Home: React.FC = () => {
 
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        setCurrentSlideTruck((prev) => (prev - 1 + truckCarouselVehicles.length) % truckCarouselVehicles.length);
+        setCurrentSlideTruck((prev) => {
+          // If at first slide, go to previous subcategory
+          if (prev === 0) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
+            setSelectedSubcategory(subcategories[prevIndex]);
+            return 0;
+          }
+          return prev - 1;
+        });
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
-        setCurrentSlideTruck((prev) => (prev + 1) % truckCarouselVehicles.length);
+        setCurrentSlideTruck((prev) => {
+          const nextSlide = prev + 1;
+          
+          // If we've reached the end, switch to next subcategory
+          if (nextSlide >= truckCarouselVehicles.length) {
+            const subcategories = getSubcategoriesForType(selectedVehicleType);
+            const currentIndex = subcategories.indexOf(selectedSubcategory);
+            const nextIndex = (currentIndex + 1) % subcategories.length;
+            setSelectedSubcategory(subcategories[nextIndex]);
+            return 0;
+          }
+          
+          return nextSlide;
+        });
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isSliderHoveredTruck, truckCarouselVehicles.length]);
+  }, [isSliderHoveredTruck, truckCarouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
   const handleVehicleClick = (vehicle: Vehicle) => {
     const { year, make, model } = parseVehicleName(vehicle.name);
@@ -1482,7 +1580,19 @@ export const Home: React.FC = () => {
   const handleFullscreenNext = () => {
     const vehicleList = getFullscreenVehicleList();
     if (vehicleList.length === 0) return;
-    const nextIndex = (fullscreenIndex + 1) % vehicleList.length;
+    
+    // If we've reached the end of the current category, switch to next subcategory
+    if (fullscreenIndex >= vehicleList.length - 1) {
+      const subcategories = getSubcategoriesForType(selectedVehicleType);
+      const currentIndex = subcategories.indexOf(selectedSubcategory);
+      const nextIndex = (currentIndex + 1) % subcategories.length;
+      setSelectedSubcategory(subcategories[nextIndex]);
+      setFullscreenIndex(0);
+      // Vehicle will be updated when carouselVehicles updates
+      return;
+    }
+    
+    const nextIndex = fullscreenIndex + 1;
     setFullscreenIndex(nextIndex);
     setFullscreenVehicle(vehicleList[nextIndex]);
   };
@@ -1491,7 +1601,19 @@ export const Home: React.FC = () => {
   const handleFullscreenPrev = () => {
     const vehicleList = getFullscreenVehicleList();
     if (vehicleList.length === 0) return;
-    const prevIndex = (fullscreenIndex - 1 + vehicleList.length) % vehicleList.length;
+    
+    // If we're at the first vehicle, switch to previous subcategory
+    if (fullscreenIndex === 0) {
+      const subcategories = getSubcategoriesForType(selectedVehicleType);
+      const currentIndex = subcategories.indexOf(selectedSubcategory);
+      const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
+      setSelectedSubcategory(subcategories[prevIndex]);
+      setFullscreenIndex(0);
+      // Vehicle will be updated when carouselVehicles updates
+      return;
+    }
+    
+    const prevIndex = fullscreenIndex - 1;
     setFullscreenIndex(prevIndex);
     setFullscreenVehicle(vehicleList[prevIndex]);
   };
@@ -1529,6 +1651,19 @@ export const Home: React.FC = () => {
     setFullscreenIndex(0);
     document.body.style.overflow = '';
   };
+
+  // Update fullscreen vehicle when subcategory changes
+  useEffect(() => {
+    if (!fullscreenVehicle || !fullscreenCarouselType) return;
+    
+    const vehicleList = getFullscreenVehicleList();
+    if (vehicleList.length > 0 && fullscreenIndex < vehicleList.length) {
+      setFullscreenVehicle(vehicleList[fullscreenIndex]);
+    } else if (vehicleList.length > 0) {
+      setFullscreenIndex(0);
+      setFullscreenVehicle(vehicleList[0]);
+    }
+  }, [selectedSubcategory, carouselVehicles, sedanCarouselVehicles, truckCarouselVehicles]);
 
   // Handle keyboard navigation in fullscreen
   useEffect(() => {
@@ -1598,27 +1733,39 @@ export const Home: React.FC = () => {
     );
   };
 
+  // Check if user is Practical Paula (Car Buyers persona)
+  const isCarBuyers = personaName === 'Practical Paula';
+
   return (
     <div className="home">
       <div className="home__container">
-        {/* Top Section: Hero + 3 Cards with Right Column Ad */}
-        <div className="home__section">
-          <div className="home__left-column">
-            <HeroPlusThree
-              hero={heroData}
-              cards={sortedVerticalCards}
-            />
+        {/* For Car Buyers (Practical Paula): Show carousel first */}
+        {isCarBuyers && (
+          <div className="home__section home__section--full-width">
+            <TopTenCarousel showExpandButton={false} />
           </div>
-          <div className="home__right-column">
-            <AdContainer
-              width={300}
-              height={250}
-              label="300 x 250"
-              position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
-            />
+        )}
+
+        {/* Top Section: Hero + 3 Cards with Right Column Ad - Hidden for Car Buyers */}
+        {!isCarBuyers && (
+          <div className="home__section">
+            <div className="home__left-column">
+              <HeroPlusThree
+                hero={heroData}
+                cards={sortedVerticalCards}
+              />
+            </div>
+            <div className="home__right-column">
+              <AdContainer
+                width={300}
+                height={250}
+                label="300 x 250"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Latest From MotorTrend Section - Right after Hero (River 1: First 6 stories) */}
         <div className="home__section">
@@ -1645,6 +1792,7 @@ export const Home: React.FC = () => {
             <VehiclesSection
               title="Vehicles"
               vehicles={filteredVehicleItems}
+              useApi={true}
               key={`vehicles-${userType || 'none'}`}
             />
           </div>
@@ -1678,14 +1826,56 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* Vehicle Carousel Section - Full width - Top Ten SUVs */}
-        {carouselVehicles.length > 0 && (
+        {/* Vehicle Carousel Section - Full width - Top Ten SUVs (Hidden for Car Buyers) */}
+        {!isCarBuyers && carouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
             <div 
               className="home__carousel"
               onMouseEnter={() => setIsSliderHovered(true)}
               onMouseLeave={() => setIsSliderHovered(false)}
             >
+                {/* Top Ten Badge with Two Dropdowns - Fixed position */}
+                <div className="home__carousel-badges-container">
+                  {/* Vehicle Type Dropdown */}
+                  <div className="home__carousel-category-badge">
+                    <select 
+                      className="home__carousel-category-dropdown"
+                      value={selectedVehicleType}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        setSelectedVehicleType(e.target.value as VehicleType);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <option value="SUV">Top Ten SUVs</option>
+                      <option value="Sedan">Top Ten Sedans</option>
+                      <option value="Truck">Top Ten Trucks</option>
+                      <option value="Coupe">Top Ten Coupes</option>
+                    </select>
+                    <Icon name="keyboard_arrow_down" size={20} className="home__carousel-category-arrow" />
+                  </div>
+
+                  {/* Subcategory Dropdown */}
+                  <div className="home__carousel-category-badge home__carousel-subcategory-badge">
+                    <select 
+                      className="home__carousel-category-dropdown"
+                      value={selectedSubcategory}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        setSelectedSubcategory(e.target.value as Subcategory);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {getSubcategoriesForType(selectedVehicleType).map(subcat => (
+                        <option key={subcat} value={subcat}>
+                          {subcat === 'All' ? 'All Categories' : subcat}
+                        </option>
+                      ))}
+                    </select>
+                    <Icon name="keyboard_arrow_down" size={20} className="home__carousel-category-arrow" />
+                  </div>
+                </div>
+                
                 <div 
                   className="home__carousel-track"
                   style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -1699,11 +1889,6 @@ export const Home: React.FC = () => {
                       <div className="home__carousel-image">
                         <img src={vehicle.image} alt={vehicle.name} />
                         
-                        {/* Top Ten SUVs Badge with Rank */}
-                        <div className="home__carousel-category-badge">
-                          <span className="home__carousel-category-text">TOP TEN SUVs / #{vehicle.rank}</span>
-                        </div>
-                        
                         {/* Expand Button */}
                         <button
                           className="home__carousel-expand-btn"
@@ -1715,7 +1900,7 @@ export const Home: React.FC = () => {
                         
                         {/* Vehicle Name and Ratings Box */}
                         <div className="home__carousel-info-box">
-                          <h2 className="home__carousel-name">{vehicle.name}</h2>
+                          <h2 className="home__carousel-name">#{vehicle.rank} {vehicle.name}</h2>
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-score-large">
@@ -1724,7 +1909,7 @@ export const Home: React.FC = () => {
                               </div>
                               <div className="home__carousel-rating-label-row">
                                 <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                                   alt="MotorTrend" 
                                   className="home__carousel-rating-mt-badge" 
                                   loading="eager"
@@ -1738,7 +1923,7 @@ export const Home: React.FC = () => {
                             <div className="home__carousel-rating-item home__carousel-rating-item--community">
                               {renderStarRating(vehicle.communityRating)}
                               <div className="home__carousel-rating-text">
-                                User Reviews <span className="home__carousel-rating-highlight">({(vehicle.communityRating / 2).toFixed(1)}/5)</span>
+                                User Reviews <Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
                               </div>
                             </div>
                             {getUserRating(vehicle.name) > 0 && (
@@ -1784,14 +1969,41 @@ export const Home: React.FC = () => {
                   <>
                     <button
                       className="home__carousel-nav home__carousel-nav--prev"
-                      onClick={() => setCurrentSlide((prev) => (prev - 1 + carouselVehicles.length) % carouselVehicles.length)}
+                      onClick={() => {
+                        setCurrentSlide((prev) => {
+                          // If at first slide, go to previous subcategory
+                          if (prev === 0) {
+                            const subcategories = getSubcategoriesForType(selectedVehicleType);
+                            const currentIndex = subcategories.indexOf(selectedSubcategory);
+                            const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
+                            setSelectedSubcategory(subcategories[prevIndex]);
+                            return 0; // Will be set to last slide of new subcategory after vehicles load
+                          }
+                          return prev - 1;
+                        });
+                      }}
                       aria-label="Previous slide"
                     >
                       <Icon name="chevron_left" size={24} />
                     </button>
                     <button
                       className="home__carousel-nav home__carousel-nav--next"
-                      onClick={() => setCurrentSlide((prev) => (prev + 1) % carouselVehicles.length)}
+                      onClick={() => {
+                        setCurrentSlide((prev) => {
+                          const nextSlide = prev + 1;
+                          
+                          // If we've reached the end, switch to next subcategory
+                          if (nextSlide >= carouselVehicles.length) {
+                            const subcategories = getSubcategoriesForType(selectedVehicleType);
+                            const currentIndex = subcategories.indexOf(selectedSubcategory);
+                            const nextIndex = (currentIndex + 1) % subcategories.length;
+                            setSelectedSubcategory(subcategories[nextIndex]);
+                            return 0; // Start from first slide of new subcategory
+                          }
+                          
+                          return nextSlide;
+                        });
+                      }}
                       aria-label="Next slide"
                     >
                       <Icon name="chevron_right" size={24} />
@@ -1872,7 +2084,7 @@ export const Home: React.FC = () => {
                         
                         {/* Vehicle Name and Ratings Box */}
                         <div className="home__carousel-info-box">
-                          <h2 className="home__carousel-name">{vehicle.name}</h2>
+                          <h2 className="home__carousel-name">#{vehicle.rank} {vehicle.name}</h2>
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-score-large">
@@ -1881,7 +2093,7 @@ export const Home: React.FC = () => {
                               </div>
                               <div className="home__carousel-rating-label-row">
                                 <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                                   alt="MotorTrend" 
                                   className="home__carousel-rating-mt-badge" 
                                   loading="eager"
@@ -1895,7 +2107,7 @@ export const Home: React.FC = () => {
                             <div className="home__carousel-rating-item home__carousel-rating-item--community">
                               {renderStarRating(vehicle.communityRating)}
                               <div className="home__carousel-rating-text">
-                                User Reviews <span className="home__carousel-rating-highlight">({(vehicle.communityRating / 2).toFixed(1)}/5)</span>
+                                User Reviews <Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
                               </div>
                             </div>
                             {getUserRating(vehicle.name) > 0 && (
@@ -2029,7 +2241,7 @@ export const Home: React.FC = () => {
                         
                         {/* Vehicle Name and Ratings Box */}
                         <div className="home__carousel-info-box">
-                          <h2 className="home__carousel-name">{vehicle.name}</h2>
+                          <h2 className="home__carousel-name">#{vehicle.rank} {vehicle.name}</h2>
                           <div className="home__carousel-ratings-list">
                             <div className="home__carousel-rating-item">
                               <div className="home__carousel-rating-score-large">
@@ -2038,7 +2250,7 @@ export const Home: React.FC = () => {
                               </div>
                               <div className="home__carousel-rating-label-row">
                                 <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
+                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
                                   alt="MotorTrend" 
                                   className="home__carousel-rating-mt-badge" 
                                   loading="eager"
@@ -2052,7 +2264,7 @@ export const Home: React.FC = () => {
                             <div className="home__carousel-rating-item home__carousel-rating-item--community">
                               {renderStarRating(vehicle.communityRating)}
                               <div className="home__carousel-rating-text">
-                                User Reviews <span className="home__carousel-rating-highlight">({(vehicle.communityRating / 2).toFixed(1)}/5)</span>
+                                User Reviews <Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
                               </div>
                             </div>
                             {getUserRating(vehicle.name) > 0 && (
@@ -2171,53 +2383,56 @@ export const Home: React.FC = () => {
                   </>
                 )}
 
-                {/* Category Badge */}
-                <div className="home__fullscreen-category-badge">
-                  <span className="home__fullscreen-category-text">
-                    {fullscreenCarouselType === 'suv' && `TOP TEN SUVs / #${fullscreenVehicle.rank}`}
-                    {fullscreenCarouselType === 'sedan' && `TOP TEN SEDANS / #${fullscreenVehicle.rank}`}
-                    {fullscreenCarouselType === 'truck' && `TOP TEN PICK UP TRUCKS / #${fullscreenVehicle.rank}`}
-                  </span>
-                </div>
-
-                {/* Carousel Type Navigation Links */}
+                {/* Carousel Type Navigation Dropdowns */}
                 <div className="home__fullscreen-carousel-links">
-                  <button
-                    className={`home__fullscreen-carousel-link ${fullscreenCarouselType === 'suv' ? 'home__fullscreen-carousel-link--active' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (fullscreenCarouselType !== 'suv' && carouselVehicles.length > 0) {
-                        handleSwitchToCarousel('suv');
-                      }
-                    }}
-                    disabled={carouselVehicles.length === 0}
-                  >
-                    SUVs
-                  </button>
-                  <button
-                    className={`home__fullscreen-carousel-link ${fullscreenCarouselType === 'sedan' ? 'home__fullscreen-carousel-link--active' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (fullscreenCarouselType !== 'sedan' && sedanCarouselVehicles.length > 0) {
-                        handleSwitchToCarousel('sedan');
-                      }
-                    }}
-                    disabled={sedanCarouselVehicles.length === 0}
-                  >
-                    Sedans
-                  </button>
-                  <button
-                    className={`home__fullscreen-carousel-link ${fullscreenCarouselType === 'truck' ? 'home__fullscreen-carousel-link--active' : ''}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (fullscreenCarouselType !== 'truck' && truckCarouselVehicles.length > 0) {
-                        handleSwitchToCarousel('truck');
-                      }
-                    }}
-                    disabled={truckCarouselVehicles.length === 0}
-                  >
-                    Trucks
-                  </button>
+                  {/* Vehicle Type Dropdown */}
+                  <div className="home__fullscreen-category-badge-wrapper">
+                    <select
+                      className="home__fullscreen-category-dropdown"
+                      value={selectedVehicleType}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        const newType = e.target.value as VehicleType;
+                        setSelectedVehicleType(newType);
+                        setSelectedSubcategory('All');
+                        // Switch to the appropriate carousel
+                        if (newType === 'SUV') {
+                          handleSwitchToCarousel('suv');
+                        } else if (newType === 'Sedan') {
+                          handleSwitchToCarousel('sedan');
+                        } else if (newType === 'Truck') {
+                          handleSwitchToCarousel('truck');
+                        }
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <option value="SUV">Top Ten SUVs</option>
+                      <option value="Sedan">Top Ten Sedans</option>
+                      <option value="Truck">Top Ten Trucks</option>
+                      <option value="Coupe">Top Ten Coupes</option>
+                    </select>
+                    <Icon name="keyboard_arrow_down" size={20} className="home__fullscreen-category-arrow" />
+                  </div>
+
+                  {/* Subcategory Dropdown */}
+                  <div className="home__fullscreen-subcategory-badge-wrapper">
+                    <select
+                      className="home__fullscreen-subcategory-dropdown"
+                      value={selectedSubcategory}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        setSelectedSubcategory(e.target.value as Subcategory);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {getSubcategoriesForType(selectedVehicleType).map(subcat => (
+                        <option key={subcat} value={subcat}>
+                          {subcat === 'All' ? 'All Categories' : subcat}
+                        </option>
+                      ))}
+                    </select>
+                    <Icon name="keyboard_arrow_down" size={20} className="home__fullscreen-subcategory-arrow" />
+                  </div>
                 </div>
 
                 {/* Fullscreen Image */}
@@ -2258,7 +2473,7 @@ export const Home: React.FC = () => {
                     }}
                     className="home__fullscreen-vehicle-link"
                   >
-                    {fullscreenVehicle.name}
+                    #{fullscreenVehicle.rank} {fullscreenVehicle.name}
                   </a>
                 </h2>
                 

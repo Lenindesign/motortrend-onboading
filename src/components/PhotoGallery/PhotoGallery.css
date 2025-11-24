@@ -4,6 +4,12 @@
  * Now uses ModalShell atom - overlay styles removed
  */
 
+/* Override ModalShell content background for photo gallery */
+.modal-shell .photo-gallery {
+  background-color: #000000 !important;
+  border-radius: 0 !important;
+}
+
 .photo-gallery {
   display: flex;
   align-items: center;

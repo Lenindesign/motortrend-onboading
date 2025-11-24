@@ -4,8 +4,8 @@
  */
 
 /* Import fonts */
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/geist@1.0.0/dist/font.css');
 
 :root {
   /* Colors - Neutrals */
@@ -76,6 +76,24 @@
   --font-weight-regular: 400;
   --font-weight-medium: 600;
   --font-weight-bold: 600;
+  
+  /* Typography - Font Sizes */
+  /* Based on Figma Ignition Design System */
+  /* Reference: https://www.figma.com/design/Xf0Qjj8Rcg3Z3Z2JgEdG8O/Ignition-design-system */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-md: 18px;
+  --font-size-lg: 24px;
+  --font-size-xl: 32px;
+  --font-size-2xl: 48px;
+  --font-size-3xl: 64px;
+  --font-size-4xl: 96px;
+  
+  /* Typography - Line Heights */
+  --line-height-tight: 1.1;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
   
   /* Spacing - Base */
   --spacing-0: 0px;

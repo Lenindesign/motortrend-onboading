@@ -6,8 +6,8 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VehicleCard } from '../../components/VehicleCard';
-import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
-import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
+import { TopTenCarousel } from '../../components/TopTenCarousel';
+import { parseVehicleName } from '../../utils/vehicleImages';
 import { LIFESTYLE_CATEGORIES, type LifestyleCategory, filterVehiclesByLifestyle } from '../../utils/vehicleLifestyles';
 import { PRICE_RANGE_CATEGORIES, type PriceRangeCategory, filterVehiclesByPriceRange } from '../../utils/vehiclePriceRanges';
 import { BODY_STYLE_CATEGORIES, type BodyStyleCategory, filterVehiclesByBodyStyle } from '../../utils/vehicleBodyStyles';
@@ -18,7 +18,7 @@ import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
-import { carDatabase } from '../../utils/vehicleDatabase';
+import { getVehicles } from '../../api/vehiclesApi';
 import './VehicleInventory.css';
 
 interface Vehicle {
@@ -189,26 +189,18 @@ export const VehicleInventory: React.FC = () => {
     }
   };
 
-  // Parse vehicle database into structured format with proper publication dates
+  // Get vehicles from API and convert to local format
   const vehicles: Vehicle[] = useMemo(() => {
-    return carDatabase.map((vehicleName, index) => {
-      const parsed = parseVehicleName(vehicleName);
-      // Decode URL-encoded values
-      const year = decodeURIComponent(parsed.year);
-      const make = decodeURIComponent(parsed.make);
-      const model = decodeURIComponent(parsed.model);
-      
-      // Generate publication date based on year, make, and model
-      // Newer years get more recent dates, and we add variation based on make/model hash
-      const currentYear = new Date().getFullYear();
-      const vehicleYear = parseInt(year) || currentYear;
+    const apiVehicles = getVehicles({});
+    
+    return apiVehicles.map((apiVehicle) => {
+      const vehicleName = `${apiVehicle.year} ${apiVehicle.make} ${apiVehicle.model}`;
+      const vehicleYear = parseInt(apiVehicle.year);
       
       // Create a deterministic hash from make and model for consistent date variation
-      const makeModelHash = (make + model).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      const makeModelHash = (apiVehicle.make + apiVehicle.model).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
       
       // Publication date: vehicles are typically published in the year before the model year
-      // For example, 2024 models are published in late 2023
-      // We'll use: (year - 1) as the base year, with month/day variation based on make/model
       const publicationYear = Math.max(vehicleYear - 1, 2019);
       const month = (makeModelHash % 12) + 1; // 1-12
       const day = (makeModelHash % 28) + 1; // 1-28 to ensure valid dates
@@ -217,20 +209,16 @@ export const VehicleInventory: React.FC = () => {
       
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
       
-      // Generate consistent ratings for this vehicle
-      const staffRating = generateStaffRating(vehicleName);
-      const communityRating = generateCommunityRating(vehicleName);
-      
       return {
-        id: `vehicle-${index}`,
+        id: apiVehicle.id,
         name: vehicleName,
-        year: year,
-        make: make,
-        model: model,
-        image: vehicleImageFor(vehicleName),
+        year: apiVehicle.year,
+        make: apiVehicle.make,
+        model: apiVehicle.model,
+        image: apiVehicle.image,
         createdDate,
-        staffRating,
-        communityRating
+        staffRating: apiVehicle.staffRating,
+        communityRating: apiVehicle.communityRating
       };
     });
   }, []);
@@ -389,83 +377,6 @@ export const VehicleInventory: React.FC = () => {
 
     return sorted;
   }, [vehicles, sortBy, sortOrder, selectedLifestyle, selectedPriceRange, selectedBodyStyle, selectedMake, selectedYear, selectedModel]);
-
-  // Get latest 5 vehicles for hero slider based on filtered/sorted vehicles
-  // Priority: Show vehicles marked as "want" from onboarding step 3 first, then fill remaining slots
-  const latestVehicles = useMemo(() => {
-    // Get "want" vehicles from onboarding step 3 (vehicles Paola might want to buy)
-    let onboardingWantVehicles: Vehicle[] = [];
-    try {
-      const onboardingData = localStorage.getItem('onboardingData');
-      if (onboardingData) {
-        const data = JSON.parse(onboardingData);
-        if (data.vehicles && Array.isArray(data.vehicles) && data.vehicles.length > 0) {
-          // Filter for only "want" vehicles (vehicles user wants to buy)
-          const wantVehicles = data.vehicles.filter((v: { name: string; ownership?: string }) => 
-            v.ownership === 'want'
-          );
-          
-          // Find matching vehicles from the vehicles array
-          const wantVehicleNames = wantVehicles.map((v: { name: string }) => v.name.trim().toLowerCase());
-          onboardingWantVehicles = vehicles.filter(v => 
-            wantVehicleNames.includes(v.name.trim().toLowerCase())
-          );
-          
-          // Sort "want" vehicles by latest (newest first)
-          onboardingWantVehicles.sort((a, b) => {
-            const dateA = a.createdDate?.getTime() || 0;
-            const dateB = b.createdDate?.getTime() || 0;
-            return dateB - dateA; // Newest first
-          });
-        }
-      }
-    } catch (error) {
-      console.error('Error loading onboarding want vehicles:', error);
-    }
-    
-    // Get base vehicles to fill remaining slots
-    let baseVehicles: Vehicle[];
-    if (selectedLifestyle) {
-      // Use filtered vehicles (already sorted by latest)
-      baseVehicles = sortedVehicles;
-    } else {
-      // No filter - sort all vehicles by latest
-      baseVehicles = [...vehicles];
-      baseVehicles.sort((a, b) => {
-        const dateA = a.createdDate?.getTime() || 0;
-        const dateB = b.createdDate?.getTime() || 0;
-        return dateB - dateA; // Newest first
-      });
-    }
-    
-    // Remove "want" vehicles from base vehicles to avoid duplicates
-    const wantVehicleNames = onboardingWantVehicles.map(v => v.name.trim().toLowerCase());
-    const remainingVehicles = baseVehicles.filter(v => 
-      !wantVehicleNames.includes(v.name.trim().toLowerCase())
-    );
-    
-    // Combine: "want" vehicles from onboarding first (vehicles Paola wants to buy), 
-    // then remaining vehicles to fill up to 5 slots
-    const combined = [...onboardingWantVehicles, ...remainingVehicles];
-    
-    // Return first 5 vehicles
-    return combined.slice(0, 5);
-  }, [sortedVehicles, vehicles, selectedLifestyle]);
-
-  // Hero slider state
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isSliderHovered, setIsSliderHovered] = useState(false);
-
-  // Auto-advance slider (pauses on hover)
-  useEffect(() => {
-    if (latestVehicles.length > 1 && !isSliderHovered) {
-      const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % latestVehicles.length);
-      }, 5000); // Change slide every 5 seconds
-
-      return () => clearInterval(interval);
-    }
-  }, [latestVehicles.length, isSliderHovered]);
 
   const handleSortChange = (newSortBy: 'latest' | 'year' | 'make' | 'model' | 'rating') => {
     if (sortBy === newSortBy) {
@@ -690,186 +601,18 @@ export const VehicleInventory: React.FC = () => {
     }
   };
 
-  // Helper function to render star rating (0-10 scale, displays as 0-5 stars)
-  const renderStarRating = (ratingValue: number) => {
-    // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
-    const normalizedRating = ratingValue / 2;
-    
-    return (
-      <div className="vehicle-inventory__hero-rating-stars">
-        {[1, 2, 3, 4, 5].map((star) => {
-          const isFilled = star < Math.ceil(normalizedRating);
-          const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
-          
-          return (
-            <div key={star} className={`vehicle-inventory__hero-star-wrapper ${isHalf ? 'vehicle-inventory__hero-star-wrapper--half' : ''}`}>
-              {/* Outline star */}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-inventory__hero-star vehicle-inventory__hero-star--outline">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                  fill="none"
-                  stroke="#33C4FF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {/* Filled star (full or half) */}
-              {isFilled && (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-inventory__hero-star vehicle-inventory__hero-star--filled">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    fill="#33C4FF"
-                  />
-                </svg>
-              )}
-              {isHalf && (
-                <div className="vehicle-inventory__hero-star-half-fill">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-inventory__hero-star">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                      fill="#33C4FF"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
   return (
     <div className="vehicle-inventory">
       <div className="container">
-        {/* Hero Slider Section */}
-        {latestVehicles.length > 0 && (
-          <div className="vehicle-inventory__hero">
-            <div 
-              className="vehicle-inventory__hero-slider"
-              onMouseEnter={() => setIsSliderHovered(true)}
-              onMouseLeave={() => setIsSliderHovered(false)}
-            >
-              <div 
-                className="vehicle-inventory__hero-slider-track"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {latestVehicles.map((vehicle) => (
-                  <div 
-                    key={vehicle.id} 
-                    className="vehicle-inventory__hero-slide"
-                    onClick={() => handleVehicleClick(vehicle)}
-                  >
-                    <div className="vehicle-inventory__hero-image">
-                      <img src={vehicle.image} alt={vehicle.name} />
-                      
-                      {/* Saved Badge - Top Left */}
-                      <button
-                        className={`vehicle-inventory__hero-save-btn ${savedVehicles.has(vehicle.name) ? 'saved' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleBookmark(vehicle.name);
-                        }}
-                        aria-label={savedVehicles.has(vehicle.name) ? 'Remove bookmark' : 'Bookmark'}
-                      >
-                        <Icon 
-                          name="bookmark" 
-                          variant={savedVehicles.has(vehicle.name) ? 'filled' : 'outlined'} 
-                          size={20} 
-                        />
-                        <span>{savedVehicles.has(vehicle.name) ? 'Saved!' : 'Save'}</span>
-                      </button>
-                      
-                      {/* Vehicle Name and Ratings Box */}
-                      <div className="vehicle-inventory__hero-info-box">
-                        <h2 className="vehicle-inventory__hero-name">{vehicle.name}</h2>
-                        <div className="vehicle-inventory__hero-ratings-list">
-                          <div className="vehicle-inventory__hero-rating-item">
-                            <div className="vehicle-inventory__hero-rating-score-large">
-                              {vehicle.staffRating.toFixed(1)}
-                              <span className="vehicle-inventory__hero-rating-score-max">/10</span>
-                            </div>
-                            <div className="vehicle-inventory__hero-rating-label-row">
-                              <img 
-                                src="https://d2kde5ohu8qb21.cloudfront.net/files/69063bf7503f980002828ffc/mt-badge.svg" 
-                                alt="MotorTrend" 
-                                className="vehicle-inventory__hero-rating-mt-badge" 
-                              />
-                              <span className="vehicle-inventory__hero-rating-motortrend-text">MotorTrend Rating</span>
-                            </div>
-                          </div>
-                          <div className="vehicle-inventory__hero-rating-item vehicle-inventory__hero-rating-item--community">
-                            {renderStarRating(vehicle.communityRating)}
-                            <div className="vehicle-inventory__hero-rating-text">
-                              User Reviews <span className="vehicle-inventory__hero-rating-highlight">({(vehicle.communityRating / 2) % 1 === 0 ? vehicle.communityRating / 2 : (vehicle.communityRating / 2).toFixed(1)}/5)</span>
-                            </div>
-                          </div>
-                        </div>
-                        {getUserRating(vehicle.name) > 0 && (
-                          <div className="vehicle-inventory__hero-rating-item">
-                            <div className="vehicle-inventory__hero-rating-label-wrapper">
-                              <span className="vehicle-inventory__hero-rating-label-top">Your</span>
-                              <span className="vehicle-inventory__hero-rating-label-bottom">Rating</span>
-                            </div>
-                            <div className="vehicle-inventory__hero-rating-value-wrapper">
-                              <img 
-                                src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                                alt="Your Rating Star" 
-                                className="vehicle-inventory__hero-rating-icon add-rate" 
-                              />
-                              <span className="vehicle-inventory__hero-rating-value">
-                                {getUserRating(vehicle.name)}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                        <button 
-                          className="vehicle-inventory__hero-listing-btn cta cta--primary cta--default"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleVehicleClick(vehicle);
-                          }}
-                        >
-                          See Local Listings
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Slider Navigation */}
-              {latestVehicles.length > 1 && (
-                <>
-                  <button
-                    className="vehicle-inventory__hero-nav vehicle-inventory__hero-nav--prev"
-                    onClick={() => setCurrentSlide((prev) => (prev - 1 + latestVehicles.length) % latestVehicles.length)}
-                    aria-label="Previous slide"
-                  >
-                    <Icon name="chevron_left" size={24} />
-                  </button>
-                  <button
-                    className="vehicle-inventory__hero-nav vehicle-inventory__hero-nav--next"
-                    onClick={() => setCurrentSlide((prev) => (prev + 1) % latestVehicles.length)}
-                    aria-label="Next slide"
-                  >
-                    <Icon name="chevron_right" size={24} />
-                  </button>
-                  
-                  {/* Slider Dots */}
-                  <div className="vehicle-inventory__hero-dots">
-                    {latestVehicles.map((_, index) => (
-                      <button
-                        key={index}
-                        className={`vehicle-inventory__hero-dot ${index === currentSlide ? 'vehicle-inventory__hero-dot--active' : ''}`}
-                        onClick={() => setCurrentSlide(index)}
-                        aria-label={`Go to slide ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+        {/* Top Ten Carousel with Filters */}
+        <TopTenCarousel 
+          className="vehicle-inventory__top-ten-carousel" 
+          showExpandButton={true}
+          onExpandClick={(vehicle) => {
+            const { year, make, model } = parseVehicleName(vehicle.name);
+            navigate(`/vehicles/${year}/${make}/${model}`);
+          }}
+        />
 
         <div className="vehicle-inventory__header">
           <h1 className="vehicle-inventory__title">Vehicle Inventory</h1>

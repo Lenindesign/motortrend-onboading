@@ -3,9 +3,9 @@
  * Reusable car search with autocomplete functionality
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Icon from '../Icon';
-import { carDatabase } from '../../utils/vehicleDatabase';
+import { getVehicles } from '../../api/vehiclesApi';
 import './VehicleSearch.css';
 
 export interface VehicleSearchProps {
@@ -30,13 +30,18 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Get all vehicles as name strings
+  const vehicleNames = useMemo(() => {
+    return getVehicles().map(v => `${v.year} ${v.make} ${v.model}`);
+  }, []);
+
   // Filter cars based on search query
   useEffect(() => {
     if (searchQuery.length > 0) {
       const queryLower = searchQuery.toLowerCase().trim();
       const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
       
-      const filtered = carDatabase.filter(car => {
+      const filtered = vehicleNames.filter(car => {
         const carLower = car.toLowerCase();
         // Check if all words in the query appear in the vehicle name (order-independent)
         return queryWords.every(word => carLower.includes(word));
@@ -57,7 +62,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
       setShowDropdown(false);
     }
     setHighlightedIndex(-1);
-  }, [searchQuery]);
+  }, [searchQuery, vehicleNames]);
 
   // Auto-focus input when component is shown
   useEffect(() => {

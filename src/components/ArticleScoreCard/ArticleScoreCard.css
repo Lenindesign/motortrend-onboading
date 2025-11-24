@@ -53,14 +53,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-2);
+  gap: 6px;
   padding: var(--spacing-3);
 }
 
 .article-score-card__number {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
-  font-size: 72px;
+  font-weight: 600;
+  font-size: 26px;
   color: var(--color-white);
   line-height: 1;
 }
@@ -68,21 +68,23 @@
 .article-score-card__label-row {
   display: flex;
   align-items: center;
-  gap: var(--spacing-component-xs);
+  gap: var(--spacing-1);
 }
 
 .article-score-card__mt-badge {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
 }
 
 .article-score-card__label {
   font-size: 14px;
-  font-weight: var(--font-weight-medium);
+  font-weight: 500;
   color: var(--color-white);
   text-transform: none;
   letter-spacing: 0;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .article-score-card__breakdown {
