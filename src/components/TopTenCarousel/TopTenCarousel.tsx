@@ -225,6 +225,16 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     return finalVehicles;
   }, [selectedVehicleType, selectedSubcategory, allVehicleItems]);
 
+  // Animate info box when slide changes
+  useEffect(() => {
+    setIsInfoBoxVisible(false);
+    const timer = setTimeout(() => {
+      setIsInfoBoxVisible(true);
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [currentSlide]);
+
   // Auto-advance carousel
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
@@ -304,16 +314,6 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   useEffect(() => {
     setCurrentSlide(0);
   }, [carouselVehicles]);
-
-  // Fade out/in animation when slide changes
-  useEffect(() => {
-    setIsInfoBoxVisible(false);
-    const timer = setTimeout(() => {
-      setIsInfoBoxVisible(true);
-    }, 150); // Short delay for fade out before fade in
-    
-    return () => clearTimeout(timer);
-  }, [currentSlide]);
 
   // Touch handlers for swipe gestures
   const onTouchStart = (e: React.TouchEvent) => {
