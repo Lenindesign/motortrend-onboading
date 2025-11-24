@@ -703,16 +703,17 @@
   }
 
   .top-ten-carousel__ratings-list {
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
   }
 
   .top-ten-carousel__rating-item:first-child {
-    padding-right: 0;
+    padding-right: 12px;
   }
 
   .top-ten-carousel__rating-item:first-child::after {
-    display: none;
+    display: block;
+    height: 40px;
   }
 
   .top-ten-carousel__rating-score-large {
