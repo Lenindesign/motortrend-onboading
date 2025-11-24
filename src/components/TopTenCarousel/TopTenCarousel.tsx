@@ -103,12 +103,13 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           return newSet;
         });
       } else {
-        // Add vehicle
+        // Add vehicle with ownership property set to 'want'
         data.vehicles.push({
           name: vehicle.name,
           year: vehicle.year,
           make: vehicle.make,
-          model: vehicle.model
+          model: vehicle.model,
+          ownership: 'want'
         });
         setSavedVehicles(prev => new Set(prev).add(vehicle.name));
         
