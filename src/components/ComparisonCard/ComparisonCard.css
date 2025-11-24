@@ -1,112 +1,15 @@
+/* ComparisonCard specific overrides */
+/* Uses Card component atoms and styles, only custom styling here */
+
 .comparison-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-white);
-  border: 1px solid var(--color-neutrals-7);
-  border-radius: var(--border-radius-lg);
-  width: 100%;
   max-width: 650px;
-  box-shadow: var(--shadow-depth-2);
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
-  overflow: hidden;
 }
 
-.comparison-card:hover {
-  box-shadow: var(--shadow-depth-5);
-  transform: translateY(-1px);
-}
-
-.comparison-card__content {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-gap-lg);
-  padding: var(--spacing-card-md);
-}
-
-.comparison-card__image-wrapper {
-  position: relative;
+/* Override image container size for comparison cards */
+.comparison-card .card__image-container {
   width: 150px;
   max-width: 150px;
   height: 100px;
-  flex-shrink: 0;
-  border-radius: var(--border-radius-md);
-  overflow: hidden;
-}
-
-.comparison-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.comparison-card__image-wrapper:hover .comparison-card__image {
-  transform: scale(1.05);
-}
-
-.comparison-card__bookmark-btn {
-  position: absolute;
-  top: var(--spacing-component-md);
-  left: var(--spacing-component-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--spacing-component-xl);
-  height: var(--spacing-component-xl);
-  padding: var(--spacing-component-sm);
-  background: var(--color-overlay-dark);
-  border: none;
-  border-radius: var(--border-radius-full);
-  color: var(--color-white);
-  cursor: pointer;
-  transition: transform var(--transition-fast), background var(--transition-fast);
-  backdrop-filter: blur(4px);
-  z-index: 1;
-}
-
-.comparison-card__bookmark-btn:hover {
-  background: var(--color-overlay-medium);
-  transform: scale(1.05);
-}
-
-.comparison-card__bookmark-btn--active {
-  background: var(--color-overlay-dark);
-}
-
-.comparison-card__bookmark-btn--active:hover {
-  background: var(--color-overlay-medium);
-}
-
-.comparison-card__info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--spacing-component-sm);
-  flex: 1;
-  min-width: 0;
-}
-
-.comparison-card__title {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 1.3;
-  color: var(--color-neutrals-1);
-  margin: 0;
-}
-
-.comparison-card__label {
-  font-family: var(--font-body);
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--color-neutrals-3);
-  margin: 0;
-}
-
-.comparison-card__button {
-  margin-top: var(--spacing-component-md);
-  align-self: flex-start;
 }
 
 @media (max-width: 768px) {
@@ -114,17 +17,13 @@
     max-width: 100%;
   }
   
-  .comparison-card__content {
-    flex-direction: column;
-    gap: var(--spacing-card-sm);
-  }
-  
-  .comparison-card__image-wrapper {
+  .comparison-card .card__image-container {
     width: 100%;
     height: 200px;
+    max-width: 100%;
   }
   
-  .comparison-card__button {
+  .comparison-card .card__button {
     width: 100%;
   }
 }
