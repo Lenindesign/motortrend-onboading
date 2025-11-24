@@ -494,7 +494,6 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                 {/* Vehicle Name and Ratings Box */}
                 <div className="top-ten-carousel__info-box">
                   <div className="top-ten-carousel__name-container">
-                    <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
                     <a 
                       href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
                       className="top-ten-carousel__buyers-guide-badge"
@@ -504,6 +503,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                     >
                       <Badge variant="info" size="sm">Buyers Guide</Badge>
                     </a>
+                    <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
                   </div>
                   <div className="top-ten-carousel__ratings-list">
                     <div className="top-ten-carousel__rating-item">
