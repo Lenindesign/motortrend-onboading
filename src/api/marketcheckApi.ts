@@ -88,20 +88,28 @@ export async function fetchMarketcheckListings(
       throw new Error(`API_ERROR: ${response.status}`);
     }
 
-    const data: MarketcheckResponse = await response.json();
+    const data: MarketcheckResponse | { message?: string } = await response.json();
+    
+    // Check for quota exhaustion message
+    if ('message' in data && data.message?.toLowerCase().includes('quota')) {
+      console.warn('⚠️ Marketcheck API quota exhausted');
+      throw new Error('QUOTA_EXHAUSTED');
+    }
+    
+    const response_data = data as MarketcheckResponse;
     
     console.log('✅ Marketcheck API response:', { 
-      numFound: data.num_found, 
-      listingsReturned: data.listings?.length || 0 
+      numFound: response_data.num_found, 
+      listingsReturned: response_data.listings?.length || 0 
     });
 
-    if (!data.listings || data.listings.length === 0) {
+    if (!response_data.listings || response_data.listings.length === 0) {
       console.warn('⚠️ No listings found from Marketcheck API');
       return [];
     }
 
     // Transform Marketcheck listings to our LocalListing format
-    const listings: LocalListing[] = data.listings.map((listing) => {
+    const listings: LocalListing[] = response_data.listings.map((listing) => {
       // Determine condition
       let condition: 'New' | 'Used' | 'Certified Pre-Owned' = 'Used';
       if (listing.miles === 0 || listing.miles < 100) {

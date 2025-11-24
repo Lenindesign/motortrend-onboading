@@ -143,8 +143,13 @@ export async function getLocalListings(
     } else {
       console.log('⚠️ Marketcheck returned 0 listings, falling back to mock data');
     }
-  } catch (error) {
-    console.warn('❌ Marketcheck API error, using mock data:', error);
+  } catch (error: any) {
+    if (error?.message === 'QUOTA_EXHAUSTED') {
+      console.warn('⚠️ Marketcheck API monthly quota exhausted. Using mock data with sample photos.');
+      console.warn('💡 The free tier includes 100 requests/day. Wait until next month or upgrade your plan.');
+    } else {
+      console.warn('❌ Marketcheck API error, using mock data:', error);
+    }
   }
   
   // Fallback to mock data
