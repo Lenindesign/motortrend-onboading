@@ -1790,7 +1790,7 @@ export const Home: React.FC = () => {
         <div className="home__section">
           <div className="home__left-column">
             <VehiclesSection
-              title="Vehicles"
+              title="Top Ranked Vehicles"
               vehicles={filteredVehicleItems}
               useApi={true}
               key={`vehicles-${userType || 'none'}`}
