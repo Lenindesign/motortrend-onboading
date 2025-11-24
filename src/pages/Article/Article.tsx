@@ -24,6 +24,7 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import { ArticleReactions } from '../../components/ArticleReactions';
 import StickyRateBar from '../../components/StickyRateBar';
 import ArticleHero from '../../components/ArticleHero/ArticleHero';
+import { RankingBadge } from '../../design-system/components/RankingBadge';
 import './Article.css';
 
 export const Article: React.FC = () => {
@@ -1141,12 +1142,11 @@ export const Article: React.FC = () => {
                               className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                             >
                               {rankingNumber && (
-                                <div className="article__image-ranking-badge">
-                                  <span className="article__ranking-content">
-                                    <span className="article__ranking-hash">#</span>
-                                    <span className="article__ranking-number">{rankingNumber}</span>
-                                  </span>
-                                </div>
+                                <RankingBadge 
+                                  rank={parseInt(rankingNumber)} 
+                                  size="medium" 
+                                  position="overlay"
+                                />
                               )}
                               <img 
                                 src={imageToUse} 
@@ -1231,12 +1231,11 @@ export const Article: React.FC = () => {
                                 className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                               >
                                 {rankingNumber && (
-                                  <div className="article__image-ranking-badge">
-                                    <span className="article__ranking-content">
-                                      <span className="article__ranking-hash">#</span>
-                                      <span className="article__ranking-number">{rankingNumber}</span>
-                                    </span>
-                                  </div>
+                                  <RankingBadge 
+                                    rank={parseInt(rankingNumber)} 
+                                    size="medium" 
+                                    position="overlay"
+                                  />
                                 )}
                                 <img 
                                   src={imageToUse} 
