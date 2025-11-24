@@ -13,7 +13,6 @@ import { parseVehicleName, vehicleImageFor } from '../../utils/vehicleImages';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { getVehicles } from '../../api/vehiclesApi';
-import { getLocalListings } from '../../utils/localListings';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import './TopTenCarousel.css';
 
@@ -422,25 +421,34 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
   // Handle vehicle click
   const handleVehicleClick = async (vehicle: CarouselVehicle) => {
-    // Open photo gallery with vehicle images and local listings
+    // Open photo gallery with vehicle images
     const images = [vehicle.image];
     setGalleryImages(images);
     setGalleryVehicleName(vehicle.name);
+    
+    // Show gallery with mock listings immediately for better UX
+    const { generateLocalListings } = await import('../../utils/localListings');
+    const mockListings = generateLocalListings(vehicle.year, vehicle.image);
+    setGalleryLocalListings(mockListings);
     setIsGalleryOpen(true);
     
-    // Fetch listings from Marketcheck API (or fallback to mock data)
+    // Fetch real listings from Marketcheck API in the background
     try {
       const parsed = parseVehicleName(vehicle.name);
+      const { getLocalListings } = await import('../../utils/localListings');
       const listings = await getLocalListings(
         parsed.year,
         parsed.make,
         parsed.model,
         vehicle.image
       );
-      setGalleryLocalListings(listings);
+      // Update with real listings when they arrive
+      if (listings.length > 0) {
+        setGalleryLocalListings(listings);
+      }
     } catch (error) {
       console.error('Error fetching local listings:', error);
-      setGalleryLocalListings([]);
+      // Keep mock listings if API fails
     }
   };
 
