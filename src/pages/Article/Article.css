@@ -2227,16 +2227,6 @@
   box-shadow: 0 4px 8px rgba(233, 12, 23, 0.3);
 }
 
-.article__rating-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-white);
-  font-size: 14px;
-  font-weight: 500;
-  flex-direction: row;
-}
-
 .article__rating-item--clickable {
   cursor: pointer;
   transition: opacity var(--transition-fast);
