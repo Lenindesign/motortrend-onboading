@@ -13,6 +13,8 @@ import { parseVehicleName, vehicleImageFor } from '../../utils/vehicleImages';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { getVehicles } from '../../api/vehiclesApi';
+import { generateLocalListings } from '../../utils/localListings';
+import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import './TopTenCarousel.css';
 
 export type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe';
@@ -59,6 +61,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryVehicleName, setGalleryVehicleName] = useState('');
+  const [galleryLocalListings, setGalleryLocalListings] = useState<LocalListing[]>([]);
   
   // Saved modal state
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
@@ -419,8 +422,13 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
   // Handle vehicle click
   const handleVehicleClick = (vehicle: CarouselVehicle) => {
-    const parsed = parseVehicleName(vehicle.name);
-    navigate(`/vehicles/${parsed.year}/${parsed.make}/${parsed.model}`);
+    // Open photo gallery with vehicle images and local listings
+    const images = [vehicle.image];
+    const listings = generateLocalListings(vehicle.name);
+    setGalleryImages(images);
+    setGalleryVehicleName(vehicle.name);
+    setGalleryLocalListings(listings);
+    setIsGalleryOpen(true);
   };
 
   // Helper function to render star rating
@@ -694,6 +702,12 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         initialIndex={0}
         onClose={() => setIsGalleryOpen(false)}
         vehicleName={galleryVehicleName}
+        localListings={galleryLocalListings}
+        onViewAllListings={() => {
+          const parsed = parseVehicleName(galleryVehicleName);
+          navigate(`/vehicles/${parsed.year}/${parsed.make}/${parsed.model}`);
+          setIsGalleryOpen(false);
+        }}
       />
 
       {/* Saved Modal */}
