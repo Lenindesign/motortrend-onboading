@@ -460,6 +460,10 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   padding: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .top-ten-carousel__dot:hover {
@@ -470,6 +474,28 @@
 .top-ten-carousel__dot--active {
   background-color: #FFFFFF;
   transform: scale(1.3);
+}
+
+.top-ten-carousel__dot-progress {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  pointer-events: none;
+}
+
+.top-ten-carousel__dot-progress-ring {
+  stroke-dasharray: 50.27;
+  stroke-dashoffset: 50.27;
+  animation: progress-ring 5s linear forwards;
+}
+
+@keyframes progress-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 /* Responsive Styles */

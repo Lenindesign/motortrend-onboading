@@ -595,7 +595,21 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   className={`top-ten-carousel__dot ${index === currentSlide ? 'top-ten-carousel__dot--active' : ''}`}
                   onClick={() => setCurrentSlide(index)}
                   aria-label={`Go to slide ${index + 1}`}
-                />
+                >
+                  {index === currentSlide && (
+                    <svg className="top-ten-carousel__dot-progress" viewBox="0 0 20 20">
+                      <circle
+                        className="top-ten-carousel__dot-progress-ring"
+                        cx="10"
+                        cy="10"
+                        r="8"
+                        fill="none"
+                        stroke="rgba(255, 255, 255, 0.5)"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  )}
+                </button>
               ))}
             </div>
           </>
