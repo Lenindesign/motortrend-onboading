@@ -24,7 +24,6 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import { ArticleReactions } from '../../components/ArticleReactions';
 import StickyRateBar from '../../components/StickyRateBar';
 import ArticleHero from '../../components/ArticleHero/ArticleHero';
-import { RankingBadge } from '../../design-system/components/RankingBadge';
 import './Article.css';
 
 export const Article: React.FC = () => {
@@ -1142,11 +1141,12 @@ export const Article: React.FC = () => {
                               className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                             >
                               {rankingNumber && (
-                                <RankingBadge 
-                                  rank={parseInt(rankingNumber)} 
-                                  size="medium" 
-                                  position="overlay"
-                                />
+                                <div className="article__image-ranking-badge">
+                                  <span className="article__ranking-content">
+                                    <span className="article__ranking-hash">#</span>
+                                    <span className="article__ranking-number">{rankingNumber}</span>
+                                  </span>
+                                </div>
                               )}
                               <img 
                                 src={imageToUse} 
@@ -1164,43 +1164,6 @@ export const Article: React.FC = () => {
                                 }}
                                 style={{ cursor: 'pointer' }}
                               />
-                              {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
-                                <div className="article__image-score-overlay">
-                                  <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
-                                  <div className="article__image-score-ratings-list">
-                                    <div className="article__image-score-rating-item">
-                                      <div className="article__image-score-rating-score-large">
-                                        {motortrendScoreForImage.toFixed(1)}
-                                        <span className="article__image-score-rating-score-max">/10</span>
-                                      </div>
-                                      <div className="article__image-score-rating-label-row">
-                                        <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                          alt="MotorTrend" 
-                                          className="article__image-score-rating-mt-badge" 
-                                        />
-                                        <span className="article__image-score-rating-motortrend-text">MotorTrend Rating</span>
-                                      </div>
-                                    </div>
-                                    <div className="article__image-score-rating-item article__image-score-rating-item--community">
-                                      {renderStarRating(userScoreForImage)}
-                                      <div className="article__image-score-rating-text">
-                                        User Reviews <span className="article__image-score-rating-highlight">({(userScoreForImage / 2).toFixed(1)}/5)</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <button 
-                                    className="article__image-score-cta cta cta--primary cta--default"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
-                                      navigate(`/vehicles/${year}/${make}/${model}`);
-                                    }}
-                                  >
-                                    See Local Listings
-                                  </button>
-                                </div>
-                              )}
                             </div>
                           );
                           // Only increment imageIndex if we used the index-based image
@@ -1231,11 +1194,12 @@ export const Article: React.FC = () => {
                                 className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                               >
                                 {rankingNumber && (
-                                  <RankingBadge 
-                                    rank={parseInt(rankingNumber)} 
-                                    size="medium" 
-                                    position="overlay"
-                                  />
+                                  <div className="article__image-ranking-badge">
+                                    <span className="article__ranking-content">
+                                      <span className="article__ranking-hash">#</span>
+                                      <span className="article__ranking-number">{rankingNumber}</span>
+                                    </span>
+                                  </div>
                                 )}
                                 <img 
                                   src={imageToUse} 
@@ -1253,57 +1217,6 @@ export const Article: React.FC = () => {
                                   }}
                                   style={{ cursor: 'pointer' }}
                                 />
-                                {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
-                                  <div className="article__image-score-overlay">
-                                    <h2 className="article__image-score-vehicle-name">{vehicleNameForImage}</h2>
-                                    <div className="article__image-score-ratings-list">
-                                      <div className="article__image-score-rating-item">
-                                        <div className="article__image-score-rating-label-wrapper">
-                                          <span className="article__image-score-rating-label-top">MotorTrend</span>
-                                          <span className="article__image-score-rating-label-bottom">Rating</span>
-                                        </div>
-                                        <div className="article__image-score-rating-value-wrapper">
-                                          <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                            alt="MotorTrend" 
-                                            className="article__image-score-rating-icon staff" 
-                                          />
-                                          <span className="article__image-score-rating-value">
-                                            {motortrendScoreForImage.toFixed(1)}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <div className="article__image-score-rating-item">
-                                        <div className="article__image-score-rating-label-wrapper">
-                                          <span className="article__image-score-rating-label-top">Community</span>
-                                          <span className="article__image-score-rating-label-bottom">
-                                            Rating <span className="article__image-score-rating-count">(25)</span>
-                                          </span>
-                                        </div>
-                                        <div className="article__image-score-rating-value-wrapper">
-                                          <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                                            alt="Community Rating Star" 
-                                            className="article__image-score-rating-icon community" 
-                                          />
-                                          <span className="article__image-score-rating-value">
-                                            {userScoreForImage.toFixed(1)}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <button 
-                                      className="article__image-score-cta cta cta--primary cta--small"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
-                                        navigate(`/vehicles/${year}/${make}/${model}`);
-                                      }}
-                                    >
-                                      Local Listings
-                                    </button>
-                                  </div>
-                                )}
                               </div>
                             );
                             // Only increment imageIndex if we used the index-based image
