@@ -606,10 +606,24 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                     >
                       <Badge variant="info" size="sm">Buyers Guide</Badge>
                     </a>
-                    <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
+                    <a 
+                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
+                      className="top-ten-carousel__name-link"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
+                    </a>
                   </div>
                   <div className="top-ten-carousel__ratings-list">
-                    <div className="top-ten-carousel__rating-item">
+                    <a 
+                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#motortrend-review`}
+                      className="top-ten-carousel__rating-item top-ten-carousel__rating-item--link"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <div className="top-ten-carousel__rating-score-row">
                         <img 
                           src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
@@ -625,15 +639,21 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                         <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--full">MotorTrend Rating</span>
                         <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--short">MT Rating</span>
                       </div>
-                    </div>
-                    <div className="top-ten-carousel__rating-item top-ten-carousel__rating-item--community">
+                    </a>
+                    <a 
+                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#user-reviews`}
+                      className="top-ten-carousel__rating-item top-ten-carousel__rating-item--community top-ten-carousel__rating-item--link"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       {renderStarRating(vehicle.communityRating)}
                       <div className="top-ten-carousel__rating-text">
                         <span className="top-ten-carousel__rating-text--full">User Reviews</span>
                         <span className="top-ten-carousel__rating-text--short">Users</span>
                         {' '}<Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
                       </div>
-                    </div>
+                    </a>
                   </div>
                   <button 
                     className="top-ten-carousel__listing-btn cta cta--primary cta--default"

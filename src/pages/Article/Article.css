@@ -2236,15 +2236,6 @@
   opacity: 0.8;
 }
 
-.article__rating-overlay-name--clickable {
-  transition: opacity var(--transition-fast);
-}
-
-.article__rating-overlay-name--clickable:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
-
 .article__rating-item--with-tooltip {
   position: relative;
 }
