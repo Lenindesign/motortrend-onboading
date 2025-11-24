@@ -470,6 +470,19 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
               <div className="top-ten-carousel__image">
                 <img src={vehicle.image} alt={vehicle.name} />
                 
+                {/* Save Button */}
+                <button
+                  className="top-ten-carousel__save-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle save functionality
+                    console.log('Save vehicle:', vehicle.name);
+                  }}
+                  aria-label="Save vehicle"
+                >
+                  <Icon name="bookmark" size={24} />
+                </button>
+                
                 {/* Expand Button */}
                 {showExpandButton && (
                   <button

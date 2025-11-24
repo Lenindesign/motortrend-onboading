@@ -124,16 +124,17 @@
   font-size: 18px;
 }
 
-/* Expand Button */
-.top-ten-carousel__expand-btn {
+/* Save Button */
+.top-ten-carousel__save-btn {
   position: absolute;
   top: 20px;
   right: 20px;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: rgba(20, 20, 22, 0.85);
-  backdrop-filter: blur(12px);
+  background-color: rgba(20, 20, 22, 0.3);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #FFFFFF;
   cursor: pointer;
@@ -141,13 +142,42 @@
   align-items: center;
   justify-content: center;
   z-index: 15;
-  transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.top-ten-carousel__save-btn:hover {
+  background-color: rgba(30, 30, 32, 0.5);
+  transform: scale(1.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Expand Button */
+.top-ten-carousel__expand-btn {
+  position: absolute;
+  top: 20px;
+  right: 76px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(20, 20, 22, 0.3);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .top-ten-carousel__expand-btn:hover {
-  background-color: rgba(30, 30, 32, 0.9);
+  background-color: rgba(30, 30, 32, 0.5);
   transform: scale(1.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* Info Box */
@@ -515,11 +545,18 @@
     transition: transform 0.3s ease-out;
   }
 
-  .top-ten-carousel__expand-btn {
+  .top-ten-carousel__save-btn {
     width: 40px;
     height: 40px;
     top: 16px;
     right: 16px;
+  }
+
+  .top-ten-carousel__expand-btn {
+    width: 40px;
+    height: 40px;
+    top: 16px;
+    right: 64px;
   }
 
   .top-ten-carousel__info-box {
