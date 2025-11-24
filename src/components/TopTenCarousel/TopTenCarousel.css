@@ -446,7 +446,7 @@
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
+  gap: 16px;
   z-index: 20;
   align-items: center;
 }
