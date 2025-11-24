@@ -61,7 +61,6 @@
   left: 20px;
   display: flex;
   flex-direction: row;
-  align-items: center;
   gap: 8px;
   z-index: 15;
 }
@@ -443,7 +442,7 @@
 /* Dots */
 .top-ten-carousel__dots {
   position: absolute;
-  top: 20px;
+  top: 28px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -482,7 +481,7 @@
   }
 
   .top-ten-carousel__dots {
-    top: 14px;
+    top: 20px;
   }
 
   .top-ten-carousel__category-badge {
@@ -591,7 +590,7 @@
   }
 
   .top-ten-carousel__dots {
-    top: 16px;
+    top: 24px;
   }
 
   .top-ten-carousel__category-badge {
@@ -660,7 +659,7 @@
   }
 
   .top-ten-carousel__dots {
-    top: 12px;
+    top: 18px;
   }
 
   .top-ten-carousel__category-badge {
