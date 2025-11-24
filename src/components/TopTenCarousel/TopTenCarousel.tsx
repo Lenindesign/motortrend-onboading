@@ -493,7 +493,18 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                 
                 {/* Vehicle Name and Ratings Box */}
                 <div className="top-ten-carousel__info-box">
-                  <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
+                  <div className="top-ten-carousel__name-container">
+                    <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
+                    <a 
+                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
+                      className="top-ten-carousel__buyers-guide-badge"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
+                      <Badge variant="info" size="sm">Buyers Guide</Badge>
+                    </a>
+                  </div>
                   <div className="top-ten-carousel__ratings-list">
                     <div className="top-ten-carousel__rating-item">
                       <div className="top-ten-carousel__rating-score-row">
