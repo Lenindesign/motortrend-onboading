@@ -1221,28 +1221,6 @@ const vehicleDatabase: Vehicle[] = [
     slug: '2024/Hyundai/Kona'
   },
   {
-    id: '37',
-    year: '2024',
-    make: 'Chrysler',
-    model: '300',
-    bodyStyle: 'Sedan',
-    image: vehicleImageFor('2024 Chrysler 300'),
-    priceRange: '$34,945 - $48,290',
-    priceMin: 34945,
-    priceMax: 48290,
-    staffRating: 7.9,
-    communityRating: 7.7,
-    reviewCount: 156,
-    fuelType: 'Gas',
-    drivetrain: 'RWD',
-    transmission: 'Automatic',
-    mpg: '19/30',
-    horsepower: 292,
-    seatingCapacity: 5,
-    features: ['Uconnect 5', 'Harman Kardon Audio', 'Adaptive Cruise Control'],
-    slug: '2024/Chrysler/300'
-  },
-  {
     id: '38',
     year: '2024',
     make: 'Dodge',

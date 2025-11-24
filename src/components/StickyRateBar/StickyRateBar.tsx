@@ -318,8 +318,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       <div className="sticky-rate-bar__content">
         {vehiclePath ? (
           <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name sticky-rate-bar__vehicle-name--link">
-            <Badge variant="neutral" size="sm">Buyers Guide</Badge>
-            <span>{vehicleName}</span>
+            {vehicleName}
           </Link>
         ) : (
           <div className="sticky-rate-bar__vehicle-name">
