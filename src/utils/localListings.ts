@@ -126,17 +126,25 @@ export async function getLocalListings(
   vehicleImage: string,
   zipCode?: string
 ): Promise<LocalListing[]> {
+  console.log(`🔍 Fetching listings for: ${year} ${make} ${model}`);
+  
   try {
     // Try to import and use Marketcheck API
     const { getMarketcheckListings } = await import('../api/marketcheckApi');
     const listings = await getMarketcheckListings(year, make, model, zipCode);
     
+    console.log(`📊 Marketcheck returned ${listings.length} listings`);
+    
     if (listings.length > 0) {
-      console.log('✅ Using real listings from Marketcheck API');
+      console.log('✅ Using real listings from Marketcheck API with photos:', 
+        listings.map(l => ({ name: l.dealerName, photos: l.photoUrls?.length || 0 }))
+      );
       return listings;
+    } else {
+      console.log('⚠️ Marketcheck returned 0 listings, falling back to mock data');
     }
   } catch (error) {
-    console.warn('⚠️ Marketcheck API unavailable, using mock data:', error);
+    console.warn('❌ Marketcheck API error, using mock data:', error);
   }
   
   // Fallback to mock data
