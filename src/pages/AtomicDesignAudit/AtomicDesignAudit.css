@@ -853,7 +853,7 @@
   font-size: 13px;
   font-weight: var(--font-weight-semibold);
   color: var(--color-primary-1);
-  background-color: rgba(233, 12, 23, 0.1);
+  background-color: var(--color-neutrals-7);
   padding: 4px 8px;
   border-radius: 4px;
   width: fit-content;
@@ -937,7 +937,7 @@
 }
 
 .atomic-button-section--rules {
-  background: linear-gradient(135deg, rgba(233, 12, 23, 0.05) 0%, rgba(53, 57, 69, 0.05) 100%);
+  background: linear-gradient(135deg, var(--color-neutrals-7) 0%, var(--color-neutrals-8) 100%);
 }
 
 .atomic-button-rules {
@@ -958,7 +958,7 @@
 }
 
 .atomic-button-rule--dont {
-  border-color: #E90C17;
+  border-color: var(--color-neutrals-4);
 }
 
 .atomic-button-rule-header {
@@ -1005,7 +1005,7 @@
   content: '✗';
   position: absolute;
   left: 0;
-  color: #E90C17;
+  color: var(--color-neutrals-4);
   font-weight: var(--font-weight-bold);
 }
 

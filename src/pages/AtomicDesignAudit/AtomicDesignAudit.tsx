@@ -123,9 +123,9 @@ const componentAuditRows = [
     component: 'Article Page',
     level: 'Organism',
     observation:
-      'Article pages orchestrate lots of tokenized molecules (hero, rate bar, reactions, user reviews, modals) but still drive custom gradients, hardcoded offsets (headerOffset=100), and inline SVG colors.',
+      'Article pages orchestrate tokenized molecules (hero, rate bar, reactions, user reviews, modals). Hero images now feature sticky rating overlays with vehicle name, ranking badge, MotorTrend rating, user reviews with star ratings, and "See Local Listings" button. Ratings centered and properly aligned using flexbox. Uses Badge atoms for score display and spacing tokens throughout.',
     opportunity:
-      'Capture the shared atom/molecule usage in this organism and replace inline colors/spacings with design tokens (`--color-neutrals-*`, `--spacing-*`, `--color-primary-1`). Consider moving the hero/rating sections into reusable molecules that already consume `CardShell` + gradient tokens.'
+      'Document the hero image overlay pattern with rating display. Consider extracting the rating overlay as a reusable molecule for other vehicle image displays. Replace remaining inline colors/spacings with design tokens.'
   },
   {
     component: 'AvatarBannerModal',
@@ -155,9 +155,9 @@ const componentAuditRows = [
     component: 'ComparisonCard',
     level: 'Molecule',
     observation:
-      'Comparison layout now uses spacing tokens for its gap/padding and tokenized overlay buttons so both sides stay aligned.',
+      'Fully refactored to use the Card component\'s atomic structure (CardShell + Card atoms). Image width fixed to 150px max-width. Now shares save icon, headline, category text, and CTA styling with other card components. Eliminated custom CSS in favor of reusable atoms.',
     opportunity:
-      'Document the comparison card shell and CTA token usage so future comparison experiences inherit the same spacing and overlay helpers.'
+      'Document the comparison card pattern as a reference for how to compose Card atoms for specialized layouts. This demonstrates proper atomic design principles.'
   },
   {
     component: 'ConnectedAccount',
@@ -240,6 +240,14 @@ const componentAuditRows = [
       'Tokenize dropdown backgrounds, highlight colors, and ensure the input follows spacing/focus tokens from the design rules.'
   },
   {
+    component: 'LocalListingsSidebar',
+    level: 'Molecule',
+    observation:
+      'Sidebar component displaying local vehicle listings with dealer information, pricing, and mileage. Integrated into PhotoGallery and VehicleDetails pages. Uses spacing tokens, CardShell atoms, and CTA buttons. Includes "View All Listings" action and responsive layout.',
+    opportunity:
+      'Document the listing card pattern and ensure consistent spacing/typography across all listing displays. Consider extracting individual listing cards as separate atoms for reuse.'
+  },
+  {
     component: 'MembershipCard',
     level: 'Molecule',
     observation:
@@ -259,9 +267,9 @@ const componentAuditRows = [
     component: 'PhotoGallery',
     level: 'Organism',
     observation:
-      'Full-screen gallery now refactored to use ModalShell atom with overlayVariant="dark" and maxWidth/maxHeight="100vw/100vh", eliminating ~25 lines of duplicate code including body scroll lock.',
+      'Full-screen gallery now refactored to use ModalShell atom with overlayVariant="dark" and maxWidth/maxHeight="100vw/100vh", eliminating ~25 lines of duplicate code including body scroll lock. Now integrates LocalListingsSidebar component, replacing specs and CTA button with real local listings for vehicles. Responsive layout hides sidebar on mobile.',
     opportunity:
-      'Document the full-screen gallery pattern with ModalShell and ensure all full-screen experiences use overlayVariant="dark" for immersive viewing.'
+      'Document the full-screen gallery pattern with ModalShell and LocalListingsSidebar integration. This demonstrates how organisms can compose multiple molecules (gallery + sidebar) for rich user experiences.'
   },
   {
     component: 'ProfileBanner',
@@ -352,6 +360,14 @@ const componentAuditRows = [
       'Consider using Badge atom for additional status indicators. Verify any remaining px-based gaps (mobile rating gap, icon sizing) convert to the `--spacing-gap-*` scale.'
   },
   {
+    component: 'TopTenCarousel',
+    level: 'Organism',
+    observation:
+      'Top Ten carousel with vehicle type and subcategory filters. Features glassmorphism navigation arrows that appear on hover, save/bookmark functionality with localStorage integration, "Buyers Guide" badge linking to vehicle detail pages, and responsive text (MT Rating/Users on mobile). Clicking "See Local Listings" now opens PhotoGallery with LocalListingsSidebar. Uses Badge atoms, spacing tokens, and integrates SavedModal for user feedback.',
+    opportunity:
+      'Document the carousel pattern with filter badges, hover-revealed navigation, and PhotoGallery integration. This demonstrates complex organism composition with multiple molecules and proper state management.'
+  },
+  {
     component: 'SubscriptionItem',
     level: 'Molecule',
     observation:
@@ -437,6 +453,7 @@ const optimizedComponents = [
   'ArticleScoreCard',
   'AIInsights',
   'StickyRateBar',
+  'TopTenCarousel',
   'ArticleReactions',
   'ComparisonCard',
   'CollapsibleSection',
@@ -447,6 +464,7 @@ const optimizedComponents = [
   'HeroCard',
   'HorizontalCard',
   'LocationAutocomplete',
+  'LocalListingsSidebar',
   'ProfileBanner',
   'ProfileCompletionCard',
   'ProfileNav',
@@ -2276,7 +2294,7 @@ export const AtomicDesignAudit: React.FC = () => {
             </div>
             <div className="atomic-button-rule atomic-button-rule--dont">
               <div className="atomic-button-rule-header">
-                <Icon name="cancel" size={24} style={{ color: '#E90C17' }} />
+                <Icon name="cancel" size={24} style={{ color: 'var(--color-neutrals-4)' }} />
                 <span>DON'T</span>
               </div>
               <ul>
