@@ -1771,7 +1771,7 @@ export const Home: React.FC = () => {
         <div className="home__section">
           <div className="home__left-column">
             <NewsSection
-              title="The Latest From MotorTrend"
+              title="Latest Car News From our Experts"
               items={sortedNewsItemsRiver1}
             />
           </div>
@@ -2031,7 +2031,7 @@ export const Home: React.FC = () => {
           <div className="home__section">
             <div className="home__left-column">
               <NewsSection
-                title="The Latest From MotorTrend"
+                title="Latest Car News From our Experts"
                 items={sortedNewsItemsRiver2}
               />
             </div>
@@ -2188,7 +2188,7 @@ export const Home: React.FC = () => {
           <div className="home__section">
             <div className="home__left-column">
               <NewsSection
-                title="The Latest From MotorTrend"
+                title="Latest Car News From our Experts"
                 items={sortedNewsItemsRiver3}
               />
             </div>
