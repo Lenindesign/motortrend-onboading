@@ -13,6 +13,7 @@ import WriteReviewModal from '../../components/WriteReviewModal';
 import RatingModal from '../../components/RatingModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
+import { Badge } from '../../components/atoms/Badge/Badge';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
 import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
 import { useRating } from '../../contexts/RatingContext';
@@ -88,6 +89,53 @@ export const Article: React.FC = () => {
   
   // Lazy load articles state
   const [articlesToShow, setArticlesToShow] = useState(5);
+
+  // Helper function to render star rating (0-10 scale, displays as 0-5 stars)
+  const renderStarRating = (ratingValue: number) => {
+    // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
+    const normalizedRating = ratingValue / 2;
+    
+    return (
+      <div className="article__rating-stars">
+        {[1, 2, 3, 4, 5].map((star) => {
+          const isFilled = star < Math.ceil(normalizedRating);
+          const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
+          
+          return (
+            <div key={star} className={`article__star-wrapper ${isHalf ? 'article__star-wrapper--half' : ''}`}>
+              {/* Outline star */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__star article__star--outline">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                  fill="none"
+                  stroke="#33C4FF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {/* Filled star (full or half) */}
+              {isFilled && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__star article__star--filled">
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                    fill="#33C4FF"
+                  />
+                </svg>
+              )}
+              {isHalf && (
+                <div className="article__star-half-fill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__star">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                      fill="#33C4FF"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
   
   // Load article data based on slug
   const articleData = useMemo(() => {
@@ -1049,6 +1097,8 @@ export const Article: React.FC = () => {
                         let vehicleNameForImage: string | null = null;
                         let rankingNumber: string | null = null;
                         let vehicleImageUrl: string | null = null;
+                        let motortrendScoreForImage: number | null = null;
+                        let userScoreForImage: number | null = null;
                         
                         if (isPremiumArticle && block.text) {
                           // Extract vehicle name and ranking from heading (e.g., "10. 2025 Kia K4" -> ranking: "10", vehicle: "2025 Kia K4")
@@ -1056,7 +1106,9 @@ export const Article: React.FC = () => {
                           if (headingMatch) {
                             rankingNumber = headingMatch[1];
                             vehicleNameForImage = headingMatch[2].trim();
-                            // Get the image for this specific vehicle
+                            // Get ratings and image for this vehicle
+                            motortrendScoreForImage = generateStaffRating(vehicleNameForImage);
+                            userScoreForImage = generateCommunityRating(vehicleNameForImage);
                             vehicleImageUrl = vehicleImageFor(vehicleNameForImage);
                           }
                         }
@@ -1113,6 +1165,45 @@ export const Article: React.FC = () => {
                                 }}
                                 style={{ cursor: 'pointer' }}
                               />
+                              {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
+                                <div className="article__rating-overlay">
+                                  <h2 className="article__rating-overlay-name">#{rankingNumber} {vehicleNameForImage}</h2>
+                                  <div className="article__ratings-list">
+                                    <div className="article__rating-item">
+                                      <div className="article__rating-score-row">
+                                        <img 
+                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
+                                          alt="MotorTrend" 
+                                          className="article__rating-mt-badge" 
+                                        />
+                                        <div className="article__rating-score-large">
+                                          {motortrendScoreForImage.toFixed(1)}
+                                          <span className="article__rating-score-max">/10</span>
+                                        </div>
+                                      </div>
+                                      <div className="article__rating-label-row">
+                                        <span className="article__rating-motortrend-text">MotorTrend Rating</span>
+                                      </div>
+                                    </div>
+                                    <div className="article__rating-item article__rating-item--community">
+                                      {renderStarRating(userScoreForImage)}
+                                      <div className="article__rating-text">
+                                        User Reviews <Badge variant="info" size="sm">{(userScoreForImage / 2).toFixed(1)}/5</Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button 
+                                    className="article__listing-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                      navigate(`/vehicles/${year}/${make}/${model}`);
+                                    }}
+                                  >
+                                    See Local Listings
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           );
                           // Only increment imageIndex if we used the index-based image
@@ -1166,6 +1257,45 @@ export const Article: React.FC = () => {
                                   }}
                                   style={{ cursor: 'pointer' }}
                                 />
+                                {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
+                                  <div className="article__rating-overlay">
+                                    <h2 className="article__rating-overlay-name">#{rankingNumber} {vehicleNameForImage}</h2>
+                                    <div className="article__ratings-list">
+                                      <div className="article__rating-item">
+                                        <div className="article__rating-score-row">
+                                          <img 
+                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
+                                            alt="MotorTrend" 
+                                            className="article__rating-mt-badge" 
+                                          />
+                                          <div className="article__rating-score-large">
+                                            {motortrendScoreForImage.toFixed(1)}
+                                            <span className="article__rating-score-max">/10</span>
+                                          </div>
+                                        </div>
+                                        <div className="article__rating-label-row">
+                                          <span className="article__rating-motortrend-text">MotorTrend Rating</span>
+                                        </div>
+                                      </div>
+                                      <div className="article__rating-item article__rating-item--community">
+                                        {renderStarRating(userScoreForImage)}
+                                        <div className="article__rating-text">
+                                          User Reviews <Badge variant="info" size="sm">{(userScoreForImage / 2).toFixed(1)}/5</Badge>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <button 
+                                      className="article__listing-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                        navigate(`/vehicles/${year}/${make}/${model}`);
+                                      }}
+                                    >
+                                      See Local Listings
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             );
                             // Only increment imageIndex if we used the index-based image
