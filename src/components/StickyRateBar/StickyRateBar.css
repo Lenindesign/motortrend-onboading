@@ -57,6 +57,24 @@
     gap: var(--spacing-3);
 }
 
+.sticky-rate-bar__name-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    flex-shrink: 0;
+}
+
+.sticky-rate-bar__buyers-guide-badge {
+    display: inline-flex;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    width: fit-content;
+}
+
+.sticky-rate-bar__buyers-guide-badge:hover {
+    opacity: 0.8;
+}
+
 .sticky-rate-bar__vehicle-name {
     font-family: var(--font-heading);
     font-weight: 600;
