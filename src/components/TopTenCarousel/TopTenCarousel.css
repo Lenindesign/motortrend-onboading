@@ -364,6 +364,14 @@
   white-space: nowrap;
 }
 
+.top-ten-carousel__rating-motortrend-text--short {
+  display: none;
+}
+
+.top-ten-carousel__rating-motortrend-text--full {
+  display: inline;
+}
+
 .top-ten-carousel__rating-stars {
   display: flex;
   align-items: center;
@@ -608,6 +616,14 @@
 
   .top-ten-carousel__rating-item--community {
     gap: 8px;
+  }
+
+  .top-ten-carousel__rating-motortrend-text--full {
+    display: none;
+  }
+
+  .top-ten-carousel__rating-motortrend-text--short {
+    display: inline;
   }
 
   .top-ten-carousel__listing-btn {

@@ -601,7 +601,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                         </div>
                       </div>
                       <div className="top-ten-carousel__rating-label-row">
-                        <span className="top-ten-carousel__rating-motortrend-text">MotorTrend Rating</span>
+                        <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--full">MotorTrend Rating</span>
+                        <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--short">MT Rating</span>
                       </div>
                     </div>
                     <div className="top-ten-carousel__rating-item top-ten-carousel__rating-item--community">
