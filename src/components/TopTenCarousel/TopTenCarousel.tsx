@@ -424,7 +424,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const handleVehicleClick = (vehicle: CarouselVehicle) => {
     // Open photo gallery with vehicle images and local listings
     const images = [vehicle.image];
-    const listings = generateLocalListings(vehicle.name);
+    const listings = generateLocalListings(vehicle.year, vehicle.image);
     setGalleryImages(images);
     setGalleryVehicleName(vehicle.name);
     setGalleryLocalListings(listings);
