@@ -432,6 +432,14 @@
   text-align: center;
 }
 
+.top-ten-carousel__rating-text--short {
+  display: none;
+}
+
+.top-ten-carousel__rating-text--full {
+  display: inline;
+}
+
 .top-ten-carousel__rating-highlight {
   color: #FFFFFF;
   font-weight: 500;
@@ -623,6 +631,14 @@
   }
 
   .top-ten-carousel__rating-motortrend-text--short {
+    display: inline;
+  }
+
+  .top-ten-carousel__rating-text--full {
+    display: none;
+  }
+
+  .top-ten-carousel__rating-text--short {
     display: inline;
   }
 

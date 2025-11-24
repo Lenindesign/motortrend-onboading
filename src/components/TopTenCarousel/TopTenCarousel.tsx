@@ -608,7 +608,9 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                     <div className="top-ten-carousel__rating-item top-ten-carousel__rating-item--community">
                       {renderStarRating(vehicle.communityRating)}
                       <div className="top-ten-carousel__rating-text">
-                        User Reviews <Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
+                        <span className="top-ten-carousel__rating-text--full">User Reviews</span>
+                        <span className="top-ten-carousel__rating-text--short">Users</span>
+                        {' '}<Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
                       </div>
                     </div>
                   </div>
