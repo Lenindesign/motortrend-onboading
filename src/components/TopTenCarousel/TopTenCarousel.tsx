@@ -13,7 +13,7 @@ import { parseVehicleName, vehicleImageFor } from '../../utils/vehicleImages';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { getVehicles } from '../../api/vehiclesApi';
-import { generateLocalListings } from '../../utils/localListings';
+import { getLocalListings } from '../../utils/localListings';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import './TopTenCarousel.css';
 
@@ -421,14 +421,27 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   };
 
   // Handle vehicle click
-  const handleVehicleClick = (vehicle: CarouselVehicle) => {
+  const handleVehicleClick = async (vehicle: CarouselVehicle) => {
     // Open photo gallery with vehicle images and local listings
     const images = [vehicle.image];
-    const listings = generateLocalListings(vehicle.year, vehicle.image);
     setGalleryImages(images);
     setGalleryVehicleName(vehicle.name);
-    setGalleryLocalListings(listings);
     setIsGalleryOpen(true);
+    
+    // Fetch listings from Marketcheck API (or fallback to mock data)
+    try {
+      const parsed = parseVehicleName(vehicle.name);
+      const listings = await getLocalListings(
+        parsed.year,
+        parsed.make,
+        parsed.model,
+        vehicle.image
+      );
+      setGalleryLocalListings(listings);
+    } catch (error) {
+      console.error('Error fetching local listings:', error);
+      setGalleryLocalListings([]);
+    }
   };
 
   // Helper function to render star rating
