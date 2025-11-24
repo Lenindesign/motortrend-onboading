@@ -171,6 +171,14 @@
   flex: 1;
 }
 
+.local-listings-sidebar__item-title--clickable {
+  transition: color 0.2s ease;
+}
+
+.local-listings-sidebar__item-title--clickable:hover {
+  color: var(--color-primary-1);
+}
+
 .local-listings-sidebar__trim {
   font-family: 'Geist', sans-serif;
   color: #666666;
@@ -185,6 +193,15 @@
   padding: 4px 8px;
   border-radius: 4px;
   white-space: nowrap;
+}
+
+.local-listings-sidebar__condition--clickable {
+  transition: all 0.2s ease;
+}
+
+.local-listings-sidebar__condition--clickable:hover {
+  background: var(--color-primary-1);
+  color: var(--color-white);
 }
 
 /* Item Details */

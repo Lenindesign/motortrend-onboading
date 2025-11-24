@@ -1167,9 +1167,27 @@ export const Article: React.FC = () => {
                               />
                               {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
                                 <div className="article__rating-overlay">
-                                  <h2 className="article__rating-overlay-name">#{rankingNumber} {vehicleNameForImage}</h2>
+                                  <h2 
+                                    className="article__rating-overlay-name article__rating-overlay-name--clickable"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                      navigate(`/vehicles/${year}/${make}/${model}`);
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    #{rankingNumber} {vehicleNameForImage}
+                                  </h2>
                                   <div className="article__ratings-list">
-                                    <div className="article__rating-item">
+                                    <div 
+                                      className="article__rating-item article__rating-item--clickable"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                        navigate(`/vehicles/${year}/${make}/${model}#staff-rating`);
+                                      }}
+                                      style={{ cursor: 'pointer' }}
+                                    >
                                       <div className="article__rating-score-row">
                                         <img 
                                           src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
@@ -1185,7 +1203,15 @@ export const Article: React.FC = () => {
                                         <span className="article__rating-motortrend-text">MotorTrend Rating</span>
                                       </div>
                                     </div>
-                                    <div className="article__rating-item article__rating-item--community">
+                                    <div 
+                                      className="article__rating-item article__rating-item--community article__rating-item--clickable"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                        navigate(`/vehicles/${year}/${make}/${model}#community-ratings`);
+                                      }}
+                                      style={{ cursor: 'pointer' }}
+                                    >
                                       {renderStarRating(userScoreForImage)}
                                       <div className="article__rating-text">
                                         User Reviews <Badge variant="info" size="sm">{(userScoreForImage / 2).toFixed(1)}/5</Badge>
@@ -1259,9 +1285,27 @@ export const Article: React.FC = () => {
                                 />
                                 {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
                                   <div className="article__rating-overlay">
-                                    <h2 className="article__rating-overlay-name">#{rankingNumber} {vehicleNameForImage}</h2>
+                                    <h2 
+                                      className="article__rating-overlay-name article__rating-overlay-name--clickable"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                        navigate(`/vehicles/${year}/${make}/${model}`);
+                                      }}
+                                      style={{ cursor: 'pointer' }}
+                                    >
+                                      #{rankingNumber} {vehicleNameForImage}
+                                    </h2>
                                     <div className="article__ratings-list">
-                                      <div className="article__rating-item">
+                                      <div 
+                                        className="article__rating-item article__rating-item--clickable"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                          navigate(`/vehicles/${year}/${make}/${model}#staff-rating`);
+                                        }}
+                                        style={{ cursor: 'pointer' }}
+                                      >
                                         <div className="article__rating-score-row">
                                           <img 
                                             src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
@@ -1277,7 +1321,15 @@ export const Article: React.FC = () => {
                                           <span className="article__rating-motortrend-text">MotorTrend Rating</span>
                                         </div>
                                       </div>
-                                      <div className="article__rating-item article__rating-item--community">
+                                      <div 
+                                        className="article__rating-item article__rating-item--community article__rating-item--clickable"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          const { year, make, model } = parseVehicleName(vehicleNameForImage);
+                                          navigate(`/vehicles/${year}/${make}/${model}#community-ratings`);
+                                        }}
+                                        style={{ cursor: 'pointer' }}
+                                      >
                                         {renderStarRating(userScoreForImage)}
                                         <div className="article__rating-text">
                                           User Reviews <Badge variant="info" size="sm">{(userScoreForImage / 2).toFixed(1)}/5</Badge>

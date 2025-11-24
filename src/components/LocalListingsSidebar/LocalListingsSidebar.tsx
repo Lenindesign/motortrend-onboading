@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon/Icon';
 import { PhotoGallery } from '../PhotoGallery';
+import { parseVehicleName } from '../../utils/vehicleImages';
 import './LocalListingsSidebar.css';
 
 export interface LocalListing {
@@ -34,6 +36,8 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
 }) => {
   console.log('🚗 LocalListingsSidebar rendering:', { vehicleName, listingsCount: listings.length });
   
+  const navigate = useNavigate();
+  
   // Track current photo index for each listing
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState<Record<string, number>>({});
   // Track which listing card is currently focused/hovered
@@ -43,6 +47,24 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryStartIndex, setGalleryStartIndex] = useState(0);
   const [galleryVehicleName, setGalleryVehicleName] = useState('');
+  
+  // Helper to navigate to vehicle detail page
+  const navigateToVehicleDetail = (year: string, scrollToId?: string) => {
+    const parsed = parseVehicleName(vehicleName);
+    const path = `/vehicles/${year}/${parsed.make}/${parsed.model}`;
+    if (scrollToId) {
+      navigate(path);
+      // Scroll after navigation
+      setTimeout(() => {
+        const element = document.getElementById(scrollToId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    } else {
+      navigate(path);
+    }
+  };
   
   const formatPrice = (price: number): string => {
     return `$${price.toLocaleString()}`;
@@ -171,11 +193,21 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
 
             <div className="local-listings-sidebar__item-content">
               <div className="local-listings-sidebar__item-header">
-                <h4 className="local-listings-sidebar__item-title">
+                <h4 
+                  className="local-listings-sidebar__item-title local-listings-sidebar__item-title--clickable"
+                  onClick={() => navigateToVehicleDetail(listing.year)}
+                  style={{ cursor: 'pointer' }}
+                >
                   {listing.year} {vehicleName}
                   {listing.trim && <span className="local-listings-sidebar__trim"> {listing.trim}</span>}
                 </h4>
-                <span className="local-listings-sidebar__condition">{listing.condition}</span>
+                <span 
+                  className="local-listings-sidebar__condition local-listings-sidebar__condition--clickable"
+                  onClick={() => navigateToVehicleDetail(listing.year)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {listing.condition}
+                </span>
               </div>
 
               <div className="local-listings-sidebar__item-details">
