@@ -46,6 +46,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
+  const [isInfoBoxVisible, setIsInfoBoxVisible] = useState(true);
   const slideIntervalRef = useRef<number | null>(null);
   
   // Touch/swipe state
@@ -304,6 +305,16 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     setCurrentSlide(0);
   }, [carouselVehicles]);
 
+  // Fade out/in animation when slide changes
+  useEffect(() => {
+    setIsInfoBoxVisible(false);
+    const timer = setTimeout(() => {
+      setIsInfoBoxVisible(true);
+    }, 150); // Short delay for fade out before fade in
+    
+    return () => clearTimeout(timer);
+  }, [currentSlide]);
+
   // Touch handlers for swipe gestures
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
@@ -492,7 +503,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                 )}
                 
                 {/* Vehicle Name and Ratings Box */}
-                <div className="top-ten-carousel__info-box">
+                <div className={`top-ten-carousel__info-box ${isInfoBoxVisible ? 'top-ten-carousel__info-box--visible' : ''}`}>
                   <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
                   <div className="top-ten-carousel__ratings-list">
                     <div className="top-ten-carousel__rating-item">
