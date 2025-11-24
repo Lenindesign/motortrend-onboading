@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Icon from '../Icon';
 import { Badge } from '../atoms/Badge/Badge';
 import { PhotoGallery } from '../PhotoGallery';
+import SavedModal from '../SavedModal';
 import { parseVehicleName, vehicleImageFor } from '../../utils/vehicleImages';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
@@ -58,6 +59,10 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryVehicleName, setGalleryVehicleName] = useState('');
+  
+  // Saved modal state
+  const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
+  const [savedVehicleName, setSavedVehicleName] = useState('');
 
   // Load saved vehicles from localStorage
   useEffect(() => {
@@ -106,6 +111,10 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           model: vehicle.model
         });
         setSavedVehicles(prev => new Set(prev).add(vehicle.name));
+        
+        // Show saved modal
+        setSavedVehicleName(vehicle.name);
+        setIsSavedModalOpen(true);
       }
 
       localStorage.setItem('onboardingData', JSON.stringify(data));
@@ -681,6 +690,14 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         initialIndex={0}
         onClose={() => setIsGalleryOpen(false)}
         vehicleName={galleryVehicleName}
+      />
+
+      {/* Saved Modal */}
+      <SavedModal
+        isOpen={isSavedModalOpen}
+        onClose={() => setIsSavedModalOpen(false)}
+        itemTitle={savedVehicleName}
+        itemType="vehicle"
       />
     </div>
   );
