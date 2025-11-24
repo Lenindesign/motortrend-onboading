@@ -363,7 +363,7 @@
   transform: scale(1);
 }
 
-/* Ranking badge for Top 10 article images - Glassmorphism style */
+/* Ranking badge for Top 10 article images - Apple style */
 .article__image-ranking-badge {
   position: absolute;
   top: 24px;
@@ -379,18 +379,6 @@
 }
 
 .article__ranking-content {
-  background-color: rgba(20, 20, 22, 0.3);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 64px;
-  line-height: 1;
-  padding: 12px 16px;
-  border-radius: 12px;
-  letter-spacing: -0.02em;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -401,21 +389,29 @@
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-weight: 600;
   font-size: 36px;
-  opacity: 1;
   line-height: 1;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  letter-spacing: -0.02em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
+  opacity: 1;
 }
 
 .article__ranking-number {
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-weight: 600;
   font-size: 64px;
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 @media (max-width: 768px) {
@@ -425,24 +421,19 @@
   }
   
   .article__ranking-content {
-    font-size: 48px;
-    padding: 10px 12px;
-    border-radius: 10px;
     gap: 6px;
   }
   
   .article__ranking-hash {
     font-size: 28px;
-    line-height: 1;
-    padding: 6px 10px;
-    border-radius: 6px;
-    min-width: 40px;
-    height: 40px;
+    padding: 10px;
+    border-radius: 10px;
+    width: 48px;
+    height: 48px;
   }
   
   .article__ranking-number {
     font-size: 48px;
-    line-height: 1;
   }
 }
 
