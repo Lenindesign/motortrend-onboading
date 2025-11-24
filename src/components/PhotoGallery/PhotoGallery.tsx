@@ -7,6 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
+import { LocalListingsSidebar, type LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import './PhotoGallery.css';
 
 interface PhotoGalleryProps {
@@ -15,6 +16,8 @@ interface PhotoGalleryProps {
   onClose: () => void;
   initialIndex?: number;
   vehicleName?: string;
+  localListings?: LocalListing[];
+  onViewAllListings?: () => void;
 }
 
 export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
@@ -22,7 +25,9 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   isOpen,
   onClose,
   initialIndex = 0,
-  vehicleName
+  vehicleName,
+  localListings = [],
+  onViewAllListings
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
@@ -89,8 +94,9 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           </button>
         </div>
 
-        {/* Main Image */}
-        <div className="photo-gallery__main">
+        <div className="photo-gallery__body">
+          {/* Main Image */}
+          <div className="photo-gallery__main">
           <button
             className="photo-gallery__nav photo-gallery__nav--prev"
             onClick={handlePrevious}
@@ -116,6 +122,18 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           >
             <Icon name="chevron_right" size={48} />
           </button>
+          </div>
+
+          {/* Sidebar with Local Listings */}
+          {localListings && localListings.length > 0 && vehicleName && (
+            <div className="photo-gallery__sidebar">
+              <LocalListingsSidebar
+                vehicleName={vehicleName}
+                listings={localListings}
+                onViewAllListings={onViewAllListings}
+              />
+            </div>
+          )}
         </div>
 
         {/* Thumbnails */}
