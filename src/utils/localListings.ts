@@ -87,6 +87,11 @@ export function generateLocalListings(
     
     const distance = Math.round(Math.random() * 50 + 1);
     
+    // Generate multiple photo URLs (for demo, we'll use the same image)
+    // In production, this would be different photos of the same vehicle
+    const photoCount = Math.floor(Math.random() * 5) + 3; // 3-7 photos per listing
+    const photoUrls = Array(photoCount).fill(vehicleImage);
+    
     listings.push({
       id: `listing-${i}-${Date.now()}`,
       dealerName: dealerNames[Math.floor(Math.random() * dealerNames.length)],
@@ -97,6 +102,7 @@ export function generateLocalListings(
       location: locations[Math.floor(Math.random() * locations.length)],
       distance,
       imageUrl: vehicleImage,
+      photoUrls,
       trim: trims[Math.floor(Math.random() * trims.length)],
       exteriorColor: exteriorColors[Math.floor(Math.random() * exteriorColors.length)],
       interiorColor: interiorColors[Math.floor(Math.random() * interiorColors.length)],
