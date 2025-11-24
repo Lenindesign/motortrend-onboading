@@ -379,12 +379,6 @@
 }
 
 .article__ranking-content {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.article__ranking-hash {
   background-color: rgba(20, 20, 22, 0.3);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -392,26 +386,25 @@
   color: #FFFFFF;
   font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 36px;
+  font-size: 64px;
   line-height: 1;
-  padding: 12px;
+  padding: 12px 24px;
   border-radius: 12px;
   letter-spacing: -0.02em;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  opacity: 1;
+  gap: 2px;
+}
+
+.article__ranking-hash {
+  font-size: 36px;
+  opacity: 0.8;
+  line-height: 1;
 }
 
 .article__ranking-number {
-  color: #FFFFFF;
-  font-family: var(--font-heading);
-  font-weight: 600;
   font-size: 64px;
   line-height: 1;
-  letter-spacing: -0.02em;
 }
 
 @media (max-width: 768px) {
@@ -421,19 +414,19 @@
   }
   
   .article__ranking-content {
-    gap: 6px;
+    font-size: 48px;
+    padding: 10px 20px;
+    border-radius: 10px;
   }
   
   .article__ranking-hash {
     font-size: 28px;
-    padding: 10px;
-    border-radius: 10px;
-    width: 48px;
-    height: 48px;
+    line-height: 1;
   }
   
   .article__ranking-number {
     font-size: 48px;
+    line-height: 1;
   }
 }
 
