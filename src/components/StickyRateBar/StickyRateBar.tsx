@@ -316,22 +316,16 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       className={`sticky-rate-bar ${isSticky ? 'sticky-rate-bar--sticky' : 'sticky-rate-bar--static'} ${isVisible ? 'sticky-rate-bar--visible' : ''} ${className}`}
     >
       <div className="sticky-rate-bar__content">
-        <div className="sticky-rate-bar__name-container">
-          {vehiclePath && (
-            <Link to={vehiclePath} className="sticky-rate-bar__buyers-guide-badge">
-              <Badge variant="info" size="sm">Buyers Guide</Badge>
-            </Link>
-          )}
-          {vehiclePath ? (
-            <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name sticky-rate-bar__vehicle-name--link">
-              {vehicleName}
-            </Link>
-          ) : (
-            <div className="sticky-rate-bar__vehicle-name">
-              {vehicleName}
-            </div>
-          )}
-        </div>
+        {vehiclePath ? (
+          <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name sticky-rate-bar__vehicle-name--link">
+            <Badge variant="neutral" size="sm">Buyers Guide</Badge>
+            <span>{vehicleName}</span>
+          </Link>
+        ) : (
+          <div className="sticky-rate-bar__vehicle-name">
+            {vehicleName}
+          </div>
+        )}
         <div className="sticky-rate-bar__ratings">
           {ratings.map((rating, index) => renderRatingItem(rating, index))}
         </div>

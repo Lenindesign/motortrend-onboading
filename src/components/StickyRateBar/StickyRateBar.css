@@ -57,24 +57,6 @@
     gap: var(--spacing-3);
 }
 
-.sticky-rate-bar__name-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-1);
-    flex-shrink: 0;
-}
-
-.sticky-rate-bar__buyers-guide-badge {
-    display: inline-flex;
-    text-decoration: none;
-    transition: opacity 0.2s ease;
-    width: fit-content;
-}
-
-.sticky-rate-bar__buyers-guide-badge:hover {
-    opacity: 0.8;
-}
-
 .sticky-rate-bar__vehicle-name {
     font-family: var(--font-heading);
     font-weight: 600;
@@ -94,8 +76,10 @@ div.sticky-rate-bar__vehicle-name {
 /* Make vehicle name look like a CTA when it's a link (Article pages) */
 .sticky-rate-bar__vehicle-name--link {
     display: inline-flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     justify-content: center;
+    gap: var(--spacing-1);
     padding: var(--spacing-component-sm) var(--spacing-component-lg);
     background-color: var(--color-neutrals-2);
     border-radius: var(--border-radius-md);
