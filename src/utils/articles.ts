@@ -5406,7 +5406,7 @@ export const articles: Record<string, Article> = {
       vehicleName: "2025 Chevrolet Corvette ZR1",
       reviewer: {
         name: "Mac Morrison",
-        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/default-avatar.jpg",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/66b0c2e0018fc100080e4801/macmorrison.jpg",
         date: "May 30, 2025",
         title: "2025 Chevrolet Corvette ZR1: A New Breed of American Supercar",
         excerpt: "The most powerful production Corvette ever built redefines what ZR1 means, delivering 1,064 horsepower with surprising refinement and control. This isn't just raw power—it's a sophisticated, track-ready machine that can also be driven daily.",
