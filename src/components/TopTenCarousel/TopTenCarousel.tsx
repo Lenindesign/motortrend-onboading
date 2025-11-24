@@ -71,7 +71,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       if (onboardingData) {
         const data = JSON.parse(onboardingData);
         if (data.vehicles && Array.isArray(data.vehicles)) {
-          const saved = new Set(data.vehicles.map((v: { name: string }) => v.name));
+          const saved = new Set<string>(data.vehicles.map((v: { name: string }) => v.name));
           setSavedVehicles(saved);
         }
       }
