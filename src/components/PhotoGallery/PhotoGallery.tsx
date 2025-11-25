@@ -258,11 +258,11 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           {/* Left Side: Photos */}
           <div className={`photo-gallery__photos-section ${activeTab === 'photos' ? 'photo-gallery__photos-section--active' : ''}`}>
             <div className="photo-gallery__main-image">
-              <img
-                src={images[currentIndex]}
-                alt={`${vehicleName || 'Vehicle'} - Photo ${currentIndex + 1}`}
-                className="photo-gallery__image"
-              />
+            <img
+              src={images[currentIndex]}
+              alt={`${vehicleName || 'Vehicle'} - Photo ${currentIndex + 1}`}
+              className="photo-gallery__image"
+            />
               
               {/* Navigation Arrows */}
               {images.length > 1 && (
@@ -274,13 +274,13 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
                   >
                     <Icon name="chevron_left" size={48} />
                   </button>
-                  <button
-                    className="photo-gallery__nav photo-gallery__nav--next"
-                    onClick={handleNext}
-                    aria-label="Next image"
-                  >
-                    <Icon name="chevron_right" size={48} />
-                  </button>
+          <button
+            className="photo-gallery__nav photo-gallery__nav--next"
+            onClick={handleNext}
+            aria-label="Next image"
+          >
+            <Icon name="chevron_right" size={48} />
+          </button>
                 </>
               )}
 
@@ -288,24 +288,24 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
               <div className="photo-gallery__photo-counter">
                 {currentIndex + 1} / {images.length}
               </div>
-            </div>
+        </div>
 
-            {/* Thumbnails */}
-            {images.length > 1 && (
-              <div className="photo-gallery__thumbnails">
-                {images.map((image, index) => (
-                  <button
-                    key={index}
-                    className={`photo-gallery__thumbnail ${
-                      index === currentIndex ? 'photo-gallery__thumbnail--active' : ''
-                    }`}
+        {/* Thumbnails */}
+        {images.length > 1 && (
+          <div className="photo-gallery__thumbnails">
+              {images.map((image, index) => (
+                <button
+                  key={index}
+                  className={`photo-gallery__thumbnail ${
+                    index === currentIndex ? 'photo-gallery__thumbnail--active' : ''
+                  }`}
                     onClick={() => setCurrentIndex(index)}
-                    aria-label={`View photo ${index + 1}`}
-                  >
-                    <img src={image} alt={`Thumbnail ${index + 1}`} />
-                  </button>
-                ))}
-              </div>
+                  aria-label={`View photo ${index + 1}`}
+                >
+                  <img src={image} alt={`Thumbnail ${index + 1}`} />
+                </button>
+              ))}
+            </div>
             )}
           </div>
 
@@ -388,8 +388,8 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
                   </button>
                 </div>
               )}
-            </div>
-          )}
+          </div>
+        )}
         </div>
       </div>
     </ModalShell>

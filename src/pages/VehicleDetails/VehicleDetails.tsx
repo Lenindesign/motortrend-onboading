@@ -70,7 +70,7 @@ export const VehicleDetails: React.FC = () => {
   
   useEffect(() => {
     const fetchListings = async () => {
-      const vehicleImage = apiVehicleData?.image || vehicleImageFor(vehicleName);
+    const vehicleImage = apiVehicleData?.image || vehicleImageFor(vehicleName);
       try {
         const listings = await getLocalListings(
           decodedYear, 

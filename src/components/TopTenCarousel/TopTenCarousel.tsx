@@ -453,7 +453,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     
     // Fetch real listings from Marketcheck API in the background
     try {
-      const parsed = parseVehicleName(vehicle.name);
+    const parsed = parseVehicleName(vehicle.name);
       console.log('🔍 Parsed vehicle:', parsed);
       const { getLocalListings } = await import('../../utils/localListings');
       const listings = await getLocalListings(
@@ -643,7 +643,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                         e.stopPropagation();
                       }}
                     >
-                      <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
+                  <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
                     </a>
                   </div>
                   <div className="top-ten-carousel__ratings-list">
@@ -668,7 +668,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                       <div className="top-ten-carousel__rating-label-row">
                         <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--full">MotorTrend Rating</span>
                         <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--short">MT Rating</span>
-                      </div>
+                    </div>
                     </a>
                     <a 
                       href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#user-reviews`}

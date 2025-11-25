@@ -1615,7 +1615,13 @@ const vehicleDatabase: Vehicle[] = [
       'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b703eb02200008fad55a/2024-lincoln-navigator-black-label-interior-18.jpg',
       'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b704544c890008b83f1b/2024-lincoln-navigator-black-label-front-view-05.jpg',
       'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b6fb8125bf0008d40214/2024-lincoln-navigator-black-label-interior-16.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b6fb6421770008f6bf96/2024-lincoln-navigator-black-label-front-view-04.jpg'
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b6fb6421770008f6bf96/2024-lincoln-navigator-black-label-front-view-04.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b7048125bf0008d40218/2024-lincoln-navigator-black-label-side-view-13.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b703eb02200008fad55b/2024-lincoln-navigator-black-label-grille-10.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b703dc885a0008363bc1/2024-lincoln-navigator-black-label-badge-11.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b6fb6421770008f6bf97/2024-lincoln-navigator-black-label-rear-view-09.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4b703bc61bd00089f41ed/2024-lincoln-navigator-black-label-interior-17.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/65a4ce2c29c1880008e3ec5f/2024-lincoln-navigator-suv-premiere-trim-interior-2.png'
     ],
     priceRange: '$83,265 - $103,465',
     priceMin: 83265,
