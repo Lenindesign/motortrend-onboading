@@ -6,7 +6,7 @@
 
 .top-ten-carousel {
   width: 100%;
-  margin-bottom: var(--spacing-6);
+  margin-bottom: 0;
 }
 
 .top-ten-carousel__slider {
