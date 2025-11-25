@@ -782,6 +782,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                       className="top-ten-carousel__dot-image"
                     />
                   </span>
+                  {index === currentSlide && (
+                    <span className="top-ten-carousel__dot-rating">
+                      #{vehicle.rank}
+                    </span>
+                  )}
                   <span className="top-ten-carousel__dot-tooltip">
                     #{vehicle.rank} {vehicle.name}
                   </span>

@@ -592,6 +592,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: opacity var(--transition-fast), filter var(--transition-fast);
 }
 
 .top-ten-carousel__dot:hover {
@@ -609,7 +610,7 @@
 }
 
 .top-ten-carousel__dot--active {
-  transform: scale(1.15);
+  transform: scale(1.2);
 }
 
 .top-ten-carousel__dot--active .top-ten-carousel__dot-progress-bg {
@@ -619,6 +620,25 @@
 .top-ten-carousel__dot--active .top-ten-carousel__dot-progress-bar {
   stroke: #FFFFFF;
   stroke-width: 2.5;
+}
+
+.top-ten-carousel__dot--active .top-ten-carousel__dot-image {
+  opacity: 0.5;
+  filter: brightness(0.5);
+}
+
+.top-ten-carousel__dot-rating {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: var(--font-weight-bold);
+  z-index: 4;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .top-ten-carousel__dot-tooltip {
