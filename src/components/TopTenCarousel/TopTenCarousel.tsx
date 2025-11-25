@@ -50,6 +50,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
   const [savedVehicles, setSavedVehicles] = useState<Set<string>>(new Set());
+  const [animationKey, setAnimationKey] = useState(0);
   const slideIntervalRef = useRef<number | null>(null);
   
   // Touch/swipe state
@@ -302,11 +303,33 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     return finalVehicles;
   }, [selectedVehicleType, selectedSubcategory, allVehicleItems]);
 
+  // Handle hover enter - reset everything
+  const handleMouseEnter = () => {
+    setIsSliderHovered(true);
+    // Clear interval immediately
+    if (slideIntervalRef.current) {
+      clearInterval(slideIntervalRef.current);
+      slideIntervalRef.current = null;
+    }
+  };
+
+  // Handle hover leave - restart everything in sync
+  const handleMouseLeave = () => {
+    setIsSliderHovered(false);
+    // Restart animation by incrementing key
+    setAnimationKey(prev => prev + 1);
+  };
+
   // Auto-advance carousel
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
     
     if (!isSliderHovered) {
+      // Clear any existing interval first
+      if (slideIntervalRef.current) {
+        clearInterval(slideIntervalRef.current);
+      }
+      
       slideIntervalRef.current = window.setInterval(() => {
         setCurrentSlide((prev) => {
           const nextSlide = prev + 1;
@@ -326,15 +349,17 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     } else {
       if (slideIntervalRef.current) {
         clearInterval(slideIntervalRef.current);
+        slideIntervalRef.current = null;
       }
     }
     
     return () => {
       if (slideIntervalRef.current) {
         clearInterval(slideIntervalRef.current);
+        slideIntervalRef.current = null;
       }
     };
-  }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
+  }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory, animationKey]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -526,8 +551,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     <div className={`top-ten-carousel ${className}`}>
       <div 
         className={`top-ten-carousel__slider ${isSliderHovered ? 'top-ten-carousel__slider--hovered' : ''}`}
-        onMouseEnter={() => setIsSliderHovered(true)}
-        onMouseLeave={() => setIsSliderHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -752,7 +777,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   onClick={() => setCurrentSlide(index)}
                   aria-label={`Go to ${vehicle.name}`}
                 >
-                  <svg className="top-ten-carousel__dot-progress" viewBox="0 0 36 36">
+                  <svg 
+                    key={`progress-${index}-${index === currentSlide ? animationKey : 0}`}
+                    className="top-ten-carousel__dot-progress" 
+                    viewBox="0 0 36 36"
+                  >
                     <circle
                       className="top-ten-carousel__dot-progress-bg"
                       cx="18"
