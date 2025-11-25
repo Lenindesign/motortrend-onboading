@@ -17,7 +17,7 @@ const NewsAndReviews: React.FC = () => {
 
   // Get all news articles (News and Features categories)
   const newsArticles = useMemo(() => {
-    return Object.entries(articles)
+    const allArticles = Object.entries(articles)
       .filter(([, article]) => 
         article.category === 'News' || article.category === 'Features'
       )
@@ -28,6 +28,21 @@ const NewsAndReviews: React.FC = () => {
         const dateB = new Date(b.article.date).getTime();
         return dateB - dateA;
       });
+
+    // Find the Escalade IQ article and place it in position 5 (second position of river)
+    const escaladeIndex = allArticles.findIndex(
+      ({ slug }) => slug === '2026-cadillac-escalade-iq-suv-of-the-year'
+    );
+    
+    if (escaladeIndex !== -1 && escaladeIndex !== 5) {
+      const escaladeArticle = allArticles[escaladeIndex];
+      // Remove from current position
+      allArticles.splice(escaladeIndex, 1);
+      // Insert at position 5 (second position of river)
+      allArticles.splice(5, 0, escaladeArticle);
+    }
+
+    return allArticles;
   }, []);
 
   // Hero data - use first news article

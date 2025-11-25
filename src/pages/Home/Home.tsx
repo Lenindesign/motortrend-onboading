@@ -515,6 +515,17 @@ export const Home: React.FC = () => {
       },
     },
     {
+      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg',
+      title: 'The Cadillac Escalade IQ Is the 2026 MotorTrend SUV of the Year',
+      author: 'Christian Seabaugh',
+      date: 'Nov 18, 2025',
+      category: 'MotorTrend | News',
+      categories: ['Luxury & Comfort', 'Eco & Future-Ready'] as ContentCategory[],
+      onClick: () => {
+        navigate('/article/2026-cadillac-escalade-iq-suv-of-the-year');
+      },
+    },
+    {
       imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg',
       title: 'Audi S3 vs. RS3: One Is Shockingly Quick, the Other Might Be the Better Deal',
       author: 'Alisa Priddle',
@@ -821,6 +832,7 @@ export const Home: React.FC = () => {
     );
     
     // For Gearhead Greg, prioritize Ferrari 296 Speciale as the first story
+    let finalSortedItems;
     if (persona?.name === 'Gearhead Greg') {
       const ferrariStory = withoutHeroAndCards.find(item => 
         item.title.includes('Ferrari 296 Speciale')
@@ -829,11 +841,29 @@ export const Home: React.FC = () => {
         const otherStories = withoutHeroAndCards.filter(item => 
           !item.title.includes('Ferrari 296 Speciale')
         );
-        return [ferrariStory, ...otherStories];
+        finalSortedItems = [ferrariStory, ...otherStories];
+      } else {
+        finalSortedItems = sortContentForPersonalization(withoutHeroAndCards, userType);
       }
+    } else {
+      finalSortedItems = sortContentForPersonalization(withoutHeroAndCards, userType);
     }
     
-    return sortContentForPersonalization(withoutHeroAndCards, userType);
+    // Place Escalade IQ article in second position (index 1) of the first river
+    const escaladeIndex = finalSortedItems.findIndex(item => 
+      item.title.includes('Cadillac Escalade IQ') || 
+      item.title.includes('2026 MotorTrend SUV of the Year')
+    );
+    
+    if (escaladeIndex !== -1 && escaladeIndex !== 1) {
+      const escaladeArticle = finalSortedItems[escaladeIndex];
+      // Remove from current position
+      finalSortedItems.splice(escaladeIndex, 1);
+      // Insert at position 1 (second position of river)
+      finalSortedItems.splice(1, 0, escaladeArticle);
+    }
+    
+    return finalSortedItems;
   }, [userType, newsItems, persona, heroData, verticalCards]);
 
   // Split news items into sets of 6 for each river

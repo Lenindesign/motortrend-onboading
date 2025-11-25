@@ -1604,6 +1604,36 @@ const vehicleDatabase: Vehicle[] = [
     slug: '2024/Cadillac/Escalade'
   },
   {
+    id: '56',
+    year: '2026',
+    make: 'Cadillac',
+    model: 'Escalade IQ',
+    bodyStyle: 'SUV',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg',
+    galleryImages: [
+      'https://d2kde5ohu8qb21.cloudfront.net/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/69124dcd1c4f49000277c388/021-2026cadillacescaladeiq-2026-suvoty.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/69124d9fefef440002fc4a66/003-2026cadillacescaladeiq-2026-suvoty.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/691237ffad30750002d818b1/004-2026cadillacescaladeiq-2026-suvoty.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/6912377e4a6ec90002aae171/015-2026cadillacescaladeiq-2026-suvoty.jpg',
+      'https://d2kde5ohu8qb21.cloudfront.net/files/691237976df2ee00020cd664/005-2026cadillacescaladeiq-2026-suvoty.jpg'
+    ],
+    priceRange: '$150,595',
+    priceMin: 150595,
+    priceMax: 150595,
+    staffRating: 9.5,
+    communityRating: 9.5,
+    reviewCount: 89,
+    fuelType: 'Electric',
+    drivetrain: 'AWD',
+    transmission: 'Automatic',
+    mpg: '460 mi EPA Range',
+    horsepower: 750,
+    seatingCapacity: 7,
+    features: ['55-inch Curved Display', 'Four-Wheel Steering', 'Arrival Mode', 'Super Cruise', 'Vehicle-to-Home'],
+    slug: '2026/Cadillac/Escalade-IQ'
+  },
+  {
     id: '55',
     year: '2024',
     make: 'Lincoln',

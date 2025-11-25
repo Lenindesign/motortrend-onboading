@@ -284,6 +284,24 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       return b.vehicleYear - a.vehicleYear;
     });
 
+    // Ensure 2026 Cadillac Escalade IQ is ranked #1 for SUV "All" subcategory
+    if (selectedVehicleType === 'SUV' && selectedSubcategory === 'All') {
+      const escaladeIQIndex = sortedVehicles.findIndex(vehicle => {
+        const make = vehicle.make.toLowerCase();
+        const model = vehicle.model.toLowerCase();
+        const year = vehicle.year;
+        return make === 'cadillac' && 
+               (model.includes('escalade') && model.includes('iq')) &&
+               year === '2026';
+      });
+      
+      if (escaladeIQIndex !== -1 && escaladeIQIndex !== 0) {
+        const escaladeIQ = sortedVehicles[escaladeIQIndex];
+        sortedVehicles.splice(escaladeIQIndex, 1);
+        sortedVehicles.unshift(escaladeIQ);
+      }
+    }
+
     // Take top 10 best vehicles and reverse order (10 to 1)
     const finalVehicles = sortedVehicles.slice(0, 10).map((vehicle, index) => ({
       id: `${selectedVehicleType.toLowerCase()}-${index}`,

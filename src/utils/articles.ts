@@ -5436,13 +5436,15 @@ export const articles: Record<string, Article> = {
     author: "Christian Seabaugh",
     date: "Nov 18, 2025",
     category: "News",
-    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg",
     images: [
-      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
-      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69124d9fefef440002fc4a66/003-2026cadillacescaladeiq-2026-suvoty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/6912377e4a6ec90002aae171/015-2026cadillacescaladeiq-2026-suvoty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/691237976df2ee00020cd664/005-2026cadillacescaladeiq-2026-suvoty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/691237cfad30750002d818af/017-2026cadillacescaladeiq-2026-suvoty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69124db6c5c0020002e2e8c0/014-2026cadillacescaladeiq-2026-suvoty.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/69124d67f2d7a8000296be53/024-2026cadillacescaladeiq-2026-suvoty.jpg"
     ],
     excerpt: "The electric Escalade returns Cadillac to its place as the Standard of the World.",
     content: [
