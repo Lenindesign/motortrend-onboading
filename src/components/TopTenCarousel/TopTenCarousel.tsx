@@ -49,7 +49,6 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
-  const [isDotsHovered, setIsDotsHovered] = useState(false);
   const [savedVehicles, setSavedVehicles] = useState<Set<string>>(new Set());
   const slideIntervalRef = useRef<number | null>(null);
   
@@ -307,7 +306,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
     
-    if (!isSliderHovered && !isDotsHovered) {
+    if (!isSliderHovered) {
       slideIntervalRef.current = window.setInterval(() => {
         setCurrentSlide((prev) => {
           const nextSlide = prev + 1;
@@ -335,7 +334,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         clearInterval(slideIntervalRef.current);
       }
     };
-  }, [isSliderHovered, isDotsHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
+  }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -745,11 +744,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
             </button>
             
             {/* Slider Dots (Desktop) / Counter (Mobile) */}
-            <div 
-              className="top-ten-carousel__dots"
-              onMouseEnter={() => setIsDotsHovered(true)}
-              onMouseLeave={() => setIsDotsHovered(false)}
-            >
+            <div className="top-ten-carousel__dots">
               {carouselVehicles.map((vehicle, index) => (
                 <button
                   key={index}
