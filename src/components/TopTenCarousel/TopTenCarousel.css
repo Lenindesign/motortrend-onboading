@@ -705,8 +705,9 @@
 
 @media (max-width: 480px) {
   .top-ten-carousel__slider {
-    aspect-ratio: 3 / 4;
-    min-height: 550px;
+    aspect-ratio: 4 / 5;
+    min-height: auto;
+    max-height: 500px;
   }
 
   .top-ten-carousel__info-box {
@@ -722,30 +723,49 @@
   }
 
   .top-ten-carousel__name {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.3;
+  }
+
+  .top-ten-carousel__buyers-guide-badge {
+    font-size: 11px;
   }
 
   .top-ten-carousel__ratings-list {
     flex-direction: row;
-    gap: 12px;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .top-ten-carousel__rating-item {
+    flex: 1;
+    min-width: 0;
   }
 
   .top-ten-carousel__rating-item:first-child {
-    padding-right: 12px;
+    padding-right: 8px;
   }
 
   .top-ten-carousel__rating-item:first-child::after {
     display: block;
-    height: 40px;
+    height: 35px;
   }
 
   .top-ten-carousel__rating-score-large {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .top-ten-carousel__rating-score-max {
-    font-size: 16px;
+    font-size: 14px;
+  }
+
+  .top-ten-carousel__rating-motortrend-text,
+  .top-ten-carousel__rating-user-reviews-text {
+    font-size: 11px;
+  }
+
+  .top-ten-carousel__rating-stars {
+    gap: 2px;
   }
 
   .top-ten-carousel__listing-btn {
@@ -783,6 +803,20 @@
 
   .top-ten-carousel__nav--next {
     right: 8px;
+  }
+
+  .top-ten-carousel__save-btn {
+    width: 36px;
+    height: 36px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .top-ten-carousel__expand-btn {
+    width: 36px;
+    height: 36px;
+    top: 12px;
+    right: 56px;
   }
 }
 
