@@ -745,13 +745,22 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
             
             {/* Slider Dots (Desktop) / Counter (Mobile) */}
             <div className="top-ten-carousel__dots">
-              {carouselVehicles.map((_, index) => (
+              {carouselVehicles.map((vehicle, index) => (
                 <button
                   key={index}
                   className={`top-ten-carousel__dot ${index === currentSlide ? 'top-ten-carousel__dot--active' : ''}`}
                   onClick={() => setCurrentSlide(index)}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
+                  aria-label={`Go to ${vehicle.name}`}
+                >
+                  <img 
+                    src={vehicle.image} 
+                    alt={vehicle.name}
+                    className="top-ten-carousel__dot-image"
+                  />
+                  <span className="top-ten-carousel__dot-tooltip">
+                    {index + 1}. {vehicle.name}
+                  </span>
+                </button>
               ))}
             </div>
             
