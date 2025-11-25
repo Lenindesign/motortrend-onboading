@@ -551,7 +551,8 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
+  overflow: visible;
 }
 
 .top-ten-carousel__dot-progress-bg {
@@ -576,13 +577,14 @@
 }
 
 .top-ten-carousel__dot-image-wrapper {
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
   border-radius: 50%;
   overflow: hidden;
   display: block;
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  margin: 2px;
 }
 
 .top-ten-carousel__dot-image {
