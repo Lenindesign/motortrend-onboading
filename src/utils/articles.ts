@@ -5430,6 +5430,131 @@ export const articles: Record<string, Article> = {
         ]
       }
     }
+  },
+  "2026-cadillac-escalade-iq-suv-of-the-year": {
+    title: "The Cadillac Escalade IQ Is the 2026 MotorTrend SUV of the Year",
+    author: "Christian Seabaugh",
+    date: "Nov 18, 2025",
+    category: "News",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+    ],
+    excerpt: "The electric Escalade returns Cadillac to its place as the Standard of the World.",
+    content: [
+      {
+        type: "paragraph",
+        text: "This story, in a way, begins with the Lincoln Navigator. In 1998, Ford put its Expedition back in the blender and came up with the Navigator luxury SUV. Surprisingly—especially to Ford—it took off, helping Lincoln outsell Cadillac for the first time in the modern era. Caught flat-footed, GM responded the following year with a recycled GMC Yukon Denali boasting a new grille and name: the Cadillac Escalade."
+      },
+      {
+        type: "paragraph",
+        text: "Lincoln's momentum predictably continued. Cadillac would have to think big for its next Escalade. Two years after its Chevrolet and GMC siblings arrived in 2002, it did. The then-new Escalade blended its stylish \"Art & Science\" exterior with bleeding-edge tech, ultimately becoming a pop culture sensation. It. Was. Everywhere. From music video backdrops to prestige television shows, you couldn't exist in the '00s without crossing paths with an Escalade. The Navigator would never challenge its sales numbers again."
+      },
+      {
+        type: "paragraph",
+        text: "As years passed, the Escalade lost some of its cultural cachet to flashier, more expensive rivals from manufacturers like Bentley, Lamborghini, and Rolls-Royce. After all, it's difficult to stand out when you've effectively treaded water for years, but the treading stops now."
+      },
+      {
+        type: "heading",
+        text: "Advancement in Design"
+      },
+      {
+        type: "paragraph",
+        text: "It begins with the sheetmetal. A Cadillac must have strong visual form, and the electric Escalade cuts a stunning presence with both its size and elegance. The design team expertly blended contemporary styling cues like distinctive jewellike LED lighting elements and a sweeping raked roof on the IQ—and an equally attractive formal roofline on the 4.2-inch-longer Escalade IQL—with classic callbacks such as the optional 24-inch wheels that pay homage to the 2002 model and lights that recall the similarly extravagant tailfin-era Cadillacs. The shape is also aerodynamically efficient for its size, with the company reporting a 0.321 drag coefficient. The Escalade IQ both looks ahead of its time and timeless, with a design that could come from no other brand."
+      },
+      {
+        type: "paragraph",
+        text: "Inside, the IQ sports what might be the most successful GM interior in generations, seamlessly blending 21st century tech with 20th century comforts. Each of the Escalade IQ's seven seats spread across three rows features thick, beautifully stitched fabrics, while the dash and SUV's walls feature laser-etched LED-backlit grained wood, subtly textured aluminum with the shape of the Cadillac crest, and piano blacks that feels as if they came from a Steinway grand."
+      },
+      {
+        type: "heading",
+        text: "Engineering Excellence and Efficiency"
+      },
+      {
+        type: "paragraph",
+        text: "Hiding underneath the Escalade IQ's gorgeous mile-long lines are engineering innovations that solve today's problems while also preparing for the future—the latest in a long line of great Cadillacs to do so."
+      },
+      {
+        type: "paragraph",
+        text: "Back in 1949, we awarded our first ever Car of the Year award to Cadillac, partly because its new overhead-valve engine allowed for both more power than existing L-head engines and because the new valve technology was \"a definite must for getting the most potential advantage from higher-octane fuels—provided, of course, that such fuels become available at economical prices.\" In other words, this technology made the Cadillac a car for both 1949's fuel and the future developments in gasoline to come."
+      },
+      {
+        type: "paragraph",
+        text: "That same principle exists 76 years later in the Escalade IQ. Its massive 205-kWh battery pack is effectively two 400-volt Cadillac Lyriq battery packs wired together in parallel. The pack operates as two separate batteries when running the Escalade IQ's front- and rear-mounted permanent-magnet motors, which produce up to 750 hp and 785 lb-ft of torque. When plugged into common but increasingly outdated DC fast chargers such as Tesla's V3 Superchargers, this system allows the Escalade IQ to maximize the charger's peak 250-kW output quickly and ride it for a prolonged period, minimizing the charging time. What happens on more modern 350-kW (and higher) chargers is even more impressive, as the Escalade IQ's battery pack operates in series, showing the charger 800 volts and allowing it to charge at peak rates of up to 352 kW in our testing."
+      },
+      {
+        type: "paragraph",
+        text: "While impressive for EV nerds, this has some serious real-world benefits for Escalade IQ drivers as the vehicle's shape, motors, and batteries combine to eliminate any compromises you might need to make to have an electric vehicle. The large battery solves for the EV range problem the same way automotive engineers solved for underpowered engines in the middle of the 20th century: by simply increasing the size. That pack, combined with the surprisingly efficient motors, helps the Escalade IQ clear 415 miles in our real-world Road-Trip Range test, which runs the battery down from full to 5 percent at a steady 70 mph. Plugged into a suitable DC fast charger, the Escalade IQ can add 149 miles of range in just 15 minutes, 262 miles in 30, and 341 miles in 45. That 5–80 percent recharge—the point at which most EV owners unplug on road trips, as charging speeds begin to drop—takes 42 minutes, while a full charge requires 80. That sort of capacity requires a rethink for EV road trippers."
+      },
+      {
+        type: "heading",
+        text: "Performance of Intended Function and Safety"
+      },
+      {
+        type: "paragraph",
+        text: "We admittedly haven't yet found a real use for Arrival mode beyond making us giggle, but the rest of the Escalade IQ package is no joke. The Escalade IQ's dual motors pull like the best big understressed V-8s do, with gobs of excess grunt on tap and smooth, refined power delivery, while the brakes, whether you use one-pedal drive modes or the pedal itself, are progressive and smooth."
+      },
+      {
+        type: "paragraph",
+        text: "This Cadillac rides and handles far better than it has any right to given its 4.5-ton curb weight. The steering wheel has great on-/off-center feel and smooth torque buildup, which along with the four-wheel steering and the suspension's ability to resist body roll makes for a surprisingly engaging driving experience."
+      }
+    ],
+    specifications: {
+      basePrice: "$150,595",
+      layout: "Front- and rear-motor, AWD, 7-pass, 4-door electric SUV",
+      motors: "R: permanent-magnet motor, 420 hp, 391 lb-ft (est)",
+      battery: "205.0-kWh NCMA lithium-ion",
+      transmission: "2 x 1-speed fixed ratio",
+      totalPower: "750 hp",
+      totalTorque: "785 lb-ft",
+      curbWeight: "8,991 lb (49/51%)",
+      wheelbase: "136.2 in",
+      dimensions: "224.3 x 85.3 x 74.1-77.1 in",
+      zeroToSixty: "4.5 sec",
+      epaRange: "460 mi",
+      roadTripRange: "415 mi",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 9.5,
+      scores: {
+        performance: 9.5,
+        efficiency: 9.8,
+        tech: 10.0,
+        value: 8.5
+      },
+      award: "2026 MotorTrend SUV of the Year",
+      vehicleName: "2026 Cadillac Escalade IQ",
+      reviewer: {
+        name: "Christian Seabaugh",
+        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg",
+        date: "Nov 18, 2025",
+        title: "The Cadillac Escalade IQ Is the 2026 MotorTrend SUV of the Year",
+        excerpt: "The electric Escalade returns Cadillac to its place as the Standard of the World. Our 2026 SUV of the Year shows what happens when big ideas are implemented and small details are sweated.",
+        detailedSections: [
+          {
+            title: "Advancement in Design",
+            content: "The Escalade IQ cuts a stunning presence with both its size and elegance. The design team expertly blended contemporary styling cues like distinctive jewellike LED lighting elements with classic callbacks such as the optional 24-inch wheels that pay homage to the 2002 model. Inside, the IQ sports what might be the most successful GM interior in generations, seamlessly blending 21st century tech with 20th century comforts."
+          },
+          {
+            title: "Engineering Excellence",
+            content: "The Escalade IQ's massive 205-kWh battery pack operates as two separate batteries when running the front- and rear-mounted permanent-magnet motors, which produce up to 750 hp and 785 lb-ft of torque. On modern 350-kW chargers, the battery pack operates in series, showing 800 volts and allowing peak charging rates of up to 352 kW."
+          },
+          {
+            title: "Range and Charging",
+            content: "The large battery helps the Escalade IQ clear 415 miles in our real-world Road-Trip Range test. Plugged into a suitable DC fast charger, the Escalade IQ can add 149 miles of range in just 15 minutes, 262 miles in 30, and 341 miles in 45. That 5–80 percent recharge takes 42 minutes."
+          },
+          {
+            title: "Performance",
+            content: "The Escalade IQ's dual motors pull like the best big understressed V-8s do, with gobs of excess grunt on tap and smooth, refined power delivery. This Cadillac rides and handles far better than it has any right to given its 4.5-ton curb weight, with four-wheel steering making it more maneuverable in tight spaces than a Tesla Model Y."
+          }
+        ]
+      }
+    }
   }
 };
 
