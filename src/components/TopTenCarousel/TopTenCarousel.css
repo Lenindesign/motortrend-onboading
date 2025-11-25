@@ -566,14 +566,16 @@
 }
 
 .top-ten-carousel__dot-progress-bar {
-  transition: stroke-dasharray 0.3s ease;
+  transition: stroke-dasharray 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
 }
 
 .top-ten-carousel__slider--hovered .top-ten-carousel__dot-progress-bar {
-  transition: stroke-dasharray 0.2s ease;
+  transition: stroke-dasharray 0.2s ease, opacity 0.2s ease;
 }
 
 .top-ten-carousel__dot-progress-bar--active {
+  opacity: 1;
   animation: progressCircle 5s linear infinite;
 }
 
