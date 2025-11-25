@@ -525,7 +525,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   return (
     <div className={`top-ten-carousel ${className}`}>
       <div 
-        className="top-ten-carousel__slider"
+        className={`top-ten-carousel__slider ${isSliderHovered ? 'top-ten-carousel__slider--hovered' : ''}`}
         onMouseEnter={() => setIsSliderHovered(true)}
         onMouseLeave={() => setIsSliderHovered(false)}
         onTouchStart={onTouchStart}
@@ -771,7 +771,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                       stroke="#FFFFFF"
                       strokeWidth="2"
                       strokeLinecap="round"
-                      strokeDasharray={`${index === currentSlide ? 100 : 0} 100`}
+                      strokeDasharray={`${index === currentSlide && !isSliderHovered ? 100 : 0} 100`}
                       transform="rotate(-90 18 18)"
                     />
                   </svg>
