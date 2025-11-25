@@ -184,51 +184,20 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
 
         {/* Listing Details */}
         <div className="photo-gallery__listing-details">
-          <div className="photo-gallery__listing-header">
-            <h3 className="photo-gallery__listing-title">
-              {listing.year} {vehicleName}
-              {listing.trim && <span className="photo-gallery__listing-trim"> {listing.trim}</span>}
-            </h3>
-            <div className="photo-gallery__listing-price">{formatPrice(listing.price)}</div>
+          <div className="photo-gallery__listing-price">{formatPrice(listing.price)}</div>
+          <div className="photo-gallery__listing-title">
+            {listing.year} {vehicleName}{listing.trim ? ` ${listing.trim}` : ''}
           </div>
-
           <div className="photo-gallery__listing-info">
             <div className="photo-gallery__listing-info-item">
               <Icon name="speed" size={16} />
               <span>{formatMileage(listing.mileage)}</span>
             </div>
-            <div className="photo-gallery__listing-info-item">
+            <div className="photo-gallery__listing-info-item photo-gallery__listing-dealer">
               <Icon name="location_on" size={16} />
-              <span>{listing.distance} mi away</span>
+              <span>{listing.dealerName}</span>
             </div>
           </div>
-
-          <div className="photo-gallery__listing-dealer">
-            <Icon name="store" size={16} />
-            <span>{listing.dealerName}</span>
-          </div>
-
-          {(listing.exteriorColor || listing.interiorColor) && (
-            <div className="photo-gallery__listing-colors">
-              {listing.exteriorColor && (
-                <span className="photo-gallery__listing-color">
-                  Ext: {listing.exteriorColor}
-                </span>
-              )}
-              {listing.interiorColor && (
-                <span className="photo-gallery__listing-color">
-                  Int: {listing.interiorColor}
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* CTA Button */}
-          <button className="photo-gallery__listing-cta">
-            <Icon name="phone" size={18} />
-            <span>Contact Dealer</span>
-            <Icon name="arrow_forward" size={18} />
-          </button>
         </div>
       </div>
     );
