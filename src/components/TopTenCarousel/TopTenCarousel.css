@@ -567,6 +567,10 @@
   animation: progressCircle 5s linear infinite;
 }
 
+.top-ten-carousel__dots:hover .top-ten-carousel__dot-progress-bar--active {
+  animation-play-state: paused;
+}
+
 @keyframes progressCircle {
   0% {
     stroke-dasharray: 0 100;
