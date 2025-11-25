@@ -760,7 +760,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                     />
                   </span>
                   <span className="top-ten-carousel__dot-tooltip">
-                    {index + 1}. {vehicle.name}
+                    #{vehicle.rank} {vehicle.name}
                   </span>
                 </button>
               ))}
