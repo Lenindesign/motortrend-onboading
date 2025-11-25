@@ -26,6 +26,7 @@ interface CarouselVehicle {
   make: string;
   model: string;
   image: string;
+  galleryImages?: string[];
   staffRating: number;
   communityRating: number;
   rank: number;
@@ -132,7 +133,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     console.log('TopTenCarousel: Total vehicles from API:', apiVehicles.length);
     return apiVehicles.map(v => ({
       name: `${v.year} ${v.make} ${v.model}`,
-      image: v.image
+      image: v.image,
+      galleryImages: v.galleryImages
     }));
   }, []); // Empty dependency array since getVehicles() returns static data
 
@@ -249,6 +251,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         make,
         model,
         image: vehicleItem.image || vehicleImageFor(vehicleItem.name),
+        galleryImages: vehicleItem.galleryImages,
         staffRating,
         communityRating,
         combinedRating,
@@ -423,8 +426,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const handleVehicleClick = async (vehicle: CarouselVehicle) => {
     console.log('🚗 Opening gallery for:', vehicle.name);
     
-    // Open photo gallery with vehicle images
-    const images = [vehicle.image];
+    // Open photo gallery with vehicle images (use gallery images if available, otherwise single image)
+    const images = vehicle.galleryImages && vehicle.galleryImages.length > 0 
+      ? vehicle.galleryImages 
+      : [vehicle.image];
+    console.log('📸 Gallery images:', images.length);
     setGalleryImages(images);
     setGalleryVehicleName(vehicle.name);
     
