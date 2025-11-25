@@ -131,6 +131,12 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const allVehicleItems = useMemo(() => {
     const apiVehicles = getVehicles();
     console.log('TopTenCarousel: Total vehicles from API:', apiVehicles.length);
+    const lincolnNavigator = apiVehicles.find(v => 
+      v.make.toLowerCase() === 'lincoln' && v.model.toLowerCase() === 'navigator' && v.year === '2024'
+    );
+    if (lincolnNavigator) {
+      console.log('✅ Found 2024 Lincoln Navigator with galleryImages:', lincolnNavigator.galleryImages?.length || 0);
+    }
     return apiVehicles.map(v => ({
       name: `${v.year} ${v.make} ${v.model}`,
       image: v.image,
@@ -285,6 +291,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       make: vehicle.make,
       model: vehicle.model,
       image: vehicle.image,
+      galleryImages: vehicle.galleryImages,
       staffRating: vehicle.staffRating,
       communityRating: vehicle.communityRating,
       rank: index + 1
@@ -425,12 +432,15 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   // Handle vehicle click
   const handleVehicleClick = async (vehicle: CarouselVehicle) => {
     console.log('🚗 Opening gallery for:', vehicle.name);
+    console.log('📸 Vehicle has galleryImages?', !!vehicle.galleryImages);
+    console.log('📸 galleryImages count:', vehicle.galleryImages?.length || 0);
+    console.log('📸 galleryImages:', vehicle.galleryImages);
     
     // Open photo gallery with vehicle images (use gallery images if available, otherwise single image)
     const images = vehicle.galleryImages && vehicle.galleryImages.length > 0 
       ? vehicle.galleryImages 
       : [vehicle.image];
-    console.log('📸 Gallery images:', images.length);
+    console.log('📸 Final gallery images array:', images.length, images);
     setGalleryImages(images);
     setGalleryVehicleName(vehicle.name);
     
