@@ -553,6 +553,12 @@
   pointer-events: none;
   z-index: 3;
   overflow: visible;
+  transition: transform var(--transition-fast);
+  transform-origin: center center;
+}
+
+.top-ten-carousel__dot--active .top-ten-carousel__dot-progress {
+  transform: scale(1.2);
 }
 
 .top-ten-carousel__dot-progress-bg {
