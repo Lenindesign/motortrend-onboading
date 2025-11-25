@@ -178,6 +178,7 @@
   line-height: 64px;
   color: var(--color-neutrals-1);
   margin: 0;
+  padding-top: 24px;
   margin-bottom: var(--spacing-3);
 }
 
