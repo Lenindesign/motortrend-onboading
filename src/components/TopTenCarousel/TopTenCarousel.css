@@ -534,7 +534,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: none;
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -544,6 +544,37 @@
   flex-shrink: 0;
 }
 
+.top-ten-carousel__dot-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.top-ten-carousel__dot-progress-bg {
+  transition: stroke var(--transition-fast);
+}
+
+.top-ten-carousel__dot-progress-bar {
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.top-ten-carousel__dot-progress-bar--active {
+  animation: progressCircle 5s linear infinite;
+}
+
+@keyframes progressCircle {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+  100% {
+    stroke-dasharray: 100 100;
+  }
+}
+
 .top-ten-carousel__dot-image-wrapper {
   width: 100%;
   height: 100%;
@@ -551,6 +582,7 @@
   overflow: hidden;
   display: block;
   position: relative;
+  z-index: 2;
 }
 
 .top-ten-carousel__dot-image {
@@ -561,8 +593,11 @@
 }
 
 .top-ten-carousel__dot:hover {
-  border-color: rgba(255, 255, 255, 0.6);
   transform: scale(1.1);
+}
+
+.top-ten-carousel__dot:hover .top-ten-carousel__dot-progress-bg {
+  stroke: rgba(255, 255, 255, 0.4);
 }
 
 .top-ten-carousel__dot:hover .top-ten-carousel__dot-tooltip {
@@ -572,10 +607,16 @@
 }
 
 .top-ten-carousel__dot--active {
-  border-color: #FFFFFF;
-  border-width: 3px;
   transform: scale(1.15);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.top-ten-carousel__dot--active .top-ten-carousel__dot-progress-bg {
+  stroke: rgba(255, 255, 255, 0.3);
+}
+
+.top-ten-carousel__dot--active .top-ten-carousel__dot-progress-bar {
+  stroke: #FFFFFF;
+  stroke-width: 2.5;
 }
 
 .top-ten-carousel__dot-tooltip {
@@ -793,6 +834,10 @@
   }
 
   .top-ten-carousel__dot-image {
+    display: none;
+  }
+
+  .top-ten-carousel__dot-progress {
     display: none;
   }
 

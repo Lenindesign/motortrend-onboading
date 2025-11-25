@@ -752,6 +752,29 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   onClick={() => setCurrentSlide(index)}
                   aria-label={`Go to ${vehicle.name}`}
                 >
+                  <svg className="top-ten-carousel__dot-progress" viewBox="0 0 36 36">
+                    <circle
+                      className="top-ten-carousel__dot-progress-bg"
+                      cx="18"
+                      cy="18"
+                      r="16"
+                      fill="none"
+                      stroke="rgba(255, 255, 255, 0.2)"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      className={`top-ten-carousel__dot-progress-bar ${index === currentSlide ? 'top-ten-carousel__dot-progress-bar--active' : ''}`}
+                      cx="18"
+                      cy="18"
+                      r="16"
+                      fill="none"
+                      stroke="#FFFFFF"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeDasharray={`${index === currentSlide ? 100 : 0} 100`}
+                      transform="rotate(-90 18 18)"
+                    />
+                  </svg>
                   <span className="top-ten-carousel__dot-image-wrapper">
                     <img 
                       src={vehicle.image} 
