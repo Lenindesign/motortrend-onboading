@@ -527,6 +527,7 @@
   gap: 8px;
   z-index: 20;
   align-items: center;
+  overflow: visible;
 }
 
 .top-ten-carousel__dot {
@@ -539,15 +540,23 @@
   transition: all var(--transition-fast);
   padding: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   flex-shrink: 0;
+}
+
+.top-ten-carousel__dot-image-wrapper {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: block;
+  position: relative;
 }
 
 .top-ten-carousel__dot-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
   display: block;
 }
 
@@ -559,7 +568,7 @@
 .top-ten-carousel__dot:hover .top-ten-carousel__dot-tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
 }
 
 .top-ten-carousel__dot--active {
@@ -571,7 +580,7 @@
 
 .top-ten-carousel__dot-tooltip {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
   background-color: rgba(20, 20, 22, 0.95);
@@ -586,10 +595,16 @@
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: all var(--transition-fast);
+  transition: opacity var(--transition-fast), visibility var(--transition-fast), transform var(--transition-fast);
   pointer-events: none;
-  z-index: 100;
+  z-index: 10000;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.top-ten-carousel__dot:hover .top-ten-carousel__dot-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 .top-ten-carousel__dot-tooltip::after {

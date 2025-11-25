@@ -752,11 +752,13 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   onClick={() => setCurrentSlide(index)}
                   aria-label={`Go to ${vehicle.name}`}
                 >
-                  <img 
-                    src={vehicle.image} 
-                    alt={vehicle.name}
-                    className="top-ten-carousel__dot-image"
-                  />
+                  <span className="top-ten-carousel__dot-image-wrapper">
+                    <img 
+                      src={vehicle.image} 
+                      alt={vehicle.name}
+                      className="top-ten-carousel__dot-image"
+                    />
+                  </span>
                   <span className="top-ten-carousel__dot-tooltip">
                     {index + 1}. {vehicle.name}
                   </span>
