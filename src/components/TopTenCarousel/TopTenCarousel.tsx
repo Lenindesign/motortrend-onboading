@@ -727,7 +727,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
               <Icon name="chevron_right" size={32} />
             </button>
             
-            {/* Slider Dots */}
+            {/* Slider Dots (Desktop) / Counter (Mobile) */}
             <div className="top-ten-carousel__dots">
               {carouselVehicles.map((_, index) => (
                 <button
@@ -737,6 +737,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
+            </div>
+            
+            {/* Slide Counter (Mobile Only) */}
+            <div className="top-ten-carousel__counter">
+              {currentSlide + 1}/{carouselVehicles.length}
             </div>
           </>
         )}

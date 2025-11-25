@@ -550,6 +550,27 @@
   transform: scale(1.3);
 }
 
+/* Slide Counter (Mobile Only) */
+.top-ten-carousel__counter {
+  display: none;
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(20, 20, 22, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 20;
+  pointer-events: none;
+}
+
 /* Responsive Styles */
 @media (max-width: 1024px) {
   .top-ten-carousel__badges-container {
@@ -781,7 +802,14 @@
   }
 
   .top-ten-carousel__dots {
+    display: none;
+  }
+
+  .top-ten-carousel__counter {
+    display: block;
     top: 18px;
+    font-size: 12px;
+    padding: 5px 12px;
   }
 
   .top-ten-carousel__category-badge {
