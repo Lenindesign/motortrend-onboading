@@ -31,7 +31,27 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [allImages, setAllImages] = useState<string[]>(images);
   const hasListings = localListings && localListings.length > 0;
+
+  // Combine vehicle hero images with listing photos
+  useEffect(() => {
+    const listingPhotos: string[] = [];
+    localListings.forEach(listing => {
+      if (listing.photoUrls && listing.photoUrls.length > 0) {
+        listingPhotos.push(...listing.photoUrls);
+      } else if (listing.imageUrl) {
+        listingPhotos.push(listing.imageUrl);
+      }
+    });
+    
+    // Combine: hero images first, then unique listing photos
+    const uniqueListingPhotos = listingPhotos.filter((photo, index, self) => 
+      self.indexOf(photo) === index && !images.includes(photo)
+    );
+    
+    setAllImages([...images, ...uniqueListingPhotos]);
+  }, [images, localListings]);
 
   // Update index when initialIndex changes
   useEffect(() => {
@@ -55,11 +75,11 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   }, [isOpen, currentIndex]);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setCurrentIndex((prev) => (prev + 1) % allImages.length);
   };
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setCurrentIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -84,7 +104,8 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           <div className="photo-gallery__title">
             {vehicleName && <h2>{vehicleName}</h2>}
             <span className="photo-gallery__counter">
-              {currentIndex + 1} / {images.length}
+              {currentIndex + 1} / {allImages.length}
+              {hasListings && <span className="photo-gallery__counter-listings"> • {localListings.length} Available</span>}
             </span>
           </div>
           <button 
@@ -102,7 +123,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
             <button
               className="photo-gallery__nav photo-gallery__nav--prev"
               onClick={handlePrevious}
-              disabled={images.length <= 1}
+              disabled={allImages.length <= 1}
               aria-label="Previous image"
             >
               <Icon name="chevron_left" size={48} />
@@ -110,7 +131,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
 
             <div className="photo-gallery__image-container">
               <img
-                src={images[currentIndex]}
+                src={allImages[currentIndex]}
                 alt={`${vehicleName || 'Vehicle'} - Photo ${currentIndex + 1}`}
                 className="photo-gallery__image"
               />
@@ -119,7 +140,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
             <button
               className="photo-gallery__nav photo-gallery__nav--next"
               onClick={handleNext}
-              disabled={images.length <= 1}
+              disabled={allImages.length <= 1}
               aria-label="Next image"
             >
               <Icon name="chevron_right" size={48} />
@@ -138,11 +159,15 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
                   <Icon name={isSidebarOpen ? 'chevron_right' : 'chevron_left'} size={24} />
                   {!isSidebarOpen && (
                     <span className="photo-gallery__sidebar-toggle-text">
-                      {localListings.length} Listings
+                      <strong>{localListings.length}</strong> Available
                     </span>
                   )}
                 </button>
                 <div className="photo-gallery__sidebar-content">
+                  <div className="photo-gallery__sidebar-header">
+                    <h3>Available Near You</h3>
+                    <p>{localListings.length} {vehicleName} {localListings.length === 1 ? 'listing' : 'listings'} • Compare prices & dealers</p>
+                  </div>
                   <LocalListingsSidebar
                     vehicleName={vehicleName}
                     listings={localListings}
@@ -155,10 +180,10 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
         </div>
 
         {/* Thumbnails */}
-        {images.length > 1 && (
+        {allImages.length > 1 && (
           <div className="photo-gallery__thumbnails">
             <div className="photo-gallery__thumbnails-scroll">
-              {images.map((image, index) => (
+              {allImages.map((image, index) => (
                 <button
                   key={index}
                   className={`photo-gallery__thumbnail ${
