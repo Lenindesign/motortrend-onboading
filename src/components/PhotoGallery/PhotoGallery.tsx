@@ -109,9 +109,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     return filtered;
   }, [localListings, sortBy, filterCondition]);
 
-  // Find best deal (lowest price)
-  const bestDeal = filteredAndSortedListings[0];
-
   const formatPrice = (price: number): string => {
     return `$${price.toLocaleString()}`;
   };
