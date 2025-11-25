@@ -10,7 +10,7 @@
  * - Mobile-optimized with swipeable tabs
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 import { Badge } from '../atoms/Badge/Badge';
@@ -44,6 +44,8 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   const [filterCondition, setFilterCondition] = useState<FilterCondition>('all');
   const [activeTab, setActiveTab] = useState<'photos' | 'listings'>('photos');
   const [currentListingPhotoIndex, setCurrentListingPhotoIndex] = useState<Record<string, number>>({});
+  const thumbnailsRef = useRef<HTMLDivElement>(null);
+  const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
   
   const hasListings = localListings && localListings.length > 0;
 
@@ -51,6 +53,26 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   useEffect(() => {
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
+
+  // Scroll active thumbnail into view
+  useEffect(() => {
+    if (thumbnailRefs.current[currentIndex] && thumbnailsRef.current) {
+      const thumbnail = thumbnailRefs.current[currentIndex];
+      const container = thumbnailsRef.current;
+      
+      if (thumbnail) {
+        const containerRect = container.getBoundingClientRect();
+        const thumbnailRect = thumbnail.getBoundingClientRect();
+        
+        // Check if thumbnail is outside visible area
+        if (thumbnailRect.left < containerRect.left) {
+          thumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        } else if (thumbnailRect.right > containerRect.right) {
+          thumbnail.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'end' });
+        }
+      }
+    }
+  }, [currentIndex]);
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -292,10 +314,13 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
 
         {/* Thumbnails */}
         {images.length > 1 && (
-          <div className="photo-gallery__thumbnails">
+          <div className="photo-gallery__thumbnails" ref={thumbnailsRef}>
               {images.map((image, index) => (
                 <button
                   key={index}
+                  ref={(el) => {
+                    thumbnailRefs.current[index] = el;
+                  }}
                   className={`photo-gallery__thumbnail ${
                     index === currentIndex ? 'photo-gallery__thumbnail--active' : ''
                   }`}
