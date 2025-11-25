@@ -156,7 +156,9 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'supra': ['Coupe'],
   
   // Hatchbacks
-  'gti': ['Hatchback'],
+  'gti': ['Hatchback', 'Sedan'],
+  'golf r': ['Hatchback', 'Sedan'],
+  'golf gti': ['Hatchback', 'Sedan'],
   'wrx': ['Hatchback'],
   'wrx sti': ['Hatchback'],
 };

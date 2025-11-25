@@ -5557,6 +5557,165 @@ export const articles: Record<string, Article> = {
         ]
       }
     }
+  },
+  "2025-ram-1500-truck-of-the-year": {
+    title: "The Ram 1500 Is MotorTrend's 2025 Truck of the Year",
+    author: "Frank Markus",
+    date: "Dec 11, 2024",
+    category: "Awards",
+    heroImage: "https://d2kde5ohu8qb21.cloudfront.net/files/674f987fd43ca000089cb1d6/025-2025-ram-1500.jpg",
+    images: [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f987fd43ca000089cb1d6/025-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f9855d5500900089c7088/006-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f986b40fab700086ab429/016-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f98581f017500099cf171/007-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f9883d5500900089c7094/027-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f98709948d000089f4384/018-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f984d1f017500099cf170/001-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f98789948d000089f4386/021-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674f9861d5500900089c708a/011-2025-ram-1500.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/674e055a1129c00008cff489/002-2025-ram-1500-tungsten-interior-dash.jpg"
+    ],
+    excerpt: "Outside, it looks like a minor refresh, but myriad refinements under that familiar skin significantly advance the half-ton pickup art.",
+    content: [
+      {
+        type: "paragraph",
+        text: "Well, that makes it a clean sweep. All three winners of Golden Calipers this year entered their competitions as dark-horse candidates. Each was overshadowed by flashier, sexier, or more \"newsworthy\" candidates. In the truck realm, those frontrunners included a purpose-built 440-mile electric pickup with midgate and tailgate tricks up its sleeve, an apocalypse-ready bullet-resistant origami EV bristling with 48-volt electrics and by-wire steering, and far newer versions of two popular midsize trucks. Alas, our exhaustive testing and evaluation process gradually revealed flaws in these competitors and brilliance in the significantly revamped 2025 Ram 1500 lineup."
+      },
+      {
+        type: "paragraph",
+        text: "Ram strategically sent us three very different trucks, chosen to vividly illustrate the breadth of what's new for 2025, starting with its budget back-road bomber, a Tradesman-based, off-road-oriented Warlock. Under its humble work-truck costume lies some serious off-road capability, powered by the standard-output (420-hp/469-lb-ft) variant of this year's biggest Ram news: the Hemi-replacing straight-six turbo (SST) Hurricane engine. At the other end of the spectrum were two premium models—the RHO and Tungsten for those seeking performance or luxury. The former replaces the late, lamented Hellcat-powered TRX, using a high-output (540-hp/521-lb-ft) version of the SST, while the latter represents a new luxury flagship model positioned above the Limited and Limited Longhorn. And in a new twist for Ram, the Limiteds and Tungsten now enjoy additional power by sharing the RHO's high-output engine."
+      },
+      {
+        type: "heading",
+        text: "Engineering Excellence"
+      },
+      {
+        type: "paragraph",
+        text: "The headline-grabbing engine-swap news initially vexed trucking traditionalists, but since its introduction, we've clearly demonstrated that the new, more powerful, and more technologically advanced engine outperforms its Hemi predecessor. In a race of like Laramie 4x4 crew cabs, the standard-output SST is 1.6 seconds quicker to 60 mph than the old 5.7 V-8. The high-output version widens that lead to 2.2 seconds. Yeah, sure, the RHO is slower than the mighty TRX—but only by 0.7 second to 60 mph and through the quarter mile, and it becomes a much more livable daily driver in the bargain."
+      },
+      {
+        type: "paragraph",
+        text: "An important element of the performance story is weight; this all-aluminum entry I-6 weighs less than the iron-block V-8s it replaces. And although it's longer, packaging the turbos aft of the axle helps make the nose feel lighter. The difference from standard output to the 5.7-liter is about 50 pounds, but the high-output SST is about 150 pounds lighter than the 6.2-liter supercharged V-8. That difference noticeably improves the RHO's handling relative to the TRX, though some editors felt the steering ratio could be tightened a commensurate amount."
+      },
+      {
+        type: "paragraph",
+        text: "And Ram could never have packaged a Hellcat motor in a luxury Limited model, but the SST is considerably more civilized. \"This engine and transmission perform as if they're installed in a Mercedes,\" deputy editor Alexander Stoklosa said. \"They're sharp and feral when you want, quiet and demure the rest of the time, surfing along on torque and imperceptible shifts.\""
+      },
+      {
+        type: "paragraph",
+        text: "Another engineering advance is Hands-Free Active Driving Assist, Stellantis' hands-free answer to GM's Super Cruise and Ford's BlueCruise. Available for use on about 125,000 miles of well-marked divided roadways, the system worked reasonably well on our Michigan freeways. We like the bright green cluster-surround lighting that shows when it's working. The system is not perfect, but it just rolled out, and in our limited experience we rank its functionality just behind BlueCruise and Super Cruise."
+      },
+      {
+        type: "paragraph",
+        text: "Screen real estate expands for 2025 with the segment's first 10.3-inch passenger screen joining the available vertical 14.5-inch display, 12.3-inch digital cluster, and 10.0-inch head-up unit. Passengers can view any of the truck's camera images, navigation, or onboard computer information, and of course play media via streaming or HDMI, which remains invisible to the driver."
+      },
+      {
+        type: "heading",
+        text: "Performance of Intended Function"
+      },
+      {
+        type: "paragraph",
+        text: "Trucks are engineered to serve a lot of disparate needs, from towing and hauling to backcountry exploration, from daily commuting to night-on-the-town strutting. These three Rams covered that gamut thoroughly, and they're merely slices of the truck's broad lineup."
+      },
+      {
+        type: "paragraph",
+        text: "Ram chips away at Ford's towing supremacy with a new reverse steering aid for trailering. It calibrates itself without the need for programming and stickers. It also allows the driver to steer the trailer with a knob, adding a Push-to-Center feature that steers the truck to keep the trailer moving straight back once you have it pointed the way you want."
+      },
+      {
+        type: "paragraph",
+        text: "Max trailer weight ratings range from 6,370 to 11,600 pounds, and we hooked a 6,870-pound Mastercraft XT22 T wake boat to our Tungsten (75 percent of its rated maximum). Several editors remarked that this truck pulled its load more easily than any other truck here. The air suspension makes trailer attachment a breeze—lower it all the way down, back under the hitch, and raise it back up. It levels loads easily, and the dampers were deemed best at absorbing road imperfections."
+      },
+      {
+        type: "paragraph",
+        text: "When there's stuff to haul, the 2025 Ram 1500 is rated to carry between 1,190 and 2,360 pounds of it. We loaded half a ton in our Warlock and were impressed that it rode even more smoothly and still handled fine."
+      },
+      {
+        type: "paragraph",
+        text: "Off-roading has long been a Ram strength, and for 2025 there's a limited-slip or electronically locking rear diff (which can lock in RWD!) standard or optional on every model. The Ram Classic's Warlock package of blacked-out trim and popular options now joins the main 1500 lineup in adding a 1-inch suspension lift, Bilstein shocks, skidplates, and a locking rear axle. Priced at $56,255, it delivers much of the Rebel's capability at a $9,935 discount."
+      },
+      {
+        type: "paragraph",
+        text: "But of course, it's the RHO that really shines here, and we generally dig its banshee wail and improved steering feel relative to the TRX. Many noted how much lighter, wieldier, and rear-torque-biased the RHO felt."
+      },
+      {
+        type: "paragraph",
+        text: "As a commuter or long-haul tripper, it's hard to beat a Ram 1500. All cabins from the Warlock to the Tungsten sounded quieter than any other competitor with an engine, outward visibility is exceptional, power pedal adjustment and A-pillar grab handles cater to varying body sizes, and all variants ride smoother than nearly any other truck, full stop."
+      },
+      {
+        type: "heading",
+        text: "Advancement in Design"
+      },
+      {
+        type: "paragraph",
+        text: "The 2025 Ram 1500's sole leap in pickup design was the choice to integrate the Tungsten model's front bumper beam behind a soft fascia, as on a car. All other variants (and competitive models) employ a separate painted or chromed metal bumper. You might not have even noticed at first glance, but this leaves no unsightly gap running around the nose below the grille, and it allows the front wheel-lip moldings to continue right down to the chin spoiler. This approach lends a nicely tailored and posh-price-appropriate look that hopefully won't balloon insurance rates."
+      },
+      {
+        type: "paragraph",
+        text: "The Tungsten model delivers next-level opulence for a truck interior. Ram has long set the standard, and this new model moves the goalposts yet again. There's intricately woven carbon-fiber trim and miles of stitching atop the dash, doors, seats, and console."
+      },
+      {
+        type: "heading",
+        text: "Efficiency"
+      },
+      {
+        type: "paragraph",
+        text: "It was clearly an efficiency play to swap V-8s for twin-turbo sixes, but the improvement is modest on mainstream trucks. Their highway economy improves by 9 percent, but in the city, rear-drive models are equivalent, and 4x4s measure 6 percent worse, so combined ratings change little. Of course, relative to the TRX, the RHO improves by 40 percent city, 14 percent highway, and 25 percent combined."
+      }
+    ],
+    specifications: {
+      basePrice: "$56,255 - $89,070",
+      layout: "Front-engine, RWD/4WD, 5-pass, 4-door pickup",
+      engines: "3.0L twin-turbo I-6 (SST Hurricane), 420 hp, 469 lb-ft; 3.0L twin-turbo I-6 (SST Hurricane HO), 540 hp, 521 lb-ft",
+      transmission: "8-speed automatic",
+      curbWeight: "5,200 - 5,800 lb",
+      wheelbase: "144.5 - 153.5 in",
+      length: "232.9 - 241.9 in",
+      width: "82.1 in",
+      height: "77.6 - 78.3 in",
+      payloadCapacity: "1,190 - 2,360 lb",
+      towingCapacity: "6,370 - 11,600 lb",
+      zeroToSixty: "4.4 - 5.2 sec",
+      quarterMile: "13.0 - 14.0 sec",
+      epaMpg: "14-17 city / 16-24 highway",
+      onSale: "Now"
+    },
+    motortrendScore: {
+      overallRating: 9.4,
+      scores: {
+        performance: 9.5,
+        efficiency: 8.5,
+        tech: 9.5,
+        value: 9.0
+      },
+      award: "2025 MotorTrend Truck of the Year",
+      vehicleName: "2025 Ram 1500",
+      reviewer: {
+        name: "Frank Markus",
+        avatar: "https://www.motortrend.com/uploads/sites/5/2024/12/frank-markus.jpg",
+        date: "Dec 11, 2024",
+        title: "The Ram 1500 Is MotorTrend's 2025 Truck of the Year",
+        excerpt: "Outside, it looks like a minor refresh, but myriad refinements under that familiar skin significantly advance the half-ton pickup art.",
+        detailedSections: [
+          {
+            title: "Engineering Excellence",
+            content: "The headline-grabbing engine-swap news initially vexed trucking traditionalists, but since its introduction, we've clearly demonstrated that the new, more powerful, and more technologically advanced engine outperforms its Hemi predecessor. The standard-output SST is 1.6 seconds quicker to 60 mph than the old 5.7 V-8, while the high-output version widens that lead to 2.2 seconds. The all-aluminum I-6 weighs less than the iron-block V-8s it replaces, with the high-output SST about 150 pounds lighter than the 6.2-liter supercharged V-8."
+          },
+          {
+            title: "Performance of Intended Function",
+            content: "Ram chips away at Ford's towing supremacy with a new reverse steering aid for trailering. Max trailer weight ratings range from 6,370 to 11,600 pounds. The air suspension makes trailer attachment a breeze, and the dampers were deemed best at absorbing road imperfections. Off-roading has long been a Ram strength, with the RHO delivering improved steering feel and lighter, more wieldy handling relative to the TRX."
+          },
+          {
+            title: "Advancement in Design",
+            content: "The 2025 Ram 1500's design leap was integrating the Tungsten model's front bumper beam behind a soft fascia, as on a car. This leaves no unsightly gap running around the nose below the grille. The Tungsten model delivers next-level opulence with intricately woven carbon-fiber trim and miles of stitching throughout the interior."
+          },
+          {
+            title: "Efficiency",
+            content: "The swap from V-8s to twin-turbo sixes improves highway economy by 9 percent. Relative to the TRX, the RHO improves by 40 percent city, 14 percent highway, and 25 percent combined fuel economy."
+          }
+        ]
+      }
+    }
   }
 };
 

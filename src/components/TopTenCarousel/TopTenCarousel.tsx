@@ -302,6 +302,42 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       }
     }
 
+    // Ensure 2026 Volkswagen Golf R is ranked #1 for Sedan "All" subcategory
+    if (selectedVehicleType === 'Sedan' && selectedSubcategory === 'All') {
+      const golfRIndex = sortedVehicles.findIndex(vehicle => {
+        const make = vehicle.make.toLowerCase();
+        const model = vehicle.model.toLowerCase();
+        const year = vehicle.year;
+        return make === 'volkswagen' && 
+               (model.includes('golf') && model.includes('r')) &&
+               year === '2026';
+      });
+      
+      if (golfRIndex !== -1 && golfRIndex !== 0) {
+        const golfR = sortedVehicles[golfRIndex];
+        sortedVehicles.splice(golfRIndex, 1);
+        sortedVehicles.unshift(golfR);
+      }
+    }
+
+    // Ensure 2025 Ram 1500 is ranked #1 for Truck "All" subcategory
+    if (selectedVehicleType === 'Truck' && selectedSubcategory === 'All') {
+      const ram1500Index = sortedVehicles.findIndex(vehicle => {
+        const make = vehicle.make.toLowerCase();
+        const model = vehicle.model.toLowerCase();
+        const year = vehicle.year;
+        return make === 'ram' && 
+               model.includes('1500') &&
+               year === '2025';
+      });
+      
+      if (ram1500Index !== -1 && ram1500Index !== 0) {
+        const ram1500 = sortedVehicles[ram1500Index];
+        sortedVehicles.splice(ram1500Index, 1);
+        sortedVehicles.unshift(ram1500);
+      }
+    }
+
     // Take top 10 best vehicles and reverse order (10 to 1)
     const finalVehicles = sortedVehicles.slice(0, 10).map((vehicle, index) => ({
       id: `${selectedVehicleType.toLowerCase()}-${index}`,
