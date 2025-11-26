@@ -1153,8 +1153,10 @@ export const Home: React.FC = () => {
       const minute = (makeModelHash % 60);
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
       
-      const staffRating = generateStaffRating(vehicleItem.name);
-      const communityRating = generateCommunityRating(vehicleItem.name);
+      // Use API ratings as primary source (single source of truth)
+      // Only fallback to generated ratings if API data is missing
+      const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
+      const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const combinedRating = (staffRating + communityRating) / 2;
       
       return {
@@ -1232,8 +1234,10 @@ export const Home: React.FC = () => {
       const minute = (makeModelHash % 60);
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
       
-      const staffRating = generateStaffRating(vehicleItem.name);
-      const communityRating = generateCommunityRating(vehicleItem.name);
+      // Use API ratings as primary source (single source of truth)
+      // Only fallback to generated ratings if API data is missing
+      const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
+      const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const combinedRating = (staffRating + communityRating) / 2;
       
       return {
@@ -1389,8 +1393,10 @@ export const Home: React.FC = () => {
       const minute = (makeModelHash % 60);
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
       
-      const staffRating = generateStaffRating(vehicleItem.name);
-      const communityRating = generateCommunityRating(vehicleItem.name);
+      // Use API ratings as primary source (single source of truth)
+      // Only fallback to generated ratings if API data is missing
+      const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
+      const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const combinedRating = (staffRating + communityRating) / 2;
       
       return {
@@ -1837,6 +1843,14 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
+        {/* Top Ten Sedans Carousel - Above Rankings & Awards */}
+        <div className="home__section home__section--full-width">
+          <TopTenCarousel 
+            initialVehicleType="Sedan"
+            initialSubcategory="All"
+          />
+        </div>
+
         {/* News Section with Right Column Ad - Rankings & Awards */}
         <div className="home__section">
           <div className="home__left-column">
@@ -1856,8 +1870,16 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
+        {/* Top Ten Trucks Carousel - Below Rankings & Awards */}
+        <div className="home__section home__section--full-width">
+          <TopTenCarousel 
+            initialVehicleType="Truck"
+            initialSubcategory="All"
+          />
+        </div>
+
         {/* Vehicle Carousel Section - Full width - Top Ten SUVs (Hidden for Car Buyers) */}
-        {!isCarBuyers && carouselVehicles.length > 0 && (
+        {false && !isCarBuyers && carouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
             <div 
               className="home__carousel"
@@ -2078,7 +2100,7 @@ export const Home: React.FC = () => {
         )}
 
         {/* Sedan Carousel Section - Full width */}
-        {sedanCarouselVehicles.length > 0 && (
+        {false && sedanCarouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
             <div 
               className="home__carousel"
@@ -2235,7 +2257,7 @@ export const Home: React.FC = () => {
         )}
 
         {/* Truck Carousel Section - Full width */}
-        {truckCarouselVehicles.length > 0 && (
+        {false && truckCarouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
             <div 
               className="home__carousel"

@@ -16,8 +16,9 @@ import { getVehicles } from '../../api/vehiclesApi';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import './TopTenCarousel.css';
 
-export type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe';
+export type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe' | 'Performance';
 export type Subcategory = 'All' | 'Subcompact' | 'Compact' | 'Midsize' | 'Full-Size' | 'Luxury' | 'Electric';
+export type RatingType = 'MotorTrend' | 'User Reviews';
 
 interface CarouselVehicle {
   id: string;
@@ -36,17 +37,22 @@ interface TopTenCarouselProps {
   className?: string;
   onExpandClick?: (vehicle: CarouselVehicle, index: number) => void;
   showExpandButton?: boolean;
+  initialVehicleType?: VehicleType;
+  initialSubcategory?: Subcategory;
 }
 
 export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({ 
   className = '', 
   onExpandClick,
-  showExpandButton = false 
+  showExpandButton = false,
+  initialVehicleType = 'SUV',
+  initialSubcategory = 'All'
 }) => {
   const navigate = useNavigate();
   
-  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>('SUV');
-  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
+  const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>(initialVehicleType);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(initialSubcategory);
+  const [ratingType, setRatingType] = useState<RatingType>('MotorTrend');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
   const [savedVehicles, setSavedVehicles] = useState<Set<string>>(new Set());
@@ -138,26 +144,36 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     if (lincolnNavigator) {
       console.log('✅ Found 2024 Lincoln Navigator with galleryImages:', lincolnNavigator.galleryImages?.length || 0);
     }
+    // Include all rating properties from API to ensure single source of truth
     return apiVehicles.map(v => ({
       name: `${v.year} ${v.make} ${v.model}`,
       image: v.image,
-      galleryImages: v.galleryImages
+      galleryImages: v.galleryImages,
+      bodyStyle: v.bodyStyle, // Include bodyStyle from API (single source of truth)
+      staffRating: v.staffRating, // Include API rating (single source of truth)
+      communityRating: v.communityRating, // Include API rating (single source of truth)
+      priceMin: v.priceMin // Include priceMin for filtering
     }));
   }, []); // Empty dependency array since getVehicles() returns static data
 
   // Helper function to get subcategories for a vehicle type
   const getSubcategoriesForType = (type: VehicleType): Subcategory[] => {
+    // Performance is a standalone category with no subcategories
+    if (type === 'Performance') {
+      return ['All'];
+    }
+    
     const commonSubcategories: Subcategory[] = ['All', 'Subcompact', 'Compact', 'Midsize', 'Full-Size', 'Luxury', 'Electric'];
     
     switch (type) {
       case 'SUV':
         return commonSubcategories;
       case 'Sedan':
-        return ['All', 'Compact', 'Midsize', 'Full-Size', 'Luxury', 'Electric'];
+        return ['All', 'Compact', 'Midsize', 'Full-Size', 'Electric'];
       case 'Truck':
         return ['All', 'Midsize', 'Full-Size', 'Electric'];
       case 'Coupe':
-        return ['All', 'Compact', 'Midsize', 'Luxury', 'Electric'];
+        return ['All', 'Compact', 'Midsize', 'Electric'];
       default:
         return ['All'];
     }
@@ -200,7 +216,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       const subcompactSedans = ['rio', 'versa', 'mirage'];
       const compactSedans = ['civic', 'corolla', 'sentra', 'elantra', 'forte', 'mazda3', 'impreza', 'jetta', 'a3'];
       const midsizeSedans = ['accord', 'camry', 'altima', 'sonata', 'optima', 'mazda6', 'legacy', 'passat', 'a4', '3 series', 'c-class'];
-      const fullSizeSedans = ['avalon', 'maxima', 'charger', '300', 'impala', 'a6', '5 series', 'e-class'];
+      const fullSizeSedans = ['avalon', 'maxima', 'charger', '300', 'impala', 'a6', '5 series', 'e-class', 'ct5', 'ct6', 'continental', 's90', 'gs', 'ls', 'q70', 'panamera', 'taycan', 'model s', 'a8', '7 series', 's-class'];
       
       if (subcompactSedans.some(model => name.includes(model))) return 'Subcompact';
       if (compactSedans.some(model => name.includes(model))) return 'Compact';
@@ -208,9 +224,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       if (fullSizeSedans.some(model => name.includes(model))) return 'Full-Size';
     }
 
-    // Luxury classification
-    const luxuryBrands = ['mercedes', 'bmw', 'audi', 'lexus', 'infiniti', 'acura', 'cadillac', 'lincoln', 'genesis', 'porsche', 'jaguar', 'land rover', 'volvo'];
-    if (luxuryBrands.some(brand => name.includes(brand))) return 'Luxury';
+    // Luxury classification (only for SUV and Truck vehicle types)
+    if (vehicleType !== 'Sedan' && vehicleType !== 'Coupe') {
+      const luxuryBrands = ['mercedes', 'bmw', 'audi', 'lexus', 'infiniti', 'acura', 'cadillac', 'lincoln', 'genesis', 'porsche', 'jaguar', 'land rover', 'volvo'];
+      if (luxuryBrands.some(brand => name.includes(brand))) return 'Luxury';
+    }
 
     return 'All';
   };
@@ -222,22 +240,46 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
   // Prepare vehicles for carousel (10 best vehicles of selected type)
   const carouselVehicles: CarouselVehicle[] = useMemo(() => {
-    // Filter by selected vehicle type
-    let filteredVehicles = allVehicleItems.filter(vehicle => {
-      const bodyStyles = getVehicleBodyStyle(vehicle.name);
-      return bodyStyles.includes(selectedVehicleType);
-    });
+    let filteredVehicles = allVehicleItems;
     
-    console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} ${selectedVehicleType}s from ${allVehicleItems.length} total vehicles`);
-    
-    // Filter by subcategory if not 'All'
-    if (selectedSubcategory !== 'All') {
-      filteredVehicles = filteredVehicles.filter(vehicle => {
-        return getVehicleSubcategory(vehicle.name, selectedVehicleType) === selectedSubcategory;
+    // Performance is a standalone category - filter by price only (all body styles)
+    if (selectedVehicleType === 'Performance') {
+      filteredVehicles = allVehicleItems.filter(vehicle => {
+        const priceMin = vehicle.priceMin ?? 0;
+        return priceMin > 150000;
       });
+      console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} Performance vehicles (price > $150k) from ${allVehicleItems.length} total vehicles`);
+    } else {
+      // Filter by selected vehicle type for regular categories
+      // Use bodyStyle from API as primary source, fallback to getVehicleBodyStyle if not available
+      filteredVehicles = allVehicleItems.filter(vehicle => {
+        // Prioritize bodyStyle from API (single source of truth)
+        if (vehicle.bodyStyle) {
+          return vehicle.bodyStyle === selectedVehicleType;
+        }
+        // Fallback to getVehicleBodyStyle for legacy compatibility
+        const bodyStyles = getVehicleBodyStyle(vehicle.name);
+        return bodyStyles.includes(selectedVehicleType);
+      });
+      
+      console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} ${selectedVehicleType}s from ${allVehicleItems.length} total vehicles`);
+      
+      // Exclude vehicles with priceMin > 150000 from regular categories (including "All")
+      filteredVehicles = filteredVehicles.filter(vehicle => {
+        const priceMin = vehicle.priceMin ?? 0;
+        return priceMin <= 150000;
+      });
+      
+      // Filter by subcategory if not 'All'
+      if (selectedSubcategory !== 'All') {
+        filteredVehicles = filteredVehicles.filter(vehicle => {
+          return getVehicleSubcategory(vehicle.name, selectedVehicleType) === selectedSubcategory;
+        });
+      }
     }
 
     // Map to Vehicle objects with ratings
+    // Use API ratings as single source of truth, fallback to generated ratings only if missing
     const vehiclesWithRatings = filteredVehicles.map((vehicleItem, index) => {
       const parsed = parseVehicleName(vehicleItem.name);
       const year = decodeURIComponent(parsed.year);
@@ -247,9 +289,20 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       const currentYear = new Date().getFullYear();
       const vehicleYear = parseInt(year) || currentYear;
       
-      const staffRating = generateStaffRating(vehicleItem.name);
-      const communityRating = generateCommunityRating(vehicleItem.name);
+      // Use API ratings as primary source (single source of truth)
+      // Only fallback to generated ratings if API data is missing
+      const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
+      const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
+      // Note: combinedRating kept for display purposes, but ranking uses staffRating only
       const combinedRating = (staffRating + communityRating) / 2;
+      
+      // Prioritize API image - only use fallback if image is truly missing
+      const vehicleImage = (vehicleItem.image && 
+                           typeof vehicleItem.image === 'string' && 
+                           vehicleItem.image.trim() !== '' &&
+                           vehicleItem.image.startsWith('http'))
+        ? vehicleItem.image 
+        : vehicleImageFor(vehicleItem.name);
       
       return {
         id: `vehicle-${index}`,
@@ -257,8 +310,9 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         year,
         make,
         model,
-        image: vehicleItem.image || vehicleImageFor(vehicleItem.name),
+        image: vehicleImage,
         galleryImages: vehicleItem.galleryImages,
+        bodyStyle: vehicleItem.bodyStyle, // Include bodyStyle for deduplication
         staffRating,
         communityRating,
         combinedRating,
@@ -266,21 +320,39 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       };
     });
 
-    // Remove duplicates by make/model (keep latest year)
+    // Remove duplicates by make/model (keep latest year, prefer matching bodyStyle)
     const uniqueVehicles = new Map<string, typeof vehiclesWithRatings[0]>();
     vehiclesWithRatings.forEach(vehicle => {
       const key = `${vehicle.make}-${vehicle.model}`.toLowerCase();
       const existing = uniqueVehicles.get(key);
-      if (!existing || vehicle.vehicleYear > existing.vehicleYear) {
+      if (!existing) {
         uniqueVehicles.set(key, vehicle);
+      } else {
+        // Prefer vehicle with matching bodyStyle, or latest year if both match
+        const existingMatchesBodyStyle = existing.bodyStyle === selectedVehicleType;
+        const vehicleMatchesBodyStyle = vehicle.bodyStyle === selectedVehicleType;
+        
+        if (vehicleMatchesBodyStyle && !existingMatchesBodyStyle) {
+          uniqueVehicles.set(key, vehicle);
+        } else if (!vehicleMatchesBodyStyle && existingMatchesBodyStyle) {
+          // Keep existing (it matches bodyStyle)
+        } else if (vehicle.vehicleYear > existing.vehicleYear) {
+          // Both match or neither match bodyStyle, keep latest year
+          uniqueVehicles.set(key, vehicle);
+        }
       }
     });
 
-    // Sort by combined rating (best first), then by year (latest first)
+    // Sort by selected rating type (best first), then by year (latest first) when ratings are equal
     const sortedVehicles = Array.from(uniqueVehicles.values()).sort((a, b) => {
-      if (Math.abs(a.combinedRating - b.combinedRating) > 0.1) {
-        return b.combinedRating - a.combinedRating;
+      // Primary sort: Use selected rating type (MotorTrend staffRating or User Reviews communityRating)
+      const aRating = ratingType === 'MotorTrend' ? a.staffRating : a.communityRating;
+      const bRating = ratingType === 'MotorTrend' ? b.staffRating : b.communityRating;
+      
+      if (Math.abs(aRating - bRating) > 0.01) {
+        return bRating - aRating;
       }
+      // Secondary sort: Year (newer first) when ratings are equal
       return b.vehicleYear - a.vehicleYear;
     });
 
@@ -302,14 +374,14 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       }
     }
 
-    // Ensure 2026 Volkswagen Golf R is ranked #1 for Sedan "All" subcategory
+    // Ensure 2026 Volkswagen Golf GTI / R is ranked #1 for Sedan "All" subcategory
     if (selectedVehicleType === 'Sedan' && selectedSubcategory === 'All') {
       const golfRIndex = sortedVehicles.findIndex(vehicle => {
         const make = vehicle.make.toLowerCase();
         const model = vehicle.model.toLowerCase();
         const year = vehicle.year;
         return make === 'volkswagen' && 
-               (model.includes('golf') && model.includes('r')) &&
+               (model.includes('golf') && (model.includes('r') || model.includes('gti'))) &&
                year === '2026';
       });
       
@@ -352,10 +424,10 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       rank: index + 1
     })).reverse();
     
-    console.log(`TopTenCarousel: Final carousel has ${finalVehicles.length} vehicles for ${selectedVehicleType} - ${selectedSubcategory}`);
+    console.log(`TopTenCarousel: Final carousel has ${finalVehicles.length} vehicles for ${selectedVehicleType} - ${selectedSubcategory} (${ratingType})`);
     
     return finalVehicles;
-  }, [selectedVehicleType, selectedSubcategory, allVehicleItems]);
+  }, [selectedVehicleType, selectedSubcategory, ratingType, allVehicleItems]);
 
   // Handle hover enter - reset everything
   const handleMouseEnter = () => {
@@ -628,6 +700,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
               <option value="Sedan">Top Ten Sedans</option>
               <option value="Truck">Top Ten Trucks</option>
               <option value="Coupe">Top Ten Coupes</option>
+              <option value="Performance">Top Ten Performance</option>
             </select>
             <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
           </div>
@@ -648,6 +721,24 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   {subcat === 'All' ? 'All Categories' : subcat}
                 </option>
               ))}
+            </select>
+            <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
+          </div>
+
+          {/* Rating Type Dropdown */}
+          <div className="top-ten-carousel__category-badge top-ten-carousel__rating-type-badge">
+            <select 
+              className="top-ten-carousel__category-dropdown"
+              value={ratingType}
+              onChange={(e) => {
+                e.stopPropagation();
+                setRatingType(e.target.value as RatingType);
+                setCurrentSlide(0); // Reset to first slide when changing rating type
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <option value="MotorTrend">MotorTrend Rating</option>
+              <option value="User Reviews">User Ratings</option>
             </select>
             <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
           </div>
@@ -879,7 +970,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
             
             {/* Slide Counter (Mobile Only) */}
             <div className="top-ten-carousel__counter">
-              {currentSlide + 1}/{carouselVehicles.length}
+              {carouselVehicles.length - currentSlide} of {carouselVehicles.length}
             </div>
           </>
         )}

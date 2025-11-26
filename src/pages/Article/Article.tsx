@@ -16,6 +16,7 @@ import SavedModal from '../../components/SavedModal';
 import { Badge } from '../../components/atoms/Badge/Badge';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
 import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
+import { getVehicleByName } from '../../api/vehiclesApi';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
 import { getArticleBySlug, getDefaultArticle, articles } from '../../utils/articles';
@@ -400,14 +401,25 @@ export const Article: React.FC = () => {
   }, [vehicleName]);
 
   // Generate community rating and staff rating
-  const communityRating = useMemo(() => generateCommunityRating(vehicleName), [vehicleName]);
-  // Use motortrendScore.overallRating if available, otherwise generate from vehicle name
+  // Use API data as single source of truth for ratings
+  // Priority: API data > Article motortrendScore > Generated rating
+  const apiVehicleData = useMemo(() => getVehicleByName(vehicleName), [vehicleName]);
+  const communityRating = useMemo(() => {
+    return apiVehicleData?.communityRating ?? generateCommunityRating(vehicleName);
+  }, [apiVehicleData, vehicleName]);
+  
   const staffRating = useMemo(() => {
+    // Priority 1: API data (single source of truth)
+    if (apiVehicleData?.staffRating) {
+      return apiVehicleData.staffRating;
+    }
+    // Priority 2: Article motortrendScore (if available)
     if (motortrendScore.overallRating && article.motortrendScore) {
       return motortrendScore.overallRating;
     }
+    // Priority 3: Generated rating (fallback only)
     return generateStaffRating(vehicleName);
-  }, [motortrendScore, article.motortrendScore, vehicleName]);
+  }, [apiVehicleData, motortrendScore, article.motortrendScore, vehicleName]);
   
   // Generate scores for staff rating tooltip
   const staffRatingScores = useMemo(() => ({
@@ -884,8 +896,10 @@ export const Article: React.FC = () => {
                   return null;
                 }
               })();
-              const staffRatingForVehicle = generateStaffRating(vehicle);
-              const communityRatingForVehicle = generateCommunityRating(vehicle);
+              // Use API data as single source of truth for ratings
+              const apiVehicleData = getVehicleByName(vehicle);
+              const staffRatingForVehicle = apiVehicleData?.staffRating ?? generateStaffRating(vehicle);
+              const communityRatingForVehicle = apiVehicleData?.communityRating ?? generateCommunityRating(vehicle);
               const userRatingForVehicle = getUserRating(vehicle);
               
               return (
@@ -1106,10 +1120,11 @@ export const Article: React.FC = () => {
                           if (headingMatch) {
                             rankingNumber = headingMatch[1];
                             vehicleNameForImage = headingMatch[2].trim();
-                            // Get ratings and image for this vehicle
-                            motortrendScoreForImage = generateStaffRating(vehicleNameForImage);
-                            userScoreForImage = generateCommunityRating(vehicleNameForImage);
-                            vehicleImageUrl = vehicleImageFor(vehicleNameForImage);
+                            // Get ratings and image for this vehicle from API (single source of truth)
+                            const apiVehicleDataForImage = getVehicleByName(vehicleNameForImage);
+                            motortrendScoreForImage = apiVehicleDataForImage?.staffRating ?? generateStaffRating(vehicleNameForImage);
+                            userScoreForImage = apiVehicleDataForImage?.communityRating ?? generateCommunityRating(vehicleNameForImage);
+                            vehicleImageUrl = apiVehicleDataForImage?.image ?? vehicleImageFor(vehicleNameForImage);
                           }
                         }
                         

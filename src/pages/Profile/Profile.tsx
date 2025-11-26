@@ -24,6 +24,7 @@ import { AvatarBannerModal } from '../../components/AvatarBannerModal';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
+import { getVehicleByName } from '../../api/vehiclesApi';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
 import RatingModal from '../../components/RatingModal';
 import WriteReviewModal from '../../components/WriteReviewModal';
@@ -531,8 +532,9 @@ export const Profile: React.FC<ProfileProps> = ({
         name: vehicleName,
         rating: rating,
         image: vehicleImageFor(vehicleName),
-        staffRating: generateStaffRating(vehicleName),
-        communityRating: generateCommunityRating(vehicleName)
+        // Use API data as single source of truth for ratings
+        staffRating: getVehicleByName(vehicleName)?.staffRating ?? generateStaffRating(vehicleName),
+        communityRating: getVehicleByName(vehicleName)?.communityRating ?? generateCommunityRating(vehicleName)
       }));
   }, [userRatings]);
 

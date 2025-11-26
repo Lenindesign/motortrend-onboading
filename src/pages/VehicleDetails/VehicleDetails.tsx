@@ -15,7 +15,7 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { generateVehicleReview } from '../../utils/vehicleReviews';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
-import { getVehicles, type Vehicle } from '../../api/vehiclesApi';
+import { getVehicles } from '../../api/vehiclesApi';
 import RatingModal from '../../components/RatingModal';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
@@ -58,7 +58,64 @@ export const VehicleDetails: React.FC = () => {
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [apiVehicleData, setApiVehicleData] = useState<Vehicle | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Load API vehicle data synchronously on initial render to prevent rating flash
+  // This ensures we have the correct rating (from API) immediately, not a generated one
+  // Using useMemo instead of useState + useEffect prevents the flash of incorrect rating
+  const apiVehicleData = useMemo(() => {
+    try {
+      console.log('🔍 Loading vehicle data synchronously - BUILD VERSION: 2024-11-23-v3-MAZDA-FIX');
+      console.log('🔍 URL params:', { decodedYear, decodedMake, decodedModel });
+      
+      const vehicles = getVehicles();
+      console.log('✅ Total vehicles fetched:', vehicles.length);
+      
+      // Build slug from URL params for exact matching
+      const urlSlug = `${decodedYear}/${decodedMake}/${decodedModel}`;
+      console.log('🔎 Looking for slug:', urlSlug);
+      
+      // First try to match by slug (most reliable)
+      let matchingVehicle = vehicles.find(v => v.slug === urlSlug);
+      
+      if (matchingVehicle) {
+        console.log('✅✅✅ FOUND matching vehicle by slug:', matchingVehicle);
+        console.log('✅ Rating:', matchingVehicle.staffRating);
+        console.log('✅ Image URL:', matchingVehicle.image);
+        console.log('✅ Gallery Images:', matchingVehicle.galleryImages?.length || 0);
+        return matchingVehicle;
+      }
+      
+      // Fallback to year/make/model matching
+      const normalizedUrlModel = decodedModel.replace(/-/g, ' ').toLowerCase();
+      console.log('🔎 Trying year/make/model match:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
+      
+      matchingVehicle = vehicles.find(v => {
+        const yearMatch = v.year === decodedYear;
+        const makeMatch = v.make === decodedMake;
+        const normalizedDbModel = v.model.replace(/-/g, ' ').toLowerCase();
+        const modelMatch = normalizedDbModel === normalizedUrlModel;
+        
+        return yearMatch && makeMatch && modelMatch;
+      });
+      
+      if (matchingVehicle) {
+        console.log('✅✅✅ FOUND matching vehicle from API:', matchingVehicle);
+        console.log('✅ Rating:', matchingVehicle.staffRating);
+        console.log('✅ Image URL:', matchingVehicle.image);
+        console.log('✅ Gallery Images:', matchingVehicle.galleryImages?.length || 0);
+        return matchingVehicle;
+      } else {
+        console.log('❌❌❌ NO matching vehicle found in API');
+        console.log('Searched for slug:', urlSlug);
+        console.log('Searched for:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ Error loading vehicle data:', error);
+      return null;
+    }
+  }, [decodedYear, decodedMake, decodedModel]);
 
   // Parse vehicle name from URL params
   // Normalize: replace dashes with spaces in model to ensure consistent format
@@ -150,6 +207,38 @@ export const VehicleDetails: React.FC = () => {
     console.log('🔄 Using fallback vehicleImageFor');
     return [vehicleImageFor(vehicleName)];
   }, [vehicleName, apiVehicleData]);
+
+  // Preload all gallery images for smooth transitions
+  useEffect(() => {
+    if (!galleryImages || galleryImages.length <= 1) {
+      return;
+    }
+    
+    galleryImages.forEach((imageUrl) => {
+      const img = new Image();
+      img.src = imageUrl;
+    });
+  }, [galleryImages]);
+
+  // Auto-cycle images for prime template every 5 seconds
+  useEffect(() => {
+    if (!isPrimeTemplate || !galleryImages || galleryImages.length <= 1) {
+      return;
+    }
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => {
+        return (prevIndex + 1) % galleryImages.length;
+      });
+    }, 5000); // 5 seconds
+    
+    return () => clearInterval(interval);
+  }, [isPrimeTemplate, galleryImages]);
+  
+  // Reset image index when gallery images change
+  useEffect(() => {
+    setCurrentImageIndex(0);
+  }, [galleryImages]);
 
   const getInitialReviews = (): ReviewData[] => {
     // First, load any user-submitted reviews from localStorage
@@ -611,12 +700,15 @@ export const VehicleDetails: React.FC = () => {
 
   const ratingCounts = calculateRatingCounts();
 
-  const vehicleData = {
+  // Use useMemo to ensure vehicleData updates when apiVehicleData loads
+  // This prevents the flash of incorrect rating (e.g., 9.4 -> 8.5)
+  const vehicleData = useMemo(() => ({
     name: vehicleName,
     year: decodedYear,
     make: decodedMake,
     model: decodedModel,
-    // Use API data if available, otherwise fall back to generated/article data
+    // Use API data as single source of truth - only fall back if truly missing
+    // This ensures consistency and prevents rating flashes
     staffRating: apiVehicleData?.staffRating ?? articleStaffRating ?? generateStaffRating(vehicleName),
     communityRating: apiVehicleData?.communityRating ?? generateCommunityRating(vehicleName),
     communityRatingCount: apiVehicleData?.reviewCount ?? 25,
@@ -670,7 +762,7 @@ export const VehicleDetails: React.FC = () => {
     },
     ratingDistribution: calculateRatingPercentages(ratingCounts),
     ratingCounts
-  };
+  }), [vehicleName, decodedYear, decodedMake, decodedModel, apiVehicleData, articleStaffRating, reviewData, ratingCounts]);
 
   console.log('[VehicleDetails] vehicleData.communityRatingCount:', vehicleData.communityRatingCount);
   console.log('[VehicleDetails] vehicleData.ratingDistribution:', vehicleData.ratingDistribution);
@@ -693,62 +785,9 @@ export const VehicleDetails: React.FC = () => {
     }
   }, [vehicleName]);
 
-  // Fetch vehicle data from API
-  useEffect(() => {
-    console.log('🔍 VehicleDetails useEffect triggered - BUILD VERSION: 2024-11-23-v3-MAZDA-FIX');
-    console.log('🔍 URL params:', { decodedYear, decodedMake, decodedModel });
-    console.warn('⚠️ If you see old images, do a HARD REFRESH: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)');
-    
-    try {
-      console.log('📡 Fetching vehicles from API...');
-      const vehicles = getVehicles();
-      console.log('✅ Total vehicles fetched:', vehicles.length);
-      
-      // Normalize both model names for comparison (replace dashes/spaces)
-      const normalizedUrlModel = decodedModel.replace(/-/g, ' ').toLowerCase();
-      console.log('🔎 Looking for:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
-      
-      // Debug: show all vehicles from the current make
-      const makeVehicles = vehicles.filter(v => v.make === decodedMake);
-      console.log(`🚗 Available ${decodedMake} vehicles:`, makeVehicles.map(v => ({
-        year: v.year,
-        make: v.make,
-        model: v.model,
-        modelLower: v.model.toLowerCase(),
-        hasImage: !!v.image,
-        imageUrl: v.image
-      })));
-      
-      const matchingVehicle = vehicles.find(v => {
-        const yearMatch = v.year === decodedYear;
-        const makeMatch = v.make === decodedMake;
-        // Normalize both models: replace dashes/spaces, then compare
-        const normalizedDbModel = v.model.replace(/-/g, ' ').toLowerCase();
-        const modelMatch = normalizedDbModel === normalizedUrlModel;
-        
-        console.log(`Checking ${v.year} ${v.make} ${v.model}:`, { 
-          yearMatch, 
-          makeMatch, 
-          modelMatch,
-          normalizedDbModel,
-          normalizedUrlModel
-        });
-        
-        return yearMatch && makeMatch && modelMatch;
-      });
-      
-      if (matchingVehicle) {
-        console.log('✅✅✅ FOUND matching vehicle from API:', matchingVehicle);
-        console.log('✅ Image URL:', matchingVehicle.image);
-        setApiVehicleData(matchingVehicle);
-      } else {
-        console.log('❌❌❌ NO matching vehicle found in API');
-        console.log('Searched for:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
-      }
-    } catch (error) {
-      console.error('❌ Error fetching vehicle data:', error);
-    }
-  }, [decodedYear, decodedMake, decodedModel]);
+  // Note: Vehicle data is now loaded synchronously via useMemo above
+  // This prevents the flash of incorrect rating (e.g., 9.4 -> 8.5)
+  // The useEffect has been removed in favor of synchronous loading
 
   // Reload reviews when vehicleName changes to ensure saved reviews are displayed
   // Use a ref to track the previous vehicleName to avoid reloading unnecessarily
@@ -1103,7 +1142,22 @@ export const VehicleDetails: React.FC = () => {
               }}
               aria-label="Open photo gallery"
             >
-              <img src={vehicleData.image} alt={vehicleName} />
+              {galleryImages && galleryImages.length > 1 ? (
+                galleryImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`${vehicleName} - Photo ${index + 1}`}
+                    className={`vehicle-details__prime-hero-slide ${index === currentImageIndex ? 'vehicle-details__prime-hero-slide--active' : ''}`}
+                  />
+                ))
+              ) : (
+                <img 
+                  src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image} 
+                  alt={vehicleName}
+                  className="vehicle-details__prime-hero-slide vehicle-details__prime-hero-slide--active"
+                />
+              )}
             </div>
 
             {/* Top Section Overlay (Breadcrumbs + Actions) */}

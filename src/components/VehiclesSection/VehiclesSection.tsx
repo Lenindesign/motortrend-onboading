@@ -20,6 +20,8 @@ import './VehiclesSection.css';
 export interface VehicleItem {
   name: string;
   image?: string;
+  staffRating?: number;
+  communityRating?: number;
 }
 
 export interface VehiclesSectionProps {
@@ -137,7 +139,12 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   const filteredVehicles = useMemo(() => {
     // Use API vehicles if enabled, otherwise use legacy data
     let filtered = useApi 
-      ? apiVehicles.map(v => ({ name: `${v.year} ${v.make} ${v.model}`, image: v.image }))
+      ? apiVehicles.map(v => ({ 
+          name: `${v.year} ${v.make} ${v.model}`, 
+          image: v.image,
+          staffRating: v.staffRating,
+          communityRating: v.communityRating
+        }))
       : vehicles;
     
     // Apply body style filter if selected (only for legacy data)
@@ -483,8 +490,10 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
       </div>
       <div className="vehicles-section__grid">
         {filteredVehicles.slice(0, vehiclesToShow).map((vehicle) => {
-          const staffRating = generateStaffRating(vehicle.name);
-          const communityRating = generateCommunityRating(vehicle.name);
+          // Use API ratings as primary source (single source of truth)
+          // Only fallback to generated ratings if API data is missing
+          const staffRating = vehicle.staffRating ?? generateStaffRating(vehicle.name);
+          const communityRating = vehicle.communityRating ?? generateCommunityRating(vehicle.name);
           const userRating = getUserRating(vehicle.name);
           
           return (

@@ -33,6 +33,7 @@ import ProfileDocumentation from './pages/ProfileDocumentation';
 import DesignSystemReference from './pages/DesignSystemReference';
 import Sitemap from './pages/Sitemap';
 import AtomicDesignAudit from './pages/AtomicDesignAudit';
+import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
 import { RatingProvider } from './contexts/RatingContext';
 import './App.css';
 
@@ -126,6 +127,10 @@ function App() {
               
               {/* Sitemap */}
               <Route path="/sitemap" element={<Sitemap />} />
+              
+              {/* Top Ten Management */}
+              <Route path="/top-ten-management" element={<TopTenManagement />} />
+              <Route path="/docs/top-ten-management" element={<TopTenManagement />} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />

@@ -9,6 +9,14 @@
   margin-bottom: 0;
 }
 
+/* Desktop padding (between 1025px and 1279px) */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .top-ten-carousel {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 .top-ten-carousel__slider {
   position: relative;
   width: 100%;
@@ -61,6 +69,7 @@
   left: 20px;
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 8px;
   z-index: 15;
 }
@@ -76,10 +85,16 @@
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   position: relative;
+  min-height: 32px;
+  box-sizing: border-box;
 }
 
 .top-ten-carousel__subcategory-badge {
   background-color: #3d4d68;
+}
+
+.top-ten-carousel__rating-type-badge {
+  background-color: #4a5568;
 }
 
 .top-ten-carousel__category-dropdown {
@@ -99,6 +114,8 @@
   outline: none;
   width: 100%;
   line-height: 1.3;
+  height: 100%;
+  display: block;
 }
 
 .top-ten-carousel__category-dropdown option {
@@ -520,14 +537,14 @@
 /* Dots */
 .top-ten-carousel__dots {
   position: absolute;
-  top: 28px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 28px; /* Aligned with save button + 4px down */
+  right: 92px; /* 20px (save btn right) + 48px (save btn width) + 24px (padding) */
   display: flex;
-  gap: 8px;
+  gap: 0; /* Removed gap, using margin on dots instead for proportional scaling */
   z-index: 20;
   align-items: center;
   overflow: visible;
+  height: 32px; /* Match badge min-height for vertical alignment */
 }
 
 .top-ten-carousel__dot {
@@ -537,11 +554,12 @@
   border: none;
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-fast), margin var(--transition-fast);
   padding: 0;
   position: relative;
   overflow: visible;
   flex-shrink: 0;
+  margin: 0 4px;
 }
 
 .top-ten-carousel__dot-progress {
@@ -612,8 +630,14 @@
   transition: opacity var(--transition-fast), filter var(--transition-fast);
 }
 
-.top-ten-carousel__dot:hover {
-  transform: scale(1.1);
+.top-ten-carousel__dot:hover:not(.top-ten-carousel__dot--active) {
+  transform: scale(2);
+  margin: 0 8px; /* Double the margin when scaled 2x */
+}
+
+/* Prevent tooltip from scaling when dot is hovered */
+.top-ten-carousel__dot:hover:not(.top-ten-carousel__dot--active) .top-ten-carousel__dot-tooltip {
+  transform: translateX(-50%) translateY(0) scale(0.5);
 }
 
 .top-ten-carousel__dot:hover .top-ten-carousel__dot-progress-bg {
@@ -623,11 +647,12 @@
 .top-ten-carousel__dot:hover .top-ten-carousel__dot-tooltip {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 
 .top-ten-carousel__dot--active {
   transform: scale(1.2);
+  margin: 0 4.8px; /* 1.2x the base margin (4px * 1.2 = 4.8px) */
 }
 
 .top-ten-carousel__dot--active .top-ten-carousel__dot-progress-bg {
@@ -660,9 +685,9 @@
 
 .top-ten-carousel__dot-tooltip {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 2px);
   left: 50%;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translateX(-50%) translateY(0);
   background-color: rgba(20, 20, 22, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -687,6 +712,13 @@
   transform: translateX(-50%) translateY(0);
 }
 
+/* Hide tooltip for active dot */
+.top-ten-carousel__dot--active .top-ten-carousel__dot-tooltip,
+.top-ten-carousel__dot--active:hover .top-ten-carousel__dot-tooltip {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .top-ten-carousel__dot-tooltip::after {
   content: '';
   position: absolute;
@@ -704,7 +736,7 @@
 .top-ten-carousel__counter {
   display: none;
   position: absolute;
-  top: 28px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(20, 20, 22, 0.6);
@@ -730,7 +762,7 @@
   }
 
   .top-ten-carousel__dots {
-    top: 20px;
+    top: 24px;
   }
 
   .top-ten-carousel__category-badge {
@@ -862,7 +894,12 @@
   }
 
   .top-ten-carousel__dots {
-    top: 24px;
+    display: none;
+  }
+
+  .top-ten-carousel__counter {
+    display: block;
+    top: 16px;
   }
 
   .top-ten-carousel__dot {
@@ -989,7 +1026,7 @@
 
   .top-ten-carousel__counter {
     display: block;
-    top: 18px;
+    top: 12px;
     font-size: 12px;
     padding: 5px 12px;
   }

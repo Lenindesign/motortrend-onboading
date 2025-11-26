@@ -127,6 +127,11 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'model y': ['SUV'],
   'cayenne': ['SUV'],
   'macan': ['SUV'],
+  'range rover': ['SUV'],
+  'defender': ['SUV'],
+  'discovery': ['SUV'],
+  'velar': ['SUV'],
+  'evoque': ['SUV'],
   
   // Trucks
   'f-150': ['Truck'],
@@ -145,6 +150,7 @@ const vehicleBodyStyleMap: Record<string, BodyStyleCategory[]> = {
   'canyon': ['Truck'],
   '2500': ['Truck'],
   '3500': ['Truck'],
+  'cybertruck': ['Truck'],
   
   // Coupes
   'mustang': ['Coupe'],
@@ -193,6 +199,11 @@ export const getVehicleBodyStyle = (vehicleName: string): BodyStyleCategory[] =>
       vehicleBodyStyleMap[key].forEach(cat => styles.add(cat));
       matchedKeys.push(key);
     }
+  }
+  
+  // Special case: Land Rover vehicles are always SUVs
+  if (normalizedName.includes('land rover')) {
+    styles.add('SUV');
   }
   
   // Default to Sedan if no match found
