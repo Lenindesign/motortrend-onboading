@@ -1786,9 +1786,9 @@ export const Home: React.FC = () => {
             <div className="home__section home__section--full-width">
               <VehicleLeadsStripe />
             </div>
-            <div className="home__section home__section--full-width">
-              <TopTenCarousel showExpandButton={false} />
-            </div>
+          <div className="home__section home__section--full-width">
+            <TopTenCarousel showExpandButton={false} />
+          </div>
           </>
         )}
 
@@ -1825,13 +1825,13 @@ export const Home: React.FC = () => {
             {isCarBuyers ? (
               <AIPersonalAssistant />
             ) : (
-              <AdContainer
-                width={300}
-                height={600}
-                label="SVOD 200 x 420"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
-              />
+            <AdContainer
+              width={300}
+              height={600}
+              label="SVOD 200 x 420"
+              position="right-column"
+              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+            />
             )}
           </div>
         </div>

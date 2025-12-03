@@ -213,7 +213,7 @@ const SEED_POSTS: Post[] = [
     content: 'Protect your vehicle with GEICO. Get a free quote and see how much you could save. 24/7 customer service and competitive rates.',
     image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6930ba485b2bea0002f46bea/geico2.jpg',
     createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago (recent to help with sorting)
-    upvotes: 192,
+    upvotes: 210,
     downvotes: 5,
     commentCount: 15,
   },
@@ -902,7 +902,16 @@ export const getPosts = (communityId?: string): Post[] => {
       posts = posts.map(p => {
         const seedPost = seedMap.get(p.id);
         if (seedPost) {
-          // Update properties from seed data, but preserve user interactions
+          // For ad posts, always use seed data to ensure correct positioning
+          const isAdPost = p.id.includes('_ad') || p.id.includes('geico');
+          if (isAdPost) {
+            // Use seed data for ad posts to maintain correct scores
+            return {
+              ...seedPost,
+              userVote: p.userVote || null, // Preserve user vote if exists
+            };
+          }
+          // Update properties from seed data, but preserve user interactions for regular posts
           return {
             ...seedPost,
             upvotes: p.upvotes || seedPost.upvotes,

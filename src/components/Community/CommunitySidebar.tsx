@@ -127,33 +127,33 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
             const isHotRodPowerTour = community.id === 'comm_hotrodpowertour';
             const isVerified = isMotorTrend || isCarAndDriver || isHotRodPowerTour;
             return (
-              <button
-                key={community.id}
-                className={`community-sidebar__item ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
-                onClick={() => handleNavigate(`/community/${community.slug}`)}
-              >
-                {community.icon ? (
-                  <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
-                ) : (
-                  <div className="community-sidebar__community-placeholder">
-                    {community.name[0]}
-                  </div>
-                )}
+            <button
+              key={community.id}
+              className={`community-sidebar__item ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
+              onClick={() => handleNavigate(`/community/${community.slug}`)}
+            >
+              {community.icon ? (
+                <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
+              ) : (
+                <div className="community-sidebar__community-placeholder">
+                  {community.name[0]}
+                </div>
+              )}
                 <span className="community-sidebar__community-name">
                   c/{community.name}
                 </span>
                 {isVerified && (
                   <Icon name="check_circle" size={16} className="community-sidebar__verified-icon" />
                 )}
-              </button>
+            </button>
             );
           })}
         </div>
       )}
 
       {/* Explore Section */}
-      <div className="community-sidebar__section">
-        <h4 className="community-sidebar__title">Explore</h4>
+        <div className="community-sidebar__section">
+          <h4 className="community-sidebar__title">Explore</h4>
         <div className="community-sidebar__search">
           <Icon name="search" size={18} className="community-sidebar__search-icon" />
           <input
@@ -192,9 +192,9 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           searchQuery.trim() && (
             <div className="community-sidebar__no-results">
               <p>No communities found</p>
-            </div>
+        </div>
           )
-        )}
+      )}
       </div>
 
       <div className="community-sidebar__footer">
