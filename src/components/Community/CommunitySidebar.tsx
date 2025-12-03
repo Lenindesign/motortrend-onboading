@@ -183,7 +183,6 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
       </div>
 
       <div className="community-sidebar__footer">
-        <p>© 2025 MotorTrend Group, LLC.</p>
         <div className="community-sidebar__links">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Use</a>
