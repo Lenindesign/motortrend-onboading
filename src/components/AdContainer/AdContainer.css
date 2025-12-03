@@ -19,6 +19,7 @@
   position: sticky;
   top: 20px;
   align-self: flex-start;
+  z-index: 10;
 }
 
 .ad-container__placeholder {
