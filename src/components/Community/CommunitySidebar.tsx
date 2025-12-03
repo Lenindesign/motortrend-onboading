@@ -7,16 +7,33 @@ import './CommunitySidebar.css';
 interface CommunitySidebarProps {
   communities: Community[];
   onJoinToggle: (id: string) => void;
+  onCreateCommunity?: () => void;
 }
 
 export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({ 
   communities,
-  onJoinToggle
+  onJoinToggle,
+  onCreateCommunity
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const joinedCommunities = communities.filter(c => c.isJoined);
+  // Default MotorTrend community (always joined)
+  const motorTrendCommunity: Community = {
+    id: 'comm_motortrend',
+    slug: 'motortrend',
+    name: 'MotorTrend',
+    description: 'The official MotorTrend community',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg',
+    memberCount: 50000,
+    isJoined: true,
+    createdAt: new Date().toISOString(),
+  };
+  
+  const joinedCommunities = [
+    motorTrendCommunity, // Always include MotorTrend first
+    ...communities.filter(c => c.isJoined && c.id !== 'comm_motortrend')
+  ];
   const otherCommunities = communities.filter(c => !c.isJoined);
 
   const handleNavigate = (path: string) => {
@@ -45,8 +62,14 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           <span>Popular</span>
         </button>
         <button 
-          className={`community-sidebar__item ${isActive('/community/create') ? 'community-sidebar__item--active' : ''}`}
-          onClick={() => handleNavigate('/community/create')}
+          className="community-sidebar__item"
+          onClick={() => {
+            if (onCreateCommunity) {
+              onCreateCommunity();
+            } else {
+              handleNavigate('/community/create');
+            }
+          }}
         >
           <Icon name="add_circle" size={20} className="community-sidebar__icon" />
           <span>Create Community</span>
@@ -57,22 +80,30 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
       {joinedCommunities.length > 0 && (
         <div className="community-sidebar__section">
           <h4 className="community-sidebar__title">My Communities</h4>
-          {joinedCommunities.map(community => (
-            <button
-              key={community.id}
-              className={`community-sidebar__item ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
-              onClick={() => handleNavigate(`/community/${community.slug}`)}
-            >
-              {community.icon ? (
-                <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
-              ) : (
-                <div className="community-sidebar__community-placeholder">
-                  {community.name[0]}
-                </div>
-              )}
-              <span>c/{community.name}</span>
-            </button>
-          ))}
+          {joinedCommunities.map(community => {
+            const isMotorTrend = community.id === 'comm_motortrend';
+            return (
+              <button
+                key={community.id}
+                className={`community-sidebar__item ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
+                onClick={() => handleNavigate(`/community/${community.slug}`)}
+              >
+                {community.icon ? (
+                  <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
+                ) : (
+                  <div className="community-sidebar__community-placeholder">
+                    {community.name[0]}
+                  </div>
+                )}
+                <span className="community-sidebar__community-name">
+                  c/{community.name}
+                </span>
+                {isMotorTrend && (
+                  <Icon name="check_circle" size={16} className="community-sidebar__verified-icon" />
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 

@@ -37,7 +37,7 @@
 
 .vote-control__btn--up:hover,
 .vote-control__btn--up.vote-control__btn--active {
-  color: var(--color-primary-1); /* Red/Orange usually */
+  color: #34A853; /* Green for upvote */
 }
 
 .vote-control__btn--down:hover,
@@ -64,7 +64,7 @@
 }
 
 .vote-control__score--up {
-  color: var(--color-primary-1);
+  color: #34A853; /* Green for upvote score */
 }
 
 .vote-control__score--down {

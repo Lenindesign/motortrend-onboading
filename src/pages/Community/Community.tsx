@@ -149,7 +149,8 @@ const CommunityPage: React.FC = () => {
         {/* Left Sidebar */}
         <CommunitySidebar 
           communities={communities} 
-          onJoinToggle={handleJoinToggle} 
+          onJoinToggle={handleJoinToggle}
+          onCreateCommunity={() => setIsCreateCommunityOpen(true)}
         />
 
         {/* Main Content */}
