@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import type { Community } from '../../api/communityApi';
 import Icon from '../Icon';
@@ -17,6 +17,7 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
   
   // Default MotorTrend community (always joined)
   const motorTrendCommunity: Community = {
@@ -34,7 +35,20 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
     motorTrendCommunity, // Always include MotorTrend first
     ...communities.filter(c => c.isJoined && c.id !== 'comm_motortrend')
   ];
-  const otherCommunities = communities.filter(c => !c.isJoined);
+  
+  // Filter communities based on search query
+  const filteredOtherCommunities = useMemo(() => {
+    const otherCommunities = communities.filter(c => !c.isJoined);
+    if (!searchQuery.trim()) {
+      return otherCommunities;
+    }
+    const query = searchQuery.toLowerCase();
+    return otherCommunities.filter(community => 
+      community.name.toLowerCase().includes(query) ||
+      community.slug.toLowerCase().includes(query) ||
+      (community.description && community.description.toLowerCase().includes(query))
+    );
+  }, [communities, searchQuery]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -108,10 +122,20 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
       )}
 
       {/* Explore Section */}
-      {otherCommunities.length > 0 && (
-        <div className="community-sidebar__section">
-          <h4 className="community-sidebar__title">Explore</h4>
-          {otherCommunities.map(community => (
+      <div className="community-sidebar__section">
+        <h4 className="community-sidebar__title">Explore</h4>
+        <div className="community-sidebar__search">
+          <Icon name="search" size={18} className="community-sidebar__search-icon" />
+          <input
+            type="text"
+            className="community-sidebar__search-input"
+            placeholder="Search communities..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        {filteredOtherCommunities.length > 0 ? (
+          filteredOtherCommunities.map(community => (
             <div key={community.id} className="community-sidebar__explore-item">
                <button
                 className={`community-sidebar__item community-sidebar__item--explore ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
@@ -133,9 +157,15 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
                 Join
               </button>
             </div>
-          ))}
-        </div>
-      )}
+          ))
+        ) : (
+          searchQuery.trim() && (
+            <div className="community-sidebar__no-results">
+              <p>No communities found</p>
+            </div>
+          )
+        )}
+      </div>
 
       <div className="community-sidebar__footer">
         <p>© 2025 MotorTrend Group, LLC.</p>
