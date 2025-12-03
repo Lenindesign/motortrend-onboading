@@ -369,6 +369,7 @@
 .community-page__ad-wrapper {
   display: flex;
   justify-content: center;
+  align-self: flex-start;
 }
 
 .community-page__empty {
