@@ -1779,15 +1779,15 @@ export const Home: React.FC = () => {
   return (
     <div className="home">
       <div className="home__container">
-        {/* For Car Buyers (Practical Paula): Show Top Ten Carousel first */}
+        {/* For Car Buyers (Practical Paula): Show Available Listings first */}
         {isCarBuyers && (
           <>
-            <div className="home__section home__section--full-width">
-              <TopTenCarousel showExpandButton={false} />
-            </div>
-            {/* Vehicle Leads Stripe - Under Top Ten Carousel */}
+            {/* Vehicle Leads Stripe - Above Top Ten Carousel */}
             <div className="home__section home__section--full-width">
               <VehicleLeadsStripe />
+            </div>
+            <div className="home__section home__section--full-width">
+              <TopTenCarousel showExpandButton={false} />
             </div>
           </>
         )}
