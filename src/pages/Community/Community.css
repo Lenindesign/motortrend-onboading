@@ -368,6 +368,7 @@
 
 .community-page__ad-wrapper {
   width: 100%;
+  position: relative;
 }
 
 .community-page__empty {
