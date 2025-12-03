@@ -31,9 +31,22 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
     createdAt: new Date().toISOString(),
   };
   
+  // Default Car and Driver community (always joined)
+  const carAndDriverCommunity: Community = {
+    id: 'comm_caranddriver',
+    slug: 'caranddriver',
+    name: 'Car and Driver',
+    description: 'Join the Car and Driver community for automotive discussions and insights.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692e5cd3c2af34000266b93d/group1175889264.svg',
+    memberCount: 9800,
+    isJoined: true,
+    createdAt: new Date().toISOString(),
+  };
+  
   const joinedCommunities = [
     motorTrendCommunity, // Always include MotorTrend first
-    ...communities.filter(c => c.isJoined && c.id !== 'comm_motortrend')
+    carAndDriverCommunity, // Always include Car and Driver second
+    ...communities.filter(c => c.isJoined && c.id !== 'comm_motortrend' && c.id !== 'comm_caranddriver')
   ];
   
   // Filter communities based on search query
@@ -96,6 +109,8 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           <h4 className="community-sidebar__title">My Communities</h4>
           {joinedCommunities.map(community => {
             const isMotorTrend = community.id === 'comm_motortrend';
+            const isCarAndDriver = community.id === 'comm_caranddriver';
+            const isVerified = isMotorTrend || isCarAndDriver;
             return (
               <button
                 key={community.id}
@@ -112,7 +127,7 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
                 <span className="community-sidebar__community-name">
                   c/{community.name}
                 </span>
-                {isMotorTrend && (
+                {isVerified && (
                   <Icon name="check_circle" size={16} className="community-sidebar__verified-icon" />
                 )}
               </button>

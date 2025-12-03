@@ -89,7 +89,7 @@ const SEED_COMMUNITIES: Community[] = [
   {
     id: 'comm_caranddriver',
     slug: 'caranddriver',
-    name: 'Car and Driver Community',
+    name: 'Car and Driver',
     description: 'Join the Car and Driver community for automotive discussions and insights.',
     icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692e5cd3c2af34000266b93d/group1175889264.svg',
     memberCount: 9800,
