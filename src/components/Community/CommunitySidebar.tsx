@@ -44,6 +44,13 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           <Icon name="trending_up" size={20} className="community-sidebar__icon" />
           <span>Popular</span>
         </button>
+        <button 
+          className={`community-sidebar__item ${isActive('/community/create') ? 'community-sidebar__item--active' : ''}`}
+          onClick={() => handleNavigate('/community/create')}
+        >
+          <Icon name="add_circle" size={20} className="community-sidebar__icon" />
+          <span>Create Community</span>
+        </button>
       </div>
 
       {/* My Communities Section */}

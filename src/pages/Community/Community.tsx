@@ -355,25 +355,55 @@ const CommunityPage: React.FC = () => {
           ) : (
             <div className="community-info-card">
                <div className="community-info-card__header">
-                 <h3>Home</h3>
+                 <h3>Recommended for You</h3>
                </div>
                <div className="community-info-card__content">
-                 <p className="community-info-card__desc">
-                   Your personal MotorTrend frontpage. Come here to check in with your favorite communities.
-                 </p>
-                 <div className="community-info-card__actions">
-                    <button 
-                      className="community-info-card__create-btn"
-                      onClick={() => setIsCreatePostOpen(true)}
-                    >
-                      Create Post
-                    </button>
-                    <button 
-                      className="community-info-card__create-comm-btn"
-                      onClick={() => setIsCreateCommunityOpen(true)}
-                    >
-                      Create Community
-                    </button>
+                 <div className="community-recommended-posts">
+                   {posts
+                     .filter(post => {
+                       // Get posts from communities user has joined or popular posts
+                       const postCommunity = communities.find(c => c.id === post.communityId);
+                       return postCommunity?.isJoined || (post.upvotes - post.downvotes) > 5;
+                     })
+                     .sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
+                     .slice(0, 5)
+                     .map(post => {
+                       const postCommunity = communities.find(c => c.id === post.communityId);
+                       return (
+                         <div 
+                           key={post.id}
+                           className="community-recommended-post"
+                           onClick={() => {
+                             if (postCommunity) {
+                               navigate(`/community/${postCommunity.slug}/post/${post.id}`);
+                             }
+                           }}
+                         >
+                           <div className="community-recommended-post__community">
+                             {postCommunity?.icon ? (
+                               <img 
+                                 src={postCommunity.icon} 
+                                 alt={postCommunity.name}
+                                 className="community-recommended-post__icon"
+                               />
+                             ) : (
+                               <div className="community-recommended-post__icon-placeholder">
+                                 {postCommunity?.name[0] || 'C'}
+                               </div>
+                             )}
+                             <span className="community-recommended-post__community-name">
+                               c/{postCommunity?.name || 'Unknown'}
+                             </span>
+                           </div>
+                           <h4 className="community-recommended-post__title">{post.title}</h4>
+                           <div className="community-recommended-post__meta">
+                             <span>{post.upvotes - post.downvotes} upvotes</span>
+                             <span>•</span>
+                             <span>{post.commentCount} comments</span>
+                           </div>
+                         </div>
+                       );
+                     })}
                  </div>
                </div>
             </div>
