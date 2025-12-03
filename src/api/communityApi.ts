@@ -472,7 +472,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_mt_3', name: 'MotorTrend Tech' },
     title: 'Electric Vehicle Range Test: Which EVs Actually Meet Their EPA Estimates?',
     content: 'We put 12 popular electric vehicles through our real-world range test. Some exceeded expectations, while others fell short. Here\'s what we found and which EVs you can trust for long road trips.',
-    image: 'https://www.motortrend.com/uploads/sites/5/2024/06/2024-Tesla-Model-3-Performance-front-three-quarter-1.jpg',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/691636a53f45e800024bf486/001-2025-cadillac-vistiq-vs-lucid-gravity-vs-volvo-ex90.jpg',
     createdAt: new Date(Date.now() - 10800000).toISOString(), // 3 hours ago
     upvotes: 312,
     downvotes: 5,
