@@ -17,7 +17,7 @@
 
 .ad-container--right-column {
   position: sticky;
-  top: var(--spacing-3);
+  top: 20px;
   align-self: flex-start;
 }
 

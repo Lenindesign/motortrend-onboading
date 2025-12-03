@@ -42,7 +42,7 @@
 
 .vote-control__btn--down:hover,
 .vote-control__btn--down.vote-control__btn--active {
-  color: var(--color-blue); /* Blue/Purple usually */
+  color: var(--color-primary-1); /* Red for downvote */
 }
 
 .vote-control__score {
@@ -68,7 +68,7 @@
 }
 
 .vote-control__score--down {
-  color: var(--color-blue);
+  color: var(--color-primary-1); /* Red for downvote score */
 }
 
 
