@@ -105,6 +105,16 @@ const SEED_COMMUNITIES: Community[] = [
     createdAt: new Date().toISOString(),
     rules: ['Be respectful', 'Share your Power Tour experiences', 'Show off your builds'],
   },
+  {
+    id: 'comm_motortrend',
+    slug: 'motortrend',
+    name: 'MotorTrend',
+    description: 'The official MotorTrend community. Get the latest car reviews, news, and insights from our expert team.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg',
+    memberCount: 50000,
+    createdAt: new Date().toISOString(),
+    rules: ['Be respectful', 'No spam', 'Stay on topic', 'Follow MotorTrend community guidelines'],
+  },
 ];
 
 const SEED_POSTS: Post[] = [
@@ -429,6 +439,44 @@ const SEED_POSTS: Post[] = [
     upvotes: 87,
     downvotes: 2,
     commentCount: 23,
+  },
+  
+  // MotorTrend Community Posts
+  {
+    id: 'post_motortrend_1',
+    communityId: 'comm_motortrend',
+    author: { id: 'user_mt_1', name: 'MotorTrend Editorial' },
+    title: '2026 MotorTrend Car of the Year: The Winners and Finalists',
+    content: 'We\'ve tested hundreds of vehicles this year, and after rigorous evaluation, we\'re excited to announce our Car of the Year finalists. From electric vehicles to performance machines, this year\'s competition was fierce.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+    createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
+    upvotes: 245,
+    downvotes: 3,
+    commentCount: 42,
+  },
+  {
+    id: 'post_motortrend_2',
+    communityId: 'comm_motortrend',
+    author: { id: 'user_mt_2', name: 'MotorTrend Reviews' },
+    title: 'First Drive: 2026 Chevrolet Corvette ZR1 - The Ultimate American Supercar',
+    content: 'We just got behind the wheel of the new ZR1, and it\'s everything we hoped for. With 1,064 horsepower and track-tested performance, this is the most powerful Corvette ever built. Full review coming soon!',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',
+    createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
+    upvotes: 189,
+    downvotes: 2,
+    commentCount: 38,
+  },
+  {
+    id: 'post_motortrend_3',
+    communityId: 'comm_motortrend',
+    author: { id: 'user_mt_3', name: 'MotorTrend Tech' },
+    title: 'Electric Vehicle Range Test: Which EVs Actually Meet Their EPA Estimates?',
+    content: 'We put 12 popular electric vehicles through our real-world range test. Some exceeded expectations, while others fell short. Here\'s what we found and which EVs you can trust for long road trips.',
+    image: 'https://www.motortrend.com/uploads/sites/5/2024/06/2024-Tesla-Model-3-Performance-front-three-quarter-1.jpg',
+    createdAt: new Date(Date.now() - 10800000).toISOString(), // 3 hours ago
+    upvotes: 312,
+    downvotes: 5,
+    commentCount: 67,
   },
 ];
 
