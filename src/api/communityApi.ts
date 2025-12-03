@@ -212,10 +212,10 @@ const SEED_POSTS: Post[] = [
     title: 'Save Money on Car Insurance - Get a Quote Today',
     content: 'Protect your vehicle with GEICO. Get a free quote and see how much you could save. 24/7 customer service and competitive rates.',
     image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6930ba485b2bea0002f46bea/geico2.jpg',
-    createdAt: new Date(Date.now() - 216000000).toISOString(), // 2.5 days ago
-    upvotes: 105,
-    downvotes: 2,
-    commentCount: 8,
+    createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago (recent to help with sorting)
+    upvotes: 210,
+    downvotes: 5,
+    commentCount: 15,
   },
   {
     id: 'post_autos_3',
