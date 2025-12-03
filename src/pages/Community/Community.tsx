@@ -168,7 +168,7 @@ const CommunityPage: React.FC = () => {
                  <div className="community-page__banner-info">
                    <h1 className="community-page__banner-title">
                      {currentCommunity.name}
-                     {currentCommunity.id === 'comm_motortrend' && (
+                     {(currentCommunity.id === 'comm_motortrend' || currentCommunity.id === 'comm_caranddriver' || currentCommunity.id === 'comm_hotrodpowertour') && (
                        <Icon name="check_circle" size={20} className="community-page__banner-verified-icon" />
                      )}
                    </h1>
@@ -400,7 +400,7 @@ const CommunityPage: React.FC = () => {
                              <span className="community-recommended-post__community-name">
                                c/{postCommunity?.name || 'Unknown'}
                              </span>
-                             {postCommunity?.id === 'comm_motortrend' && (
+                             {(postCommunity?.id === 'comm_motortrend' || postCommunity?.id === 'comm_caranddriver' || postCommunity?.id === 'comm_hotrodpowertour') && (
                                <Icon name="check_circle" size={14} className="community-recommended-post__verified-icon" />
                              )}
                            </div>

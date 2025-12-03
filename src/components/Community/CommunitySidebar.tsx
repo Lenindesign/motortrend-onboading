@@ -43,15 +43,29 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
     createdAt: new Date().toISOString(),
   };
   
+  // Default Hot Rod Power Tour community (always joined)
+  const hotRodPowerTourCommunity: Community = {
+    id: 'comm_hotrodpowertour',
+    slug: 'hotrodpowertour',
+    name: 'HOT ROD POWER TOUR',
+    description: 'Join the HOT ROD Power Tour community for discussions about the annual road trip event, car builds, and hot rod culture.',
+    icon: 'https://www.sema.org/sites/default/files/inline-images/HRPT-1410x790.jpg',
+    memberCount: 7200,
+    isJoined: true,
+    createdAt: new Date().toISOString(),
+    rules: ['Be respectful', 'Share your Power Tour experiences', 'Show off your builds'],
+  };
+  
   const joinedCommunities = [
     motorTrendCommunity, // Always include MotorTrend first
     carAndDriverCommunity, // Always include Car and Driver second
-    ...communities.filter(c => c.isJoined && c.id !== 'comm_motortrend' && c.id !== 'comm_caranddriver')
+    hotRodPowerTourCommunity, // Always include Hot Rod Power Tour third
+    ...communities.filter(c => c.isJoined && c.id !== 'comm_motortrend' && c.id !== 'comm_caranddriver' && c.id !== 'comm_hotrodpowertour')
   ];
   
   // Filter communities based on search query
   const filteredOtherCommunities = useMemo(() => {
-    const otherCommunities = communities.filter(c => !c.isJoined);
+    const otherCommunities = communities.filter(c => !c.isJoined && c.id !== 'comm_hotrodpowertour');
     if (!searchQuery.trim()) {
       return otherCommunities;
     }
@@ -110,7 +124,8 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           {joinedCommunities.map(community => {
             const isMotorTrend = community.id === 'comm_motortrend';
             const isCarAndDriver = community.id === 'comm_caranddriver';
-            const isVerified = isMotorTrend || isCarAndDriver;
+            const isHotRodPowerTour = community.id === 'comm_hotrodpowertour';
+            const isVerified = isMotorTrend || isCarAndDriver || isHotRodPowerTour;
             return (
               <button
                 key={community.id}
