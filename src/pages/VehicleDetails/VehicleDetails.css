@@ -1216,10 +1216,39 @@
   overflow: hidden;
 }
 
-.vehicle-details__hero-image img {
+.vehicle-details__hero-image img:not(.vehicle-details__hero-slide) {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.vehicle-details__hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+  pointer-events: none;
+  will-change: opacity;
+  border-radius: 8px;
+}
+
+.vehicle-details__hero-slide--active {
+  opacity: 1 !important;
+  z-index: 1;
+  will-change: auto;
+}
+
+.vehicle-details__hero-image:hover .vehicle-details__hero-slide--active {
+  transform: scale(1.01);
+  filter: brightness(1.05);
 }
 
 .vehicle-details__save-btn {
@@ -1440,12 +1469,23 @@
 }
 
 .vehicle-details__listings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  display: flex;
   gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.vehicle-details__listings-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .vehicle-details__listing-card {
+  flex: 0 0 270px;
+  min-width: 270px;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
@@ -2223,10 +2263,6 @@
   .vehicle-details__divider {
     width: 100%;
     height: 1px;
-  }
-
-  .vehicle-details__listings-grid {
-    grid-template-columns: 1fr;
   }
 }
 

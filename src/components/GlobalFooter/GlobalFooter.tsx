@@ -46,6 +46,7 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
   const sitemapLink = { label: 'Site Map', path: '/sitemap' };
 
   const documentationLinks = [
+    { label: 'Community', path: '/community' },
     { label: 'Review System Docs', path: '/docs/review-system' },
     { label: 'Onboarding Docs', path: '/docs/onboarding' },
     { label: 'Profile Docs', path: '/docs/profile' },
@@ -154,4 +155,5 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
 };
 
 export default GlobalFooter;
+
 

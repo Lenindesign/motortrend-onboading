@@ -7,6 +7,10 @@
 import React from 'react';
 import './HeroCard.css';
 import { CardShell } from '../atoms/CardShell/CardShell';
+import { useImageFallback } from '../../hooks/useImageFallback';
+
+// Fallback placeholder for broken images (larger size for Hero)
+const HERO_FALLBACK_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400"%3E%3Crect fill="%23374151" width="800" height="400"/%3E%3Ctext fill="%239CA3AF" font-family="system-ui" font-size="24" text-anchor="middle" x="400" y="200"%3EImage unavailable%3C/text%3E%3C/svg%3E';
 
 export interface HeroCardProps {
   imageUrl: string;
@@ -19,6 +23,8 @@ export const HeroCard: React.FC<HeroCardProps> = ({
   title,
   onClick,
 }) => {
+  const { imgSrc, handleImageError } = useImageFallback(imageUrl, HERO_FALLBACK_IMAGE);
+
   return (
     <CardShell
       padding="none"
@@ -32,9 +38,10 @@ export const HeroCard: React.FC<HeroCardProps> = ({
       <div className="hero-card__inner">
         <div className="hero-card__image-container">
         <img 
-          src={imageUrl} 
+          src={imgSrc} 
           alt={title} 
           className="hero-card__image"
+          onError={handleImageError}
         />
       </div>
       <div className="hero-card__content">

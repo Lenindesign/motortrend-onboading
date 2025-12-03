@@ -464,12 +464,12 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   };
 
   // Default comments for illustration
-  const getDefaultComments = (): CommentData[] => {
+  const getDefaultComments = (name: string): CommentData[] => {
     return [
       {
         id: 'comment_default_1',
         commenterName: 'one2three',
-        content: 'Edgy design makes this the most head-turning Elantra yet. But it\'s more than just stylish—the Elantra is comfortable and offers many features. Value is high, and the hardcore Elantra N is a riot.',
+        content: `Edgy design makes this the most head-turning ${name} yet. But it's more than just stylish—the ${name} is comfortable and offers many features. Value is high, and the performance is a riot.`,
         date: '4 days ago',
         likes: 30,
         isLiked: false,
@@ -478,7 +478,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
       {
         id: 'comment_default_2',
         commenterName: 'Ajm4042',
-        content: 'Edgy design makes this the most head-turning Elantra yet. But it\'s more than just stylish—the Elantra is comfortable and offers many features. Value is high, and the hardcore Elantra N is a riot.',
+        content: `I've been driving the ${name} for a few months now and I'm really impressed with the build quality and feature set for the price point. Definitely a strong contender in its segment.`,
         date: '4 days ago',
         likes: 30,
         isLiked: false,
@@ -490,20 +490,20 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   // Load comments from localStorage
   useEffect(() => {
     try {
-      const commentsKey = `comments_${vehicleName}`;
+      const commentsKey = `comments_contextual_${vehicleName}`;
       const savedCommentsJson = localStorage.getItem(commentsKey);
       if (savedCommentsJson) {
         const savedComments: CommentData[] = JSON.parse(savedCommentsJson);
         setComments(savedComments);
         // Load like states
-        const likesKey = `commentLikes_${vehicleName}`;
+        const likesKey = `commentLikes_contextual_${vehicleName}`;
         const savedLikesJson = localStorage.getItem(likesKey);
         if (savedLikesJson) {
           setCommentLikes(JSON.parse(savedLikesJson));
         }
       } else {
         // Use default comments if no saved comments exist
-        const defaultComments = getDefaultComments();
+        const defaultComments = getDefaultComments(vehicleName);
         setComments(defaultComments);
         // Save default comments to localStorage
         localStorage.setItem(commentsKey, JSON.stringify(defaultComments));
@@ -511,7 +511,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     } catch (error) {
       console.error('Error loading comments:', error);
       // Use default comments on error
-      const defaultComments = getDefaultComments();
+      const defaultComments = getDefaultComments(vehicleName);
       setComments(defaultComments);
     }
   }, [vehicleName]);
@@ -542,7 +542,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
       setCommentText('');
 
       // Save to localStorage
-      const commentsKey = `comments_${vehicleName}`;
+      const commentsKey = `comments_contextual_${vehicleName}`;
       localStorage.setItem(commentsKey, JSON.stringify(updatedComments));
     } catch (error) {
       console.error('Error posting comment:', error);
@@ -567,8 +567,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     setComments(updatedComments);
 
     // Save to localStorage
-    const commentsKey = `comments_${vehicleName}`;
-    const likesKey = `commentLikes_${vehicleName}`;
+    const commentsKey = `comments_contextual_${vehicleName}`;
+    const likesKey = `commentLikes_contextual_${vehicleName}`;
     localStorage.setItem(commentsKey, JSON.stringify(updatedComments));
     localStorage.setItem(likesKey, JSON.stringify(newLikes));
   };
@@ -863,7 +863,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                             className="user-reviews__review-star"
                           />
                           <span className="user-reviews__review-rating">
-                            {(review.rating / 2) % 1 === 0 ? review.rating / 2 : (review.rating / 2).toFixed(1)}
+                            {(review.rating / 20) % 1 === 0 ? review.rating / 20 : (review.rating / 20).toFixed(1)}
                           </span>
                         </div>
                       </div>

@@ -15,6 +15,7 @@ import { RatingModal } from '../RatingModal';
 import WriteReviewModal from '../WriteReviewModal';
 import { getVehicleBodyStyle, type BodyStyleCategory, BODY_STYLE_CATEGORIES } from '../../utils/vehicleBodyStyles';
 import { getVehicles, searchVehicles } from '../../api/vehiclesApi';
+import Icon from '../Icon';
 import './VehiclesSection.css';
 
 export interface VehicleItem {
@@ -401,22 +402,11 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
                 ×
               </button>
             )}
-            <svg
+            <Icon 
+              name="search" 
+              size={20} 
               className="vehicles-section__search-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            />
             
             {/* Autocomplete Dropdown */}
             {showAutocomplete && autocompleteResults.length > 0 && (

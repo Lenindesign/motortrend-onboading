@@ -288,17 +288,7 @@
 }
 
 /* Small mobile */
-@media (max-width: 480px) {
-  .user-type-selection {
-    gap: 16px;
-    max-width: 100%;
-  }
-  
-  .user-type-option {
-    padding: 12px;
-    gap: 12px;
-    min-height: 100px;
-  }
+
 
   .user-type-img {
     width: 100px;
@@ -319,5 +309,4 @@
   .user-type-description {
     font-size: 11px;
   }
-}
 

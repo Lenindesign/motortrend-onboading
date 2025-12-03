@@ -5,11 +5,12 @@
  */
 
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useRating } from '../../contexts/RatingContext';
 import { StaffRatingTooltip } from '../StaffRatingTooltip';
 import { RatingDistributionTooltip } from '../RatingDistributionTooltip';
 import { Badge, Button } from '../../design-system/components';
+import { ActionBadge } from '../molecules/ActionBadge';
 import { Popover } from '../atoms/Popover';
 import './StickyRateBar.css';
 
@@ -41,6 +42,7 @@ export interface StickyRateBarProps {
   staffRatingScores?: { performance?: number; efficiency?: number; tech?: number; value?: number };
   ratingDistribution?: { [key: number]: number };
   totalReviews?: number;
+  hideCtaButton?: boolean;
 }
 
 const StickyRateBar: React.FC<StickyRateBarProps> = ({
@@ -55,10 +57,12 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   barRef,
   staffRatingScores,
   ratingDistribution,
-  totalReviews
+  totalReviews,
+  hideCtaButton
 }) => {
   console.log('[StickyRateBar] Received totalReviews:', totalReviews);
   console.log('[StickyRateBar] Received ratingDistribution:', ratingDistribution);
+  const navigate = useNavigate();
   const { getUserRating } = useRating();
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isDistributionTooltipVisible, setIsDistributionTooltipVisible] = useState(false);
@@ -316,6 +320,36 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       className={`sticky-rate-bar ${isSticky ? 'sticky-rate-bar--sticky' : 'sticky-rate-bar--static'} ${isVisible ? 'sticky-rate-bar--visible' : ''} ${className}`}
     >
       <div className="sticky-rate-bar__content">
+        <div className="sticky-rate-bar__name-container">
+          <div className="sticky-rate-bar__badges-row">
+            {vehiclePath ? (
+              <ActionBadge
+                text="Buyers Guide"
+                variant="secondary"
+                href={vehiclePath}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(vehiclePath);
+                }}
+                className="sticky-rate-bar__buyers-guide-badge"
+              />
+            ) : (
+              <div className="sticky-rate-bar__buyers-guide-badge">
+                <Badge variant="info" size="sm">Buyers Guide</Badge>
+              </div>
+            )}
+            {ctaText && (
+              <ActionBadge
+                className="sticky-rate-bar__cta-badge"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  ctaOnClick?.();
+                }}
+                text={ctaText}
+                variant="primary"
+              />
+            )}
+          </div>
         {vehiclePath ? (
           <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name sticky-rate-bar__vehicle-name--link">
             {vehicleName}
@@ -325,12 +359,13 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             {vehicleName}
           </div>
         )}
+        </div>
         <div className="sticky-rate-bar__ratings">
           {ratings.map((rating, index) => renderRatingItem(rating, index))}
         </div>
-        {ctaText && (
+        {ctaText && !hideCtaButton && (
           <Button
-            className="sticky-rate-bar__cta"
+            className="sticky-rate-bar__cta sticky-rate-bar__cta--desktop"
             color="primary"
             onClick={ctaOnClick}
           >

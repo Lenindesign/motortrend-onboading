@@ -59,6 +59,7 @@ export const VehicleDetails: React.FC = () => {
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentGalleryImages, setCurrentGalleryImages] = useState<string[]>([]);
   
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
@@ -146,10 +147,16 @@ export const VehicleDetails: React.FC = () => {
   }, [decodedYear, decodedMake, decodedModel, apiVehicleData, vehicleName]);
 
   // Check if this is a Prime template vehicle
+  // Includes: hardcoded vehicles, award winners, and all performance cars (priceMin > $150k)
   const isPrimeTemplate = (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') ||
     (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') ||
     (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') ||
-    (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1');
+    (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1') ||
+    (decodedYear === '2026' && decodedMake === 'Cadillac' && decodedModel === 'Escalade-IQ') ||
+    (decodedYear === '2026' && decodedMake === 'Volkswagen' && (decodedModel === 'Golf-GTI-R' || decodedModel === 'Golf-GTI-/-R' || decodedModel === 'Golf-GTI-%2F-R')) ||
+    (decodedYear === '2025' && decodedMake === 'Ram' && decodedModel === '1500') ||
+    // All performance cars (vehicles with starting price > $150,000)
+    (apiVehicleData?.priceMin && apiVehicleData.priceMin > 150000);
 
   // Display name for prime template
   const displayName = (() => {
@@ -165,6 +172,15 @@ export const VehicleDetails: React.FC = () => {
     if (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1') {
       return '2025 Chevrolet Corvette ZR1';
     }
+    if (decodedYear === '2026' && decodedMake === 'Cadillac' && decodedModel === 'Escalade-IQ') {
+      return '2026 Cadillac Escalade IQ';
+    }
+    if (decodedYear === '2026' && decodedMake === 'Volkswagen' && (decodedModel === 'Golf-GTI-R' || decodedModel === 'Golf-GTI-/-R' || decodedModel === 'Golf-GTI-%2F-R')) {
+      return '2026 Volkswagen Golf GTI / R';
+    }
+    if (decodedYear === '2025' && decodedMake === 'Ram' && decodedModel === '1500') {
+      return '2025 Ram 1500';
+    }
     return vehicleName;
   })();
 
@@ -174,6 +190,7 @@ export const VehicleDetails: React.FC = () => {
     console.log('🖼️ apiVehicleData:', apiVehicleData);
     console.log('🖼️ apiVehicleData?.image:', apiVehicleData?.image);
     console.log('🖼️ apiVehicleData?.galleryImages:', apiVehicleData?.galleryImages);
+    console.log('🖼️ isPrimeTemplate:', isPrimeTemplate);
     
     // PRIORITY 1: Use API gallery images if available
     if (apiVehicleData?.galleryImages && apiVehicleData.galleryImages.length > 0) {
@@ -181,32 +198,79 @@ export const VehicleDetails: React.FC = () => {
       return apiVehicleData.galleryImages;
     }
     
-    // PRIORITY 2: Use single API vehicle image if available
-    if (apiVehicleData?.image) {
+    // PRIORITY 2: For prime template vehicles, check articles first (they have multiple images)
+    // For non-prime vehicles, use single API image if available
+    if (!isPrimeTemplate && apiVehicleData?.image) {
       console.log('✅ Using single API image:', apiVehicleData.image);
       return [apiVehicleData.image];
     }
     
-    console.log('⚠️⚠️⚠️ No API vehicle data, checking articles...');
+    console.log('⚠️⚠️⚠️ Checking articles for images...');
     
     // PRIORITY 3: Find matching article
     for (const article of Object.values(articles)) {
       if (article.motortrendScore?.vehicleName) {
-        const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
-        const currentVehicleName = vehicleName.toLowerCase().replace(/\s*\/\s*/g, '/');
+        // Normalize both names: replace hyphens with spaces and normalize whitespace
+        const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase()
+          .replace(/\s*\/\s*/g, '/')
+          .replace(/-/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        const currentVehicleName = vehicleName.toLowerCase()
+          .replace(/\s*\/\s*/g, '/')
+          .replace(/-/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
 
         if (articleVehicleName === currentVehicleName ||
           articleVehicleName.includes(currentVehicleName) ||
           currentVehicleName.includes(articleVehicleName)) {
-          console.log('📰 Using article images');
-          return article.images || [];
+          console.log('📰 Using article images:', article.images?.length || 0);
+          if (article.images && article.images.length > 0) {
+            return article.images;
+          }
         }
       }
     }
-    // PRIORITY 4: Fallback to hero image if no article found
+    
+    // PRIORITY 4: For prime template, use displayName to find article if vehicleName didn't match
+    if (isPrimeTemplate && displayName !== vehicleName) {
+      console.log('🔄 Trying displayName for article match:', displayName);
+      for (const article of Object.values(articles)) {
+        if (article.motortrendScore?.vehicleName) {
+          const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase()
+            .replace(/\s*\/\s*/g, '/')
+            .replace(/-/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+          const currentDisplayName = displayName.toLowerCase()
+            .replace(/\s*\/\s*/g, '/')
+            .replace(/-/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          if (articleVehicleName === currentDisplayName ||
+            articleVehicleName.includes(currentDisplayName) ||
+            currentDisplayName.includes(articleVehicleName)) {
+            console.log('📰 Using article images with displayName:', article.images?.length || 0);
+            if (article.images && article.images.length > 0) {
+              return article.images;
+            }
+          }
+        }
+      }
+    }
+    
+    // PRIORITY 5: Use single API vehicle image if available (fallback for prime template)
+    if (apiVehicleData?.image) {
+      console.log('✅ Using single API image as fallback:', apiVehicleData.image);
+      return [apiVehicleData.image];
+    }
+    
+    // PRIORITY 6: Fallback to hero image if no article found
     console.log('🔄 Using fallback vehicleImageFor');
     return [vehicleImageFor(vehicleName)];
-  }, [vehicleName, apiVehicleData]);
+  }, [vehicleName, apiVehicleData, isPrimeTemplate, displayName]);
 
   // Preload all gallery images for smooth transitions
   useEffect(() => {
@@ -220,9 +284,9 @@ export const VehicleDetails: React.FC = () => {
     });
   }, [galleryImages]);
 
-  // Auto-cycle images for prime template every 5 seconds
+  // Auto-cycle images for all vehicles with multiple gallery images every 5 seconds
   useEffect(() => {
-    if (!isPrimeTemplate || !galleryImages || galleryImages.length <= 1) {
+    if (!galleryImages || galleryImages.length <= 1) {
       return;
     }
     
@@ -233,11 +297,18 @@ export const VehicleDetails: React.FC = () => {
     }, 5000); // 5 seconds
     
     return () => clearInterval(interval);
-  }, [isPrimeTemplate, galleryImages]);
+  }, [galleryImages]);
   
   // Reset image index when gallery images change
   useEffect(() => {
     setCurrentImageIndex(0);
+  }, [galleryImages]);
+
+  // Initialize current gallery images when galleryImages changes
+  useEffect(() => {
+    if (galleryImages && galleryImages.length > 0) {
+      setCurrentGalleryImages(galleryImages);
+    }
   }, [galleryImages]);
 
   const getInitialReviews = (): ReviewData[] => {
@@ -1107,6 +1178,7 @@ export const VehicleDetails: React.FC = () => {
       {/* Sticky Rate Bar - appears below header on load, becomes sticky when scrolling */}
       <StickyRateBar
         vehicleName={displayName}
+        vehiclePath={`/vehicles/${decodedYear}/${decodedMake}/${decodedModel}`}
         ratings={stickyRatings}
         isVisible={isStickyBarVisible || !isStickyBarSticky}
         isSticky={isStickyBarSticky}
@@ -1491,8 +1563,36 @@ export const VehicleDetails: React.FC = () => {
           {/* Hero Image (hidden for prime template) */}
           {!isPrimeTemplate && (
             <div className="vehicle-details__hero">
-              <div className="vehicle-details__hero-image">
-                <img src={vehicleData.image} alt={vehicleName} />
+              <div 
+                className="vehicle-details__hero-image"
+                onClick={() => setIsGalleryOpen(true)}
+                style={{ cursor: 'pointer' }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsGalleryOpen(true);
+                  }
+                }}
+                aria-label="Open photo gallery"
+              >
+                {galleryImages && galleryImages.length > 1 ? (
+                  galleryImages.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`${vehicleName} - Photo ${index + 1}`}
+                      className={`vehicle-details__hero-slide ${index === currentImageIndex ? 'vehicle-details__hero-slide--active' : ''}`}
+                    />
+                  ))
+                ) : (
+                  <img 
+                    src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image} 
+                    alt={vehicleName}
+                    className="vehicle-details__hero-slide vehicle-details__hero-slide--active"
+                  />
+                )}
               </div>
             </div>
           )}
@@ -2141,11 +2241,28 @@ export const VehicleDetails: React.FC = () => {
 
       {/* Photo Gallery */}
       <PhotoGallery
-        images={galleryImages}
+        key={currentGalleryImages.length > 0 ? currentGalleryImages[0] : galleryImages[0] || 'gallery'}
+        images={currentGalleryImages.length > 0 ? currentGalleryImages : galleryImages}
         isOpen={isGalleryOpen}
-        onClose={() => setIsGalleryOpen(false)}
+        onClose={() => {
+          setIsGalleryOpen(false);
+          // Reset to original gallery images when closing
+          setCurrentGalleryImages(galleryImages);
+        }}
         initialIndex={0}
         vehicleName={displayName}
+        localListings={localListings}
+        onViewAllListings={() => {
+          console.log('View all listings clicked from gallery');
+          // TODO: Navigate to listings page or open modal
+        }}
+        onListingClick={(listing) => {
+          // When a listing is clicked in the gallery, update the gallery images
+          const listingPhotos = listing.photoUrls || [listing.imageUrl];
+          if (listingPhotos.length > 0) {
+            setCurrentGalleryImages(listingPhotos);
+          }
+        }}
       />
 
     </div>

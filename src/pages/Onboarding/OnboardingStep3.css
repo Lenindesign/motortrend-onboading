@@ -579,16 +579,8 @@
   }
 }
 
-@media (max-width: 480px) {
-  .onboarding-card__title {
-    font-size: 24px;
-  }
 
-  .vehicle-search__input-wrapper {
-    padding: 8px 12px;
-  }
 
   .vehicle-search__input {
     font-size: 14px;
   }
-}

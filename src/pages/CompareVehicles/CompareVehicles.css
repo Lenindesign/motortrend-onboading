@@ -107,14 +107,7 @@
 }
 
 /* Small mobile */
-@media (max-width: 480px) {
-  .compare-vehicles {
-    padding: var(--spacing-2) 0;
-  }
 
-  .compare-vehicles__container {
-    padding: 0 16px;
-  }
 
   .compare-vehicles__section {
     margin-bottom: var(--spacing-2);
@@ -125,5 +118,4 @@
     font-size: 20px;
     margin-bottom: var(--spacing-2);
   }
-}
 

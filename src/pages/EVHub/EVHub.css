@@ -75,18 +75,10 @@
 }
 
 /* Small mobile */
-@media (max-width: 480px) {
-  .ev-hub {
-    padding: var(--spacing-2) 0;
-  }
 
-  .ev-hub__container {
-    padding: 0 16px;
-  }
 
   .ev-hub__section {
     margin-bottom: var(--spacing-2);
     gap: var(--spacing-2);
   }
-}
 

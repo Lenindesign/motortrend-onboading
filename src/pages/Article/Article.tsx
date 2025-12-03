@@ -14,6 +14,7 @@ import RatingModal from '../../components/RatingModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
 import { Badge } from '../../components/atoms/Badge/Badge';
+import { ActionBadge } from '../../components/molecules/ActionBadge';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
 import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
 import { getVehicleByName } from '../../api/vehiclesApi';
@@ -78,7 +79,6 @@ export const Article: React.FC = () => {
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
-  const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
   const commentIconRef = useRef<HTMLSpanElement>(null);
   const justSavedReviewRef = useRef<boolean>(false);
   const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
@@ -850,7 +850,7 @@ export const Article: React.FC = () => {
                 showHalfStars: true
               }
             ]}
-            ctaText="Local Listings"
+            ctaText="See Local Listings"
             ctaOnClick={() => {
               const listingsSection = document.querySelector('.article__listings');
               if (listingsSection) {
@@ -866,6 +866,7 @@ export const Article: React.FC = () => {
                 console.log('Navigate to local listings');
               }
             }}
+            hideCtaButton={true}
             isVisible={isStickyBarVisible || !isStickyBarSticky}
             isSticky={isStickyBarSticky}
             barRef={stickyRateBarRef as React.RefObject<HTMLDivElement>}
@@ -1182,7 +1183,34 @@ export const Article: React.FC = () => {
                               />
                               {vehicleNameForImage && motortrendScoreForImage !== null && userScoreForImage !== null && (
                                 <div className="article__rating-overlay">
-                                  <h2 className="article__rating-overlay-name">#{rankingNumber} {vehicleNameForImage}</h2>
+                                  <div className="article__rating-left-content">
+                                    <div className="article__badges-row">
+                                      <ActionBadge
+                                        text="Buyers Guide"
+                                        variant="secondary"
+                                        href={`/vehicles/${encodeURIComponent(parseVehicleName(vehicleNameForImage).year)}/${encodeURIComponent(parseVehicleName(vehicleNameForImage).make)}/${encodeURIComponent(parseVehicleName(vehicleNameForImage).model)}`}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          const { year, make, model } = parseVehicleName(vehicleNameForImage!);
+                                          navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
+                                        }}
+                                        className="article__buyers-guide-badge"
+                                      />
+                                      <ActionBadge
+                                        text="See Local Listings"
+                                        variant="primary"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          const { year, make, model } = parseVehicleName(vehicleNameForImage!);
+                                          navigate(`/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`);
+                                        }}
+                                        className="article__buyers-guide-badge"
+                                      />
+                                    </div>
+                                    <h2 className="article__rating-overlay-name">#{rankingNumber} {vehicleNameForImage}</h2>
+                                  </div>
                                   <div className="article__ratings-list">
                                     <div className="article__rating-item">
                                       <div className="article__rating-score-row">
@@ -1194,8 +1222,8 @@ export const Article: React.FC = () => {
                                         <div className="article__rating-score-large">
                                           {motortrendScoreForImage.toFixed(1)}
                                           <span className="article__rating-score-max">/10</span>
-                                        </div>
                                       </div>
+                                    </div>
                                       <div className="article__rating-label-row">
                                         <span className="article__rating-motortrend-text">MotorTrend Rating</span>
                                       </div>
@@ -1207,16 +1235,6 @@ export const Article: React.FC = () => {
                                       </div>
                                     </div>
                                   </div>
-                                  <button 
-                                    className="article__listing-btn"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      const { year, make, model } = parseVehicleName(vehicleNameForImage);
-                                      navigate(`/vehicles/${year}/${make}/${model}`);
-                                    }}
-                                  >
-                                    See Local Listings
-                                  </button>
                                 </div>
                               )}
                             </div>
@@ -1286,8 +1304,8 @@ export const Article: React.FC = () => {
                                           <div className="article__rating-score-large">
                                             {motortrendScoreForImage.toFixed(1)}
                                             <span className="article__rating-score-max">/10</span>
-                                          </div>
                                         </div>
+                                      </div>
                                         <div className="article__rating-label-row">
                                           <span className="article__rating-motortrend-text">MotorTrend Rating</span>
                                         </div>
@@ -1442,52 +1460,28 @@ export const Article: React.FC = () => {
                                   <h3>{motortrendScore.reviewer.title}</h3>
                                   <p>{motortrendScore.reviewer.excerpt}</p>
 
-                                  {/* Read Full Review Accordion CTA */}
+                                  {/* Read Full Review Link */}
                                   <div className="article__review-accordion">
-                                    <button
-                                      className="article__review-accordion-button"
-                                      onClick={() => setIsReviewAccordionOpen(!isReviewAccordionOpen)}
-                                      aria-expanded={isReviewAccordionOpen}
-                                    >
-                                      <span>Read Full Review</span>
-                                      <svg
-                                        className={`article__review-accordion-chevron ${isReviewAccordionOpen ? 'article__review-accordion-chevron--open' : ''}`}
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 20 20"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M5 7.5L10 12.5L15 7.5"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
-                                    </button>
-                                    {isReviewAccordionOpen && (
-                                      <div className="article__review-accordion-content">
-                                        <div className="article__review-accordion-text">
-                                          {motortrendScore.reviewer.detailedSections ? (
-                                            motortrendScore.reviewer.detailedSections.map((section, sectionIndex) => (
-                                              <div key={sectionIndex} className="article__review-section">
-                                                <h4 className="article__review-section-title">{section.title}</h4>
-                                                {section.content.split('\n\n').map((paragraph, pIndex) => (
-                                                  <p key={pIndex}>{paragraph}</p>
-                                                ))}
-                                              </div>
-                                            ))
-                                          ) : (
-                                            <>
-                                              <h4>Detailed Review</h4>
-                                              <p>Full review content would appear here.</p>
-                                            </>
-                                          )}
-                                        </div>
-                                      </div>
-                                    )}
+                                    {(() => {
+                                      // Parse vehicle name to get year, make, and model for navigation
+                                      const vehicleNameForLink = motortrendScore.vehicleName;
+                                      const parsed = parseVehicleName(vehicleNameForLink);
+                                      const vehiclePath = parsed ? `/vehicles/${parsed.year}/${parsed.make}/${parsed.model}` : '#';
+                                      
+                                      return (
+                                        <button
+                                          className="article__review-accordion-button"
+                                          onClick={() => {
+                                            if (parsed) {
+                                              navigate(vehiclePath);
+                                            }
+                                          }}
+                                        >
+                                          <span>Read Full Review</span>
+                                          <Icon name="chevron_right" size={20} />
+                                        </button>
+                                      );
+                                    })()}
                                   </div>
                                 </div>
                               </div>

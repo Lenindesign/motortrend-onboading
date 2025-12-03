@@ -23,6 +23,7 @@ import { useRating } from '../../contexts/RatingContext';
 import { getVehicleSpecs } from '../../utils/vehicleSpecs';
 import { getArticleBySlug } from '../../utils/articles';
 import { getVehicles } from '../../api/vehiclesApi';
+import { CommunityPostsPromo } from '../../components/CommunityPostsPromo';
 import './Home.css';
 
 // Get vehicle database from API - NO HARDCODED DATA
@@ -1839,6 +1840,25 @@ export const Home: React.FC = () => {
               label="SVOD 200 x 420"
               position="right-column"
               imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116444ba9124000252c544/8119904599187119191.png"
+            />
+          </div>
+        </div>
+
+        {/* Community Posts Promo Section */}
+        <div className="home__section">
+          <div className="home__left-column">
+            <CommunityPostsPromo 
+              title="Trending in Community"
+              maxPosts={4}
+            />
+          </div>
+          <div className="home__right-column">
+            <AdContainer
+              width={300}
+              height={600}
+              label="SVOD 200 x 420"
+              position="right-column"
+              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>

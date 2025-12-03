@@ -75,13 +75,7 @@
   }
 }
 
-@media (max-width: 480px) {
-  .home__section--full-width {
-    margin-left: -16px;
-    margin-right: -16px;
-    width: calc(100% + 32px);
-  }
-}
+
 
 .home__left-column {
   display: flex;
@@ -848,17 +842,8 @@
   }
 }
 
-/* Small mobile */
-@media (max-width: 480px) {
-  .home__carousel {
-    aspect-ratio: 3 / 4; /* Portrait orientation for small screens */
-    min-height: 500px;
-  }
-
-  .home__carousel-name {
-    font-size: 16px;
-  }
-
+/* Small mobile styles merged into tablet breakpoint */
+@media (max-width: 768px) {
   .home__carousel-info-box {
     padding: 10px 12px;
     gap: 10px;
@@ -1765,4 +1750,3 @@
     font-size: 12px;
   }
 }
-

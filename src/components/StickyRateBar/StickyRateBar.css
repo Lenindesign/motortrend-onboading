@@ -57,6 +57,30 @@
     gap: var(--spacing-3);
 }
 
+.sticky-rate-bar__name-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    flex-shrink: 0;
+}
+
+.sticky-rate-bar__badges-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sticky-rate-bar__buyers-guide-badge {
+    display: inline-flex;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    width: fit-content;
+}
+
+a.sticky-rate-bar__buyers-guide-badge:hover {
+    opacity: 0.8;
+}
+
 .sticky-rate-bar__vehicle-name {
     font-family: var(--font-heading);
     font-weight: 600;
@@ -73,23 +97,15 @@ div.sticky-rate-bar__vehicle-name {
     font-size: 24px;
 }
 
-/* Make vehicle name look like a CTA when it's a link (Article pages) */
+/* Vehicle name as a link - simple text link, not a button */
 .sticky-rate-bar__vehicle-name--link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-component-sm) var(--spacing-component-lg);
-    background-color: var(--color-neutrals-2);
-    border-radius: var(--border-radius-md);
-    color: var(--color-neutrals-8);
-    transition: all var(--transition-fast);
-    font-size: 20px;
+    color: #E0E0E0;
+    transition: opacity var(--transition-fast);
+    font-size: 24px;
 }
 
 .sticky-rate-bar__vehicle-name--link:hover {
-    background-color: var(--color-neutrals-1);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-depth-2);
+    opacity: 0.8;
 }
 
 .sticky-rate-bar__ratings {
@@ -348,6 +364,11 @@ div.sticky-rate-bar__vehicle-name {
     box-shadow: var(--shadow-button-hover);
 }
 
+/* Hide badge version on desktop */
+.sticky-rate-bar__cta--badge {
+    display: none;
+}
+
 /* Remove side padding at 1280px+ since content is constrained by max-width */
 @media (min-width: 1280px) {
     .sticky-rate-bar__content {
@@ -358,39 +379,73 @@ div.sticky-rate-bar__vehicle-name {
 
 @media (max-width: 768px) {
     .sticky-rate-bar__content {
-        padding: 8px 12px;
-        flex-direction: column;
-        gap: 8px;
+        padding: 10px 12px;
+        flex-direction: row;
+        gap: 12px;
         align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .sticky-rate-bar__name-container {
+        order: 1;
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    /* Badges row - Buyers Guide + Local Listings */
+    .sticky-rate-bar__badges-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        order: 1;
+    }
+
+    .sticky-rate-bar__buyers-guide-badge {
+        display: inline-flex;
+    }
+
+    /* Hide desktop CTA, show badge version */
+    .sticky-rate-bar__cta--desktop {
+        display: none !important;
+    }
+
+    /* BuyersGuideBadge molecule styling - styles are handled by the molecule component */
+    .sticky-rate-bar__cta-badge {
+        /* Styles are handled by the BuyersGuideBadge molecule component */
     }
 
     .sticky-rate-bar__vehicle-name {
-        font-size: 15px;
-        text-align: center;
-        width: 100%;
+        font-size: 18px;
+        text-align: left;
         line-height: 1.2;
-        order: 1;
+        order: 2;
+        width: 100%;
     }
 
     /* Make/Model pages (VehicleDetails) - larger font size on mobile too */
     div.sticky-rate-bar__vehicle-name {
-        font-size: 16px;
+        font-size: 18px;
     }
 
     /* Mobile CTA button styling for link version */
     .sticky-rate-bar__vehicle-name--link {
-        width: 100%;
-        padding: 8px 12px;
-        font-size: 14px;
+        padding: 0;
+        font-size: 18px;
     }
 
     .sticky-rate-bar__ratings {
-        width: 100%;
-        justify-content: center;
-        gap: 20px;
+        gap: 8px;
         flex-wrap: nowrap;
         display: flex !important;
         order: 2;
+        flex: 1;
+        justify-content: flex-end;
+        min-width: 0;
     }
 
     .sticky-rate-bar__rating-item {
@@ -404,9 +459,21 @@ div.sticky-rate-bar__vehicle-name {
         display: flex !important;
     }
 
-    /* Hide only "Rate This Vehicle" (3rd item) on mobile */
-    .sticky-rate-bar__rating-item:nth-child(3) {
+    /* Hide "Rate This Vehicle" (your-rating type) on mobile */
+    .sticky-rate-bar__rate-btn,
+    .sticky-rate-bar__rating-item--vertical.sticky-rate-bar__rate-btn {
         display: none !important;
+    }
+
+    /* Hide separator before "Rate This Vehicle" */
+    .sticky-rate-bar__rating-separator:last-of-type {
+        display: none !important;
+    }
+
+    /* Reduce separator margin on mobile */
+    .sticky-rate-bar__rating-separator {
+        margin: 0 4px;
+        height: 30px;
     }
 
     .sticky-rate-bar__rating-label {
@@ -456,12 +523,9 @@ div.sticky-rate-bar__vehicle-name {
         font-size: 14px;
     }
 
-    .sticky-rate-bar__cta {
-        width: 100%;
-        padding: 11px 16px;
-        font-size: 14px;
-        font-weight: 600;
-        order: 3;
+    /* Desktop CTA hidden on mobile */
+    .sticky-rate-bar__cta--desktop {
+        display: none !important;
     }
 
     .sticky-rate-bar__rate-btn--mobile-hide {
@@ -469,77 +533,4 @@ div.sticky-rate-bar__vehicle-name {
     }
 }
 
-/* Medium mobile breakpoint */
-@media (max-width: 640px) {
-    .sticky-rate-bar__content {
-        padding: 8px 10px;
-        gap: 6px;
-    }
-
-    .sticky-rate-bar__vehicle-name {
-        font-size: 15px;
-    }
-
-    div.sticky-rate-bar__vehicle-name {
-        font-size: 16px;
-    }
-
-    .sticky-rate-bar__ratings {
-        gap: 16px;
-    }
-
-    .sticky-rate-bar__rating-value {
-        font-size: 17px;
-    }
-
-    .sticky-rate-bar__rating-label {
-        font-size: 9px;
-    }
-
-    .sticky-rate-bar__cta {
-        padding: 9px 14px;
-        font-size: 13px;
-    }
-}
-
-/* Small mobile breakpoint */
-@media (max-width: 480px) {
-    .sticky-rate-bar__content {
-        padding: 8px 8px;
-        gap: 6px;
-    }
-
-    .sticky-rate-bar__vehicle-name {
-        font-size: 14px;
-    }
-
-    div.sticky-rate-bar__vehicle-name {
-        font-size: 15px;
-    }
-
-    .sticky-rate-bar__ratings {
-        gap: 12px;
-    }
-
-    .sticky-rate-bar__rating-value {
-        font-size: 16px;
-    }
-
-    .sticky-rate-bar__rating-label {
-        font-size: 9px;
-    }
-
-    .sticky-rate-bar__rating-icon {
-        width: 14px;
-        height: 14px;
-    }
-
-    .sticky-rate-bar__star {
-        font-size: 12px;
-    }
-
-    .sticky-rate-bar__cta {
-        padding: 9px 12px;
-        font-size: 13px;
-    }
-}
+/* All mobile devices use tablet (768px) styles - no separate breakpoints */

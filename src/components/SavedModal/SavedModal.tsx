@@ -14,7 +14,7 @@ export interface SavedModalProps {
   isOpen: boolean;
   onClose: () => void;
   itemTitle: string;
-  itemType?: 'article' | 'vehicle' | 'comparison' | 'video';
+  itemType?: 'article' | 'vehicle' | 'comparison' | 'video' | 'lead';
 }
 
 export const SavedModal: React.FC<SavedModalProps> = ({

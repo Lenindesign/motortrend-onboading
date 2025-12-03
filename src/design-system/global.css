@@ -169,7 +169,7 @@
   --shadow-card: 0px 4px 8px 0px rgba(20, 20, 22, 0.1);
   --shadow-card-hover: 0px 4px 12px 0px rgba(20, 20, 22, 0.12);
   --shadow-button: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-button-hover: 0 4px 8px rgba(233, 12, 23, 0.3);
+  --shadow-button-hover: 0 4px 8px rgba(20, 20, 22, 0.2);
   --shadow-button-primary: 0 2px 4px rgba(233, 12, 23, 0.2);
   --shadow-modal: 0 24px 48px rgba(0, 0, 0, 0.3);
   --shadow-modal-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -324,13 +324,12 @@ body {
 .cta--primary {
   background-color: var(--color-primary-1);
   color: var(--color-white);
-  box-shadow: 0 2px 4px rgba(233, 12, 23, 0.2);
 }
 
 .cta--primary:hover:not(:disabled) {
   background-color: var(--color-neutrals-1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(233, 12, 23, 0.3);
+  box-shadow: 0 4px 8px rgba(20, 20, 22, 0.2);
 }
 
 /* CTA Colors - Secondary Actions */

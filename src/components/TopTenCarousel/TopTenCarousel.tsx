@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../Icon';
 import { Badge } from '../atoms/Badge/Badge';
+import { ActionBadge } from '../molecules/ActionBadge';
 import { PhotoGallery } from '../PhotoGallery';
 import SavedModal from '../SavedModal';
 import { parseVehicleName, vehicleImageFor } from '../../utils/vehicleImages';
@@ -16,7 +17,7 @@ import { getVehicles } from '../../api/vehiclesApi';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import './TopTenCarousel.css';
 
-export type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe' | 'Performance';
+export type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe' | 'Performance' | 'Recommended For You';
 export type Subcategory = 'All' | 'Subcompact' | 'Compact' | 'Midsize' | 'Full-Size' | 'Luxury' | 'Electric';
 export type RatingType = 'MotorTrend' | 'User Reviews';
 
@@ -58,6 +59,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const [savedVehicles, setSavedVehicles] = useState<Set<string>>(new Set());
   const [animationKey, setAnimationKey] = useState(0);
   const slideIntervalRef = useRef<number | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isInView, setIsInView] = useState(false);
+  const ratingBadgeRef = useRef<HTMLDivElement>(null);
+  const dotsRef = useRef<HTMLDivElement>(null);
+  const [shouldHideRatingBadge, setShouldHideRatingBadge] = useState(false);
   
   // Touch/swipe state
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -158,8 +164,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
   // Helper function to get subcategories for a vehicle type
   const getSubcategoriesForType = (type: VehicleType): Subcategory[] => {
-    // Performance is a standalone category with no subcategories
-    if (type === 'Performance') {
+    // Performance and Recommended For You are standalone categories with no subcategories
+    if (type === 'Performance' || type === 'Recommended For You') {
       return ['All'];
     }
     
@@ -226,8 +232,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
     // Luxury classification (only for SUV and Truck vehicle types)
     if (vehicleType !== 'Sedan' && vehicleType !== 'Coupe') {
-      const luxuryBrands = ['mercedes', 'bmw', 'audi', 'lexus', 'infiniti', 'acura', 'cadillac', 'lincoln', 'genesis', 'porsche', 'jaguar', 'land rover', 'volvo'];
-      if (luxuryBrands.some(brand => name.includes(brand))) return 'Luxury';
+    const luxuryBrands = ['mercedes', 'bmw', 'audi', 'lexus', 'infiniti', 'acura', 'cadillac', 'lincoln', 'genesis', 'porsche', 'jaguar', 'land rover', 'volvo'];
+    if (luxuryBrands.some(brand => name.includes(brand))) return 'Luxury';
     }
 
     return 'All';
@@ -236,14 +242,81 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   // Reset subcategory when vehicle type changes
   useEffect(() => {
     setSelectedSubcategory('All');
+    // If switching to Recommended For You, ensure subcategory is set to All
+    if (selectedVehicleType === 'Recommended For You') {
+      setSelectedSubcategory('All');
+    }
   }, [selectedVehicleType]);
 
   // Prepare vehicles for carousel (10 best vehicles of selected type)
   const carouselVehicles: CarouselVehicle[] = useMemo(() => {
     let filteredVehicles = allVehicleItems;
     
+    // Recommended For You - filter by saved vehicles from user's profile, fill to at least 10
+    if (selectedVehicleType === 'Recommended For You') {
+      try {
+        const onboardingData = localStorage.getItem('onboardingData');
+        const savedVehicleNames = new Set<string>();
+        
+        if (onboardingData) {
+          const data = JSON.parse(onboardingData);
+          if (data.vehicles && Array.isArray(data.vehicles) && data.vehicles.length > 0) {
+            data.vehicles.forEach((v: { name: string }) => {
+              if (v.name) {
+                savedVehicleNames.add(v.name.toLowerCase().trim());
+              }
+            });
+          }
+        }
+        
+        // Get saved vehicles first
+        const savedVehicles = allVehicleItems.filter(vehicle => {
+          const vehicleNameLower = vehicle.name.toLowerCase().trim();
+          return savedVehicleNames.has(vehicleNameLower);
+        });
+        
+        // If we have fewer than 10 saved vehicles, add recommendations to reach at least 10
+        if (savedVehicles.length < 10) {
+          const remainingCount = 10 - savedVehicles.length;
+          const savedVehicleNamesSet = new Set(savedVehicles.map(v => v.name.toLowerCase().trim()));
+          
+          // Get additional vehicles that are not already saved
+          // Prioritize vehicles with high ratings
+          const additionalVehicles = allVehicleItems
+            .filter(vehicle => {
+              const vehicleNameLower = vehicle.name.toLowerCase().trim();
+              return !savedVehicleNamesSet.has(vehicleNameLower);
+            })
+            .sort((a, b) => {
+              // Sort by combined rating (staff + community) descending
+              const aRating = (a.staffRating || 0) + (a.communityRating || 0);
+              const bRating = (b.staffRating || 0) + (b.communityRating || 0);
+              return bRating - aRating;
+            })
+            .slice(0, remainingCount);
+          
+          filteredVehicles = [...savedVehicles, ...additionalVehicles];
+          
+          console.log(`TopTenCarousel: ${savedVehicles.length} saved + ${additionalVehicles.length} recommended = ${filteredVehicles.length} Recommended For You vehicles`);
+        } else {
+          // We have 10+ saved vehicles, use top 10
+          filteredVehicles = savedVehicles.slice(0, 10);
+          console.log(`TopTenCarousel: Using ${filteredVehicles.length} saved vehicles for Recommended For You`);
+        }
+      } catch (error) {
+        console.error('Error loading recommended vehicles:', error);
+        // Fallback: show top 10 rated vehicles
+        filteredVehicles = allVehicleItems
+          .sort((a, b) => {
+            const aRating = (a.staffRating || 0) + (a.communityRating || 0);
+            const bRating = (b.staffRating || 0) + (b.communityRating || 0);
+            return bRating - aRating;
+          })
+          .slice(0, 10);
+      }
+    }
     // Performance is a standalone category - filter by price only (all body styles)
-    if (selectedVehicleType === 'Performance') {
+    else if (selectedVehicleType === 'Performance') {
       filteredVehicles = allVehicleItems.filter(vehicle => {
         const priceMin = vehicle.priceMin ?? 0;
         return priceMin > 150000;
@@ -258,23 +331,23 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           return vehicle.bodyStyle === selectedVehicleType;
         }
         // Fallback to getVehicleBodyStyle for legacy compatibility
-        const bodyStyles = getVehicleBodyStyle(vehicle.name);
-        return bodyStyles.includes(selectedVehicleType);
-      });
-      
-      console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} ${selectedVehicleType}s from ${allVehicleItems.length} total vehicles`);
+      const bodyStyles = getVehicleBodyStyle(vehicle.name);
+      return bodyStyles.includes(selectedVehicleType);
+    });
+    
+    console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} ${selectedVehicleType}s from ${allVehicleItems.length} total vehicles`);
       
       // Exclude vehicles with priceMin > 150000 from regular categories (including "All")
       filteredVehicles = filteredVehicles.filter(vehicle => {
         const priceMin = vehicle.priceMin ?? 0;
         return priceMin <= 150000;
       });
-      
-      // Filter by subcategory if not 'All'
-      if (selectedSubcategory !== 'All') {
-        filteredVehicles = filteredVehicles.filter(vehicle => {
-          return getVehicleSubcategory(vehicle.name, selectedVehicleType) === selectedSubcategory;
-        });
+    
+    // Filter by subcategory if not 'All'
+    if (selectedSubcategory !== 'All') {
+      filteredVehicles = filteredVehicles.filter(vehicle => {
+          return getVehicleSubcategory(vehicle.name, selectedVehicleType as 'SUV' | 'Sedan' | 'Truck' | 'Coupe') === selectedSubcategory;
+      });
       }
     }
 
@@ -338,7 +411,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           // Keep existing (it matches bodyStyle)
         } else if (vehicle.vehicleYear > existing.vehicleYear) {
           // Both match or neither match bodyStyle, keep latest year
-          uniqueVehicles.set(key, vehicle);
+        uniqueVehicles.set(key, vehicle);
         }
       }
     });
@@ -446,11 +519,78 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     setAnimationKey(prev => prev + 1);
   };
 
-  // Auto-advance carousel
+  // Intersection Observer to detect when carousel is in view
+  useEffect(() => {
+    const carouselElement = carouselRef.current;
+    if (!carouselElement) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsInView(entry.isIntersecting);
+        });
+      },
+      {
+        threshold: 0.1, // Trigger when at least 10% of the carousel is visible
+        rootMargin: '0px'
+      }
+    );
+
+    observer.observe(carouselElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Check if rating badge overlaps with dots and hide it if needed
+  useEffect(() => {
+    const checkOverlap = () => {
+      if (!ratingBadgeRef.current || !dotsRef.current || !carouselRef.current) {
+        setShouldHideRatingBadge(false);
+        return;
+      }
+
+      // Temporarily ensure badge is visible for measurement
+      const originalVisibility = ratingBadgeRef.current.style.visibility;
+      const originalOpacity = ratingBadgeRef.current.style.opacity;
+      ratingBadgeRef.current.style.visibility = 'visible';
+      ratingBadgeRef.current.style.opacity = '1';
+
+      // Force a reflow to ensure measurements are accurate
+      ratingBadgeRef.current.offsetHeight;
+
+      const ratingBadgeRect = ratingBadgeRef.current.getBoundingClientRect();
+      const dotsRect = dotsRef.current.getBoundingClientRect();
+
+      // Restore original state
+      ratingBadgeRef.current.style.visibility = originalVisibility;
+      ratingBadgeRef.current.style.opacity = originalOpacity;
+
+      // Check if they overlap horizontally (with a small margin for safety)
+      const margin = 8; // 8px margin to prevent tight spacing
+      const overlaps = ratingBadgeRect.right + margin > dotsRect.left;
+
+      setShouldHideRatingBadge(overlaps);
+    };
+
+    // Check on mount and when window resizes
+    const timeoutId = setTimeout(checkOverlap, 100);
+    const timeoutId2 = setTimeout(checkOverlap, 300);
+    window.addEventListener('resize', checkOverlap);
+
+    return () => {
+      window.removeEventListener('resize', checkOverlap);
+      clearTimeout(timeoutId);
+      clearTimeout(timeoutId2);
+    };
+  }, [carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
+
+  // Auto-advance carousel (only when in view and not hovered)
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
     
-    if (!isSliderHovered) {
+    if (isInView && !isSliderHovered) {
       // Clear any existing interval first
       if (slideIntervalRef.current) {
         clearInterval(slideIntervalRef.current);
@@ -485,7 +625,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         slideIntervalRef.current = null;
       }
     };
-  }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory, animationKey]);
+  }, [isInView, isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory, animationKey]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -674,7 +814,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   }
 
   return (
-    <div className={`top-ten-carousel ${className}`}>
+    <div ref={carouselRef} className={`top-ten-carousel ${className}`}>
       <div 
         className={`top-ten-carousel__slider ${isSliderHovered ? 'top-ten-carousel__slider--hovered' : ''}`}
         onMouseEnter={handleMouseEnter}
@@ -701,11 +841,13 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
               <option value="Truck">Top Ten Trucks</option>
               <option value="Coupe">Top Ten Coupes</option>
               <option value="Performance">Top Ten Performance</option>
+              <option value="Recommended For You">Recommended For You</option>
             </select>
             <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
           </div>
 
-          {/* Subcategory Dropdown */}
+          {/* Subcategory Dropdown - Hide for Recommended For You */}
+          {selectedVehicleType !== 'Recommended For You' && (
           <div className="top-ten-carousel__category-badge top-ten-carousel__subcategory-badge">
             <select 
               className="top-ten-carousel__category-dropdown"
@@ -721,12 +863,17 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   {subcat === 'All' ? 'All Categories' : subcat}
                 </option>
               ))}
-            </select>
-            <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
-          </div>
+              </select>
+              <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
+            </div>
+          )}
 
           {/* Rating Type Dropdown */}
-          <div className="top-ten-carousel__category-badge top-ten-carousel__rating-type-badge">
+          <div 
+            ref={ratingBadgeRef} 
+            className={`top-ten-carousel__category-badge top-ten-carousel__rating-type-badge ${shouldHideRatingBadge ? 'top-ten-carousel__rating-type-badge--hidden' : ''}`}
+            style={shouldHideRatingBadge ? { visibility: 'hidden', pointerEvents: 'none' } : undefined}
+          >
             <select 
               className="top-ten-carousel__category-dropdown"
               value={ratingType}
@@ -748,14 +895,18 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           className="top-ten-carousel__track"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {carouselVehicles.map((vehicle) => (
+          {carouselVehicles.map((vehicle, index) => (
             <div 
               key={vehicle.id} 
               className="top-ten-carousel__slide"
               onClick={() => handleVehicleClick(vehicle)}
             >
               <div className="top-ten-carousel__image">
-                <img src={vehicle.image} alt={vehicle.name} />
+                <img 
+                  src={vehicle.image} 
+                  alt={vehicle.name}
+                  className={index === currentSlide ? 'top-ten-carousel__image--active' : ''}
+                />
                 
                 {/* Save Button */}
                 <button
@@ -795,17 +946,30 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                 )}
                 
                 {/* Vehicle Name and Ratings Box */}
-                <div className="top-ten-carousel__info-box">
+                <div className={`top-ten-carousel__info-box ${index === currentSlide ? 'top-ten-carousel__info-box--active' : ''}`}>
                   <div className="top-ten-carousel__name-container">
-                    <a 
-                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
-                      className="top-ten-carousel__buyers-guide-badge"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <Badge variant="info" size="sm">Buyers Guide</Badge>
-                    </a>
+                    <div className="top-ten-carousel__badges-row">
+                      <ActionBadge
+                        text="Buyers Guide"
+                        variant="secondary"
+                        href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          navigate(`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`);
+                        }}
+                        className="top-ten-carousel__buyers-guide-badge"
+                      />
+                      <ActionBadge
+                        text="See Local Listings"
+                        variant="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVehicleClick(vehicle);
+                        }}
+                        className="top-ten-carousel__listing-btn-badge"
+                      />
+                    </div>
                     <a 
                       href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
                       className="top-ten-carousel__name-link"
@@ -813,9 +977,17 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                         e.stopPropagation();
                       }}
                     >
-                  <h2 className="top-ten-carousel__name">#{vehicle.rank} {vehicle.name}</h2>
+                  <h2 
+                    className="top-ten-carousel__name" 
+                    style={{ 
+                      color: '#FFFFFF',
+                      WebkitTextFillColor: '#FFFFFF'
+                    }}
+                  >
+                    #{vehicle.rank} {vehicle.name}
+                  </h2>
                     </a>
-                  </div>
+                      </div>
                   <div className="top-ten-carousel__ratings-list">
                     <a 
                       href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#motortrend-review`}
@@ -833,8 +1005,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                         <div className="top-ten-carousel__rating-score-large">
                           {vehicle.staffRating.toFixed(1)}
                           <span className="top-ten-carousel__rating-score-max">/10</span>
-                        </div>
                       </div>
+                    </div>
                       <div className="top-ten-carousel__rating-label-row">
                         <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--full">MotorTrend Rating</span>
                         <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--short">MT Rating</span>
@@ -855,15 +1027,6 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                       </div>
                     </a>
                   </div>
-                  <button 
-                    className="top-ten-carousel__listing-btn cta cta--primary cta--default"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleVehicleClick(vehicle);
-                    }}
-                  >
-                    See Local Listings
-                  </button>
                 </div>
               </div>
             </div>
@@ -914,7 +1077,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
             </button>
             
             {/* Slider Dots (Desktop) / Counter (Mobile) */}
-            <div className="top-ten-carousel__dots">
+            <div ref={dotsRef} className="top-ten-carousel__dots">
               {carouselVehicles.map((vehicle, index) => (
                 <button
                   key={index}

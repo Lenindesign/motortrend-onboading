@@ -75,18 +75,10 @@
 }
 
 /* Small mobile */
-@media (max-width: 480px) {
-  .news-reviews {
-    padding: var(--spacing-2) 0;
-  }
 
-  .news-reviews__container {
-    padding: 0 16px;
-  }
 
   .news-reviews__section {
     margin-bottom: var(--spacing-2);
     gap: var(--spacing-2);
   }
-}
 

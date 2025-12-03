@@ -958,6 +958,12 @@ export const parseVehicleName = (vehicleName: string): { year: string; make: str
     }
   }
   
+  // Replace "/" with "-" in model to avoid URL routing issues
+  // This handles cases like "Golf GTI / R" -> "Golf-GTI-R"
+  if (model) {
+    model = model.replace(/\//g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  }
+  
   // Defaults if parsing fails
   if (!make) make = 'BMW';
   if (!model) model = '3-Series';

@@ -914,14 +914,5 @@
   }
 }
 
-@media (max-width: 480px) {
-  .vehicle-inventory {
-    padding: var(--spacing-3) 0;
-  }
 
-  .vehicle-inventory__grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2);
-  }
-}
 

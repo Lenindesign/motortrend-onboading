@@ -1,0 +1,96 @@
+/**
+ * Recommended Vehicles Stripe Styles
+ * Horizontal scrolling stripe of recommended vehicles
+ */
+
+.recommended-vehicles-stripe {
+  width: 100%;
+  margin-bottom: var(--spacing-6);
+}
+
+.recommended-vehicles-stripe__header {
+  margin-bottom: var(--spacing-4);
+  padding: 0 var(--spacing-4);
+}
+
+.recommended-vehicles-stripe__title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-neutrals-1);
+  margin: 0;
+}
+
+.recommended-vehicles-stripe__container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutrals-4) transparent;
+  padding-bottom: var(--spacing-2);
+}
+
+.recommended-vehicles-stripe__container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.recommended-vehicles-stripe__container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.recommended-vehicles-stripe__container::-webkit-scrollbar-thumb {
+  background-color: var(--color-neutrals-4);
+  border-radius: 4px;
+}
+
+.recommended-vehicles-stripe__container::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-neutrals-3);
+}
+
+.recommended-vehicles-stripe__scroll {
+  display: flex;
+  gap: var(--spacing-4);
+  padding: 0 var(--spacing-4);
+  width: max-content;
+}
+
+.recommended-vehicles-stripe__item {
+  flex-shrink: 0;
+  width: 320px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .recommended-vehicles-stripe__header {
+    padding: 0 var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .recommended-vehicles-stripe__title {
+    font-size: var(--font-size-xl);
+  }
+
+  .recommended-vehicles-stripe__scroll {
+    gap: var(--spacing-3);
+    padding: 0 var(--spacing-3);
+  }
+
+  .recommended-vehicles-stripe__item {
+    width: 280px;
+  }
+}
+
+
+
+  .recommended-vehicles-stripe__scroll {
+    gap: var(--spacing-2);
+    padding: 0 var(--spacing-2);
+  }
+
+  .recommended-vehicles-stripe__item {
+    width: 260px;
+  }
+
+

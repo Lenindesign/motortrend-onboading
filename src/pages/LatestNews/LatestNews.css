@@ -68,18 +68,10 @@
   }
 }
 
-@media (max-width: 480px) {
-  .latest-news {
-    padding: var(--spacing-2) 0;
-  }
 
-  .latest-news__container {
-    padding: 0 16px;
-  }
 
   .latest-news__section {
     margin-bottom: var(--spacing-2);
     gap: var(--spacing-2);
   }
-}
 

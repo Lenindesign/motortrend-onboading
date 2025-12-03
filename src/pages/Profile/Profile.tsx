@@ -31,6 +31,8 @@ import WriteReviewModal from '../../components/WriteReviewModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
+import { getAllSavedLeads, unsaveLead } from '../../utils/savedLeads';
+import type { LocalListing } from '../../components/LocalListingsSidebar/LocalListingsSidebar';
 import './Profile.css';
 
 export interface ProfileProps {
@@ -126,6 +128,30 @@ export const Profile: React.FC<ProfileProps> = ({
       loadSavedArticles();
     }
   }, [activeTab]);
+
+  // Saved listings state
+  const [savedListings, setSavedListings] = useState<Array<{ id: string; listing: LocalListing; vehicleName: string; savedAt: string }>>([]);
+
+  // Load saved listings
+  useEffect(() => {
+    const loadSavedListings = () => {
+      const savedLeads = getAllSavedLeads();
+      setSavedListings(savedLeads);
+    };
+    loadSavedListings();
+    
+    // Listen for changes to saved leads
+    const handleStorageChange = () => {
+      loadSavedListings();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('savedLeadsUpdated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('savedLeadsUpdated', handleStorageChange);
+    };
+  }, []);
   
   // Onboarding data state
   const [localOnboardingData, setLocalOnboardingData] = useState<{
@@ -837,62 +863,6 @@ export const Profile: React.FC<ProfileProps> = ({
                     <h3 className="profile-section__heading">Vehicles</h3>
                   </div>
                   
-                  {/* Cars I Own */}
-                  <div className="profile-vehicles-subsection">
-                    <h4 className="profile-subsection__title">Cars I Own</h4>
-                    <div className="profile-vehicles-grid">
-                      {vehiclesIOwn.map((vehicle, index) => (
-                        <VehicleCard
-                          key={`own-${index}`}
-                          image={vehicleImageFor(vehicle.name)}
-                          name={vehicle.name}
-                          type="Vehicle"
-                          rating1={9.1}
-                          rating2={8.5}
-                          hasMultipleRatings={true}
-                          isBookmarked={true}
-                          onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
-                          ownership={vehicle.ownership}
-                          onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
-                          onViewDetails={() => {
-                            const { year, make, model } = parseVehicleName(vehicle.name);
-                            navigate(`/vehicles/${year}/${make}/${model}`);
-                          }}
-                          onRate={() => handleRateVehicle(vehicle.name)}
-                          userRating={getUserRating(vehicle.name)}
-                        />
-                      ))}
-                      <EmptyVehicleSection 
-                        type="own" 
-                        onClick={() => handleAddVehicleClick('own')}
-                      />
-                    </div>
-                    {/* Vehicle Search - appears inline under Cars I Own when active */}
-                    {activeVehicleSearch === 'own' && (
-                      <div className="profile-vehicle-search">
-                        <div className="profile-vehicle-search__header">
-                          <h4>Add a Vehicle</h4>
-                          <button 
-                            className="profile-vehicle-search__cancel"
-                            onClick={handleCancelVehicleSearch}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                        <VehicleSearch
-                          onVehicleSelect={handleVehicleSelect}
-                          placeholder="Start typing to search"
-                          className="profile-vehicle-search__input"
-                          defaultOwnership="own"
-                          autoFocus={true}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Divider - always show between sections */}
-                  <div className="profile-section-divider"></div>
-
                   {/* Cars I Want */}
                   <div className="profile-vehicles-subsection">
                     <h4 className="profile-subsection__title">Cars I Want</h4>
@@ -946,37 +916,143 @@ export const Profile: React.FC<ProfileProps> = ({
                     )}
                   </div>
 
+                  {/* Divider - always show between sections */}
+                  <div className="profile-section-divider"></div>
+
+                  {/* Cars I Own */}
+                  <div className="profile-vehicles-subsection">
+                    <h4 className="profile-subsection__title">Cars I Own</h4>
+                    <div className="profile-vehicles-grid">
+                      {vehiclesIOwn.map((vehicle, index) => (
+                        <VehicleCard
+                          key={`own-${index}`}
+                          image={vehicleImageFor(vehicle.name)}
+                          name={vehicle.name}
+                          type="Vehicle"
+                          rating1={9.1}
+                          rating2={8.5}
+                          hasMultipleRatings={true}
+                          isBookmarked={true}
+                          onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
+                          ownership={vehicle.ownership}
+                          onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                          onViewDetails={() => {
+                            const { year, make, model } = parseVehicleName(vehicle.name);
+                            navigate(`/vehicles/${year}/${make}/${model}`);
+                          }}
+                          onRate={() => handleRateVehicle(vehicle.name)}
+                          userRating={getUserRating(vehicle.name)}
+                        />
+                      ))}
+                      <EmptyVehicleSection 
+                        type="own" 
+                        onClick={() => handleAddVehicleClick('own')}
+                      />
+                    </div>
+                    {/* Vehicle Search - appears inline under Cars I Own when active */}
+                    {activeVehicleSearch === 'own' && (
+                      <div className="profile-vehicle-search">
+                        <div className="profile-vehicle-search__header">
+                          <h4>Add a Vehicle</h4>
+                          <button 
+                            className="profile-vehicle-search__cancel"
+                            onClick={handleCancelVehicleSearch}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                        <VehicleSearch
+                          onVehicleSelect={handleVehicleSelect}
+                          placeholder="Start typing to search"
+                          className="profile-vehicle-search__input"
+                          defaultOwnership="own"
+                          autoFocus={true}
+                        />
+                      </div>
+                    )}
+                  </div>
+
                   {/* Divider - show between sections */}
-                  {vehiclesIReviewed.length > 0 && (
-                    <>
-                      <div className="profile-section-divider"></div>
-                      
-                      {/* Cars I Rated or Reviewed */}
-                      <div className="profile-vehicles-subsection">
-                        <h4 className="profile-subsection__title">Cars I Rated or Reviewed</h4>
-                        <div className="profile-vehicles-grid">
-                          {vehiclesIReviewed.map((vehicle, index) => (
-                            <VehicleCard
-                              key={`reviewed-${index}`}
-                              image={vehicle.image}
-                              name={vehicle.name}
-                              type="Vehicle"
-                              rating1={vehicle.staffRating}
-                              rating2={vehicle.communityRating}
-                              hasMultipleRatings={true}
-                              isBookmarked={false}
-                              onViewDetails={() => {
-                                const { year, make, model } = parseVehicleName(vehicle.name);
+                  <div className="profile-section-divider"></div>
+                  
+                  {/* Your Listings */}
+                  <div className="profile-vehicles-subsection">
+                    <h4 className="profile-subsection__title">Your Listings</h4>
+                    <div className="profile-listings-grid">
+                      {savedListings.length === 0 ? (
+                        <div className="profile-empty-state">
+                          <Icon name="bookmark_border" size={48} />
+                          <p>No saved listings yet</p>
+                          <p className="profile-empty-state__subtitle">Save listings from vehicle detail pages to see them here</p>
+                        </div>
+                      ) : (
+                        savedListings.map((savedLead) => {
+                          const { listing, vehicleName } = savedLead;
+                          const listingImage = listing.photoUrls && listing.photoUrls.length > 0 
+                            ? listing.photoUrls[0] 
+                            : listing.imageUrl;
+                          
+                          const formatPrice = (price: number): string => {
+                            return `$${price.toLocaleString()}`;
+                          };
+
+                          const formatMileage = (mileage: number): string => {
+                            if (mileage === 0) return 'New';
+                            return `${mileage.toLocaleString()} mi`;
+                          };
+
+                          return (
+                            <div 
+                              key={listing.id} 
+                              className="profile-listing-card"
+                              onClick={() => {
+                                const { year, make, model } = parseVehicleName(vehicleName);
                                 navigate(`/vehicles/${year}/${make}/${model}`);
                               }}
-                              onRate={() => handleRateVehicle(vehicle.name)}
-                              userRating={vehicle.rating}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  )}
+                            >
+                              <div className="profile-listing-card__image">
+                                <img src={listingImage} alt={`${listing.year} ${vehicleName}`} />
+                                <button
+                                  className="profile-listing-card__unsave"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    unsaveLead(listing.id);
+                                    setSavedListings(prev => prev.filter(l => l.id !== listing.id));
+                                  }}
+                                  aria-label="Remove listing"
+                                >
+                                  <Icon name="close" size={20} />
+                                </button>
+                              </div>
+                              <div className="profile-listing-card__content">
+                                <div className="profile-listing-card__header">
+                                  <h4 className="profile-listing-card__title">
+                                    {listing.year} {vehicleName}{listing.trim ? ` ${listing.trim}` : ''}
+                                  </h4>
+                                  <span className="profile-listing-card__condition">{listing.condition}</span>
+                                </div>
+                                <div className="profile-listing-card__price">{formatPrice(listing.price)}</div>
+                                <div className="profile-listing-card__details">
+                                  <div className="profile-listing-card__detail">
+                                    <Icon name="speed" size={16} />
+                                    <span>{formatMileage(listing.mileage)}</span>
+                                  </div>
+                                  <div className="profile-listing-card__detail">
+                                    <Icon name="store" size={16} />
+                                    <span>{listing.dealerName}</span>
+                                  </div>
+                                  <div className="profile-listing-card__detail">
+                                    <Icon name="location_on" size={16} />
+                                    <span>{listing.location} • {listing.distance} mi away</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1074,53 +1150,37 @@ export const Profile: React.FC<ProfileProps> = ({
                 </div>
               </div>
 
-              {/* Rate Your Cars Section */}
-              <div className="profile-section profile-section--vehicles">
-                <div className="profile-section__content">
-                  <div className="profile-section__header-row">
-                    <h3 className="profile-section__heading">Rate Your Cars</h3>
-                  </div>
-                  
-                  <div className="profile-vehicles-grid">
-                    {(() => {
-                      // Filter to show only owned vehicles that haven't been rated yet
-                      const unratedOwnedVehicles = vehiclesIOwn.filter(vehicle => 
-                        getUserRating(vehicle.name) === 0
-                      );
-
-                      if (unratedOwnedVehicles.length === 0) {
-                        return (
-                          <div className="profile-empty-state">
-                            <p>All your cars have been rated!</p>
-                          </div>
-                        );
-                      }
-
-                      return unratedOwnedVehicles.map((vehicle, index) => (
+              {/* Cars I Rated or Reviewed Section */}
+              {vehiclesIReviewed.length > 0 && (
+                <div className="profile-section profile-section--vehicles">
+                  <div className="profile-section__content">
+                    <div className="profile-section__header-row">
+                      <h3 className="profile-section__heading">Cars I Rated or Reviewed</h3>
+                    </div>
+                    
+                    <div className="profile-vehicles-grid">
+                      {vehiclesIReviewed.map((vehicle, index) => (
                         <VehicleCard
-                          key={`rate-${index}`}
-                          image={vehicleImageFor(vehicle.name)}
+                          key={`reviewed-${index}`}
+                          image={vehicle.image}
                           name={vehicle.name}
                           type="Vehicle"
-                          rating1={9.1}
-                          rating2={8.5}
+                          rating1={vehicle.staffRating}
+                          rating2={vehicle.communityRating}
                           hasMultipleRatings={true}
-                          isBookmarked={true}
-                          onBookmark={() => handleRemoveOnboardingVehicle(vehicle.name)}
-                          ownership={vehicle.ownership}
-                          onOwnershipChange={(value) => handleChangeVehicleOwnership(vehicle.name, value)}
+                          isBookmarked={false}
                           onViewDetails={() => {
                             const { year, make, model } = parseVehicleName(vehicle.name);
                             navigate(`/vehicles/${year}/${make}/${model}`);
                           }}
                           onRate={() => handleRateVehicle(vehicle.name)}
-                          userRating={getUserRating(vehicle.name)}
+                          userRating={vehicle.rating}
                         />
-                      ));
-                    })()}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </>
           )}
 

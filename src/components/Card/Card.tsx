@@ -8,6 +8,7 @@ import React from 'react';
 import './Card.css';
 import Icon from '../Icon';
 import { CardShell } from '../atoms/CardShell/CardShell';
+import { useImageFallback } from '../../hooks/useImageFallback';
 
 export interface CardProps {
   // Core content
@@ -61,6 +62,8 @@ export const Card: React.FC<CardProps> = ({
   className = '',
   variant = 'default'
 }) => {
+  const { imgSrc, handleImageError } = useImageFallback(image);
+  
   const cardClasses = `card card--${variant} ${className}`.trim();
 
   return (
@@ -81,7 +84,12 @@ export const Card: React.FC<CardProps> = ({
             onAction();
           } : undefined}
         >
-          <img src={image} alt={title} className="card__image" />
+          <img 
+            src={imgSrc} 
+            alt={title} 
+            className="card__image" 
+            onError={handleImageError}
+          />
           {onBookmark && (
             <button
               className={`card__bookmark-btn ${isBookmarked ? 'card__bookmark-btn--active' : ''}`}

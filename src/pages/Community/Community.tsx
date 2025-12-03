@@ -1,250 +1,429 @@
-/**
- * Community Page Component
- * Index page displaying community content, forums, and popular vehicles
- */
-
-import React, { useMemo, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { NewsSection } from '../../components/NewsSection';
-import { VehiclesSection } from '../../components/VehiclesSection';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import type { 
+  Community as ICommunity,
+  Post
+} from '../../api/communityApi';
+import { 
+  getCommunities, 
+  getCommunityBySlug, 
+  getPosts, 
+  getPostById, 
+  toggleJoin, 
+  toggleVote
+} from '../../api/communityApi';
+import { CommunitySidebar } from '../../components/Community/CommunitySidebar';
+import { PostCard } from '../../components/Community/PostCard';
+import { VoteControl } from '../../components/Community/VoteControl';
+import { CreatePostModal } from '../../components/Community/CreatePostModal';
+import { CreateCommunityModal } from '../../components/Community/CreateCommunityModal';
+import { CommentSection } from '../../components/Community/CommentSection';
+import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
-import type { RiverItem } from '../../components/River';
-import { articles } from '../../utils/articles';
-import { getVehicles } from '../../api/vehiclesApi';
-import { getPersonaFromOnboarding, getPersona, type PersonaName } from '../../utils/personas';
-import { filterVehiclesByLifestyle } from '../../utils/vehicleLifestyles';
 import './Community.css';
 
-const Community: React.FC = () => {
+const CommunityPage: React.FC = () => {
+  const { slug, postId } = useParams<{ slug?: string; postId?: string }>();
   const navigate = useNavigate();
-  const [personaName, setPersonaName] = useState<PersonaName | null>(null);
+  const location = useLocation();
   
-  // Load persona on mount
-  useEffect(() => {
-    const persona = getPersonaFromOnboarding();
-    setPersonaName(persona);
-  }, []);
+  // Data State
+  const [communities, setCommunities] = useState<ICommunity[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [currentCommunity, setCurrentCommunity] = useState<ICommunity | undefined>(undefined);
+  const [currentPost, setCurrentPost] = useState<Post | undefined>(undefined);
   
-  const persona = useMemo(() => {
-    return getPersona(personaName);
-  }, [personaName]);
+  // UI State
+  const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<'hot' | 'new' | 'top'>('hot');
+  const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
 
-  // Get all articles sorted by date (newest first) - community might discuss these
-  const communityArticles = useMemo(() => {
-    return Object.entries(articles)
-      .map(([slug, article]) => ({ slug, article }))
-      .sort((a, b) => {
-        const dateA = new Date(a.article.date).getTime();
-        const dateB = new Date(b.article.date).getTime();
-        return dateB - dateA; // Newest first
-      })
-      .slice(0, 20); // Limit to 20 most recent
-  }, []);
-
-  // Get latest vehicles (2024, 2025, 2026 models)
-  const latestVehicles = useMemo(() => {
-    const allVehicles = getVehicles();
-    return allVehicles
-      .filter(vehicle => {
-        const year = parseInt(vehicle.year, 10);
-        return year >= 2024 && year <= 2026;
-      })
-      .sort((a, b) => {
-        const yearA = parseInt(a.year, 10);
-        const yearB = parseInt(b.year, 10);
-        if (yearB !== yearA) {
-          return yearB - yearA; // Newer years first
-        }
-        const nameA = `${a.make} ${a.model}`;
-        const nameB = `${b.make} ${b.model}`;
-        return nameA.localeCompare(nameB); // Alphabetical within same year
-      })
-      .map(v => `${v.year} ${v.make} ${v.model}`);
-  }, []);
-  
-  // Personalized vehicles based on user's persona
-  const dreamCars = useMemo(() => {
-    if (!persona || !persona.priorityCategories.length) {
-      return [];
+  // Initial Load & Refresh
+  const loadData = () => {
+    setCommunities(getCommunities());
+    
+    if (postId) {
+       setCurrentPost(getPostById(postId));
+    } else {
+       setCurrentPost(undefined);
     }
-    
-    // Get vehicles from primary lifestyle category
-    const primaryCategory = persona.priorityCategories[0];
-    const filteredVehicles = filterVehiclesByLifestyle(
-      latestVehicles.map(name => ({ name })),
-      primaryCategory
-    );
-    
-    // Get unique vehicles (by make/model)
-    const seen = new Map<string, string>();
-    const unique: string[] = [];
-    
-    filteredVehicles.forEach(({ name: vehicle }) => {
-      const makeModel = vehicle.replace(/^\d{4}\s/, '').toLowerCase();
-      if (!seen.has(makeModel)) {
-        seen.set(makeModel, vehicle);
-        unique.push(vehicle);
-      }
-    });
-    
-    return unique.slice(0, 12);
-  }, [persona, latestVehicles]);
-  
-  // Family/Friends vehicles - practical and shareable
-  const familyFriendlyVehicles = useMemo(() => {
-    const familyVehicles = filterVehiclesByLifestyle(
-      latestVehicles.map(name => ({ name })),
-      'Family & Practical'
-    );
-    
-    // Get unique vehicles
-    const seen = new Map<string, string>();
-    const unique: string[] = [];
-    
-    familyVehicles.forEach(({ name: vehicle }) => {
-      const makeModel = vehicle.replace(/^\d{4}\s/, '').toLowerCase();
-      if (!seen.has(makeModel)) {
-        seen.set(makeModel, vehicle);
-        unique.push(vehicle);
-      }
-    });
-    
-    return unique.slice(0, 12);
-  }, [latestVehicles]);
 
-  // Get unique popular vehicles (by make/model)
-  const uniquePopularVehicles = useMemo(() => {
-    const seen = new Map<string, string>();
-    const unique: string[] = [];
-    
-    latestVehicles.forEach(vehicle => {
-      // Extract make and model (everything after year)
-      const makeModel = vehicle.replace(/^\d{4}\s/, '').toLowerCase();
-      if (!seen.has(makeModel)) {
-        seen.set(makeModel, vehicle);
-        unique.push(vehicle);
+    if (slug && slug !== 'popular') {
+      const comm = getCommunityBySlug(slug);
+      setCurrentCommunity(comm);
+      if (comm) {
+        setPosts(getPosts(comm.id));
+      } else {
+        // Community not found, redirect or show error? For now just show all posts
+        setPosts(getPosts()); 
+      }
+    } else {
+      setCurrentCommunity(undefined);
+      setPosts(getPosts());
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, [slug, postId, location.pathname]); // Re-run when route changes
+
+  // Load user avatar from localStorage
+  useEffect(() => {
+    const loadUserAvatar = () => {
+      try {
+        const onboardingData = localStorage.getItem('onboardingData');
+        if (onboardingData) {
+          const data = JSON.parse(onboardingData);
+          setUserAvatar(data.avatar);
+        }
+      } catch (error) {
+        console.error('Error loading user avatar:', error);
+      }
+    };
+
+    loadUserAvatar();
+
+    // Listen for avatar updates
+    const handleUpdate = () => {
+      loadUserAvatar();
+    };
+
+    window.addEventListener('onboardingDataUpdated', handleUpdate);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'onboardingData') {
+        loadUserAvatar();
       }
     });
-    
-    return unique;
-  }, [latestVehicles]);
 
-  // Community items for river section - community articles
-  const communityItems = useMemo(() => {
-    return communityArticles.map(({ slug, article }) => ({
-      imageUrl: article.heroImage,
-      title: article.title,
-      author: article.author,
-      date: article.date,
-      category: `MotorTrend | ${article.category}`,
-      onClick: () => {
-        navigate(`/article/${slug}`);
-      },
-    })) as RiverItem[];
-  }, [communityArticles, navigate]);
+    return () => {
+      window.removeEventListener('onboardingDataUpdated', handleUpdate);
+    };
+  }, []);
+
+  // Handlers
+  const handleJoinToggle = (id: string) => {
+    toggleJoin(id);
+    loadData(); // Refresh to update UI state
+  };
+
+  const handleVote = (id: string, direction: 'up' | 'down') => {
+    toggleVote('post', id, direction);
+    loadData(); // Refresh
+    if (currentPost && currentPost.id === id) {
+        setCurrentPost(getPostById(id));
+    }
+  };
+
+  const handlePostCreated = () => {
+    loadData();
+  };
+
+  const handleCommunityCreated = (newSlug: string) => {
+    loadData();
+    navigate(`/community/${newSlug}`);
+  };
+
+  // Derived Data
+  const sortedPosts = useMemo(() => {
+    let sorted = [...posts];
+    if (sortBy === 'new') {
+      sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else if (sortBy === 'top') {
+      sorted.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+    } else {
+      // Hot = combination of score and recency (mock logic)
+      sorted.sort((a, b) => {
+        const scoreA = a.upvotes - a.downvotes;
+        const scoreB = b.upvotes - b.downvotes;
+        return scoreB - scoreA; // Simplified to just score for now
+      });
+    }
+    return sorted;
+  }, [posts, sortBy]);
 
   return (
-    <div className="community">
-      <div className="community__container">
-        {/* Personalized Dream Cars Section */}
-        {dreamCars.length > 0 && persona && (
-          <div className="community__section">
-            <div className="community__left-column">
-              <VehiclesSection
-                title={`Dream Cars for ${persona.displayName}`}
-                vehicles={dreamCars.map(name => ({ name }))}
-                showMoreVisible={dreamCars.length >= 12}
-                onShowMore={() => {
-                  navigate('/vehicles');
-                }}
-              />
+    <div className="community-page">
+      <div className="community-page__container">
+        
+        {/* Left Sidebar */}
+        <CommunitySidebar 
+          communities={communities} 
+          onJoinToggle={handleJoinToggle} 
+        />
+
+        {/* Main Content */}
+        <main className="community-page__main">
+          
+          {/* Header / Banner Area */}
+          {currentCommunity ? (
+            <div className="community-page__banner">
+               <div className="community-page__banner-header">
+                 {currentCommunity.icon ? (
+                   <img src={currentCommunity.icon} alt={currentCommunity.name} className="community-page__banner-icon" />
+                 ) : (
+                   <div className="community-page__banner-placeholder">{currentCommunity.name[0]}</div>
+                 )}
+                 <div className="community-page__banner-info">
+                   <h1 className="community-page__banner-title">{currentCommunity.name}</h1>
+                   <span className="community-page__banner-slug">c/{currentCommunity.slug}</span>
+                 </div>
+                 <button 
+                   className={`community-page__join-btn ${currentCommunity.isJoined ? 'community-page__join-btn--joined' : ''}`}
+                   onClick={() => handleJoinToggle(currentCommunity.id)}
+                 >
+                   {currentCommunity.isJoined ? 'Joined' : 'Join'}
+                 </button>
+               </div>
             </div>
-            <div className="community__right-column">
-              <AdContainer
+          ) : !postId && (
+            <div className="community-page__feed-header">
+               <h2>{slug === 'popular' ? 'Popular Posts' : 'Home Feed'}</h2>
+               <p>Your daily dose of car culture.</p>
+            </div>
+          )}
+
+          {/* Create Post Input (Feed only) */}
+          {!postId && (
+            <div className="community-page__create-post-bar">
+              <div className="community-page__user-avatar">
+                {userAvatar ? (
+                  <img 
+                    src={userAvatar} 
+                    alt="User avatar" 
+                    className="community-page__avatar-img"
+                  />
+                ) : (
+                  <div className="community-page__avatar-logo">
+                    <img 
+                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg" 
+                      alt="MotorTrend" 
+                      className="community-page__avatar-logo-img"
+                    />
+                  </div>
+                )}
+              </div>
+              <input 
+                type="text" 
+                placeholder="Create Post" 
+                className="community-page__create-input"
+                onClick={() => setIsCreatePostOpen(true)}
+                readOnly
+              />
+              <button className="community-page__media-btn" onClick={() => setIsCreatePostOpen(true)}>
+                <Icon name="image" size={24} />
+              </button>
+            </div>
+          )}
+
+          {/* Filter/Sort Bar (Feed only) */}
+          {!postId && (
+            <div className="community-page__sort-bar">
+               <button 
+                 className={`community-page__sort-btn ${sortBy === 'hot' ? 'community-page__sort-btn--active' : ''}`}
+                 onClick={() => setSortBy('hot')}
+               >
+                 <Icon name="local_fire_department" size={20} />
+                 Hot
+               </button>
+               <button 
+                 className={`community-page__sort-btn ${sortBy === 'new' ? 'community-page__sort-btn--active' : ''}`}
+                 onClick={() => setSortBy('new')}
+               >
+                 <Icon name="new_releases" size={20} />
+                 New
+               </button>
+               <button 
+                 className={`community-page__sort-btn ${sortBy === 'top' ? 'community-page__sort-btn--active' : ''}`}
+                 onClick={() => setSortBy('top')}
+               >
+                 <Icon name="leaderboard" size={20} />
+                 Top
+               </button>
+            </div>
+          )}
+
+          {/* Content: Post Detail or Feed */}
+          {postId && currentPost ? (
+            <div className="community-page__post-detail">
+              <div className="post-card post-card--detail">
+                <div className="post-card__vote-column">
+                   <VoteControl 
+                      upvotes={currentPost.upvotes} 
+                      downvotes={currentPost.downvotes}
+                      userVote={currentPost.userVote}
+                      onVote={(dir) => handleVote(currentPost.id, dir)}
+                      orientation="vertical"
+                      size="md"
+                    />
+                </div>
+                <div className="post-card__content-column">
+                   <div className="post-card__header">
+                      <span className="post-card__meta">
+                        Posted by {currentPost.author.name} • {new Date(currentPost.createdAt).toLocaleDateString()}
+                      </span>
+                   </div>
+                   <h1 className="post-card__title post-card__title--detail">{currentPost.title}</h1>
+                   {currentPost.image && (
+                     <div className="post-card__media">
+                        <img src={currentPost.image} alt={currentPost.title} className="post-card__image" />
+                     </div>
+                   )}
+                   <div className="post-card__text-content">
+                      {currentPost.content}
+                   </div>
+                   
+                   {/* Footer: Actions */}
+                   <div className="post-card__footer">
+                     <div className="post-card__action">
+                       <Icon name="chat_bubble_outline" size={18} />
+                       <span>{currentPost.commentCount} Comments</span>
+                     </div>
+                     <div className="post-card__action">
+                       <Icon name="share" size={18} />
+                       <span>Share</span>
+                     </div>
+                     <div className="post-card__action">
+                       <Icon name="bookmark_border" size={18} />
+                       <span>Save</span>
+                     </div>
+                   </div>
+                   
+                   <CommentSection postId={currentPost.id} />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="community-page__feed">
+              {sortedPosts.length === 0 ? (
+                <div className="community-page__empty">
+                   <p>No posts yet. Be the first to post!</p>
+                </div>
+              ) : (
+                sortedPosts.map(post => {
+                  // Find community for this post
+                  const postCommunity = communities.find(c => c.id === post.communityId);
+                  return (
+                    <PostCard 
+                      key={post.id} 
+                      post={post} 
+                      community={postCommunity}
+                      onVote={handleVote}
+                      showCommunity={!currentCommunity} // Don't show community name if we are IN that community page
+                    />
+                  );
+                })
+              )}
+            </div>
+          )}
+
+        </main>
+
+        {/* Right Sidebar */}
+        <aside className="community-page__right-sidebar">
+          {currentCommunity ? (
+            <div className="community-info-card">
+              <div className="community-info-card__header">
+                <h3>About Community</h3>
+              </div>
+              <div className="community-info-card__content">
+                {currentCommunity.description && (
+                  <p className="community-info-card__desc">{currentCommunity.description}</p>
+                )}
+                <div className="community-info-card__stats">
+                   <div className="community-info-card__stat">
+                     <div className="stat-value">{currentCommunity.memberCount.toLocaleString()}</div>
+                     <div className="stat-label">Members</div>
+                   </div>
+                   <div className="community-info-card__stat">
+                     <div className="stat-value">120</div>
+                     <div className="stat-label">Online</div>
+                   </div>
+                </div>
+                <div className="community-info-card__created">
+                  <Icon name="cake" size={16} />
+                  Created {new Date(currentCommunity.createdAt).toLocaleDateString()}
+                </div>
+                <button 
+                  className="community-info-card__create-btn"
+                  onClick={() => setIsCreatePostOpen(true)}
+                >
+                  Create Post
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="community-info-card">
+               <div className="community-info-card__header">
+                 <h3>Home</h3>
+               </div>
+               <div className="community-info-card__content">
+                 <p className="community-info-card__desc">
+                   Your personal MotorTrend frontpage. Come here to check in with your favorite communities.
+                 </p>
+                 <div className="community-info-card__actions">
+                    <button 
+                      className="community-info-card__create-btn"
+                      onClick={() => setIsCreatePostOpen(true)}
+                    >
+                      Create Post
+                    </button>
+                    <button 
+                      className="community-info-card__create-comm-btn"
+                      onClick={() => setIsCreateCommunityOpen(true)}
+                    >
+                      Create Community
+                    </button>
+                 </div>
+               </div>
+            </div>
+          )}
+
+          {/* Rules Section (if community) */}
+          {currentCommunity && currentCommunity.rules && (
+            <div className="community-info-card">
+               <div className="community-info-card__header">
+                 <h3>Rules</h3>
+               </div>
+               <div className="community-info-card__content">
+                 <ol className="community-rules-list">
+                   {currentCommunity.rules.map((rule, idx) => (
+                     <li key={idx}>{rule}</li>
+                   ))}
+                 </ol>
+               </div>
+            </div>
+          )}
+
+          {/* Ads */}
+          <div className="community-page__ad-wrapper">
+             <AdContainer
                 width={300}
                 height={250}
                 label="300 x 250"
                 position="right-column"
                 imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
               />
-            </div>
           </div>
-        )}
-
-        {/* Family & Friends Vehicles Section */}
-        {familyFriendlyVehicles.length > 0 && (
-          <div className="community__section">
-            <div className="community__left-column">
-              <VehiclesSection
-                title="Perfect for Family & Friends"
-                vehicles={familyFriendlyVehicles.map(name => ({ name }))}
-                showMoreVisible={familyFriendlyVehicles.length >= 12}
-                onShowMore={() => {
-                  navigate('/vehicles');
-                }}
-              />
-            </div>
-            <div className="community__right-column">
-              <AdContainer
-                width={300}
-                height={600}
-                label="SVOD 200 x 420"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Popular Vehicles Section */}
-        {uniquePopularVehicles.length > 0 && (
-          <div className="community__section">
-            <div className="community__left-column">
-              <VehiclesSection
-                title="Popular in the Community"
-                vehicles={uniquePopularVehicles.slice(0, 12).map(name => ({ name }))}
-                showMoreVisible={uniquePopularVehicles.length > 12}
-                onShowMore={() => {
-                  navigate('/vehicles');
-                }}
-              />
-            </div>
-            <div className="community__right-column">
-              <AdContainer
-                width={300}
-                height={600}
-                label="SVOD 200 x 420"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Community Content Section (River) */}
-        {communityItems.length > 0 && (
-          <div className="community__section">
-            <div className="community__left-column">
-              <NewsSection
-                title="Community Discussions"
-                items={communityItems}
-              />
-            </div>
-            <div className="community__right-column">
-              <AdContainer
-                width={300}
-                height={600}
-                label="SVOD 200 x 420"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
-              />
-            </div>
-          </div>
-        )}
+        </aside>
       </div>
+
+      {/* Modals */}
+      <CreatePostModal 
+        isOpen={isCreatePostOpen}
+        onClose={() => setIsCreatePostOpen(false)}
+        communities={communities}
+        initialCommunityId={currentCommunity?.id}
+        onPostCreated={handlePostCreated}
+      />
+      
+      <CreateCommunityModal
+        isOpen={isCreateCommunityOpen}
+        onClose={() => setIsCreateCommunityOpen(false)}
+        onCommunityCreated={handleCommunityCreated}
+      />
     </div>
   );
 };
 
-export default Community;
-
+export default CommunityPage;

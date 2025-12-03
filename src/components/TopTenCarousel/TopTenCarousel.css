@@ -7,6 +7,7 @@
 .top-ten-carousel {
   width: 100%;
   margin-bottom: 0;
+  padding: 0 16px 16px 16px;
 }
 
 /* Desktop padding (between 1025px and 1279px) */
@@ -14,6 +15,18 @@
   .top-ten-carousel {
     padding-left: 16px;
     padding-right: 16px;
+    padding-top: 0;
+    padding-bottom: 16px;
+  }
+}
+
+/* Remove side padding for screens 1280px and wider */
+@media (min-width: 1280px) {
+  .top-ten-carousel {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 16px;
   }
 }
 
@@ -54,12 +67,33 @@
 .top-ten-carousel__image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
   transition: transform 0.3s ease;
 }
 
-.top-ten-carousel__slide:hover .top-ten-carousel__image img {
-  transform: scale(1.05);
+.top-ten-carousel__image img.top-ten-carousel__image--active {
+  animation: kenBurnsZoom 6s ease-in-out infinite;
+}
+
+/* Mobile: fill height of carousel */
+@media (max-width: 768px) {
+  .top-ten-carousel__image img {
+    object-fit: cover;
+  }
+}
+
+.top-ten-carousel__slide:hover .top-ten-carousel__image img.top-ten-carousel__image--active {
+  animation-play-state: paused;
+}
+
+@keyframes kenBurnsZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
 }
 
 /* Badges Container */
@@ -76,7 +110,7 @@
 
 .top-ten-carousel__category-badge {
   padding: 8px 16px;
-  background-color: #2d3748;
+  background-color: var(--color-neutrals-7);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -89,13 +123,7 @@
   box-sizing: border-box;
 }
 
-.top-ten-carousel__subcategory-badge {
-  background-color: #3d4d68;
-}
 
-.top-ten-carousel__rating-type-badge {
-  background-color: #4a5568;
-}
 
 .top-ten-carousel__category-dropdown {
   appearance: none;
@@ -103,9 +131,9 @@
   -moz-appearance: none;
   background: transparent;
   border: none;
-  color: var(--color-white);
+  color: var(--color-neutrals-2);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   font-family: var(--font-body);
   letter-spacing: 0;
   text-transform: none;
@@ -119,7 +147,7 @@
 }
 
 .top-ten-carousel__category-dropdown option {
-  background-color: #2d3748;
+  background-color: var(--color-neutrals-1);
   color: var(--color-white);
   padding: 12px 16px;
   font-family: var(--font-body);
@@ -136,7 +164,7 @@
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: var(--color-white);
+  color: var(--color-neutrals-2);
   opacity: 1;
   font-size: 18px;
 }
@@ -228,6 +256,18 @@
   gap: 32px;
   min-width: 0;
   overflow: hidden;
+  
+  /* Animation for slide change */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.top-ten-carousel__info-box--active {
+  opacity: 1;
+  transform: translateY(0);
+  /* Delay slightly to sync with slide movement */
+  transition-delay: 0.1s;
 }
 
 .top-ten-carousel__name-container {
@@ -235,11 +275,12 @@
   flex-direction: column;
   gap: 8px;
   flex-shrink: 0;
+  color: #FFFFFF !important;
 }
 
 .top-ten-carousel__name-link {
   text-decoration: none;
-  color: inherit;
+  color: #FFFFFF;
   pointer-events: auto;
   transition: opacity 0.2s ease;
   cursor: pointer;
@@ -254,10 +295,25 @@
   font-weight: 600;
   font-size: 24px;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
   margin: 0;
   padding: 0;
   flex-shrink: 0;
+}
+
+.top-ten-carousel__name-container h2.top-ten-carousel__name,
+.top-ten-carousel__name-link h2.top-ten-carousel__name {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+.top-ten-carousel__badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
 }
 
 .top-ten-carousel__buyers-guide-badge {
@@ -267,8 +323,35 @@
   width: fit-content;
 }
 
+/* Specific adjustment for 'See Local Listings' badge on desktop */
+@media (min-width: 769px) {
+  .top-ten-carousel__badges-row .top-ten-carousel__buyers-guide-badge:nth-child(2) {
+    transform: translateY(1px);
+  }
+}
+
 .top-ten-carousel__buyers-guide-badge:hover {
   opacity: 0.8;
+}
+
+.top-ten-carousel__buyers-guide-badge .badge {
+  background-color: #DFE2E6;
+  color: #141416;
+  border: none;
+}
+
+/* BuyersGuideBadge molecule styling - styles are handled by the BuyersGuideBadge molecule component */
+
+/* Hide desktop button on mobile, show badge version */
+@media (max-width: 768px) {
+  .top-ten-carousel__listing-btn--desktop {
+    display: none !important;
+  }
+
+  .top-ten-carousel__badges-row {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
 }
 
 .top-ten-carousel__ratings-list {
@@ -537,7 +620,7 @@
 /* Dots */
 .top-ten-carousel__dots {
   position: absolute;
-  top: 28px; /* Aligned with save button + 4px down */
+  top: 22px; /* Aligned with save button */
   right: 92px; /* 20px (save btn right) + 48px (save btn width) + 24px (padding) */
   display: flex;
   gap: 0; /* Removed gap, using margin on dots instead for proportional scaling */
@@ -554,7 +637,7 @@
   border: none;
   background-color: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all var(--transition-fast), margin var(--transition-fast);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), margin 0.3s ease;
   padding: 0;
   position: relative;
   overflow: visible;
@@ -652,7 +735,7 @@
 
 .top-ten-carousel__dot--active {
   transform: scale(1.2);
-  margin: 0 4.8px; /* 1.2x the base margin (4px * 1.2 = 4.8px) */
+  /* margin: 0 4.8px; Removed to prevent choppy layout shift */
 }
 
 .top-ten-carousel__dot--active .top-ten-carousel__dot-progress-bg {
@@ -762,7 +845,7 @@
   }
 
   .top-ten-carousel__dots {
-    top: 24px;
+    top: 16px;
   }
 
   .top-ten-carousel__category-badge {
@@ -787,8 +870,8 @@
 
 @media (max-width: 768px) {
   .top-ten-carousel__slider {
-    aspect-ratio: 4 / 3;
-    min-height: 500px;
+    aspect-ratio: 1 / 1;
+    min-height: 338px;
     touch-action: pan-y pinch-zoom;
   }
 
@@ -819,6 +902,7 @@
     left: 20px;
     right: 20px;
     width: calc(100% - 40px);
+    max-width: none;
   }
 
   .top-ten-carousel__name-container {
@@ -828,6 +912,7 @@
   .top-ten-carousel__name {
     font-size: 22px;
     line-height: 1.3;
+    color: #FFFFFF !important;
   }
 
   .top-ten-carousel__ratings-list {
@@ -898,7 +983,7 @@
   }
 
   .top-ten-carousel__counter {
-    display: block;
+    display: none;
     top: 16px;
   }
 
@@ -943,127 +1028,4 @@
   }
 }
 
-@media (max-width: 480px) {
-  .top-ten-carousel__slider {
-    aspect-ratio: 4 / 5;
-    min-height: auto;
-    max-height: 500px;
-  }
-
-  .top-ten-carousel__info-box {
-    padding: 16px;
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
-    width: calc(100% - 32px);
-  }
-
-  .top-ten-carousel__name-container {
-    gap: 4px;
-  }
-
-  .top-ten-carousel__name {
-    font-size: 16px;
-    line-height: 1.3;
-  }
-
-  .top-ten-carousel__buyers-guide-badge {
-    font-size: 11px;
-  }
-
-  .top-ten-carousel__ratings-list {
-    flex-direction: row;
-    gap: 8px;
-    width: 100%;
-  }
-
-  .top-ten-carousel__rating-item {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .top-ten-carousel__rating-item:first-child {
-    padding-right: 8px;
-  }
-
-  .top-ten-carousel__rating-item:first-child::after {
-    display: block;
-    height: 35px;
-  }
-
-  .top-ten-carousel__rating-score-large {
-    font-size: 20px;
-  }
-
-  .top-ten-carousel__rating-score-max {
-    font-size: 14px;
-  }
-
-  .top-ten-carousel__rating-motortrend-text,
-  .top-ten-carousel__rating-user-reviews-text {
-    font-size: 11px;
-  }
-
-  .top-ten-carousel__rating-stars {
-    gap: 2px;
-  }
-
-  .top-ten-carousel__listing-btn {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-
-  .top-ten-carousel__badges-container {
-    flex-direction: column;
-    gap: 6px;
-    top: 12px;
-    left: 12px;
-  }
-
-  .top-ten-carousel__dots {
-    display: none;
-  }
-
-  .top-ten-carousel__counter {
-    display: block;
-    top: 12px;
-    font-size: 12px;
-    padding: 5px 12px;
-  }
-
-  .top-ten-carousel__category-badge {
-    padding: 6px 12px;
-  }
-
-  .top-ten-carousel__category-dropdown {
-    font-size: 12px;
-  }
-
-  .top-ten-carousel__nav {
-    width: 40px;
-    height: 40px;
-  }
-
-  .top-ten-carousel__nav--prev {
-    left: 8px;
-  }
-
-  .top-ten-carousel__nav--next {
-    right: 8px;
-  }
-
-  .top-ten-carousel__save-btn {
-    width: 36px;
-    height: 36px;
-    top: 12px;
-    right: 12px;
-  }
-
-  .top-ten-carousel__expand-btn {
-    width: 36px;
-    height: 36px;
-    top: 12px;
-    right: 56px;
-  }
-}
-
+/* All mobile devices use tablet (768px) styles - no separate breakpoints */

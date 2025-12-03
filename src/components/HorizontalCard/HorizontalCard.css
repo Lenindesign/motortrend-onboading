@@ -19,8 +19,9 @@
 
 .horizontal-card__image-container {
   flex-shrink: 0;
-  width: 352px;
-  aspect-ratio: 16 / 9;
+  width: 50%;
+  aspect-ratio: 16/9;
+  height: auto;
   overflow: hidden;
   border-radius: var(--border-radius-md);
   background-color: var(--color-neutrals-7);

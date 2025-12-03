@@ -234,15 +234,7 @@
   }
 }
 
-@media (max-width: 480px) {
-  .article-reactions__trigger {
-    width: 32px;
-    height: 32px;
-  }
 
-  .article-reactions__trigger-icon {
-    font-size: 18px;
-  }
 
   .article-reactions__popup {
     padding: var(--spacing-component-xs) var(--spacing-component-sm);
@@ -257,5 +249,4 @@
   .article-reactions__option-emoji {
     font-size: 20px;
   }
-}
 

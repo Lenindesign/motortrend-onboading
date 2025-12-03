@@ -82,6 +82,9 @@ function App() {
               
               {/* Community Page */}
               <Route path="/community" element={<Community />} />
+              <Route path="/community/popular" element={<Community />} />
+              <Route path="/community/:slug" element={<Community />} />
+              <Route path="/community/:slug/post/:postId" element={<Community />} />
               
               {/* Rankings & Awards Page */}
               <Route path="/rankings-awards" element={<RankingsAndAwards />} />

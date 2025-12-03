@@ -68,18 +68,10 @@
   }
 }
 
-@media (max-width: 480px) {
-  .videos {
-    padding: var(--spacing-2) 0;
-  }
 
-  .videos__container {
-    padding: 0 16px;
-  }
 
   .videos__section {
     margin-bottom: var(--spacing-2);
     gap: var(--spacing-2);
   }
-}
 

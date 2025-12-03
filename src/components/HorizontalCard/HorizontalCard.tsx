@@ -7,6 +7,7 @@
 import React from 'react';
 import './HorizontalCard.css';
 import { CardShell } from '../atoms/CardShell/CardShell';
+import { useImageFallback } from '../../hooks/useImageFallback';
 
 export interface HorizontalCardProps {
   imageUrl: string;
@@ -25,6 +26,8 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   category,
   onClick,
 }) => {
+  const { imgSrc, handleImageError } = useImageFallback(imageUrl);
+
   return (
     <CardShell
       padding="none"
@@ -38,9 +41,10 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
       <div className="horizontal-card__inner">
         <div className="horizontal-card__image-container">
         <img 
-          src={imageUrl} 
+          src={imgSrc} 
           alt={title} 
           className="horizontal-card__image"
+          onError={handleImageError}
         />
       </div>
       <div className="horizontal-card__content">

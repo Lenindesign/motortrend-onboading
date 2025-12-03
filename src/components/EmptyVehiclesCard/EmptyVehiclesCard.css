@@ -94,16 +94,7 @@
   }
 }
 
-@media (max-width: 480px) {
-  .empty-vehicles-card {
-    min-height: calc(var(--spacing-card-xl) * 3.5);
-    padding: var(--spacing-3);
-  }
 
-  .empty-vehicles-card__icon {
-    width: calc(var(--spacing-6) * 1.15);
-    height: calc(var(--spacing-6) * 1.15);
-  }
 
   .empty-vehicles-card__title {
     font-size: 16px;
@@ -113,4 +104,3 @@
     font-size: 13px;
     max-width: calc(var(--spacing-card-xl) * 6);
   }
-}

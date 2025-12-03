@@ -1,0 +1,136 @@
+{
+  "how-motortrend-tests-cars": {
+    "slug": "how-motortrend-tests-cars",
+    "title": "How MotorTrend Tests Cars: The Science Behind Our Performance Numbers",
+    "author": "MotorTrend Editorial",
+    "date": "Jan 15, 2025",
+    "category": "Features",
+    "heroImage": "https://hips.hearstapps.com/mtg-prod/6847305c2067a000089216c9/161-coty-2024-bts.jpg",
+    "excerpt": "Since October 1949, MotorTrend has been setting the standard for objective automotive testing. Here's how we ensure every performance number is accurate, repeatable, and trustworthy.",
+    "images": [
+      "https://hips.hearstapps.com/mtg-prod/6847305c2067a000089216c9/161-coty-2024-bts.jpg",
+      "https://hips.hearstapps.com/mtg-prod/684729f7f0353c0008d1e4ac/2022totybts04.jpg",
+      "https://hips.hearstapps.com/mtg-prod/65f7fcbe62443100086f55e3/018-2022-tesla-model-s-plaid.jpg",
+      "https://hips.hearstapps.com/mtg-prod/65a3451b2fa6790008b82cb3/2022-gmc-hummer-ev-truck-105.jpg",
+      "https://hips.hearstapps.com/mtg-prod/68472ab070beae000817b87d/001-2025-lexus-lx700h.jpg",
+      "https://hips.hearstapps.com/mtg-prod/68472b0da67b160007699a62/dji-0200.jpg",
+      "https://hips.hearstapps.com/mtg-prod/68472b6cf0353c0008d1e4ad/lead-2025-ford-explorer-active.jpg",
+      "https://hips.hearstapps.com/mtg-prod/68472c76f0353c0008d1e4ae/s5a1451.jpg",
+      "https://hips.hearstapps.com/mtg-prod/68473115d014200008c04daf/019-2022-tesla-model-s-plaid-2024-lucid-air-sapphire.jpg"
+    ],
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "MotorTrend has been a trusted source for objective automotive testing since October 1949, when it published its first 0–60 mph times. Over the decades, the publication has refined its methodologies to provide accurate and unbiased evaluations of vehicles' performance, safety, and overall quality. Every number you see in our reviews—from acceleration times to braking distances—comes from rigorous, standardized testing procedures designed to ensure consistency and reliability."
+      },
+      {
+        "type": "paragraph",
+        "text": "Our commitment to precision means that when we say a car accelerates from 0 to 60 mph in 3.5 seconds, you can trust that number. When we report a braking distance of 110 feet from 60 mph, that measurement was taken under controlled conditions using the same methodology we've applied to thousands of vehicles over the past 75 years. This consistency allows for meaningful comparisons between vehicles and gives you, the consumer, reliable data to inform your purchasing decisions."
+      },
+      {
+        "type": "heading",
+        "text": "Where We Test"
+      },
+      {
+        "type": "paragraph",
+        "text": "MotorTrend conducts performance tests at automaker-owned proving grounds in California's Mojave Desert and near Detroit. These facilities offer long, level straights for acceleration and braking tests, as well as expansive areas for handling maneuvers. The consistent and high-quality surfaces help control variables, ensuring repeatable and reliable results."
+      },
+      {
+        "type": "paragraph",
+        "text": "These proving grounds provide ideal conditions for testing: predictable weather patterns, consistent road surfaces, and safety features that allow our test drivers to push vehicles to their limits safely. The controlled environment eliminates variables that could affect performance numbers, ensuring that the results reflect the vehicle's true capabilities rather than environmental factors."
+      },
+      {
+        "type": "heading",
+        "text": "Preparation: Setting the Stage for Accuracy"
+      },
+      {
+        "type": "paragraph",
+        "text": "Before testing, each vehicle undergoes a standardized check-in procedure. This thorough preparation ensures that each test starts from a consistent baseline, eliminating variables that could skew results."
+      },
+      {
+        "type": "paragraph",
+        "text": "We begin by documenting the Vehicle Identification Number (VIN), odometer reading, tire specifications, and other pertinent details. This creates a complete record of the vehicle's condition and configuration at the time of testing. Safety is paramount, so we torque lug nuts to manufacturer specifications and perform a comprehensive safety check before any performance testing begins."
+      },
+      {
+        "type": "paragraph",
+        "text": "Fueling is standardized—we fill the tank with the recommended fuel type, ensuring that octane ratings and fuel quality don't affect performance. Tire pressures are set according to manufacturer guidelines, as even small variations can significantly impact handling and acceleration. For electric vehicles, plug-in hybrids, and hybrids, we ensure batteries are fully charged, as power output can decrease with battery discharge."
+      },
+      {
+        "type": "paragraph",
+        "text": "Finally, we weigh each vehicle using precise scales. Curb weight affects every aspect of performance, from acceleration to braking to handling. By measuring actual weight rather than relying on manufacturer claims, we ensure our performance numbers reflect real-world conditions."
+      },
+      {
+        "type": "heading",
+        "text": "Acceleration Testing: The Pursuit of Speed"
+      },
+      {
+        "type": "paragraph",
+        "text": "Acceleration tests measure a vehicle's ability to reach certain speeds from a standstill, such as 0–60 mph and quarter-mile times. These metrics are crucial for assessing performance during highway merges, overtaking maneuvers, and overall responsiveness."
+      },
+      {
+        "type": "paragraph",
+        "text": "To achieve the quickest possible times, our testers may utilize launch-control features in performance cars or experiment with various drive modes and traction control settings in mainstream models. For manual transmissions, experienced drivers fine-tune engine rpm, clutch release, and throttle input to find the optimal launch technique."
+      },
+      {
+        "type": "paragraph",
+        "text": "Given that internal combustion engine performance is affected by ambient conditions, MotorTrend applies a weather correction based on the SAE J1349 standard. This adjustment normalizes acceleration data to standard conditions (77°F, 0% humidity, and 29.2348 inches of mercury barometric pressure), allowing for fair comparisons across different testing environments. This means a car tested on a hot day in the desert will have its numbers adjusted to match what it would achieve under standard conditions, ensuring apples-to-apples comparisons."
+      },
+      {
+        "type": "heading",
+        "text": "Braking Testing: Stopping Power Under Scrutiny"
+      },
+      {
+        "type": "paragraph",
+        "text": "Braking tests evaluate a vehicle's stopping capability, typically measuring the distance required to decelerate from 60 mph to a complete stop. This is one of the most critical safety metrics we test, as braking performance can mean the difference between avoiding an accident and a collision."
+      },
+      {
+        "type": "paragraph",
+        "text": "Our testers perform multiple stops, both in rapid succession and with cooling intervals, to assess brake performance under various conditions. This helps us understand not just how well brakes work when cold, but also how they perform when hot—a crucial factor in real-world driving scenarios like descending mountain passes or repeated hard stops."
+      },
+      {
+        "type": "paragraph",
+        "text": "The shortest stopping distance is recorded, rounded to the nearest foot. This conservative approach ensures that our reported numbers represent the vehicle's best-case braking performance, giving consumers confidence in the vehicle's safety capabilities."
+      },
+      {
+        "type": "heading",
+        "text": "Handling and Lateral Acceleration: Testing Grip and Balance"
+      },
+      {
+        "type": "paragraph",
+        "text": "Handling tests assess a vehicle's cornering abilities and overall stability. One method involves navigating a fixed-diameter circle as quickly as possible while maintaining the center of gravity on the measured line. This test measures the average lateral acceleration, providing insight into the vehicle's grip and balance during cornering."
+      },
+      {
+        "type": "paragraph",
+        "text": "These tests reveal how well a vehicle's suspension, tires, and chassis work together to maintain grip and stability. High lateral acceleration numbers indicate a vehicle that can corner quickly and confidently, while lower numbers may suggest areas where the vehicle's dynamics could be improved."
+      },
+      {
+        "type": "heading",
+        "text": "EV Range and Charging Tests: The New Frontier"
+      },
+      {
+        "type": "paragraph",
+        "text": "With the rise of electric vehicles, MotorTrend has developed methodologies to assess real-world driving range and fast-charging capabilities. These tests help consumers understand how EVs perform during typical usage and long-distance travel, providing valuable information for potential buyers."
+      },
+      {
+        "type": "paragraph",
+        "text": "Our EV testing goes beyond manufacturer claims, measuring actual range under various driving conditions and charging speeds at different types of charging stations. This real-world data helps consumers make informed decisions about whether an EV fits their lifestyle and driving needs."
+      },
+      {
+        "type": "heading",
+        "text": "The MotorTrend Standard: Trust Through Consistency"
+      },
+      {
+        "type": "paragraph",
+        "text": "By adhering to these rigorous testing procedures, MotorTrend ensures that its reviews and comparisons are grounded in reliable, repeatable data. Every test follows the same methodology, every number is verified, and every result is presented with the transparency and accuracy that consumers deserve."
+      },
+      {
+        "type": "paragraph",
+        "text": "This commitment to consistency means that when you compare acceleration times, braking distances, or handling metrics across different vehicles, you're comparing apples to apples. The same standards we applied to test vehicles in 1949 still guide our testing today, ensuring that MotorTrend remains the gold standard for automotive performance testing."
+      },
+      {
+        "type": "paragraph",
+        "text": "Whether you're shopping for a family SUV, a performance sports car, or an electric vehicle, you can trust that MotorTrend's performance numbers reflect real-world capabilities tested under controlled, repeatable conditions. That's the MotorTrend difference—objective data you can rely on."
+      }
+    ]
+  }
+}

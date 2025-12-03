@@ -1,2357 +1,988 @@
-import React, { useState } from 'react';
+/**
+ * Atomic Design Audit Page
+ * Interactive component library with live previews
+ */
+
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import Card from '../../components/Card';
-import { AdContainer } from '../../components/AdContainer';
-import { ArticleCard } from '../../components/ArticleCard';
-import { ArticleReactions } from '../../components/ArticleReactions';
-import { ArticleScoreCard } from '../../components/ArticleScoreCard';
-import { AvatarBannerModal } from '../../components/AvatarBannerModal';
-import { ComparisonCard } from '../../components/ComparisonCard';
-import { CollapsibleSection } from '../../components/CollapsibleSection';
-import { ConnectedAccount } from '../../components/ConnectedAccount';
-import { EditableField } from '../../components/EditableField';
-import { EmptyVehicleSection } from '../../components/EmptyVehicleSection';
-import { EmptyVehiclesCard } from '../../components/EmptyVehiclesCard';
-import GlobalFooter from '../../components/GlobalFooter';
-import GlobalHeader from '../../components/GlobalHeader';
-import { HeroCard } from '../../components/HeroCard';
-import { HeroPlusThree } from '../../components/HeroPlusThree';
-import { HorizontalCard } from '../../components/HorizontalCard';
-import { LocationAutocomplete } from '../../components/LocationAutocomplete';
-import { NewsSection } from '../../components/NewsSection';
-import { PhotoGallery } from '../../components/PhotoGallery';
-import { ProfileBanner } from '../../components/ProfileBanner';
-import { ProfileCompletionCard } from '../../components/ProfileCompletionCard';
-import { ProfileNav } from '../../components/ProfileNav';
-import RatingModal from '../../components/RatingModal';
-import { River, type RiverItem } from '../../components/River';
-import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
-import { SavedModal } from '../../components/SavedModal';
-import { SubscriptionItem } from '../../components/SubscriptionItem';
-import { UserReviews, type ReviewData } from '../../components/UserReviews';
-import { VehicleSearch } from '../../components/VehicleSearch';
-import { VehiclesSection } from '../../components/VehiclesSection';
-import { VideoCard } from '../../components/VideoCard';
-import { VerticalCard } from '../../components/VerticalCard';
-import WriteReviewModal from '../../components/WriteReviewModal';
-import { AIInsights } from '../../components/AIInsights';
-import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
-import { Badge, CardShell, Tooltip, Button } from '../../design-system/components';
-import { Popover } from '../../components/atoms/Popover';
 import Icon from '../../components/Icon';
+import { Badge, TextField, CardShell, Tooltip } from '../../design-system/components';
+import Card from '../../components/Card';
+import { ArticleCard } from '../../components/ArticleCard';
+import { HorizontalCard } from '../../components/HorizontalCard';
+import { VerticalCard } from '../../components/VerticalCard';
+import { VideoCard } from '../../components/VideoCard';
+import { HeroCard } from '../../components/HeroCard';
+import { CollapsibleSection } from '../../components/CollapsibleSection';
+import { EditableField } from '../../components/EditableField';
+import { EmptyVehiclesCard } from '../../components/EmptyVehiclesCard';
+import { ConnectedAccount } from '../../components/ConnectedAccount';
+import { ProfileCompletionCard } from '../../components/ProfileCompletionCard';
+import { SubscriptionItem } from '../../components/SubscriptionItem';
+import { AdContainer } from '../../components/AdContainer';
+import { ArticleReactions } from '../../components/ArticleReactions';
+import { LocationAutocomplete } from '../../components/LocationAutocomplete';
+import { VehicleSearch } from '../../components/VehicleSearch';
+import { ProfileBanner } from '../../components/ProfileBanner';
+import GlobalHeader from '../../components/GlobalHeader';
+import GlobalFooter from '../../components/GlobalFooter';
+import StickyRateBar from '../../components/StickyRateBar';
+import { AIInsights } from '../../components/AIInsights';
+import { TopTenCarousel } from '../../components/TopTenCarousel';
+import { MembershipCard } from '../../components/MembershipCard';
+import { BaTAuctionCard } from '../../components/BaTAuctionCard/BaTAuctionCard';
 import './AtomicDesignAudit.css';
 
-const atomicLevelSummary = [
-  {
-    name: 'Atoms',
-    description:
-      'Single-purpose building blocks such as icons and badges. Atoms offer predictable styling and should never bundle layout logic.',
-    focus: 'Icon, Toast, basic indicator rows.'
-  },
-  {
-    name: 'Molecules',
-    description:
-      'Composable groups that combine atoms into reusable tiles (cards, inputs, buttons). Molecules are the workhorses of the page grid.',
-    focus: 'Card, ArticleCard, HorizontalCard, VehicleCard variants and notification helpers.'
-  },
-  {
-    name: 'Organisms',
-    description:
-      'Page-level units that orchestrate molecules with business logic, hooks, and data flows (headers, modals, hero + list sections).',
-    focus: 'GlobalHeader, StickyRateBar, UserReviews, AIInsights, Search/Filter containers.'
-  }
+interface Section {
+  id: string;
+  title: string;
+  icon: string;
+}
+
+const sections: Section[] = [
+  { id: 'overview', title: 'Overview', icon: 'dashboard' },
+  { id: 'atoms', title: 'Atoms', icon: 'circle' },
+  { id: 'molecules', title: 'Molecules', icon: 'workspaces' },
+  { id: 'organisms', title: 'Organisms', icon: 'grid_view' },
+  { id: 'integrations', title: 'Integrations', icon: 'extension' },
 ];
 
-const componentAuditRows = [
-  {
-    component: 'Icon',
-    level: 'Atom',
-    observation:
-      'Material symbol wrapper controls variant, size, and baseline styling; every card, header, and modal drags from it.',
-    opportunity:
-      'Document semantic color tokens (CTA, neutral, disabled) and expose props so glyph colors no longer depend on parent overrides.'
-  },
-  {
-    component: 'AdContainer',
-    level: 'Molecule',
-    observation:
-      'Sticky placeholder already reuses neutrals, border radius, and spacing tokens, and the min-height now reads from the spacing scale so the ratio stays on the 8px grid.',
-    opportunity:
-      'Document the placeholder ratio and surface tokenized shadows/spacing so ad placements can be reused without re-implementing the sticky offsets.'
-  },
-  {
-    component: 'AIInsights',
-    level: 'Organism',
-    observation:
-      'Insight grid now uses spacing tokens for margins/padding, which keeps the sections aligned with the 8px rhythm.',
-    opportunity:
-      'Swap the remaining px gaps inside lists with `--spacing-gap-sm` and capture the repeated section blocks using the shared atoms so future grids stay synchronized.'
-  },
-  {
-    component: 'ArticleCard',
-    level: 'Molecule',
-    observation:
-      'Now inherits the universal `Card` atom; the previous custom CSS file has been retired, so every article preview shares the same spacing and shadow surface.',
-    opportunity:
-      'Document the ArticleCard surface inside the audit page, then reuse the new `CardShell` plus the `Badge`/`Tooltip` atoms for any ArticleCard variants that need metadata chips or helper copy.'
-  },
-  {
-    component: 'ArticleHero',
-    level: 'Molecule',
-    observation:
-      'Article hero image component is fully tokenized. Uses design tokens for all spacing (--spacing-*), border-radius (--border-radius-md), colors (--color-neutrals-*), and transitions (--transition-fast). No hardcoded values found.',
-    opportunity:
-      'Document the hero image pattern and ensure all hero components across the app follow this same tokenized approach.'
-  },
-  {
-    component: 'ArticleScoreCard',
-    level: 'Molecule',
-    observation:
-      'Score card component now fully tokenized. Replaced hardcoded colors (#FFB74D → --color-rating-motortrend, #2C2C2E/#1C1C1E → --color-neutrals-2/1). All spacing, shadows, and typography use design tokens.',
-    opportunity:
-      'Document the score card pattern with rating bars and ensure all rating displays use --color-rating-motortrend for consistency.'
-  },
-  {
-    component: 'ArticleReactions',
-    level: 'Molecule',
-    observation:
-      'Emoji overlay now relies on spacing tokens for gaps, padding, and box shadows instead of hardcoded px values.',
-    opportunity:
-      'Document the tooltip trigger + popup so future hover states can reuse the `Tooltip` atom and consistent spacing.'
-  },
-  {
-    component: 'Article Page',
-    level: 'Organism',
-    observation:
-      'Article pages orchestrate tokenized molecules (hero, rate bar, reactions, user reviews, modals). Hero images now feature sticky rating overlays with vehicle name, ranking badge, MotorTrend rating, user reviews with star ratings, and "See Local Listings" button. Ratings centered and properly aligned using flexbox. Uses Badge atoms for score display and spacing tokens throughout.',
-    opportunity:
-      'Document the hero image overlay pattern with rating display. Consider extracting the rating overlay as a reusable molecule for other vehicle image displays. Replace remaining inline colors/spacings with design tokens.'
-  },
-  {
-    component: 'AvatarBannerModal',
-    level: 'Organism',
-    observation:
-      'Avatar/banner picker now refactored to use ModalShell atom, eliminating ~25 lines of duplicate overlay and animation code. All spacing, tabs, and grid gaps use design tokens.',
-    opportunity:
-      'Document the selection grid pattern with ModalShell and ensure all picker modals use this same composition approach for consistency.'
-  },
-  {
-    component: 'Card',
-    level: 'Molecule',
-    observation:
-      'Universal vehicle card uses tokens for most surfaces but keeps `rgba` backgrounds and px gaps inside the ratings section.',
-    opportunity:
-      'Swap the `rgba` overlays for overlay tokens, move gap/tooltip padding to spacing tokens, and centralize rating colors via `var(--color-rating-*)`.'
-  },
-  {
-    component: 'CollapsibleSection',
-    level: 'Molecule',
-    observation:
-      'Expandable container that hides content behind an animated toggle—now padding, gaps, and borders read off tokens so the surface matches other cards.',
-    opportunity:
-      'Document the toggle spacing, split the header into badge/text atoms, and reuse the new tokens for the arrow so every accordion stays aligned.'
-  },
-  {
-    component: 'ComparisonCard',
-    level: 'Molecule',
-    observation:
-      'Fully refactored to use the Card component\'s atomic structure (CardShell + Card atoms). Image width fixed to 150px max-width. Now shares save icon, headline, category text, and CTA styling with other card components. Eliminated custom CSS in favor of reusable atoms.',
-    opportunity:
-      'Document the comparison card pattern as a reference for how to compose Card atoms for specialized layouts. This demonstrates proper atomic design principles.'
-  },
-  {
-    component: 'ConnectedAccount',
-    level: 'Molecule',
-    observation:
-      'Account badge with provider icons now renders the icon cube, text, and CTA using neutrals, spacing, and border tokens.',
-    opportunity:
-      'Formalize the icon surface and button spacing inside the design system guide so any new account badge knows which atoms to reuse.'
-  },
-  {
-    component: 'EditableField',
-    level: 'Molecule',
-    observation:
-      'Inline edit row now consumes spacing, border-radius, and focus tokens plus the shared button atom so the CTA row matches the rest of the system.',
-    opportunity:
-      'Document the trigger-to-input gap, icon actions, and focus border color so every editable row follows the same interaction model.'
-  },
-  {
-    component: 'EmptyVehiclesCard',
-    level: 'Molecule',
-    observation:
-      'Empty state card already uses spacing tokens, dashed borders, and rounded corners so the placeholder sits on the same 8px grid.',
-    opportunity:
-      'Document the search margin/gap scales and CTA placement so every empty state that wraps this molecule can stay consistent.'
-  },
-  {
-    component: 'EmptyVehicleSection',
-    level: 'Organism',
-    observation:
-      'Section that composes empty cards, CTA banners, and status copy when a search returns nothing.',
-    opportunity:
-      'Treat this section as a template that reuses the empty card atom plus shared spacing/shadow tokens, making the pattern easy to reapply elsewhere.'
-  },
-  {
-    component: 'GlobalFooter',
-    level: 'Organism',
-    observation:
-      'Footer with navigation links and badges that already brands the bottom bar but mixes a couple of px-based gaps.',
-    opportunity:
-      'Standardize inner gaps and link spacing to `var(--spacing-3)`/`var(--spacing-4)` so the footer mirrors the header grid.'
-  },
-  {
-    component: 'GlobalHeader',
-    level: 'Organism',
-    observation:
-      'Persistent navigation now uses Badge atom for notification counts, replacing custom blinking dot with semantic error variant badge. Eliminated 18 lines of custom CSS including @keyframes animation. Badge displays notification count (e.g., "1") with consistent error styling.',
-    opportunity:
-      'Switch dropdown surfaces to `var(--color-neutrals-1)`/`var(--color-neutrals-3-5)` tokens, and convert the 8px/12px gaps to spacing tokens for consistency.'
-  },
-  {
-    component: 'HeroCard',
-    level: 'Molecule',
-    observation:
-      'Large hero tile now draws padding from spacing tokens, shadows from `var(--shadow-card)`, and uses the design-system gradient overlay tokens for its footer.',
-    opportunity:
-      'Call out the overlay + shadow tokens inside the audit so other hero blocks can copy the same surface and typography pairing.'
-  },
-  {
-    component: 'HeroPlusThree',
-    level: 'Organism',
-    observation:
-      'Combines a primary hero with three supporting cards, forming a featured content block.',
-    opportunity:
-      'Ensure the three cards are all instances of the same molecule and that spacing/padding between cards uses shared gap tokens.'
-  },
-  {
-    component: 'HorizontalCard',
-    level: 'Molecule',
-    observation:
-      'Wide card layout for highlights that now leans on tokenized padding, borders, and shadows so it pairs with the vertical card family.',
-    opportunity:
-      'Document the landscape image container size and CTA spacing so horizontal cards can drop into other flows with the same surface tokens.'
-  },
-  {
-    component: 'LocationAutocomplete',
-    level: 'Molecule',
-    observation:
-      'Search field with suggestion dropdown used across onboarding flows.',
-    opportunity:
-      'Tokenize dropdown backgrounds, highlight colors, and ensure the input follows spacing/focus tokens from the design rules.'
-  },
-  {
-    component: 'LocalListingsSidebar',
-    level: 'Molecule',
-    observation:
-      'Sidebar component displaying local vehicle listings with dealer information, pricing, and mileage. Integrated into PhotoGallery and VehicleDetails pages. Uses spacing tokens, CardShell atoms, and CTA buttons. Includes "View All Listings" action and responsive layout.',
-    opportunity:
-      'Document the listing card pattern and ensure consistent spacing/typography across all listing displays. Consider extracting individual listing cards as separate atoms for reuse.'
-  },
-  {
-    component: 'MembershipCard',
-    level: 'Molecule',
-    observation:
-      'Premium membership card now fully tokenized with gradient backgrounds using neutrals tokens, shadow tokens (--shadow-card, --shadow-card-hover), text shadows (--shadow-text-dark, --shadow-text-medium, --shadow-text-light), and border colors (--color-border-light).',
-    opportunity:
-      'Document the gradient pattern and animation keyframes so other premium cards can reuse the same visual treatment and tokenized approach.'
-  },
-  {
-    component: 'NewsSection',
-    level: 'Organism',
-    observation:
-      'Section that stitches multiple card rows, badges, and “view all” CTAs for news articles.',
-    opportunity:
-      'Treat the section as a template: define row gaps via `var(--spacing-4)` and ensure headlines use typography tokens described in the design rules.'
-  },
-  {
-    component: 'PhotoGallery',
-    level: 'Organism',
-    observation:
-      'Full-screen gallery now refactored to use ModalShell atom with overlayVariant="dark" and maxWidth/maxHeight="100vw/100vh", eliminating ~25 lines of duplicate code including body scroll lock. Now integrates LocalListingsSidebar component, replacing specs and CTA button with real local listings for vehicles. Responsive layout hides sidebar on mobile.',
-    opportunity:
-      'Document the full-screen gallery pattern with ModalShell and LocalListingsSidebar integration. This demonstrates how organisms can compose multiple molecules (gallery + sidebar) for rich user experiences.'
-  },
-  {
-    component: 'ProfileBanner',
-    level: 'Molecule',
-    observation:
-      'Profile hero that layers blurred banners, avatar, and metadata now draws spacing, gradients, and shadows from the token catalog so it matches the onboarding shell.',
-    opportunity:
-      'Document the banner gradient, avatar elevation, and CTA spacing so any dashboard hero can duplicate the same depth and typography rules.'
-  },
-  {
-    component: 'ProfileCompletionCard',
-    level: 'Molecule',
-    observation:
-      'Progress card with steps, search, and vehicle tiles; padding, borders and shadows now follow the design system tokens so it matches the other cards.',
-    opportunity:
-      'Document the progress bar tokens and CTA spacing so every onboarding card can reuse the same surface and typography rules.'
-  },
-  {
-    component: 'ProfileNav',
-    level: 'Molecule',
-    observation:
-      'Sidebar tab navigation now pulls spacing, border, and hover transitions from the design tokens so it mirrors the header nav rhythm.',
-    opportunity:
-      'Document the tab gap/padding tokens plus focus states so any account nav can reuse the same surface and active colors.'
-  },
-  {
-    component: 'RatingDistributionTooltip',
-    level: 'Molecule',
-    observation:
-      'Tooltip that displays 10-segment distribution, anchored to rating bars.',
-    opportunity:
-      'Tokenize tooltip padding, border-radius, and shadow; reuse `--shadow-dropdown` so all tooltips look identical.'
-  },
-  {
-    component: 'RatingModal',
-    level: 'Organism',
-    observation:
-      'Rating modal now refactored to use ModalShell atom, eliminating ~30 lines of duplicate overlay, animation, and event handling code. All tokenization maintained.',
-    opportunity:
-      'Document the star rating interaction pattern and ensure all rating modals across the app follow this same composition approach.'
-  },
-  {
-    component: 'ReviewSubmittedToast',
-    level: 'Organism',
-    observation:
-      'Success confirmation modal now refactored to use ModalShell atom, removing duplicate escape key handling, body scroll lock, and overlay click logic.',
-    opportunity:
-      'Document the success confirmation pattern with ModalShell and ensure all confirmation modals follow this composition approach.'
-  },
-  {
-    component: 'River',
-    level: 'Molecule',
-    observation:
-      'Horizontal list of cards that now wraps each `HorizontalCard` and applies spacing/padding tokens so it nests with other sections.',
-    opportunity:
-      'Document the outer spacing and separator tokens so future river sections can drop in without re-implementing the surrounding chrome.'
-  },
-  {
-    component: 'SavedModal',
-    level: 'Organism',
-    observation:
-      'Confirmation modal now refactored to use the new ModalShell atom, eliminating ~40 lines of duplicate overlay, animation, and event handling code.',
-    opportunity:
-      'Document the ModalShell composition pattern so all future modals use this atom instead of reimplementing overlay logic.'
-  },
-  {
-    component: 'ScrollToTop',
-    level: 'Molecule',
-    observation:
-      'Route-aware helper that resets the viewport to the top whenever the pathname changes.',
-    opportunity:
-      'Capture the animation/spacing tokens used by any future floating CTA so this helper can reuse the same surface when a button gets added.'
-  },
-  {
-    component: 'StaffRatingTooltip',
-    level: 'Molecule',
-    observation:
-      'Tooltip that surfaces MotorTrend rating details near staff scores.',
-    opportunity:
-      'Match the tooltip styling with the rating distribution tooltip by reusing the same tokens for padding, radius, and shadow.'
-  },
-  {
-    component: 'StickyRateBar',
-    level: 'Organism',
-    observation:
-      'Sticky rating bar now uses Badge atom for rating highlights (e.g., "4.5/5"), eliminating custom .sticky-rate-bar__rating-highlight styles. Uses spacing tokens for layout, tokenized overlays/shadows, and reuses CTA styles. Rating values now display as semantic badges (info for user reviews, success for your rating).',
-    opportunity:
-      'Consider using Badge atom for additional status indicators. Verify any remaining px-based gaps (mobile rating gap, icon sizing) convert to the `--spacing-gap-*` scale.'
-  },
-  {
-    component: 'TopTenCarousel',
-    level: 'Organism',
-    observation:
-      'Top Ten carousel with vehicle type and subcategory filters. Features glassmorphism navigation arrows that appear on hover, save/bookmark functionality with localStorage integration, "Buyers Guide" badge linking to vehicle detail pages, and responsive text (MT Rating/Users on mobile). Clicking "See Local Listings" now opens PhotoGallery with LocalListingsSidebar. Uses Badge atoms, spacing tokens, and integrates SavedModal for user feedback.',
-    opportunity:
-      'Document the carousel pattern with filter badges, hover-revealed navigation, and PhotoGallery integration. This demonstrates complex organism composition with multiple molecules and proper state management.'
-  },
-  {
-    component: 'SubscriptionItem',
-    level: 'Molecule',
-    observation:
-      'Membership card that highlights plans, badges, and actions while already using tokens for the pill badge and layout.',
-    opportunity:
-      'Document the badge padding, border, and layout spacing tokens so every subscription tile can copy this surface.'
-  },
-  {
-    component: 'Toast',
-    level: 'Molecule',
-    observation:
-      'Micro-feedback toast that already pulls typography and CTA structure from the design system while overlaying tokenized colors.',
-    opportunity:
-      'Document the overlay opacity, elevation, and button spacing tokens so all future toast states reuse the same palette.'
-  },
-  {
-    component: 'UserReviews',
-    level: 'Organism',
-    observation:
-      'Primary reviews list with rating distribution, review cards, and CTA controls.',
-    opportunity:
-      'Split the reviews list into reusable atoms (review header, stats, actions) and ensure spacing/color tokens flow from the `CURSOR_DESIGN_SYSTEM_RULES`.'
-  },
-  {
-    component: 'VehicleCard',
-    level: 'Molecule',
-    observation:
-      'Thin wrapper over `Card` that pushes MotorTrend/community rating colors via hex literals (#FFB74D, #33C4FF).',
-    opportunity:
-      'Introduce rating color tokens (`--color-rating-motortrend`, `--color-rating-community`) and share them with every component that renders a score.'
-  },
-  {
-    component: 'VehicleSearch',
-    level: 'Organism',
-    observation:
-      'Search filter panel that mixes selects, chips, and CTA buttons.',
-    opportunity:
-      'Audit each input/button inside the panel to ensure they reuse spacing, button, and form tokens documented in the Cursor rules.'
-  },
-  {
-    component: 'VehiclesSection',
-    level: 'Organism',
-    observation:
-      'Section combining hero, filters, and vehicle cards for inventory displays.',
-    opportunity:
-      'Treat the section as a template with defined row/column spacing tokens so future sections mirror each other.'
-  },
-  {
-    component: 'VerticalCard',
-    level: 'Molecule',
-    observation:
-      'Vertical card for video/article content now has consistent border-radius (--border-radius-md) on the image container, matching the card surface. Uses tokenized overlay colors (--color-overlay-dark) for play icon backgrounds.',
-    opportunity:
-      'Document the play overlay pattern and ensure all video cards across the app use this same tokenized approach for consistency.'
-  },
-  {
-    component: 'VideoCard',
-    level: 'Molecule',
-    observation:
-      'Media-first story card already delegates layout, overlay, and actions to the tokenized `Card` molecule.',
-    opportunity:
-      'Document the shared overlay/shadow tokens plus the play CTA spacing so every video tile can mirror this surface.'
-  },
-  {
-    component: 'WriteReviewModal',
-    level: 'Organism',
-    observation:
-      'Side-drawer modal now refactored to use ModalShell atom with position="side-right" and animation="slide-right", eliminating ~40 lines of duplicate code including escape key handling and body scroll lock.',
-    opportunity:
-      'Document the side-drawer pattern with ModalShell and ensure all form modals use this same composition approach.'
-  }
-];
-
-const optimizedComponents = [
-  'Icon',
-  'Badge',
-  'Tooltip',
-  'CardShell',
-  'ModalShell',
-  'Card',
-  'ArticleCard',
-  'ArticleHero',
-  'ArticleScoreCard',
-  'AIInsights',
-  'StickyRateBar',
-  'TopTenCarousel',
-  'ArticleReactions',
-  'ComparisonCard',
-  'CollapsibleSection',
-  'ConnectedAccount',
-  'EditableField',
-  'EmptyVehiclesCard',
-  'AdContainer',
-  'HeroCard',
-  'HorizontalCard',
-  'LocationAutocomplete',
-  'LocalListingsSidebar',
-  'ProfileBanner',
-  'ProfileCompletionCard',
-  'ProfileNav',
-  'River',
-  'SubscriptionItem',
-  'ScrollToTop',
-  'Toast',
-  'AvatarBannerModal',
-  'VideoCard',
-  'RatingModal',
-  'ReviewSubmittedToast',
-  'SavedModal',
-  'UserReviews',
-  'VehicleSearch',
-  'VehiclesSection',
-  'WriteReviewModal',
-  'NewsSection',
-  'PhotoGallery',
-  'GlobalHeader',
-  'GlobalFooter',
-  'EmptyVehicleSection',
-  'MembershipCard',
-  'VerticalCard',
-  'RatingDistributionTooltip',
-  'StaffRatingTooltip',
-  'VehicleCard',
-  'HeroPlusThree'
-];
-
-const LocationAutocompletePreview: React.FC = () => {
-  const [location, setLocation] = useState('San Francisco, CA');
-  return (
-    <LocationAutocomplete
-      value={location}
-      onChange={setLocation}
-      onDetectLocation={() => setLocation('MotorTrend HQ, Detroit, MI')}
-      label="Location"
-      placeholder="City or ZIP"
-      required
-    />
-  );
-};
-
-const riverSampleItems: RiverItem[] = [
-  {
-    imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg',
-    title: 'Mazda CX-50 AWD vs. the West Coast Trails',
-    author: 'MotorTrend Staff',
-    date: 'Nov 2025',
-    category: 'Review'
-  },
-  {
-    imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
-    title: '2026 Kia Sportage Hybrid: Projected MPG',
-    author: 'Editorial',
-    date: 'Oct 2025',
-    category: 'Insight'
-  }
-];
-
-const ToastPreview: React.FC = () => (
-  <div className="toast toast--info toast--preview">
-    <div className="toast__content">
-      <div className="toast__icon">
-        <Icon name="info" size={24} />
-      </div>
-      <p className="toast__message">Settings saved successfully.</p>
-    </div>
-    <div className="toast__actions">
-      <button className="cta cta--ghost">Dismiss</button>
-      <button className="cta cta--primary">View</button>
-    </div>
-  </div>
-);
-
-const galleryImages = [
-  'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg'
-];
-
-const PhotoGalleryPreview: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="atomic-component-preview-inline">
-      <button className="cta cta--ghost" type="button" onClick={() => setIsOpen(true)}>
-        Open Gallery
-      </button>
-      <PhotoGallery
-        images={galleryImages}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        vehicleName="2025 Honda Civic Si"
-      />
-    </div>
-  );
-};
-
-const RatingModalPreview: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="atomic-component-preview-inline">
-      <button className="cta cta--ghost" type="button" onClick={() => setIsOpen(true)}>
-        Open Rating Modal
-      </button>
-      <RatingModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        vehicleName="2025 BMW 3-Series"
-        onRate={() => setIsOpen(false)}
-        currentRating={80}
-        onRateAndReview={() => setIsOpen(false)}
-      />
-    </div>
-  );
-};
-
-const ReviewSubmittedToastPreview: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  return (
-    <div className="atomic-component-preview-inline">
-      <button className="cta cta--ghost" type="button" onClick={() => setIsVisible(true)}>
-        Show Review Toast
-      </button>
-      <ReviewSubmittedToast
-        isVisible={isVisible}
-        onClose={() => setIsVisible(false)}
-        onViewReview={() => setIsVisible(false)}
-        vehicleName="2025 Subaru WRX"
-      />
-    </div>
-  );
-};
-
-const SavedModalPreview: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="atomic-component-preview-inline">
-      <button className="cta cta--ghost" type="button" onClick={() => setIsOpen(true)}>
-        Show Saved Modal
-      </button>
-      <SavedModal isOpen={isOpen} onClose={() => setIsOpen(false)} itemTitle="2025 Honda Civic Si" />
-    </div>
-  );
-};
-
-const AvatarBannerModalPreview: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  return (
-    <div className="atomic-component-preview-inline">
-      <button className="cta cta--ghost" type="button" onClick={() => setIsVisible(true)}>
-        Edit Profile
-      </button>
-      <AvatarBannerModal
-        isVisible={isVisible}
-        onClose={() => setIsVisible(false)}
-        onSave={() => setIsVisible(false)}
-      />
-    </div>
-  );
-};
-
-const userReviewsSample: ReviewData[] = [
-  {
-    id: 'review-1',
-    reviewerName: 'Road Warrior',
-    rating: 90,
-    title: 'Smooth touring experience',
-    content: 'The Civic Si nailed the commute and freeway runs with steady comfort and sharp steering.',
-    vehicleType: 'Sedan',
-    vehicleModel: 'Civic Si',
-    date: 'Nov 2025',
-    thumbsUpCount: 12,
-    verificationLevel: 'owner',
-    vehicleRelationship: 'own',
-    experienceDuration: '2 years'
-  },
-  {
-    id: 'review-2',
-    reviewerName: 'MotorTrend Editor',
-    rating: 80,
-    title: 'Value-packed performance',
-    content: 'Incredible value for budding enthusiasts—plenty of tech with great chassis balance.',
-    vehicleType: 'Coupe',
-    vehicleModel: 'Sportage Hybrid',
-    date: 'Oct 2025',
-    thumbsUpCount: 9,
-    verificationLevel: 'verified',
-    vehicleRelationship: 'test_drove',
-    experienceDuration: '1 day'
-  }
-];
-const userReviewDistribution = [5, 8, 10, 6, 3, 2, 1, 0, 0, 0];
-
-const UserReviewsPreview: React.FC = () => (
-  <UserReviews
-    vehicleName="2025 Honda Civic Si"
-    communityRating={8.4}
-    totalReviews={124}
-    ratingDistribution={userReviewDistribution}
-    reviews={userReviewsSample}
-    onWriteReview={() => {
-      console.log('Write review requested');
-    }}
-  />
-);
-
-const VehicleSearchPreview: React.FC = () => {
-  const [selected, setSelected] = useState('None');
-  return (
-    <div className="atomic-component-preview-inline">
-      <VehicleSearch onVehicleSelect={(vehicle) => setSelected(vehicle.name)} />
-      <span className="atomic-component-preview-status">Selected: {selected}</span>
-    </div>
-  );
-};
-
-const VehiclesSectionPreview: React.FC = () => {
-  const vehicles = [
-    { name: '2025 Honda Civic Si' },
-    { name: '2026 Kia Sportage Hybrid' },
-    { name: '2026 Mazda CX-50 AWD' }
-  ];
-  return (
-    <VehiclesSection
-      title="Inventory Spotlight"
-      vehicles={vehicles}
-    />
-  );
-};
-
-const WriteReviewModalPreview: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="atomic-component-preview-inline">
-      <button className="cta cta--ghost" type="button" onClick={() => setIsOpen(true)}>
-        Open Write Review
-      </button>
-      <WriteReviewModal
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        vehicleName="2026 Mazda CX-50"
-        vehicleImage="https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg"
-      />
-    </div>
-  );
-};
-
-const NewsSectionPreview: React.FC = () => (
-  <NewsSection title="News Spotlight" items={riverSampleItems} />
-);
-
-const stickySampleRatings: RatingItem[] = [
-  {
-    type: 'motortrend',
-    value: 9.4,
-    iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
-    iconAlt: 'MT',
-    labelTop: 'Expert',
-    labelBottom: 'Rating',
-    format: 'vehicle-details'
-  },
-  {
-    type: 'user-reviews',
-    value: 8.2,
-    label: 'Community'
-  },
-  {
-    type: 'your-rating',
-    value: 40
-  }
-];
-
-const atomList = [
-  {
-    name: 'Icon',
-    sample: 'Material symbol glyphs used across atoms, cards, and nav helpers.',
-    previewNode: (
-      <div className="atomic-component-preview-inline">
-        <Icon name="star" size={32} />
-        <Icon name="favorite" size={32} />
-        <Icon name="keyboard_arrow_right" size={32} />
-      </div>
-    )
-  },
-  {
-    name: 'CardShell',
-    sample: 'Tokenized container with spacing, radius, and shadows.',
-    previewNode: (
-      <CardShell hasHover={false} padding="sm">
-        <p>Card shell sample</p>
-        <Badge variant="info">New</Badge>
-      </CardShell>
-    )
-  },
-  {
-    name: 'Badge',
-    sample: 'Standardized badge with semantic variants (new, premium, verified, info, success, warning, error). Replaces custom badge styling in 5+ components.',
-    previewNode: (
-      <div className="atomic-component-preview-inline" style={{ gap: 'var(--spacing-1)', flexWrap: 'wrap' }}>
-        <Badge variant="new">New</Badge>
-        <Badge variant="premium">Premium</Badge>
-        <Badge variant="verified" icon={<span style={{ fontSize: '10px' }}>✓</span>}>Verified</Badge>
-        <Badge variant="info">Info</Badge>
-        <Badge variant="success">Success</Badge>
-        <Badge variant="warning">Warning</Badge>
-        <Badge variant="error">Error</Badge>
-        <Badge variant="neutral">Neutral</Badge>
-      </div>
-    )
-  },
-  {
-    name: 'Tooltip',
-    sample: 'Accessible tooltip with positioning (top/bottom/left/right), delay control, and arrow indicators. Replaces custom implementations in RatingDistributionTooltip and StaffRatingTooltip.',
-    previewNode: (
-      <div className="atomic-component-preview-inline" style={{ gap: 'var(--spacing-3)', flexWrap: 'wrap' }}>
-        <Tooltip content="Top tooltip with arrow" placement="top">
-          <Badge variant="info">Top</Badge>
-        </Tooltip>
-        <Tooltip content="Bottom tooltip" placement="bottom">
-          <Badge variant="success">Bottom</Badge>
-        </Tooltip>
-        <Tooltip content="Left tooltip" placement="left">
-          <Badge variant="warning">Left</Badge>
-        </Tooltip>
-        <Tooltip content="Right tooltip" placement="right">
-          <Badge variant="error">Right</Badge>
-        </Tooltip>
-        <Tooltip content="No arrow tooltip" placement="top" showArrow={false}>
-          <Badge variant="neutral">No Arrow</Badge>
-        </Tooltip>
-      </div>
-    )
-  },
-  {
-    name: 'Popover',
-    sample: 'Interactive popover for rich content, using portals and positioning logic. Supports click/hover triggers and auto-positioning.',
-    previewNode: (
-      <div className="atomic-component-preview-inline" style={{ gap: 'var(--spacing-3)', flexWrap: 'wrap' }}>
-        <Popover 
-          content={<div style={{ padding: '12px', width: '200px' }}>
-            <h4 style={{ margin: '0 0 8px', fontSize: '14px' }}>Popover Title</h4>
-            <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-neutrals-3)' }}>This popover contains rich content and interactive elements.</p>
-            <button style={{ marginTop: '8px', padding: '4px 8px', fontSize: '12px', cursor: 'pointer' }}>Action</button>
-          </div>}
-          placement="top"
-        >
-          <Badge variant="neutral">Click Me</Badge>
-        </Popover>
-        <Popover 
-          trigger="hover"
-          content={<div style={{ padding: '8px' }}>Hover Content</div>}
-          placement="right"
-        >
-          <Badge variant="info">Hover Me</Badge>
-        </Popover>
-      </div>
-    )
-  },
-  {
-    name: 'ModalShell',
-    sample: 'Reusable modal wrapper with standardized overlay (--color-overlay-medium/dark) and shadow (--shadow-modal). Handles escape key, body scroll lock, and click-outside behavior.',
-    previewNode: (
-      <div className="atomic-component-preview-text">
-        <p><strong>Props:</strong> isOpen, onClose, maxWidth, overlayVariant, position, animation</p>
-        <p><strong>Usage:</strong> Wrap modal content to eliminate duplicate overlay code</p>
-      </div>
-    )
-  },
-  {
-    name: 'Button',
-    sample: 'Standard CTA button using tokenized spacing and colors.',
-    previewNode: (
-      <Button color="primary">
-        Take Action
-      </Button>
-    )
-  }
-];
-
-const moleculeList = [
-  {
-    name: 'Card',
-    sample: 'Universal vehicle card with ratings and actions.',
-    previewNode: (
-        <Card
-          image="https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg"
-        title="2025 Sample Vehicle"
-        metadata="Sample"
-        type="Sedan"
-        onAction={() => {}}
-        actionText="View"
-      />
-    )
-  },
-  {
-    name: 'ArticleCard',
-    sample: 'Article preview built on the universal card surface.',
-    previewNode: (
-      <ArticleCard
-        imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg"
-        title="2025 Civic Si: MotorTrend Road Test"
-        author="MotorTrend Editorial"
-        date="Nov 2025"
-        onReadArticle={() => {}}
-      />
-    )
-  },
-  {
-    name: 'ArticleScoreCard',
-    sample: 'MotorTrend review score card with award badge (now using Badge atom), rating breakdown, and reviewer info. Fully tokenized with design system colors and spacing.',
-    previewNode: (
-      <ArticleScoreCard
-        vehicleName="2026 Honda Civic Si"
-        score={{
-          vehicleName: '2026 Honda Civic Si',
-          overallRating: 8.5,
-          scores: {
-            performance: 8.7,
-            efficiency: 7.8,
-            tech: 8.9,
-            value: 8.6
-          },
-          reviewer: {
-            name: 'Scott Evans',
-            avatar: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
-            title: 'A Thrilling Return to Form',
-            excerpt: 'The 2026 Honda Civic Si brings back the joy of driving with its responsive handling, rev-happy engine, and affordable price point. This is the enthusiast sedan we\'ve been waiting for.',
-            date: 'Nov 15, 2025',
-            detailedSections: [
-              {
-                title: 'Performance',
-                content: 'The turbocharged 1.5-liter engine delivers 200 hp and feels eager at every rev. The six-speed manual transmission is a joy to use with short throws and precise engagement.'
-              },
-              {
-                title: 'Handling',
-                content: 'Adaptive dampers and a limited-slip differential make the Si feel planted through corners. The steering is communicative and the chassis balance is near-perfect.'
-              }
-            ]
-          }
-        }}
-      />
-    )
-  },
-  {
-    name: 'HorizontalCard',
-    sample: 'News-rich horizontal tile reusing card padding, border, and shadow tokens.',
-    previewNode: (
-      <HorizontalCard
-        imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg"
-        title="2026 Kia Sportage Hybrid Review"
-        author="MotorTrend Staff"
-        date="Nov 2025"
-        category="Review"
-        onClick={() => {}}
-      />
-    )
-  },
-  {
-    name: 'VideoCard',
-    sample: 'Video hero that inherits overlay tokens from the universal `Card` molecule.',
-    previewNode: (
-      <VideoCard
-        image="https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg"
-        title="Road Test: 2026 Kia Sportage Hybrid"
-        author="MotorTrend Video"
-        date="Nov 2025"
-        isBookmarked
-        onBookmark={() => {}}
-        onPlayVideo={() => {}}
-      />
-    )
-  },
-  {
-    name: 'River',
-    sample: 'Tokenized river wrapper that spaces and separates rows of horizontal cards.',
-    previewNode: (
-      <div className="atomic-component-preview-inline">
-        <River items={riverSampleItems} />
-      </div>
-    )
-  },
-  {
-    name: 'ComparisonCard',
-    sample: 'Side-by-side comparison tile with tokenized overlays.',
-    previewNode: (
-      <ComparisonCard
-        vehicle1={{
-          image:
-            'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
-          name: '2026 Honda CR-V'
-        }}
-        vehicle2={{
-          image:
-            'https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg',
-          name: '2026 Mazda CX-50'
-        }}
-        onBookmark={() => {}}
-        onViewComparison={() => {}}
-        isBookmarked
-      />
-    )
-  },
-  {
-    name: 'ArticleReactions',
-    sample: 'Emoji popups built on tokenized gaps and tooltip.',
-    previewNode: (
-      <div className="atomic-component-preview-inline">
-        <ArticleReactions articleSlug="2025-bmw-3-series" showTooltipsBelow />
-      </div>
-    )
-  },
-  {
-    name: 'EmptyVehiclesCard',
-    sample: 'Empty-state hero with dashed border, icon bubble, and search helper.',
-    previewNode: (
-      <EmptyVehiclesCard
-        onVehicleSelect={(vehicle) => {
-          console.log('selected', vehicle);
-        }}
-      />
-    )
-  },
-  {
-    name: 'EditableField',
-    sample: 'Inline edit row with tokenized focus + action buttons.',
-    previewNode: (
-      <EditableField
-        label="User Email"
-        value="design-system@motortrend.com"
-        placeholder="Enter new email"
-        onSave={() => {}}
-      />
-    )
-  },
-  {
-    name: 'CollapsibleSection',
-    sample: 'Accordion surface with tokenized padding, borders, and arrow.',
-    previewNode: (
-      <CollapsibleSection title="Tokenized Accordion" description="Expands to reveal more info." defaultOpen>
-        <p>
-          This content lives inside a shared molecule that already honors spacing tokens all the way through the header and 
-          body gaps.
-        </p>
-      </CollapsibleSection>
-    )
-  },
-  {
-    name: 'ConnectedAccount',
-    sample: 'Provider badge with icon cube plus connected state.',
-    previewNode: (
-      <ConnectedAccount provider="google" accountName="design-system@motortrend.com" isConnected />
-    )
-  },
-  {
-    name: 'AdContainer',
-    sample: 'Sticky ad placeholder with tokenized padding and shadows.',
-    previewNode: (
-      <AdContainer
-        label="Ad Preview"
-        position="inline"
-        imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg"
-      />
-    )
-  },
-  {
-    name: 'SubscriptionItem',
-    sample: 'Subscription tile with tokenized badge, spacing, and hover elevation.',
-    previewNode: (
-      <SubscriptionItem
-        name="MotorTrend Premium"
-        logo="https://d2kde5ohu8qb21.cloudfront.net/files/69101763c398630002aedb21/buyer.svg"
-        isActive
-        onToggleSubscription={() => {}}
-      />
-    )
-  },
-  {
-    name: 'LocationAutocomplete',
-    sample: 'Search field with tokenized dropdowns and auto-detect helper.',
-    previewNode: <LocationAutocompletePreview />
-  },
-  {
-    name: 'ProfileBanner',
-    sample: 'Hero banner with tokenized overlay, avatar, and metadata.',
-    previewNode: (
-      <ProfileBanner
-        userName="Lenin Aviles"
-        userAvatar="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg"
-        userBanner="https://d2kde5ohu8qb21.cloudfront.net/files/68f787e24fba630002fdc127/golf.jpg"
-        joinDate="09/27/2025"
-        location="Los Angeles, CA"
-        onEditProfile={() => {}}
-      />
-    )
-  },
-  {
-    name: 'ProfileCompletionCard',
-    sample: 'Onboarding checklist with progress bar, steps, and vehicle search using shared tokens.',
-    previewNode: (
-      <ProfileCompletionCard
-        onUpdateStep1={() => {}}
-        onUpdateStep2={() => {}}
-        onUpdateStep3={() => {}}
-        onUpdateStep4={() => {}}
-      />
-    )
-  },
-  {
-    name: 'ProfileNav',
-    sample: 'Tokenized tab strip with active/hover states matching the header nav tokens.',
-    previewNode: <ProfileNav activeTab="saved-items" onTabChange={() => {}} />
-  },
-  {
-    name: 'Toast',
-    sample: 'Micro-feedback overlay that relies on tokenized overlay, typography, and CTA spacing.',
-    previewNode: <ToastPreview />
-  },
-  {
-    name: 'ScrollToTop',
-    sample: 'Route listener that resets the viewport when navigation completes.',
-    previewNode: (
-      <div className="atomic-component-preview-inline">
-        <p>ScrollToTop (behavioral listener)</p>
-      </div>
-    )
-  },
-  {
-    name: 'HeroCard',
-    sample: 'Media hero that plugs into HeroPlusThree.',
-    previewNode: (
-      <HeroCard
-        imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg"
-        title="Hero Spotlight"
-      />
-    )
-  },
-  {
-    name: 'VerticalCard',
-    sample: 'Information card for resources.',
-    previewNode: (
-      <VerticalCard
-        imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg"
-        title="Vertical Resource"
-        type="Article"
-      />
-    )
-  }
-];
-
-const organismList = [
-  {
-    name: 'AIInsights',
-    sample: 'Insight grid with bold sections.',
-    previewNode: <AIInsights vehicleName="2025 BMW 3-Series" />
-  },
-  {
-    name: 'AvatarBannerModal',
-    sample: 'Profile modal with tokenized overlay, tabs, and option grids.',
-    previewNode: <AvatarBannerModalPreview />
-  },
-  {
-    name: 'EmptyVehicleSection',
-    sample: 'Template that reuses the empty card atom plus shared spacing/shadow tokens.',
-    previewNode: (
-      <EmptyVehicleSection type="own" onClick={() => {}} />
-    )
-  },
-  {
-    name: 'GlobalHeader',
-    sample: 'Persistent nav with dropdowns and search inputs.',
-    previewNode: <GlobalHeader />
-  },
-  {
-    name: 'GlobalFooter',
-    sample: 'Footer with navigation, documentation, and CTA badges.',
-    previewNode: <GlobalFooter />
-  },
-  {
-    name: 'HeroPlusThree',
-    sample: 'Hero block with supporting cards.',
-    previewNode: (
-      <HeroPlusThree
-        hero={{
-          imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
-          title: 'Hero Feature'
-        }}
-          cards={[
-            {
-              imageUrl:
-                'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
-              title: 'Card One'
-            },
-            {
-              imageUrl:
-                'https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
-              title: 'Card Two',
-              type: 'Article'
-            },
-            {
-              imageUrl:
-                'https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg',
-              title: 'Card Three'
-            }
-          ]}
-      />
-    )
-  },
-  {
-    name: 'NewsSection',
-    sample: 'Section that stitches multiple card rows, badges, and view-all CTAs.',
-    previewNode: <NewsSectionPreview />
-  },
-  {
-    name: 'PhotoGallery',
-    sample: 'Modal gallery with overlay controls and thumbnails.',
-    previewNode: <PhotoGalleryPreview />
-  },
-  {
-    name: 'RatingModal',
-    sample: 'Star-based rating modal with CTA buttons.',
-    previewNode: <RatingModalPreview />
-  },
-  {
-    name: 'ReviewSubmittedToast',
-    sample: 'Success notification that confirms review submissions.',
-    previewNode: <ReviewSubmittedToastPreview />
-  },
-  {
-    name: 'SavedModal',
-    sample: 'Modal shown after saving content, sharing the modal shell.',
-    previewNode: <SavedModalPreview />
-  },
-  {
-    name: 'StickyRateBar',
-    sample: 'Sticky bar with ratings, CTA, and tooltips.',
-    previewNode: (
-      <StickyRateBar
-        vehicleName="2025 BMW 3-Series"
-        ratings={stickySampleRatings}
-        ctaText="Local Listings"
-        ctaOnClick={() => {}}
-        isVisible={true}
-        staffRatingScores={{ performance: 9, efficiency: 8, tech: 8, value: 9 }}
-        ratingDistribution={{ 1: 2, 2: 3, 3: 5, 4: 10, 5: 20, 6: 30, 7: 45, 8: 50, 9: 30, 10: 10 }}
-        totalReviews={123}
-      />
-    )
-  },
-  {
-    name: 'UserReviews',
-    sample: 'Review list with rating distribution, cards, and CTA controls.',
-    previewNode: <UserReviewsPreview />
-  },
-  {
-    name: 'VehicleSearch',
-    sample: 'Search panel with autocomplete and chips.',
-    previewNode: <VehicleSearchPreview />
-  },
-  {
-    name: 'VehiclesSection',
-    sample: 'Vehicle grid with filters, cards, and modals.',
-    previewNode: <VehiclesSectionPreview />
-  },
-  {
-    name: 'WriteReviewModal',
-    sample: 'Review submission modal with stars, form, and media upload.',
-    previewNode: <WriteReviewModalPreview />
-  }
-];
-
-const remainingMolecules = componentAuditRows
-  .filter((row) => row.level === 'Molecule' && !optimizedComponents.includes(row.component))
-  .map((row) => row.component);
-
-const remainingOrganisms = componentAuditRows
-  .filter((row) => row.level === 'Organism' && !optimizedComponents.includes(row.component))
-  .map((row) => row.component);
-
-const focusAreas = [
-  {
-    title: 'Token-first alignment',
-    detail:
-      'Every component should consume the color, spacing, and shadow variables defined in `CURSOR_DESIGN_SYSTEM_RULES`. Hardcoded hex (`#141416`, `#FFB74D`) and px gaps should be replaced with tokens before we scale.'
-  },
-  {
-    title: 'Atomic composition',
-    detail:
-      'Reuse the same atoms/molecules across components instead of recreating similar CSS. We now publish `CardShell`, `Badge`, and `Tooltip` under `src/design-system/components/` so every card and helper popover can draw from the same tokenized pieces.'
-  },
-  {
-    title: 'Documentation',
-    detail:
-      'Document each molecule’s API and token expectations in the design system reference so PMs and designers understand when to reuse an existing pattern versus requesting a new one.'
-  }
-];
-
-const nextSteps: string[] = [];
-
-export const AtomicDesignAudit: React.FC = () => {
+const AtomicDesignAudit: React.FC = () => {
   const [activeSection, setActiveSection] = useState('overview');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const titleRefs = useRef<Record<string, HTMLElement | null>>({});
 
-  const scrollToSection = (sectionId: string) => {
-    setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
+  // Demo states
+  const [textFieldValue, setTextFieldValue] = useState('');
+  const [editableValue, setEditableValue] = useState('Click to edit');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+      
+      for (const section of sections) {
+        const element = sectionRefs.current[section.id];
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Force white color on all section titles - using direct style manipulation
+  useEffect(() => {
+    // Use setTimeout to ensure DOM is fully rendered
+    const timer = setTimeout(() => {
+      Object.values(titleRefs.current).forEach((titleEl) => {
+        if (titleEl) {
+          titleEl.style.color = '#FFFFFF';
+          titleEl.style.setProperty('color', '#FFFFFF', 'important');
+          // Also try webkit text fill color
+          (titleEl.style as any).webkitTextFillColor = '#FFFFFF';
+        }
+      });
+      
+      // Also target all h2.audit-section__title elements directly
+      const allTitles = document.querySelectorAll('h2.audit-section__title');
+      allTitles.forEach((title) => {
+        (title as HTMLElement).style.color = '#FFFFFF';
+        (title as HTMLElement).style.setProperty('color', '#FFFFFF', 'important');
+      });
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = sectionRefs.current[id];
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const offset = 80;
+      const top = element.offsetTop - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
     }
   };
 
-  const totalComponents = atomList.length + moleculeList.length + organismList.length;
-  const optimizedCount = optimizedComponents.length;
-  const progress = Math.round((optimizedCount / totalComponents) * 100);
+  // Sample data for components - using reliable placeholder image
+  const sampleImage = 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&q=80';
 
   return (
-    <div className="atomic-audit-page">
-      {/* Sidebar Navigation */}
-      <aside className="atomic-audit-sidebar">
-        <h3 className="atomic-audit-sidebar__title">Navigation</h3>
-        <ul className="atomic-audit-sidebar__nav">
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'overview' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('overview')}
+    <div className="audit-page">
+      {/* Sidebar */}
+      <nav className={`audit-sidebar ${isSidebarCollapsed ? 'audit-sidebar--collapsed' : ''}`}>
+        <div className="audit-sidebar__header">
+          <div className="audit-sidebar__header-top">
+            <div className="audit-sidebar__logo">
+              <Icon name="architecture" size={32} />
+            </div>
+            <button 
+              className="audit-sidebar__toggle"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <Icon name="dashboard" size={18} />
-              Overview
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'components' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('components')}
-            >
-              <Icon name="widgets" size={18} />
-              Components
-              <span className="atomic-audit-sidebar__badge">{totalComponents}</span>
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'atoms' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('atoms')}
-            >
-              <Icon name="circle" size={18} />
-              Atoms
-              <span className="atomic-audit-sidebar__badge">{atomList.length}</span>
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'molecules' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('molecules')}
-            >
-              <Icon name="extension" size={18} />
-              Molecules
-              <span className="atomic-audit-sidebar__badge">{moleculeList.length}</span>
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'organisms' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('organisms')}
-            >
-              <Icon name="view_module" size={18} />
-              Organisms
-              <span className="atomic-audit-sidebar__badge">{organismList.length}</span>
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'levels' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('levels')}
-            >
-              <Icon name="layers" size={18} />
-              Atomic Levels
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'inventory' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('inventory')}
-            >
-              <Icon name="inventory_2" size={18} />
-              Full Inventory
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'status' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('status')}
-            >
-              <Icon name="check_circle" size={18} />
-              Status
-              <span className="atomic-audit-sidebar__badge">{progress}%</span>
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'focus' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('focus')}
-            >
-              <Icon name="target" size={18} />
-              Focus Areas
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'documentation' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('documentation')}
-            >
-              <Icon name="menu_book" size={18} />
-              Documentation
-            </a>
-          </li>
-          <li>
-            <a
-              className={`atomic-audit-sidebar__link ${activeSection === 'roadmap' ? 'atomic-audit-sidebar__link--active' : ''}`}
-              onClick={() => scrollToSection('roadmap')}
-            >
-              <Icon name="map" size={18} />
-              Roadmap
-            </a>
-          </li>
+              <Icon name={isSidebarCollapsed ? "chevron_right" : "chevron_left"} size={20} />
+            </button>
+          </div>
+          {!isSidebarCollapsed && (
+            <div className="audit-sidebar__header-info">
+              <span className="audit-sidebar__title">Component Library</span>
+              <span className="audit-sidebar__version">Storybook</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="audit-sidebar__search">
+          <Icon name="search" size={18} />
+          {!isSidebarCollapsed && (
+            <input 
+              type="text" 
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          )}
+        </div>
+
+        <ul className="audit-sidebar__nav">
+          {sections.map((section) => (
+            <li key={section.id}>
+              <button
+                className={`audit-sidebar__nav-item ${activeSection === section.id ? 'audit-sidebar__nav-item--active' : ''}`}
+                onClick={() => scrollToSection(section.id)}
+                title={isSidebarCollapsed ? section.title : undefined}
+              >
+                <Icon name={section.icon} size={20} />
+                {!isSidebarCollapsed && <span>{section.title}</span>}
+              </button>
+            </li>
+          ))}
         </ul>
-      </aside>
+
+        <div className="audit-sidebar__footer">
+          <Link to="/design-system" className="audit-sidebar__link" title={isSidebarCollapsed ? "Design System" : undefined}>
+            <Icon name="palette" size={18} />
+            {!isSidebarCollapsed && "Design System"}
+          </Link>
+        </div>
+      </nav>
 
       {/* Main Content */}
-      <div className="atomic-audit-content">
-        <header className="atomic-audit-page__header" id="overview">
-          <p className="atomic-audit-page__eyebrow">Design System Audit</p>
-          <h1 className="atomic-audit-page__title">Atomic Design Inventory</h1>
-          <p className="atomic-audit-page__intro">
-            A page-level audit of every React component, organized by atomic-design level, with recommendations
-            for token adoption and composability. This complements the{' '}
-            <Link to="/design-system" className="atomic-audit-page__link">
-              Design System Reference
-            </Link>{' '}
-            and the{' '}
-            <Link to="/documentation/review-system" className="atomic-audit-page__link">
-              Review System docs
-            </Link>
-            .
-          </p>
-
-          {/* Progress Bar */}
-          <div className="atomic-progress">
-            <div className="atomic-progress__label">
-              <span>Tokenization Progress</span>
-              <span>{progress}% Complete</span>
-            </div>
-            <div className="atomic-progress__bar">
-              <div className="atomic-progress__fill" style={{ width: `${progress}%` }} />
-            </div>
+      <main className={`audit-main ${isSidebarCollapsed ? 'audit-main--collapsed' : ''}`}>
+        {/* Header */}
+        <header className="audit-header">
+          <div className="audit-header__content">
+            <span className="audit-header__eyebrow">Interactive Preview</span>
+            <h1 className="audit-header__title">Component Library</h1>
+            <p className="audit-header__subtitle">
+              Live, interactive previews of all UI components. Test and explore each component in isolation.
+            </p>
           </div>
         </header>
 
-        {/* Stats Cards */}
-        <div className="atomic-audit-page__stats">
-          <div className="atomic-audit-stat-card">
-            <div className="atomic-audit-stat-card__number">{totalComponents}</div>
-            <p className="atomic-audit-stat-card__label">Total Components</p>
+        {/* Overview Section */}
+        <section 
+          id="overview" 
+          className="audit-section"
+          ref={(el) => { sectionRefs.current['overview'] = el; }}
+        >
+          <div className="audit-section__header">
+            <div className="audit-section__icon">
+              <Icon name="dashboard" size={24} />
+            </div>
+            <div style={{ color: '#FFFFFF' }}>
+              <h2 
+                ref={(el) => { titleRefs.current['overview'] = el; }}
+                className="audit-section__title" 
+                style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
+              >
+                Overview
+              </h2>
+              <p className="audit-section__description">
+                Component architecture following atomic design methodology.
+              </p>
+            </div>
           </div>
-          <div className="atomic-audit-stat-card">
-            <div className="atomic-audit-stat-card__number">{optimizedCount}</div>
-            <p className="atomic-audit-stat-card__label">Optimized</p>
-          </div>
-          <div className="atomic-audit-stat-card">
-            <div className="atomic-audit-stat-card__number">3</div>
-            <p className="atomic-audit-stat-card__label">Atomic Layers</p>
-          </div>
-          <div className="atomic-audit-stat-card">
-            <div className="atomic-audit-stat-card__number">{progress}%</div>
-            <p className="atomic-audit-stat-card__label">Progress</p>
-          </div>
-        </div>
 
-      <section className="atomic-component-tables" id="components">
-        <article className="atomic-component-section" id="atoms">
-          <h3>Atoms</h3>
-          <table className="atomic-component-table">
-            <thead>
-                <tr>
-                  <th>Component</th>
-                  <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-              {atomList.map((atom) => (
-                <React.Fragment key={atom.name}>
-                  <tr>
-                    <td>{atom.name}</td>
-                    <td>{atom.sample}</td>
-                  </tr>
-                  <tr className="atomic-component-preview-row">
-                    <td colSpan={2}>
-                      <div className="atomic-component-preview-wrapper">
-                        {atom.previewNode}
-                      </div>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </article>
+          <div className="audit-levels">
+            <div className="audit-level-card audit-level-card--atom">
+              <div className="audit-level-card__header">
+                <Icon name="circle" size={24} />
+                <span className="audit-level-card__badge">6 components</span>
+              </div>
+              <h3 className="audit-level-card__title">Atoms</h3>
+              <p className="audit-level-card__description">
+                Basic building blocks: Icon, Badge, Button, TextField, CardShell, Tooltip
+              </p>
+            </div>
 
-        <article className="atomic-component-section" id="molecules">
-          <h3>Molecules</h3>
-          <table className="atomic-component-table">
-            <thead>
-                <tr>
-                  <th>Component</th>
-                  <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-              {moleculeList.map((molecule) => (
-                <React.Fragment key={molecule.name}>
-                  <tr>
-                    <td>{molecule.name}</td>
-                    <td>{molecule.sample}</td>
-                  </tr>
-                  <tr className="atomic-component-preview-row">
-                    <td colSpan={2}>
-                      <div className="atomic-component-preview-wrapper">
-                        {molecule.previewNode}
-                      </div>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </article>
+            <div className="audit-level-card audit-level-card--molecule">
+              <div className="audit-level-card__header">
+                <Icon name="workspaces" size={24} />
+                <span className="audit-level-card__badge">15 components</span>
+              </div>
+              <h3 className="audit-level-card__title">Molecules</h3>
+              <p className="audit-level-card__description">
+                Composable groups: Cards, Inputs, Form Fields, Previews
+              </p>
+            </div>
 
-        <article className="atomic-component-section" id="organisms">
-          <h3>Organisms</h3>
-          <table className="atomic-component-table">
-            <thead>
-                <tr>
-                  <th>Component</th>
-                  <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-              {organismList.map((organism) => (
-                <React.Fragment key={organism.name}>
-                  <tr>
-                    <td>{organism.name}</td>
-                    <td>{organism.sample}</td>
-                  </tr>
-                  <tr className="atomic-component-preview-row">
-                    <td colSpan={2}>
-                      <div className="atomic-component-preview-wrapper">
-                        {organism.previewNode}
-                      </div>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </article>
-      </section>
+            <div className="audit-level-card audit-level-card--organism">
+              <div className="audit-level-card__header">
+                <Icon name="grid_view" size={24} />
+                <span className="audit-level-card__badge">10 components</span>
+              </div>
+              <h3 className="audit-level-card__title">Organisms</h3>
+              <p className="audit-level-card__description">
+                Page sections: Header, Footer, Carousels, Reviews, Sections
+              </p>
+            </div>
+          </div>
+        </section>
 
-      <section className="atomic-samples">
-        <article className="atomic-sample-card atomic-sample-card--atom">
-          <p className="atomic-sample-card__label">Atom sample</p>
-          <div className="atomic-sample-chip">Badge</div>
-          <p>Spacing: <code>var(--spacing-component-sm)</code> · Colors: semantic token</p>
-        </article>
-        <article className="atomic-sample-card atomic-sample-card--molecule">
-          <p className="atomic-sample-card__label">Molecule sample</p>
-          <div className="atomic-sample-structure">
-            <span>CardShell</span>
-            <span>Title</span>
-            <span>CTA</span>
+        {/* ============ ATOMS SECTION ============ */}
+        <section 
+          id="atoms" 
+          className="audit-section"
+          ref={(el) => { sectionRefs.current['atoms'] = el; }}
+        >
+          <div className="audit-section__header">
+            <div className="audit-section__icon audit-section__icon--atom">
+              <Icon name="circle" size={24} />
+            </div>
+            <div style={{ color: '#FFFFFF' }}>
+              <h2 
+                ref={(el) => { titleRefs.current['atoms'] = el; }}
+                className="audit-section__title" 
+                style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
+              >
+                Atoms
+              </h2>
+              <p className="audit-section__description">
+                Foundational building blocks with no business logic.
+              </p>
+            </div>
           </div>
-          <p>Composes card shell + badge + rating/toggle.</p>
-        </article>
-        <article className="atomic-sample-card atomic-sample-card--organism">
-          <p className="atomic-sample-card__label">Organism sample</p>
-          <div className="atomic-sample-structure">
-            <span>Sticky row</span>
-            <span>Vehicle name</span>
-            <span>CTA</span>
-          </div>
-          <p>StickyRateBar integrates CTAs, tooltips, and spacing tokens.</p>
-        </article>
-      </section>
 
-      <section className="atomic-audit-section" id="levels">
-        <div className="atomic-audit-section__header">
-          <h2>Atomic level summary</h2>
-          <p>Confirm that every component maps back to the right atomic layer so we can keep the system modular.</p>
-        </div>
-        <div className="atomic-level-grid">
-          {atomicLevelSummary.map((summary) => (
-            <article key={summary.name} className="atomic-level-card">
-              <h3>{summary.name}</h3>
-              <p>{summary.description}</p>
-              <p className="atomic-level-card__focus"><strong>Focus:</strong> {summary.focus}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+          {/* Icon */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Icon</h3>
+              <code className="audit-preview__path">components/Icon</code>
+            </div>
+            <div className="audit-preview__canvas">
+              <div className="audit-preview__row">
+                <Icon name="home" size={24} />
+                <Icon name="search" size={24} />
+                <Icon name="settings" size={24} />
+                <Icon name="favorite" size={24} />
+                <Icon name="star" size={24} />
+                <Icon name="check_circle" size={24} />
+                <Icon name="warning" size={24} />
+                <Icon name="info" size={24} />
+              </div>
+              <div className="audit-preview__row">
+                <Icon name="home" size={16} />
+                <Icon name="home" size={20} />
+                <Icon name="home" size={24} />
+                <Icon name="home" size={32} />
+                <Icon name="home" size={40} />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<Icon name="home" size={24} />`}</code>
+            </div>
+          </div>
 
-      <section className="atomic-audit-section" id="inventory">
-        <div className="atomic-audit-section__header">
-          <h2>Component inventory</h2>
-          <p>Every component is listed below with the current observations and the immediate optimization opportunity.</p>
-        </div>
-        <div className="atomic-table-wrapper">
-          <table className="atomic-audit-table">
-            <thead>
-              <tr>
-                <th>Component</th>
-                <th>Level</th>
-                <th>Observation</th>
-                <th>Optimization opportunity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {componentAuditRows.map((row) => (
-                <tr key={row.component}>
-                  <td>{row.component}</td>
-                  <td>{row.level}</td>
-                  <td>{row.observation}</td>
-                  <td>{row.opportunity}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+          {/* Badge */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Badge</h3>
+              <code className="audit-preview__path">design-system/Badge</code>
+            </div>
+            <div className="audit-preview__canvas">
+              <div className="audit-preview__row">
+                <Badge variant="neutral">Neutral</Badge>
+                <Badge variant="success">Success</Badge>
+                <Badge variant="warning">Warning</Badge>
+                <Badge variant="error">Error</Badge>
+                <Badge variant="info">Info</Badge>
+                <Badge variant="premium">Premium</Badge>
+              </div>
+              <div className="audit-preview__row">
+                <Badge variant="success" size="sm">Small</Badge>
+                <Badge variant="success" size="md">Medium</Badge>
+                <Badge variant="success" size="lg">Large</Badge>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<Badge variant="success" size="md">Success</Badge>`}</code>
+            </div>
+          </div>
 
-      <section className="atomic-audit-section" id="status">
-        <div className="atomic-audit-section__header">
-          <h2>Component status</h2>
-          <p>Track what the team has tokenized and what still needs attention.</p>
-        </div>
-        <div className="atomic-status-grid">
-          <div>
-            <h4>Optimized this sprint</h4>
-            <ul>
-              {optimizedComponents.map((component) => (
-                <li key={component}>{component}</li>
-              ))}
-            </ul>
+          {/* Button */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Button (CTA)</h3>
+              <code className="audit-preview__path">design-system/Button</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__row">
+                <button className="cta cta--primary cta--small">Small</button>
+                <button className="cta cta--primary cta--default">Default</button>
+                <button className="cta cta--primary cta--large">Large</button>
+              </div>
+              <div className="audit-preview__row">
+                <button className="cta cta--primary cta--default">Primary</button>
+                <button className="cta cta--secondary cta--default">Secondary</button>
+                <button className="cta cta--ghost cta--default">Ghost</button>
+                <button className="cta cta--outline cta--default">Outline</button>
+              </div>
+              <div className="audit-preview__row">
+                <button className="cta cta--success cta--default">Success</button>
+                <button className="cta cta--warning cta--default">Warning</button>
+                <button className="cta cta--primary cta--default" disabled>Disabled</button>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<button className="cta cta--primary cta--default">Button</button>`}</code>
+            </div>
           </div>
-          <div>
-            <h4>Remaining molecules</h4>
-            <ul>
-              {remainingMolecules.map((component) => (
-                <li key={component}>{component}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4>Remaining organisms</h4>
-            <ul>
-              {remainingOrganisms.map((component) => (
-                <li key={component}>{component}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
 
+          {/* TextField */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">TextField</h3>
+              <code className="audit-preview__path">design-system/TextField</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-2">
+                <TextField 
+                  label="Default" 
+                  placeholder="Enter text..."
+                  value={textFieldValue}
+                  onChange={(e) => setTextFieldValue(e.target.value)}
+                />
+                <TextField 
+                  label="With Helper Text" 
+                  placeholder="Enter email..."
+                  helperText="We'll never share your email"
+                />
+                <TextField 
+                  label="Error State" 
+                  placeholder="Required field"
+                  error="This field is required"
+                />
+                <TextField 
+                  label="Disabled" 
+                  placeholder="Cannot edit"
+                  disabled
+                />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<TextField label="Email" placeholder="Enter email..." />`}</code>
+            </div>
+          </div>
 
-      <section className="atomic-audit-section" id="focus">
-        <div className="atomic-audit-section__header">
-          <h2>Cross-cutting focus areas</h2>
-          <p>Carry these priorities into every component patch.</p>
-        </div>
-        <div className="atomic-focus-grid">
-          {focusAreas.map((focus) => (
-            <article key={focus.title} className="atomic-focus-card">
-              <h3>{focus.title}</h3>
-              <p>{focus.detail}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+          {/* CardShell */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">CardShell</h3>
+              <code className="audit-preview__path">design-system/CardShell</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-3">
+                <CardShell padding="sm">
+                  <p style={{ margin: 0 }}>Small padding</p>
+                </CardShell>
+                <CardShell padding="md">
+                  <p style={{ margin: 0 }}>Medium padding</p>
+                </CardShell>
+                <CardShell padding="lg" hasHover>
+                  <p style={{ margin: 0 }}>Large + Hoverable</p>
+                </CardShell>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<CardShell padding="md" hoverable>Content</CardShell>`}</code>
+            </div>
+          </div>
 
-      <section className="atomic-audit-section atomic-audit-section--documentation" id="documentation">
-        <div className="atomic-audit-section__header">
-          <h2>📚 Documentation</h2>
-          <p>Comprehensive guides for using atoms in your components.</p>
-        </div>
-        <div className="atomic-documentation-grid">
-          <div className="atomic-doc-card">
-            <div className="atomic-doc-card__icon">📖</div>
-            <h3 className="atomic-doc-card__title">Atom Composition Guide</h3>
-            <p className="atomic-doc-card__description">
-              Complete guide showing how to compose ModalShell, CardShell, Badge, and Tooltip atoms in your molecules and organisms.
-            </p>
-            <div className="atomic-doc-card__features">
-              <span>✓ Usage patterns</span>
-              <span>✓ Code examples</span>
-              <span>✓ Anti-patterns</span>
-              <span>✓ Design tokens</span>
+          {/* Tooltip */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Tooltip</h3>
+              <code className="audit-preview__path">design-system/Tooltip</code>
             </div>
-            <a href="/docs/ATOM_COMPOSITION_GUIDE.md" className="atomic-doc-card__link" target="_blank" rel="noopener noreferrer">
-              View Full Guide →
-            </a>
-          </div>
-          <div className="atomic-doc-card">
-            <div className="atomic-doc-card__icon">⚡</div>
-            <h3 className="atomic-doc-card__title">Quick Reference Card</h3>
-            <p className="atomic-doc-card__description">
-              One-page cheat sheet with common props, variants, and composition patterns for quick lookup while coding.
-            </p>
-            <div className="atomic-doc-card__features">
-              <span>✓ Common props</span>
-              <span>✓ Token reference</span>
-              <span>✓ Quick examples</span>
-              <span>✓ Printable</span>
+            <div className="audit-preview__canvas">
+              <div className="audit-preview__row" style={{ gap: '48px' }}>
+                <Tooltip content="Tooltip on top" placement="top">
+                  <button className="cta cta--secondary cta--small">Top</button>
+                </Tooltip>
+                <Tooltip content="Tooltip on bottom" placement="bottom">
+                  <button className="cta cta--secondary cta--small">Bottom</button>
+                </Tooltip>
+                <Tooltip content="Tooltip on left" placement="left">
+                  <button className="cta cta--secondary cta--small">Left</button>
+                </Tooltip>
+                <Tooltip content="Tooltip on right" placement="right">
+                  <button className="cta cta--secondary cta--small">Right</button>
+                </Tooltip>
+              </div>
             </div>
-            <a href="/docs/ATOMS_QUICK_REFERENCE.md" className="atomic-doc-card__link" target="_blank" rel="noopener noreferrer">
-              View Quick Reference →
-            </a>
-          </div>
-          <div className="atomic-doc-card">
-            <div className="atomic-doc-card__icon">🎭</div>
-            <h3 className="atomic-doc-card__title">ModalShell README</h3>
-            <p className="atomic-doc-card__description">
-              Detailed documentation for the ModalShell atom including all props, examples, and refactoring benefits.
-            </p>
-            <div className="atomic-doc-card__features">
-              <span>✓ All props explained</span>
-              <span>✓ Advanced patterns</span>
-              <span>✓ Accessibility</span>
-              <span>✓ Migration guide</span>
+            <div className="audit-preview__code">
+              <code>{`<Tooltip content="Help text" placement="top">Hover me</Tooltip>`}</code>
             </div>
-            <a href="/src/components/atoms/ModalShell/README.md" className="atomic-doc-card__link" target="_blank" rel="noopener noreferrer">
-              View ModalShell Docs →
-            </a>
           </div>
-          <div className="atomic-doc-card">
-            <div className="atomic-doc-card__icon">🔒</div>
-            <h3 className="atomic-doc-card__title">Token Governance</h3>
-            <p className="atomic-doc-card__description">
-              Automated enforcement of design tokens with ESLint rules, CSS linting, and pre-commit hooks to prevent hardcoded values.
-            </p>
-            <div className="atomic-doc-card__features">
-              <span>✓ ESLint rules</span>
-              <span>✓ CSS linter</span>
-              <span>✓ Pre-commit hooks</span>
-              <span>✓ Token reference</span>
-            </div>
-            <a href="/docs/TOKEN_GOVERNANCE.md" className="atomic-doc-card__link" target="_blank" rel="noopener noreferrer">
-              View Governance Docs →
-            </a>
-          </div>
-          <div className="atomic-doc-card">
-            <div className="atomic-doc-card__icon">✅</div>
-            <h3 className="atomic-doc-card__title">PR Template & Contributing</h3>
-            <p className="atomic-doc-card__description">
-              Pull request template with required atom composition checklist and comprehensive contributing guide for maintaining design system quality.
-            </p>
-            <div className="atomic-doc-card__features">
-              <span>✓ Atom checklist</span>
-              <span>✓ Token checklist</span>
-              <span>✓ Testing guide</span>
-              <span>✓ Code examples</span>
-            </div>
-            <a href="/.github/PULL_REQUEST_TEMPLATE.md" className="atomic-doc-card__link" target="_blank" rel="noopener noreferrer">
-              View PR Template →
-            </a>
-          </div>
-          <div className="atomic-doc-card">
-            <div className="atomic-doc-card__icon">🔄</div>
-            <h3 className="atomic-doc-card__title">Atom Migration Plan</h3>
-            <p className="atomic-doc-card__description">
-              Strategic plan for migrating 15+ components to use CardShell, Badge, and Tooltip atoms. Includes priority order, migration checklist, and success metrics.
-            </p>
-            <div className="atomic-doc-card__features">
-              <span>✓ Priority matrix</span>
-              <span>✓ Migration strategy</span>
-              <span>✓ Success metrics</span>
-              <span>✓ Risk mitigation</span>
-            </div>
-            <a href="/docs/ATOM_MIGRATION_PLAN.md" className="atomic-doc-card__link" target="_blank" rel="noopener noreferrer">
-              View Migration Plan →
-            </a>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="atomic-audit-section atomic-audit-section--completed" id="completed">
-        <div className="atomic-audit-section__header">
-          <h2>Recent Completions</h2>
-          <p>Successfully migrated components using atomic design patterns.</p>
-        </div>
-        <div className="atomic-completion-list">
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
+        {/* ============ MOLECULES SECTION ============ */}
+        <section 
+          id="molecules" 
+          className="audit-section"
+          ref={(el) => { sectionRefs.current['molecules'] = el; }}
+        >
+          <div className="audit-section__header">
+            <div className="audit-section__icon audit-section__icon--molecule">
+              <Icon name="workspaces" size={24} />
             </div>
-            <h3 className="atomic-completion-title">Atom Improvements & Component Migration</h3>
-            <p className="atomic-completion-description">
-              Refactored `Button` atom to align with global `cta` classes and updated `TextField` to support complex labels and helper text. Migrated `WriteReviewModal` inputs and buttons, as well as CTAs in `ComparisonCard` and `StickyRateBar` to use these standardized atoms.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Components Updated</span>
-                <span className="atomic-completion-metric-value">4</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Atoms Enhanced</span>
-                <span className="atomic-completion-metric-value">Button, TextField</span>
-              </div>
+            <div style={{ color: '#FFFFFF' }}>
+              <h2 
+                ref={(el) => { titleRefs.current['molecules'] = el; }}
+                className="audit-section__title" 
+                style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
+              >
+                Molecules
+              </h2>
+              <p className="audit-section__description">
+                Composable groups combining atoms into reusable components.
+              </p>
             </div>
           </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">CI/CD Token Enforcement</h3>
-            <p className="atomic-completion-description">
-              Established GitHub Actions workflow to enforce design token usage. The pipeline runs ESLint and the custom CSS token linter (`npm run lint:css`) on every push and pull request to `main`, preventing hardcoded values and ensuring design system compliance.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Checks Added</span>
-                <span className="atomic-completion-metric-value">Lint & CSS Tokens</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Workflow</span>
-                <span className="atomic-completion-metric-value">GitHub Actions</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">Rating Tooltips → Popover Atom</h3>
-            <p className="atomic-completion-description">
-              Migrated RatingDistributionTooltip and StaffRatingTooltip to use Popover atom. Removed custom portal and positioning logic, reducing code complexity while maintaining exact visual design and dark theme styling.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Components Migrated</span>
-                <span className="atomic-completion-metric-value">2</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Logic Removed</span>
-                <span className="atomic-completion-metric-value">Manual Positioning</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Consistency</span>
-                <span className="atomic-completion-metric-value">Atomic</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">Create Popover Atom</h3>
-            <p className="atomic-completion-description">
-              Created new Popover atom for rich content and interactive overlays. Supports click/hover triggers, auto-positioning, and portal rendering. Will standardize complex tooltips like RatingDistributionTooltip.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">New Atom</span>
-                <span className="atomic-completion-metric-value">Popover</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Key Features</span>
-                <span className="atomic-completion-metric-value">Portals, Positioning, Interactive</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">UserReviews → Badge Atom (All Badges)</h3>
-            <p className="atomic-completion-description">
-              Migrated ALL custom badges to use the Badge atom: verification badges (Owner, Verified Owner, Documents Verified) and relationship badges (Current Owner, Previous Owner, Leased, Rented, Test Drove, Passenger). Replaced 9 custom badge implementations with standardized Badge component.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Eliminated</span>
-                <span className="atomic-completion-metric-value">55 lines</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Badge Types Migrated</span>
-                <span className="atomic-completion-metric-value">9 types</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Badge Variants Used</span>
-                <span className="atomic-completion-metric-value">3</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">5 Card Components → CardShell Atom</h3>
-            <p className="atomic-completion-description">
-              Migrated HorizontalCard, VerticalCard, HeroCard, ProfileCompletionCard, and SubscriptionItem to use CardShell atom. Eliminated 60+ CSS property declarations across all components (padding, background, border, border-radius, box-shadow, hover effects, transitions). These components are used throughout the app for news, videos, profiles, and subscriptions.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Components Migrated</span>
-                <span className="atomic-completion-metric-value">5</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Properties Eliminated</span>
-                <span className="atomic-completion-metric-value">60+</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Impact</span>
-                <span className="atomic-completion-metric-value">High</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">Card → CardShell Atom</h3>
-            <p className="atomic-completion-description">
-              Migrated Card component to use CardShell atom for consistent wrapper styling. Eliminated 20+ CSS property declarations (padding, background, border, border-radius, box-shadow, hover effects). Card is used extensively across the app for vehicle displays, making this a high-impact migration.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Properties Eliminated</span>
-                <span className="atomic-completion-metric-value">20+</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Components Affected</span>
-                <span className="atomic-completion-metric-value">5+ sections</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Impact</span>
-                <span className="atomic-completion-metric-value">High</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">WriteReviewModal → Badge Atom</h3>
-            <p className="atomic-completion-description">
-              Migrated optional label badges to use Badge atom with info variant and outline style. Replaced 2 custom badge implementations with standardized Badge component.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Eliminated</span>
-                <span className="atomic-completion-metric-value">7 lines</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Badge Instances</span>
-                <span className="atomic-completion-metric-value">2</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Badge Style</span>
-                <span className="atomic-completion-metric-value">Outline</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">ArticleScoreCard → Badge Atom</h3>
-            <p className="atomic-completion-description">
-              Migrated award badge ("Best Compact") to use Badge atom with premium variant and trophy icon. Maintains visual design while eliminating custom badge CSS.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Eliminated</span>
-                <span className="atomic-completion-metric-value">11 lines</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">Badge Variant</span>
-                <span className="atomic-completion-metric-value">Premium</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">GlobalHeader → Badge Atom</h3>
-            <p className="atomic-completion-description">
-              Replaced blinking notification dot with Badge atom (error variant) showing profile completion count. Enhanced UX with actual notification count instead of generic indicator.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Eliminated</span>
-                <span className="atomic-completion-metric-value">12 lines</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">UX Improvement</span>
-                <span className="atomic-completion-metric-value">Count visible</span>
-              </div>
-            </div>
-          </div>
-          <div className="atomic-completion-item">
-            <div className="atomic-completion-header">
-              <Badge variant="success" size="sm">✓ Completed</Badge>
-              <span className="atomic-completion-date">Nov 22, 2025</span>
-            </div>
-            <h3 className="atomic-completion-title">StickyRateBar → Badge Atom</h3>
-            <p className="atomic-completion-description">
-              Migrated custom rating badge to use Badge atom (premium variant with custom styling). Eliminated duplicate badge CSS while maintaining visual design.
-            </p>
-            <div className="atomic-completion-metrics">
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">CSS Eliminated</span>
-                <span className="atomic-completion-metric-value">18 lines</span>
-              </div>
-              <div className="atomic-completion-metric">
-                <span className="atomic-completion-metric-label">High-Visibility</span>
-                <span className="atomic-completion-metric-value">All pages</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Button & CTA Audit Section */}
-      <section className="atomic-audit-section" id="buttons">
-        <div className="atomic-audit-section__header">
-          <h2>Button & CTA System Audit</h2>
-          <p>Comprehensive audit of all button patterns and call-to-action elements across the application.</p>
-        </div>
-
-        {/* CTA System Overview */}
-        <div className="atomic-button-overview">
-          <div className="atomic-button-stats">
-            <div className="atomic-button-stat">
-              <span className="atomic-button-stat-value">3</span>
-              <span className="atomic-button-stat-label">Sizes</span>
+          {/* Card (Vehicle) */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Card</h3>
+              <code className="audit-preview__path">components/Card</code>
             </div>
-            <div className="atomic-button-stat">
-              <span className="atomic-button-stat-value">7</span>
-              <span className="atomic-button-stat-label">Color Variants</span>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-3">
+                <Card
+                  title="2024 Toyota Camry"
+                  subtitle="Sedan"
+                  image={sampleImage}
+                  metadata="$28,400 - $35,600"
+                  ratings={[
+                    { value: 8.5, color: '#E90C17' },
+                    { value: 8.2, color: '#FFB800' }
+                  ]}
+                />
+              </div>
             </div>
-            <div className="atomic-button-stat">
-              <span className="atomic-button-stat-value">3</span>
-              <span className="atomic-button-stat-label">Style Variants</span>
-            </div>
-            <div className="atomic-button-stat">
-              <span className="atomic-button-stat-value">100%</span>
-              <span className="atomic-button-stat-label">Tokenized</span>
+            <div className="audit-preview__code">
+              <code>{`<Card title="2024 Toyota Camry" image="..." ratings={[...]} />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Button Sizes */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Button Sizes</h3>
-          <p className="atomic-button-section-description">Three standardized sizes for different contexts and hierarchy levels.</p>
-          <div className="atomic-button-grid">
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--small">Small Button</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--small</code>
-                <span className="atomic-button-specs">28px height • 12px font</span>
-                <span className="atomic-button-usage">Compact spaces, inline actions</span>
+          {/* ArticleCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ArticleCard</h3>
+              <code className="audit-preview__path">components/ArticleCard</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-3">
+                <ArticleCard
+                  title="2024 Toyota Camry First Drive Review"
+                  author="MotorTrend Staff"
+                  date="Nov 29, 2024"
+                  imageUrl={sampleImage}
+                />
               </div>
             </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default">Default Button</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--default</code>
-                <span className="atomic-button-specs">36px height • 14px font</span>
-                <span className="atomic-button-usage">Standard actions, forms</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--large">Large Button</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--large</code>
-                <span className="atomic-button-specs">44px height • 16px font</span>
-                <span className="atomic-button-usage">Primary CTAs, hero sections</span>
-              </div>
+            <div className="audit-preview__code">
+              <code>{`<ArticleCard title="..." author="..." imageUrl="..." />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Button Color Variants */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Color Variants</h3>
-          <p className="atomic-button-section-description">Semantic color system for different action types and importance levels.</p>
-          <div className="atomic-button-grid">
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default">Primary</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--primary</code>
-                <span className="atomic-button-usage">Main actions, conversions</span>
-                <span className="atomic-button-examples">Sign In, Submit, Continue</span>
+          {/* HorizontalCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">HorizontalCard</h3>
+              <code className="audit-preview__path">components/HorizontalCard</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '500px' }}>
+                <HorizontalCard
+                  title="2024 Toyota Camry First Drive Review"
+                  author="MotorTrend Staff"
+                  date="Nov 29, 2024"
+                  imageUrl={sampleImage}
+                  category="First Drive"
+                />
               </div>
             </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--secondary cta--default">Secondary</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--secondary</code>
-                <span className="atomic-button-usage">Supporting actions</span>
-                <span className="atomic-button-examples">View Details, Learn More</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--neutral cta--default">Neutral</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--neutral</code>
-                <span className="atomic-button-usage">Tertiary actions</span>
-                <span className="atomic-button-examples">Cancel, Back, Skip</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--success cta--default">Success</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--success</code>
-                <span className="atomic-button-usage">Positive confirmations</span>
-                <span className="atomic-button-examples">Save, Confirm, Accept</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--warning cta--default">Warning</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--warning</code>
-                <span className="atomic-button-usage">Caution actions</span>
-                <span className="atomic-button-examples">Delete, Remove, Clear</span>
-              </div>
+            <div className="audit-preview__code">
+              <code>{`<HorizontalCard title="..." imageUrl="..." category="..." />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Button Style Variants */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Style Variants</h3>
-          <p className="atomic-button-section-description">Different visual treatments for varying emphasis and context.</p>
-          <div className="atomic-button-grid">
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default">Solid</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--[color]</code>
-                <span className="atomic-button-usage">Default style, highest emphasis</span>
-                <span className="atomic-button-examples">Primary CTAs, form submissions</span>
+          {/* VerticalCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">VerticalCard</h3>
+              <code className="audit-preview__path">components/VerticalCard</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-3">
+                <VerticalCard
+                  title="2024 Toyota Camry First Drive"
+                  imageUrl={sampleImage}
+                  type="Video"
+                />
+                <VerticalCard
+                  title="Best Sedans of 2024"
+                  imageUrl={sampleImage}
+                  type="Article"
+                />
               </div>
             </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default cta--ghost">Ghost</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--ghost</code>
-                <span className="atomic-button-usage">Transparent, text-only</span>
-                <span className="atomic-button-examples">Secondary links, subtle actions</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default cta--outline">Outline</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--outline</code>
-                <span className="atomic-button-usage">Bordered, medium emphasis</span>
-                <span className="atomic-button-examples">Alternative actions, filters</span>
-              </div>
+            <div className="audit-preview__code">
+              <code>{`<VerticalCard title="..." imageUrl="..." type="Video" />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Button States */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Button States</h3>
-          <p className="atomic-button-section-description">Interactive states and modifiers for different contexts.</p>
-          <div className="atomic-button-grid">
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default">Default</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">:default</code>
-                <span className="atomic-button-usage">Normal resting state</span>
+          {/* VideoCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">VideoCard</h3>
+              <code className="audit-preview__path">components/VideoCard</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-3">
+                <VideoCard
+                  title="2024 Camry Road Test"
+                  image={sampleImage}
+                  author="MotorTrend Staff"
+                  date="Nov 29, 2024"
+                />
               </div>
             </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default" style={{ transform: 'translateY(-1px)', boxShadow: '0 4px 8px rgba(233, 12, 23, 0.3)' }}>Hover</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">:hover</code>
-                <span className="atomic-button-usage">Lift effect + enhanced shadow</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default" disabled>Disabled</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">:disabled</code>
-                <span className="atomic-button-usage">50% opacity, no interaction</span>
-              </div>
-            </div>
-            <div className="atomic-button-sample">
-              <button className="cta cta--primary cta--default cta--full-width">Full Width</button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">cta--full-width</code>
-                <span className="atomic-button-usage">100% container width</span>
-              </div>
+            <div className="audit-preview__code">
+              <code>{`<VideoCard title="..." image="..." author="..." date="..." />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Button with Icons */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Buttons with Icons</h3>
-          <p className="atomic-button-section-description">Icon integration for enhanced visual communication.</p>
-          <div className="atomic-button-grid">
-            <div className="atomic-button-sample">
-              <Button color="primary" icon={<Icon name="arrow_forward" size={20} />} iconPosition="right">
-                Continue
-              </Button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">iconPosition="right"</code>
-                <span className="atomic-button-usage">Forward actions, next steps</span>
-              </div>
+          {/* HeroCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">HeroCard</h3>
+              <code className="audit-preview__path">components/HeroCard</code>
             </div>
-            <div className="atomic-button-sample">
-              <Button color="secondary" icon={<Icon name="arrow_back" size={20} />} iconPosition="left">
-                Back
-              </Button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">iconPosition="left"</code>
-                <span className="atomic-button-usage">Back actions, previous steps</span>
-              </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <HeroCard
+                title="2024 Toyota Camry First Drive Review"
+                imageUrl={sampleImage}
+              />
             </div>
-            <div className="atomic-button-sample">
-              <Button color="success" icon={<Icon name="check" size={20} />} iconPosition="left">
-                Save Changes
-              </Button>
-              <div className="atomic-button-sample-info">
-                <code className="atomic-button-code">icon + success</code>
-                <span className="atomic-button-usage">Confirmation actions</span>
-              </div>
+            <div className="audit-preview__code">
+              <code>{`<HeroCard title="..." imageUrl="..." />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Real-World Usage Examples */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Real-World Usage</h3>
-          <p className="atomic-button-section-description">Where these buttons are used throughout the application.</p>
-          <div className="atomic-button-usage-grid">
-            <div className="atomic-button-usage-card">
-              <h4 className="atomic-button-usage-title">Onboarding Flow</h4>
-              <ul className="atomic-button-usage-list">
-                <li><code>cta--primary cta--large</code> - Continue buttons</li>
-                <li><code>cta--neutral cta--default</code> - Skip buttons</li>
-                <li><code>cta--secondary cta--default</code> - Back navigation</li>
-              </ul>
+          {/* CollapsibleSection */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">CollapsibleSection</h3>
+              <code className="audit-preview__path">components/CollapsibleSection</code>
             </div>
-            <div className="atomic-button-usage-card">
-              <h4 className="atomic-button-usage-title">Sign In / Sign Up</h4>
-              <ul className="atomic-button-usage-list">
-                <li><code>cta--neutrals3 cta--large</code> - Main submit button</li>
-                <li><code>cta--ghost</code> - Social login buttons</li>
-                <li><code>cta--outline</code> - Alternative sign-in methods</li>
-              </ul>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '500px' }}>
+                <CollapsibleSection title="Expandable Section" defaultOpen>
+                  <p>This content can be collapsed or expanded by clicking the header. Great for FAQs and detailed information sections.</p>
+                </CollapsibleSection>
+                <CollapsibleSection title="Another Section">
+                  <p>More collapsible content here.</p>
+                </CollapsibleSection>
+              </div>
             </div>
-            <div className="atomic-button-usage-card">
-              <h4 className="atomic-button-usage-title">Vehicle Details</h4>
-              <ul className="atomic-button-usage-list">
-                <li><code>cta--primary</code> - Rate Your Car, Local Listings</li>
-                <li><code>cta--secondary</code> - View Comparison</li>
-                <li><code>cta--ghost</code> - Secondary actions</li>
-              </ul>
-            </div>
-            <div className="atomic-button-usage-card">
-              <h4 className="atomic-button-usage-title">Modals & Forms</h4>
-              <ul className="atomic-button-usage-list">
-                <li><code>cta--primary</code> - Submit, Confirm actions</li>
-                <li><code>cta--neutral</code> - Cancel, Close actions</li>
-                <li><code>cta--success</code> - Save changes</li>
-              </ul>
-            </div>
-            <div className="atomic-button-usage-card">
-              <h4 className="atomic-button-usage-title">Profile & Settings</h4>
-              <ul className="atomic-button-usage-list">
-                <li><code>cta--success</code> - Save Profile</li>
-                <li><code>cta--warning</code> - Delete Account</li>
-                <li><code>cta--ghost</code> - Edit fields</li>
-              </ul>
-            </div>
-            <div className="atomic-button-usage-card">
-              <h4 className="atomic-button-usage-title">Article Pages</h4>
-              <ul className="atomic-button-usage-list">
-                <li><code>cta--primary</code> - Rate Your Car (sticky bar)</li>
-                <li><code>cta--secondary</code> - Save article</li>
-                <li><code>cta--ghost</code> - Share, comment actions</li>
-              </ul>
+            <div className="audit-preview__code">
+              <code>{`<CollapsibleSection title="FAQ">Content</CollapsibleSection>`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Design System Rules */}
-        <div className="atomic-button-section atomic-button-section--rules">
-          <h3 className="atomic-button-section-title">Design System Rules</h3>
-          <div className="atomic-button-rules">
-            <div className="atomic-button-rule atomic-button-rule--do">
-              <div className="atomic-button-rule-header">
-                <Icon name="check_circle" size={24} style={{ color: '#34A853' }} />
-                <span>DO</span>
-              </div>
-              <ul>
-                <li>Always use <code>cta</code> classes for all buttons</li>
-                <li>Use <code>Button</code> atom component from design system</li>
-                <li>Choose appropriate size based on context and hierarchy</li>
-                <li>Use semantic colors (primary for main actions, success for confirmations)</li>
-                <li>Include hover states (handled automatically by CTA classes)</li>
-                <li>Use <code>:disabled</code> attribute for disabled states</li>
-                <li>Add icons for directional or confirmation actions</li>
-              </ul>
+          {/* EditableField */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">EditableField</h3>
+              <code className="audit-preview__path">components/EditableField</code>
             </div>
-            <div className="atomic-button-rule atomic-button-rule--dont">
-              <div className="atomic-button-rule-header">
-                <Icon name="cancel" size={24} style={{ color: 'var(--color-neutrals-4)' }} />
-                <span>DON'T</span>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '400px' }}>
+                <EditableField
+                  label="Display Name"
+                  value={editableValue}
+                  onSave={(val) => setEditableValue(val)}
+                />
               </div>
-              <ul>
-                <li>Never create custom button styles with inline CSS</li>
-                <li>Don't use hardcoded colors or spacing values</li>
-                <li>Avoid mixing button systems (use CTA classes consistently)</li>
-                <li>Don't override CTA hover/active states with custom CSS</li>
-                <li>Never use generic <code>&lt;button&gt;</code> without CTA classes</li>
-                <li>Don't create custom disabled states (use <code>:disabled</code>)</li>
-                <li>Avoid using multiple primary buttons in the same context</li>
-              </ul>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<EditableField label="Name" value="..." onSave={...} />`}</code>
             </div>
           </div>
-        </div>
 
-        {/* Migration Status */}
-        <div className="atomic-button-section">
-          <h3 className="atomic-button-section-title">Migration Status</h3>
-          <div className="atomic-button-migration">
-            <div className="atomic-button-migration-stat">
-              <div className="atomic-button-migration-progress">
-                <div className="atomic-button-migration-bar" style={{ width: '95%' }}></div>
-              </div>
-              <div className="atomic-button-migration-label">
-                <span className="atomic-button-migration-percentage">95%</span>
-                <span className="atomic-button-migration-text">Components using Button atom or CTA classes</span>
-              </div>
+          {/* EmptyVehiclesCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">EmptyVehiclesCard</h3>
+              <code className="audit-preview__path">components/EmptyVehiclesCard</code>
             </div>
-            <div className="atomic-button-migration-details">
-              <div className="atomic-button-migration-detail">
-                <Badge variant="success" size="sm">✓ Migrated</Badge>
-                <span>WriteReviewModal, ComparisonCard, StickyRateBar, SignIn, Onboarding Steps, Profile</span>
-              </div>
-              <div className="atomic-button-migration-detail">
-                <Badge variant="warning" size="sm">⚠ Needs Review</Badge>
-                <span>Some custom buttons in legacy components may need standardization</span>
-              </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <EmptyVehiclesCard />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<EmptyVehiclesCard onVehicleSelect={...} />`}</code>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section className="atomic-audit-section atomic-audit-section--roadmap" id="roadmap">
-        <div className="atomic-audit-section__header">
-          <h2>Next steps</h2>
-          <p>Actions to close the audit loop.</p>
-        </div>
-        <ol>
-          {nextSteps.map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-      </section>
-      </div>
+          {/* ConnectedAccount */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ConnectedAccount</h3>
+              <code className="audit-preview__path">components/ConnectedAccount</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <ConnectedAccount provider="google" accountName="user@gmail.com" isConnected={true} />
+                <ConnectedAccount provider="facebook" isConnected={false} />
+                <ConnectedAccount provider="apple" accountName="user@icloud.com" isConnected={true} />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<ConnectedAccount provider="google" isConnected />`}</code>
+            </div>
+          </div>
+
+          {/* ProfileCompletionCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ProfileCompletionCard</h3>
+              <code className="audit-preview__path">components/ProfileCompletionCard</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '400px' }}>
+                <ProfileCompletionCard />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<ProfileCompletionCard onUpdateStep1={...} />`}</code>
+            </div>
+          </div>
+
+          {/* SubscriptionItem */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">SubscriptionItem</h3>
+              <code className="audit-preview__path">components/SubscriptionItem</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <SubscriptionItem name="MotorTrend Newsletter" isActive={true} />
+                <SubscriptionItem name="Deal Alerts" isActive={false} />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<SubscriptionItem name="..." isActive={true} />`}</code>
+            </div>
+          </div>
+
+          {/* MembershipCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">MembershipCard</h3>
+              <code className="audit-preview__path">components/MembershipCard</code>
+            </div>
+            <div className="audit-preview__canvas">
+              <div style={{ maxWidth: '400px' }}>
+                <MembershipCard
+                  name="John Doe"
+                  memberSince="Jan 2024"
+                  car="2024 Toyota Camry"
+                  newsletter="MotorTrend"
+                />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<MembershipCard name="John Doe" memberSince="Jan 2024" />`}</code>
+            </div>
+          </div>
+
+          {/* ArticleReactions */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ArticleReactions</h3>
+              <code className="audit-preview__path">components/ArticleReactions</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <ArticleReactions articleSlug="sample-article" />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<ArticleReactions articleSlug="article-123" />`}</code>
+            </div>
+          </div>
+
+          {/* LocationAutocomplete */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">LocationAutocomplete</h3>
+              <code className="audit-preview__path">components/LocationAutocomplete</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '400px' }}>
+                <LocationAutocomplete
+                  value=""
+                  onChange={() => {}}
+                  placeholder="Enter your city..."
+                />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<LocationAutocomplete value="..." onChange={...} />`}</code>
+            </div>
+          </div>
+
+          {/* AdContainer */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">AdContainer</h3>
+              <code className="audit-preview__path">components/AdContainer</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <AdContainer />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<AdContainer />`}</code>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ ORGANISMS SECTION ============ */}
+        <section 
+          id="organisms" 
+          className="audit-section"
+          ref={(el) => { sectionRefs.current['organisms'] = el; }}
+        >
+          <div className="audit-section__header">
+            <div className="audit-section__icon audit-section__icon--organism">
+              <Icon name="grid_view" size={24} />
+            </div>
+            <div style={{ color: '#FFFFFF' }}>
+              <h2 
+                ref={(el) => { titleRefs.current['organisms'] = el; }}
+                className="audit-section__title" 
+                style={{ color: '#FFFFFF', WebkitTextFillColor: '#FFFFFF' }}
+              >
+                Organisms
+              </h2>
+              <p className="audit-section__description">
+                Page-level components with business logic and data flows.
+              </p>
+            </div>
+          </div>
+
+          {/* ProfileBanner */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ProfileBanner</h3>
+              <code className="audit-preview__path">components/ProfileBanner</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <ProfileBanner
+                userName="John Doe"
+                joinDate="January 2024"
+                location="Los Angeles, CA"
+              />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<ProfileBanner userName="John Doe" joinDate="January 2024" />`}</code>
+            </div>
+          </div>
+
+          {/* VehicleSearch */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">VehicleSearch</h3>
+              <code className="audit-preview__path">components/VehicleSearch</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div style={{ maxWidth: '500px' }}>
+                <VehicleSearch
+                  onVehicleSelect={(v) => alert(`Selected: ${v.name}`)}
+                />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<VehicleSearch onVehicleSelect={...} />`}</code>
+            </div>
+          </div>
+
+          {/* StickyRateBar */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">StickyRateBar</h3>
+              <code className="audit-preview__path">components/StickyRateBar</code>
+            </div>
+            <div className="audit-preview__canvas" style={{ position: 'relative', height: '80px' }}>
+              <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}>
+                <StickyRateBar
+                  vehicleName="2024 Toyota Camry"
+                  isVisible={true}
+                  ratings={[
+                    { type: 'motortrend', value: 8.5, label: 'MotorTrend' },
+                    { type: 'user-reviews', value: 8.2, label: 'User Reviews' }
+                  ]}
+                  ctaText="See Local Listings"
+                  ctaOnClick={() => alert('CTA clicked!')}
+                />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<StickyRateBar vehicleName="..." ratings={[...]} />`}</code>
+            </div>
+          </div>
+
+          {/* TopTenCarousel */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">TopTenCarousel</h3>
+              <code className="audit-preview__path">components/TopTenCarousel</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <TopTenCarousel />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<TopTenCarousel />`}</code>
+            </div>
+          </div>
+
+          {/* AIInsights */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">AIInsights</h3>
+              <code className="audit-preview__path">components/AIInsights</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <AIInsights vehicleName="2024 Toyota Camry" />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<AIInsights vehicleName="2024 Toyota Camry" />`}</code>
+            </div>
+          </div>
+
+          {/* GlobalHeader */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">GlobalHeader</h3>
+              <code className="audit-preview__path">components/GlobalHeader</code>
+            </div>
+            <div className="audit-preview__canvas" style={{ overflow: 'hidden' }}>
+              <div style={{ transform: 'scale(0.9)', transformOrigin: 'top left', width: '111%' }}>
+                <GlobalHeader />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<GlobalHeader />`}</code>
+            </div>
+          </div>
+
+          {/* GlobalFooter */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">GlobalFooter</h3>
+              <code className="audit-preview__path">components/GlobalFooter</code>
+            </div>
+            <div className="audit-preview__canvas" style={{ overflow: 'hidden' }}>
+              <div style={{ transform: 'scale(0.85)', transformOrigin: 'top left', width: '118%' }}>
+                <GlobalFooter />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<GlobalFooter />`}</code>
+            </div>
+          </div>
+        </section>
+
+        {/* ============ INTEGRATIONS SECTION ============ */}
+        <section 
+          id="integrations" 
+          className="audit-section"
+          ref={(el) => { sectionRefs.current['integrations'] = el; }}
+        >
+          <div className="audit-section__header">
+            <div className="audit-section__icon audit-section__icon--organism">
+              <Icon name="extension" size={24} />
+            </div>
+            <div>
+              <h2 className="audit-section__title" style={{ color: '#FFFFFF' }}>Integrations</h2>
+              <p className="audit-section__description">
+                Third-party integration components (e.g. Bring a Trailer).
+              </p>
+            </div>
+          </div>
+
+          {/* BaTAuctionCard */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">BaTAuctionCard</h3>
+              <code className="audit-preview__path">components/BaTAuctionCard</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__grid-3">
+                <BaTAuctionCard
+                  image="https://images.unsplash.com/photo-1566576912902-199dfa3d1691?w=800&q=80"
+                  title="1972 BMW 3.0CS 4-Speed"
+                  currentBid={45000}
+                  timeLeft="2 days"
+                  location="Los Angeles, CA"
+                  isNoReserve={true}
+                  bidsCount={12}
+                />
+                <BaTAuctionCard
+                  image="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&q=80"
+                  title="1994 Porsche 911 Turbo 3.6"
+                  currentBid={250000}
+                  timeLeft="4 hours"
+                  location="Miami, FL"
+                  isPremium={true}
+                  bidsCount={45}
+                />
+                <BaTAuctionCard
+                  image="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&q=80"
+                  title="2020 Chevrolet Corvette Stingray Coupe 3LT Z51"
+                  currentBid={72500}
+                  timeLeft="Ended"
+                  location="Austin, TX"
+                  bidsCount={8}
+                />
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<BaTAuctionCard title="..." currentBid={45000} isNoReserve />`}</code>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
 
 export default AtomicDesignAudit;
-

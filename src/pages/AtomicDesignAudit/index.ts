@@ -1,2 +1,1 @@
-export { AtomicDesignAudit as default } from './AtomicDesignAudit';
-
+export { default } from './AtomicDesignAudit';

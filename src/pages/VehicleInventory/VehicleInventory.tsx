@@ -9,7 +9,7 @@ import { VehicleCard } from '../../components/VehicleCard';
 import { TopTenCarousel } from '../../components/TopTenCarousel';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { LIFESTYLE_CATEGORIES, type LifestyleCategory, filterVehiclesByLifestyle } from '../../utils/vehicleLifestyles';
-import { PRICE_RANGE_CATEGORIES, type PriceRangeCategory, filterVehiclesByPriceRange } from '../../utils/vehiclePriceRanges';
+import { PRICE_RANGE_CATEGORIES, type PriceRangeCategory } from '../../utils/vehiclePriceRanges';
 import { BODY_STYLE_CATEGORIES, type BodyStyleCategory, filterVehiclesByBodyStyle } from '../../utils/vehicleBodyStyles';
 import Icon from '../../components/Icon';
 import RatingModal from '../../components/RatingModal';
@@ -31,6 +31,8 @@ interface Vehicle {
   createdDate?: Date; // For sorting by latest
   staffRating: number;
   communityRating: number;
+  priceMin?: number;
+  priceMax?: number;
 }
 
 
@@ -190,10 +192,23 @@ export const VehicleInventory: React.FC = () => {
   };
 
   // Get vehicles from API and convert to local format
+  // Use useApiOnly: true to exclude generated legacy vehicles
   const vehicles: Vehicle[] = useMemo(() => {
-    const apiVehicles = getVehicles({});
+    const apiVehicles = getVehicles({ useApiOnly: true });
     
-    return apiVehicles.map((apiVehicle) => {
+    // Deduplicate by vehicle name (year + make + model) to prevent duplicates
+    const seen = new Set<string>();
+    const uniqueVehicles = apiVehicles.filter(vehicle => {
+      const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+      const normalizedName = vehicleName.toLowerCase().trim();
+      if (seen.has(normalizedName)) {
+        return false;
+      }
+      seen.add(normalizedName);
+      return true;
+    });
+    
+    return uniqueVehicles.map((apiVehicle) => {
       const vehicleName = `${apiVehicle.year} ${apiVehicle.make} ${apiVehicle.model}`;
       const vehicleYear = parseInt(apiVehicle.year);
       
@@ -218,7 +233,9 @@ export const VehicleInventory: React.FC = () => {
         image: apiVehicle.image,
         createdDate,
         staffRating: apiVehicle.staffRating,
-        communityRating: apiVehicle.communityRating
+        communityRating: apiVehicle.communityRating,
+        priceMin: apiVehicle.priceMin ?? undefined,
+        priceMax: apiVehicle.priceMax ?? undefined
       };
     });
   }, []);
@@ -266,9 +283,59 @@ export const VehicleInventory: React.FC = () => {
       ? filterVehiclesByLifestyle(vehicles, selectedLifestyle)
       : vehicles;
     
-    // Then filter by price range if one is selected
+    // Then filter by price range if one is selected (use actual price data from API)
     filtered = selectedPriceRange
-      ? filterVehiclesByPriceRange(filtered, selectedPriceRange)
+      ? filtered.filter(vehicle => {
+          // Skip vehicles without price data
+          if (vehicle.priceMin === undefined || vehicle.priceMin === null) {
+            return false;
+          }
+          
+          const priceMin = vehicle.priceMin;
+          const vehicleNameLower = vehicle.name.toLowerCase();
+          
+          // Explicitly exclude high-end vehicles from "Under $25,000" filter
+          if (selectedPriceRange === 'Under $25,000') {
+            // Exclude Escalade IQ
+            if (vehicleNameLower.includes('escalade') && vehicleNameLower.includes('iq')) {
+              console.log('🚫 Excluding Escalade IQ from Under $25k filter:', {
+                name: vehicle.name,
+                priceMin,
+                vehicleNameLower
+              });
+              return false;
+            }
+            // Exclude Porsche Cayenne (luxury SUV, should never be under $25k)
+            if (vehicleNameLower.includes('porsche') && vehicleNameLower.includes('cayenne')) {
+              console.log('🚫 Excluding Porsche Cayenne from Under $25k filter:', {
+                name: vehicle.name,
+                priceMin,
+                vehicleNameLower
+              });
+              return false;
+            }
+            // Also check priceMin value
+            if (priceMin >= 25000) {
+              return false;
+            }
+            return priceMin < 25000;
+          }
+          
+          switch (selectedPriceRange) {
+            case '$25,000 - $40,000':
+              return priceMin >= 25000 && priceMin < 40000;
+            case '$40,000 - $60,000':
+              return priceMin >= 40000 && priceMin < 60000;
+            case '$60,000 - $80,000':
+              return priceMin >= 60000 && priceMin < 80000;
+            case '$80,000 - $100,000':
+              return priceMin >= 80000 && priceMin < 100000;
+            case 'Over $100,000':
+              return priceMin >= 100000;
+            default:
+              return true;
+          }
+        })
       : filtered;
     
     // Then filter by body style if one is selected

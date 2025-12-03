@@ -65,6 +65,7 @@
 /* Empty State */
 .profile-empty-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 48px 24px;
@@ -76,6 +77,12 @@
   background-color: var(--color-neutrals-7);
   border: 1px dashed var(--color-neutrals-5);
   border-radius: var(--border-radius-md);
+  gap: var(--spacing-2);
+}
+
+.profile-empty-state svg {
+  color: var(--color-neutrals-4);
+  opacity: 0.5;
 }
 
 .profile-section--header {
@@ -92,6 +99,10 @@
 }
 
 .profile-section--vehicles {
+  padding: var(--spacing-3);
+}
+
+.profile-section--listings {
   padding: var(--spacing-3);
 }
 
@@ -216,6 +227,140 @@
   gap: var(--spacing-3);
   width: 100%;
   text-align: left;
+}
+
+.profile-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.profile-listing-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-listing-card:hover {
+  border-color: var(--color-primary-1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.profile-listing-card__image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--color-neutrals-7);
+}
+
+.profile-listing-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.profile-listing-card:hover .profile-listing-card__image img {
+  transform: scale(1.05);
+}
+
+.profile-listing-card__unsave {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  z-index: 2;
+}
+
+.profile-listing-card:hover .profile-listing-card__unsave {
+  opacity: 1;
+}
+
+.profile-listing-card__unsave:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.profile-listing-card__content {
+  padding: var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.profile-listing-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
+
+.profile-listing-card__title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-neutrals-1);
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.profile-listing-card__condition {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-neutrals-3);
+  background: var(--color-neutrals-7);
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.profile-listing-card__price {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-neutrals-1);
+}
+
+.profile-listing-card__details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-neutrals-3);
+}
+
+.profile-listing-card__detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-empty-state__subtitle {
+  font-size: 12px;
+  color: var(--color-neutrals-4);
+  margin-top: 8px;
 }
 
 .profile-vehicles-grid .empty-vehicle-section {
@@ -529,7 +674,8 @@
   .profile-vehicles-grid,
   .profile-comparisons-grid,
   .profile-videos-grid,
-  .profile-subscriptions-grid {
+  .profile-subscriptions-grid,
+  .profile-listings-grid {
     grid-template-columns: 1fr;
     width: 100%;
   }
@@ -568,7 +714,8 @@
   .profile-vehicles-grid,
   .profile-articles,
   .profile-comparisons-grid,
-  .profile-videos-grid {
+  .profile-videos-grid,
+  .profile-listings-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }

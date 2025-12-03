@@ -1,1066 +1,680 @@
 /**
  * Design System Reference Page
- * Comprehensive reference for all design system elements
+ * Professional, modern design system documentation
  */
 
-import React from 'react';
-import { Button, TextField } from '../../design-system/components';
+import React, { useState, useEffect, useRef } from 'react';
+import { TextField } from '../../design-system/components';
+import Icon from '../../components/Icon';
 import './DesignSystemReference.css';
 
-const DesignSystemReference: React.FC = () => {
+interface Section {
+  id: string;
+  title: string;
+  icon: string;
+}
+
+const sections: Section[] = [
+  { id: 'colors', title: 'Colors', icon: 'palette' },
+  { id: 'typography', title: 'Typography', icon: 'text_fields' },
+  { id: 'spacing', title: 'Spacing', icon: 'space_bar' },
+  { id: 'effects', title: 'Effects', icon: 'auto_awesome' },
+  { id: 'buttons', title: 'Buttons', icon: 'smart_button' },
+  { id: 'forms', title: 'Forms', icon: 'input' },
+];
+
+const ColorSwatch: React.FC<{ 
+  name: string; 
+  variable: string; 
+  value: string; 
+  usage?: string;
+  isDark?: boolean;
+}> = ({ name, variable, value, usage, isDark }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`var(${variable})`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="design-system-reference">
-      <div className="design-system-reference__container">
-        <header className="design-system-reference__header">
-          <h1 className="design-system-reference__title">Design System Reference</h1>
-          <p className="design-system-reference__subtitle">
-            Complete reference guide for MotorTrend Onboarding design system tokens, components, and patterns.
-          </p>
+    <div className="ds-color-swatch" onClick={handleCopy}>
+      <div 
+        className="ds-color-swatch__preview" 
+        style={{ backgroundColor: `var(${variable})` }}
+      >
+        {isDark && <span className="ds-color-swatch__light-text">Aa</span>}
+      </div>
+      <div className="ds-color-swatch__info">
+        <span className="ds-color-swatch__name">{name}</span>
+        <code className="ds-color-swatch__var">{variable}</code>
+        <span className="ds-color-swatch__value">{value}</span>
+        {usage && <span className="ds-color-swatch__usage">{usage}</span>}
+      </div>
+      <div className={`ds-color-swatch__copied ${copied ? 'ds-color-swatch__copied--visible' : ''}`}>
+        <Icon name="check" size={16} /> Copied!
+      </div>
+    </div>
+  );
+};
+
+const TokenCard: React.FC<{
+  name: string;
+  variable: string;
+  value: string;
+  preview?: React.ReactNode;
+}> = ({ name, variable, value, preview }) => {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`var(${variable})`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="ds-token-card" onClick={handleCopy}>
+      {preview && <div className="ds-token-card__preview">{preview}</div>}
+      <div className="ds-token-card__content">
+        <span className="ds-token-card__name">{name}</span>
+        <code className="ds-token-card__var">{variable}</code>
+        <span className="ds-token-card__value">{value}</span>
+      </div>
+      <button className="ds-token-card__copy" title="Copy variable">
+        <Icon name={copied ? 'check' : 'content_copy'} size={16} />
+      </button>
+    </div>
+  );
+};
+
+const DesignSystemReference: React.FC = () => {
+  const [activeSection, setActiveSection] = useState('colors');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+      
+      for (const section of sections) {
+        const element = sectionRefs.current[section.id];
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = sectionRefs.current[id];
+    if (element) {
+      const offset = 80;
+      const top = element.offsetTop - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
+  const neutralColors = [
+    { name: 'Neutrals 1', var: '--color-neutrals-1', value: '#141416', usage: 'Primary backgrounds' },
+    { name: 'Neutrals 2', var: '--color-neutrals-2', value: '#23262F', usage: 'Secondary backgrounds' },
+    { name: 'Neutrals 3', var: '--color-neutrals-3', value: '#353945', usage: 'Borders, buttons' },
+    { name: 'Neutrals 4', var: '--color-neutrals-4', value: '#6E7481', usage: 'Secondary text' },
+    { name: 'Neutrals 5', var: '--color-neutrals-5', value: '#B1B5C3', usage: 'Tertiary text' },
+    { name: 'Neutrals 6', var: '--color-neutrals-6', value: '#E6E8EC', usage: 'Light borders' },
+    { name: 'Neutrals 7', var: '--color-neutrals-7', value: '#F4F5F6', usage: 'Light backgrounds' },
+    { name: 'Neutrals 8', var: '--color-neutrals-8', value: '#FCFCFD', usage: 'White backgrounds' },
+  ];
+
+  const semanticColors = [
+    { name: 'Success', var: '--color-semantic-success', value: '#34A853' },
+    { name: 'Success Light', var: '--color-semantic-success-light', value: '#E8F5E9' },
+    { name: 'Warning', var: '--color-semantic-warning', value: '#F59E0B' },
+    { name: 'Warning Light', var: '--color-semantic-warning-light', value: '#FFF3E0' },
+    { name: 'Error', var: '--color-semantic-error', value: '#EA4335' },
+    { name: 'Error Light', var: '--color-semantic-error-light', value: '#FFEBEE' },
+    { name: 'Info', var: '--color-semantic-info', value: '#186CEA' },
+    { name: 'Info Light', var: '--color-semantic-info-light', value: '#E3F2FD' },
+  ];
+
+  const spacingTokens = [
+    { name: 'Spacing 1', var: '--spacing-1', value: '8px' },
+    { name: 'Spacing 2', var: '--spacing-2', value: '16px' },
+    { name: 'Spacing 3', var: '--spacing-3', value: '24px' },
+    { name: 'Spacing 4', var: '--spacing-4', value: '32px' },
+    { name: 'Spacing 5', var: '--spacing-5', value: '40px' },
+    { name: 'Spacing 6', var: '--spacing-6', value: '48px' },
+  ];
+
+  const radiusTokens = [
+    { name: 'Small', var: '--border-radius-sm', value: '4px' },
+    { name: 'Medium', var: '--border-radius-md', value: '8px' },
+    { name: 'Large', var: '--border-radius-lg', value: '16px' },
+    { name: 'Full', var: '--border-radius-full', value: '100px' },
+  ];
+
+  const shadowTokens = [
+    { name: 'Card', var: '--shadow-card', value: 'Default card elevation' },
+    { name: 'Card Hover', var: '--shadow-card-hover', value: 'Elevated card state' },
+    { name: 'Modal', var: '--shadow-modal', value: 'Modal overlay' },
+    { name: 'Dropdown', var: '--shadow-dropdown', value: 'Dropdown menus' },
+  ];
+
+  return (
+    <div className="ds-page">
+      {/* Sidebar Navigation */}
+      <nav className={`ds-sidebar ${isSidebarCollapsed ? 'ds-sidebar--collapsed' : ''}`}>
+        <div className="ds-sidebar__header">
+          <div className="ds-sidebar__header-top">
+            <div className="ds-sidebar__logo">
+              DS
+            </div>
+            <button 
+              className="ds-sidebar__toggle"
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <Icon name={isSidebarCollapsed ? "chevron_right" : "chevron_left"} size={20} />
+            </button>
+          </div>
+          {!isSidebarCollapsed && (
+            <div className="ds-sidebar__header-info">
+              <span className="ds-sidebar__title">Design System</span>
+              <span className="ds-sidebar__version">v2.0</span>
+            </div>
+          )}
+        </div>
+        
+        <div className="ds-sidebar__search">
+          <Icon name="search" size={18} />
+          {!isSidebarCollapsed && (
+            <input 
+              type="text" 
+              placeholder="Search tokens..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          )}
+        </div>
+
+        <ul className="ds-sidebar__nav">
+          {sections.map((section) => (
+            <li key={section.id}>
+              <button
+                className={`ds-sidebar__nav-item ${activeSection === section.id ? 'ds-sidebar__nav-item--active' : ''}`}
+                onClick={() => scrollToSection(section.id)}
+                title={isSidebarCollapsed ? section.title : undefined}
+              >
+                <Icon name={section.icon} size={20} />
+                {!isSidebarCollapsed && <span>{section.title}</span>}
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="ds-sidebar__footer">
+          <a href="/documentation" className="ds-sidebar__link" title={isSidebarCollapsed ? "Full Documentation" : undefined}>
+            <Icon name="description" size={18} />
+            {!isSidebarCollapsed && "Full Documentation"}
+          </a>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main className={`ds-main ${isSidebarCollapsed ? 'ds-main--collapsed' : ''}`}>
+        <header className="ds-header">
+          <div className="ds-header__content">
+            <h1 className="ds-header__title">Design System</h1>
+            <p className="ds-header__subtitle">
+              Comprehensive design tokens and components for building consistent MotorTrend experiences.
+            </p>
+          </div>
+          <div className="ds-header__stats">
+            <div className="ds-header__stat">
+              <span className="ds-header__stat-value">50+</span>
+              <span className="ds-header__stat-label">Color Tokens</span>
+            </div>
+            <div className="ds-header__stat">
+              <span className="ds-header__stat-value">24</span>
+              <span className="ds-header__stat-label">Spacing Tokens</span>
+            </div>
+            <div className="ds-header__stat">
+              <span className="ds-header__stat-value">12</span>
+              <span className="ds-header__stat-label">Components</span>
+            </div>
+          </div>
         </header>
 
         {/* Colors Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Colors</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Neutrals Palette</h3>
-            <p className="design-system-reference__description">
-              Use CSS variables: <code>var(--color-neutrals-1)</code> through <code>var(--color-neutrals-8)</code>
-            </p>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-1)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 1</span>
-                  <span className="design-system-reference__color-value">#141416</span>
-                  <span className="design-system-reference__color-usage">Headers, footers</span>
-                </div>
+        <section 
+          id="colors" 
+          className="ds-section"
+          ref={(el) => { sectionRefs.current['colors'] = el; }}
+        >
+          <div className="ds-section__header">
+            <div className="ds-section__icon">
+              <Icon name="palette" size={24} />
+            </div>
+            <div>
+              <h2 className="ds-section__title">Colors</h2>
+              <p className="ds-section__description">
+                Core color palette with semantic meaning and accessibility built-in.
+              </p>
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">
+              <span className="ds-subsection__badge">Primary</span>
+              Brand Color
+            </h3>
+            <div className="ds-color-hero">
+              <div className="ds-color-hero__swatch" style={{ backgroundColor: 'var(--color-primary-1)' }}>
+                <span className="ds-color-hero__name">MotorTrend Red</span>
+                <span className="ds-color-hero__value">#E90C17</span>
               </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-2)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 2</span>
-                  <span className="design-system-reference__color-value">#23262F</span>
-                  <span className="design-system-reference__color-usage">Dark backgrounds</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-3)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 3</span>
-                  <span className="design-system-reference__color-value">#353945</span>
-                  <span className="design-system-reference__color-usage">Buttons, borders</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-4)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 4</span>
-                  <span className="design-system-reference__color-value">#6E7481</span>
-                  <span className="design-system-reference__color-usage">Secondary text</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-5)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 5</span>
-                  <span className="design-system-reference__color-value">#B1B5C3</span>
-                  <span className="design-system-reference__color-usage">Tertiary text, placeholders</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 6</span>
-                  <span className="design-system-reference__color-value">#E6E8EC</span>
-                  <span className="design-system-reference__color-usage">Borders</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-7)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 7</span>
-                  <span className="design-system-reference__color-value">#F4F5F6</span>
-                  <span className="design-system-reference__color-usage">Backgrounds</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-8)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 8</span>
-                  <span className="design-system-reference__color-value">#FCFCFD</span>
-                  <span className="design-system-reference__color-usage">Text on dark, input backgrounds</span>
-                </div>
+              <div className="ds-color-hero__info">
+                <code>var(--color-primary-1)</code>
+                <p>Primary brand color used for CTAs, links, and key interactive elements.</p>
               </div>
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Primary Colors</h3>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-primary-1)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Primary 1</span>
-                  <span className="design-system-reference__color-value">#E90C17</span>
-                  <span className="design-system-reference__color-usage">MotorTrend Red</span>
-                </div>
-              </div>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">
+              <span className="ds-subsection__badge">Neutrals</span>
+              Grayscale Palette
+            </h3>
+            <div className="ds-color-grid">
+              {neutralColors.map((color) => (
+                <ColorSwatch 
+                  key={color.var}
+                  name={color.name}
+                  variable={color.var}
+                  value={color.value}
+                  usage={color.usage}
+                  isDark={['--color-neutrals-1', '--color-neutrals-2', '--color-neutrals-3'].includes(color.var)}
+                />
+              ))}
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Extended Neutrals</h3>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-2-5)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 2.5</span>
-                  <span className="design-system-reference__color-value">#282a30</span>
-                  <span className="design-system-reference__color-usage">Extended neutral</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-neutrals-3-5)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Neutrals 3.5</span>
-                  <span className="design-system-reference__color-value">#374151</span>
-                  <span className="design-system-reference__color-usage">Extended neutral</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Semantic Status Colors</h3>
-            <p className="design-system-reference__description">
-              Use for status indicators, alerts, and feedback messages.
-            </p>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-success)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Success</span>
-                  <span className="design-system-reference__color-value">#34A853</span>
-                  <code className="design-system-reference__code">--color-semantic-success</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-success-light)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Success Light</span>
-                  <span className="design-system-reference__color-value">#E8F5E9</span>
-                  <code className="design-system-reference__code">--color-semantic-success-light</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-success-dark)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Success Dark</span>
-                  <span className="design-system-reference__color-value">#2E7D32</span>
-                  <code className="design-system-reference__code">--color-semantic-success-dark</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-warning)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Warning</span>
-                  <span className="design-system-reference__color-value">#F59E0B</span>
-                  <code className="design-system-reference__code">--color-semantic-warning</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-warning-light)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Warning Light</span>
-                  <span className="design-system-reference__color-value">#FFF3E0</span>
-                  <code className="design-system-reference__code">--color-semantic-warning-light</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-warning-dark)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Warning Dark</span>
-                  <span className="design-system-reference__color-value">#D97706</span>
-                  <code className="design-system-reference__code">--color-semantic-warning-dark</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-error)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Error</span>
-                  <span className="design-system-reference__color-value">#EA4335</span>
-                  <code className="design-system-reference__code">--color-semantic-error</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-error-light)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Error Light</span>
-                  <span className="design-system-reference__color-value">#FFEBEE</span>
-                  <code className="design-system-reference__code">--color-semantic-error-light</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-error-dark)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Error Dark</span>
-                  <span className="design-system-reference__color-value">#C62828</span>
-                  <code className="design-system-reference__code">--color-semantic-error-dark</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-info)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Info</span>
-                  <span className="design-system-reference__color-value">#186CEA</span>
-                  <code className="design-system-reference__code">--color-semantic-info</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-info-light)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Info Light</span>
-                  <span className="design-system-reference__color-value">#E3F2FD</span>
-                  <code className="design-system-reference__code">--color-semantic-info-light</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-semantic-info-dark)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Info Dark</span>
-                  <span className="design-system-reference__color-value">#1976D2</span>
-                  <code className="design-system-reference__code">--color-semantic-info-dark</code>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Rating Colors</h3>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-rating-motortrend)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">MotorTrend Rating</span>
-                  <span className="design-system-reference__color-value">#FFB74D</span>
-                  <code className="design-system-reference__code">--color-rating-motortrend</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-rating-community)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Community Rating</span>
-                  <span className="design-system-reference__color-value">#33CCFF</span>
-                  <code className="design-system-reference__code">--color-rating-community</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-rating-staff)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">MotorTrend Rating</span>
-                  <span className="design-system-reference__color-value">#FFB74D</span>
-                  <code className="design-system-reference__code">--color-rating-staff</code>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">State Colors</h3>
-            <p className="design-system-reference__description">
-              Use for interactive states (hover, active, disabled).
-            </p>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-hover-overlay)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Hover Overlay</span>
-                  <span className="design-system-reference__color-value">rgba(0, 0, 0, 0.1)</span>
-                  <code className="design-system-reference__code">--color-hover-overlay</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-hover-overlay-dark)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Hover Overlay Dark</span>
-                  <span className="design-system-reference__color-value">rgba(0, 0, 0, 0.2)</span>
-                  <code className="design-system-reference__code">--color-hover-overlay-dark</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-active-overlay)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Active Overlay</span>
-                  <span className="design-system-reference__color-value">rgba(0, 0, 0, 0.15)</span>
-                  <code className="design-system-reference__code">--color-active-overlay</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-disabled-bg)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Disabled BG</span>
-                  <span className="design-system-reference__color-value">var(--color-neutrals-3)</span>
-                  <code className="design-system-reference__code">--color-disabled-bg</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-disabled-text)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Disabled Text</span>
-                  <span className="design-system-reference__color-value">var(--color-neutrals-5)</span>
-                  <code className="design-system-reference__code">--color-disabled-text</code>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Overlay Colors</h3>
-            <p className="design-system-reference__description">
-              Use for modal overlays and backdrop effects.
-            </p>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-overlay-light)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Overlay Light</span>
-                  <span className="design-system-reference__color-value">rgba(0, 0, 0, 0.5)</span>
-                  <code className="design-system-reference__code">--color-overlay-light</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-overlay-medium)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Overlay Medium</span>
-                  <span className="design-system-reference__color-value">rgba(0, 0, 0, 0.7)</span>
-                  <code className="design-system-reference__code">--color-overlay-medium</code>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-overlay-dark)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Overlay Dark</span>
-                  <span className="design-system-reference__color-value">rgba(0, 0, 0, 0.9)</span>
-                  <code className="design-system-reference__code">--color-overlay-dark</code>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Basic Colors</h3>
-            <div className="design-system-reference__color-grid">
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-blue)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Blue</span>
-                  <span className="design-system-reference__color-value">#186CEA</span>
-                  <span className="design-system-reference__color-usage">Links, accents</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-white)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">White</span>
-                  <span className="design-system-reference__color-value">#FFFFFF</span>
-                  <span className="design-system-reference__color-usage">Text on dark backgrounds</span>
-                </div>
-              </div>
-              <div className="design-system-reference__color-item">
-                <div className="design-system-reference__color-swatch" style={{ backgroundColor: 'var(--color-black)', border: '1px solid var(--color-neutrals-6)' }} />
-                <div className="design-system-reference__color-info">
-                  <span className="design-system-reference__color-name">Black</span>
-                  <span className="design-system-reference__color-value">#000000</span>
-                  <span className="design-system-reference__color-usage">Text on light backgrounds</span>
-                </div>
-              </div>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">
+              <span className="ds-subsection__badge">Semantic</span>
+              Status Colors
+            </h3>
+            <div className="ds-color-grid ds-color-grid--compact">
+              {semanticColors.map((color) => (
+                <ColorSwatch 
+                  key={color.var}
+                  name={color.name}
+                  variable={color.var}
+                  value={color.value}
+                />
+              ))}
             </div>
           </div>
         </section>
 
         {/* Typography Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Typography</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Font Families</h3>
-            <div className="design-system-reference__typography-grid">
-              <div className="design-system-reference__typography-item">
-                <span className="design-system-reference__typography-label">Heading Font:</span>
-                <span className="design-system-reference__typography-value" style={{ fontFamily: 'var(--font-heading)' }}>
-                  Poppins
+        <section 
+          id="typography" 
+          className="ds-section"
+          ref={(el) => { sectionRefs.current['typography'] = el; }}
+        >
+          <div className="ds-section__header">
+            <div className="ds-section__icon">
+              <Icon name="text_fields" size={24} />
+            </div>
+            <div>
+              <h2 className="ds-section__title">Typography</h2>
+              <p className="ds-section__description">
+                Font families and text styles for consistent visual hierarchy.
+              </p>
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Font Families</h3>
+            <div className="ds-font-showcase">
+              <div className="ds-font-card">
+                <span className="ds-font-card__label">Headings</span>
+                <span className="ds-font-card__name" style={{ fontFamily: 'var(--font-heading)' }}>Poppins</span>
+                <span className="ds-font-card__sample" style={{ fontFamily: 'var(--font-heading)', fontWeight: 600 }}>
+                  The quick brown fox jumps
                 </span>
+                <code>var(--font-heading)</code>
               </div>
-              <div className="design-system-reference__typography-item">
-                <span className="design-system-reference__typography-label">Body Font:</span>
-                <span className="design-system-reference__typography-value" style={{ fontFamily: 'var(--font-body)' }}>
-                  Geist
+              <div className="ds-font-card">
+                <span className="ds-font-card__label">Body</span>
+                <span className="ds-font-card__name" style={{ fontFamily: 'var(--font-body)' }}>Geist</span>
+                <span className="ds-font-card__sample" style={{ fontFamily: 'var(--font-body)' }}>
+                  The quick brown fox jumps
                 </span>
+                <code>var(--font-body)</code>
               </div>
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Text Styles</h3>
-            <div className="design-system-reference__text-styles">
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Hero</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-heading)', 
-                  fontWeight: 600, 
-                  fontSize: '96px', 
-                  lineHeight: '1em' 
-                }}>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Type Scale</h3>
+            <div className="ds-type-scale">
+              <div className="ds-type-item">
+                <span className="ds-type-item__label">Hero</span>
+                <span className="ds-type-item__preview" style={{ fontFamily: 'var(--font-heading)', fontSize: '48px', fontWeight: 600, lineHeight: 1.1 }}>
                   Hero Text
-                </div>
-                <code className="design-system-reference__code">96px, Poppins, Bold</code>
+                </span>
+                <span className="ds-type-item__specs">48px / Bold / Poppins</span>
               </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">H5</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-heading)', 
-                  fontWeight: 600, 
-                  fontSize: '24px', 
-                  lineHeight: '1.167em' 
-                }}>
-                  Heading 5
-                </div>
-                <code className="design-system-reference__code">24px, Poppins, Bold</code>
+              <div className="ds-type-item">
+                <span className="ds-type-item__label">H1</span>
+                <span className="ds-type-item__preview" style={{ fontFamily: 'var(--font-heading)', fontSize: '36px', fontWeight: 600, lineHeight: 1.2 }}>
+                  Heading One
+                </span>
+                <span className="ds-type-item__specs">36px / Bold / Poppins</span>
               </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Subtitle 1</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-heading)', 
-                  fontWeight: 600, 
-                  fontSize: '18px', 
-                  lineHeight: '1.333em' 
-                }}>
-                  Subtitle Text
-                </div>
-                <code className="design-system-reference__code">18px, Poppins, Bold</code>
+              <div className="ds-type-item">
+                <span className="ds-type-item__label">H2</span>
+                <span className="ds-type-item__preview" style={{ fontFamily: 'var(--font-heading)', fontSize: '28px', fontWeight: 600, lineHeight: 1.2 }}>
+                  Heading Two
+                </span>
+                <span className="ds-type-item__specs">28px / Bold / Poppins</span>
               </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Body 2</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-body)', 
-                  fontWeight: 400, 
-                  fontSize: '18px', 
-                  lineHeight: '1.556em' 
-                }}>
-                  Body text for paragraphs and longer content. This style is used for main content areas.
-                </div>
-                <code className="design-system-reference__code">18px, Geist, Regular</code>
+              <div className="ds-type-item">
+                <span className="ds-type-item__label">H3</span>
+                <span className="ds-type-item__preview" style={{ fontFamily: 'var(--font-heading)', fontSize: '24px', fontWeight: 600, lineHeight: 1.3 }}>
+                  Heading Three
+                </span>
+                <span className="ds-type-item__specs">24px / Bold / Poppins</span>
               </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Body 3</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-body)', 
-                  fontWeight: 400, 
-                  fontSize: '16px', 
-                  lineHeight: '1.5em' 
-                }}>
-                  Body text for smaller paragraphs and secondary content.
-                </div>
-                <code className="design-system-reference__code">16px, Geist, Regular</code>
+              <div className="ds-type-item">
+                <span className="ds-type-item__label">Body</span>
+                <span className="ds-type-item__preview" style={{ fontFamily: 'var(--font-body)', fontSize: '16px', fontWeight: 400, lineHeight: 1.5 }}>
+                  Body text for paragraphs and content areas.
+                </span>
+                <span className="ds-type-item__specs">16px / Regular / Geist</span>
               </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Button 1</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-heading)', 
-                  fontWeight: 600, 
-                  fontSize: '16px', 
-                  lineHeight: '1em' 
-                }}>
-                  Button Text
-                </div>
-                <code className="design-system-reference__code">16px, Poppins, Bold</code>
-              </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Caption 1</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-body)', 
-                  fontWeight: 400, 
-                  fontSize: '14px', 
-                  lineHeight: '1.286em' 
-                }}>
-                  Caption text for labels and metadata
-                </div>
-                <code className="design-system-reference__code">14px, Geist, Regular</code>
-              </div>
-              <div className="design-system-reference__text-style-item">
-                <span className="design-system-reference__text-style-label">Caption 2</span>
-                <div className="design-system-reference__text-style-preview" style={{ 
-                  fontFamily: 'var(--font-body)', 
-                  fontWeight: 400, 
-                  fontSize: '12px', 
-                  lineHeight: '1.333em' 
-                }}>
-                  Small caption text
-                </div>
-                <code className="design-system-reference__code">12px, Geist, Regular</code>
+              <div className="ds-type-item">
+                <span className="ds-type-item__label">Caption</span>
+                <span className="ds-type-item__preview" style={{ fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 400, lineHeight: 1.4, color: 'var(--color-neutrals-4)' }}>
+                  Caption text for metadata and labels
+                </span>
+                <span className="ds-type-item__specs">14px / Regular / Geist</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* Spacing Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Spacing</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Base Spacing (8px system)</h3>
-            <p className="design-system-reference__description">
-              Use CSS variables: <code>var(--spacing-1)</code> through <code>var(--spacing-6)</code>
-            </p>
-            <div className="design-system-reference__spacing-grid">
-              {[1, 2, 3, 4, 5, 6].map((num) => (
-                <div key={num} className="design-system-reference__spacing-item">
-                  <div 
-                    className="design-system-reference__spacing-visual" 
-                    style={{ width: `var(--spacing-${num})`, height: `var(--spacing-${num})` }}
-                  />
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Spacing {num}</span>
-                    <span className="design-system-reference__spacing-value">
-                      {num === 1 ? '8px' : num === 2 ? '16px' : num === 3 ? '24px' : num === 4 ? '32px' : num === 5 ? '40px' : '48px'}
-                    </span>
-                    <code className="design-system-reference__code">var(--spacing-{num})</code>
-                  </div>
-                </div>
-              ))}
+        <section 
+          id="spacing" 
+          className="ds-section"
+          ref={(el) => { sectionRefs.current['spacing'] = el; }}
+        >
+          <div className="ds-section__header">
+            <div className="ds-section__icon">
+              <Icon name="space_bar" size={24} />
+            </div>
+            <div>
+              <h2 className="ds-section__title">Spacing</h2>
+              <p className="ds-section__description">
+                Consistent spacing scale based on 8px grid system.
+              </p>
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Component Padding</h3>
-            <p className="design-system-reference__description">
-              Use for component internal padding: <code>var(--spacing-component-xs)</code> through <code>var(--spacing-component-xxl)</code>
-            </p>
-            <div className="design-system-reference__spacing-grid">
-              {[
-                { name: 'XS', var: '--spacing-component-xs', value: '4px' },
-                { name: 'SM', var: '--spacing-component-sm', value: '8px' },
-                { name: 'MD', var: '--spacing-component-md', value: '12px' },
-                { name: 'LG', var: '--spacing-component-lg', value: '16px' },
-                { name: 'XL', var: '--spacing-component-xl', value: '24px' },
-                { name: 'XXL', var: '--spacing-component-xxl', value: '32px' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__spacing-item">
-                  <div 
-                    className="design-system-reference__spacing-visual" 
-                    style={{ width: item.value, height: item.value }}
-                  />
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Component {item.name}</span>
-                    <span className="design-system-reference__spacing-value">{item.value}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Component Gap</h3>
-            <p className="design-system-reference__description">
-              Use for gaps between elements: <code>var(--spacing-gap-xs)</code> through <code>var(--spacing-gap-xxl)</code>
-            </p>
-            <div className="design-system-reference__spacing-grid">
-              {[
-                { name: 'XS', var: '--spacing-gap-xs', value: '4px' },
-                { name: 'SM', var: '--spacing-gap-sm', value: '8px' },
-                { name: 'MD', var: '--spacing-gap-md', value: '12px' },
-                { name: 'LG', var: '--spacing-gap-lg', value: '16px' },
-                { name: 'XL', var: '--spacing-gap-xl', value: '24px' },
-                { name: 'XXL', var: '--spacing-gap-xxl', value: '32px' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__spacing-item">
-                  <div 
-                    className="design-system-reference__spacing-visual" 
-                    style={{ width: item.value, height: item.value }}
-                  />
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Gap {item.name}</span>
-                    <span className="design-system-reference__spacing-value">{item.value}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Button Padding</h3>
-            <div className="design-system-reference__spacing-grid">
-              {[
-                { name: 'XS', var: '--spacing-button-xs', value: '6px 12px' },
-                { name: 'SM', var: '--spacing-button-sm', value: '8px 16px' },
-                { name: 'MD', var: '--spacing-button-md', value: '12px 24px' },
-                { name: 'LG', var: '--spacing-button-lg', value: '16px 32px' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__spacing-item">
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Button {item.name}</span>
-                    <span className="design-system-reference__spacing-value">{item.value}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Card Padding</h3>
-            <div className="design-system-reference__spacing-grid">
-              {[
-                { name: 'XS', var: '--spacing-card-xs', value: '8px' },
-                { name: 'SM', var: '--spacing-card-sm', value: '12px' },
-                { name: 'MD', var: '--spacing-card-md', value: '16px' },
-                { name: 'LG', var: '--spacing-card-lg', value: '24px' },
-                { name: 'XL', var: '--spacing-card-xl', value: '32px' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__spacing-item">
-                  <div 
-                    className="design-system-reference__spacing-visual" 
-                    style={{ width: item.value, height: item.value }}
-                  />
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Card {item.name}</span>
-                    <span className="design-system-reference__spacing-value">{item.value}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Modal Spacing</h3>
-            <div className="design-system-reference__spacing-grid">
-              {[
-                { name: 'XS', var: '--spacing-modal-xs', value: '16px' },
-                { name: 'SM', var: '--spacing-modal-sm', value: '20px' },
-                { name: 'MD', var: '--spacing-modal-md', value: '24px' },
-                { name: 'LG', var: '--spacing-modal-lg', value: '32px' },
-                { name: 'XL', var: '--spacing-modal-xl', value: '40px' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__spacing-item">
-                  <div 
-                    className="design-system-reference__spacing-visual" 
-                    style={{ width: item.value, height: item.value }}
-                  />
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Modal {item.name}</span>
-                    <span className="design-system-reference__spacing-value">{item.value}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Grid Spacing</h3>
-            <div className="design-system-reference__spacing-grid">
-              {[
-                { name: 'XS', var: '--spacing-grid-xs', value: '8px' },
-                { name: 'SM', var: '--spacing-grid-sm', value: '12px' },
-                { name: 'MD', var: '--spacing-grid-md', value: '16px' },
-                { name: 'LG', var: '--spacing-grid-lg', value: '24px' },
-                { name: 'XL', var: '--spacing-grid-xl', value: '32px' },
-                { name: 'XXL', var: '--spacing-grid-xxl', value: '48px' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__spacing-item">
-                  <div 
-                    className="design-system-reference__spacing-visual" 
-                    style={{ width: item.value, height: item.value }}
-                  />
-                  <div className="design-system-reference__spacing-info">
-                    <span className="design-system-reference__spacing-name">Grid {item.name}</span>
-                    <span className="design-system-reference__spacing-value">{item.value}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                  </div>
-                </div>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Base Scale</h3>
+            <div className="ds-spacing-grid">
+              {spacingTokens.map((token) => (
+                <TokenCard
+                  key={token.var}
+                  name={token.name}
+                  variable={token.var}
+                  value={token.value}
+                  preview={
+                    <div 
+                      className="ds-spacing-preview"
+                      style={{ 
+                        width: token.value, 
+                        height: token.value,
+                        backgroundColor: 'var(--color-primary-1)',
+                        borderRadius: '4px'
+                      }}
+                    />
+                  }
+                />
               ))}
             </div>
           </div>
         </section>
 
         {/* Effects Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Effects</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Border Radius</h3>
-            <div className="design-system-reference__effects-grid">
-              <div className="design-system-reference__effect-item">
-                <div className="design-system-reference__effect-visual" style={{ borderRadius: 'var(--border-radius-sm)' }} />
-                <div className="design-system-reference__effect-info">
-                  <span className="design-system-reference__effect-name">Small</span>
-                  <code className="design-system-reference__code">var(--border-radius-sm)</code>
-                  <span className="design-system-reference__effect-value">4px</span>
-                </div>
-              </div>
-              <div className="design-system-reference__effect-item">
-                <div className="design-system-reference__effect-visual" style={{ borderRadius: 'var(--border-radius-md)' }} />
-                <div className="design-system-reference__effect-info">
-                  <span className="design-system-reference__effect-name">Medium</span>
-                  <code className="design-system-reference__code">var(--border-radius-md)</code>
-                  <span className="design-system-reference__effect-value">8px</span>
-                </div>
-              </div>
-              <div className="design-system-reference__effect-item">
-                <div className="design-system-reference__effect-visual" style={{ borderRadius: 'var(--border-radius-lg)' }} />
-                <div className="design-system-reference__effect-info">
-                  <span className="design-system-reference__effect-name">Large</span>
-                  <code className="design-system-reference__code">var(--border-radius-lg)</code>
-                  <span className="design-system-reference__effect-value">16px</span>
-                </div>
-              </div>
-              <div className="design-system-reference__effect-item">
-                <div className="design-system-reference__effect-visual" style={{ borderRadius: 'var(--border-radius-full)' }} />
-                <div className="design-system-reference__effect-info">
-                  <span className="design-system-reference__effect-name">Full</span>
-                  <code className="design-system-reference__code">var(--border-radius-full)</code>
-                  <span className="design-system-reference__effect-value">100px</span>
-                </div>
-              </div>
+        <section 
+          id="effects" 
+          className="ds-section"
+          ref={(el) => { sectionRefs.current['effects'] = el; }}
+        >
+          <div className="ds-section__header">
+            <div className="ds-section__icon">
+              <Icon name="auto_awesome" size={24} />
+            </div>
+            <div>
+              <h2 className="ds-section__title">Effects</h2>
+              <p className="ds-section__description">
+                Border radius, shadows, and transitions for depth and motion.
+              </p>
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Shadows - Depth System</h3>
-            <p className="design-system-reference__description">
-              Elevation-based shadow system: <code>var(--shadow-depth-0)</code> through <code>var(--shadow-depth-7)</code>
-            </p>
-            <div className="design-system-reference__effects-grid">
-              {[
-                { name: 'Depth 0', var: '--shadow-depth-0', desc: 'No shadow' },
-                { name: 'Depth 1', var: '--shadow-depth-1', desc: 'Subtle elevation' },
-                { name: 'Depth 2', var: '--shadow-depth-2', desc: 'Low elevation' },
-                { name: 'Depth 3', var: '--shadow-depth-3', desc: 'Medium elevation' },
-                { name: 'Depth 4', var: '--shadow-depth-4', desc: 'High elevation' },
-                { name: 'Depth 5', var: '--shadow-depth-5', desc: 'Standard elevation' },
-                { name: 'Depth 6', var: '--shadow-depth-6', desc: 'Very high elevation' },
-                { name: 'Depth 7', var: '--shadow-depth-7', desc: 'Highest elevation' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__effect-item">
-                  <div className="design-system-reference__effect-visual" style={{ boxShadow: item.var === '--shadow-depth-0' ? 'none' : `var(${item.var})` }} />
-                  <div className="design-system-reference__effect-info">
-                    <span className="design-system-reference__effect-name">{item.name}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                    <span className="design-system-reference__effect-value">{item.desc}</span>
-                  </div>
-                </div>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Border Radius</h3>
+            <div className="ds-effects-grid">
+              {radiusTokens.map((token) => (
+                <TokenCard
+                  key={token.var}
+                  name={token.name}
+                  variable={token.var}
+                  value={token.value}
+                  preview={
+                    <div 
+                      className="ds-radius-preview"
+                      style={{ borderRadius: `var(${token.var})` }}
+                    />
+                  }
+                />
               ))}
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Component Shadows</h3>
-            <p className="design-system-reference__description">
-              Pre-configured shadows for specific components.
-            </p>
-            <div className="design-system-reference__effects-grid">
-              {[
-                { name: 'Card', var: '--shadow-card', desc: 'Card default shadow' },
-                { name: 'Card Hover', var: '--shadow-card-hover', desc: 'Card hover shadow' },
-                { name: 'Button', var: '--shadow-button', desc: 'Button default shadow' },
-                { name: 'Button Hover', var: '--shadow-button-hover', desc: 'Button hover shadow' },
-                { name: 'Button Primary', var: '--shadow-button-primary', desc: 'Primary button shadow' },
-                { name: 'Modal', var: '--shadow-modal', desc: 'Modal shadow' },
-                { name: 'Modal Large', var: '--shadow-modal-lg', desc: 'Large modal shadow' },
-                { name: 'Dropdown', var: '--shadow-dropdown', desc: 'Dropdown shadow' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__effect-item">
-                  <div className="design-system-reference__effect-visual" style={{ boxShadow: `var(${item.var})` }} />
-                  <div className="design-system-reference__effect-info">
-                    <span className="design-system-reference__effect-name">{item.name}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                    <span className="design-system-reference__effect-value">{item.desc}</span>
-                  </div>
-                </div>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Shadows</h3>
+            <div className="ds-effects-grid">
+              {shadowTokens.map((token) => (
+                <TokenCard
+                  key={token.var}
+                  name={token.name}
+                  variable={token.var}
+                  value={token.value}
+                  preview={
+                    <div 
+                      className="ds-shadow-preview"
+                      style={{ boxShadow: `var(${token.var})` }}
+                    />
+                  }
+                />
               ))}
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Text Shadows</h3>
-            <div className="design-system-reference__effects-grid">
-              {[
-                { name: 'Small', var: '--shadow-text-sm', desc: 'Small text shadow' },
-                { name: 'Medium', var: '--shadow-text-md', desc: 'Medium text shadow' },
-                { name: 'Large', var: '--shadow-text-lg', desc: 'Large text shadow' },
-              ].map((item) => (
-                <div key={item.name} className="design-system-reference__effect-item">
-                  <div className="design-system-reference__effect-visual" style={{ 
-                    background: 'var(--color-primary-1)', 
-                    color: 'var(--color-white)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textShadow: `var(${item.var})`,
-                    fontSize: '14px',
-                    fontWeight: 'bold'
-                  }}>
-                    Text
-                  </div>
-                  <div className="design-system-reference__effect-info">
-                    <span className="design-system-reference__effect-name">{item.name}</span>
-                    <code className="design-system-reference__code">{`var(${item.var})`}</code>
-                    <span className="design-system-reference__effect-value">{item.desc}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Transitions</h3>
-            <div className="design-system-reference__transition-grid">
-              <div className="design-system-reference__transition-item">
-                <span className="design-system-reference__transition-label">Fast:</span>
-                <code className="design-system-reference__code">var(--transition-fast)</code>
-                <span className="design-system-reference__transition-value">150ms ease-in-out</span>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Transitions</h3>
+            <div className="ds-transitions">
+              <div className="ds-transition-demo">
+                <div className="ds-transition-demo__box ds-transition-demo__box--fast">Fast</div>
+                <code>var(--transition-fast)</code>
+                <span>150ms</span>
               </div>
-              <div className="design-system-reference__transition-item">
-                <span className="design-system-reference__transition-label">Normal:</span>
-                <code className="design-system-reference__code">var(--transition-normal)</code>
-                <span className="design-system-reference__transition-value">250ms ease-in-out</span>
+              <div className="ds-transition-demo">
+                <div className="ds-transition-demo__box ds-transition-demo__box--normal">Normal</div>
+                <code>var(--transition-normal)</code>
+                <span>250ms</span>
               </div>
-              <div className="design-system-reference__transition-item">
-                <span className="design-system-reference__transition-label">Slow:</span>
-                <code className="design-system-reference__code">var(--transition-slow)</code>
-                <span className="design-system-reference__transition-value">350ms ease-in-out</span>
+              <div className="ds-transition-demo">
+                <div className="ds-transition-demo__box ds-transition-demo__box--slow">Slow</div>
+                <code>var(--transition-slow)</code>
+                <span>350ms</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* Buttons Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Buttons (CTA)</h2>
-          <p className="design-system-reference__description">
-            Always use CTA classes: <code>cta cta--[variant] cta--[size]</code>
-          </p>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Sizes</h3>
-            <div className="design-system-reference__button-group">
-              <button className="cta cta--primary cta--small">Small Button</button>
-              <button className="cta cta--primary cta--default">Default Button</button>
-              <button className="cta cta--primary cta--large">Large Button</button>
+        <section 
+          id="buttons" 
+          className="ds-section"
+          ref={(el) => { sectionRefs.current['buttons'] = el; }}
+        >
+          <div className="ds-section__header">
+            <div className="ds-section__icon">
+              <Icon name="smart_button" size={24} />
+            </div>
+            <div>
+              <h2 className="ds-section__title">Buttons</h2>
+              <p className="ds-section__description">
+                Call-to-action buttons with multiple variants and sizes.
+              </p>
             </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Variants</h3>
-            <div className="design-system-reference__button-group">
-              <button className="cta cta--primary cta--default">Primary</button>
-              <button className="cta cta--secondary cta--default">Secondary</button>
-              <button className="cta cta--neutral cta--default">Neutral</button>
-              <button className="cta cta--success cta--default">Success</button>
-              <button className="cta cta--warning cta--default">Warning</button>
-              <button className="cta cta--ghost cta--default">Ghost</button>
-              <button className="cta cta--outline cta--default">Outline</button>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">States</h3>
-            <div className="design-system-reference__button-group">
-              <button className="cta cta--primary cta--default">Normal</button>
-              <button className="cta cta--primary cta--default" disabled>Disabled</button>
-              <button className="cta cta--primary cta--default cta--full-width">Full Width</button>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Button Component</h3>
-            <div className="design-system-reference__button-group">
-              <Button color="primary" size="default" variant="solid">Button Component</Button>
-              <Button color="secondary" size="large" variant="solid">Secondary Large</Button>
-              <Button color="primary" size="small" variant="ghost">Ghost Small</Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Form Components Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Form Components</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">TextField</h3>
-            <div className="design-system-reference__form-group">
-              <TextField 
-                label="Default TextField" 
-                placeholder="Enter text here"
-                fullWidth
-              />
-              <TextField 
-                label="TextField with Error" 
-                placeholder="Enter text here"
-                error="This field is required"
-                fullWidth
-              />
-              <TextField 
-                label="TextField with Helper Text" 
-                placeholder="Enter text here"
-                helperText="This is helper text"
-                fullWidth
-              />
-              <TextField 
-                label="Disabled TextField" 
-                placeholder="Cannot edit"
-                disabled
-                fullWidth
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Layout Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Layout</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Container Max Width</h3>
-            <div className="design-system-reference__layout-item">
-              <code className="design-system-reference__code">var(--max-width-container)</code>
-              <span className="design-system-reference__layout-value">1280px</span>
-            </div>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Section Spacing</h3>
-            <div className="design-system-reference__layout-grid">
-              <div className="design-system-reference__layout-item">
-                <span className="design-system-reference__layout-label">Vertical:</span>
-                <code className="design-system-reference__code">var(--section-spacing-vertical)</code>
-                <span className="design-system-reference__layout-value">32px</span>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Sizes</h3>
+            <div className="ds-button-showcase">
+              <div className="ds-button-row">
+                <button className="cta cta--primary cta--small">Small</button>
+                <button className="cta cta--primary cta--default">Default</button>
+                <button className="cta cta--primary cta--large">Large</button>
               </div>
-              <div className="design-system-reference__layout-item">
-                <span className="design-system-reference__layout-label">Horizontal:</span>
-                <code className="design-system-reference__code">var(--section-spacing-horizontal)</code>
-                <span className="design-system-reference__layout-value">24px</span>
+              <div className="ds-button-code">
+                <code>cta cta--primary cta--[size]</code>
+              </div>
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Variants</h3>
+            <div className="ds-button-variants">
+              <div className="ds-button-variant">
+                <button className="cta cta--primary cta--default">Primary</button>
+                <span>Main actions</span>
+              </div>
+              <div className="ds-button-variant">
+                <button className="cta cta--secondary cta--default">Secondary</button>
+                <span>Secondary actions</span>
+              </div>
+              <div className="ds-button-variant">
+                <button className="cta cta--ghost cta--default">Ghost</button>
+                <span>Tertiary actions</span>
+              </div>
+              <div className="ds-button-variant">
+                <button className="cta cta--outline cta--default">Outline</button>
+                <span>Bordered style</span>
+              </div>
+              <div className="ds-button-variant">
+                <button className="cta cta--success cta--default">Success</button>
+                <span>Positive actions</span>
+              </div>
+              <div className="ds-button-variant">
+                <button className="cta cta--warning cta--default">Warning</button>
+                <span>Caution actions</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">States</h3>
+            <div className="ds-button-states">
+              <div className="ds-button-state">
+                <button className="cta cta--primary cta--default">Default</button>
+              </div>
+              <div className="ds-button-state">
+                <button className="cta cta--primary cta--default" style={{ opacity: 0.8 }}>Hover</button>
+              </div>
+              <div className="ds-button-state">
+                <button className="cta cta--primary cta--default" disabled>Disabled</button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Usage Examples Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Usage Examples</h2>
-          
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Card Component</h3>
-            <pre className="design-system-reference__code-block">
-{`.card {
-  background: var(--color-neutrals-8);
-  border: 1px solid var(--color-neutrals-6);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-card-md);
-  box-shadow: var(--shadow-card);
-  transition: all var(--transition-fast);
-}
-
-.card:hover {
-  box-shadow: var(--shadow-card-hover);
-}`}
-            </pre>
+        {/* Forms Section */}
+        <section 
+          id="forms" 
+          className="ds-section"
+          ref={(el) => { sectionRefs.current['forms'] = el; }}
+        >
+          <div className="ds-section__header">
+            <div className="ds-section__icon">
+              <Icon name="input" size={24} />
+            </div>
+            <div>
+              <h2 className="ds-section__title">Form Components</h2>
+              <p className="ds-section__description">
+                Input fields and form elements for user interaction.
+              </p>
+            </div>
           </div>
 
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Button Component</h3>
-            <pre className="design-system-reference__code-block">
-{`.button {
-  padding: var(--spacing-button-sm);
-  background: var(--color-primary-1);
-  color: var(--color-white);
-  border-radius: var(--border-radius-sm);
-  box-shadow: var(--shadow-button-primary);
-  transition: all var(--transition-fast);
-}
-
-.button:hover {
-  box-shadow: var(--shadow-button-hover);
-}`}
-            </pre>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Modal Component</h3>
-            <pre className="design-system-reference__code-block">
-{`.modal-overlay {
-  background-color: var(--color-overlay-medium);
-}
-
-.modal-content {
-  background: var(--color-neutrals-8);
-  border-radius: var(--border-radius-lg);
-  padding: var(--spacing-modal-md);
-  box-shadow: var(--shadow-modal);
-}`}
-            </pre>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Success Message</h3>
-            <pre className="design-system-reference__code-block">
-{`.success-message {
-  background: var(--color-semantic-success-light);
-  color: var(--color-semantic-success-dark);
-  border: 1px solid var(--color-semantic-success);
-  padding: var(--spacing-component-md);
-  border-radius: var(--border-radius-sm);
-}`}
-            </pre>
-          </div>
-
-          <div className="design-system-reference__subsection">
-            <h3 className="design-system-reference__subsection-title">Grid Layout</h3>
-            <pre className="design-system-reference__code-block">
-{`.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-grid-lg);
-}`}
-            </pre>
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">Text Fields</h3>
+            <div className="ds-form-grid">
+              <div className="ds-form-example">
+                <TextField 
+                  label="Default" 
+                  placeholder="Enter text..."
+                />
+                <span className="ds-form-example__label">Default state</span>
+              </div>
+              <div className="ds-form-example">
+                <TextField 
+                  label="With Value" 
+                  placeholder="Enter text..."
+                  value="Sample input"
+                  onChange={() => {}}
+                />
+                <span className="ds-form-example__label">Filled state</span>
+              </div>
+              <div className="ds-form-example">
+                <TextField 
+                  label="Error State" 
+                  placeholder="Enter text..."
+                  error="This field is required"
+                />
+                <span className="ds-form-example__label">Error state</span>
+              </div>
+              <div className="ds-form-example">
+                <TextField 
+                  label="Disabled" 
+                  placeholder="Cannot edit"
+                  disabled
+                />
+                <span className="ds-form-example__label">Disabled state</span>
+              </div>
+            </div>
           </div>
         </section>
-
-        {/* Best Practices Section */}
-        <section className="design-system-reference__section">
-          <h2 className="design-system-reference__section-title">Best Practices</h2>
-          
-          <div className="design-system-reference__subsection">
-            <ol className="design-system-reference__best-practices">
-              <li>
-                <strong>Always use CSS variables</strong> - Never hardcode colors or spacing
-              </li>
-              <li>
-                <strong>Use semantic tokens</strong> - Prefer <code>--color-semantic-success</code> over <code>#34A853</code>
-              </li>
-              <li>
-                <strong>Follow 8px system</strong> - Use spacing tokens aligned with 8px base
-              </li>
-              <li>
-                <strong>Use component-specific tokens</strong> - Prefer <code>--spacing-card-md</code> over <code>--spacing-2</code> for cards
-              </li>
-              <li>
-                <strong>Consistent shadows</strong> - Use shadow depth system for elevation
-              </li>
-              <li>
-                <strong>State colors</strong> - Use state tokens for hover/active/disabled states
-              </li>
-            </ol>
-          </div>
-        </section>
-      </div>
+      </main>
     </div>
   );
 };
 
 export default DesignSystemReference;
-

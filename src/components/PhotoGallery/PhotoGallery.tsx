@@ -14,7 +14,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 import { Badge } from '../atoms/Badge/Badge';
+import { SavedModal } from '../SavedModal';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
+import { isLeadSaved, toggleSaveLead } from '../../utils/savedLeads';
 import './PhotoGallery.css';
 
 interface PhotoGalleryProps {
@@ -25,6 +27,7 @@ interface PhotoGalleryProps {
   vehicleName?: string;
   localListings?: LocalListing[];
   onViewAllListings?: () => void;
+  onListingClick?: (listing: LocalListing) => void;
 }
 
 type SortOption = 'price-low' | 'price-high' | 'mileage-low' | 'distance';
@@ -37,22 +40,63 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   initialIndex = 0,
   vehicleName,
   localListings = [],
-  onViewAllListings
+  onViewAllListings,
+  onListingClick
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [sortBy, setSortBy] = useState<SortOption>('price-low');
   const [filterCondition, setFilterCondition] = useState<FilterCondition>('all');
   const [activeTab, setActiveTab] = useState<'photos' | 'listings'>('photos');
   const [currentListingPhotoIndex, setCurrentListingPhotoIndex] = useState<Record<string, number>>({});
+  const [savedLeads, setSavedLeads] = useState<Set<string>>(new Set());
+  const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
+  const [savedLeadTitle, setSavedLeadTitle] = useState('');
+  const [localImages, setLocalImages] = useState<string[]>(images);
   const thumbnailsRef = useRef<HTMLDivElement>(null);
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
   
   const hasListings = localListings && localListings.length > 0;
 
+  // Update local images when prop changes
+  useEffect(() => {
+    setLocalImages(images);
+    setCurrentIndex(0);
+  }, [images]);
+
+  // Load saved leads on mount and when listings change
+  useEffect(() => {
+    if (localListings.length > 0) {
+      const saved = new Set<string>();
+      localListings.forEach(listing => {
+        if (isLeadSaved(listing.id)) {
+          saved.add(listing.id);
+        }
+      });
+      setSavedLeads(saved);
+    }
+  }, [localListings]);
+
   // Update index when initialIndex changes
   useEffect(() => {
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
+
+  // Update index and reset when images change (e.g., clicking on different listing)
+  useEffect(() => {
+    if (localImages.length > 0) {
+      const validIndex = initialIndex >= 0 && initialIndex < localImages.length ? initialIndex : 0;
+      setCurrentIndex(validIndex);
+    } else {
+      setCurrentIndex(0);
+    }
+  }, [localImages, initialIndex]);
+
+  // Ensure currentIndex is always valid
+  useEffect(() => {
+    if (localImages.length > 0 && currentIndex >= localImages.length) {
+      setCurrentIndex(0);
+    }
+  }, [localImages.length, currentIndex]);
 
   // Scroll active thumbnail into view
   useEffect(() => {
@@ -91,11 +135,15 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   }, [isOpen, currentIndex]);
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+    if (localImages.length > 0) {
+      setCurrentIndex((prev) => (prev + 1) % localImages.length);
+    }
   };
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    if (localImages.length > 0) {
+      setCurrentIndex((prev) => (prev - 1 + localImages.length) % localImages.length);
+    }
   };
 
   // Filter and sort listings
@@ -150,6 +198,40 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     });
   };
 
+  const handleListingCardClick = (listing: LocalListing) => {
+    const listingPhotos = listing.photoUrls || [listing.imageUrl];
+    if (listingPhotos.length > 0) {
+      // Update local images immediately
+      setLocalImages(listingPhotos);
+      setCurrentIndex(0);
+      // Switch to photos tab
+      setActiveTab('photos');
+      // Call the parent callback to update the images (for persistence)
+      if (onListingClick) {
+        onListingClick(listing);
+      }
+    }
+  };
+
+  const handleSaveLead = (listing: LocalListing, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const wasSaved = toggleSaveLead(listing, vehicleName || '');
+    const listingTitle = `${listing.year} ${vehicleName}${listing.trim ? ` ${listing.trim}` : ''}`;
+    
+    if (wasSaved) {
+      setSavedLeads(prev => new Set(prev).add(listing.id));
+      setSavedLeadTitle(listingTitle);
+      setIsSavedModalOpen(true);
+    } else {
+      setSavedLeads(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(listing.id);
+        return newSet;
+      });
+    }
+  };
+
   const renderListingCard = (listing: LocalListing, isBestDeal: boolean = false) => {
     const photos = listing.photoUrls || [listing.imageUrl];
     const currentPhotoIdx = currentListingPhotoIndex[listing.id] || 0;
@@ -159,6 +241,8 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
       <div 
         key={listing.id} 
         className={`photo-gallery__listing-card ${isBestDeal ? 'photo-gallery__listing-card--best' : ''}`}
+        onClick={() => handleListingCardClick(listing)}
+        style={{ cursor: 'pointer' }}
       >
         {isBestDeal && (
           <div className="photo-gallery__best-deal-badge">
@@ -171,18 +255,37 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
         <div className="photo-gallery__listing-image">
           <img src={photos[currentPhotoIdx]} alt={`${listing.year} ${vehicleName}`} />
           
+          {/* Save Button */}
+          <button
+            className={`photo-gallery__listing-save ${savedLeads.has(listing.id) ? 'photo-gallery__listing-save--saved' : ''}`}
+            onClick={(e) => handleSaveLead(listing, e)}
+            aria-label={savedLeads.has(listing.id) ? 'Unsave lead' : 'Save lead'}
+          >
+            <Icon 
+              name={savedLeads.has(listing.id) ? 'bookmark' : 'bookmark_border'} 
+              variant={savedLeads.has(listing.id) ? 'filled' : 'outlined'}
+              size={20} 
+            />
+          </button>
+          
           {hasMultiplePhotos && (
             <>
               <button
                 className="photo-gallery__listing-nav photo-gallery__listing-nav--prev"
-                onClick={() => handleListingPhotoNav(listing.id, 'prev', photos.length)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleListingPhotoNav(listing.id, 'prev', photos.length);
+                }}
                 aria-label="Previous photo"
               >
                 <Icon name="chevron_left" size={20} />
               </button>
               <button
                 className="photo-gallery__listing-nav photo-gallery__listing-nav--next"
-                onClick={() => handleListingPhotoNav(listing.id, 'next', photos.length)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleListingPhotoNav(listing.id, 'next', photos.length);
+                }}
                 aria-label="Next photo"
               >
                 <Icon name="chevron_right" size={20} />
@@ -192,9 +295,14 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
               </div>
             </>
           )}
+        </div>
 
-          {/* Condition Badge */}
-          <div className="photo-gallery__listing-condition">
+        {/* Listing Details */}
+        <div className="photo-gallery__listing-details">
+          <div className="photo-gallery__listing-header">
+            <div className="photo-gallery__listing-title">
+              {listing.year} {vehicleName}{listing.trim ? ` ${listing.trim}` : ''}
+            </div>
             <Badge 
               variant={listing.condition === 'New' ? 'success' : listing.condition === 'Certified Pre-Owned' ? 'info' : 'neutral'} 
               size="sm"
@@ -202,24 +310,50 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
               {listing.condition === 'Certified Pre-Owned' ? 'CPO' : listing.condition}
             </Badge>
           </div>
-        </div>
-
-        {/* Listing Details */}
-        <div className="photo-gallery__listing-details">
+          
           <div className="photo-gallery__listing-price">{formatPrice(listing.price)}</div>
-          <div className="photo-gallery__listing-title">
-            {listing.year} {vehicleName}{listing.trim ? ` ${listing.trim}` : ''}
-          </div>
+          
           <div className="photo-gallery__listing-info">
             <div className="photo-gallery__listing-info-item">
               <Icon name="speed" size={16} />
               <span>{formatMileage(listing.mileage)}</span>
             </div>
-            <div className="photo-gallery__listing-info-item photo-gallery__listing-dealer">
-              <Icon name="location_on" size={16} />
-              <span>{listing.dealerName}</span>
-            </div>
           </div>
+          
+          <div className="photo-gallery__listing-dealer">
+            <Icon name="store" size={16} />
+            <span className="photo-gallery__listing-dealer-name">{listing.dealerName}</span>
+          </div>
+          
+          <div className="photo-gallery__listing-location">
+            <Icon name="location_on" size={16} />
+            <span>{listing.location} • {listing.distance} mi away</span>
+          </div>
+          
+          {listing.exteriorColor && (
+            <div className="photo-gallery__listing-colors">
+              <span className="photo-gallery__listing-color-label">Exterior:</span>
+              <span className="photo-gallery__listing-color-value">{listing.exteriorColor}</span>
+              {listing.interiorColor && (
+                <>
+                  <span className="photo-gallery__listing-color-separator">•</span>
+                  <span className="photo-gallery__listing-color-label">Interior:</span>
+                  <span className="photo-gallery__listing-color-value">{listing.interiorColor}</span>
+                </>
+              )}
+            </div>
+          )}
+          
+          <button 
+            className="photo-gallery__listing-cta"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Handle view details action
+            }}
+          >
+            View Details
+            <Icon name="arrow_forward" size={16} />
+          </button>
         </div>
       </div>
     );
@@ -264,7 +398,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
             onClick={() => setActiveTab('photos')}
           >
             <Icon name="photo_library" size={20} />
-            <span>Photos ({images.length})</span>
+            <span>Photos ({localImages.length})</span>
           </button>
           <button
             className={`photo-gallery__mobile-tab ${activeTab === 'listings' ? 'photo-gallery__mobile-tab--active' : ''}`}
@@ -280,14 +414,22 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           {/* Left Side: Photos */}
           <div className={`photo-gallery__photos-section ${activeTab === 'photos' ? 'photo-gallery__photos-section--active' : ''}`}>
             <div className="photo-gallery__main-image">
-            <img
-              src={images[currentIndex]}
-              alt={`${vehicleName || 'Vehicle'} - Photo ${currentIndex + 1}`}
-              className="photo-gallery__image"
-            />
+            {localImages.length > 0 && localImages[currentIndex] ? (
+              <img
+                key={`img-${currentIndex}-${localImages[currentIndex]}`}
+                src={localImages[currentIndex]}
+                alt={`${vehicleName || 'Vehicle'} - Photo ${currentIndex + 1}`}
+                className="photo-gallery__image"
+              />
+            ) : localImages.length === 0 ? (
+              <div className="photo-gallery__image-placeholder">
+                <Icon name="image" size={48} />
+                <p>No images available</p>
+              </div>
+            ) : null}
               
               {/* Navigation Arrows */}
-              {images.length > 1 && (
+              {localImages.length > 1 && (
                 <>
                   <button
                     className="photo-gallery__nav photo-gallery__nav--prev"
@@ -307,15 +449,17 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
               )}
 
               {/* Photo Counter */}
-              <div className="photo-gallery__photo-counter">
-                {currentIndex + 1} / {images.length}
-              </div>
+              {localImages.length > 0 && (
+                <div className="photo-gallery__photo-counter">
+                  {currentIndex + 1} / {localImages.length}
+                </div>
+              )}
         </div>
 
         {/* Thumbnails */}
-        {images.length > 1 && (
+        {localImages.length > 1 && (
           <div className="photo-gallery__thumbnails" ref={thumbnailsRef}>
-              {images.map((image, index) => (
+              {localImages.map((image, index) => (
                 <button
                   key={index}
                   ref={(el) => {
@@ -417,6 +561,14 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
         )}
         </div>
       </div>
+
+      {/* Saved Modal */}
+      <SavedModal
+        isOpen={isSavedModalOpen}
+        onClose={() => setIsSavedModalOpen(false)}
+        itemTitle={savedLeadTitle}
+        itemType="lead"
+      />
     </ModalShell>
   );
 };

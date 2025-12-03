@@ -75,18 +75,10 @@
 }
 
 /* Small mobile */
-@media (max-width: 480px) {
-  .used-cars {
-    padding: var(--spacing-2) 0;
-  }
 
-  .used-cars__container {
-    padding: 0 16px;
-  }
 
   .used-cars__section {
     margin-bottom: var(--spacing-2);
     gap: var(--spacing-2);
   }
-}
 

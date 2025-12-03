@@ -144,16 +144,8 @@
   }
 }
 
-@media (max-width: 480px) {
-  .membership-page__title {
-    font-size: 28px;
-  }
-  
-  .membership-page__subtitle {
-    font-size: 14px;
-  }
+
   
   .membership-page__card-container {
     padding: 16px;
   }
-}

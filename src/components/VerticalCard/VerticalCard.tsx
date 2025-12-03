@@ -7,6 +7,7 @@
 import React from 'react';
 import './VerticalCard.css';
 import { CardShell } from '../atoms/CardShell/CardShell';
+import { useImageFallback } from '../../hooks/useImageFallback';
 
 export interface VerticalCardProps {
   imageUrl: string;
@@ -21,6 +22,8 @@ export const VerticalCard: React.FC<VerticalCardProps> = ({
   type = 'Video',
   onClick,
 }) => {
+  const { imgSrc, handleImageError } = useImageFallback(imageUrl);
+
   return (
     <CardShell
       padding="none"
@@ -34,9 +37,10 @@ export const VerticalCard: React.FC<VerticalCardProps> = ({
       <div className="vertical-card__inner">
         <div className="vertical-card__image-container">
         <img 
-          src={imageUrl} 
+          src={imgSrc} 
           alt={title} 
           className="vertical-card__image"
+          onError={handleImageError}
         />
         {type === 'Video' && (
           <div className="vertical-card__play-overlay">

@@ -277,6 +277,47 @@
 
 .local-listings-sidebar__cta:hover {
   background: #1A1B21;
+  color: #FFFFFF;
+}
+
+/* Save Button */
+.local-listings-sidebar__save {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0;
+  z-index: 3;
+}
+
+.local-listings-sidebar__item:hover .local-listings-sidebar__save {
+  opacity: 1;
+}
+
+.local-listings-sidebar__save:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.local-listings-sidebar__save--saved {
+  background-color: var(--color-primary-1);
+  opacity: 1;
+}
+
+.local-listings-sidebar__save--saved:hover {
+  background-color: var(--color-primary-2);
+}
   border-color: #1A1B21;
   color: #FFFFFF;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
