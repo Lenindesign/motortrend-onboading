@@ -206,6 +206,18 @@ const SEED_POSTS: Post[] = [
     commentCount: 31,
   },
   {
+    id: 'post_geico_ad_home',
+    communityId: 'comm_autos',
+    author: { id: 'user_geico', name: 'GEICO' },
+    title: 'Save Money on Car Insurance - Get a Quote Today',
+    content: 'Protect your vehicle with GEICO. Get a free quote and see how much you could save. 24/7 customer service and competitive rates.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6930ba485b2bea0002f46bea/geico2.jpg',
+    createdAt: new Date(Date.now() - 216000000).toISOString(), // 2.5 days ago
+    upvotes: 105,
+    downvotes: 2,
+    commentCount: 8,
+  },
+  {
     id: 'post_autos_3',
     communityId: 'comm_autos',
     author: { id: 'user_8', name: 'IndustryInsider' },
