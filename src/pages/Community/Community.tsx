@@ -166,7 +166,12 @@ const CommunityPage: React.FC = () => {
                    <div className="community-page__banner-placeholder">{currentCommunity.name[0]}</div>
                  )}
                  <div className="community-page__banner-info">
-                   <h1 className="community-page__banner-title">{currentCommunity.name}</h1>
+                   <h1 className="community-page__banner-title">
+                     {currentCommunity.name}
+                     {currentCommunity.id === 'comm_motortrend' && (
+                       <Icon name="check_circle" size={20} className="community-page__banner-verified-icon" />
+                     )}
+                   </h1>
                    <span className="community-page__banner-slug">c/{currentCommunity.slug}</span>
                  </div>
                  <button 
@@ -395,6 +400,9 @@ const CommunityPage: React.FC = () => {
                              <span className="community-recommended-post__community-name">
                                c/{postCommunity?.name || 'Unknown'}
                              </span>
+                             {postCommunity?.id === 'comm_motortrend' && (
+                               <Icon name="check_circle" size={14} className="community-recommended-post__verified-icon" />
+                             )}
                            </div>
                            <h4 className="community-recommended-post__title">{post.title}</h4>
                            <div className="community-recommended-post__meta">

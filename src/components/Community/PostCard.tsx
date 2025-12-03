@@ -75,6 +75,9 @@ export const PostCard: React.FC<PostCardProps> = ({
                 <img src={community.icon} alt={community.name} className="post-card__community-icon" />
               )}
               <span className="post-card__community-name">c/{community.slug}</span>
+              {community.id === 'comm_motortrend' && (
+                <Icon name="check_circle" size={14} className="post-card__verified-icon" />
+              )}
               <span className="post-card__dot">•</span>
             </div>
           )}

@@ -58,6 +58,12 @@
   object-fit: cover;
 }
 
+.post-card__verified-icon {
+  margin-left: 4px;
+  color: #186CEA;
+  flex-shrink: 0;
+}
+
 .post-card__dot {
   margin: 0 4px;
   color: var(--color-neutrals-5);
