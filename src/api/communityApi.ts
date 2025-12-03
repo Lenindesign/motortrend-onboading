@@ -440,6 +440,30 @@ const SEED_POSTS: Post[] = [
     downvotes: 2,
     commentCount: 23,
   },
+  {
+    id: 'post_hotrodpowertour_2',
+    communityId: 'comm_hotrodpowertour',
+    author: { id: 'user_51', name: 'HotRodBuilder' },
+    title: 'Best Mods for Power Tour 2025',
+    content: 'What modifications are you planning for this year\'s Power Tour? Share your build plans and get feedback from the community!',
+    image: 'https://www.motortrend.com/uploads/sites/5/2023/08/003-2024-Mustang-GT-6MT-front-three-quarters-in-action.jpg',
+    createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+    upvotes: 65,
+    downvotes: 1,
+    commentCount: 18,
+  },
+  {
+    id: 'post_hotrodpowertour_geico_ad',
+    communityId: 'comm_hotrodpowertour',
+    author: { id: 'user_geico', name: 'GEICO' },
+    title: 'Protect Your Ride on Power Tour 2025',
+    content: 'Get the coverage you need for your Power Tour adventure. GEICO offers competitive rates and 24/7 customer service to keep you protected on the road.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6930b7bd3cb4320002bdd0a6/geico.png',
+    createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
+    upvotes: 45,
+    downvotes: 0,
+    commentCount: 5,
+  },
   
   // MotorTrend Community Posts
   {
