@@ -24,6 +24,9 @@ import { getVehicleSpecs } from '../../utils/vehicleSpecs';
 import { getArticleBySlug } from '../../utils/articles';
 import { getVehicles } from '../../api/vehiclesApi';
 import { CommunityPostsPromo } from '../../components/CommunityPostsPromo';
+import { AIPersonalAssistant } from '../../components/AIPersonalAssistant';
+import { KnowYourBudget } from '../../components/KnowYourBudget';
+import { VehicleLeadsStripe } from '../../components/VehicleLeadsStripe';
 import './Home.css';
 
 // Get vehicle database from API - NO HARDCODED DATA
@@ -1776,11 +1779,17 @@ export const Home: React.FC = () => {
   return (
     <div className="home">
       <div className="home__container">
-        {/* For Car Buyers (Practical Paula): Show carousel first */}
+        {/* For Car Buyers (Practical Paula): Show Top Ten Carousel first */}
         {isCarBuyers && (
-          <div className="home__section home__section--full-width">
-            <TopTenCarousel showExpandButton={false} />
-          </div>
+          <>
+            <div className="home__section home__section--full-width">
+              <TopTenCarousel showExpandButton={false} />
+            </div>
+            {/* Vehicle Leads Stripe - Under Top Ten Carousel */}
+            <div className="home__section home__section--full-width">
+              <VehicleLeadsStripe />
+            </div>
+          </>
         )}
 
         {/* Top Section: Hero + 3 Cards with Right Column Ad - Hidden for Car Buyers */}
@@ -1813,15 +1822,26 @@ export const Home: React.FC = () => {
             />
           </div>
           <div className="home__right-column">
-            <AdContainer
-              width={300}
-              height={600}
-              label="SVOD 200 x 420"
-              position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
-            />
+            {isCarBuyers ? (
+              <AIPersonalAssistant />
+            ) : (
+              <AdContainer
+                width={300}
+                height={600}
+                label="SVOD 200 x 420"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              />
+            )}
           </div>
         </div>
+
+        {/* For Car Buyers (Practical Paula): Show Know Your Budget widget after Latest Car News */}
+        {isCarBuyers && (
+          <div className="home__section home__section--full-width">
+            <KnowYourBudget />
+          </div>
+        )}
 
         {/* Vehicles Section with Right Column Ad */}
         <div className="home__section">
@@ -2674,6 +2694,7 @@ export const Home: React.FC = () => {
 };
 
 export default Home;
+
 
 
 

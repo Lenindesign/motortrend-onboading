@@ -1,0 +1,358 @@
+/**
+ * Know Your Buying Power Widget Styles
+ * Budget calculator using MotorTrend design system
+ */
+
+.know-your-budget {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 16px;
+  box-shadow: 0px 4px 8px 0px rgba(20, 20, 22, 0.1);
+  overflow: hidden;
+}
+
+.know-your-budget__container {
+  display: flex;
+  min-height: 500px;
+}
+
+/* Left Section */
+.know-your-budget__left {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #FFFFFF;
+}
+
+.know-your-budget__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #186CEA;
+  border-radius: 100px;
+  width: fit-content;
+}
+
+.know-your-budget__badge span {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.know-your-budget__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.know-your-budget__title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1A1B21;
+  margin: 0;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.know-your-budget__info-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #666666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.know-your-budget__info-button:hover {
+  color: #E90C17;
+}
+
+.know-your-budget__description {
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.know-your-budget__image-container {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  min-height: 300px;
+}
+
+.know-your-budget__image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Right Section */
+.know-your-budget__right {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: #F8F8F8;
+  border-left: 1px solid #E5E5E5;
+}
+
+/* Buying Power Display */
+.know-your-budget__power-display {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #E5E5E5;
+}
+
+.know-your-budget__power-amount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: #1A1B21;
+  line-height: 1;
+}
+
+.know-your-budget__power-label {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+}
+
+.know-your-budget__power-apr {
+  font-family: 'Geist', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+}
+
+/* Input Fields */
+.know-your-budget__inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.know-your-budget__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.know-your-budget__label {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1A1B21;
+}
+
+.know-your-budget__select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  background: #FFFFFF;
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1A1B21;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%231A1B21' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.know-your-budget__select:focus {
+  border-color: #E90C17;
+}
+
+.know-your-budget__select:hover {
+  border-color: #CCCCCC;
+}
+
+.know-your-budget__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.know-your-budget__currency {
+  position: absolute;
+  left: 16px;
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1A1B21;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.know-your-budget__input {
+  width: 100%;
+  padding: 12px 16px 12px 32px;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  background: #FFFFFF;
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1A1B21;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.know-your-budget__input:focus {
+  border-color: #E90C17;
+}
+
+.know-your-budget__input:hover {
+  border-color: #CCCCCC;
+}
+
+.know-your-budget__input::placeholder {
+  color: #B1B5C3;
+}
+
+/* Trade-In Toggle */
+.know-your-budget__trade-in {
+  padding-top: 8px;
+}
+
+.know-your-budget__toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.know-your-budget__toggle {
+  width: 44px;
+  height: 24px;
+  appearance: none;
+  background: #E5E5E5;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.know-your-budget__toggle::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.know-your-budget__toggle:checked {
+  background: #E90C17;
+}
+
+.know-your-budget__toggle:checked::before {
+  transform: translateX(20px);
+}
+
+.know-your-budget__toggle-text {
+  font-family: 'Geist', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1B21;
+}
+
+/* CTA Button */
+.know-your-budget__cta {
+  width: 100%;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #1A1B21;
+  color: #FFFFFF;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: auto;
+}
+
+.know-your-budget__cta:hover {
+  background: #E90C17;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(233, 12, 23, 0.3);
+}
+
+.know-your-budget__cta:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .know-your-budget__container {
+    flex-direction: column;
+  }
+
+  .know-your-budget__right {
+    border-left: none;
+    border-top: 1px solid #E5E5E5;
+  }
+
+  .know-your-budget__image-container {
+    min-height: 200px;
+  }
+
+  .know-your-budget__inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .know-your-budget__left,
+  .know-your-budget__right {
+    padding: 24px;
+  }
+
+  .know-your-budget__title {
+    font-size: 24px;
+  }
+
+  .know-your-budget__power-amount {
+    font-size: 48px;
+  }
+
+  .know-your-budget__image-container {
+    min-height: 150px;
+  }
+}
+
