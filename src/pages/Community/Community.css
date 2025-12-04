@@ -8,8 +8,9 @@
   max-width: 1280px; /* Matches global header constraint */
   margin: 0 auto;
   padding: 20px 24px;
+  padding-right: 40px; /* Extra padding for toggle button */
   gap: 24px;
-  transition: gap 0.3s ease;
+  transition: gap 0.3s ease, padding 0.3s ease;
   overflow: visible;
 }
 

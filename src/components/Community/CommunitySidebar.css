@@ -2,7 +2,6 @@
   position: relative;
   flex-shrink: 0;
   overflow: visible;
-  margin-right: 12px; /* Space for toggle button to be visible */
 }
 
 .community-sidebar {
@@ -30,7 +29,7 @@
 .community-sidebar__toggle {
   position: absolute;
   top: 16px;
-  right: -36px;
+  right: -12px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -57,7 +56,7 @@
 }
 
 .community-sidebar--collapsed .community-sidebar__toggle {
-  right: -36px;
+  right: -12px;
 }
 
 .community-sidebar__section {
