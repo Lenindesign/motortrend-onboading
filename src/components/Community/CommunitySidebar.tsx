@@ -82,7 +82,7 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
   
   // Filter communities based on search query
   const filteredOtherCommunities = useMemo(() => {
-    const otherCommunities = communities.filter(c => !c.isJoined && c.id !== 'comm_hotrodpowertour');
+    const otherCommunities = communities.filter(c => !c.isJoined && c.id !== 'comm_hotrodpowertour' && c.publisher !== 'Hearst');
     if (!searchQuery.trim()) {
       return otherCommunities;
     }
@@ -93,6 +93,11 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
       (community.description && community.description.toLowerCase().includes(query))
     );
   }, [communities, searchQuery]);
+
+  // Filter Hearst communities
+  const hearstCommunities = useMemo(() => {
+    return communities.filter(c => c.publisher === 'Hearst' && !c.isJoined);
+  }, [communities]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -231,6 +236,38 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
         )}
           </div>
         )}
+
+      {/* Hearst Section */}
+      {!isCollapsed && hearstCommunities.length > 0 && (
+        <div className="community-sidebar__section">
+          <h4 className="community-sidebar__title">Hearst</h4>
+          {hearstCommunities.map(community => (
+            <div key={community.id} className="community-sidebar__explore-item">
+              <button
+                className={`community-sidebar__item community-sidebar__item--explore ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
+                onClick={() => handleNavigate(`/community/${community.slug}`)}
+              >
+                {community.icon ? (
+                  <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
+                ) : (
+                  <div className="community-sidebar__community-placeholder">
+                    {community.name[0]}
+                  </div>
+                )}
+                {!isCollapsed && <span>c/{community.name}</span>}
+              </button>
+              {!isCollapsed && (
+                <button 
+                  className="community-sidebar__join-btn"
+                  onClick={(e) => { e.stopPropagation(); onJoinToggle(community.id); }}
+                >
+                  Join
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {!isCollapsed && (
         <div className="community-sidebar__footer">

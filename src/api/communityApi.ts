@@ -45,6 +45,7 @@ export interface Community {
   isJoined?: boolean; // For current user session
   rules?: string[];
   createdAt: string;
+  publisher?: string; // For categorizing communities by publisher (e.g., 'Hearst')
 }
 
 // Seed Data
@@ -114,6 +115,16 @@ const SEED_COMMUNITIES: Community[] = [
     memberCount: 50000,
     createdAt: new Date().toISOString(),
     rules: ['Be respectful', 'No spam', 'Stay on topic', 'Follow MotorTrend community guidelines'],
+  },
+  {
+    id: 'comm_esquire',
+    slug: 'esquire',
+    name: 'Esquire',
+    description: 'Join the Esquire community for style, culture, and lifestyle discussions.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a14cf522b300025a1432/icon-0uk5pi9k.svg',
+    memberCount: 12000,
+    createdAt: new Date().toISOString(),
+    publisher: 'Hearst',
   },
 ];
 
