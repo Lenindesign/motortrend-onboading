@@ -1,3 +1,8 @@
+.community-sidebar__wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .community-sidebar {
   width: 280px;
   background-color: var(--color-white);
@@ -8,10 +13,16 @@
   top: 80px; /* Adjust based on header height + spacing */
   padding: 16px 12px;
   overflow-y: auto;
+  overflow-x: visible;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.community-sidebar--collapsed {
+  width: 72px;
+  padding: 16px 8px;
 }
 
 .community-sidebar--collapsed {
@@ -32,9 +43,14 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.community-sidebar__wrapper {
+  position: relative;
 }
 
 .community-sidebar__toggle:hover {

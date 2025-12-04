@@ -101,15 +101,16 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <aside className={`community-sidebar ${isCollapsed ? 'community-sidebar--collapsed' : ''}`}>
-      {/* Toggle Button */}
-      <button 
-        className="community-sidebar__toggle"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-      >
-        <Icon name={isCollapsed ? 'chevron_right' : 'chevron_left'} size={20} />
-      </button>
+    <div className="community-sidebar__wrapper">
+      <aside className={`community-sidebar ${isCollapsed ? 'community-sidebar--collapsed' : ''}`}>
+        {/* Toggle Button */}
+        <button 
+          className="community-sidebar__toggle"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <Icon name={isCollapsed ? 'chevron_right' : 'chevron_left'} size={20} />
+        </button>
       
       {/* Feeds Section */}
       <div className="community-sidebar__section">
@@ -239,7 +240,8 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           </div>
         </div>
       )}
-    </aside>
+      </aside>
+    </div>
   );
 };
 
