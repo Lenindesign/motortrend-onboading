@@ -65,7 +65,14 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background-color: var(--color-white);
+  padding: 8px;
+}
+
+.community-page__banner-icon {
+  display: block;
 }
 
 .community-page__banner-placeholder {
