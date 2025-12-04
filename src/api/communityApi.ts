@@ -146,6 +146,16 @@ const SEED_COMMUNITIES: Community[] = [
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
   },
+  {
+    id: 'comm_roadandtrack',
+    slug: 'roadandtrack',
+    name: 'Road & Track',
+    description: 'Join the Road & Track community for automotive performance, racing, and enthusiast discussions.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a14e01f974000277653d/icon-17204tuu.svg',
+    memberCount: 14000,
+    createdAt: new Date().toISOString(),
+    publisher: 'Hearst',
+  },
 ];
 
 const SEED_POSTS: Post[] = [
