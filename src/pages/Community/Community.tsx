@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import type { 
   Community as ICommunity,
@@ -26,6 +26,7 @@ const CommunityPage: React.FC = () => {
   const { slug, postId } = useParams<{ slug?: string; postId?: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const adWrapperRef = useRef<HTMLDivElement>(null);
   
   // Data State
   const [communities, setCommunities] = useState<ICommunity[]>([]);
@@ -100,6 +101,50 @@ const CommunityPage: React.FC = () => {
       window.removeEventListener('onboardingDataUpdated', handleUpdate);
     };
   }, []);
+
+  // Handle sticky ad positioning with JavaScript
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!adWrapperRef.current) return;
+      
+      const wrapper = adWrapperRef.current;
+      const sidebar = wrapper.closest('.community-page__right-sidebar');
+      if (!sidebar) return;
+      
+      const container = sidebar.closest('.community-page__container');
+      if (!container) return;
+      
+      const containerRect = container.getBoundingClientRect();
+      const sidebarRect = sidebar.getBoundingClientRect();
+      const wrapperRect = wrapper.getBoundingClientRect();
+      
+      // Calculate if we should stick
+      const shouldStick = containerRect.top <= 20 && 
+                         containerRect.bottom > (wrapperRect.height + 20);
+      
+      if (shouldStick) {
+        const topOffset = Math.max(20, 20 - (containerRect.top));
+        wrapper.style.position = 'fixed';
+        wrapper.style.top = `${topOffset}px`;
+        wrapper.style.width = `${sidebarRect.width}px`;
+        wrapper.style.zIndex = '10';
+      } else {
+        wrapper.style.position = '';
+        wrapper.style.top = '';
+        wrapper.style.width = '';
+        wrapper.style.zIndex = '';
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [currentCommunity]);
 
   // Handlers
   const handleJoinToggle = (id: string) => {
@@ -435,7 +480,7 @@ const CommunityPage: React.FC = () => {
           )}
 
           {/* Ads */}
-          <div className="community-page__ad-wrapper">
+          <div ref={adWrapperRef} className="community-page__ad-wrapper">
              <AdContainer
                 width={300}
                 height={250}
