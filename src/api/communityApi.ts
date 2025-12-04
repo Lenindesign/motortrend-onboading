@@ -613,6 +613,20 @@ const SEED_POSTS: Post[] = [
     downvotes: 2,
     commentCount: 31,
   },
+  
+  // Men's Health Community Posts
+  {
+    id: 'post_menshealth_1',
+    communityId: 'comm_menshealth',
+    author: { id: 'user_menshealth_1', name: 'Men\'s Health Fitness' },
+    title: '9 Reasons You Need Strength Training in Your Life',
+    content: 'Strength training isn\'t just about building muscle—it\'s about transforming your life. From boosting metabolism to improving mental health, here are nine compelling reasons why strength training should be a non-negotiable part of your fitness routine.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a66401f9740002776547/594468833-1415948256556630-6332666672800229607-n.jpg',
+    createdAt: new Date(Date.now() - 2400000).toISOString(), // 40 minutes ago
+    upvotes: 156,
+    downvotes: 1,
+    commentCount: 42,
+  },
 ];
 
 // Seed Comments
