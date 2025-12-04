@@ -9,6 +9,7 @@
   margin: 0 auto;
   padding: 20px 24px;
   gap: 24px;
+  align-items: flex-start;
 }
 
 @media (min-width: 1280px) {
@@ -378,9 +379,11 @@
 
 .community-page__ad-wrapper {
   width: 100%;
+  position: -webkit-sticky;
   position: sticky;
   top: 20px;
   align-self: flex-start;
+  z-index: 10;
 }
 
 .community-page__empty {
