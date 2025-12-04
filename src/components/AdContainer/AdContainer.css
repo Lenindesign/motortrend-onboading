@@ -16,7 +16,13 @@
 }
 
 .ad-container--right-column {
+  position: -webkit-sticky; /* Safari support */
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+  z-index: 10;
   width: 100%;
+  margin-bottom: auto;
 }
 
 .ad-container__placeholder {

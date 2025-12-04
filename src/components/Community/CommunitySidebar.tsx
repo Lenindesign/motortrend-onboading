@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import type { Community } from '../../api/communityApi';
 import Icon from '../Icon';
@@ -18,6 +18,23 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  
+  // Auto-collapse on small screens
+  useEffect(() => {
+    const checkWidth = () => {
+      // Collapse if window width is less than 1024px
+      if (window.innerWidth < 1024) {
+        setIsCollapsed(true);
+      } else {
+        setIsCollapsed(false);
+      }
+    };
+    
+    checkWidth();
+    window.addEventListener('resize', checkWidth);
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
   
   // Default MotorTrend community (always joined)
   const motorTrendCommunity: Community = {
@@ -82,9 +99,21 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
   };
 
   const isActive = (path: string) => location.pathname === path;
+  
+  const toggleCollapse = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   return (
-    <aside className="community-sidebar">
+    <aside className={`community-sidebar ${isCollapsed ? 'community-sidebar--collapsed' : ''}`}>
+      {/* Toggle Button */}
+      <button 
+        className="community-sidebar__toggle"
+        onClick={toggleCollapse}
+        aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        <Icon name={isCollapsed ? 'chevron_right' : 'chevron_left'} size={20} />
+      </button>
       {/* Feeds Section */}
       <div className="community-sidebar__section">
         <h4 className="community-sidebar__title">Feeds</h4>
@@ -93,14 +122,14 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           onClick={() => handleNavigate('/community')}
         >
           <Icon name="home" size={20} className="community-sidebar__icon" />
-          <span>Home</span>
+          {!isCollapsed && <span>Home</span>}
         </button>
         <button 
           className={`community-sidebar__item ${isActive('/community/popular') ? 'community-sidebar__item--active' : ''}`}
           onClick={() => handleNavigate('/community/popular')}
         >
           <Icon name="trending_up" size={20} className="community-sidebar__icon" />
-          <span>Popular</span>
+          {!isCollapsed && <span>Popular</span>}
         </button>
         <button 
           className="community-sidebar__item"
@@ -113,7 +142,7 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
           }}
         >
           <Icon name="add_circle" size={20} className="community-sidebar__icon" />
-          <span>Create Community</span>
+          {!isCollapsed && <span>Create Community</span>}
         </button>
       </div>
 
@@ -139,11 +168,15 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
                   {community.name[0]}
                 </div>
               )}
-                <span className="community-sidebar__community-name">
-                  c/{community.name}
-                </span>
-                {isVerified && (
-                  <Icon name="check_circle" size={16} className="community-sidebar__verified-icon" />
+                {!isCollapsed && (
+                  <>
+                    <span className="community-sidebar__community-name">
+                      c/{community.name}
+                    </span>
+                    {isVerified && (
+                      <Icon name="check_circle" size={16} className="community-sidebar__verified-icon" />
+                    )}
+                  </>
                 )}
             </button>
             );
@@ -152,57 +185,61 @@ export const CommunitySidebar: React.FC<CommunitySidebarProps> = ({
       )}
 
       {/* Explore Section */}
+      {!isCollapsed && (
         <div className="community-sidebar__section">
           <h4 className="community-sidebar__title">Explore</h4>
-        <div className="community-sidebar__search">
-          <Icon name="search" size={18} className="community-sidebar__search-icon" />
-          <input
-            type="text"
-            className="community-sidebar__search-input"
-            placeholder="Search communities..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          <div className="community-sidebar__search">
+            <Icon name="search" size={18} className="community-sidebar__search-icon" />
+            <input
+              type="text"
+              className="community-sidebar__search-input"
+              placeholder="Search communities..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          {filteredOtherCommunities.length > 0 ? (
+            filteredOtherCommunities.map(community => (
+              <div key={community.id} className="community-sidebar__explore-item">
+                 <button
+                  className={`community-sidebar__item community-sidebar__item--explore ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
+                  onClick={() => handleNavigate(`/community/${community.slug}`)}
+                >
+                  {community.icon ? (
+                    <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
+                  ) : (
+                    <div className="community-sidebar__community-placeholder">
+                      {community.name[0]}
+                    </div>
+                  )}
+                  <span>c/{community.name}</span>
+                </button>
+                <button 
+                  className="community-sidebar__join-btn"
+                  onClick={(e) => { e.stopPropagation(); onJoinToggle(community.id); }}
+                >
+                  Join
+                </button>
+              </div>
+            ))
+          ) : (
+            searchQuery.trim() && (
+              <div className="community-sidebar__no-results">
+                <p>No communities found</p>
+              </div>
+            )
+          )}
         </div>
-        {filteredOtherCommunities.length > 0 ? (
-          filteredOtherCommunities.map(community => (
-            <div key={community.id} className="community-sidebar__explore-item">
-               <button
-                className={`community-sidebar__item community-sidebar__item--explore ${isActive(`/community/${community.slug}`) ? 'community-sidebar__item--active' : ''}`}
-                onClick={() => handleNavigate(`/community/${community.slug}`)}
-              >
-                {community.icon ? (
-                  <img src={community.icon} alt={community.name} className="community-sidebar__community-icon" />
-                ) : (
-                  <div className="community-sidebar__community-placeholder">
-                    {community.name[0]}
-                  </div>
-                )}
-                <span>c/{community.name}</span>
-              </button>
-              <button 
-                className="community-sidebar__join-btn"
-                onClick={(e) => { e.stopPropagation(); onJoinToggle(community.id); }}
-              >
-                Join
-              </button>
-            </div>
-          ))
-        ) : (
-          searchQuery.trim() && (
-            <div className="community-sidebar__no-results">
-              <p>No communities found</p>
-        </div>
-          )
       )}
-      </div>
 
-      <div className="community-sidebar__footer">
-        <div className="community-sidebar__links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Use</a>
+      {!isCollapsed && (
+        <div className="community-sidebar__footer">
+          <div className="community-sidebar__links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+          </div>
         </div>
-      </div>
+      )}
     </aside>
   );
 };
