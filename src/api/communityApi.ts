@@ -156,6 +156,16 @@ const SEED_COMMUNITIES: Community[] = [
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
   },
+  {
+    id: 'comm_bicycling',
+    slug: 'bicycling',
+    name: 'Bicycling',
+    description: 'Join the Bicycling community for cycling tips, gear reviews, and training discussions.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a15001f9740002776542/icon-semed7vd.svg',
+    memberCount: 11000,
+    createdAt: new Date().toISOString(),
+    publisher: 'Hearst',
+  },
 ];
 
 const SEED_POSTS: Post[] = [
