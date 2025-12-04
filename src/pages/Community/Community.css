@@ -29,6 +29,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  align-items: flex-start;
   display: none; /* Hidden on smaller screens by default */
 }
 
@@ -376,7 +377,6 @@
 
 .community-page__ad-wrapper {
   width: 100%;
-  position: relative;
 }
 
 .community-page__empty {

@@ -23,6 +23,7 @@
   z-index: 10;
   width: 100%;
   margin-bottom: auto;
+  will-change: transform; /* Optimize for sticky positioning */
 }
 
 .ad-container__placeholder {
