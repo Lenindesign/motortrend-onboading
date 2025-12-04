@@ -378,8 +378,9 @@
 
 .community-page__ad-wrapper {
   width: 100%;
-  position: sticky;
-  top: 20px;
+  position: -webkit-sticky !important; /* Safari support */
+  position: sticky !important;
+  top: 20px !important;
   align-self: flex-start;
   z-index: 10;
 }
