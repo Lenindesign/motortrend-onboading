@@ -639,6 +639,20 @@ const SEED_POSTS: Post[] = [
     downvotes: 0,
     commentCount: 28,
   },
+  
+  // Popular Mechanics Community Posts
+  {
+    id: 'post_popularmechanics_1',
+    communityId: 'comm_popularmechanics',
+    author: { id: 'user_popularmechanics_1', name: 'Popular Mechanics Science' },
+    title: 'Archaeologists Found 6,000-Year-Old Artifacts Under One of England\'s Most Hallowed Buildings',
+    content: 'In a remarkable archaeological discovery, researchers have uncovered 6,000-year-old artifacts beneath one of England\'s most revered historical structures. The findings shed new light on the ancient history of the site and reveal fascinating insights into early human civilization.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931b97caf193f0002077421/11905983392533026799.jpeg',
+    createdAt: new Date(Date.now() - 3000000).toISOString(), // 50 minutes ago
+    upvotes: 178,
+    downvotes: 2,
+    commentCount: 45,
+  },
 ];
 
 // Seed Comments
