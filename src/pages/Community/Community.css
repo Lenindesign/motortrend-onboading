@@ -9,6 +9,11 @@
   margin: 0 auto;
   padding: 20px 24px;
   gap: 24px;
+  transition: gap 0.3s ease;
+}
+
+.community-page__container:has(.community-sidebar--collapsed) {
+  gap: 12px;
 }
 
 @media (min-width: 1280px) {
