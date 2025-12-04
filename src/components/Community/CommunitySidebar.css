@@ -204,7 +204,10 @@
   height: 24px;
   border-radius: 50%;
   margin-right: 12px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+  background-color: var(--color-white);
+  padding: 2px;
   flex-shrink: 0;
   transition: margin 0.2s;
   display: block;
@@ -214,6 +217,7 @@
   margin-right: 0;
   width: 32px;
   height: 32px;
+  padding: 3px;
 }
 
 .community-sidebar__community-placeholder {
