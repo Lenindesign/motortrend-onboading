@@ -691,6 +691,20 @@ const SEED_POSTS: Post[] = [
     downvotes: 4,
     commentCount: 52,
   },
+  
+  // Bicycling Community Posts
+  {
+    id: 'post_bicycling_1',
+    communityId: 'comm_bicycling',
+    author: { id: 'user_bicycling_1', name: 'Bicycling Gear' },
+    title: 'The Best Thing to Happen to Gravel Bikes? This Unexpected Tire Trend.',
+    content: 'Gravel biking is experiencing a revolution, and it\'s all about the tires. An unexpected tire trend is transforming how riders approach off-road adventures, offering better performance, durability, and versatility than ever before. Discover what\'s changing the game for gravel bike enthusiasts.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931baba5abce4000277ff07/592936961-1233296655330378-4098180843638564870-n.jpg',
+    createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+    upvotes: 142,
+    downvotes: 1,
+    commentCount: 33,
+  },
 ];
 
 // Seed Comments
