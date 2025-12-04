@@ -12,7 +12,6 @@
   flex-direction: column;
   gap: 24px;
   transition: width 0.3s ease;
-  position: relative;
 }
 
 .community-sidebar--collapsed {
