@@ -601,6 +601,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 0,
     commentCount: 18,
   },
+  {
+    id: 'post_esquire_3',
+    communityId: 'comm_esquire',
+    author: { id: 'user_esquire_3', name: 'Esquire Music' },
+    title: 'Florence Welch, Lily Allen, and Brandi Carlile: Confronting Struggles Through Music',
+    content: 'In different ways and with very different sounds, Florence Welch, Lily Allen, and Brandi Carlile all confronted their own struggles and managed to be both cathartic and creatively thrilling.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a5ac01f9740002776546/593449860-1215967070389549-2765656914296172558-n.jpg',
+    createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
+    upvotes: 112,
+    downvotes: 2,
+    commentCount: 31,
+  },
 ];
 
 // Seed Comments
