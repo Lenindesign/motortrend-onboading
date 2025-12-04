@@ -166,6 +166,16 @@ const SEED_COMMUNITIES: Community[] = [
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
   },
+  {
+    id: 'comm_delish',
+    slug: 'delish',
+    name: 'Delish',
+    description: 'Join the Delish community for recipes, cooking tips, and food discussions.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a38385dbf90002d04ec9/logo-4efffb6.svg',
+    memberCount: 16000,
+    createdAt: new Date().toISOString(),
+    publisher: 'Hearst',
+  },
 ];
 
 const SEED_POSTS: Post[] = [
