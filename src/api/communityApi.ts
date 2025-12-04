@@ -82,7 +82,7 @@ const SEED_COMMUNITIES: Community[] = [
     slug: 'whatcarshouldibuy',
     name: 'What Car Should I Buy?',
     description: 'Help choosing your next vehicle.',
-    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692e5f27e457fc00025723c9/car-with-coin-icon-buying-car-icon-flat-style-car-loan-icon-graphics-vector.jpg',
+    icon: 'https://static0.carbuzzimages.com/wordpress/wp-content/uploads/gallery-images/original/1210000/900/1210962.jpg',
     memberCount: 15200,
     createdAt: new Date().toISOString(),
   },
