@@ -653,6 +653,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 2,
     commentCount: 45,
   },
+  {
+    id: 'post_popularmechanics_2',
+    communityId: 'comm_popularmechanics',
+    author: { id: 'user_popularmechanics_2', name: 'Popular Mechanics Space' },
+    title: 'To Escape Extinction, We Need to Achieve Warp Speed. New Scientific Breakthroughs Suggest It\'s Possible.',
+    content: 'The race to achieve faster-than-light travel has taken a dramatic turn with recent scientific breakthroughs. As humanity faces existential threats, warp speed technology may be our ticket to survival. New research suggests that what was once science fiction could become reality sooner than we think.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931b9e6e38ed80002bfcc40/591188542-1225311566122744-8037494552216590848-n.jpg',
+    createdAt: new Date(Date.now() - 6000000).toISOString(), // 1.7 hours ago
+    upvotes: 203,
+    downvotes: 3,
+    commentCount: 67,
+  },
 ];
 
 // Seed Comments
