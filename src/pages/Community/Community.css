@@ -1,6 +1,7 @@
 .community-page {
   background-color: var(--color-neutrals-7); /* Light grey background for the page */
   min-height: calc(100vh - 64px);
+  position: relative;
 }
 
 .community-page__container {
