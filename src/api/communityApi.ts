@@ -627,6 +627,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 1,
     commentCount: 42,
   },
+  {
+    id: 'post_menshealth_2',
+    communityId: 'comm_menshealth',
+    author: { id: 'user_menshealth_2', name: 'Men\'s Health Nutrition' },
+    title: 'Tired of Powders and Bars? Use These Creative Ways to Hit Your Protein Needs When You Travel.',
+    content: 'Traveling doesn\'t mean you have to sacrifice your protein goals. Skip the powders and bars and discover these creative, delicious ways to meet your protein needs while on the road. From airport-friendly options to hotel room hacks, we\'ve got you covered.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a74cf522b300025a1436/593451365-1415739333244189-6264539126554493333-n.jpg',
+    createdAt: new Date(Date.now() - 4800000).toISOString(), // 1.3 hours ago
+    upvotes: 134,
+    downvotes: 0,
+    commentCount: 28,
+  },
 ];
 
 // Seed Comments
