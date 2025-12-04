@@ -679,6 +679,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 1,
     commentCount: 38,
   },
+  {
+    id: 'post_roadandtrack_2',
+    communityId: 'comm_roadandtrack',
+    author: { id: 'user_roadandtrack_2', name: 'Road & Track Industry' },
+    title: 'President Donald Trump has apparently given Kei cars the green light for the U.S.A.',
+    content: 'In a significant development for automotive enthusiasts, President Donald Trump has apparently given Kei cars the green light for the U.S.A. This could open the door for these compact Japanese vehicles to enter the American market, bringing a new category of efficient and affordable transportation options.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931ba540781fc0002ce26c2/594544055-1217981220191074-2482676462710758147-n.jpg',
+    createdAt: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+    upvotes: 189,
+    downvotes: 4,
+    commentCount: 52,
+  },
 ];
 
 // Seed Comments
