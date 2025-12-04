@@ -705,6 +705,20 @@ const SEED_POSTS: Post[] = [
     downvotes: 1,
     commentCount: 33,
   },
+  
+  // Delish Community Posts
+  {
+    id: 'post_delish_1',
+    communityId: 'comm_delish',
+    author: { id: 'user_delish_1', name: 'Delish Recipes' },
+    title: 'My High-Protein Shrimp Bowls Are Ready In Under 30 Minutes',
+    content: 'Looking for a quick, healthy, and delicious meal? These high-protein shrimp bowls come together in under 30 minutes, making them perfect for busy weeknights. Packed with flavor and nutrients, this recipe is sure to become a family favorite.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bb1aff63ff0002cb9b32/592677151-1240970344560903-3347500235960729446-n.jpg',
+    createdAt: new Date(Date.now() - 2700000).toISOString(), // 45 minutes ago
+    upvotes: 198,
+    downvotes: 2,
+    commentCount: 41,
+  },
 ];
 
 // Seed Comments
