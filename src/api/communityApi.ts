@@ -575,6 +575,20 @@ const SEED_POSTS: Post[] = [
     downvotes: 5,
     commentCount: 67,
   },
+  
+  // Esquire Community Posts
+  {
+    id: 'post_esquire_1',
+    communityId: 'comm_esquire',
+    author: { id: 'user_esquire_1', name: 'Esquire Editorial' },
+    title: 'The Jonas Brothers: Two Decades In, A Legacy Act With Hits to Prove It',
+    content: 'The #JonasBrothers are musical veterans. Never mind the fact that they\'re only in their mid-30s. Two decades into their careers, they\'re officially a legacy act—with the hits to prove it.\n\nSince coming apart and exploring life on their own, the JoBros have become a stronger unit. And their next twenty years have only just begun.\n\nStory by Dave Holmes\n\nPhotographed by Billy Kidd\n\nStyled by Mark Holmes\n\nGrooming by Marissa Machado\n\nTailoring by Suzy Yun\n\nEsquire Design Director Martin Hoops\n\nEsquire Visual Director James Morris\n\nEsquire Entertainment Director Andrea Cuttler\n\nEsquire Editor-in-Chief Michael Sebastian',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a446df56f80002017a16/568262900-1180744377245152-1900907009731257623-n.jpg',
+    createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
+    upvotes: 128,
+    downvotes: 1,
+    commentCount: 24,
+  },
 ];
 
 // Seed Comments
