@@ -589,6 +589,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 1,
     commentCount: 24,
   },
+  {
+    id: 'post_esquire_2',
+    communityId: 'comm_esquire',
+    author: { id: 'user_esquire_2', name: 'Esquire Style' },
+    title: 'The Coolest Things for the Coolest People You Know',
+    content: 'From luxurious leathers to snacks and scents, these are the coolest things for the coolest people you know.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a4ecf522b300025a1434/16219943632514205774.jpeg',
+    createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+    upvotes: 95,
+    downvotes: 0,
+    commentCount: 18,
+  },
 ];
 
 // Seed Comments
