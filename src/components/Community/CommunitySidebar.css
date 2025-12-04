@@ -1,6 +1,8 @@
 .community-sidebar__wrapper {
   position: relative;
   flex-shrink: 0;
+  overflow: visible;
+  padding-right: 12px; /* Space for toggle button */
 }
 
 .community-sidebar {
@@ -25,15 +27,10 @@
   padding: 16px 8px;
 }
 
-.community-sidebar--collapsed {
-  width: 72px;
-  padding: 16px 8px;
-}
-
 .community-sidebar__toggle {
   position: absolute;
   top: 16px;
-  right: -12px;
+  right: 0;
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -47,11 +44,9 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
   flex-shrink: 0;
+  color: var(--color-black);
 }
 
-.community-sidebar__wrapper {
-  position: relative;
-}
 
 .community-sidebar__toggle:hover {
   background-color: var(--color-neutrals-7);
