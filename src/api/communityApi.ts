@@ -126,6 +126,16 @@ const SEED_COMMUNITIES: Community[] = [
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
   },
+  {
+    id: 'comm_menshealth',
+    slug: 'menshealth',
+    name: "Men's Health",
+    description: 'Join the Men\'s Health community for fitness, health, and wellness discussions.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a150f522b300025a1433/icon-pp5oy5jy.svg',
+    memberCount: 15000,
+    createdAt: new Date().toISOString(),
+    publisher: 'Hearst',
+  },
 ];
 
 const SEED_POSTS: Post[] = [
