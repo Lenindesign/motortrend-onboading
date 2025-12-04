@@ -613,6 +613,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 2,
     commentCount: 31,
   },
+  {
+    id: 'post_esquire_4',
+    communityId: 'comm_esquire',
+    author: { id: 'user_esquire_4', name: 'Esquire Entertainment' },
+    title: 'Billy Bob Thornton leads Taylor Sheridan\'s drama to another hopeful start—even if the plot occasionally stretches itself too thin.',
+    content: 'Billy Bob Thornton leads Taylor Sheridan\'s drama to another hopeful start—even if the plot occasionally stretches itself too thin. The series continues to showcase Sheridan\'s signature storytelling style, with Thornton delivering a compelling performance that anchors the narrative.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bda7caedbc000274bc73/593515026-1214644467188476-7489586715543291596-n.jpg',
+    createdAt: new Date(Date.now() - 9000000).toISOString(), // 2.5 hours ago
+    upvotes: 134,
+    downvotes: 3,
+    commentCount: 28,
+  },
   
   // Men's Health Community Posts
   {
