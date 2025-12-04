@@ -27,12 +27,11 @@
 .community-page__right-sidebar {
   width: 312px;
   flex-shrink: 0;
-  display: flex;
+  display: none; /* Hidden on smaller screens by default */
   flex-direction: column;
   gap: 16px;
   align-items: flex-start;
   align-self: flex-start;
-  display: none; /* Hidden on smaller screens by default */
 }
 
 @media (min-width: 960px) {
@@ -379,11 +378,6 @@
 
 .community-page__ad-wrapper {
   width: 100%;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 20px;
-  align-self: flex-start;
-  z-index: 10;
 }
 
 .community-page__empty {
