@@ -719,6 +719,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 2,
     commentCount: 41,
   },
+  {
+    id: 'post_delish_2',
+    communityId: 'comm_delish',
+    author: { id: 'user_delish_2', name: 'Delish Cooking' },
+    title: 'Tender Oven-Baked Pork Chops Will Be Your New Favorite Weeknight Dinner',
+    content: 'Say goodbye to dry, tough pork chops. This oven-baked method delivers perfectly tender, juicy pork chops every time. With minimal prep and maximum flavor, this recipe is about to become your go-to weeknight dinner solution.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bc78d03c7f0002a5c2d9/592948208-1240957114562226-1351952327316964510-n.jpg',
+    createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
+    upvotes: 175,
+    downvotes: 1,
+    commentCount: 36,
+  },
 ];
 
 // Seed Comments
