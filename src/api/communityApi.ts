@@ -731,6 +731,18 @@ const SEED_POSTS: Post[] = [
     downvotes: 1,
     commentCount: 36,
   },
+  {
+    id: 'post_delish_3',
+    communityId: 'comm_delish',
+    author: { id: 'user_delish_3', name: 'Delish Drinks' },
+    title: 'This vintage cocktail belongs at your next party.',
+    content: 'This vintage cocktail belongs at your next party. Read the full story at the link in the comments.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bcc020002400028f713c/592923230-1240883204569617-5351794831195745600-n.jpg',
+    createdAt: new Date(Date.now() - 8100000).toISOString(), // 2.25 hours ago
+    upvotes: 156,
+    downvotes: 0,
+    commentCount: 29,
+  },
 ];
 
 // Seed Comments
