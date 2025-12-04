@@ -665,6 +665,20 @@ const SEED_POSTS: Post[] = [
     downvotes: 3,
     commentCount: 67,
   },
+  
+  // Road & Track Community Posts
+  {
+    id: 'post_roadandtrack_1',
+    communityId: 'comm_roadandtrack',
+    author: { id: 'user_roadandtrack_1', name: 'Road & Track News' },
+    title: 'Porsche exec on Ioniq 5 N-style simulated shifts for EV sports cars: \'This is the way\'',
+    content: 'Porsche executives are embracing the future of electric sports cars, endorsing simulated gear shifts similar to Hyundai\'s Ioniq 5 N. The technology adds an engaging driving experience to EVs, bridging the gap between traditional manual transmissions and electric powertrains.',
+    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931ba1d0781fc0002ce26c1/594489489-1218087390180457-7463885223071952471-n.jpg',
+    createdAt: new Date(Date.now() - 4200000).toISOString(), // 1.2 hours ago
+    upvotes: 167,
+    downvotes: 1,
+    commentCount: 38,
+  },
 ];
 
 // Seed Comments
