@@ -136,6 +136,16 @@ const SEED_COMMUNITIES: Community[] = [
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
   },
+  {
+    id: 'comm_popularmechanics',
+    slug: 'popularmechanics',
+    name: 'Popular Mechanics',
+    description: 'Join the Popular Mechanics community for science, technology, and DIY discussions.',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a14f01f974000277653f/icon-e7jv600c.svg',
+    memberCount: 18000,
+    createdAt: new Date().toISOString(),
+    publisher: 'Hearst',
+  },
 ];
 
 const SEED_POSTS: Post[] = [
