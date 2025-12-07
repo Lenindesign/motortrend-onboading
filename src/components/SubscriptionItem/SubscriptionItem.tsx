@@ -1,5 +1,9 @@
-import React from 'react';
-import './SubscriptionItem.css';
+/**
+ * SubscriptionItem Component
+ * Migrated to inline styles for Tailwind compatibility
+ */
+
+import React, { useState } from 'react';
 import { CardShell } from '../atoms/CardShell/CardShell';
 
 export interface SubscriptionItemProps {
@@ -10,6 +14,7 @@ export interface SubscriptionItemProps {
   onClick?: () => void;
   onToggleSubscription?: (name: string, isActive: boolean) => void;
   href?: string;
+  className?: string;
 }
 
 export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({ 
@@ -19,32 +24,119 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
   isFindMore = false,
   onClick,
   onToggleSubscription,
-  href
+  href,
+  className = '',
 }) => {
+  const [isBadgeHovered, setIsBadgeHovered] = useState(false);
+
   const handleBadgeClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering the main onClick
+    e.stopPropagation();
     if (onToggleSubscription && !isFindMore) {
       onToggleSubscription(name, isActive);
     }
   };
 
   const handleClick = () => {
-    if (href) {
-      // If href is provided, let the link handle navigation
-      return;
-    }
-    if (onClick) {
-      onClick();
-    }
+    if (href) return;
+    if (onClick) onClick();
+  };
+
+  // Container styles
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'var(--spacing-2, 16px)',
+    width: '156px',
+    padding: 'var(--spacing-2, 16px)',
+    cursor: 'pointer',
+  };
+
+  // Link styles
+  const linkStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 'var(--spacing-2, 16px)',
+    width: '100%',
+    textDecoration: 'none',
+    color: 'inherit',
+    padding: 'var(--spacing-2, 16px)',
+  };
+
+  // Logo container styles
+  const logoContainerStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '116px',
+    height: '116px',
+    flexShrink: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  // Logo styles
+  const logoStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    borderRadius: '50%',
+    objectFit: 'cover',
+    backgroundColor: 'var(--color-neutrals-2, #23262F)',
+    boxShadow: 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))',
+  };
+
+  // Logo placeholder styles
+  const logoPlaceholderStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    borderRadius: '50%',
+    backgroundColor: 'var(--color-neutrals-2, #23262F)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--color-neutrals-5, #B1B5C3)',
+  };
+
+  // Badge styles
+  const badgeStyle: React.CSSProperties = {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: isActive ? 'var(--color-white, #FFFFFF)' : 'transparent',
+    borderRadius: '100px',
+    boxShadow: isActive ? 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))' : 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    transform: isBadgeHovered ? 'scale(1.1)' : 'none',
+  };
+
+  // Name styles
+  const nameStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight: 1.25,
+    textAlign: 'center',
+    color: 'var(--color-neutrals-2, #23262F)',
+    margin: 0,
+    marginTop: 'var(--spacing-1, 8px)',
+    width: '100%',
+    letterSpacing: '-0.1px',
+    wordWrap: 'break-word',
   };
 
   const content = (
     <>
-      <div className="subscription-item__logo-container">
+      <div style={logoContainerStyle}>
         {logo ? (
-          <img src={logo} alt={name} className="subscription-item__logo" />
+          <img src={logo} alt={name} style={logoStyle} />
         ) : (
-          <div className="subscription-item__logo-placeholder">
+          <div style={logoPlaceholderStyle}>
             {isFindMore && (
               <img 
                 src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64af5e852a20002f9bc06/more.svg" 
@@ -58,8 +150,10 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
         )}
         {isActive && (
           <div 
-            className="subscription-item__badge subscription-item__badge--clickable" 
+            style={badgeStyle}
             onClick={handleBadgeClick}
+            onMouseEnter={() => setIsBadgeHovered(true)}
+            onMouseLeave={() => setIsBadgeHovered(false)}
             title="Click to unsubscribe"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -70,8 +164,10 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
         )}
         {!isActive && !isFindMore && (
           <div 
-            className="subscription-item__badge subscription-item__badge--empty subscription-item__badge--clickable" 
+            style={badgeStyle}
             onClick={handleBadgeClick}
+            onMouseEnter={() => setIsBadgeHovered(true)}
+            onMouseLeave={() => setIsBadgeHovered(false)}
             title="Click to subscribe"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -80,7 +176,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
           </div>
         )}
       </div>
-      <p className="subscription-item__name">{name}</p>
+      <p style={nameStyle}>{name}</p>
     </>
   );
 
@@ -89,16 +185,15 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
       <CardShell
         padding="none"
         hasHover={true}
-        hasShadow={false}
-        borderRadius="md"
         background="transparent"
-        className="subscription-item subscription-item--link"
+        className={className}
+        style={containerStyle}
       >
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="subscription-item__link"
+          style={linkStyle}
           onClick={handleClick}
         >
           {content}
@@ -111,13 +206,13 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
     <CardShell
       padding="none"
       hasHover={true}
-      hasShadow={false}
-      borderRadius="md"
       background="transparent"
-      onClick={handleClick}
-      className="subscription-item"
+      className={className}
+      style={containerStyle}
     >
-      {content}
+      <div onClick={handleClick} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {content}
+      </div>
     </CardShell>
   );
 };

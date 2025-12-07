@@ -282,7 +282,7 @@
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   border: none;
-  color: #FFFFFF;
+  color: var(--color-white);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -924,8 +924,8 @@
   align-items: flex-start;
   gap: 16px;
   padding: 20px;
-  background-color: #FEF2F2;
-  border: 1px solid #FECACA;
+  background-color: var(--color-semantic-error-light);
+  border: 1px solid var(--color-semantic-error-border);
   border-radius: var(--border-radius-md);
 }
 
@@ -943,7 +943,7 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 1.5em;
-  color: #DC2626;
+  color: var(--color-semantic-error);
   margin: 0 0 8px 0;
 }
 
@@ -952,7 +952,7 @@
   font-weight: 600;
   font-size: 14px;
   line-height: 1.5em;
-  color: #7F1D1D;
+  color: var(--color-semantic-error-dark);
   margin: 0;
 }
 
@@ -989,8 +989,8 @@
 }
 
 .delete-account-checkbox input[type="checkbox"]:checked + .delete-account-checkmark {
-  background-color: #DC2626;
-  border-color: #DC2626;
+  background-color: var(--color-semantic-error);
+  border-color: var(--color-semantic-error);
 }
 
 .delete-account-checkbox input[type="checkbox"]:checked + .delete-account-checkmark:after {
@@ -1040,12 +1040,12 @@
 }
 
 .delete-account-btn--danger {
-  background-color: #DC2626;
+  background-color: var(--color-semantic-error);
   color: var(--color-white);
 }
 
 .delete-account-btn--danger:hover {
-  background-color: #B91C1C;
+  background-color: var(--color-semantic-error-dark);
 }
 
 /* Mobile Responsive */

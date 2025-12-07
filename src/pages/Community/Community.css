@@ -100,7 +100,7 @@
 }
 
 .community-page__banner-verified-icon {
-  color: #186CEA;
+  color: var(--color-blue);
   flex-shrink: 0;
 }
 
@@ -267,28 +267,11 @@
   color: var(--color-black);
 }
 
-/* Post Detail */
-.community-page__post-detail .post-card {
-  cursor: default;
-  margin-bottom: 0;
-}
-
-.community-page__post-detail .post-card:hover {
-  border-color: var(--color-neutrals-6);
-}
-
-.post-card__title--detail {
-  font-size: 24px;
-  margin-bottom: 16px;
-  color: var(--color-black);
-}
-
-.post-card__text-content {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-black);
-  margin-bottom: 24px;
-  white-space: pre-wrap;
+/* Post Detail - PostCard component handles styling internally with isDetailView prop */
+.community-page__post-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* Info Card (Right Sidebar) */
@@ -460,7 +443,7 @@
 
 .community-recommended-post__verified-icon {
   margin-left: 4px;
-  color: #186CEA;
+  color: var(--color-blue);
   flex-shrink: 0;
 }
 

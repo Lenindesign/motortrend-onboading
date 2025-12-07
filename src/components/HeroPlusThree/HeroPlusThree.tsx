@@ -1,13 +1,12 @@
 /**
  * Hero Plus Three Component
- * Hero card with 3 vertical cards below, with optional vehicle sliders
+ * Migrated to inline styles for Tailwind compatibility
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { HeroCard } from '../HeroCard';
 import { VerticalCard } from '../VerticalCard';
 import { VehiclesSection } from '../VehiclesSection';
-import './HeroPlusThree.css';
 
 export interface VehicleSlider {
   title: string;
@@ -31,43 +30,57 @@ export interface HeroPlusThreeProps {
   vehicleSliders?: VehicleSlider[];
 }
 
-export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({
-  hero,
-  cards,
-  vehicleSliders = [],
-}) => {
+export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ hero, cards, vehicleSliders = [] }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-3, 24px)',
+    width: '100%',
+  };
+
+  const heroStyle: React.CSSProperties = { width: '100%' };
+
+  const cardsStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+    gap: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-3, 24px)',
+    width: '100%',
+  };
+
+  const vehicleSlidersStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: isMobile ? 'var(--spacing-4, 32px)' : 'var(--spacing-6, 48px)',
+    width: '100%',
+    marginTop: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)',
+  };
+
+  const vehicleSliderStyle: React.CSSProperties = { width: '100%' };
+
   return (
-    <div className="hero-plus-three">
-      <div className="hero-plus-three__hero">
-        <HeroCard
-          imageUrl={hero.imageUrl}
-          title={hero.title}
-          onClick={hero.onClick}
-        />
+    <div style={containerStyle}>
+      <div style={heroStyle}>
+        <HeroCard imageUrl={hero.imageUrl} title={hero.title} onClick={hero.onClick} />
       </div>
-      <div className="hero-plus-three__cards">
+      <div style={cardsStyle}>
         {cards.slice(0, 3).map((card, index) => (
-          <VerticalCard
-            key={index}
-            imageUrl={card.imageUrl}
-            title={card.title}
-            type={card.type}
-            onClick={card.onClick}
-          />
+          <VerticalCard key={index} imageUrl={card.imageUrl} title={card.title} type={card.type} onClick={card.onClick} />
         ))}
       </div>
-      
-      {/* Vehicle Sliders */}
       {vehicleSliders.length > 0 && (
-        <div className="hero-plus-three__vehicle-sliders">
+        <div style={vehicleSlidersStyle}>
           {vehicleSliders.map((slider, index) => (
-            <div key={index} className="hero-plus-three__vehicle-slider">
-              <VehiclesSection
-                title={slider.title}
-                vehicles={slider.vehicles}
-                showMoreVisible={slider.showMoreVisible}
-                onShowMore={slider.onShowMore}
-              />
+            <div key={index} style={vehicleSliderStyle}>
+              <VehiclesSection title={slider.title} vehicles={slider.vehicles} showMoreVisible={slider.showMoreVisible} onShowMore={slider.onShowMore} />
             </div>
           ))}
         </div>
@@ -77,6 +90,3 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({
 };
 
 export default HeroPlusThree;
-
-
-

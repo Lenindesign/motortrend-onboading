@@ -113,7 +113,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: var(--color-white);
   margin: 0;
   padding: 0;
   flex-shrink: 0;
@@ -153,7 +153,7 @@
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 14px;
-  color: #FFFFFF;
+  color: var(--color-white);
   cursor: pointer;
   transition: all var(--transition-fast);
   z-index: 10;
@@ -165,7 +165,7 @@
 }
 
 .vehicle-inventory__hero-save-btn svg {
-  color: #4A9EFF;
+  color: var(--color-blue);
 }
 
 /* Rating Items - Horizontal Layout */
@@ -174,7 +174,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
@@ -205,7 +205,7 @@
   transform: translateY(-50%);
   width: 1px;
   height: 40px;
-  background-color: #FFFFFF;
+  background-color: var(--color-white);
 }
 
 .vehicle-inventory__hero-rating-label-wrapper {
@@ -216,14 +216,14 @@
 }
 
 .vehicle-inventory__hero-rating-label-top {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
 }
 
 .vehicle-inventory__hero-rating-label-bottom {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -232,7 +232,7 @@
 .vehicle-inventory__hero-rating-count {
   font-size: 12px;
   font-weight: 400;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
 }
 
 .vehicle-inventory__hero-rating-value-wrapper {
@@ -301,7 +301,7 @@
 }
 
 .vehicle-inventory__hero-rating-value {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 32px;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -310,7 +310,7 @@
 
 /* New rating format styles - Expert Rating */
 .vehicle-inventory__hero-rating-score-large {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 32px;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -322,7 +322,7 @@
 }
 
 .vehicle-inventory__hero-rating-score-max {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
@@ -374,7 +374,7 @@
 }
 
 .vehicle-inventory__hero-rating-motortrend-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -443,7 +443,7 @@
 }
 
 .vehicle-inventory__hero-rating-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -455,7 +455,7 @@
 }
 
 .vehicle-inventory__hero-rating-highlight {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-weight: 500;
 }
 
@@ -470,7 +470,7 @@
   background-color: rgba(20, 20, 22, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
+  color: var(--color-white);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -521,7 +521,7 @@
 }
 
 .vehicle-inventory__hero-dot--active {
-  background-color: #FFFFFF;
+  background-color: var(--color-white);
   width: 24px;
   border-radius: 4px;
 }
@@ -620,7 +620,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #FFFFFF;
+  background-color: var(--color-white);
   margin-bottom: var(--spacing-6);
   margin-left: calc(-1 * var(--spacing-6));
   margin-right: calc(-1 * var(--spacing-6));

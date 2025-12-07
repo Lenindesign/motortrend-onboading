@@ -1,7 +1,6 @@
 /**
  * Vehicles Section Component
- * Section with heading and vehicle cards grid
- * Now powered by the Vehicles API for better filtering
+ * Migrated to inline styles for Tailwind compatibility
  */
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
@@ -16,7 +15,6 @@ import WriteReviewModal from '../WriteReviewModal';
 import { getVehicleBodyStyle, type BodyStyleCategory, BODY_STYLE_CATEGORIES } from '../../utils/vehicleBodyStyles';
 import { getVehicles, searchVehicles } from '../../api/vehiclesApi';
 import Icon from '../Icon';
-import './VehiclesSection.css';
 
 export interface VehicleItem {
   name: string;
@@ -353,210 +351,112 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
     setShowAutocomplete(false);
   };
 
+  // Hover states
+  const [hoveredFilterBtn, setHoveredFilterBtn] = useState<string | null>(null);
+  const [hoveredTopFilter, setHoveredTopFilter] = useState<string | null>(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [hoveredAutocomplete, setHoveredAutocomplete] = useState<string | null>(null);
+  const [isDisplayMoreHovered, setIsDisplayMoreHovered] = useState(false);
+
+  // Styles
+  const sectionStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--section-spacing-vertical, 32px)', padding: 0 };
+  const headerStyle: React.CSSProperties = { marginBottom: 'var(--spacing-3, 24px)' };
+  const titleRowStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-2, 16px)', gap: 'var(--spacing-3, 24px)' };
+  const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '24px', lineHeight: '1.2em', color: 'var(--color-neutrals-1, #141416)', margin: 0, textAlign: 'left', flexShrink: 0 };
+  const topFiltersStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-2, 16px)', flexWrap: 'wrap', justifyContent: 'flex-end' };
+  
+  const getTopFilterBtnStyle = (id: string, isActive: boolean): React.CSSProperties => {
+    const isHovered = hoveredTopFilter === id;
+    return { padding: '8px 20px', backgroundColor: isActive ? 'var(--color-neutrals-3, #353945)' : (isHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-neutrals-8, #FCFCFD)'), border: `1px solid ${isActive ? 'var(--color-neutrals-3)' : (isHovered ? 'var(--color-neutrals-3)' : 'var(--color-neutrals-6, #E6E8EC)')}`, borderRadius: 'var(--border-radius-sm, 4px)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 600, color: isActive ? 'var(--color-neutrals-8, #FCFCFD)' : 'var(--color-neutrals-2, #23262F)', cursor: 'pointer', transition: 'all 150ms ease-in-out', whiteSpace: 'nowrap', flexShrink: 0 };
+  };
+
+  const searchContainerStyle: React.CSSProperties = { position: 'relative', flex: 1, minWidth: '200px', maxWidth: '400px' };
+  const searchInputStyle: React.CSSProperties = { width: '100%', padding: '8px 40px 8px 16px', backgroundColor: isSearchFocused ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-neutrals-8, #FCFCFD)', border: `1px solid ${isSearchFocused ? 'var(--color-neutrals-3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, borderRadius: 'var(--border-radius-sm, 4px)', fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--color-neutrals-1, #141416)', transition: 'all 150ms ease-in-out', outline: 'none' };
+  const searchIconStyle: React.CSSProperties = { position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-neutrals-5, #B1B5C3)', pointerEvents: 'none' };
+  const searchClearStyle: React.CSSProperties = { position: 'absolute', right: '36px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--color-neutrals-4, #6E7481)', fontSize: '24px', lineHeight: 1, cursor: 'pointer', padding: '0 4px' };
+  const autocompleteStyle: React.CSSProperties = { position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0, backgroundColor: 'var(--color-neutrals-8, #FCFCFD)', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-sm, 4px)', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', maxHeight: '300px', overflowY: 'auto', zIndex: 100 };
+  
+  const getAutocompleteItemStyle = (id: string): React.CSSProperties => ({ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '12px 16px', background: hoveredAutocomplete === id ? 'var(--color-neutrals-7, #F4F5F6)' : 'none', border: 'none', borderBottom: '1px solid var(--color-neutrals-7, #F4F5F6)', textAlign: 'left', cursor: 'pointer', transition: 'background-color 150ms ease-in-out' });
+  
+  const autocompleteTextStyle: React.CSSProperties = { fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };
+  const autocompleteTypeStyle: React.CSSProperties = { fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)', padding: '2px 8px', backgroundColor: 'var(--color-neutrals-7, #F4F5F6)', borderRadius: 'var(--border-radius-sm, 4px)' };
+  
+  const filtersStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-2, 16px)', flexWrap: 'nowrap', overflowX: 'auto', overflowY: 'hidden', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' };
+  
+  const getFilterBtnStyle = (id: string, isActive: boolean): React.CSSProperties => {
+    const isHovered = hoveredFilterBtn === id;
+    return { padding: '6px 16px', backgroundColor: isActive ? 'var(--color-neutrals-3, #353945)' : (isHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-neutrals-8, #FCFCFD)'), border: `1px solid ${isActive ? 'var(--color-neutrals-3)' : (isHovered ? 'var(--color-neutrals-3)' : 'var(--color-neutrals-6, #E6E8EC)')}`, borderRadius: 'var(--border-radius-sm, 4px)', fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 600, color: isActive ? 'var(--color-neutrals-8, #FCFCFD)' : 'var(--color-neutrals-2, #23262F)', whiteSpace: 'nowrap', flexShrink: 0, cursor: 'pointer', transition: 'all 150ms ease-in-out' };
+  };
+
+  const gridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 'var(--spacing-3, 24px)', width: '100%' };
+  const displayMoreStyle: React.CSSProperties = { display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'var(--spacing-4, 32px)', width: '100%' };
+  const displayMoreBtnStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: '12px 16px', background: isDisplayMoreHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'none', border: `1px solid ${isDisplayMoreHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, borderRadius: 'var(--border-radius-md, 8px)', fontFamily: 'var(--font-body)', fontSize: '16px', fontWeight: 600, color: 'var(--color-neutrals-2, #23262F)', cursor: 'pointer', transition: 'all 150ms ease-in-out', gap: 'var(--spacing-2, 16px)' };
+  const chevronStyle: React.CSSProperties = { flexShrink: 0, width: '20px', height: '20px', color: 'var(--color-neutrals-3, #353945)' };
+
   return (
-    <section className="vehicles-section">
-      <div className="vehicles-section__header">
-        {/* Title and Top Filters on Same Row */}
-        <div className="vehicles-section__title-row">
-          <h2 className="vehicles-section__title">{title}</h2>
-          
-          {/* Top Filter Bar: Type and Price */}
-          <div className="vehicles-section__top-filters">
-          <button
-            className={`vehicles-section__top-filter-btn ${filterMode === 'type' ? 'vehicles-section__top-filter-btn--active' : ''}`}
-            onClick={handleTypeClick}
-            type="button"
-          >
-            Type
-          </button>
-          <button
-            className={`vehicles-section__top-filter-btn ${filterMode === 'price' ? 'vehicles-section__top-filter-btn--active' : ''}`}
-            onClick={handlePriceClick}
-            type="button"
-          >
-            Price
-          </button>
-          
-          {/* Search Input with Autocomplete */}
-          <div className="vehicles-section__search-container">
-            <input
-              ref={searchInputRef}
-              type="text"
-              className="vehicles-section__search-input"
-              placeholder="Search by make, model, or year"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => {
-                if (searchQuery.length >= 1) {
-                  setShowAutocomplete(true);
-                }
-              }}
-            />
-            {searchQuery && (
-              <button
-                className="vehicles-section__search-clear"
-                onClick={handleSearchClear}
-                type="button"
-                aria-label="Clear search"
-              >
-                ×
-              </button>
-            )}
-            <Icon 
-              name="search" 
-              size={20} 
-              className="vehicles-section__search-icon"
-            />
-            
-            {/* Autocomplete Dropdown */}
-            {showAutocomplete && autocompleteResults.length > 0 && (
-              <div ref={autocompleteRef} className="vehicles-section__autocomplete">
-                {autocompleteResults.map((vehicle) => (
-                  <button
-                    key={vehicle.id}
-                    className="vehicles-section__autocomplete-item"
-                    onClick={() => handleAutocompleteSelect(vehicle)}
-                    type="button"
-                  >
-                    <span className="vehicles-section__autocomplete-text">
-                      {vehicle.year} {vehicle.make} {vehicle.model}
-                    </span>
-                    <span className="vehicles-section__autocomplete-type">
-                      {vehicle.bodyStyle}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
+    <section style={sectionStyle}>
+      <div style={headerStyle}>
+        <div style={titleRowStyle}>
+          <h2 style={titleStyle}>{title}</h2>
+          <div style={topFiltersStyle}>
+            <button style={getTopFilterBtnStyle('type', filterMode === 'type')} onClick={handleTypeClick} onMouseEnter={() => setHoveredTopFilter('type')} onMouseLeave={() => setHoveredTopFilter(null)} type="button">Type</button>
+            <button style={getTopFilterBtnStyle('price', filterMode === 'price')} onClick={handlePriceClick} onMouseEnter={() => setHoveredTopFilter('price')} onMouseLeave={() => setHoveredTopFilter(null)} type="button">Price</button>
+            <div style={searchContainerStyle}>
+              <input ref={searchInputRef} type="text" style={searchInputStyle} placeholder="Search by make, model, or year" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onFocus={() => { setIsSearchFocused(true); if (searchQuery.length >= 1) setShowAutocomplete(true); }} onBlur={() => setIsSearchFocused(false)} />
+              {searchQuery && <button style={searchClearStyle} onClick={handleSearchClear} type="button" aria-label="Clear search">×</button>}
+              <Icon name="search" size={20} style={searchIconStyle} />
+              {showAutocomplete && autocompleteResults.length > 0 && (
+                <div ref={autocompleteRef} style={autocompleteStyle}>
+                  {autocompleteResults.map((vehicle) => (
+                    <button key={vehicle.id} style={getAutocompleteItemStyle(vehicle.id)} onClick={() => handleAutocompleteSelect(vehicle)} onMouseEnter={() => setHoveredAutocomplete(vehicle.id)} onMouseLeave={() => setHoveredAutocomplete(null)} type="button">
+                      <span style={autocompleteTextStyle}>{vehicle.year} {vehicle.make} {vehicle.model}</span>
+                      <span style={autocompleteTypeStyle}>{vehicle.bodyStyle}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        </div>
-        
-        {/* Dynamic Filters - Show Type or Price based on filterMode */}
         {filterMode === 'type' && availableBodyStyles.length > 0 && (
-          <div className="vehicles-section__filters">
-            <button
-              className={`vehicles-section__filter-btn ${selectedBodyStyle === null ? 'vehicles-section__filter-btn--active' : ''}`}
-              onClick={() => setSelectedBodyStyle(null)}
-              type="button"
-            >
-              All
-            </button>
+          <div style={filtersStyle}>
+            <button style={getFilterBtnStyle('all-type', selectedBodyStyle === null)} onClick={() => setSelectedBodyStyle(null)} onMouseEnter={() => setHoveredFilterBtn('all-type')} onMouseLeave={() => setHoveredFilterBtn(null)} type="button">All</button>
             {availableBodyStyles.map((bodyStyle) => (
-              <button
-                key={bodyStyle}
-                className={`vehicles-section__filter-btn ${selectedBodyStyle === bodyStyle ? 'vehicles-section__filter-btn--active' : ''}`}
-                onClick={() => setSelectedBodyStyle(selectedBodyStyle === bodyStyle ? null : bodyStyle)}
-                type="button"
-              >
+              <button key={bodyStyle} style={getFilterBtnStyle(bodyStyle, selectedBodyStyle === bodyStyle)} onClick={() => setSelectedBodyStyle(selectedBodyStyle === bodyStyle ? null : bodyStyle)} onMouseEnter={() => setHoveredFilterBtn(bodyStyle)} onMouseLeave={() => setHoveredFilterBtn(null)} type="button">
                 {bodyStyle === 'Truck' ? 'Top Trucks' : bodyStyle === 'Sedan' ? 'Top Sedans' : bodyStyle === 'SUV' ? 'Top SUVs' : bodyStyle === 'Coupe' ? 'Top Coupes' : bodyStyle === 'Hatchback' ? 'Top Hatchbacks' : bodyStyle === 'Convertible' ? 'Top Convertibles' : bodyStyle === 'Wagon' ? 'Top Wagons' : `Top ${bodyStyle}s`}
               </button>
             ))}
           </div>
         )}
-        
-        {/* Price Range Filters */}
         {filterMode === 'price' && (
-          <div className="vehicles-section__filters">
-            <button
-              className={`vehicles-section__filter-btn ${selectedPriceRange === null ? 'vehicles-section__filter-btn--active' : ''}`}
-              onClick={() => setSelectedPriceRange(null)}
-              type="button"
-            >
-              All
-            </button>
+          <div style={filtersStyle}>
+            <button style={getFilterBtnStyle('all-price', selectedPriceRange === null)} onClick={() => setSelectedPriceRange(null)} onMouseEnter={() => setHoveredFilterBtn('all-price')} onMouseLeave={() => setHoveredFilterBtn(null)} type="button">All</button>
             {PRICE_RANGES.map((range) => (
-              <button
-                key={range.label}
-                className={`vehicles-section__filter-btn ${selectedPriceRange === range.label ? 'vehicles-section__filter-btn--active' : ''}`}
-                onClick={() => setSelectedPriceRange(selectedPriceRange === range.label ? null : range.label)}
-                type="button"
-              >
-                {range.label}
-              </button>
+              <button key={range.label} style={getFilterBtnStyle(range.label, selectedPriceRange === range.label)} onClick={() => setSelectedPriceRange(selectedPriceRange === range.label ? null : range.label)} onMouseEnter={() => setHoveredFilterBtn(range.label)} onMouseLeave={() => setHoveredFilterBtn(null)} type="button">{range.label}</button>
             ))}
           </div>
         )}
       </div>
-      <div className="vehicles-section__grid">
+      <div style={gridStyle}>
         {filteredVehicles.slice(0, vehiclesToShow).map((vehicle) => {
-          // Use API ratings as primary source (single source of truth)
-          // Only fallback to generated ratings if API data is missing
           const staffRating = vehicle.staffRating ?? generateStaffRating(vehicle.name);
           const communityRating = vehicle.communityRating ?? generateCommunityRating(vehicle.name);
           const userRating = getUserRating(vehicle.name);
-          
           return (
-            <VehicleCard
-              key={vehicle.name}
-              image={vehicle.image || vehicleImageFor(vehicle.name)}
-              name={vehicle.name}
-              type=""
-              rating1={staffRating}
-              rating2={communityRating}
-              hasMultipleRatings={true}
-              onBookmark={() => handleBookmark(vehicle.name)}
-              isBookmarked={isBookmarked(vehicle.name)}
-              onViewDetails={() => handleViewDetails(vehicle.name)}
-              onRate={() => handleRate(vehicle.name)}
-              userRating={userRating}
-            />
+            <VehicleCard key={vehicle.name} image={vehicle.image || vehicleImageFor(vehicle.name)} name={vehicle.name} type="" rating1={staffRating} rating2={communityRating} hasMultipleRatings={true} onBookmark={() => handleBookmark(vehicle.name)} isBookmarked={isBookmarked(vehicle.name)} onViewDetails={() => handleViewDetails(vehicle.name)} onRate={() => handleRate(vehicle.name)} userRating={userRating} />
           );
         })}
       </div>
       {filteredVehicles.length > vehiclesToShow && (
-        <div className="vehicles-section__display-more">
-          <button
-            className="vehicles-section__display-more-btn"
-            onClick={() => setVehiclesToShow(prev => prev + 6)}
-            type="button"
-            aria-label="Display more vehicles"
-          >
+        <div style={displayMoreStyle}>
+          <button style={displayMoreBtnStyle} onClick={() => setVehiclesToShow(prev => prev + 6)} onMouseEnter={() => setIsDisplayMoreHovered(true)} onMouseLeave={() => setIsDisplayMoreHovered(false)} type="button" aria-label="Display more vehicles">
             <span>Display More</span>
-            <svg
-              className="vehicles-section__display-more-chevron"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5 7.5L10 12.5L15 7.5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <svg style={chevronStyle} width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
         </div>
       )}
-      
-      {/* Rating Modal */}
-      <RatingModal
-        isOpen={isRatingModalOpen}
-        onClose={handleCloseRatingModal}
-        onRate={handleSubmitRating}
-        vehicleName={ratingVehicle}
-        currentRating={ratingVehicle ? getUserRating(ratingVehicle) : 0}
-        onRateAndReview={handleRateAndReview}
-        onClear={handleClearRating}
-      />
-      
-      {/* Write Review Modal */}
-      <WriteReviewModal
-        key={`${ratingVehicle}-${reviewModalRating || 'new'}`}
-        isOpen={isWriteReviewModalOpen}
-        onClose={() => {
-          setIsWriteReviewModalOpen(false);
-          setReviewModalRating(undefined);
-        }}
-        vehicleName={ratingVehicle}
-        vehicleImage={ratingVehicle ? vehicleImageFor(ratingVehicle) : undefined}
-        onSubmit={handleSubmitReview}
-        initialRating={reviewModalRating}
-      />
+      <RatingModal isOpen={isRatingModalOpen} onClose={handleCloseRatingModal} onRate={handleSubmitRating} vehicleName={ratingVehicle} currentRating={ratingVehicle ? getUserRating(ratingVehicle) : 0} onRateAndReview={handleRateAndReview} onClear={handleClearRating} />
+      <WriteReviewModal key={`${ratingVehicle}-${reviewModalRating || 'new'}`} isOpen={isWriteReviewModalOpen} onClose={() => { setIsWriteReviewModalOpen(false); setReviewModalRating(undefined); }} vehicleName={ratingVehicle} vehicleImage={ratingVehicle ? vehicleImageFor(ratingVehicle) : undefined} onSubmit={handleSubmitReview} initialRating={reviewModalRating} />
     </section>
   );
 };

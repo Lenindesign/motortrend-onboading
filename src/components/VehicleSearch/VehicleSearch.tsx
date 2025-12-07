@@ -1,12 +1,11 @@
 /**
  * Vehicle Search Component
- * Reusable car search with autocomplete functionality
+ * Migrated to inline styles for Tailwind compatibility
  */
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Icon from '../Icon';
 import { getVehicles } from '../../api/vehiclesApi';
-import './VehicleSearch.css';
 
 export interface VehicleSearchProps {
   onVehicleSelect: (vehicle: { name: string; ownership: 'own' | 'want' }) => void;
@@ -14,6 +13,7 @@ export interface VehicleSearchProps {
   className?: string;
   defaultOwnership?: 'own' | 'want';
   autoFocus?: boolean;
+  style?: React.CSSProperties;
 }
 
 export const VehicleSearch: React.FC<VehicleSearchProps> = ({
@@ -21,12 +21,14 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   placeholder = "Start typing to search...",
   className = "",
   defaultOwnership = 'own',
-  autoFocus = false
+  autoFocus = false,
+  style,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCars, setFilteredCars] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,17 +45,14 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
       
       const filtered = vehicleNames.filter(car => {
         const carLower = car.toLowerCase();
-        // Check if all words in the query appear in the vehicle name (order-independent)
         return queryWords.every(word => carLower.includes(word));
       })
       .sort((a, b) => {
-        // Extract year from vehicle name (e.g., "2025 Subaru WRX" -> 2025)
         const yearA = parseInt(a.match(/\d{4}/)?.[0] || '0');
         const yearB = parseInt(b.match(/\d{4}/)?.[0] || '0');
-        // Sort by year descending (newest first)
         return yearB - yearA;
       })
-      .slice(0, 15); // Limit to 15 results
+      .slice(0, 15);
       
       setFilteredCars(filtered);
       setShowDropdown(true);
@@ -67,7 +66,6 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   // Auto-focus input when component is shown
   useEffect(() => {
     if (autoFocus && inputRef.current) {
-      // Small delay to ensure DOM is ready
       setTimeout(() => {
         inputRef.current?.focus();
       }, 0);
@@ -89,8 +87,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
+    setSearchQuery(e.target.value);
   };
 
   const handleCarSelect = (car: string) => {
@@ -103,9 +100,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedIndex(prev => 
-          prev < filteredCars.length - 1 ? prev + 1 : prev
-        );
+        setHighlightedIndex(prev => prev < filteredCars.length - 1 ? prev + 1 : prev);
         break;
       case 'ArrowUp':
         e.preventDefault();
@@ -124,31 +119,104 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
     }
   };
 
+  // Container styles
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    ...style,
+  };
+
+  // Input container styles
+  const inputContainerStyle: React.CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+  };
+
+  // Search icon styles
+  const searchIconStyle: React.CSSProperties = {
+    position: 'absolute',
+    left: '16px',
+    color: 'var(--color-neutrals-4, #6E7481)',
+    zIndex: 1,
+  };
+
+  // Input styles
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '14px 16px 14px 48px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '1.5em',
+    color: 'var(--color-neutrals-2, #23262F)',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    border: `1px solid ${isFocused ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
+    borderRadius: 'var(--border-radius-md, 8px)',
+    outline: 'none',
+    boxShadow: isFocused 
+      ? 'var(--shadow-depth-5, 0 4px 20px rgba(20, 20, 22, 0.06))' 
+      : 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))',
+    transition: 'border-color 150ms ease-in-out, box-shadow 150ms ease-in-out',
+  };
+
+  // Dropdown styles
+  const dropdownStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    marginTop: '4px',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    boxShadow: 'var(--shadow-depth-5, 0 4px 20px rgba(20, 20, 22, 0.06))',
+    zIndex: 1000,
+    maxHeight: '240px',
+    overflowY: 'auto',
+  };
+
+  // Dropdown item styles
+  const getDropdownItemStyle = (isHighlighted: boolean, isLast: boolean): React.CSSProperties => ({
+    padding: '12px 16px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '1.5em',
+    color: 'var(--color-neutrals-2, #23262F)',
+    cursor: 'pointer',
+    transition: 'background-color 150ms ease-in-out',
+    backgroundColor: isHighlighted ? 'var(--color-neutrals-7, #F4F5F6)' : 'transparent',
+    borderBottom: isLast ? 'none' : '1px solid var(--color-neutrals-7, #F4F5F6)',
+  });
+
   return (
-    <div className={`vehicle-search ${className}`} ref={searchRef}>
-      <div className="vehicle-search__input-container">
-        <Icon name="search" size={20} className="vehicle-search__search-icon" />
+    <div className={className} style={containerStyle} ref={searchRef}>
+      <div style={inputContainerStyle}>
+        <Icon name="search" size={20} style={searchIconStyle} />
         <input
           ref={inputRef}
           type="text"
           value={searchQuery}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => searchQuery.length > 0 && setShowDropdown(true)}
+          onFocus={() => {
+            setIsFocused(true);
+            if (searchQuery.length > 0) setShowDropdown(true);
+          }}
+          onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="vehicle-search__input"
+          style={inputStyle}
         />
       </div>
 
-      {/* Autocomplete Dropdown */}
       {showDropdown && filteredCars.length > 0 && (
-        <div className="vehicle-search__dropdown">
+        <div style={dropdownStyle}>
           {filteredCars.map((car, index) => (
             <div
               key={car}
-              className={`vehicle-search__dropdown-item ${
-                index === highlightedIndex ? 'vehicle-search__dropdown-item--highlighted' : ''
-              }`}
+              style={getDropdownItemStyle(index === highlightedIndex, index === filteredCars.length - 1)}
               onClick={() => handleCarSelect(car)}
               onMouseEnter={() => setHighlightedIndex(index)}
             >

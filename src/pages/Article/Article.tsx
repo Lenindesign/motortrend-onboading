@@ -1074,6 +1074,7 @@ export const Article: React.FC = () => {
             <div className={`article__hero-wrapper ${isPremiumArticle ? 'article__hero-wrapper--premium' : ''}`}>
               <ArticleHero
                 imageUrl={article.heroImage}
+                videoUrl={article.heroVideo}
                 title={article.title}
                 onShare={handleShare}
                 onImageClick={() => handleImageClick(0)}

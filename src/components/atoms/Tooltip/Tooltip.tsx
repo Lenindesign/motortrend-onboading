@@ -1,10 +1,10 @@
 /**
  * Tooltip Atom
+ * Migrated to inline styles for Tailwind compatibility
  * Accessible tooltip component with positioning and delay control
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import './Tooltip.css';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 export type TooltipTrigger = 'hover' | 'click' | 'focus';
@@ -34,6 +34,54 @@ export interface TooltipProps {
   'aria-label'?: string;
 }
 
+// Arrow styles for each placement
+const arrowStyles: Record<TooltipPlacement, React.CSSProperties> = {
+  top: {
+    position: 'absolute',
+    bottom: '-6px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderWidth: '6px 6px 0 6px',
+    borderColor: 'var(--color-neutrals-2, #23262F) transparent transparent transparent',
+  },
+  bottom: {
+    position: 'absolute',
+    top: '-6px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderWidth: '0 6px 6px 6px',
+    borderColor: 'transparent transparent var(--color-neutrals-2, #23262F) transparent',
+  },
+  left: {
+    position: 'absolute',
+    right: '-6px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderWidth: '6px 0 6px 6px',
+    borderColor: 'transparent transparent transparent var(--color-neutrals-2, #23262F)',
+  },
+  right: {
+    position: 'absolute',
+    left: '-6px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderWidth: '6px 6px 6px 0',
+    borderColor: 'transparent var(--color-neutrals-2, #23262F) transparent transparent',
+  },
+};
+
 export const Tooltip: React.FC<TooltipProps> = ({
   content,
   children,
@@ -54,13 +102,48 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const showTimeoutRef = useRef<number | null>(null);
   const hideTimeoutRef = useRef<number | null>(null);
 
+  // Trigger wrapper styles
+  const triggerStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    cursor: 'help',
+  };
+
+  // Tooltip container styles
+  const tooltipStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: `${position.top}px`,
+    left: `${position.left}px`,
+    maxWidth,
+    zIndex: 10000,
+    backgroundColor: 'var(--color-neutrals-2, #23262F)',
+    color: 'var(--color-white, #FFFFFF)',
+    padding: '8px 12px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '14px',
+    fontWeight: 500,
+    lineHeight: '1.4',
+    boxShadow: 'var(--shadow-tooltip, 0 4px 12px rgba(20, 20, 22, 0.2))',
+    opacity: isVisible ? 1 : 0,
+    visibility: isVisible ? 'visible' : 'hidden',
+    transition: 'opacity 150ms ease-in-out, visibility 150ms ease-in-out',
+    pointerEvents: isVisible ? 'auto' : 'none',
+  };
+
+  // Content wrapper styles
+  const contentStyle: React.CSSProperties = {
+    position: 'relative',
+    zIndex: 1,
+  };
+
   // Calculate tooltip position
   const calculatePosition = () => {
     if (!triggerRef.current || !tooltipRef.current) return;
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
-    const offset = showArrow ? 12 : 8; // Extra space for arrow
+    const offset = showArrow ? 12 : 8;
 
     let top = 0;
     let left = 0;
@@ -98,68 +181,51 @@ export const Tooltip: React.FC<TooltipProps> = ({
     setPosition({ top, left });
   };
 
-  // Show tooltip with delay
   const handleShow = () => {
     if (disabled) return;
-
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
       hideTimeoutRef.current = null;
     }
-
     if (showDelay > 0) {
-      showTimeoutRef.current = window.setTimeout(() => {
-        setIsVisible(true);
-      }, showDelay);
+      showTimeoutRef.current = window.setTimeout(() => setIsVisible(true), showDelay);
     } else {
       setIsVisible(true);
     }
   };
 
-  // Hide tooltip with delay
   const handleHide = () => {
     if (showTimeoutRef.current) {
       clearTimeout(showTimeoutRef.current);
       showTimeoutRef.current = null;
     }
-
     if (hideDelay > 0) {
-      hideTimeoutRef.current = window.setTimeout(() => {
-        setIsVisible(false);
-      }, hideDelay);
+      hideTimeoutRef.current = window.setTimeout(() => setIsVisible(false), hideDelay);
     } else {
       setIsVisible(false);
     }
   };
 
-  // Toggle tooltip (for click trigger)
   const handleToggle = () => {
     if (disabled) return;
     setIsVisible(!isVisible);
   };
 
-  // Calculate position when tooltip becomes visible
   useEffect(() => {
-    if (isVisible) {
-      calculatePosition();
-    }
+    if (isVisible) calculatePosition();
   }, [isVisible, content]);
 
-  // Recalculate position on scroll/resize
   useEffect(() => {
     if (!isVisible) return;
-
     const handleUpdate = () => calculatePosition();
     window.addEventListener('scroll', handleUpdate, true);
     window.addEventListener('resize', handleUpdate);
-
     return () => {
       window.removeEventListener('scroll', handleUpdate, true);
       window.removeEventListener('resize', handleUpdate);
     };
   }, [isVisible]);
 
-  // Cleanup timeouts
   useEffect(() => {
     return () => {
       if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
@@ -167,27 +233,21 @@ export const Tooltip: React.FC<TooltipProps> = ({
     };
   }, []);
 
-  // Handle click outside to close (for click trigger)
   useEffect(() => {
     if (trigger !== 'click' || !isVisible) return;
-
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        triggerRef.current &&
-        !triggerRef.current.contains(event.target as Node) &&
-        tooltipRef.current &&
-        !tooltipRef.current.contains(event.target as Node)
+        triggerRef.current && !triggerRef.current.contains(event.target as Node) &&
+        tooltipRef.current && !tooltipRef.current.contains(event.target as Node)
       ) {
         setIsVisible(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [trigger, isVisible]);
 
-  // Event handlers based on trigger type
-  const triggerProps: any = {};
+  const triggerProps: Record<string, () => void> = {};
   if (trigger === 'hover') {
     triggerProps.onMouseEnter = handleShow;
     triggerProps.onMouseLeave = handleHide;
@@ -200,21 +260,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
     triggerProps.onBlur = handleHide;
   }
 
-  const tooltipClasses = [
-    'tooltip',
-    `tooltip--${placement}`,
-    showArrow && 'tooltip--with-arrow',
-    isVisible && 'tooltip--visible',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
   return (
     <>
       <div
         ref={triggerRef}
-        className="tooltip-trigger"
+        className={className}
+        style={triggerStyle}
         aria-describedby={isVisible ? 'tooltip-content' : undefined}
         {...triggerProps}
       >
@@ -225,21 +276,14 @@ export const Tooltip: React.FC<TooltipProps> = ({
         <div
           ref={tooltipRef}
           id="tooltip-content"
-          className={tooltipClasses}
           role="tooltip"
           aria-label={ariaLabel}
-          style={{
-            position: 'fixed',
-            top: `${position.top}px`,
-            left: `${position.left}px`,
-            maxWidth,
-            zIndex: 10000,
-          }}
+          style={tooltipStyle}
           onMouseEnter={trigger === 'hover' ? handleShow : undefined}
           onMouseLeave={trigger === 'hover' ? handleHide : undefined}
         >
-          <div className="tooltip__content">{content}</div>
-          {showArrow && <div className="tooltip__arrow" />}
+          <div style={contentStyle}>{content}</div>
+          {showArrow && <div style={arrowStyles[placement]} />}
         </div>
       )}
     </>

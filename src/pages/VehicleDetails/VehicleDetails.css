@@ -124,8 +124,8 @@
 
 .vehicle-details__photo-gallery-view-all {
   flex-shrink: 0;
-  color: #ffffff;
-  background-color: #000000;
+  color: var(--color-white);
+  background-color: var(--color-black);
 }
 
 .vehicle-details__photo-gallery-grid {
@@ -222,7 +222,7 @@
 }
 
 .vehicle-details__prime-top-overlay .vehicle-details__breadcrumbs a:hover {
-  color: #FFFFFF;
+  color: var(--color-white);
 }
 
 .vehicle-details__prime-top-overlay .vehicle-details__breadcrumbs span {
@@ -311,7 +311,7 @@
 }
 
 .vehicle-details__prime-top-overlay .article-reactions__trigger:hover .article-reactions__trigger-icon--lucide {
-  color: #000000;
+  color: var(--color-black);
   filter: none;
 }
 
@@ -327,7 +327,7 @@
 
 .vehicle-details__prime-top-overlay .vehicle-details__save-btn:hover {
   background-color: rgba(20, 20, 22, 0.4);
-  color: #FFFFFF;
+  color: var(--color-white);
   transform: translateY(-1px);
 }
 
@@ -367,7 +367,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: var(--color-white);
   margin: 0;
   padding: 0;
   flex-shrink: 1;
@@ -392,7 +392,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
@@ -410,14 +410,14 @@
 }
 
 .vehicle-details__prime-rating-label-top {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
 }
 
 .vehicle-details__prime-rating-label-bottom {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -451,7 +451,7 @@
 }
 
 .vehicle-details__prime-rating-value {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 32px;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -740,7 +740,7 @@
   left: 0;
   right: 0;
   width: 100%;
-  background-color: #141416;
+  background-color: var(--color-neutrals-1);
   z-index: 1000;
   transform: translateY(-100%);
   opacity: 0;
@@ -770,7 +770,7 @@
   font-weight: 600;
   font-size: 20px;
   line-height: 1.2em;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -786,7 +786,7 @@
 .vehicle-details__sticky-rating-separator {
   width: 1px;
   height: 40px;
-  background-color: #2A2A2A;
+  background-color: var(--color-neutrals-2);
   margin: 0 var(--spacing-3);
   flex-shrink: 0;
 }
@@ -795,7 +795,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -828,7 +828,7 @@
   gap: 8px;
   background: none;
   border: none;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   padding: 0;
   font-size: 14px;
   font-weight: 500;
@@ -837,7 +837,7 @@
 }
 
 .vehicle-details__sticky-rating-label {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 14px;
   font-weight: 500;
   text-decoration-line: underline;
@@ -852,7 +852,7 @@
 }
 
 .vehicle-details__sticky-rating-label-top {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.2;
@@ -860,7 +860,7 @@
 }
 
 .vehicle-details__sticky-rating-label-bottom {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.2;
@@ -895,7 +895,7 @@
 }
 
 .vehicle-details__sticky-rating-value {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 32px;
   font-weight: 600;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
@@ -950,7 +950,7 @@
 }
 
 .vehicle-details__sticky-rating-text {
-  color: #B0B0B0;
+  color: var(--color-neutrals-5);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -961,7 +961,7 @@
 }
 
 .vehicle-details__sticky-rating-highlight {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-weight: 600;
 }
 
@@ -974,7 +974,7 @@
 }
 
 .vehicle-details__sticky-rating-score-large {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 32px;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -986,7 +986,7 @@
 }
 
 .vehicle-details__sticky-rating-score-max {
-  color: #B0B0B0;
+  color: var(--color-neutrals-5);
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
@@ -1006,7 +1006,7 @@
 }
 
 .vehicle-details__sticky-rating-motortrend-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -1046,7 +1046,7 @@
   padding: 16px 48px;
   padding-left: 48px;
   padding-right: 48px;
-  background-color: #141416;
+  background-color: var(--color-neutrals-1);
   border-radius: 8px;
   margin-bottom: var(--spacing-3);
   overflow: visible;
@@ -1056,7 +1056,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 14px;
   font-weight: 500;
   min-width: 0;
@@ -1078,7 +1078,7 @@
 }
 
 .vehicle-details__rating-label {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 14px;
   font-weight: 500;
   text-decoration-line: underline;
@@ -1093,7 +1093,7 @@
 }
 
 .vehicle-details__rating-label-top {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.2;
@@ -1101,7 +1101,7 @@
 }
 
 .vehicle-details__rating-label-bottom {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 12px;
   font-weight: 500;
   line-height: 1.2;
@@ -1160,7 +1160,7 @@
 }
 
 .vehicle-details__rating-value {
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   font-size: 18px;
   font-weight: 600;
   font-family: 'Geist', system-ui, -apple-system, sans-serif;
@@ -1180,7 +1180,7 @@
   gap: var(--spacing-1);
   background: none;
   border: none;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
   padding: 0;
   font-size: 14px;
   font-weight: 500;
@@ -1620,7 +1620,7 @@
   padding-right: 42px;
   padding-bottom: 42px;
   padding-left: 42px;
-  background-color: #ffffff;
+  background-color: var(--color-white);
   border-radius: 8px;
 }
 
@@ -1921,7 +1921,7 @@
   justify-content: center;
   width: 189px;
   height: 160px;
-  background-color: #282a30;
+  background-color: var(--color-neutrals-2-5);
   border-radius: 8px;
   gap: 4px;
   position: relative;
@@ -2004,48 +2004,48 @@
 .vehicle-details__score-bar {
   flex: 1;
   height: 8px;
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .vehicle-details__score-bar-fill {
   height: 100%;
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
   border-radius: 4px;
   transition: width var(--transition-fast);
 }
 
 .vehicle-details__score-item:nth-of-type(1) .vehicle-details__score-bar-fill {
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
 }
 
 .vehicle-details__score-item:nth-of-type(2) .vehicle-details__score-bar-fill {
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
 }
 
 .vehicle-details__score-item:nth-of-type(3) .vehicle-details__score-bar-fill {
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
 }
 
 .vehicle-details__score-item:nth-of-type(4) .vehicle-details__score-bar-fill {
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
 }
 
 .vehicle-details__score-item:nth-of-type(1) .vehicle-details__score-bar {
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
 }
 
 .vehicle-details__score-item:nth-of-type(2) .vehicle-details__score-bar {
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
 }
 
 .vehicle-details__score-item:nth-of-type(3) .vehicle-details__score-bar {
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
 }
 
 .vehicle-details__score-item:nth-of-type(4) .vehicle-details__score-bar {
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
 }
 
 .vehicle-details__score-item span:last-child {
@@ -2597,11 +2597,11 @@
   display: none;
   align-items: center;
   justify-content: space-between;
-  background-color: #1A1B21;
+  background-color: var(--color-neutrals-1);
   border-radius: 12px;
   padding: 20px 40px;
   margin-bottom: 32px;
-  color: #FFFFFF;
+  color: var(--color-white);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -2630,7 +2630,7 @@
   font-size: 48px;
   font-weight: 700;
   line-height: 1;
-  color: #FFFFFF;
+  color: var(--color-white);
   display: flex;
   align-items: baseline;
 }
@@ -2648,7 +2648,7 @@
   gap: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #FFFFFF;
+  color: var(--color-white);
 }
 
 .vehicle-details__rating-mt-logo {
@@ -2675,7 +2675,7 @@
 }
 
 .vehicle-details__rating-highlight {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-weight: 600;
   margin-left: 4px;
 }

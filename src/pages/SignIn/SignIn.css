@@ -93,7 +93,7 @@
 
 .social-btn--google {
   background-color: var(--color-neutrals-8);
-  color: #6A6A6A;
+  color: var(--color-neutrals-4);
 }
 
 .social-btn--google:hover {
@@ -106,7 +106,7 @@
 }
 
 .social-btn--facebook:hover {
-  background-color: #1557c1;
+  background-color: var(--color-blue);
 }
 
 .social-btn--apple {
@@ -115,7 +115,7 @@
 }
 
 .social-btn--apple:hover {
-  background-color: #1a1a1a;
+  background-color: var(--color-neutrals-1);
 }
 
 /* Divider */
@@ -201,7 +201,7 @@
 }
 
 .sign-in-card__sign-up-link:hover {
-  color: #1557c1;
+  color: var(--color-blue);
 }
 
 /* Mobile Responsive */

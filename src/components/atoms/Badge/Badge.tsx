@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import './Badge.css';
 
 export type BadgeVariant = 
   | 'new' 
@@ -19,23 +18,58 @@ export type BadgeVariant =
 export type BadgeSize = 'sm' | 'md' | 'lg';
 
 export interface BadgeProps {
-  /** Badge content */
   children: React.ReactNode;
-  /** Visual variant with semantic meaning */
   variant?: BadgeVariant;
-  /** Size of the badge */
   size?: BadgeSize;
-  /** Additional CSS classes */
   className?: string;
-  /** Icon to display before text */
   icon?: React.ReactNode;
-  /** Whether badge has a subtle outline style */
   outline?: boolean;
-  /** Click handler (makes badge interactive) */
   onClick?: () => void;
-  /** ARIA label for accessibility */
   'aria-label'?: string;
 }
+
+// Size: padding-y padding-x font-size gap
+const sizeStyles: Record<BadgeSize, React.CSSProperties> = {
+  sm: { padding: '6px 16px', fontSize: '11px', gap: '4px' },
+  md: { padding: '8px 20px', fontSize: '12px', gap: '4px' },
+  lg: { padding: '10px 24px', fontSize: '14px', gap: '4px' },
+};
+
+// Variant colors - Using CSS variables from design system
+const variantStyles: Record<BadgeVariant, { bg: string; color: string }> = {
+  neutral: { 
+    bg: 'var(--color-neutrals-6, #E6E8EC)', 
+    color: 'var(--color-neutrals-3, #353945)' 
+  },
+  new: { 
+    bg: 'var(--color-primary-1, #E90C17)', 
+    color: 'var(--color-white, #FFFFFF)' 
+  },
+  premium: { 
+    bg: 'var(--color-neutrals-1, #141416)', 
+    color: 'var(--color-white, #FFFFFF)' 
+  },
+  verified: { 
+    bg: 'var(--color-secondary-1, #0865b4)', 
+    color: 'var(--color-white, #FFFFFF)' 
+  },
+  info: { 
+    bg: 'var(--color-semantic-info-light, #c1eaff)', 
+    color: 'var(--color-info-1, #1d3b54)' 
+  },
+  success: { 
+    bg: 'var(--color-semantic-success-light, #e7f4e7)', 
+    color: 'var(--color-success-1, #283d32)' 
+  },
+  warning: { 
+    bg: 'var(--color-semantic-warning-light, #fff1df)', 
+    color: 'var(--color-warning-1, #553925)' 
+  },
+  error: { 
+    bg: 'var(--color-semantic-error-light, #fae5e5)', 
+    color: 'var(--color-error-1, #4c272e)' 
+  },
+};
 
 export const Badge: React.FC<BadgeProps> = ({
   children,
@@ -47,64 +81,63 @@ export const Badge: React.FC<BadgeProps> = ({
   onClick,
   'aria-label': ariaLabel,
 }) => {
-  const classNames = [
-    'badge',
-    `badge--${variant}`,
-    `badge--${size}`,
-    outline && 'badge--outline',
-    onClick && 'badge--clickable',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const sizeStyle = sizeStyles[size];
+  const variantStyle = variantStyles[variant];
+
+  const style: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontFamily: 'var(--font-body, Geist, system-ui, sans-serif)',
+    fontWeight: 500,
+    borderRadius: 'var(--border-radius-sm, 4px)',
+    transition: 'var(--transition-fast, 150ms ease-in-out)',
+    whiteSpace: 'nowrap',
+    lineHeight: 1,
+    cursor: onClick ? 'pointer' : 'default',
+    // Size
+    padding: sizeStyle.padding,
+    fontSize: sizeStyle.fontSize,
+    gap: sizeStyle.gap,
+    // Variant
+    backgroundColor: outline ? 'transparent' : variantStyle.bg,
+    color: variantStyle.color,
+    border: outline ? '1px solid currentColor' : 'none',
+  };
 
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
-      e.stopPropagation(); // Prevent event bubbling
-      onClick();
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
-      e.preventDefault();
       e.stopPropagation();
       onClick();
     }
   };
 
-  const BadgeContent = (
+  const Content = (
     <>
-      {icon && <span className="badge__icon">{icon}</span>}
-      <span className="badge__text">{children}</span>
+      {icon && <span style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}>{icon}</span>}
+      <span>{children}</span>
     </>
   );
 
   if (onClick) {
     return (
       <button
-        className={classNames}
+        className={className}
+        style={style}
         onClick={handleClick}
-        onKeyPress={handleKeyPress}
         aria-label={ariaLabel || (typeof children === 'string' ? children : undefined)}
         type="button"
       >
-        {BadgeContent}
+        {Content}
       </button>
     );
   }
 
   return (
-    <span 
-      className={classNames}
-      aria-label={ariaLabel}
-      role={ariaLabel ? 'status' : undefined}
-    >
-      {BadgeContent}
+    <span className={className} style={style} aria-label={ariaLabel} role={ariaLabel ? 'status' : undefined}>
+      {Content}
     </span>
   );
 };
 
 export default Badge;
-
-

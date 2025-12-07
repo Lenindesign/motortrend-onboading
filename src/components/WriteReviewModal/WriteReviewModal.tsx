@@ -1,3 +1,7 @@
+/**
+ * WriteReviewModal Component
+ * Migrated to inline React styles - no external CSS dependency
+ */
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ModalShell } from '../atoms/ModalShell';
@@ -7,7 +11,6 @@ import { useRating } from '../../contexts/RatingContext';
 import { computeOverallRating } from '../../utils/ratingUtils';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import type { ReviewData, VerificationLevel, VehicleRelationship } from '../UserReviews/UserReviews';
-import './WriteReviewModal.css';
 
 interface WriteReviewModalProps {
   isOpen: boolean;
@@ -17,7 +20,7 @@ interface WriteReviewModalProps {
   onSubmit?: (review: ReviewData) => void;
   existingReview?: ReviewData | null;
   isEditMode?: boolean;
-  initialRating?: number; // Optional initial rating to pass directly
+  initialRating?: number;
 }
 
 const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
@@ -31,37 +34,76 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   initialRating
 }) => {
   const { getUserRating, setUserRating } = useRating();
-  // Initialize rating with initialRating if provided, otherwise 0
   const [rating, setRating] = useState(() => {
-    // Use initialRating if it's already available when component mounts
     const initial = initialRating !== undefined && initialRating !== null && !isNaN(initialRating) && initialRating > 0 
       ? initialRating 
       : 0;
-    console.log('WriteReviewModal: Initializing rating state with:', initial, 'initialRating prop:', initialRating);
     return initial;
   });
   
-  // Log props when they change
+  // Responsive state
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  
+  // Hover states
+  const [isCloseBtnHovered, setIsCloseBtnHovered] = useState(false);
+  const [isInfoIconHovered, setIsInfoIconHovered] = useState(false);
+  const [isChangeVehicleHovered, setIsChangeVehicleHovered] = useState(false);
+  const [hoveredStarIndex, setHoveredStarIndex] = useState<number | null>(null);
+  const [hoveredCategoryStarIndex, setHoveredCategoryStarIndex] = useState<{category: string, index: number} | null>(null);
+  const [isExpandBtnHovered, setIsExpandBtnHovered] = useState(false);
+  const [hoveredMediaRemove, setHoveredMediaRemove] = useState<number | null>(null);
+  const [isSubmitHovered, setIsSubmitHovered] = useState(false);
+  const [isFullscreenCloseHovered, setIsFullscreenCloseHovered] = useState(false);
+  const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [isMediaPlaceholderHovered, setIsMediaPlaceholderHovered] = useState(false);
+  
+  // Responsive handler
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // Inject keyframes for animations
+  useEffect(() => {
+    const styleId = 'write-review-modal-keyframes';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes writeReviewFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes writeReviewSlideUp {
+          from { transform: translateY(20px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    return () => {
+      const existing = document.getElementById(styleId);
+      if (existing) existing.remove();
+    };
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
-      console.log('WriteReviewModal: Props received - initialRating:', initialRating, 'vehicleName:', vehicleName, 'isOpen:', isOpen, 'current rating state:', rating);
+      console.log('WriteReviewModal: Props received - initialRating:', initialRating, 'vehicleName:', vehicleName);
     }
   }, [isOpen, initialRating, vehicleName, rating]);
+
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewContent, setReviewContent] = useState('');
   const [vehicleModel, setVehicleModel] = useState('');
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
   const [isTextareaExpanded, setIsTextareaExpanded] = useState(false);
-  
-  // Verification
   const [vinNumber, setVinNumber] = useState('');
-  
-  // Vehicle Relationship
   const [vehicleRelationship, setVehicleRelationship] = useState<VehicleRelationship | ''>('');
   const [experienceDuration, setExperienceDuration] = useState('');
   
-  // Category ratings
   const [categoryRatings, setCategoryRatings] = useState({
     driverExperience: 0,
     reliability: 0,
@@ -69,21 +111,15 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     manufacturerWarranty: 0
   });
 
-  // Track if user manually set the overall rating
   const [isManualRating, setIsManualRating] = useState(false);
 
-  // Compute overall rating from category ratings
   const computedRating = useMemo(() => {
     return computeOverallRating(categoryRatings);
   }, [categoryRatings]);
 
-  // Load existing user rating when modal opens
   useEffect(() => {
     if (isOpen && vehicleName) {
-      console.log('WriteReviewModal: Modal opened effect - initialRating:', initialRating, 'vehicleName:', vehicleName, 'isEditMode:', isEditMode, 'current rating:', rating);
       if (isEditMode && existingReview) {
-        // Load existing review data for editing
-        console.log('WriteReviewModal: Loading edit mode data, rating:', existingReview.rating);
         setRating(existingReview.rating);
         setReviewTitle(existingReview.title);
         setReviewContent(existingReview.content);
@@ -99,49 +135,29 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             manufacturerWarranty: existingReview.categoryRatings.manufacturerWarranty || existingReview.categoryRatings.interior || 0
           });
         }
-        // Keep existing media previews if available
         if (existingReview.mediaPreviews && existingReview.mediaPreviews.length > 0) {
           setMediaPreviews(existingReview.mediaPreviews);
         }
-        setIsManualRating(true); // Preserve manual rating in edit mode
+        setIsManualRating(true);
       } else {
-        // New review - prioritize initialRating prop, then load from context
-        // Use initialRating if provided and > 0, otherwise get from context
         let ratingToUse = 0;
-        console.log('WriteReviewModal: Checking initialRating:', initialRating, 'type:', typeof initialRating, 'value:', initialRating, 'isNaN:', isNaN(Number(initialRating)));
         if (initialRating !== undefined && initialRating !== null && !isNaN(initialRating) && initialRating > 0) {
           ratingToUse = initialRating;
-          console.log('WriteReviewModal: Modal opened - Using initialRating:', initialRating);
         } else {
           const contextRating = getUserRating(vehicleName);
           ratingToUse = contextRating;
-          console.log('WriteReviewModal: Modal opened - Using context rating:', contextRating, 'for vehicle:', vehicleName);
         }
-        console.log('WriteReviewModal: Setting rating to:', ratingToUse, 'current rating state:', rating);
-        // Set rating and manual flag synchronously - use functional update to ensure we have latest
-        setRating(prevRating => {
-          console.log('WriteReviewModal: setRating called, prevRating:', prevRating, 'new rating:', ratingToUse);
-          return ratingToUse;
-        });
-        // If initialRating is provided and > 0, treat as manual to prevent computedRating from overriding
+        setRating(ratingToUse);
         const shouldBeManual = initialRating !== undefined && initialRating !== null && !isNaN(initialRating) && initialRating > 0;
         setIsManualRating(shouldBeManual);
-        console.log('WriteReviewModal: Set rating to', ratingToUse, 'isManualRating:', shouldBeManual);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, vehicleName, getUserRating, isEditMode, existingReview, initialRating]);
 
-  // Reset state when modal closes (only if it stays closed)
   const prevIsOpenRef = useRef(isOpen);
   useEffect(() => {
-    // Only reset if modal was open and is now closed
     if (prevIsOpenRef.current && !isOpen) {
-      // Use a timeout to ensure the modal stays closed
       const timeoutId = setTimeout(() => {
-        // Only reset if modal is still closed
-        // This prevents resetting if modal was quickly reopened
-        console.log('WriteReviewModal: Modal closed, resetting state after delay');
         setRating(0);
         setReviewTitle('');
         setReviewContent('');
@@ -159,56 +175,41 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     prevIsOpenRef.current = isOpen;
   }, [isOpen]);
 
-  // Handle initialRating changes when modal is already open (backup effect)
   useEffect(() => {
     if (isOpen && vehicleName && !isEditMode && !existingReview) {
-      console.log('WriteReviewModal: initialRating effect triggered, initialRating:', initialRating, 'current rating:', rating);
       if (initialRating !== undefined && initialRating !== null && initialRating > 0) {
-        console.log('WriteReviewModal: initialRating prop changed to:', initialRating, 'updating rating');
         setRating(initialRating);
         setIsManualRating(true);
       } else if ((initialRating === undefined || initialRating === null || initialRating === 0) && rating === 0) {
-        // If initialRating was cleared but rating is still 0, try to get from context
         const contextRating = getUserRating(vehicleName);
         if (contextRating > 0) {
-          console.log('WriteReviewModal: No initialRating, using context rating:', contextRating);
           setRating(contextRating);
         }
       }
     }
   }, [initialRating, isOpen, vehicleName, isEditMode, existingReview, rating, getUserRating]);
 
-  // Handle Escape key to close fullscreen overlay
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isTextareaExpanded) {
         setIsTextareaExpanded(false);
       }
     };
-
     if (isTextareaExpanded) {
       window.addEventListener('keydown', handleEscape);
       return () => window.removeEventListener('keydown', handleEscape);
     }
   }, [isTextareaExpanded]);
 
-  // Update rating when category ratings change (if user hasn't manually set it)
-  // Don't override if initialRating was provided (that means user set it from rating modal)
   useEffect(() => {
-    // Only update from computedRating if:
-    // 1. Rating is not manually set by user
-    // 2. No initialRating was provided (which means user set it from rating modal)
-    // 3. computedRating is actually > 0
     if (!isManualRating && computedRating > 0 && initialRating === undefined) {
       setRating(computedRating);
-      // Save to global context automatically
       if (vehicleName) {
         setUserRating(vehicleName, computedRating);
       }
     }
   }, [computedRating, isManualRating, vehicleName, setUserRating, initialRating]);
 
-  // Clean up media preview URLs when component unmounts or modal closes
   useEffect(() => {
     return () => {
       mediaPreviews.forEach((url) => URL.revokeObjectURL(url));
@@ -217,8 +218,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
   const handleRatingClick = (selectedRating: number) => {
     setRating(selectedRating);
-    setIsManualRating(true); // Mark as manually set
-    // Immediately save to global context when user changes rating
+    setIsManualRating(true);
     if (vehicleName) {
       setUserRating(vehicleName, selectedRating);
     }
@@ -229,7 +229,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       ...prev,
       [category]: selectedRating
     }));
-    // Reset manual rating flag so computed rating takes precedence
     setIsManualRating(false);
   };
 
@@ -253,26 +252,18 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   };
 
   const handleRemoveMedia = (index: number) => {
-    // Revoke object URL to prevent memory leaks
     URL.revokeObjectURL(mediaPreviews[index]);
-    
     setMediaFiles((prev) => prev.filter((_, i) => i !== index));
     setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Determine verification level
   const getVerificationLevel = (): VerificationLevel => {
-    // If user provided VIN number, return highest level
     if (vinNumber.trim().length > 0) {
       return 'verified_documents';
     }
-    
-    // Check if user owns this vehicle (from profile or relationship selection)
     if (vehicleRelationship === 'own') {
       return 'owner';
     }
-    
-    // Check if user owns this vehicle from profile
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       if (onboardingData) {
@@ -280,20 +271,16 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         const ownedVehicles = (data.vehicles || []).filter(
           (v: { name: string; ownership: string }) => v.ownership === 'own'
         );
-        
-        // Check if vehicleName matches any owned vehicle
         const ownsVehicle = ownedVehicles.some((v: { name: string }) => 
           v.name === vehicleName
         );
-        
         if (ownsVehicle) {
-          return 'owner'; // Basic owner badge
+          return 'owner';
         }
       }
     } catch (error) {
       console.error('Error checking vehicle ownership:', error);
     }
-    
     return 'none';
   };
 
@@ -302,15 +289,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       return;
     }
 
-    // Save rating to global context
     if (vehicleName) {
       setUserRating(vehicleName, rating);
     }
 
-    // Determine verification level
     const verificationLevel = getVerificationLevel();
 
-    // Save VIN to localStorage securely (encrypted in production)
     if (vinNumber.trim().length > 0 && vehicleName) {
       try {
         const vinData = {
@@ -318,12 +302,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
           vin: vinNumber.trim(),
           timestamp: new Date().toISOString()
         };
-        
-        // Get existing VIN data or create new object
         const existingVinData = localStorage.getItem('vehicleVINs');
         const vinDataObj = existingVinData ? JSON.parse(existingVinData) : {};
-        
-        // Store VIN securely (in production, this should be encrypted)
         vinDataObj[vehicleName] = vinData;
         localStorage.setItem('vehicleVINs', JSON.stringify(vinDataObj));
       } catch (error) {
@@ -333,7 +313,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
     const newReview: ReviewData = {
       id: isEditMode && existingReview ? existingReview.id : `review-${Date.now()}`,
-      reviewerName: 'You', // In a real app, this would come from user authentication
+      reviewerName: 'You',
       rating,
       title: reviewTitle,
       content: reviewContent,
@@ -363,50 +343,34 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     };
 
     if (onSubmit) {
-      // Capture vehicleName before calling onSubmit to ensure it's available
       const capturedVehicleName = vehicleName;
-      console.log('WriteReviewModal: handleSubmit called, vehicleName prop:', capturedVehicleName, 'newReview:', newReview);
-      
-      // Add vehicleName to the review object so parent can access it
       const reviewWithVehicleName = {
         ...newReview,
-        _vehicleName: capturedVehicleName // Add vehicle name to review for parent to access
+        _vehicleName: capturedVehicleName
       };
-      
-      // Call onSubmit first, but don't close immediately
-      // The parent component will handle closing after processing the review
       onSubmit(reviewWithVehicleName);
       
-      // Use a small delay before resetting and closing to ensure parent has captured the data
       setTimeout(() => {
-    // Reset form
-    setRating(0);
-    setReviewTitle('');
-    setReviewContent('');
-    setVehicleModel('');
-    setIsManualRating(false);
-    setCategoryRatings({
-      driverExperience: 0,
-      reliability: 0,
-      budgetFriendly: 0,
-      manufacturerWarranty: 0
-    });
-    
-    // Clean up media previews
-    mediaPreviews.forEach((url) => URL.revokeObjectURL(url));
-    setMediaFiles([]);
-    setMediaPreviews([]);
-    
-    // Reset verification and relationship
-    setVinNumber('');
-    setVehicleRelationship('');
-    setExperienceDuration('');
-    
-        // Close modal after parent has processed the submission
+        setRating(0);
+        setReviewTitle('');
+        setReviewContent('');
+        setVehicleModel('');
+        setIsManualRating(false);
+        setCategoryRatings({
+          driverExperience: 0,
+          reliability: 0,
+          budgetFriendly: 0,
+          manufacturerWarranty: 0
+        });
+        mediaPreviews.forEach((url) => URL.revokeObjectURL(url));
+        setMediaFiles([]);
+        setMediaPreviews([]);
+        setVinNumber('');
+        setVehicleRelationship('');
+        setExperienceDuration('');
         onClose();
       }, 100);
     } else {
-      // If no onSubmit handler, reset and close immediately
       setRating(0);
       setReviewTitle('');
       setReviewContent('');
@@ -418,16 +382,812 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         budgetFriendly: 0,
         manufacturerWarranty: 0
       });
-      
       mediaPreviews.forEach((url) => URL.revokeObjectURL(url));
       setMediaFiles([]);
       setMediaPreviews([]);
       setVinNumber('');
       setVehicleRelationship('');
       setExperienceDuration('');
-    onClose();
+      onClose();
     }
   };
+
+  // ==================== INLINE STYLES ====================
+
+  const modalStyle: React.CSSProperties = {
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+    width: isMobile ? '100%' : undefined,
+    height: isMobile ? '100vh' : undefined,
+    borderRadius: isMobile ? 0 : undefined,
+  };
+
+  const innerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '0 0 var(--spacing-5, 40px) 0',
+    height: '100%',
+    overflowY: 'auto',
+  };
+
+  const headerStyle: React.CSSProperties = {
+    width: '100%',
+    height: '32px',
+    backgroundColor: 'var(--color-neutrals-2, #23262F)',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 16px',
+  };
+
+  const closeBtnStyle: React.CSSProperties = {
+    width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    transition: 'opacity var(--transition-fast, all 150ms ease-in-out)',
+    opacity: isCloseBtnHovered ? 0.7 : 1,
+    background: 'none',
+    border: 'none',
+  };
+
+  const contentStyle: React.CSSProperties = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+    width: '100%',
+    overflowY: 'auto',
+    paddingBottom: '100px',
+  };
+
+  const mainStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '-1px',
+    padding: '0 16px',
+    width: '100%',
+  };
+
+  const titleWrapperStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    marginTop: 'var(--spacing-3, 24px)',
+    marginBottom: 'var(--spacing-2, 16px)',
+    position: 'relative',
+    width: '100%',
+  };
+
+  const titleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 'var(--font-weight-bold, 600)',
+    fontSize: '24px',
+    lineHeight: '1.333em',
+    color: 'var(--color-neutrals-1, #141416)',
+    textAlign: 'center',
+    margin: 0,
+  };
+
+  const infoIconWrapperStyle: React.CSSProperties = {
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    marginLeft: '4px',
+    padding: '4px',
+    borderRadius: '4px',
+    transition: 'background-color var(--transition-fast, all 150ms ease-in-out)',
+    backgroundColor: isInfoIconHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'transparent',
+  };
+
+  const infoIconStyle: React.CSSProperties = {
+    width: '24px',
+    height: '24px',
+    display: 'block',
+    opacity: isInfoIconHovered ? 0.7 : 1,
+    transition: 'opacity var(--transition-fast, all 150ms ease-in-out)',
+    flexShrink: 0,
+    objectFit: 'contain',
+  };
+
+  const infoTooltipStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: 'calc(100% + 4px)',
+    right: 0,
+    background: 'var(--color-neutrals-2, #23262F)',
+    color: 'var(--color-white, #FFFFFF)',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '12px',
+    lineHeight: 1.5,
+    whiteSpace: 'normal',
+    width: '320px',
+    maxWidth: 'calc(100vw - 32px)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+    zIndex: 1001,
+    opacity: isInfoIconHovered ? 1 : 0,
+    visibility: isInfoIconHovered ? 'visible' : 'hidden',
+    transition: 'opacity 0.2s ease, visibility 0.2s ease',
+    pointerEvents: 'auto',
+    textAlign: 'left',
+  };
+
+  const tooltipLinkStyle: React.CSSProperties = {
+    color: 'var(--color-primary-300, #FF6B6B)',
+    textDecoration: 'underline',
+    fontWeight: 600,
+    display: 'inline-block',
+    marginTop: '4px',
+  };
+
+  const vehicleCardStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: isMobile ? 'flex-start' : 'center',
+    flexDirection: isMobile ? 'column' : 'row',
+    gap: '16px',
+    width: '100%',
+    marginBottom: '16px',
+  };
+
+  const vehicleImageStyle: React.CSSProperties = {
+    width: isMobile ? '100%' : '153.5px',
+    height: isMobile ? '200px' : '104.34px',
+    backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  };
+
+  const vehicleImgStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  };
+
+  const vehiclePlaceholderStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--color-neutrals-4, #6E7481)',
+  };
+
+  const vehicleInfoStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    flex: 1,
+  };
+
+  const vehicleNameStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '1.375em',
+    color: 'var(--color-neutrals-2, #23262F)',
+    margin: 0,
+    display: 'block',
+  };
+
+  const vehicleBodyStyleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '1.29em',
+    color: 'var(--color-neutrals-3, #353945)',
+    margin: 0,
+  };
+
+  const ratingSectionStyle: React.CSSProperties = {
+    backgroundColor: 'var(--color-neutrals-3, #353945)',
+    borderRadius: '8px',
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+    width: '100%',
+    height: '104px',
+    marginBottom: '16px',
+  };
+
+  const ratingHeaderStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  };
+
+  const ratingLabelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '1.375em',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+  };
+
+  const ratingValueStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 400,
+    fontSize: '12px',
+    lineHeight: '1.333em',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+  };
+
+  const starsStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '4px',
+    width: '100%',
+    justifyContent: 'center',
+    padding: '0 16px',
+  };
+
+  const starWrapperStyle: React.CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    width: '24px',
+    height: '24px',
+  };
+
+  const starVisualStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '24px',
+    height: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'none',
+    zIndex: 1,
+  };
+
+  const getStarClickStyle = (isLeft: boolean, isActive: boolean): React.CSSProperties => ({
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+    position: 'absolute',
+    top: 0,
+    width: '12px',
+    height: '24px',
+    zIndex: 2,
+    transition: 'transform var(--transition-fast, all 150ms ease-in-out)',
+    left: isLeft ? 0 : undefined,
+    right: !isLeft ? 0 : undefined,
+    transform: isActive ? 'scale(1.05)' : undefined,
+  });
+
+  const starIconStyle: React.CSSProperties = {
+    width: '24px',
+    height: '24px',
+    objectFit: 'contain',
+  };
+
+  const sectionGroupStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-2, 16px)',
+    width: '100%',
+    marginBottom: 'var(--spacing-4, 32px)',
+    padding: 'var(--spacing-3, 24px)',
+    backgroundColor: 'var(--color-neutrals-8, #FCFCFD)',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+  };
+
+  const sectionGroupOptionalStyle: React.CSSProperties = {
+    ...sectionGroupStyle,
+    backgroundColor: 'transparent',
+    border: '1px dashed var(--color-neutrals-5, #B1B5C3)',
+  };
+
+  const sectionGroupHeaderStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-1, 8px)',
+    marginBottom: 0,
+  };
+
+  const sectionGroupTitleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 'var(--font-weight-bold, 600)',
+    fontSize: '18px',
+    lineHeight: '1.333em',
+    color: 'var(--color-neutrals-1, #141416)',
+    margin: 0,
+  };
+
+  const sectionGroupSubtitleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 'var(--font-weight-regular, 400)',
+    fontSize: '14px',
+    lineHeight: '1.429em',
+    color: 'var(--color-neutrals-3, #353945)',
+    margin: 0,
+  };
+
+  const fieldStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-1, 8px)',
+    width: '100%',
+  };
+
+  const fieldLabelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 'var(--font-weight-regular, 400)',
+    fontSize: '14px',
+    lineHeight: '1.429em',
+    color: 'var(--color-neutrals-2, #23262F)',
+    marginBottom: 'var(--spacing-1, 8px)',
+  };
+
+  const textareaHeaderStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '8px',
+  };
+
+  const expandBtnStyle: React.CSSProperties = {
+    background: isExpandBtnHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
+    border: 'none',
+    cursor: 'pointer',
+    color: isExpandBtnHovered ? 'var(--color-neutrals-2, #23262F)' : 'var(--color-neutrals-4, #6E7481)',
+    padding: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '4px',
+    transition: 'all var(--transition-fast, all 150ms ease-in-out)',
+  };
+
+  const getInputStyle = (inputName: string): React.CSSProperties => ({
+    width: '100%',
+    padding: '6px 16px',
+    backgroundColor: 'var(--color-neutrals-8, #FCFCFD)',
+    border: `1px solid ${focusedInput === inputName ? 'var(--color-primary-500, #E90C17)' : 'var(--color-neutrals-5, #B1B5C3)'}`,
+    borderRadius: '8px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '16px',
+    lineHeight: '1.75em',
+    color: 'var(--color-neutrals-2, #23262F)',
+    transition: 'border-color var(--transition-fast, all 150ms ease-in-out)',
+    outline: 'none',
+    boxShadow: focusedInput === inputName ? '0 0 0 2px var(--color-primary-100, rgba(233, 12, 23, 0.1))' : 'none',
+  });
+
+  const textareaStyle: React.CSSProperties = {
+    ...getInputStyle('textarea'),
+    resize: 'vertical',
+    minHeight: '100px',
+    paddingTop: '12px',
+    paddingBottom: '12px',
+  };
+
+  const selectStyle: React.CSSProperties = {
+    ...getInputStyle('select'),
+    cursor: 'pointer',
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+    backgroundPosition: 'right 12px center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '16px',
+    paddingRight: '40px',
+  };
+
+  const experienceSectionStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-3, 24px)',
+    width: '100%',
+    marginBottom: 'var(--spacing-4, 32px)',
+    padding: 'var(--spacing-3, 24px)',
+    backgroundColor: 'var(--color-neutrals-8, #FCFCFD)',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+  };
+
+  const categoryCardStyle: React.CSSProperties = {
+    backgroundColor: 'var(--color-neutrals-3, #353945)',
+    borderRadius: '8px',
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    width: '100%',
+  };
+
+  const categoryHeaderStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    width: '100%',
+  };
+
+  const categoryInfoStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    flex: 1,
+  };
+
+  const categoryTitleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '16px',
+    lineHeight: '1.375em',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    margin: 0,
+  };
+
+  const categoryDescriptionStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 'var(--font-weight-regular, 400)',
+    fontSize: '12px',
+    lineHeight: '1.5em',
+    color: 'var(--color-neutrals-5, #B1B5C3)',
+    margin: 0,
+    width: '100%',
+    opacity: 0.9,
+  };
+
+  const categoryRatingValueStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '1.333em',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    flexShrink: 0,
+    marginLeft: '12px',
+  };
+
+  const categoryStarsStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '6px',
+    width: '100%',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
+
+  const categoryStarWrapperStyle: React.CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    width: '36px',
+    height: '36px',
+  };
+
+  const categoryStarVisualStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '36px',
+    height: '36px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'none',
+    zIndex: 1,
+  };
+
+  const getCategoryStarClickStyle = (isLeft: boolean, isActive: boolean): React.CSSProperties => ({
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+    position: 'absolute',
+    top: 0,
+    width: '18px',
+    height: '36px',
+    zIndex: 2,
+    transition: 'transform var(--transition-fast, all 150ms ease-in-out)',
+    left: isLeft ? 0 : undefined,
+    right: !isLeft ? 0 : undefined,
+    transform: isActive ? 'scale(1.05)' : undefined,
+  });
+
+  const categoryStarIconStyle: React.CSSProperties = {
+    width: '36px',
+    height: '36px',
+    objectFit: 'contain',
+    pointerEvents: 'none',
+  };
+
+  const mediaUploadStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    width: '100%',
+  };
+
+  const mediaInputStyle: React.CSSProperties = {
+    display: 'none',
+  };
+
+  const mediaLabelStyle: React.CSSProperties = {
+    width: '100%',
+    cursor: 'pointer',
+    display: 'block',
+  };
+
+  const mediaPlaceholderStyle: React.CSSProperties = {
+    width: '100%',
+    minHeight: '120px',
+    backgroundColor: isMediaPlaceholderHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-neutrals-8, #FCFCFD)',
+    border: `1px solid ${isMediaPlaceholderHovered ? 'var(--color-primary-500, #E90C17)' : 'var(--color-neutrals-5, #B1B5C3)'}`,
+    borderRadius: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--color-neutrals-4, #6E7481)',
+    transition: 'border-color var(--transition-fast, all 150ms ease-in-out), background-color var(--transition-fast, all 150ms ease-in-out)',
+  };
+
+  const mediaPreviewsStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    width: '100%',
+  };
+
+  const mediaPreviewStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    aspectRatio: '16 / 9',
+    borderRadius: '8px',
+    overflow: 'hidden',
+    backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
+  };
+
+  const mediaItemStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    display: 'block',
+    objectFit: 'contain',
+  };
+
+  const getMediaRemoveStyle = (index: number): React.CSSProperties => ({
+    position: 'absolute',
+    top: '8px',
+    right: '8px',
+    width: '28px',
+    height: '28px',
+    backgroundColor: hoveredMediaRemove === index ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.6)',
+    border: 'none',
+    borderRadius: '50%',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background-color var(--transition-fast, all 150ms ease-in-out)',
+    zIndex: 10,
+  });
+
+  const fieldHintStyle: React.CSSProperties = {
+    display: 'block',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 'var(--font-weight-regular, 400)',
+    fontSize: '12px',
+    lineHeight: '1.333em',
+    color: 'var(--color-neutrals-4, #6E7481)',
+    marginTop: 'var(--spacing-1, 8px)',
+    fontStyle: 'italic',
+  };
+
+  const vinDisclaimerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '8px',
+    padding: '12px',
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+    border: '1px solid var(--color-neutrals-5, #B1B5C3)',
+    borderRadius: '8px',
+    marginTop: '8px',
+  };
+
+  const footerStyle: React.CSSProperties = {
+    position: 'sticky',
+    bottom: 0,
+    width: '100%',
+    padding: '16px',
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+    zIndex: 100,
+    boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.15)',
+  };
+
+  const fullscreenOverlayStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    zIndex: 10000,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '24px',
+    animation: 'writeReviewFadeIn 0.2s ease',
+  };
+
+  const fullscreenContainerStyle: React.CSSProperties = {
+    width: '100%',
+    maxWidth: '1200px',
+    height: '100%',
+    maxHeight: '90vh',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    borderRadius: '12px',
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+    animation: 'writeReviewSlideUp 0.2s ease',
+  };
+
+  const fullscreenHeaderStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '24px',
+    borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
+  };
+
+  const fullscreenLabelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '24px',
+    lineHeight: '1.333em',
+    color: 'var(--color-neutrals-2, #23262F)',
+  };
+
+  const fullscreenCloseStyle: React.CSSProperties = {
+    background: isFullscreenCloseHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
+    border: 'none',
+    cursor: 'pointer',
+    color: isFullscreenCloseHovered ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-3, #353945)',
+    padding: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '6px',
+    transition: 'all var(--transition-fast, all 150ms ease-in-out)',
+  };
+
+  const fullscreenTextareaStyle: React.CSSProperties = {
+    flex: 1,
+    width: '100%',
+    padding: '24px',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    border: 'none',
+    borderRadius: '0 0 12px 12px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '18px',
+    lineHeight: '1.75em',
+    color: 'var(--color-neutrals-2, #23262F)',
+    resize: 'none',
+    outline: 'none',
+    minHeight: '400px',
+  };
+
+  // Star rating rendering helper
+  const renderStars = (currentRating: number, onClickHandler: (rating: number) => void, size: 'small' | 'large' = 'small') => {
+    const starSize = size === 'large' ? '36px' : '24px';
+    const wrapperSize = size === 'large' ? categoryStarWrapperStyle : starWrapperStyle;
+    const visualSize = size === 'large' ? categoryStarVisualStyle : starVisualStyle;
+    const iconSize = size === 'large' ? categoryStarIconStyle : starIconStyle;
+    const clickWidth = size === 'large' ? '18px' : '12px';
+    const clickHeight = size === 'large' ? '36px' : '24px';
+    
+    return Array.from({ length: 5 }, (_, index) => {
+      const starPosition = index + 1;
+      const oddRating = starPosition * 20 - 10;
+      const evenRating = starPosition * 20;
+      
+      const isOddSelected = oddRating <= currentRating;
+      const isEvenSelected = evenRating <= currentRating;
+      const showHalfStar = isOddSelected && !isEvenSelected;
+      const showFullStar = isEvenSelected;
+      
+      return (
+        <div key={starPosition} style={wrapperSize}>
+          <div style={visualSize}>
+            {showHalfStar ? (
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                alt={`${oddRating} star rating`}
+                style={iconSize}
+              />
+            ) : showFullStar ? (
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                alt={`${evenRating} star rating`}
+                style={iconSize}
+              />
+            ) : (
+              <img 
+                src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                alt="Empty star"
+                style={iconSize}
+              />
+            )}
+          </div>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: clickWidth,
+              height: clickHeight,
+              zIndex: 2,
+            }}
+            onClick={() => onClickHandler(oddRating)}
+            aria-label={`Rate ${oddRating} out of 100`}
+          />
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: clickWidth,
+              height: clickHeight,
+              zIndex: 2,
+            }}
+            onClick={() => onClickHandler(evenRating)}
+            aria-label={`Rate ${evenRating} out of 100`}
+          />
+        </div>
+      );
+    });
+  };
+
+  // Category rating card component
+  const renderCategoryCard = (
+    category: keyof typeof categoryRatings,
+    title: string,
+    description: string
+  ) => (
+    <div style={categoryCardStyle}>
+      <div style={categoryHeaderStyle}>
+        <div style={categoryInfoStyle}>
+          <h4 style={categoryTitleStyle}>{title}</h4>
+          <p style={categoryDescriptionStyle}>{description}</p>
+        </div>
+        <span style={categoryRatingValueStyle}>
+          {categoryRatings[category] > 0 ? `${(categoryRatings[category] / 20).toFixed(1)}/5` : '?/5'}
+        </span>
+      </div>
+      <div style={categoryStarsStyle}>
+        {renderStars(categoryRatings[category], (rating) => handleCategoryRatingClick(category, rating), 'large')}
+      </div>
+    </div>
+  );
 
   return (
     <ModalShell
@@ -438,41 +1198,49 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       maxWidth="400px"
       closeOnEscape={!isTextareaExpanded}
       closeOnOverlayClick={true}
-      className="write-review-modal"
+      style={modalStyle}
     >
-      <div className="write-review-modal__inner">
+      <div style={innerStyle}>
         {/* Header */}
-        <div className="write-review-modal__header">
-          <div className="write-review-modal__close-btn" onClick={onClose}>
+        <div style={headerStyle}>
+          <button 
+            style={closeBtnStyle} 
+            onClick={onClose}
+            onMouseEnter={() => setIsCloseBtnHovered(true)}
+            onMouseLeave={() => setIsCloseBtnHovered(false)}
+          >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </div>
+          </button>
         </div>
 
         {/* Content */}
-        <div className="write-review-modal__content">
-          <div className="write-review-modal__main">
-            <div className="write-review-modal__title-wrapper">
-            <div className="write-review-modal__title">
-              {isEditMode ? 'Edit Your Review' : 'Add User Review'}
+        <div style={contentStyle}>
+          <div style={mainStyle}>
+            <div style={titleWrapperStyle}>
+              <div style={titleStyle}>
+                {isEditMode ? 'Edit Your Review' : 'Add User Review'}
               </div>
               {!isEditMode && (
-                <div className="write-review-modal__info-icon-wrapper">
+                <div 
+                  style={infoIconWrapperStyle}
+                  onMouseEnter={() => setIsInfoIconHovered(true)}
+                  onMouseLeave={() => setIsInfoIconHovered(false)}
+                >
                   <img 
                     src="https://d2kde5ohu8qb21.cloudfront.net/files/6918b2a80074bb0002840bac/demography.svg"
                     alt="Community Guidelines"
-                    className="write-review-modal__info-icon"
+                    style={infoIconStyle}
                     onError={(e) => {
-                      console.error('Failed to load community guidelines icon');
                       e.currentTarget.style.display = 'none';
                     }}
                   />
-                  <div className="write-review-modal__info-tooltip">
+                  <div style={infoTooltipStyle}>
                     1–5 Rating Guide<br />
                     1: Poor · 2: Below average · 3: Average · 4: Good · 5: Excellent.<br /><br />
                     Overall ratings reflect factors like review recency, verified ownership, and trust signals — not just simple averages.<br /><br />
-                    <Link to="/article/how-to-rate-vehicles" className="write-review-modal__tooltip-link" onClick={(e) => e.stopPropagation()}>
+                    <Link to="/article/how-to-rate-vehicles" style={tooltipLinkStyle} onClick={(e) => e.stopPropagation()}>
                       Read Our Rating Overview
                     </Link>
                   </div>
@@ -481,104 +1249,51 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             </div>
             
             {/* Vehicle Selection Card */}
-            <div className="write-review-modal__vehicle-card">
-              <div className="write-review-modal__vehicle-image">
+            <div style={vehicleCardStyle}>
+              <div style={vehicleImageStyle}>
                 {vehicleImage ? (
-                  <img src={vehicleImage} alt={vehicleName} />
+                  <img src={vehicleImage} alt={vehicleName} style={vehicleImgStyle} />
                 ) : (
-                  <div className="write-review-modal__vehicle-placeholder">
+                  <div style={vehiclePlaceholderStyle}>
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
                       <path d="M3 12L12 3L21 12L12 21L3 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </div>
                 )}
               </div>
-              <div className="write-review-modal__vehicle-info">
+              <div style={vehicleInfoStyle}>
                 {vehicleName && vehicleName.trim() ? (
                   <>
-                    <div className="write-review-modal__vehicle-name">
-                      {vehicleName}
-                    </div>
-                    <div className="write-review-modal__vehicle-body-style">
-                      {getVehicleBodyStyle(vehicleName)[0] || 'Sedan'}
-                    </div>
+                    <div style={vehicleNameStyle}>{vehicleName}</div>
+                    <div style={vehicleBodyStyleStyle}>{getVehicleBodyStyle(vehicleName)[0] || 'Sedan'}</div>
                   </>
                 ) : (
                   <>
-                    <div className="write-review-modal__vehicle-name">
-                      Select Vehicle
-                    </div>
-                    <div className="write-review-modal__vehicle-body-style">
-                      Sedan
-                    </div>
+                    <div style={vehicleNameStyle}>Select Vehicle</div>
+                    <div style={vehicleBodyStyleStyle}>Sedan</div>
                   </>
                 )}
               </div>
             </div>
 
             {/* Rating Section */}
-            <div className="write-review-modal__rating-section">
-              <div className="write-review-modal__rating-header">
-                <span className="write-review-modal__rating-label">Rate Your Experience (1-5)</span>
-                <span className="write-review-modal__rating-value">
+            <div style={ratingSectionStyle}>
+              <div style={ratingHeaderStyle}>
+                <span style={ratingLabelStyle}>Rate Your Experience (1-5)</span>
+                <span style={ratingValueStyle}>
                   {rating > 0 ? (rating / 20).toFixed(1) : '?'}/5
                 </span>
               </div>
-              <div className="write-review-modal__stars">
-                {Array.from({ length: 5 }, (_, index) => {
-                  const starPosition = index + 1;
-                  const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
-                  const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
-                  
-                  const isOddSelected = oddRating <= rating;
-                  const isEvenSelected = evenRating <= rating;
-                  const showHalfStar = isOddSelected && !isEvenSelected;
-                  const showFullStar = isEvenSelected;
-                  
-                  return (
-                    <div key={starPosition} className="write-review-modal__star-wrapper">
-                      <div className="write-review-modal__star-visual">
-                        {showHalfStar ? (
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
-                            alt={`${oddRating} star rating`}
-                            className="write-review-modal__star-icon"
-                          />
-                        ) : showFullStar ? (
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                            alt={`${evenRating} star rating`}
-                            className="write-review-modal__star-icon"
-                          />
-                        ) : (
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                            alt="Empty star"
-                            className="write-review-modal__star-icon"
-                          />
-                        )}
-                      </div>
-                      <button
-                        className={`write-review-modal__star-click write-review-modal__star-click--left ${isOddSelected ? 'active' : ''}`}
-                        onClick={() => handleRatingClick(oddRating)}
-                        aria-label={`Rate ${oddRating} out of 100`}
-                      />
-                      <button
-                        className={`write-review-modal__star-click write-review-modal__star-click--right ${isEvenSelected ? 'active' : ''}`}
-                        onClick={() => handleRatingClick(evenRating)}
-                        aria-label={`Rate ${evenRating} out of 100`}
-                      />
-                    </div>
-                  );
-                })}
+              <div style={starsStyle}>
+                {renderStars(rating, handleRatingClick, 'small')}
               </div>
             </div>
 
             {/* Review Form */}
-            <div className="write-review-modal__section-group">
-              <div className="write-review-modal__section-group-header">
-                <h3 className="write-review-modal__section-group-title">Your Review</h3>
-                <p className="write-review-modal__section-group-subtitle">Share your thoughts and experiences</p>
+            <div style={sectionGroupStyle}>
+              <div style={sectionGroupHeaderStyle}>
+                <h3 style={sectionGroupTitleStyle}>Your Review</h3>
+                <p style={sectionGroupSubtitleStyle}>Share your thoughts and experiences</p>
               </div>
               
               {/* Review Title */}
@@ -588,49 +1303,45 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 value={reviewTitle}
                 onChange={(e) => setReviewTitle(e.target.value)}
                 fullWidth
-                className="write-review-modal__field"
               />
 
               {/* Review Content */}
-              <div className="write-review-modal__field">
-                <div className="write-review-modal__textarea-header">
-                  <label className="write-review-modal__field-label">Your Review</label>
+              <div style={fieldStyle}>
+                <div style={textareaHeaderStyle}>
+                  <label style={fieldLabelStyle}>Your Review</label>
                   <button
                     type="button"
-                    className="write-review-modal__expand-btn"
+                    style={expandBtnStyle}
                     onClick={() => setIsTextareaExpanded(!isTextareaExpanded)}
+                    onMouseEnter={() => setIsExpandBtnHovered(true)}
+                    onMouseLeave={() => setIsExpandBtnHovered(false)}
                     aria-label={isTextareaExpanded ? 'Collapse' : 'Expand to fullscreen'}
                   >
-                    {isTextareaExpanded ? (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M8 3H5C3.89543 3 3 3.89543 3 5V8M21 8V5C21 3.89543 20.1046 3 19 3H16M16 21H19C20.1046 21 21 20.1046 21 19V16M3 16V19C3 20.1046 3.89543 21 5 21H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    ) : (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M8 3H5C3.89543 3 3 3.89543 3 5V8M21 8V5C21 3.89543 20.1046 3 19 3H16M16 21H19C20.1046 21 21 20.1046 21 19V16M3 16V19C3 20.1046 3.89543 21 5 21H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12 8V12M12 12V16M12 12H8M12 12H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M8 3H5C3.89543 3 3 3.89543 3 5V8M21 8V5C21 3.89543 20.1046 3 19 3H16M16 21H19C20.1046 21 21 20.1046 21 19V16M3 16V19C3 20.1046 3.89543 21 5 21H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                   </button>
                 </div>
                 <textarea
-                  className="write-review-modal__textarea"
+                  style={textareaStyle}
                   placeholder="Let others know what you like and dislike based on your hands-on experience with this vehicle"
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
                   rows={4}
+                  onFocus={() => setFocusedInput('textarea')}
+                  onBlur={() => setFocusedInput(null)}
                 />
               </div>
 
-              {/* Vehicle Relationship Section - Moved here to be right under Your Review */}
-              <div className="write-review-modal__field">
-                <label className="write-review-modal__field-label">
-                  Your experience with this vehicle
-                </label>
+              {/* Vehicle Relationship Section */}
+              <div style={fieldStyle}>
+                <label style={fieldLabelStyle}>Your experience with this vehicle</label>
                 <select
-                  className="write-review-modal__select"
+                  style={selectStyle}
                   value={vehicleRelationship}
                   onChange={(e) => setVehicleRelationship(e.target.value as VehicleRelationship | '')}
+                  onFocus={() => setFocusedInput('select')}
+                  onBlur={() => setFocusedInput(null)}
                 >
                   <option value="">Select experience</option>
                   <option value="own">I currently own this vehicle</option>
@@ -655,319 +1366,49 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   value={experienceDuration}
                   onChange={(e) => setExperienceDuration(e.target.value)}
                   fullWidth
-                  className="write-review-modal__field"
                 />
               )}
             </div>
 
             {/* Experience Rating Section */}
-            <div className="write-review-modal__experience-section">
-              <div className="write-review-modal__section-group-header">
-                <h3 className="write-review-modal__experience-title">
+            <div style={experienceSectionStyle}>
+              <div style={sectionGroupHeaderStyle}>
+                <h3 style={sectionGroupTitleStyle}>
                   Rate Your Experience
-                  <Badge variant="info" size="sm" outline={true} className="write-review-modal__optional-badge">
+                  <Badge variant="info" size="sm" outline={true} style={{ marginLeft: 'var(--spacing-1, 8px)' }}>
                     Optional
                   </Badge>
                 </h3>
-                <p className="write-review-modal__experience-subtitle">Rate specific aspects of your experience with this vehicle</p>
+                <p style={sectionGroupSubtitleStyle}>Rate specific aspects of your experience with this vehicle</p>
               </div>
               
-              {/* Driver Experience */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Driver Experience</h4>
-                    <p className="write-review-modal__category-description">Handling, comfort, and overall driving feel</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.driverExperience > 0 ? `${(categoryRatings.driverExperience / 20).toFixed(1)}/5` : '?/5'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {Array.from({ length: 5 }, (_, index) => {
-                    const starPosition = index + 1;
-                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
-                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
-                    
-                    const isOddSelected = oddRating <= categoryRatings.driverExperience;
-                    const isEvenSelected = evenRating <= categoryRatings.driverExperience;
-                    const showHalfStar = isOddSelected && !isEvenSelected;
-                    const showFullStar = isEvenSelected;
-                    
-                    return (
-                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
-                        <div className="write-review-modal__category-star-visual">
-                          {showHalfStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
-                              alt={`${oddRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : showFullStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                              alt={`${evenRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                              alt="Empty star"
-                              className="write-review-modal__category-star-icon"
-                            />
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('driverExperience', oddRating);
-                          }}
-                          aria-label={`Rate ${oddRating} out of 100`}
-                        />
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('driverExperience', evenRating);
-                          }}
-                          aria-label={`Rate ${evenRating} out of 100`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Reliability */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Reliability</h4>
-                    <p className="write-review-modal__category-description">Performance over time, dependability</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.reliability > 0 ? `${(categoryRatings.reliability / 20).toFixed(1)}/5` : '?/5'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {Array.from({ length: 5 }, (_, index) => {
-                    const starPosition = index + 1;
-                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
-                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
-                    
-                    const isOddSelected = oddRating <= categoryRatings.reliability;
-                    const isEvenSelected = evenRating <= categoryRatings.reliability;
-                    const showHalfStar = isOddSelected && !isEvenSelected;
-                    const showFullStar = isEvenSelected;
-                    
-                    return (
-                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
-                        <div className="write-review-modal__category-star-visual">
-                          {showHalfStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
-                              alt={`${oddRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : showFullStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                              alt={`${evenRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                              alt="Empty star"
-                              className="write-review-modal__category-star-icon"
-                            />
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('reliability', oddRating);
-                          }}
-                          aria-label={`Rate ${oddRating} out of 100`}
-                        />
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('reliability', evenRating);
-                          }}
-                          aria-label={`Rate ${evenRating} out of 100`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Manufacturer Warranty */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Manufacturer Warranty</h4>
-                    <p className="write-review-modal__category-description">Coverage quality and support experience</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.manufacturerWarranty > 0 ? `${(categoryRatings.manufacturerWarranty / 20).toFixed(1)}/5` : '?/5'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {Array.from({ length: 5 }, (_, index) => {
-                    const starPosition = index + 1;
-                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
-                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
-                    
-                    const isOddSelected = oddRating <= categoryRatings.manufacturerWarranty;
-                    const isEvenSelected = evenRating <= categoryRatings.manufacturerWarranty;
-                    const showHalfStar = isOddSelected && !isEvenSelected;
-                    const showFullStar = isEvenSelected;
-                    
-                    return (
-                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
-                        <div className="write-review-modal__category-star-visual">
-                          {showHalfStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
-                              alt={`${oddRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : showFullStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                              alt={`${evenRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                              alt="Empty star"
-                              className="write-review-modal__category-star-icon"
-                            />
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('manufacturerWarranty', oddRating);
-                          }}
-                          aria-label={`Rate ${oddRating} out of 100`}
-                        />
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('manufacturerWarranty', evenRating);
-                          }}
-                          aria-label={`Rate ${evenRating} out of 100`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Budget Friendly */}
-              <div className="write-review-modal__category-card">
-                <div className="write-review-modal__category-header">
-                  <div className="write-review-modal__category-info">
-                    <h4 className="write-review-modal__category-title">Budget Friendly</h4>
-                    <p className="write-review-modal__category-description">Cost of ownership and overall value</p>
-                  </div>
-                  <span className="write-review-modal__category-rating-value">
-                    {categoryRatings.budgetFriendly > 0 ? `${(categoryRatings.budgetFriendly / 20).toFixed(1)}/5` : '?/5'}
-                  </span>
-                </div>
-                <div className="write-review-modal__category-stars">
-                  {Array.from({ length: 5 }, (_, index) => {
-                    const starPosition = index + 1;
-                    const oddRating = starPosition * 20 - 10; // 10, 30, 50, 70, 90
-                    const evenRating = starPosition * 20; // 20, 40, 60, 80, 100
-                    
-                    const isOddSelected = oddRating <= categoryRatings.budgetFriendly;
-                    const isEvenSelected = evenRating <= categoryRatings.budgetFriendly;
-                    const showHalfStar = isOddSelected && !isEvenSelected;
-                    const showFullStar = isEvenSelected;
-                    
-                    return (
-                      <div key={starPosition} className="write-review-modal__category-star-wrapper">
-                        <div className="write-review-modal__category-star-visual">
-                          {showHalfStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
-                              alt={`${oddRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : showFullStar ? (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                              alt={`${evenRating} star rating`}
-                              className="write-review-modal__category-star-icon"
-                            />
-                          ) : (
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                              alt="Empty star"
-                              className="write-review-modal__category-star-icon"
-                            />
-                          )}
-                        </div>
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--left ${isOddSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('budgetFriendly', oddRating);
-                          }}
-                          aria-label={`Rate ${oddRating} out of 100`}
-                        />
-                        <button
-                          type="button"
-                          className={`write-review-modal__category-star-click write-review-modal__category-star-click--right ${isEvenSelected ? 'active' : ''}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCategoryRatingClick('budgetFriendly', evenRating);
-                          }}
-                          aria-label={`Rate ${evenRating} out of 100`}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              {renderCategoryCard('driverExperience', 'Driver Experience', 'Handling, comfort, and overall driving feel')}
+              {renderCategoryCard('reliability', 'Reliability', 'Performance over time, dependability')}
+              {renderCategoryCard('manufacturerWarranty', 'Manufacturer Warranty', 'Coverage quality and support experience')}
+              {renderCategoryCard('budgetFriendly', 'Budget Friendly', 'Cost of ownership and overall value')}
             </div>
 
             {/* Optional Information Section */}
-            <div className="write-review-modal__section-group write-review-modal__section-group--optional">
-              <div className="write-review-modal__section-group-header">
-                <h3 className="write-review-modal__section-group-title">
+            <div style={sectionGroupOptionalStyle}>
+              <div style={sectionGroupHeaderStyle}>
+                <h3 style={sectionGroupTitleStyle}>
                   Additional Information
-                  <Badge variant="info" size="sm" outline={true} className="write-review-modal__optional-badge">
+                  <Badge variant="info" size="sm" outline={true} style={{ marginLeft: 'var(--spacing-1, 8px)' }}>
                     Optional
                   </Badge>
                 </h3>
-                <p className="write-review-modal__section-group-subtitle">Help others by providing more details</p>
+                <p style={sectionGroupSubtitleStyle}>Help others by providing more details</p>
               </div>
 
               {/* Model Selection */}
-              <div className="write-review-modal__field">
-                <label className="write-review-modal__field-label">Model</label>
+              <div style={fieldStyle}>
+                <label style={fieldLabelStyle}>Model</label>
                 <select
-                  className="write-review-modal__select"
+                  style={selectStyle}
                   value={vehicleModel}
                   onChange={(e) => setVehicleModel(e.target.value)}
+                  onFocus={() => setFocusedInput('model')}
+                  onBlur={() => setFocusedInput(null)}
                 >
                   <option value="">Select Model</option>
                   <option value="base">Base</option>
@@ -978,19 +1419,24 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </div>
 
               {/* Media Upload Section */}
-              <div className="write-review-modal__field">
-                <label className="write-review-modal__field-label">Share a video or photo of your car</label>
-                <div className="write-review-modal__media-upload">
+              <div style={fieldStyle}>
+                <label style={fieldLabelStyle}>Share a video or photo of your car</label>
+                <div style={mediaUploadStyle}>
                   <input
                     type="file"
                     id="media-upload"
-                    className="write-review-modal__media-input"
+                    style={mediaInputStyle}
                     accept="image/*,video/*"
                     multiple
                     onChange={handleMediaUpload}
                   />
-                  <label htmlFor="media-upload" className="write-review-modal__media-label">
-                    <div className="write-review-modal__media-placeholder">
+                  <label 
+                    htmlFor="media-upload" 
+                    style={mediaLabelStyle}
+                    onMouseEnter={() => setIsMediaPlaceholderHovered(true)}
+                    onMouseLeave={() => setIsMediaPlaceholderHovered(false)}
+                  >
+                    <div style={mediaPlaceholderStyle}>
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                         <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -1001,18 +1447,20 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   
                   {/* Media Previews */}
                   {mediaPreviews.length > 0 && (
-                    <div className="write-review-modal__media-previews">
+                    <div style={mediaPreviewsStyle}>
                       {mediaPreviews.map((preview, index) => (
-                        <div key={index} className="write-review-modal__media-preview">
+                        <div key={index} style={mediaPreviewStyle}>
                           {mediaFiles[index]?.type.startsWith('video/') ? (
-                            <video src={preview} controls className="write-review-modal__media-item" />
+                            <video src={preview} controls style={mediaItemStyle} />
                           ) : (
-                            <img src={preview} alt={`Preview ${index + 1}`} className="write-review-modal__media-item" />
+                            <img src={preview} alt={`Preview ${index + 1}`} style={mediaItemStyle} />
                           )}
                           <button
                             type="button"
-                            className="write-review-modal__media-remove"
+                            style={getMediaRemoveStyle(index)}
                             onClick={() => handleRemoveMedia(index)}
+                            onMouseEnter={() => setHoveredMediaRemove(index)}
+                            onMouseLeave={() => setHoveredMediaRemove(null)}
                             aria-label="Remove media"
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1026,12 +1474,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 </div>
               </div>
 
-              {/* VIN Verification Section (Optional) */}
+              {/* VIN Verification Section */}
               <TextField
                 label={
                   <>
                   Verify Ownership
-                  <span className="write-review-modal__field-hint">
+                  <span style={fieldHintStyle}>
                     Enter your Vehicle Identification Number (VIN) for highest verification level
                   </span>
                   </>
@@ -1044,36 +1492,34 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 }}
                 maxLength={17}
                 fullWidth
-                className="write-review-modal__field write-review-modal__vin-input"
                 helperText={
-                  <div className="write-review-modal__vin-disclaimer">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div style={vinDisclaimerStyle}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary-500, #E90C17)', flexShrink: 0, marginTop: '2px' }}>
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                       <path d="M12 8v4M12 16h.01"/>
                     </svg>
-                    <span>Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.</span>
+                    <span style={{ fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: '12px', lineHeight: '1.5em', color: 'var(--color-neutrals-3, #353945)' }}>
+                      Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.
+                    </span>
                   </div>
                 }
               />
             </div>
-
           </div>
         </div>
 
         {/* Submit Button */}
-        <div className="write-review-modal__footer">
+        <div style={footerStyle}>
           <Button
             type="button"
-            className="write-review-modal__submit-btn"
             color="primary"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              console.log('WriteReviewModal: Submit button clicked');
-              console.log('WriteReviewModal: Current state - rating:', rating, 'title:', reviewTitle, 'content:', reviewContent);
               handleSubmit();
             }}
             disabled={rating === 0 || !reviewTitle.trim() || !reviewContent.trim()}
+            style={{ width: '100%', maxWidth: '328px', height: '48px' }}
           >
             {isEditMode ? 'Update Review' : 'Submit Your Review'}
           </Button>
@@ -1082,14 +1528,16 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
       {/* Fullscreen Textarea Overlay */}
       {isTextareaExpanded && (
-        <div className="write-review-modal__fullscreen-overlay">
-          <div className="write-review-modal__fullscreen-container">
-            <div className="write-review-modal__fullscreen-header">
-              <label className="write-review-modal__fullscreen-label">Your Review</label>
+        <div style={fullscreenOverlayStyle}>
+          <div style={fullscreenContainerStyle}>
+            <div style={fullscreenHeaderStyle}>
+              <label style={fullscreenLabelStyle}>Your Review</label>
               <button
                 type="button"
-                className="write-review-modal__fullscreen-close"
+                style={fullscreenCloseStyle}
                 onClick={() => setIsTextareaExpanded(false)}
+                onMouseEnter={() => setIsFullscreenCloseHovered(true)}
+                onMouseLeave={() => setIsFullscreenCloseHovered(false)}
                 aria-label="Collapse"
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -1098,7 +1546,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               </button>
             </div>
             <textarea
-              className="write-review-modal__fullscreen-textarea"
+              style={fullscreenTextareaStyle}
               placeholder="Let others know what you like and dislike based on your hands-on experience with this vehicle"
               value={reviewContent}
               onChange={(e) => setReviewContent(e.target.value)}

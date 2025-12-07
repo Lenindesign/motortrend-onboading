@@ -6,6 +6,20 @@ Welcome to the MotorTrend Design System documentation. This folder contains comp
 
 ## 📚 Available Documentation
 
+### [Inline to Tailwind Migration Guide](./INLINE_TO_TAILWIND_MIGRATION.md) 🆕
+**Step-by-step guide for converting inline styles to Tailwind CSS**
+
+A comprehensive guide for migrating React inline styles to Tailwind CSS utility classes. Includes:
+- The `cn` utility for conditional classes
+- Color, spacing, and typography mappings
+- Interactive state patterns (hover, focus, responsive)
+- Before/after code examples
+- Migration checklist
+
+**Best for**: Developers converting existing inline-styled components to Tailwind CSS
+
+---
+
 ### [Atom Composition Guide](./ATOM_COMPOSITION_GUIDE.md)
 **Comprehensive reference for composing components**
 
@@ -186,6 +200,7 @@ When adding new atoms or updating existing ones:
 
 - **Questions about atoms?** Check the [Atom Composition Guide](./ATOM_COMPOSITION_GUIDE.md)
 - **Need quick reference?** See [Quick Reference Card](./ATOMS_QUICK_REFERENCE.md)
+- **Migrating to Tailwind?** See [Inline to Tailwind Migration Guide](./INLINE_TO_TAILWIND_MIGRATION.md)
 - **Specific atom details?** Check component README files
 - **Live examples?** Visit [Atomic Design Audit](/documentation/atomic-design-audit)
 
@@ -202,11 +217,20 @@ Current status of atomic design implementation:
 - 🔄 **4 modals** remaining to refactor
 - 🔄 **Article components** to audit
 
+### Tailwind CSS Migration Status
+
+- ✅ **64 component CSS files** migrated to inline styles
+- ✅ **Tailwind v4** configured with custom design tokens
+- ✅ **`cn` utility** created for className merging
+- ✅ **Migration guide** documented
+- 🔄 **28 page CSS files** remaining
+- 🔄 **Inline → Tailwind classes** conversion pending
+
 **See full progress**: [Atomic Design Audit Page](/documentation/atomic-design-audit)
 
 ---
 
-**Last Updated**: November 2025  
+**Last Updated**: December 2024  
 **Maintained By**: MotorTrend Design System Team
 
 

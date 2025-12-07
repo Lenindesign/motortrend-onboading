@@ -1,10 +1,10 @@
 /**
  * StickyRateBar Component
+ * Migrated to inline React styles - no external CSS dependency
  * A reusable sticky navigation bar for displaying vehicle ratings
- * Supports MotorTrend ratings, User Reviews, and Your Rating with half-star display
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useRating } from '../../contexts/RatingContext';
 import { StaffRatingTooltip } from '../StaffRatingTooltip';
@@ -12,33 +12,31 @@ import { RatingDistributionTooltip } from '../RatingDistributionTooltip';
 import { Badge, Button } from '../../design-system/components';
 import { ActionBadge } from '../molecules/ActionBadge';
 import { Popover } from '../atoms/Popover';
-import './StickyRateBar.css';
 
 export interface RatingItem {
   type: 'motortrend' | 'user-reviews' | 'your-rating';
-  value: number | string; // Rating value (0-100 for your-rating, 0-10 for motortrend, 0-10 for user-reviews)
+  value: number | string;
   onClick?: () => void;
-  label?: string; // For user-reviews: "User Reviews"
-  showStars?: boolean; // For user-reviews and your-rating
-  showHalfStars?: boolean; // Enable half-star display
-  iconSrc?: string; // Icon URL for motortrend type
-  iconAlt?: string; // Alt text for icon
-  labelTop?: string; // For Article format: "Expert" or "Community"
-  labelBottom?: string; // For Article format: "Rating" or "Rating (count)"
-  format?: 'vehicle-details' | 'article'; // Display format
+  label?: string;
+  showStars?: boolean;
+  showHalfStars?: boolean;
+  iconSrc?: string;
+  iconAlt?: string;
+  labelTop?: string;
+  labelBottom?: string;
+  format?: 'vehicle-details' | 'article';
 }
 
 export interface StickyRateBarProps {
   vehicleName: string;
-  vehiclePath?: string; // Optional link path for vehicle name
+  vehiclePath?: string;
   ratings: RatingItem[];
-  ctaText?: string; // Call-to-action button text
+  ctaText?: string;
   ctaOnClick?: () => void;
   isVisible: boolean;
-  isSticky?: boolean; // Whether the bar should be fixed (sticky) or static
+  isSticky?: boolean;
   className?: string;
-  barRef?: React.RefObject<HTMLDivElement | null>; // Ref for scroll detection
-  // Tooltip data
+  barRef?: React.RefObject<HTMLDivElement | null>;
   staffRatingScores?: { performance?: number; efficiency?: number; tech?: number; value?: number };
   ratingDistribution?: { [key: number]: number };
   totalReviews?: number;
@@ -60,17 +58,25 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   totalReviews,
   hideCtaButton
 }) => {
-  console.log('[StickyRateBar] Received totalReviews:', totalReviews);
-  console.log('[StickyRateBar] Received ratingDistribution:', ratingDistribution);
   const navigate = useNavigate();
   const { getUserRating } = useRating();
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isDistributionTooltipVisible, setIsDistributionTooltipVisible] = useState(false);
-  // Refs removed as Popover handles positioning
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [hoveredItem, setHoveredItem] = useState<number | null>(null);
+  const [isCtaHovered, setIsCtaHovered] = useState(false);
+  const [isVehicleNameHovered, setIsVehicleNameHovered] = useState(false);
+  const [isBuyersGuideHovered, setIsBuyersGuideHovered] = useState(false);
+  
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const hideDistributionTooltipTimeout = useRef<number | null>(null);
 
-  // Tooltip handlers for staff rating
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleStaffTooltipMouseEnter = () => {
     if (hideStaffTooltipTimeout.current) {
       clearTimeout(hideStaffTooltipTimeout.current);
@@ -85,7 +91,6 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     }, 100);
   };
 
-  // Tooltip handlers for distribution rating
   const handleDistributionTooltipMouseEnter = () => {
     if (hideDistributionTooltipTimeout.current) {
       clearTimeout(hideDistributionTooltipTimeout.current);
@@ -100,21 +105,282 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     }, 100);
   };
 
+  // ==================== INLINE STYLES ====================
+
+  const barStyle: React.CSSProperties = {
+    width: isSticky ? undefined : '100vw',
+    backgroundColor: 'var(--color-neutrals-1, #141416)',
+    boxShadow: 'var(--shadow-depth-5, 0px 4px 20px 0px rgba(20, 20, 22, 0.06))',
+    position: isSticky ? 'fixed' : 'relative',
+    top: isSticky ? 0 : undefined,
+    left: isSticky ? 0 : undefined,
+    right: isSticky ? 0 : undefined,
+    zIndex: isSticky ? 1000 : 10,
+    transform: isSticky ? (isVisible ? 'translateY(0)' : 'translateY(-100%)') : undefined,
+    opacity: isSticky ? (isVisible ? 1 : 0) : 1,
+    pointerEvents: isSticky && !isVisible ? 'none' : 'auto',
+    transition: isSticky ? 'transform var(--transition-normal, 250ms ease-in-out), opacity var(--transition-normal, 250ms ease-in-out)' : 'none',
+    marginTop: isSticky ? undefined : 0,
+    marginBottom: isSticky ? undefined : 0,
+    marginLeft: isSticky ? undefined : 'calc(-50vw + 50%)',
+    marginRight: isSticky ? undefined : 'calc(-50vw + 50%)',
+  };
+
+  const contentStyle: React.CSSProperties = {
+    maxWidth: 'var(--max-width-content, 1280px)',
+    width: '100%',
+    margin: '0 auto',
+    padding: isMobile ? '10px 12px' : 'var(--spacing-2, 16px) var(--spacing-3, 24px)',
+    paddingLeft: !isMobile && window.innerWidth >= 1280 ? 0 : undefined,
+    paddingRight: !isMobile && window.innerWidth >= 1280 ? 0 : undefined,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: isMobile ? '12px' : 'var(--spacing-3, 24px)',
+    flexDirection: 'row',
+    flexWrap: isMobile ? 'wrap' : 'nowrap',
+  };
+
+  const nameContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: isMobile ? '6px' : 'var(--spacing-1, 8px)',
+    flexShrink: 0,
+    order: isMobile ? 1 : undefined,
+    flex: isMobile ? '1 1 auto' : undefined,
+    minWidth: isMobile ? 0 : undefined,
+  };
+
+  const badgesRowStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexWrap: isMobile ? 'wrap' : 'nowrap',
+    order: isMobile ? 1 : undefined,
+  };
+
+  const buyersGuideBadgeStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    textDecoration: 'none',
+    transition: 'opacity 0.2s ease',
+    width: 'fit-content',
+    opacity: isBuyersGuideHovered ? 0.8 : 1,
+  };
+
+  const vehicleNameStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: isMobile ? '18px' : '24px',
+    lineHeight: '1.2em',
+    color: '#E0E0E0',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    textDecoration: 'none',
+    textAlign: isMobile ? 'left' : undefined,
+    order: isMobile ? 2 : undefined,
+    width: isMobile ? '100%' : undefined,
+    transition: 'opacity var(--transition-fast, all 150ms ease-in-out)',
+    opacity: isVehicleNameHovered ? 0.8 : 1,
+  };
+
+  const ratingsStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: isMobile ? '8px' : 'var(--spacing-4, 32px)',
+    flex: isMobile ? 1 : 1,
+    justifyContent: 'flex-end',
+    flexWrap: 'nowrap',
+    order: isMobile ? 2 : undefined,
+    minWidth: isMobile ? 0 : undefined,
+  };
+
+  const separatorStyle: React.CSSProperties = {
+    width: '1px',
+    height: isMobile ? '30px' : '40px',
+    backgroundColor: 'var(--color-neutrals-3, #353945)',
+    margin: isMobile ? '0 4px' : '0 var(--spacing-3, 24px)',
+    flexShrink: 0,
+  };
+
+  const getRatingItemStyle = (type: string, index: number): React.CSSProperties => {
+    const isYourRating = type === 'your-rating';
+    const isVertical = type === 'user-reviews' || type === 'your-rating';
+    const isMotortrend = type === 'motortrend';
+    
+    return {
+      display: isMobile && isYourRating ? 'none' : 'flex',
+      alignItems: 'center',
+      gap: isMobile ? '3px' : (isVertical ? '12px' : 'var(--spacing-2, 16px)'),
+      cursor: 'pointer',
+      transition: 'opacity var(--transition-fast, all 150ms ease-in-out)',
+      background: 'none',
+      border: 'none',
+      padding: 0,
+      minWidth: 0,
+      flexShrink: 0,
+      height: 'fit-content',
+      flexDirection: isMobile || isVertical || isMotortrend ? 'column' : 'row',
+      textAlign: isMobile ? 'center' : undefined,
+      fontSize: isMobile ? '11px' : undefined,
+      opacity: hoveredItem === index ? 0.8 : 1,
+    };
+  };
+
+  const ratingLabelWrapperStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 'var(--spacing-gap-xs, 4px)',
+    flexShrink: 0,
+    alignItems: 'center',
+  };
+
+  const ratingLabelStyle: React.CSSProperties = {
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    fontSize: isMobile ? '9px' : '12px',
+    fontWeight: 500,
+    lineHeight: 1.2,
+    textDecoration: 'none',
+  };
+
+  const ratingIconStyle: React.CSSProperties = {
+    flexShrink: 0,
+    width: isMobile ? '18px' : '24px',
+    height: isMobile ? '18px' : '24px',
+    minWidth: isMobile ? '18px' : '24px',
+    minHeight: isMobile ? '18px' : '24px',
+    maxWidth: isMobile ? '18px' : '24px',
+    maxHeight: isMobile ? '18px' : '24px',
+    objectFit: 'contain',
+    display: 'block',
+    lineHeight: 1,
+    margin: isMobile ? '0 0 2px 0' : 0,
+    padding: 0,
+    background: 'transparent',
+    border: 'none',
+    order: isMobile ? 1 : undefined,
+  };
+
+  const ratingValueStyle: React.CSSProperties = {
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    fontSize: isMobile ? '20px' : '32px',
+    fontWeight: isMobile ? 700 : 600,
+    fontFamily: "'Geist', system-ui, -apple-system, sans-serif",
+    order: isMobile ? 2 : undefined,
+    margin: isMobile ? 0 : undefined,
+  };
+
+  const ratingStarsStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '2px',
+    flexShrink: 0,
+    justifyContent: 'center',
+    order: isMobile ? 1 : undefined,
+    margin: isMobile ? '0 0 2px 0' : undefined,
+  };
+
+  const starWrapperStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '18px',
+    height: '18px',
+    flexShrink: 0,
+  };
+
+  const ratingTextStyle: React.CSSProperties = {
+    fontFamily: "'Geist', sans-serif",
+    color: 'var(--color-neutrals-7, #F4F5F6)',
+    fontSize: isMobile ? '10px' : '14px',
+    fontWeight: 400,
+    lineHeight: 1.2,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--spacing-gap-xs, 4px)',
+    whiteSpace: 'nowrap',
+    order: isMobile ? 3 : undefined,
+  };
+
+  const scoreRowStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--spacing-1, 8px)',
+  };
+
+  const scoreLargeStyle: React.CSSProperties = {
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    fontSize: '26px',
+    fontWeight: 600,
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    lineHeight: 1,
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: 'var(--spacing-gap-xs, 4px)',
+    whiteSpace: 'nowrap',
+  };
+
+  const scoreMaxStyle: React.CSSProperties = {
+    color: 'var(--color-neutrals-4, #6E7481)',
+    fontSize: '18px',
+    fontWeight: 400,
+    lineHeight: 1,
+  };
+
+  const mtBadgeStyle: React.CSSProperties = {
+    width: '16px',
+    height: '16px',
+    flexShrink: 0,
+    objectFit: 'contain',
+  };
+
+  const motortrendTextStyle: React.CSSProperties = {
+    color: '#FFFFFF',
+    fontSize: '14px',
+    fontWeight: 500,
+    lineHeight: 1.2,
+    whiteSpace: 'nowrap',
+  };
+
+  const ctaStyle: React.CSSProperties = {
+    display: isMobile ? 'none' : 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'var(--spacing-component-sm, 8px) var(--spacing-component-lg, 24px)',
+    backgroundColor: isCtaHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-primary-2, #FF3B42)',
+    border: 'none',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '16px',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    cursor: 'pointer',
+    transition: 'all var(--transition-fast, all 150ms ease-in-out)',
+    whiteSpace: 'nowrap',
+    flexShrink: 0,
+    transform: isCtaHovered ? 'translateY(-1px)' : undefined,
+    boxShadow: isCtaHovered ? 'var(--shadow-button-hover, 0 4px 12px rgba(0,0,0,0.15))' : undefined,
+  };
+
   const renderStarRating = (ratingValue: number, showHalfStars: boolean = true) => {
-    // Convert rating to 0-5 scale
-    const normalizedRating = ratingValue / 20; // Assuming 0-100 scale input
+    const normalizedRating = ratingValue / 20;
 
     return (
-      <div className="sticky-rate-bar__rating-stars">
+      <div style={ratingStarsStyle}>
         {[1, 2, 3, 4, 5].map((star) => {
           const isFilled = star <= normalizedRating;
           const isHalf = showHalfStars && star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
 
           return (
-            <div key={star} className={`sticky-rate-bar__star-wrapper ${isHalf ? 'sticky-rate-bar__star-wrapper--half' : ''}`}>
+            <div key={star} style={starWrapperStyle}>
               {/* Outline star */}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="sticky-rate-bar__rating-star sticky-rate-bar__rating-star--outline">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+              <svg 
+                width="18" 
+                height="18" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg" 
+                style={{ position: 'absolute', top: 0, left: 0 }}
+              >
+                <path 
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
                   fill="none"
                   stroke="#33C4FF"
                   strokeWidth="2"
@@ -122,18 +388,33 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              {/* Filled star (full or half) */}
+              {/* Filled star */}
               {isFilled && (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="sticky-rate-bar__rating-star sticky-rate-bar__rating-star--filled">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                <svg 
+                  width="18" 
+                  height="18" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  style={{ position: 'absolute', top: 0, left: 0 }}
+                >
+                  <path 
+                    d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
                     fill="#33C4FF"
                   />
                 </svg>
               )}
               {isHalf && (
-                <div className="sticky-rate-bar__star-half-fill">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="sticky-rate-bar__rating-star">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '100%', overflow: 'hidden' }}>
+                  <svg 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path 
+                      d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
                       fill="#33C4FF"
                     />
                   </svg>
@@ -153,63 +434,57 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     const userRating = rating.type === 'your-rating' ? getUserRating(vehicleName) : 0;
     const displayRating = rating.type === 'your-rating' ? userRating : rating.value;
 
-    // Handle different rating formats
     let ratingDisplay: React.ReactNode = null;
 
     if (rating.type === 'motortrend') {
       if (rating.format === 'article') {
-        // Article format: Label wrapper + Icon + Value
         ratingDisplay = (
           <>
             {rating.labelTop && rating.labelBottom && (
-              <div className="sticky-rate-bar__rating-label-wrapper">
-                <span className="sticky-rate-bar__rating-label-top">{rating.labelTop}</span>
-                <span className="sticky-rate-bar__rating-label-bottom">{rating.labelBottom}</span>
+              <div style={ratingLabelWrapperStyle}>
+                <span style={ratingLabelStyle}>{rating.labelTop}</span>
+                <span style={ratingLabelStyle}>{rating.labelBottom}</span>
               </div>
             )}
             {rating.iconSrc && (
               <img
                 src={rating.iconSrc}
                 alt={rating.iconAlt || 'Rating icon'}
-                className="sticky-rate-bar__rating-icon"
+                style={ratingIconStyle}
               />
             )}
-            <span className="sticky-rate-bar__rating-value">
+            <span style={ratingValueStyle}>
               {typeof displayRating === 'number' ? displayRating.toFixed(1) : displayRating}
             </span>
           </>
         );
       } else {
-        // VehicleDetails format: Icon + Score on top, Label below
         ratingDisplay = (
           <>
-            <div className="sticky-rate-bar__rating-score-row">
+            <div style={scoreRowStyle}>
               {rating.iconSrc && (
                 <img
                   src={rating.iconSrc}
                   alt={rating.iconAlt || 'MT'}
-                  className="sticky-rate-bar__rating-mt-badge"
+                  style={mtBadgeStyle}
                 />
               )}
-              <div className="sticky-rate-bar__rating-score-large">
+              <div style={scoreLargeStyle}>
                 {typeof displayRating === 'number' ? displayRating.toFixed(1) : displayRating}
-                <span className="sticky-rate-bar__rating-score-max">/10</span>
+                <span style={scoreMaxStyle}>/10</span>
               </div>
             </div>
-            <span className="sticky-rate-bar__rating-motortrend-text">MotorTrend Rating</span>
+            <span style={motortrendTextStyle}>MotorTrend Rating</span>
           </>
         );
       }
     } else if (rating.type === 'user-reviews') {
-      // User Reviews: Stars + Text
-      // Rating is in 0-10 scale, convert to 0-5 for display
       const ratingValue = typeof displayRating === 'number' ? displayRating / 2 : parseFloat(String(displayRating)) / 2;
-      // Convert to 0-100 scale for renderStarRating (which expects 0-100 and divides by 20)
       const ratingForStars = ratingValue * 20;
       ratingDisplay = (
         <>
           {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
-          <div className="sticky-rate-bar__rating-text">
+          <div style={ratingTextStyle}>
             {rating.label || 'User Reviews'}{' '}
             <Badge variant="neutral" size="sm">
               {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
@@ -218,12 +493,11 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
         </>
       );
     } else if (rating.type === 'your-rating') {
-      // Your Rating: Stars + Text
       const ratingValue = typeof displayRating === 'number' ? displayRating / 20 : 0;
       ratingDisplay = (
         <>
           {renderStarRating(displayRating as number, rating.showHalfStars !== false)}
-          <div className="sticky-rate-bar__rating-text">
+          <div style={ratingTextStyle}>
             Rate This Vehicle{userRating > 0 && (
               <>
                 {' '}
@@ -237,23 +511,25 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       );
     }
 
-    const itemClasses = [
-      'sticky-rate-bar__rating-item',
-      rating.type === 'motortrend' ? 'sticky-rate-bar__rating-item--motortrend' : '',
-      rating.type === 'user-reviews' || rating.type === 'your-rating' ? 'sticky-rate-bar__rating-item--vertical' : '',
-      rating.type === 'your-rating' ? 'sticky-rate-bar__rate-btn' : ''
-    ].filter(Boolean).join(' ');
-
-    // Mouse handlers for tooltips
-    const mouseHandlers: React.DOMAttributes<HTMLElement> = {};
+    const mouseHandlers: React.DOMAttributes<HTMLElement> = {
+      onMouseEnter: () => setHoveredItem(index),
+      onMouseLeave: () => setHoveredItem(null),
+    };
+    
     let tooltipContent: React.ReactNode = null;
     let isTooltipOpen = false;
     let onTooltipOpenChange: ((isOpen: boolean) => void) | undefined = undefined;
     let popoverClass = '';
 
     if (rating.type === 'motortrend' && staffRatingScores) {
-      mouseHandlers.onMouseEnter = handleStaffTooltipMouseEnter;
-      mouseHandlers.onMouseLeave = handleStaffTooltipMouseLeave;
+      mouseHandlers.onMouseEnter = () => {
+        setHoveredItem(index);
+        handleStaffTooltipMouseEnter();
+      };
+      mouseHandlers.onMouseLeave = () => {
+        setHoveredItem(null);
+        handleStaffTooltipMouseLeave();
+      };
       isTooltipOpen = isStaffTooltipVisible;
       onTooltipOpenChange = setIsStaffTooltipVisible;
       popoverClass = 'staff-rating-tooltip-popover';
@@ -267,8 +543,14 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
         />
       );
     } else if (rating.type === 'user-reviews' && ratingDistribution && totalReviews) {
-      mouseHandlers.onMouseEnter = handleDistributionTooltipMouseEnter;
-      mouseHandlers.onMouseLeave = handleDistributionTooltipMouseLeave;
+      mouseHandlers.onMouseEnter = () => {
+        setHoveredItem(index);
+        handleDistributionTooltipMouseEnter();
+      };
+      mouseHandlers.onMouseLeave = () => {
+        setHoveredItem(null);
+        handleDistributionTooltipMouseLeave();
+      };
       isTooltipOpen = isDistributionTooltipVisible;
       onTooltipOpenChange = setIsDistributionTooltipVisible;
       popoverClass = 'rating-tooltip-popover';
@@ -285,13 +567,16 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
 
     const content = (
       <Component
-        className={itemClasses}
+        style={getRatingItemStyle(rating.type, index)}
         onClick={rating.onClick}
         {...mouseHandlers}
       >
         {ratingDisplay}
       </Component>
     );
+
+    // Hide separator before "Rate This Vehicle" on mobile
+    const showSeparator = !isLast && !(isMobile && ratings[index + 1]?.type === 'your-rating');
 
     return (
       <React.Fragment key={index}>
@@ -300,7 +585,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             content={tooltipContent}
             isOpen={isTooltipOpen}
             onOpenChange={onTooltipOpenChange}
-            trigger="click" // Disabled internal hover logic, managed by state
+            trigger="click"
             placement="bottom"
             className={popoverClass}
           >
@@ -309,7 +594,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
         ) : (
           content
         )}
-        {!isLast && <div className="sticky-rate-bar__rating-separator"></div>}
+        {showSeparator && <div style={separatorStyle}></div>}
       </React.Fragment>
     );
   };
@@ -317,30 +602,35 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   return (
     <div
       ref={barRef}
-      className={`sticky-rate-bar ${isSticky ? 'sticky-rate-bar--sticky' : 'sticky-rate-bar--static'} ${isVisible ? 'sticky-rate-bar--visible' : ''} ${className}`}
+      style={barStyle}
+      className={className}
     >
-      <div className="sticky-rate-bar__content">
-        <div className="sticky-rate-bar__name-container">
-          <div className="sticky-rate-bar__badges-row">
+      <div style={contentStyle}>
+        <div style={nameContainerStyle}>
+          <div style={badgesRowStyle}>
             {vehiclePath ? (
-              <ActionBadge
-                text="Buyers Guide"
-                variant="secondary"
+              <a
                 href={vehiclePath}
+                style={buyersGuideBadgeStyle}
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(vehiclePath);
                 }}
-                className="sticky-rate-bar__buyers-guide-badge"
-              />
+                onMouseEnter={() => setIsBuyersGuideHovered(true)}
+                onMouseLeave={() => setIsBuyersGuideHovered(false)}
+              >
+                <ActionBadge
+                  text="Buyers Guide"
+                  variant="secondary"
+                />
+              </a>
             ) : (
-              <div className="sticky-rate-bar__buyers-guide-badge">
+              <div style={buyersGuideBadgeStyle}>
                 <Badge variant="info" size="sm">Buyers Guide</Badge>
               </div>
             )}
-            {ctaText && (
+            {ctaText && isMobile && (
               <ActionBadge
-                className="sticky-rate-bar__cta-badge"
                 onClick={(e) => {
                   e.stopPropagation();
                   ctaOnClick?.();
@@ -350,27 +640,33 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               />
             )}
           </div>
-        {vehiclePath ? (
-          <Link to={vehiclePath} className="sticky-rate-bar__vehicle-name sticky-rate-bar__vehicle-name--link">
-            {vehicleName}
-          </Link>
-        ) : (
-          <div className="sticky-rate-bar__vehicle-name">
-            {vehicleName}
-          </div>
-        )}
+          {vehiclePath ? (
+            <Link 
+              to={vehiclePath} 
+              style={vehicleNameStyle}
+              onMouseEnter={() => setIsVehicleNameHovered(true)}
+              onMouseLeave={() => setIsVehicleNameHovered(false)}
+            >
+              {vehicleName}
+            </Link>
+          ) : (
+            <div style={vehicleNameStyle}>
+              {vehicleName}
+            </div>
+          )}
         </div>
-        <div className="sticky-rate-bar__ratings">
+        <div style={ratingsStyle}>
           {ratings.map((rating, index) => renderRatingItem(rating, index))}
         </div>
-        {ctaText && !hideCtaButton && (
-          <Button
-            className="sticky-rate-bar__cta sticky-rate-bar__cta--desktop"
-            color="primary"
+        {ctaText && !hideCtaButton && !isMobile && (
+          <button
+            style={ctaStyle}
             onClick={ctaOnClick}
+            onMouseEnter={() => setIsCtaHovered(true)}
+            onMouseLeave={() => setIsCtaHovered(false)}
           >
             {ctaText}
-          </Button>
+          </button>
         )}
       </div>
     </div>

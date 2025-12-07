@@ -73,7 +73,7 @@
 .top-ten-management__sidebar-logo {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -315,7 +315,7 @@
 }
 
 .top-ten-management__stat-card--highlight {
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
   border: none;
 }
 
@@ -433,7 +433,7 @@
   width: 48px;
   height: 48px;
   min-width: 48px;
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -567,7 +567,7 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
   color: var(--color-white);
   border-radius: 10px;
   font-family: var(--font-heading);
@@ -576,17 +576,17 @@
 }
 
 .top-ten-management__rank-badge--gold {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  background: linear-gradient(135deg, var(--color-medal-gold-start) 0%, var(--color-medal-gold-end) 100%);
   color: #000;
 }
 
 .top-ten-management__rank-badge--silver {
-  background: linear-gradient(135deg, #C0C0C0 0%, #A8A8A8 100%);
+  background: linear-gradient(135deg, var(--color-medal-silver-start) 0%, var(--color-medal-silver-end) 100%);
   color: #000;
 }
 
 .top-ten-management__rank-badge--bronze {
-  background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+  background: linear-gradient(135deg, var(--color-medal-bronze-start) 0%, var(--color-medal-bronze-end) 100%);
   color: #000;
 }
 
@@ -649,7 +649,7 @@
 }
 
 .top-ten-management__rating--medium {
-  color: #f59e0b;
+  color: var(--color-semantic-warning);
 }
 
 .top-ten-management__rating--low {
@@ -873,7 +873,7 @@
 .top-ten-management__bento-card.bento-card--feature .top-ten-management__bento-rank-badge {
   font-size: 18px;
   padding: 10px 16px;
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
 }
 
 .top-ten-management__bento-card.bento-card--hero .top-ten-management__bento-rating,
@@ -1067,7 +1067,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--color-primary-1), #ff6b6b, var(--color-primary-1));
+  background: linear-gradient(90deg, var(--color-primary-1), var(--color-primary-3, #ff858a), var(--color-primary-1));
   background-size: 200% 100%;
   animation: shimmer 2s ease-in-out infinite;
 }

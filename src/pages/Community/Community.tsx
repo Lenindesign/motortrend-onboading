@@ -14,7 +14,6 @@ import {
 } from '../../api/communityApi';
 import { CommunitySidebar } from '../../components/Community/CommunitySidebar';
 import { PostCard } from '../../components/Community/PostCard';
-import { VoteControl } from '../../components/Community/VoteControl';
 import { CreatePostModal } from '../../components/Community/CreatePostModal';
 import { CreateCommunityModal } from '../../components/Community/CreateCommunityModal';
 import { CommentSection } from '../../components/Community/CommentSection';
@@ -252,52 +251,14 @@ const CommunityPage: React.FC = () => {
           {/* Content: Post Detail or Feed */}
           {postId && currentPost ? (
             <div className="community-page__post-detail">
-              <div className="post-card post-card--detail">
-                <div className="post-card__vote-column">
-                   <VoteControl 
-                      upvotes={currentPost.upvotes} 
-                      downvotes={currentPost.downvotes}
-                      userVote={currentPost.userVote}
-                      onVote={(dir) => handleVote(currentPost.id, dir)}
-                      orientation="vertical"
-                      size="md"
-                    />
-                </div>
-                <div className="post-card__content-column">
-                   <div className="post-card__header">
-                      <span className="post-card__meta">
-                        Posted by {currentPost.author.name} • {new Date(currentPost.createdAt).toLocaleDateString()}
-                      </span>
-                   </div>
-                   <h1 className="post-card__title post-card__title--detail">{currentPost.title}</h1>
-                   {currentPost.image && (
-                     <div className="post-card__media">
-                        <img src={currentPost.image} alt={currentPost.title} className="post-card__image" />
-                     </div>
-                   )}
-                   <div className="post-card__text-content">
-                      {currentPost.content}
-                   </div>
-                   
-                   {/* Footer: Actions */}
-                   <div className="post-card__footer">
-                     <div className="post-card__action">
-                       <Icon name="chat_bubble_outline" size={18} />
-                       <span>{currentPost.commentCount} Comments</span>
-                     </div>
-                     <div className="post-card__action">
-                       <Icon name="share" size={18} />
-                       <span>Share</span>
-                     </div>
-                     <div className="post-card__action">
-                       <Icon name="bookmark_border" size={18} />
-                       <span>Save</span>
-                     </div>
-                   </div>
-                   
-                   <CommentSection postId={currentPost.id} />
-                </div>
-              </div>
+              <PostCard 
+                post={currentPost}
+                community={currentCommunity || undefined}
+                onVote={handleVote}
+                showCommunity={false}
+                isDetailView={true}
+              />
+              <CommentSection postId={currentPost.id} />
             </div>
           ) : (
             <div className="community-page__feed">

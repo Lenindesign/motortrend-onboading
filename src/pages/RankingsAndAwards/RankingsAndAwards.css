@@ -40,8 +40,8 @@
   font-weight: var(--font-weight-bold);
   font-size: 64px;
   line-height: 1.2em;
-  background-color: #ffffff;
-  color: #23262F;
+  background-color: var(--color-white);
+  color: var(--color-neutrals-2);
   margin: 0 0 var(--spacing-3) 0;
 }
 

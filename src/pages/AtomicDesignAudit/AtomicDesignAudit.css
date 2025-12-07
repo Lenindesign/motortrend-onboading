@@ -5,7 +5,7 @@
 /* ============ CRITICAL: Force white color on section titles ============ */
 .audit-page .audit-main .audit-section .audit-section__header div h2.audit-section__title,
 .audit-page .audit-main .audit-section .audit-section__header > div > h2.audit-section__title {
-  color: #FFFFFF !important;
+  color: var(--color-white) !important;
 }
 
 /* ============ Page Layout ============ */
@@ -76,7 +76,7 @@
 .audit-sidebar__logo {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -295,7 +295,7 @@
 }
 
 .audit-header__stat--highlight {
-  background: linear-gradient(135deg, var(--color-primary-1) 0%, #ff4444 100%);
+  background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
   border: none;
 }
 
@@ -357,19 +357,19 @@
 }
 
 .audit-section__icon--atom {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-purple-start) 0%, var(--color-purple-end) 100%);
 }
 
 .audit-section__icon--molecule {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--color-teal-start) 0%, var(--color-teal-end) 100%);
 }
 
 .audit-section__icon--organism {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  background: linear-gradient(135deg, var(--color-amber-start) 0%, var(--color-amber-end) 100%);
 }
 
 .audit-section__icon--success {
-  background: linear-gradient(135deg, #34a853 0%, #2d8f47 100%);
+  background: linear-gradient(135deg, var(--color-green-start) 0%, var(--color-green-end) 100%);
 }
 
 .audit-section__title,
@@ -383,7 +383,7 @@ h2.audit-section__title,
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 28px;
-  color: #FFFFFF !important;
+  color: var(--color-white) !important;
   margin: 0 0 8px;
 }
 
@@ -422,15 +422,15 @@ h2.audit-section__title,
 }
 
 .audit-level-card--atom::before {
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  background: linear-gradient(90deg, var(--color-purple-start), var(--color-purple-end));
 }
 
 .audit-level-card--molecule::before {
-  background: linear-gradient(90deg, #10b981, #059669);
+  background: linear-gradient(90deg, var(--color-teal-start), var(--color-teal-end));
 }
 
 .audit-level-card--organism::before {
-  background: linear-gradient(90deg, #f59e0b, #d97706);
+  background: linear-gradient(90deg, var(--color-amber-start), var(--color-amber-end));
 }
 
 .audit-level-card__header {
@@ -442,15 +442,15 @@ h2.audit-section__title,
 }
 
 .audit-level-card--atom .audit-level-card__header {
-  color: #8b5cf6;
+  color: var(--color-purple-end);
 }
 
 .audit-level-card--molecule .audit-level-card__header {
-  color: #10b981;
+  color: var(--color-teal-start);
 }
 
 .audit-level-card--organism .audit-level-card__header {
-  color: #f59e0b;
+  color: var(--color-amber-start);
 }
 
 .audit-level-card__badge {
@@ -527,7 +527,7 @@ h2.audit-section__title,
 
 .audit-progress__fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-semantic-success) 0%, #2d8f47 100%);
+  background: linear-gradient(90deg, var(--color-semantic-success) 0%, var(--color-green-end) 100%);
   border-radius: 100px;
   transition: width 0.6s ease;
 }
@@ -936,7 +936,7 @@ h2.audit-section__title,
   .audit-section__header div h2.audit-section__title,
   .audit-section__header div .audit-section__title {
     font-size: 22px;
-    color: #FFFFFF !important;
+    color: var(--color-white) !important;
   }
 
   .audit-component-grid {

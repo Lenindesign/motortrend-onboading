@@ -1,6 +1,6 @@
 /**
  * Top Ten Carousel Component
- * Reusable carousel with vehicle type and subcategory filters
+ * Migrated to inline React styles
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
@@ -15,7 +15,6 @@ import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { getVehicles } from '../../api/vehiclesApi';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
-import './TopTenCarousel.css';
 
 export type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe' | 'Performance' | 'Recommended For You';
 export type Subcategory = 'All' | 'Subcompact' | 'Compact' | 'Midsize' | 'Full-Size' | 'Luxury' | 'Electric';
@@ -65,6 +64,17 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const dotsRef = useRef<HTMLDivElement>(null);
   const [shouldHideRatingBadge, setShouldHideRatingBadge] = useState(false);
   
+  // Responsive state
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isTablet, setIsTablet] = useState(window.innerWidth <= 1024);
+  const [isWideDesktop, setIsWideDesktop] = useState(window.innerWidth >= 1280);
+  
+  // Hover states
+  const [hoveredNav, setHoveredNav] = useState<string | null>(null);
+  const [hoveredDot, setHoveredDot] = useState<number | null>(null);
+  const [isSaveBtnHovered, setIsSaveBtnHovered] = useState(false);
+  const [isExpandBtnHovered, setIsExpandBtnHovered] = useState(false);
+  
   // Touch/swipe state
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -79,6 +89,41 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   // Saved modal state
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [savedVehicleName, setSavedVehicleName] = useState('');
+
+  // Inject keyframes animations
+  useEffect(() => {
+    const styleId = 'top-ten-carousel-styles';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes kenBurnsZoom {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.05); }
+        }
+        @keyframes progressCircle {
+          0% { stroke-dasharray: 0 100; }
+          100% { stroke-dasharray: 100 100; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    return () => {
+      const existing = document.getElementById(styleId);
+      if (existing) existing.remove();
+    };
+  }, []);
+
+  // Responsive handler
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsTablet(window.innerWidth <= 1024);
+      setIsWideDesktop(window.innerWidth >= 1280);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Load saved vehicles from localStorage
   useEffect(() => {
@@ -96,22 +141,16 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     }
   }, []);
 
-  // Handle save/unsave vehicle
   const handleSaveVehicle = (vehicle: CarouselVehicle) => {
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       let data = onboardingData ? JSON.parse(onboardingData) : { vehicles: [] };
       
-      if (!data.vehicles) {
-        data.vehicles = [];
-      }
+      if (!data.vehicles) data.vehicles = [];
 
-      const vehicleIndex = data.vehicles.findIndex(
-        (v: { name: string }) => v.name === vehicle.name
-      );
+      const vehicleIndex = data.vehicles.findIndex((v: { name: string }) => v.name === vehicle.name);
 
       if (vehicleIndex > -1) {
-        // Remove vehicle
         data.vehicles.splice(vehicleIndex, 1);
         setSavedVehicles(prev => {
           const newSet = new Set(prev);
@@ -119,17 +158,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           return newSet;
         });
       } else {
-        // Add vehicle with ownership property set to 'want'
-        data.vehicles.push({
-          name: vehicle.name,
-          year: vehicle.year,
-          make: vehicle.make,
-          model: vehicle.model,
-          ownership: 'want'
-        });
+        data.vehicles.push({ name: vehicle.name, year: vehicle.year, make: vehicle.make, model: vehicle.model, ownership: 'want' });
         setSavedVehicles(prev => new Set(prev).add(vehicle.name));
-        
-        // Show saved modal
         setSavedVehicleName(vehicle.name);
         setIsSavedModalOpen(true);
       }
@@ -140,119 +170,82 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     }
   };
 
-  // Get all vehicles from API (memoized to prevent unnecessary re-renders)
   const allVehicleItems = useMemo(() => {
     const apiVehicles = getVehicles();
-    console.log('TopTenCarousel: Total vehicles from API:', apiVehicles.length);
-    const lincolnNavigator = apiVehicles.find(v => 
-      v.make.toLowerCase() === 'lincoln' && v.model.toLowerCase() === 'navigator' && v.year === '2024'
-    );
-    if (lincolnNavigator) {
-      console.log('✅ Found 2024 Lincoln Navigator with galleryImages:', lincolnNavigator.galleryImages?.length || 0);
-    }
-    // Include all rating properties from API to ensure single source of truth
     return apiVehicles.map(v => ({
       name: `${v.year} ${v.make} ${v.model}`,
       image: v.image,
       galleryImages: v.galleryImages,
-      bodyStyle: v.bodyStyle, // Include bodyStyle from API (single source of truth)
-      staffRating: v.staffRating, // Include API rating (single source of truth)
-      communityRating: v.communityRating, // Include API rating (single source of truth)
-      priceMin: v.priceMin // Include priceMin for filtering
+      bodyStyle: v.bodyStyle,
+      staffRating: v.staffRating,
+      communityRating: v.communityRating,
+      priceMin: v.priceMin
     }));
-  }, []); // Empty dependency array since getVehicles() returns static data
+  }, []);
 
-  // Helper function to get subcategories for a vehicle type
   const getSubcategoriesForType = (type: VehicleType): Subcategory[] => {
-    // Performance and Recommended For You are standalone categories with no subcategories
-    if (type === 'Performance' || type === 'Recommended For You') {
-      return ['All'];
-    }
-    
+    if (type === 'Performance' || type === 'Recommended For You') return ['All'];
     const commonSubcategories: Subcategory[] = ['All', 'Subcompact', 'Compact', 'Midsize', 'Full-Size', 'Luxury', 'Electric'];
-    
     switch (type) {
-      case 'SUV':
-        return commonSubcategories;
-      case 'Sedan':
-        return ['All', 'Compact', 'Midsize', 'Full-Size', 'Electric'];
-      case 'Truck':
-        return ['All', 'Midsize', 'Full-Size', 'Electric'];
-      case 'Coupe':
-        return ['All', 'Compact', 'Midsize', 'Electric'];
-      default:
-        return ['All'];
+      case 'SUV': return commonSubcategories;
+      case 'Sedan': return ['All', 'Compact', 'Midsize', 'Full-Size', 'Electric'];
+      case 'Truck': return ['All', 'Midsize', 'Full-Size', 'Electric'];
+      case 'Coupe': return ['All', 'Compact', 'Midsize', 'Electric'];
+      default: return ['All'];
     }
   };
 
-  // Helper function to categorize vehicles
   const getVehicleSubcategory = (vehicleName: string, vehicleType: VehicleType): Subcategory => {
     const name = vehicleName.toLowerCase();
-    
-    // Electric vehicles (highest priority)
     const electricModels = ['electric', 'ev', 'e-tron', 'taycan', 'model 3', 'model s', 'model x', 'model y', 'i4', 'i8', 'eq', 'ioniq', 'leaf', 'bolt', 'id.4', 'mach-e', 'lightning', 'rivian', 'lucid', 'polestar', 'ariya', 'bz4x'];
     if (electricModels.some(model => name.includes(model))) return 'Electric';
 
-    // SUV subcategories
     if (vehicleType === 'SUV') {
       const subcompactSUVs = ['venue', 'trailblazer', 'kicks', 'soul', 'encore', 'encore gx', 'trax', 'seltos', 'crosstrek', 'kona', 'hr-v'];
       const compactSUVs = ['cr-v', 'rav4', 'rogue', 'equinox', 'escape', 'tucson', 'sportage', 'cx-5', 'forester', 'cherokee', 'compass', 'q3', 'x1', 'x3', 'glb', 'qx50'];
       const midsizeSUVs = ['pilot', 'highlander', 'pathfinder', 'traverse', 'explorer', 'santa fe', 'sorento', 'cx-9', 'ascent', 'grand cherokee', 'passport', 'q5', 'x5', 'gle', 'qx60', 'cx-90'];
       const fullSizeSUVs = ['expedition', 'tahoe', 'suburban', 'yukon', 'armada', 'sequoia', 'durango', 'telluride', 'palisade', 'atlas', 'qx80', 'escalade', 'navigator'];
-      
       if (subcompactSUVs.some(model => name.includes(model))) return 'Subcompact';
       if (compactSUVs.some(model => name.includes(model))) return 'Compact';
       if (midsizeSUVs.some(model => name.includes(model))) return 'Midsize';
       if (fullSizeSUVs.some(model => name.includes(model))) return 'Full-Size';
     }
 
-    // Truck subcategories
     if (vehicleType === 'Truck') {
       const compactTrucks = ['maverick', 'santa cruz'];
       const midsizeTrucks = ['ranger', 'colorado', 'tacoma', 'frontier', 'gladiator', 'canyon', 'ridgeline'];
       const fullSizeTrucks = ['f-150', 'silverado', 'sierra', 'ram 1500', 'tundra', 'titan'];
-      
       if (compactTrucks.some(model => name.includes(model))) return 'Compact';
       if (midsizeTrucks.some(model => name.includes(model))) return 'Midsize';
       if (fullSizeTrucks.some(model => name.includes(model))) return 'Full-Size';
     }
 
-    // Sedan subcategories
     if (vehicleType === 'Sedan') {
       const subcompactSedans = ['rio', 'versa', 'mirage'];
       const compactSedans = ['civic', 'corolla', 'sentra', 'elantra', 'forte', 'mazda3', 'impreza', 'jetta', 'a3'];
       const midsizeSedans = ['accord', 'camry', 'altima', 'sonata', 'optima', 'mazda6', 'legacy', 'passat', 'a4', '3 series', 'c-class'];
       const fullSizeSedans = ['avalon', 'maxima', 'charger', '300', 'impala', 'a6', '5 series', 'e-class', 'ct5', 'ct6', 'continental', 's90', 'gs', 'ls', 'q70', 'panamera', 'taycan', 'model s', 'a8', '7 series', 's-class'];
-      
       if (subcompactSedans.some(model => name.includes(model))) return 'Subcompact';
       if (compactSedans.some(model => name.includes(model))) return 'Compact';
       if (midsizeSedans.some(model => name.includes(model))) return 'Midsize';
       if (fullSizeSedans.some(model => name.includes(model))) return 'Full-Size';
     }
 
-    // Luxury classification (only for SUV and Truck vehicle types)
     if (vehicleType !== 'Sedan' && vehicleType !== 'Coupe') {
-    const luxuryBrands = ['mercedes', 'bmw', 'audi', 'lexus', 'infiniti', 'acura', 'cadillac', 'lincoln', 'genesis', 'porsche', 'jaguar', 'land rover', 'volvo'];
-    if (luxuryBrands.some(brand => name.includes(brand))) return 'Luxury';
+      const luxuryBrands = ['mercedes', 'bmw', 'audi', 'lexus', 'infiniti', 'acura', 'cadillac', 'lincoln', 'genesis', 'porsche', 'jaguar', 'land rover', 'volvo'];
+      if (luxuryBrands.some(brand => name.includes(brand))) return 'Luxury';
     }
 
     return 'All';
   };
 
-  // Reset subcategory when vehicle type changes
   useEffect(() => {
     setSelectedSubcategory('All');
-    // If switching to Recommended For You, ensure subcategory is set to All
-    if (selectedVehicleType === 'Recommended For You') {
-      setSelectedSubcategory('All');
-    }
   }, [selectedVehicleType]);
 
-  // Prepare vehicles for carousel (10 best vehicles of selected type)
   const carouselVehicles: CarouselVehicle[] = useMemo(() => {
     let filteredVehicles = allVehicleItems;
     
-    // Recommended For You - filter by saved vehicles from user's profile, fill to at least 10
     if (selectedVehicleType === 'Recommended For You') {
       try {
         const onboardingData = localStorage.getItem('onboardingData');
@@ -262,138 +255,59 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           const data = JSON.parse(onboardingData);
           if (data.vehicles && Array.isArray(data.vehicles) && data.vehicles.length > 0) {
             data.vehicles.forEach((v: { name: string }) => {
-              if (v.name) {
-                savedVehicleNames.add(v.name.toLowerCase().trim());
-              }
+              if (v.name) savedVehicleNames.add(v.name.toLowerCase().trim());
             });
           }
         }
         
-        // Get saved vehicles first
-        const savedVehicles = allVehicleItems.filter(vehicle => {
-          const vehicleNameLower = vehicle.name.toLowerCase().trim();
-          return savedVehicleNames.has(vehicleNameLower);
-        });
+        const savedVehiclesList = allVehicleItems.filter(vehicle => savedVehicleNames.has(vehicle.name.toLowerCase().trim()));
         
-        // If we have fewer than 10 saved vehicles, add recommendations to reach at least 10
-        if (savedVehicles.length < 10) {
-          const remainingCount = 10 - savedVehicles.length;
-          const savedVehicleNamesSet = new Set(savedVehicles.map(v => v.name.toLowerCase().trim()));
-          
-          // Get additional vehicles that are not already saved
-          // Prioritize vehicles with high ratings
+        if (savedVehiclesList.length < 10) {
+          const remainingCount = 10 - savedVehiclesList.length;
+          const savedVehicleNamesSet = new Set(savedVehiclesList.map(v => v.name.toLowerCase().trim()));
           const additionalVehicles = allVehicleItems
-            .filter(vehicle => {
-              const vehicleNameLower = vehicle.name.toLowerCase().trim();
-              return !savedVehicleNamesSet.has(vehicleNameLower);
-            })
-            .sort((a, b) => {
-              // Sort by combined rating (staff + community) descending
-              const aRating = (a.staffRating || 0) + (a.communityRating || 0);
-              const bRating = (b.staffRating || 0) + (b.communityRating || 0);
-              return bRating - aRating;
-            })
+            .filter(vehicle => !savedVehicleNamesSet.has(vehicle.name.toLowerCase().trim()))
+            .sort((a, b) => ((b.staffRating || 0) + (b.communityRating || 0)) - ((a.staffRating || 0) + (a.communityRating || 0)))
             .slice(0, remainingCount);
-          
-          filteredVehicles = [...savedVehicles, ...additionalVehicles];
-          
-          console.log(`TopTenCarousel: ${savedVehicles.length} saved + ${additionalVehicles.length} recommended = ${filteredVehicles.length} Recommended For You vehicles`);
+          filteredVehicles = [...savedVehiclesList, ...additionalVehicles];
         } else {
-          // We have 10+ saved vehicles, use top 10
-          filteredVehicles = savedVehicles.slice(0, 10);
-          console.log(`TopTenCarousel: Using ${filteredVehicles.length} saved vehicles for Recommended For You`);
+          filteredVehicles = savedVehiclesList.slice(0, 10);
         }
       } catch (error) {
-        console.error('Error loading recommended vehicles:', error);
-        // Fallback: show top 10 rated vehicles
         filteredVehicles = allVehicleItems
-          .sort((a, b) => {
-            const aRating = (a.staffRating || 0) + (a.communityRating || 0);
-            const bRating = (b.staffRating || 0) + (b.communityRating || 0);
-            return bRating - aRating;
-          })
+          .sort((a, b) => ((b.staffRating || 0) + (b.communityRating || 0)) - ((a.staffRating || 0) + (a.communityRating || 0)))
           .slice(0, 10);
       }
-    }
-    // Performance is a standalone category - filter by price only (all body styles)
-    else if (selectedVehicleType === 'Performance') {
-      filteredVehicles = allVehicleItems.filter(vehicle => {
-        const priceMin = vehicle.priceMin ?? 0;
-        return priceMin > 150000;
-      });
-      console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} Performance vehicles (price > $150k) from ${allVehicleItems.length} total vehicles`);
+    } else if (selectedVehicleType === 'Performance') {
+      filteredVehicles = allVehicleItems.filter(vehicle => (vehicle.priceMin ?? 0) > 150000);
     } else {
-      // Filter by selected vehicle type for regular categories
-      // Use bodyStyle from API as primary source, fallback to getVehicleBodyStyle if not available
       filteredVehicles = allVehicleItems.filter(vehicle => {
-        // Prioritize bodyStyle from API (single source of truth)
-        if (vehicle.bodyStyle) {
-          return vehicle.bodyStyle === selectedVehicleType;
-        }
-        // Fallback to getVehicleBodyStyle for legacy compatibility
-      const bodyStyles = getVehicleBodyStyle(vehicle.name);
-      return bodyStyles.includes(selectedVehicleType);
-    });
-    
-    console.log(`TopTenCarousel: Filtered ${filteredVehicles.length} ${selectedVehicleType}s from ${allVehicleItems.length} total vehicles`);
-      
-      // Exclude vehicles with priceMin > 150000 from regular categories (including "All")
-      filteredVehicles = filteredVehicles.filter(vehicle => {
-        const priceMin = vehicle.priceMin ?? 0;
-        return priceMin <= 150000;
+        if (vehicle.bodyStyle) return vehicle.bodyStyle === selectedVehicleType;
+        const bodyStyles = getVehicleBodyStyle(vehicle.name);
+        return bodyStyles.includes(selectedVehicleType);
       });
-    
-    // Filter by subcategory if not 'All'
-    if (selectedSubcategory !== 'All') {
-      filteredVehicles = filteredVehicles.filter(vehicle => {
-          return getVehicleSubcategory(vehicle.name, selectedVehicleType as 'SUV' | 'Sedan' | 'Truck' | 'Coupe') === selectedSubcategory;
-      });
+      filteredVehicles = filteredVehicles.filter(vehicle => (vehicle.priceMin ?? 0) <= 150000);
+      if (selectedSubcategory !== 'All') {
+        filteredVehicles = filteredVehicles.filter(vehicle => getVehicleSubcategory(vehicle.name, selectedVehicleType as 'SUV' | 'Sedan' | 'Truck' | 'Coupe') === selectedSubcategory);
       }
     }
 
-    // Map to Vehicle objects with ratings
-    // Use API ratings as single source of truth, fallback to generated ratings only if missing
     const vehiclesWithRatings = filteredVehicles.map((vehicleItem, index) => {
       const parsed = parseVehicleName(vehicleItem.name);
       const year = decodeURIComponent(parsed.year);
       const make = decodeURIComponent(parsed.make);
       const model = decodeURIComponent(parsed.model);
-      
       const currentYear = new Date().getFullYear();
       const vehicleYear = parseInt(year) || currentYear;
-      
-      // Use API ratings as primary source (single source of truth)
-      // Only fallback to generated ratings if API data is missing
       const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
       const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
-      // Note: combinedRating kept for display purposes, but ranking uses staffRating only
       const combinedRating = (staffRating + communityRating) / 2;
+      const vehicleImage = (vehicleItem.image && typeof vehicleItem.image === 'string' && vehicleItem.image.trim() !== '' && vehicleItem.image.startsWith('http'))
+        ? vehicleItem.image : vehicleImageFor(vehicleItem.name);
       
-      // Prioritize API image - only use fallback if image is truly missing
-      const vehicleImage = (vehicleItem.image && 
-                           typeof vehicleItem.image === 'string' && 
-                           vehicleItem.image.trim() !== '' &&
-                           vehicleItem.image.startsWith('http'))
-        ? vehicleItem.image 
-        : vehicleImageFor(vehicleItem.name);
-      
-      return {
-        id: `vehicle-${index}`,
-        name: vehicleItem.name,
-        year,
-        make,
-        model,
-        image: vehicleImage,
-        galleryImages: vehicleItem.galleryImages,
-        bodyStyle: vehicleItem.bodyStyle, // Include bodyStyle for deduplication
-        staffRating,
-        communityRating,
-        combinedRating,
-        vehicleYear
-      };
+      return { id: `vehicle-${index}`, name: vehicleItem.name, year, make, model, image: vehicleImage, galleryImages: vehicleItem.galleryImages, bodyStyle: vehicleItem.bodyStyle, staffRating, communityRating, combinedRating, vehicleYear };
     });
 
-    // Remove duplicates by make/model (keep latest year, prefer matching bodyStyle)
     const uniqueVehicles = new Map<string, typeof vehiclesWithRatings[0]>();
     vehiclesWithRatings.forEach(vehicle => {
       const key = `${vehicle.make}-${vehicle.model}`.toLowerCase();
@@ -401,404 +315,175 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       if (!existing) {
         uniqueVehicles.set(key, vehicle);
       } else {
-        // Prefer vehicle with matching bodyStyle, or latest year if both match
         const existingMatchesBodyStyle = existing.bodyStyle === selectedVehicleType;
         const vehicleMatchesBodyStyle = vehicle.bodyStyle === selectedVehicleType;
-        
-        if (vehicleMatchesBodyStyle && !existingMatchesBodyStyle) {
-          uniqueVehicles.set(key, vehicle);
-        } else if (!vehicleMatchesBodyStyle && existingMatchesBodyStyle) {
-          // Keep existing (it matches bodyStyle)
-        } else if (vehicle.vehicleYear > existing.vehicleYear) {
-          // Both match or neither match bodyStyle, keep latest year
-        uniqueVehicles.set(key, vehicle);
-        }
+        if (vehicleMatchesBodyStyle && !existingMatchesBodyStyle) uniqueVehicles.set(key, vehicle);
+        else if (!vehicleMatchesBodyStyle && existingMatchesBodyStyle) { /* keep existing */ }
+        else if (vehicle.vehicleYear > existing.vehicleYear) uniqueVehicles.set(key, vehicle);
       }
     });
 
-    // Sort by selected rating type (best first), then by year (latest first) when ratings are equal
     const sortedVehicles = Array.from(uniqueVehicles.values()).sort((a, b) => {
-      // Primary sort: Use selected rating type (MotorTrend staffRating or User Reviews communityRating)
       const aRating = ratingType === 'MotorTrend' ? a.staffRating : a.communityRating;
       const bRating = ratingType === 'MotorTrend' ? b.staffRating : b.communityRating;
-      
-      if (Math.abs(aRating - bRating) > 0.01) {
-        return bRating - aRating;
-      }
-      // Secondary sort: Year (newer first) when ratings are equal
+      if (Math.abs(aRating - bRating) > 0.01) return bRating - aRating;
       return b.vehicleYear - a.vehicleYear;
     });
 
-    // Ensure 2026 Cadillac Escalade IQ is ranked #1 for SUV "All" subcategory
+    // Priority rankings for specific vehicle types
     if (selectedVehicleType === 'SUV' && selectedSubcategory === 'All') {
-      const escaladeIQIndex = sortedVehicles.findIndex(vehicle => {
-        const make = vehicle.make.toLowerCase();
-        const model = vehicle.model.toLowerCase();
-        const year = vehicle.year;
-        return make === 'cadillac' && 
-               (model.includes('escalade') && model.includes('iq')) &&
-               year === '2026';
-      });
-      
-      if (escaladeIQIndex !== -1 && escaladeIQIndex !== 0) {
-        const escaladeIQ = sortedVehicles[escaladeIQIndex];
-        sortedVehicles.splice(escaladeIQIndex, 1);
-        sortedVehicles.unshift(escaladeIQ);
-      }
+      const escaladeIQIndex = sortedVehicles.findIndex(v => v.make.toLowerCase() === 'cadillac' && v.model.toLowerCase().includes('escalade') && v.model.toLowerCase().includes('iq') && v.year === '2026');
+      if (escaladeIQIndex > 0) { const [v] = sortedVehicles.splice(escaladeIQIndex, 1); sortedVehicles.unshift(v); }
     }
-
-    // Ensure 2026 Volkswagen Golf GTI / R is ranked #1 for Sedan "All" subcategory
     if (selectedVehicleType === 'Sedan' && selectedSubcategory === 'All') {
-      const golfRIndex = sortedVehicles.findIndex(vehicle => {
-        const make = vehicle.make.toLowerCase();
-        const model = vehicle.model.toLowerCase();
-        const year = vehicle.year;
-        return make === 'volkswagen' && 
-               (model.includes('golf') && (model.includes('r') || model.includes('gti'))) &&
-               year === '2026';
-      });
-      
-      if (golfRIndex !== -1 && golfRIndex !== 0) {
-        const golfR = sortedVehicles[golfRIndex];
-        sortedVehicles.splice(golfRIndex, 1);
-        sortedVehicles.unshift(golfR);
-      }
+      const golfRIndex = sortedVehicles.findIndex(v => v.make.toLowerCase() === 'volkswagen' && v.model.toLowerCase().includes('golf') && (v.model.toLowerCase().includes('r') || v.model.toLowerCase().includes('gti')) && v.year === '2026');
+      if (golfRIndex > 0) { const [v] = sortedVehicles.splice(golfRIndex, 1); sortedVehicles.unshift(v); }
     }
-
-    // Ensure 2025 Ram 1500 is ranked #1 for Truck "All" subcategory
     if (selectedVehicleType === 'Truck' && selectedSubcategory === 'All') {
-      const ram1500Index = sortedVehicles.findIndex(vehicle => {
-        const make = vehicle.make.toLowerCase();
-        const model = vehicle.model.toLowerCase();
-        const year = vehicle.year;
-        return make === 'ram' && 
-               model.includes('1500') &&
-               year === '2025';
-      });
-      
-      if (ram1500Index !== -1 && ram1500Index !== 0) {
-        const ram1500 = sortedVehicles[ram1500Index];
-        sortedVehicles.splice(ram1500Index, 1);
-        sortedVehicles.unshift(ram1500);
-      }
+      const ram1500Index = sortedVehicles.findIndex(v => v.make.toLowerCase() === 'ram' && v.model.toLowerCase().includes('1500') && v.year === '2025');
+      if (ram1500Index > 0) { const [v] = sortedVehicles.splice(ram1500Index, 1); sortedVehicles.unshift(v); }
     }
 
-    // Take top 10 best vehicles and reverse order (10 to 1)
-    const finalVehicles = sortedVehicles.slice(0, 10).map((vehicle, index) => ({
+    return sortedVehicles.slice(0, 10).map((vehicle, index) => ({
       id: `${selectedVehicleType.toLowerCase()}-${index}`,
-      name: vehicle.name,
-      year: vehicle.year,
-      make: vehicle.make,
-      model: vehicle.model,
-      image: vehicle.image,
-      galleryImages: vehicle.galleryImages,
-      staffRating: vehicle.staffRating,
-      communityRating: vehicle.communityRating,
-      rank: index + 1
+      name: vehicle.name, year: vehicle.year, make: vehicle.make, model: vehicle.model, image: vehicle.image, galleryImages: vehicle.galleryImages, staffRating: vehicle.staffRating, communityRating: vehicle.communityRating, rank: index + 1
     })).reverse();
-    
-    console.log(`TopTenCarousel: Final carousel has ${finalVehicles.length} vehicles for ${selectedVehicleType} - ${selectedSubcategory} (${ratingType})`);
-    
-    return finalVehicles;
   }, [selectedVehicleType, selectedSubcategory, ratingType, allVehicleItems]);
 
-  // Handle hover enter - reset everything
   const handleMouseEnter = () => {
     setIsSliderHovered(true);
-    // Clear interval immediately
-    if (slideIntervalRef.current) {
-      clearInterval(slideIntervalRef.current);
-      slideIntervalRef.current = null;
-    }
+    if (slideIntervalRef.current) { clearInterval(slideIntervalRef.current); slideIntervalRef.current = null; }
   };
 
-  // Handle hover leave - restart everything in sync
   const handleMouseLeave = () => {
     setIsSliderHovered(false);
-    // Restart animation by incrementing key
     setAnimationKey(prev => prev + 1);
   };
 
-  // Intersection Observer to detect when carousel is in view
   useEffect(() => {
     const carouselElement = carouselRef.current;
     if (!carouselElement) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsInView(entry.isIntersecting);
-        });
-      },
-      {
-        threshold: 0.1, // Trigger when at least 10% of the carousel is visible
-        rootMargin: '0px'
-      }
-    );
-
+    const observer = new IntersectionObserver((entries) => { entries.forEach((entry) => setIsInView(entry.isIntersecting)); }, { threshold: 0.1, rootMargin: '0px' });
     observer.observe(carouselElement);
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
-  // Check if rating badge overlaps with dots and hide it if needed
   useEffect(() => {
     const checkOverlap = () => {
-      if (!ratingBadgeRef.current || !dotsRef.current || !carouselRef.current) {
-        setShouldHideRatingBadge(false);
-        return;
-      }
-
-      // Temporarily ensure badge is visible for measurement
+      if (!ratingBadgeRef.current || !dotsRef.current) { setShouldHideRatingBadge(false); return; }
       const originalVisibility = ratingBadgeRef.current.style.visibility;
       const originalOpacity = ratingBadgeRef.current.style.opacity;
       ratingBadgeRef.current.style.visibility = 'visible';
       ratingBadgeRef.current.style.opacity = '1';
-
-      // Force a reflow to ensure measurements are accurate
       ratingBadgeRef.current.offsetHeight;
-
       const ratingBadgeRect = ratingBadgeRef.current.getBoundingClientRect();
       const dotsRect = dotsRef.current.getBoundingClientRect();
-
-      // Restore original state
       ratingBadgeRef.current.style.visibility = originalVisibility;
       ratingBadgeRef.current.style.opacity = originalOpacity;
-
-      // Check if they overlap horizontally (with a small margin for safety)
-      const margin = 8; // 8px margin to prevent tight spacing
-      const overlaps = ratingBadgeRect.right + margin > dotsRect.left;
-
-      setShouldHideRatingBadge(overlaps);
+      setShouldHideRatingBadge(ratingBadgeRect.right + 8 > dotsRect.left);
     };
-
-    // Check on mount and when window resizes
     const timeoutId = setTimeout(checkOverlap, 100);
     const timeoutId2 = setTimeout(checkOverlap, 300);
     window.addEventListener('resize', checkOverlap);
-
-    return () => {
-      window.removeEventListener('resize', checkOverlap);
-      clearTimeout(timeoutId);
-      clearTimeout(timeoutId2);
-    };
+    return () => { window.removeEventListener('resize', checkOverlap); clearTimeout(timeoutId); clearTimeout(timeoutId2); };
   }, [carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
-  // Auto-advance carousel (only when in view and not hovered)
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
-    
     if (isInView && !isSliderHovered) {
-      // Clear any existing interval first
-      if (slideIntervalRef.current) {
-        clearInterval(slideIntervalRef.current);
-      }
-      
+      if (slideIntervalRef.current) clearInterval(slideIntervalRef.current);
       slideIntervalRef.current = window.setInterval(() => {
         setCurrentSlide((prev) => {
           const nextSlide = prev + 1;
-          
-          // If we've reached the end, switch to next subcategory
           if (nextSlide >= carouselVehicles.length) {
             const subcategories = getSubcategoriesForType(selectedVehicleType);
             const currentIndex = subcategories.indexOf(selectedSubcategory);
-            const nextIndex = (currentIndex + 1) % subcategories.length;
-            setSelectedSubcategory(subcategories[nextIndex]);
+            setSelectedSubcategory(subcategories[(currentIndex + 1) % subcategories.length]);
             return 0;
           }
-          
           return nextSlide;
         });
       }, 5000);
     } else {
-      if (slideIntervalRef.current) {
-        clearInterval(slideIntervalRef.current);
-        slideIntervalRef.current = null;
-      }
+      if (slideIntervalRef.current) { clearInterval(slideIntervalRef.current); slideIntervalRef.current = null; }
     }
-    
-    return () => {
-      if (slideIntervalRef.current) {
-        clearInterval(slideIntervalRef.current);
-        slideIntervalRef.current = null;
-      }
-    };
+    return () => { if (slideIntervalRef.current) { clearInterval(slideIntervalRef.current); slideIntervalRef.current = null; } };
   }, [isInView, isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory, animationKey]);
 
-  // Keyboard navigation
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isSliderHovered) return;
-
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         setCurrentSlide((prev) => {
-          if (prev === 0) {
-            const subcategories = getSubcategoriesForType(selectedVehicleType);
-            const currentIndex = subcategories.indexOf(selectedSubcategory);
-            const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
-            setSelectedSubcategory(subcategories[prevIndex]);
-            return 0;
-          }
+          if (prev === 0) { const subcategories = getSubcategoriesForType(selectedVehicleType); const currentIndex = subcategories.indexOf(selectedSubcategory); setSelectedSubcategory(subcategories[(currentIndex - 1 + subcategories.length) % subcategories.length]); return 0; }
           return prev - 1;
         });
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         setCurrentSlide((prev) => {
           const nextSlide = prev + 1;
-          
-          if (nextSlide >= carouselVehicles.length) {
-            const subcategories = getSubcategoriesForType(selectedVehicleType);
-            const currentIndex = subcategories.indexOf(selectedSubcategory);
-            const nextIndex = (currentIndex + 1) % subcategories.length;
-            setSelectedSubcategory(subcategories[nextIndex]);
-            return 0;
-          }
-          
+          if (nextSlide >= carouselVehicles.length) { const subcategories = getSubcategoriesForType(selectedVehicleType); const currentIndex = subcategories.indexOf(selectedSubcategory); setSelectedSubcategory(subcategories[(currentIndex + 1) % subcategories.length]); return 0; }
           return nextSlide;
         });
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSliderHovered, carouselVehicles.length, selectedVehicleType, selectedSubcategory]);
 
-  // Reset slide when vehicles change
-  useEffect(() => {
-    setCurrentSlide(0);
-  }, [carouselVehicles]);
+  useEffect(() => { setCurrentSlide(0); }, [carouselVehicles]);
 
-  // Touch handlers for swipe gestures
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
+  const onTouchStart = (e: React.TouchEvent) => { setTouchEnd(null); setTouchStart(e.targetTouches[0].clientX); };
+  const onTouchMove = (e: React.TouchEvent) => { setTouchEnd(e.targetTouches[0].clientX); };
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    
     const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe) {
-      // Swipe left - go to next slide
-      setCurrentSlide((prev) => {
-        const nextSlide = prev + 1;
-        
-        if (nextSlide >= carouselVehicles.length) {
-          const subcategories = getSubcategoriesForType(selectedVehicleType);
-          const currentIndex = subcategories.indexOf(selectedSubcategory);
-          const nextIndex = (currentIndex + 1) % subcategories.length;
-          setSelectedSubcategory(subcategories[nextIndex]);
-          return 0;
-        }
-        
-        return nextSlide;
-      });
-    } else if (isRightSwipe) {
-      // Swipe right - go to previous slide
-      setCurrentSlide((prev) => {
-        if (prev === 0) {
-          const subcategories = getSubcategoriesForType(selectedVehicleType);
-          const currentIndex = subcategories.indexOf(selectedSubcategory);
-          const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
-          setSelectedSubcategory(subcategories[prevIndex]);
-          return 0;
-        }
-        return prev - 1;
-      });
+    if (distance > minSwipeDistance) {
+      setCurrentSlide((prev) => { const nextSlide = prev + 1; if (nextSlide >= carouselVehicles.length) { const subcategories = getSubcategoriesForType(selectedVehicleType); const currentIndex = subcategories.indexOf(selectedSubcategory); setSelectedSubcategory(subcategories[(currentIndex + 1) % subcategories.length]); return 0; } return nextSlide; });
+    } else if (distance < -minSwipeDistance) {
+      setCurrentSlide((prev) => { if (prev === 0) { const subcategories = getSubcategoriesForType(selectedVehicleType); const currentIndex = subcategories.indexOf(selectedSubcategory); setSelectedSubcategory(subcategories[(currentIndex - 1 + subcategories.length) % subcategories.length]); return 0; } return prev - 1; });
     }
   };
 
-  // Handle vehicle click
   const handleVehicleClick = async (vehicle: CarouselVehicle) => {
-    console.log('🚗 Opening gallery for:', vehicle.name);
-    console.log('📸 Vehicle has galleryImages?', !!vehicle.galleryImages);
-    console.log('📸 galleryImages count:', vehicle.galleryImages?.length || 0);
-    console.log('📸 galleryImages:', vehicle.galleryImages);
-    
-    // Open photo gallery with vehicle images (use gallery images if available, otherwise single image)
-    const images = vehicle.galleryImages && vehicle.galleryImages.length > 0 
-      ? vehicle.galleryImages 
-      : [vehicle.image];
-    console.log('📸 Final gallery images array:', images.length, images);
+    const images = vehicle.galleryImages && vehicle.galleryImages.length > 0 ? vehicle.galleryImages : [vehicle.image];
     setGalleryImages(images);
     setGalleryVehicleName(vehicle.name);
-    
-    // Show gallery with mock listings immediately for better UX
     const { generateLocalListings } = await import('../../utils/localListings');
     const mockListings = generateLocalListings(vehicle.year, vehicle.image);
-    console.log('📝 Setting initial mock listings:', mockListings.length);
     setGalleryLocalListings(mockListings);
     setIsGalleryOpen(true);
-    
-    // Fetch real listings from Marketcheck API in the background
     try {
-    const parsed = parseVehicleName(vehicle.name);
-      console.log('🔍 Parsed vehicle:', parsed);
+      const parsed = parseVehicleName(vehicle.name);
       const { getLocalListings } = await import('../../utils/localListings');
-      const listings = await getLocalListings(
-        parsed.year,
-        parsed.make,
-        parsed.model,
-        vehicle.image
-      );
-      // Update with real listings when they arrive
-      console.log('📊 Received listings:', listings.length, 'photos per listing:', listings.map(l => l.photoUrls?.length));
-      if (listings.length > 0) {
-        console.log('✅ Updating gallery with real listings');
-        setGalleryLocalListings(listings);
-      }
-    } catch (error) {
-      console.error('❌ Error fetching local listings:', error);
-      // Keep mock listings if API fails
-    }
+      const listings = await getLocalListings(parsed.year, parsed.make, parsed.model, vehicle.image);
+      if (listings.length > 0) setGalleryLocalListings(listings);
+    } catch (error) { console.error('Error fetching local listings:', error); }
   };
 
-  // Helper function to render star rating
   const renderStarRating = (ratingValue: number) => {
     const normalizedRating = ratingValue / 2;
-    
     return (
-      <div className="top-ten-carousel__rating-stars">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0, justifyContent: 'center' }}>
         {[1, 2, 3, 4, 5].map((star) => {
           const isFilled = star < Math.ceil(normalizedRating);
           const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
-          
           return (
-            <div key={star} className={`top-ten-carousel__star-wrapper ${isHalf ? 'top-ten-carousel__star-wrapper--half' : ''}`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="top-ten-carousel__star top-ten-carousel__star--outline">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                  fill="none"
-                  stroke="#33C4FF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+            <div key={star} style={{ position: 'relative', width: '18px', height: '18px', flexShrink: 0 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', top: 0, left: 0 }}>
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="none" stroke="#33C4FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               {isFilled && (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="top-ten-carousel__star top-ten-carousel__star--filled">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    fill="#33C4FF"
-                  />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', top: 0, left: 0 }}>
+                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#33C4FF" />
                 </svg>
               )}
               {isHalf && (
-                <div className="top-ten-carousel__star-half-fill">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="top-ten-carousel__star">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                      fill="#33C4FF"
-                    />
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '100%', overflow: 'hidden' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#33C4FF" />
                   </svg>
                 </div>
               )}
@@ -809,33 +494,505 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     );
   };
 
-  if (carouselVehicles.length === 0) {
-    return null;
-  }
+  // ==================== INLINE STYLES ====================
+
+  const containerStyle: React.CSSProperties = {
+    width: '100%',
+    marginBottom: 0,
+    padding: isWideDesktop ? '0 0 16px 0' : '0 16px 16px 16px',
+  };
+
+  const sliderStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    overflow: 'hidden',
+    borderRadius: '4px',
+    backgroundColor: 'var(--color-neutrals-8, #FCFCFD)',
+    boxShadow: 'var(--shadow-lg, 0 10px 25px rgba(0,0,0,0.1))',
+    aspectRatio: isMobile ? '1 / 1' : '16 / 9',
+    minHeight: isMobile ? '338px' : undefined,
+    touchAction: isMobile ? 'pan-y pinch-zoom' : undefined,
+  };
+
+  const trackStyle: React.CSSProperties = {
+    display: 'flex',
+    transition: isMobile ? 'transform 0.3s ease-out' : 'transform 0.5s ease-in-out',
+    willChange: 'transform',
+    height: '100%',
+    transform: `translateX(-${currentSlide * 100}%)`,
+  };
+
+  const slideStyle: React.CSSProperties = {
+    minWidth: '100%',
+    width: '100%',
+    height: '100%',
+    flexShrink: 0,
+    cursor: 'pointer',
+  };
+
+  const imageContainerStyle: React.CSSProperties = {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    borderRadius: '8px',
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+  };
+
+  const getImageStyle = (isActive: boolean): React.CSSProperties => ({
+    width: '100%',
+    height: '100%',
+    objectFit: isMobile ? 'cover' : 'contain',
+    objectPosition: 'center',
+    transition: 'transform 0.3s ease',
+    animation: isActive && !isSliderHovered ? 'kenBurnsZoom 6s ease-in-out infinite' : 'none',
+    animationPlayState: isSliderHovered ? 'paused' : 'running',
+  });
+
+  const badgesContainerStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: isMobile ? '16px' : (isTablet ? '14px' : '20px'),
+    left: isMobile ? '16px' : (isTablet ? '14px' : '20px'),
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: isTablet ? '6px' : '8px',
+    zIndex: 15,
+  };
+
+  const categoryBadgeStyle: React.CSSProperties = {
+    padding: isMobile ? '8px 14px' : (isTablet ? '6px 14px' : '8px 16px'),
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+    borderRadius: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+    position: 'relative',
+    minHeight: '32px',
+    boxSizing: 'border-box',
+  };
+
+  const dropdownStyle: React.CSSProperties = {
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    MozAppearance: 'none',
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--color-neutrals-2, #23262F)',
+    fontSize: isMobile ? '13px' : (isTablet ? '12px' : '14px'),
+    fontWeight: 400,
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    letterSpacing: 0,
+    textTransform: 'none',
+    cursor: 'pointer',
+    paddingRight: isTablet ? '20px' : '22px',
+    outline: 'none',
+    width: '100%',
+    lineHeight: 1.3,
+    height: '100%',
+    display: 'block',
+  };
+
+  const arrowStyle: React.CSSProperties = {
+    position: 'absolute',
+    right: isTablet ? '6px' : '8px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    pointerEvents: 'none',
+    color: 'var(--color-neutrals-2, #23262F)',
+    opacity: 1,
+    fontSize: isTablet ? '16px' : '18px',
+  };
+
+  const getActionBtnStyle = (isHovered: boolean, isActive: boolean = false): React.CSSProperties => ({
+    position: 'absolute',
+    width: isMobile ? '40px' : '48px',
+    height: isMobile ? '40px' : '48px',
+    borderRadius: '50%',
+    backgroundColor: isActive ? (isHovered ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.2)') : (isHovered ? 'rgba(30, 30, 32, 0.5)' : 'rgba(20, 20, 22, 0.3)'),
+    backdropFilter: 'blur(20px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#FFFFFF',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 15,
+    transition: 'all 0.3s ease',
+    transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+  });
+
+  const saveBtnStyle: React.CSSProperties = {
+    ...getActionBtnStyle(isSaveBtnHovered, savedVehicles.has(carouselVehicles[currentSlide]?.name)),
+    top: isMobile ? '16px' : '20px',
+    right: isMobile ? '16px' : '20px',
+  };
+
+  const expandBtnStyle: React.CSSProperties = {
+    ...getActionBtnStyle(isExpandBtnHovered),
+    top: isMobile ? '16px' : '20px',
+    right: isMobile ? '64px' : '76px',
+    boxShadow: isExpandBtnHovered ? '0 12px 40px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.4)',
+  };
+
+  const infoBoxStyle = (isActive: boolean): React.CSSProperties => ({
+    position: 'absolute',
+    bottom: isMobile ? '20px' : '16px',
+    left: isMobile ? '20px' : '16px',
+    right: isMobile ? '20px' : '16px',
+    backgroundColor: 'rgba(20, 20, 22, 0.3)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '12px',
+    padding: isMobile ? '20px' : '24px 28px',
+    zIndex: 10,
+    width: isMobile ? 'calc(100% - 40px)' : 'calc(100% - 32px)',
+    pointerEvents: 'none',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+    display: 'flex',
+    flexDirection: isMobile ? 'column' : 'row',
+    alignItems: isMobile ? 'flex-start' : 'center',
+    justifyContent: 'space-between',
+    gap: isMobile ? '16px' : '32px',
+    minWidth: 0,
+    overflow: 'hidden',
+    opacity: isActive ? 1 : 0,
+    transform: isActive ? 'translateY(0)' : 'translateY(20px)',
+    transition: 'opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)',
+    transitionDelay: isActive ? '0.1s' : '0s',
+  });
+
+  const nameContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: isMobile ? '6px' : '8px',
+    flexShrink: 0,
+  };
+
+  const badgesRowStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    flexWrap: 'wrap',
+    marginBottom: '6px',
+  };
+
+  const nameLinkStyle: React.CSSProperties = {
+    textDecoration: 'none',
+    color: '#FFFFFF',
+    pointerEvents: 'auto',
+    transition: 'opacity 0.2s ease',
+    cursor: 'pointer',
+  };
+
+  const nameStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: isMobile ? '22px' : '24px',
+    lineHeight: isMobile ? 1.3 : 1.2,
+    color: '#FFFFFF',
+    WebkitTextFillColor: '#FFFFFF',
+    margin: 0,
+    padding: 0,
+    flexShrink: 0,
+  };
+
+  const ratingsListStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: isMobile ? '16px' : '24px',
+    flex: isMobile ? undefined : 1,
+    justifyContent: isMobile ? 'flex-start' : 'flex-end',
+    minWidth: 0,
+    flexWrap: 'nowrap',
+    position: 'relative',
+    width: isMobile ? '100%' : undefined,
+  };
+
+  const getRatingItemStyle = (isFirst: boolean): React.CSSProperties => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: isFirst ? '6px' : '12px',
+    color: '#FFFFFF',
+    fontSize: '14px',
+    fontWeight: 500,
+    lineHeight: 1.5,
+    minWidth: 0,
+    flexShrink: 0,
+    height: 'fit-content',
+    alignSelf: 'center',
+    justifyContent: 'flex-start',
+    textDecoration: 'none',
+    pointerEvents: 'auto',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    paddingRight: isFirst ? (isMobile ? '16px' : '24px') : 0,
+    position: 'relative',
+    flex: isMobile ? 1 : undefined,
+  });
+
+  const ratingDividerStyle: React.CSSProperties = {
+    content: '""',
+    position: 'absolute',
+    right: 0,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '1px',
+    height: isMobile ? '50px' : '40px',
+    backgroundColor: '#FFFFFF',
+  };
+
+  const scoreRowStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: '6px',
+    justifyContent: 'center',
+    width: '100%',
+  };
+
+  const mtBadgeStyle: React.CSSProperties = {
+    width: '14px',
+    height: '14px',
+    minWidth: '14px',
+    minHeight: '14px',
+    maxWidth: '14px',
+    maxHeight: '14px',
+    flexShrink: 0,
+    objectFit: 'contain',
+    display: 'block',
+    margin: 0,
+    padding: 0,
+    lineHeight: 1,
+  };
+
+  const scoreLargeStyle: React.CSSProperties = {
+    color: '#FFFFFF',
+    fontSize: '26px',
+    fontWeight: 600,
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    lineHeight: 1,
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: '4px',
+    whiteSpace: 'nowrap',
+  };
+
+  const scoreMaxStyle: React.CSSProperties = {
+    color: '#FFFFFF',
+    fontSize: '18px',
+    fontWeight: 400,
+    lineHeight: 1,
+  };
+
+  const labelRowStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--spacing-1, 8px)',
+    marginTop: 0,
+    justifyContent: 'center',
+    width: '100%',
+    flexWrap: 'nowrap',
+    minWidth: 0,
+    flexShrink: 0,
+  };
+
+  const motortrendTextStyle: React.CSSProperties = {
+    color: '#FFFFFF',
+    fontSize: '14px',
+    fontWeight: 500,
+    lineHeight: 1.2,
+    whiteSpace: 'nowrap',
+  };
+
+  const ratingTextStyle: React.CSSProperties = {
+    color: '#FFFFFF',
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: 1.2,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    whiteSpace: 'nowrap',
+    textAlign: 'center',
+  };
+
+  const getNavBtnStyle = (direction: 'prev' | 'next'): React.CSSProperties => ({
+    position: 'absolute',
+    top: '50%',
+    transform: hoveredNav === direction ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)',
+    left: direction === 'prev' ? (isMobile ? '12px' : '16px') : undefined,
+    right: direction === 'next' ? (isMobile ? '12px' : '16px') : undefined,
+    width: isMobile ? '44px' : '48px',
+    height: isMobile ? '44px' : '48px',
+    borderRadius: '50%',
+    backgroundColor: hoveredNav === direction ? 'rgba(30, 30, 32, 0.5)' : 'rgba(20, 20, 22, 0.3)',
+    backdropFilter: 'blur(20px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    color: '#FFFFFF',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 20,
+    transition: 'all 0.3s ease',
+    boxShadow: hoveredNav === direction ? '0 12px 40px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.4)',
+    opacity: isSliderHovered ? 1 : 0,
+    pointerEvents: isSliderHovered ? 'auto' : 'none',
+  });
+
+  const dotsContainerStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: isMobile ? '16px' : (isTablet ? '16px' : '22px'),
+    right: '92px',
+    display: isMobile ? 'none' : 'flex',
+    gap: 0,
+    zIndex: 20,
+    alignItems: 'center',
+    overflow: 'visible',
+    height: '32px',
+  };
+
+  const getDotStyle = (index: number, isActive: boolean): React.CSSProperties => {
+    const isHovered = hoveredDot === index && !isActive;
+    return {
+      width: isMobile ? '8px' : '32px',
+      height: isMobile ? '8px' : '32px',
+      borderRadius: '50%',
+      border: 'none',
+      backgroundColor: isMobile ? (isActive ? '#FFFFFF' : 'rgba(255, 255, 255, 0.4)') : 'rgba(255, 255, 255, 0.1)',
+      cursor: 'pointer',
+      transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), margin 0.3s ease',
+      padding: 0,
+      position: 'relative',
+      overflow: 'visible',
+      flexShrink: 0,
+      margin: isHovered ? '0 8px' : '0 4px',
+      transform: isHovered ? 'scale(2)' : (isActive ? 'scale(1.2)' : 'scale(1)'),
+      boxShadow: isMobile && isActive ? 'none' : undefined,
+    };
+  };
+
+  const dotProgressStyle = (isActive: boolean): React.CSSProperties => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    pointerEvents: 'none',
+    zIndex: 3,
+    overflow: 'visible',
+    transition: 'transform var(--transition-fast, 150ms ease-in-out)',
+    transformOrigin: 'center center',
+    transform: isActive ? 'scale(1.2)' : 'scale(1)',
+    display: isMobile ? 'none' : 'block',
+  });
+
+  const dotImageWrapperStyle: React.CSSProperties = {
+    width: 'calc(100% - 4px)',
+    height: 'calc(100% - 4px)',
+    borderRadius: '50%',
+    overflow: 'hidden',
+    display: isMobile ? 'none' : 'block',
+    position: 'relative',
+    zIndex: 1,
+    margin: '2px',
+  };
+
+  const getDotImageStyle = (isActive: boolean): React.CSSProperties => ({
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    display: isMobile ? 'none' : 'block',
+    transition: 'opacity var(--transition-fast, 150ms ease-in-out), filter var(--transition-fast, 150ms ease-in-out)',
+    opacity: isActive ? 0.5 : 1,
+    filter: isActive ? 'brightness(0.5)' : 'none',
+  });
+
+  const dotRatingStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    color: '#FFFFFF',
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontSize: '14px',
+    fontWeight: 'var(--font-weight-bold, 600)',
+    zIndex: 4,
+    pointerEvents: 'none',
+    textShadow: '0 1px 3px rgba(0, 0, 0, 0.5)',
+  };
+
+  const getDotTooltipStyle = (index: number, isActive: boolean): React.CSSProperties => {
+    const isHovered = hoveredDot === index;
+    return {
+      position: 'absolute',
+      top: 'calc(100% + 2px)',
+      left: '50%',
+      transform: isHovered && !isActive ? 'translateX(-50%) translateY(0) scale(0.5)' : 'translateX(-50%) translateY(0)',
+      backgroundColor: 'rgba(20, 20, 22, 0.95)',
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      color: '#FFFFFF',
+      padding: '6px 12px',
+      borderRadius: '6px',
+      fontFamily: 'var(--font-body, Geist, sans-serif)',
+      fontSize: '12px',
+      fontWeight: 600,
+      whiteSpace: 'nowrap',
+      opacity: isHovered && !isActive ? 1 : 0,
+      visibility: isHovered && !isActive ? 'visible' : 'hidden',
+      transition: 'opacity var(--transition-fast, 150ms ease-in-out), visibility var(--transition-fast, 150ms ease-in-out), transform var(--transition-fast, 150ms ease-in-out)',
+      pointerEvents: 'none',
+      zIndex: 10000,
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+      display: isMobile ? 'none' : 'block',
+    };
+  };
+
+  const counterStyle: React.CSSProperties = {
+    display: 'none',
+    position: 'absolute',
+    top: '16px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    backgroundColor: 'rgba(20, 20, 22, 0.6)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '20px',
+    padding: '6px 14px',
+    color: '#FFFFFF',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '13px',
+    fontWeight: 600,
+    zIndex: 20,
+    pointerEvents: 'none',
+  };
+
+  if (carouselVehicles.length === 0) return null;
 
   return (
-    <div ref={carouselRef} className={`top-ten-carousel ${className}`}>
+    <div ref={carouselRef} style={containerStyle} className={className}>
       <div 
-        className={`top-ten-carousel__slider ${isSliderHovered ? 'top-ten-carousel__slider--hovered' : ''}`}
+        style={sliderStyle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {/* Top Ten Badge with Two Dropdowns - Fixed position */}
-        <div className="top-ten-carousel__badges-container">
-          {/* Vehicle Type Dropdown */}
-          <div className="top-ten-carousel__category-badge">
-            <select 
-              className="top-ten-carousel__category-dropdown"
-              value={selectedVehicleType}
-              onChange={(e) => {
-                e.stopPropagation();
-                setSelectedVehicleType(e.target.value as VehicleType);
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
+        <div style={badgesContainerStyle}>
+          <div style={categoryBadgeStyle}>
+            <select style={dropdownStyle} value={selectedVehicleType} onChange={(e) => { e.stopPropagation(); setSelectedVehicleType(e.target.value as VehicleType); }} onClick={(e) => e.stopPropagation()}>
               <option value="SUV">Top Ten SUVs</option>
               <option value="Sedan">Top Ten Sedans</option>
               <option value="Truck">Top Ten Trucks</option>
@@ -843,186 +1000,82 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
               <option value="Performance">Top Ten Performance</option>
               <option value="Recommended For You">Recommended For You</option>
             </select>
-            <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
+            <Icon name="keyboard_arrow_down" size={20} style={arrowStyle} />
           </div>
 
-          {/* Subcategory Dropdown - Hide for Recommended For You */}
           {selectedVehicleType !== 'Recommended For You' && (
-          <div className="top-ten-carousel__category-badge top-ten-carousel__subcategory-badge">
-            <select 
-              className="top-ten-carousel__category-dropdown"
-              value={selectedSubcategory}
-              onChange={(e) => {
-                e.stopPropagation();
-                setSelectedSubcategory(e.target.value as Subcategory);
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {getSubcategoriesForType(selectedVehicleType).map(subcat => (
-                <option key={subcat} value={subcat}>
-                  {subcat === 'All' ? 'All Categories' : subcat}
-                </option>
-              ))}
+            <div style={categoryBadgeStyle}>
+              <select style={dropdownStyle} value={selectedSubcategory} onChange={(e) => { e.stopPropagation(); setSelectedSubcategory(e.target.value as Subcategory); }} onClick={(e) => e.stopPropagation()}>
+                {getSubcategoriesForType(selectedVehicleType).map(subcat => (
+                  <option key={subcat} value={subcat}>{subcat === 'All' ? 'All Categories' : subcat}</option>
+                ))}
               </select>
-              <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
+              <Icon name="keyboard_arrow_down" size={20} style={arrowStyle} />
             </div>
           )}
 
-          {/* Rating Type Dropdown */}
-          <div 
-            ref={ratingBadgeRef} 
-            className={`top-ten-carousel__category-badge top-ten-carousel__rating-type-badge ${shouldHideRatingBadge ? 'top-ten-carousel__rating-type-badge--hidden' : ''}`}
-            style={shouldHideRatingBadge ? { visibility: 'hidden', pointerEvents: 'none' } : undefined}
-          >
-            <select 
-              className="top-ten-carousel__category-dropdown"
-              value={ratingType}
-              onChange={(e) => {
-                e.stopPropagation();
-                setRatingType(e.target.value as RatingType);
-                setCurrentSlide(0); // Reset to first slide when changing rating type
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div ref={ratingBadgeRef} style={{ ...categoryBadgeStyle, visibility: shouldHideRatingBadge ? 'hidden' : 'visible', pointerEvents: shouldHideRatingBadge ? 'none' : 'auto' }}>
+            <select style={dropdownStyle} value={ratingType} onChange={(e) => { e.stopPropagation(); setRatingType(e.target.value as RatingType); setCurrentSlide(0); }} onClick={(e) => e.stopPropagation()}>
               <option value="MotorTrend">MotorTrend Rating</option>
               <option value="User Reviews">User Ratings</option>
             </select>
-            <Icon name="keyboard_arrow_down" size={20} className="top-ten-carousel__category-arrow" />
+            <Icon name="keyboard_arrow_down" size={20} style={arrowStyle} />
           </div>
         </div>
         
-        <div 
-          className="top-ten-carousel__track"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
+        <div style={trackStyle}>
           {carouselVehicles.map((vehicle, index) => (
-            <div 
-              key={vehicle.id} 
-              className="top-ten-carousel__slide"
-              onClick={() => handleVehicleClick(vehicle)}
-            >
-              <div className="top-ten-carousel__image">
-                <img 
-                  src={vehicle.image} 
-                  alt={vehicle.name}
-                  className={index === currentSlide ? 'top-ten-carousel__image--active' : ''}
-                />
+            <div key={vehicle.id} style={slideStyle} onClick={() => handleVehicleClick(vehicle)}>
+              <div style={imageContainerStyle}>
+                <img src={vehicle.image} alt={vehicle.name} style={getImageStyle(index === currentSlide)} />
                 
-                {/* Save Button */}
                 <button
-                  className={`top-ten-carousel__save-btn ${savedVehicles.has(vehicle.name) ? 'top-ten-carousel__save-btn--active' : ''}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSaveVehicle(vehicle);
-                  }}
+                  style={saveBtnStyle}
+                  onClick={(e) => { e.stopPropagation(); handleSaveVehicle(vehicle); }}
+                  onMouseEnter={() => setIsSaveBtnHovered(true)}
+                  onMouseLeave={() => setIsSaveBtnHovered(false)}
                   aria-label={savedVehicles.has(vehicle.name) ? 'Remove from saved' : 'Save vehicle'}
                 >
-                  <Icon 
-                    name={savedVehicles.has(vehicle.name) ? 'bookmark' : 'bookmark_border'} 
-                    variant={savedVehicles.has(vehicle.name) ? 'filled' : 'outlined'}
-                    size={24} 
-                  />
+                  <Icon name={savedVehicles.has(vehicle.name) ? 'bookmark' : 'bookmark_border'} variant={savedVehicles.has(vehicle.name) ? 'filled' : 'outlined'} size={24} />
                 </button>
                 
-                {/* Expand Button */}
                 {showExpandButton && (
                   <button
-                    className="top-ten-carousel__expand-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Open photo gallery with vehicle image
-                      setGalleryImages([vehicle.image]);
-                      setGalleryVehicleName(vehicle.name);
-                      setIsGalleryOpen(true);
-                      // Also call the prop callback if provided
-                      if (onExpandClick) {
-                        onExpandClick(vehicle, currentSlide);
-                      }
-                    }}
+                    style={expandBtnStyle}
+                    onClick={(e) => { e.stopPropagation(); setGalleryImages([vehicle.image]); setGalleryVehicleName(vehicle.name); setIsGalleryOpen(true); if (onExpandClick) onExpandClick(vehicle, currentSlide); }}
+                    onMouseEnter={() => setIsExpandBtnHovered(true)}
+                    onMouseLeave={() => setIsExpandBtnHovered(false)}
                     aria-label="Expand to fullscreen"
                   >
                     <Icon name="open_in_full" size={24} />
                   </button>
                 )}
                 
-                {/* Vehicle Name and Ratings Box */}
-                <div className={`top-ten-carousel__info-box ${index === currentSlide ? 'top-ten-carousel__info-box--active' : ''}`}>
-                  <div className="top-ten-carousel__name-container">
-                    <div className="top-ten-carousel__badges-row">
-                      <ActionBadge
-                        text="Buyers Guide"
-                        variant="secondary"
-                        href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          navigate(`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`);
-                        }}
-                        className="top-ten-carousel__buyers-guide-badge"
-                      />
-                      <ActionBadge
-                        text="See Local Listings"
-                        variant="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleVehicleClick(vehicle);
-                        }}
-                        className="top-ten-carousel__listing-btn-badge"
-                      />
+                <div style={infoBoxStyle(index === currentSlide)}>
+                  <div style={nameContainerStyle}>
+                    <div style={badgesRowStyle}>
+                      <ActionBadge text="Buyers Guide" variant="secondary" href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`} onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate(`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`); }} />
+                      <ActionBadge text="See Local Listings" variant="primary" onClick={(e) => { e.stopPropagation(); handleVehicleClick(vehicle); }} />
                     </div>
-                    <a 
-                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`}
-                      className="top-ten-carousel__name-link"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                  <h2 
-                    className="top-ten-carousel__name" 
-                    style={{ 
-                      color: '#FFFFFF',
-                      WebkitTextFillColor: '#FFFFFF'
-                    }}
-                  >
-                    #{vehicle.rank} {vehicle.name}
-                  </h2>
+                    <a href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`} style={nameLinkStyle} onClick={(e) => e.stopPropagation()}>
+                      <h2 style={nameStyle}>#{vehicle.rank} {vehicle.name}</h2>
                     </a>
+                  </div>
+                  <div style={ratingsListStyle}>
+                    <a href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#motortrend-review`} style={getRatingItemStyle(true)} onClick={(e) => e.stopPropagation()}>
+                      <div style={scoreRowStyle}>
+                        <img src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={mtBadgeStyle} />
+                        <div style={scoreLargeStyle}>{vehicle.staffRating.toFixed(1)}<span style={scoreMaxStyle}>/10</span></div>
                       </div>
-                  <div className="top-ten-carousel__ratings-list">
-                    <a 
-                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#motortrend-review`}
-                      className="top-ten-carousel__rating-item top-ten-carousel__rating-item--link"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <div className="top-ten-carousel__rating-score-row">
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                          alt="MotorTrend" 
-                          className="top-ten-carousel__rating-mt-badge" 
-                        />
-                        <div className="top-ten-carousel__rating-score-large">
-                          {vehicle.staffRating.toFixed(1)}
-                          <span className="top-ten-carousel__rating-score-max">/10</span>
+                      <div style={labelRowStyle}>
+                        <span style={motortrendTextStyle}>{isMobile ? 'MT Rating' : 'MotorTrend Rating'}</span>
                       </div>
-                    </div>
-                      <div className="top-ten-carousel__rating-label-row">
-                        <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--full">MotorTrend Rating</span>
-                        <span className="top-ten-carousel__rating-motortrend-text top-ten-carousel__rating-motortrend-text--short">MT Rating</span>
-                    </div>
+                      <div style={ratingDividerStyle} />
                     </a>
-                    <a 
-                      href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#user-reviews`}
-                      className="top-ten-carousel__rating-item top-ten-carousel__rating-item--community top-ten-carousel__rating-item--link"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
+                    <a href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#user-reviews`} style={getRatingItemStyle(false)} onClick={(e) => e.stopPropagation()}>
                       {renderStarRating(vehicle.communityRating)}
-                      <div className="top-ten-carousel__rating-text">
-                        <span className="top-ten-carousel__rating-text--full">User Reviews</span>
-                        <span className="top-ten-carousel__rating-text--short">Users</span>
+                      <div style={ratingTextStyle}>
+                        <span>{isMobile ? 'Users' : 'User Reviews'}</span>
                         {' '}<Badge variant="info" size="sm">{(vehicle.communityRating / 2).toFixed(1)}/5</Badge>
                       </div>
                     </a>
@@ -1033,113 +1086,65 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           ))}
         </div>
         
-        {/* Slider Navigation */}
         {carouselVehicles.length > 1 && (
           <>
             <button
-              className="top-ten-carousel__nav top-ten-carousel__nav--prev"
-              onClick={() => {
-                setCurrentSlide((prev) => {
-                  if (prev === 0) {
-                    const subcategories = getSubcategoriesForType(selectedVehicleType);
-                    const currentIndex = subcategories.indexOf(selectedSubcategory);
-                    const prevIndex = (currentIndex - 1 + subcategories.length) % subcategories.length;
-                    setSelectedSubcategory(subcategories[prevIndex]);
-                    return 0;
-                  }
-                  return prev - 1;
-                });
-              }}
+              style={getNavBtnStyle('prev')}
+              onClick={() => { setCurrentSlide((prev) => { if (prev === 0) { const subcategories = getSubcategoriesForType(selectedVehicleType); const currentIndex = subcategories.indexOf(selectedSubcategory); setSelectedSubcategory(subcategories[(currentIndex - 1 + subcategories.length) % subcategories.length]); return 0; } return prev - 1; }); }}
+              onMouseEnter={() => setHoveredNav('prev')}
+              onMouseLeave={() => setHoveredNav(null)}
               aria-label="Previous slide"
             >
               <Icon name="chevron_left" size={32} />
             </button>
             <button
-              className="top-ten-carousel__nav top-ten-carousel__nav--next"
-              onClick={() => {
-                setCurrentSlide((prev) => {
-                  const nextSlide = prev + 1;
-                  
-                  if (nextSlide >= carouselVehicles.length) {
-                    const subcategories = getSubcategoriesForType(selectedVehicleType);
-                    const currentIndex = subcategories.indexOf(selectedSubcategory);
-                    const nextIndex = (currentIndex + 1) % subcategories.length;
-                    setSelectedSubcategory(subcategories[nextIndex]);
-                    return 0;
-                  }
-                  
-                  return nextSlide;
-                });
-              }}
+              style={getNavBtnStyle('next')}
+              onClick={() => { setCurrentSlide((prev) => { const nextSlide = prev + 1; if (nextSlide >= carouselVehicles.length) { const subcategories = getSubcategoriesForType(selectedVehicleType); const currentIndex = subcategories.indexOf(selectedSubcategory); setSelectedSubcategory(subcategories[(currentIndex + 1) % subcategories.length]); return 0; } return nextSlide; }); }}
+              onMouseEnter={() => setHoveredNav('next')}
+              onMouseLeave={() => setHoveredNav(null)}
               aria-label="Next slide"
             >
               <Icon name="chevron_right" size={32} />
             </button>
             
-            {/* Slider Dots (Desktop) / Counter (Mobile) */}
-            <div ref={dotsRef} className="top-ten-carousel__dots">
+            <div ref={dotsRef} style={dotsContainerStyle}>
               {carouselVehicles.map((vehicle, index) => (
                 <button
                   key={index}
-                  className={`top-ten-carousel__dot ${index === currentSlide ? 'top-ten-carousel__dot--active' : ''}`}
+                  style={getDotStyle(index, index === currentSlide)}
                   onClick={() => setCurrentSlide(index)}
+                  onMouseEnter={() => setHoveredDot(index)}
+                  onMouseLeave={() => setHoveredDot(null)}
                   aria-label={`Go to ${vehicle.name}`}
                 >
-                  <svg 
-                    key={`progress-${index}-${index === currentSlide ? animationKey : 0}`}
-                    className="top-ten-carousel__dot-progress" 
-                    viewBox="0 0 36 36"
-                  >
+                  <svg key={`progress-${index}-${index === currentSlide ? animationKey : 0}`} style={dotProgressStyle(index === currentSlide)} viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="16" fill="none" stroke={hoveredDot === index || index === currentSlide ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.2)'} strokeWidth="2" />
                     <circle
-                      className="top-ten-carousel__dot-progress-bg"
-                      cx="18"
-                      cy="18"
-                      r="16"
-                      fill="none"
-                      stroke="rgba(255, 255, 255, 0.2)"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      className={`top-ten-carousel__dot-progress-bar ${index === currentSlide ? 'top-ten-carousel__dot-progress-bar--active' : ''}`}
-                      cx="18"
-                      cy="18"
-                      r="16"
-                      fill="none"
-                      stroke="#FFFFFF"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeDasharray={`${index === currentSlide && !isSliderHovered ? 100 : 0} 100`}
+                      cx="18" cy="18" r="16" fill="none" stroke="#FFFFFF" strokeWidth={index === currentSlide ? '2.5' : '2'} strokeLinecap="round"
+                      strokeDasharray={index === currentSlide && !isSliderHovered ? '100 100' : '0 100'}
                       transform="rotate(-90 18 18)"
+                      style={{ 
+                        transition: isSliderHovered ? 'stroke-dasharray 0.2s ease, opacity 0.2s ease' : 'stroke-dasharray 0.3s ease, opacity 0.3s ease',
+                        opacity: index === currentSlide ? 1 : 0,
+                        animation: index === currentSlide && !isSliderHovered ? 'progressCircle 5s linear infinite' : 'none',
+                        animationPlayState: isSliderHovered ? 'paused' : 'running',
+                      }}
                     />
                   </svg>
-                  <span className="top-ten-carousel__dot-image-wrapper">
-                    <img 
-                      src={vehicle.image} 
-                      alt={vehicle.name}
-                      className="top-ten-carousel__dot-image"
-                    />
+                  <span style={dotImageWrapperStyle}>
+                    <img src={vehicle.image} alt={vehicle.name} style={getDotImageStyle(index === currentSlide)} />
                   </span>
-                  {index === currentSlide && (
-                    <span className="top-ten-carousel__dot-rating">
-                      #{vehicle.rank}
-                    </span>
-                  )}
-                  <span className="top-ten-carousel__dot-tooltip">
-                    #{vehicle.rank} {vehicle.name}
-                  </span>
+                  {index === currentSlide && <span style={dotRatingStyle}>#{vehicle.rank}</span>}
+                  <span style={getDotTooltipStyle(index, index === currentSlide)}>#{vehicle.rank} {vehicle.name}</span>
                 </button>
               ))}
             </div>
             
-            {/* Slide Counter (Mobile Only) */}
-            <div className="top-ten-carousel__counter">
-              {carouselVehicles.length - currentSlide} of {carouselVehicles.length}
-            </div>
+            <div style={counterStyle}>{carouselVehicles.length - currentSlide} of {carouselVehicles.length}</div>
           </>
         )}
       </div>
 
-      {/* Photo Gallery Modal */}
       <PhotoGallery
         images={galleryImages}
         isOpen={isGalleryOpen}
@@ -1147,21 +1152,10 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
         onClose={() => setIsGalleryOpen(false)}
         vehicleName={galleryVehicleName}
         localListings={galleryLocalListings}
-        onViewAllListings={() => {
-          const parsed = parseVehicleName(galleryVehicleName);
-          navigate(`/vehicles/${parsed.year}/${parsed.make}/${parsed.model}`);
-          setIsGalleryOpen(false);
-        }}
+        onViewAllListings={() => { const parsed = parseVehicleName(galleryVehicleName); navigate(`/vehicles/${parsed.year}/${parsed.make}/${parsed.model}`); setIsGalleryOpen(false); }}
       />
 
-      {/* Saved Modal */}
-      <SavedModal
-        isOpen={isSavedModalOpen}
-        onClose={() => setIsSavedModalOpen(false)}
-        itemTitle={savedVehicleName}
-        itemType="vehicle"
-      />
+      <SavedModal isOpen={isSavedModalOpen} onClose={() => setIsSavedModalOpen(false)} itemTitle={savedVehicleName} itemType="vehicle" />
     </div>
   );
 };
-

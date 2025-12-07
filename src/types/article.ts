@@ -165,6 +165,9 @@ export interface Article {
   /** Hero/featured image URL */
   heroImage: string;
   
+  /** Hero/featured video URL (optional, takes precedence over heroImage if provided) */
+  heroVideo?: string;
+  
   /** Additional article images */
   images: string[];
   

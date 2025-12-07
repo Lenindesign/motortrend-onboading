@@ -1,10 +1,10 @@
 /**
  * Material Icon Component
+ * Migrated to inline styles for Tailwind compatibility
  * Wrapper for Google Material Icons
  */
 
 import React from 'react';
-import './Icon.css';
 
 export type IconVariant = 'outlined' | 'filled' | 'rounded' | 'sharp';
 
@@ -16,6 +16,14 @@ export interface IconProps {
   style?: React.CSSProperties;
 }
 
+// Map variant to Material Icon font class
+const variantClassMap: Record<IconVariant, string> = {
+  outlined: 'material-symbols-outlined',
+  filled: 'material-icons',
+  rounded: 'material-icons-round',
+  sharp: 'material-icons-sharp',
+};
+
 export const Icon: React.FC<IconProps> = ({ 
   name, 
   variant = 'outlined',
@@ -23,18 +31,30 @@ export const Icon: React.FC<IconProps> = ({
   className = '',
   style = {}
 }) => {
-  const iconClass = variant === 'outlined' 
-    ? 'material-symbols-outlined' 
-    : variant === 'filled'
-    ? 'material-icons'
-    : variant === 'rounded'
-    ? 'material-icons-round'
-    : 'material-icons-sharp';
+  const iconClass = variantClassMap[variant];
 
-  const iconStyle = size ? { ...style, fontSize: `${size}px` } : style;
+  const baseStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    userSelect: 'none',
+    verticalAlign: 'middle',
+    lineHeight: 1,
+    fontSize: size ? `${size}px` : '24px',
+    letterSpacing: 'normal',
+    textTransform: 'none',
+    whiteSpace: 'nowrap',
+    wordWrap: 'normal',
+    direction: 'ltr',
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale',
+    textRendering: 'optimizeLegibility',
+    fontFeatureSettings: '"liga"',
+    ...style,
+  };
 
   return (
-    <span className={`icon ${iconClass} ${className}`} style={iconStyle}>
+    <span className={`${iconClass} ${className}`} style={baseStyle}>
       {name}
     </span>
   );

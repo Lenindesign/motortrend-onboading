@@ -8,6 +8,7 @@
   min-height: 100vh;
   background-color: var(--color-neutrals-8);
   position: relative;
+  padding-top: 0;
 }
 
 /* Sticky Rate Bar margin on article page */
@@ -19,6 +20,7 @@
   max-width: var(--max-width-container);
   margin: 0 auto;
   padding: 0;
+  padding-top: var(--spacing-3);
 }
 
 @media (max-width: 1279px) {
@@ -385,7 +387,7 @@
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
+  color: var(--color-white);
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 64px;
@@ -493,8 +495,8 @@
 }
 
 .article__buyers-guide-badge .badge {
-  background-color: #DFE2E6;
-  color: #141416;
+  background-color: var(--color-neutrals-6);
+  color: var(--color-neutrals-1);
   border: none;
 }
 
@@ -503,7 +505,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: var(--color-white);
   margin: 0;
   padding: 0;
   flex-shrink: 0;
@@ -526,7 +528,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.4;
@@ -556,7 +558,7 @@
   transform: translateY(-50%);
   width: 1px;
   height: 40px;
-  background-color: #FFFFFF;
+  background-color: var(--color-white);
 }
 
 .article__rating-item--community {
@@ -578,7 +580,7 @@
 }
 
 .article__rating-score-large {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 26px !important;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -590,7 +592,7 @@
 }
 
 .article__rating-score-max {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
@@ -624,7 +626,7 @@
 }
 
 .article__rating-motortrend-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -683,7 +685,7 @@
 }
 
 .article__rating-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -697,8 +699,8 @@
 }
 
 .article__listing-btn {
-  background-color: #FF0000;
-  color: #FFFFFF;
+  background-color: var(--color-semantic-error);
+  color: var(--color-white);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -712,7 +714,7 @@
 }
 
 .article__listing-btn:hover {
-  background-color: #CC0000;
+  background-color: var(--color-semantic-error-dark);
 }
 
 @media (max-width: 1024px) {
@@ -813,7 +815,7 @@
   font-weight: 600;
   font-size: 32px;
   line-height: 1.2;
-  color: #FFFFFF;
+  color: var(--color-white);
   margin: 0;
   padding: 0;
   flex-shrink: 0;
@@ -837,7 +839,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
@@ -868,7 +870,7 @@
   transform: translateY(-50%);
   width: 1px;
   height: 40px;
-  background-color: #FFFFFF;
+  background-color: var(--color-white);
 }
 
 .article__image-score-rating-label-wrapper {
@@ -879,14 +881,14 @@
 }
 
 .article__image-score-rating-label-top {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
 }
 
 .article__image-score-rating-label-bottom {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -895,7 +897,7 @@
 .article__image-score-rating-count {
   font-size: 12px;
   font-weight: 400;
-  color: #E0E0E0;
+  color: var(--color-neutrals-6);
 }
 
 .article__image-score-rating-value-wrapper {
@@ -953,7 +955,7 @@
 }
 
 .article__image-score-rating-value {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 32px;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -962,7 +964,7 @@
 
 /* New rating format styles - Expert Rating */
 .article__image-score-rating-score-large {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 32px;
   font-weight: 600;
   font-family: var(--font-heading);
@@ -974,7 +976,7 @@
 }
 
 .article__image-score-rating-score-max {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
@@ -1026,7 +1028,7 @@
 }
 
 .article__image-score-rating-motortrend-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
@@ -1095,7 +1097,7 @@
 }
 
 .article__image-score-rating-text {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -1107,7 +1109,7 @@
 }
 
 .article__image-score-rating-highlight {
-  color: #FFFFFF;
+  color: var(--color-white);
   font-weight: 500;
 }
 
@@ -1140,8 +1142,8 @@
 
 .article__photo-gallery-view-all {
   flex-shrink: 0;
-  color: #ffffff;
-  background-color: #000000;
+  color: var(--color-white);
+  background-color: var(--color-black);
 }
 
 .article__photo-gallery-grid {
@@ -1490,7 +1492,7 @@
   justify-content: center;
   width: 189px;
   height: 160px;
-  background-color: #141416;
+  background-color: var(--color-neutrals-1);
   border-radius: 8px;
   gap: 4px;
   position: relative;
@@ -1553,14 +1555,14 @@
 .article__score-bar {
   flex: 1;
   height: 8px;
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .article__score-bar-fill {
   height: 100%;
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
   border-radius: 4px;
   transition: width var(--transition-fast);
 }
@@ -1577,7 +1579,7 @@
 .article__score-review {
   margin-top: 24px;
   padding: 42px;
-  background-color: #ffffff;
+  background-color: var(--color-white);
   border-radius: 8px;
 }
 
@@ -3466,7 +3468,7 @@
 .article__score-review {
   margin-top: 24px;
   padding: 42px;
-  background-color: #ffffff;
+  background-color: var(--color-white);
   border-radius: 8px;
 }
 
@@ -3766,7 +3768,7 @@
   justify-content: center;
   width: 189px;
   height: 160px;
-  background-color: #282a30;
+  background-color: var(--color-neutrals-2-5);
   border-radius: 8px;
   gap: 4px;
   position: relative;
@@ -3829,14 +3831,14 @@
 .article__score-bar {
   flex: 1;
   height: 8px;
-  background-color: #6E7481;
+  background-color: var(--color-neutrals-4);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .article__score-bar-fill {
   height: 100%;
-  background-color: #ffb74d;
+  background-color: var(--color-rating-motortrend);
   border-radius: 4px;
   transition: width var(--transition-fast);
 }

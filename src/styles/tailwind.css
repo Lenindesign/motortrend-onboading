@@ -1,0 +1,67 @@
+/**
+ * MotorTrend Design System - Tailwind CSS v4
+ * 
+ * NOTE: Tailwind class generation is currently limited.
+ * Components use inline styles with CSS variables as a workaround.
+ */
+
+/* Base Tailwind - generates preflight/reset */
+@import 'tailwindcss';
+
+/* 
+ * Custom CSS variables for the design system
+ * These are used by inline styles in components
+ */
+:root {
+  /* Font families */
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Geist', system-ui, sans-serif;
+  --font-subtitle: 'Poppins', sans-serif;
+  --font-button: 'Poppins', sans-serif;
+  --font-caption: 'Geist', system-ui, sans-serif;
+  
+  /* Neutral colors */
+  --color-neutrals-1: #141416;
+  --color-neutrals-2: #23262F;
+  --color-neutrals-3: #353945;
+  --color-neutrals-4: #6E7481;
+  --color-neutrals-5: #B1B5C3;
+  --color-neutrals-6: #E6E8EC;
+  --color-neutrals-7: #F4F5F6;
+  --color-neutrals-8: #FCFCFD;
+  
+  /* Primary colors */
+  --color-primary-1: #E90C17;
+  --color-primary-2: #c70a15;
+  
+  /* Semantic colors */
+  --color-blue: #186CEA;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  
+  /* Spacing (8px base) */
+  --spacing-1: 8px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-5: 40px;
+  --spacing-6: 48px;
+  
+  /* Border radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-full: 100px;
+  
+  /* Shadows */
+  --shadow-depth-5: 0px 4px 20px 0px rgba(20, 20, 22, 0.06);
+  --shadow-tooltip: 0 4px 16px rgba(0, 0, 0, 0.15);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+  
+  /* Container */
+  --max-width-container: 1280px;
+}

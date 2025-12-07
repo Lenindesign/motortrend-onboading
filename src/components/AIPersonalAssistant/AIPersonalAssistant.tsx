@@ -1,5 +1,6 @@
 /**
  * AI Personal Assistant Component
+ * Migrated to inline styles for Tailwind compatibility
  * A chat widget that helps users decide what car to buy
  * Personalized based on onboarding data (owned/wanted vehicles)
  */
@@ -10,7 +11,6 @@ import Icon from '../Icon';
 import { getVehicles } from '../../api/vehiclesApi';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import type { OnboardingData } from '../../types/user';
-import './AIPersonalAssistant.css';
 
 export interface Message {
   id: string;
@@ -31,9 +31,51 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [hoveredPreset, setHoveredPreset] = useState<number | null>(null);
+  const [hoveredVehicleLink, setHoveredVehicleLink] = useState<string | null>(null);
+  const [hoveredQuickAction, setHoveredQuickAction] = useState<number | null>(null);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isSendHovered, setIsSendHovered] = useState(false);
 
   // Get onboarding data
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
+
+  // Inject keyframes and scrollbar styles
+  useEffect(() => {
+    const styleId = 'ai-assistant-styles';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes typing {
+          0%, 60%, 100% { transform: translateY(0); opacity: 0.7; }
+          30% { transform: translateY(-10px); opacity: 1; }
+        }
+        .ai-assistant-chat-scroll::-webkit-scrollbar { width: 6px; }
+        .ai-assistant-chat-scroll::-webkit-scrollbar-track { background: transparent; }
+        .ai-assistant-chat-scroll::-webkit-scrollbar-thumb { background: #E5E5E5; border-radius: 3px; }
+        .ai-assistant-chat-scroll::-webkit-scrollbar-thumb:hover { background: #CCCCCC; }
+      `;
+      document.head.appendChild(style);
+    }
+    return () => {
+      const existingStyle = document.getElementById(styleId);
+      if (existingStyle) existingStyle.remove();
+    };
+  }, []);
+
+  // Responsive
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Load onboarding data
@@ -183,7 +225,6 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
         response = "I can help you find the perfect truck. What will you be using it for?";
       }
     } else if (messageLower.includes('budget') || messageLower.includes('price') || messageLower.includes('$')) {
-      // Extract price if mentioned
       const priceMatch = userMessage.match(/\$?(\d+)[kK]?/);
       if (priceMatch) {
         const price = parseInt(priceMatch[1]) * (priceMatch[0].includes('k') || priceMatch[0].includes('K') ? 1000 : 1);
@@ -228,7 +269,6 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
       response += "• Vehicle recommendations based on what you own\n";
       response += "\nWhat would you like help with?";
     } else {
-      // Generic helpful response
       if (ownedVehicles.length > 0) {
         const ownedName = ownedVehicles[0].name;
         response = `Based on your current ${ownedName}, I can help you find similar vehicles or help you upgrade. `;
@@ -267,7 +307,6 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI thinking time
     setTimeout(() => {
       const aiResponse = generateRecommendations(userMessage.content);
       setIsTyping(false);
@@ -288,18 +327,13 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
       navigate(`/vehicles/${year}/${make}/${model}`);
     } catch (error) {
       console.error('Error parsing vehicle name:', error);
-      // Fallback: navigate to vehicles page with search
       navigate(`/vehicles?search=${encodeURIComponent(vehicleName)}`);
     }
   };
 
-  const handleCompareClick = () => {
-    navigate('/compare-vehicles');
-  };
+  const handleCompareClick = () => navigate('/compare-vehicles');
 
-  const handlePresetClick = (preset: string) => {
-    handleSendMessage(preset);
-  };
+  const handlePresetClick = (preset: string) => handleSendMessage(preset);
 
   const presetOptions = [
     { label: 'Shop New', query: 'Show me new cars' },
@@ -310,47 +344,281 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
     { label: 'Trade In', query: 'Help me with a trade in' }
   ];
 
+  // Styles
+  const containerStyle: React.CSSProperties = {
+    background: 'var(--color-white, #FFFFFF)',
+    border: '1px solid #E5E5E5',
+    borderRadius: '16px',
+    boxShadow: '0px 4px 8px 0px rgba(20, 20, 22, 0.1)',
+    display: 'flex',
+    flexDirection: 'column',
+    height: isMobile ? '500px' : '600px',
+    maxHeight: isMobile ? '500px' : '600px',
+    overflow: 'hidden',
+    width: '100%',
+    padding: 0,
+    position: 'sticky',
+    top: '20px',
+    alignSelf: 'flex-start'
+  };
+
+  const headerStyle: React.CSSProperties = {
+    padding: isMobile ? '16px' : '20px',
+    borderBottom: '1px solid #E5E5E5',
+    background: 'var(--color-white, #FFFFFF)',
+    flexShrink: 0
+  };
+
+  const headerContentStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px'
+  };
+
+  const avatarStyle: React.CSSProperties = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    background: 'var(--color-primary-1, #E90C17)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--color-white, #FFFFFF)',
+    flexShrink: 0
+  };
+
+  const titleStyle: React.CSSProperties = {
+    fontFamily: "'Poppins', sans-serif",
+    fontSize: '20px',
+    fontWeight: 700,
+    color: 'var(--color-neutrals-1, #141416)',
+    margin: '0 0 8px 0',
+    lineHeight: 1.2
+  };
+
+  const subtitleStyle: React.CSSProperties = {
+    fontFamily: "'Geist', sans-serif",
+    fontSize: '12px',
+    color: 'var(--color-neutrals-4, #6E7481)',
+    margin: 0,
+    lineHeight: 1.3
+  };
+
+  const chatStyle: React.CSSProperties = {
+    flex: 1,
+    overflowY: 'auto',
+    padding: isMobile ? '16px' : '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 0
+  };
+
+  const presetsStyle: React.CSSProperties = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+    marginBottom: '16px',
+    paddingBottom: '16px',
+    borderBottom: '1px solid #E5E5E5'
+  };
+
+  const getPresetBtnStyle = (index: number): React.CSSProperties => ({
+    padding: '8px 12px',
+    border: `1px solid ${hoveredPreset === index ? '#E90C17' : '#E5E5E5'}`,
+    borderRadius: '8px',
+    background: hoveredPreset === index ? '#F8F8F8' : '#FFFFFF',
+    color: hoveredPreset === index ? '#E90C17' : '#1A1B21',
+    fontFamily: "'Geist', sans-serif",
+    fontSize: '13px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    whiteSpace: 'nowrap',
+    transform: hoveredPreset === index ? 'translateY(-1px)' : 'none',
+    boxShadow: hoveredPreset === index ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none'
+  });
+
+  const messagesStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px'
+  };
+
+  const getMessageStyle = (type: 'ai' | 'user'): React.CSSProperties => ({
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'flex-start',
+    animation: 'fadeIn 0.3s ease-in',
+    flexDirection: type === 'user' ? 'row-reverse' : 'row'
+  });
+
+  const messageAvatarStyle: React.CSSProperties = {
+    width: '28px',
+    height: '28px',
+    borderRadius: '50%',
+    background: 'var(--color-primary-1, #E90C17)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--color-white, #FFFFFF)',
+    flexShrink: 0,
+    marginTop: '4px'
+  };
+
+  const getMessageContentStyle = (type: 'ai' | 'user'): React.CSSProperties => ({
+    maxWidth: isMobile ? '85%' : '80%',
+    padding: '12px 16px',
+    wordWrap: 'break-word',
+    lineHeight: 1.5,
+    background: type === 'user' ? '#1A1B21' : '#F8F8F8',
+    color: type === 'user' ? '#FFFFFF' : '#1A1B21',
+    borderRadius: type === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px'
+  });
+
+  const messageTextStyle: React.CSSProperties = {
+    fontFamily: "'Geist', sans-serif",
+    fontSize: '14px',
+    whiteSpace: 'pre-wrap'
+  };
+
+  const vehicleLinksStyle: React.CSSProperties = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+    marginTop: '8px'
+  };
+
+  const getVehicleLinkStyle = (vehicleName: string): React.CSSProperties => ({
+    background: hoveredVehicleLink === vehicleName ? '#E90C17' : 'transparent',
+    border: '1px solid #E90C17',
+    color: hoveredVehicleLink === vehicleName ? '#FFFFFF' : '#E90C17',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    fontFamily: "'Geist', sans-serif",
+    fontSize: '14px',
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    textDecoration: hoveredVehicleLink === vehicleName ? 'none' : 'underline',
+    textUnderlineOffset: '2px'
+  });
+
+  const typingIndicatorStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '4px',
+    padding: '8px 0'
+  };
+
+  const typingDotStyle = (delay: string): React.CSSProperties => ({
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    background: 'var(--color-neutrals-4, #6E7481)',
+    animation: `typing 1.4s infinite ease-in-out ${delay}`
+  });
+
+  const inputContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: '8px',
+    padding: isMobile ? '8px 16px' : '12px 20px',
+    borderTop: '1px solid #E5E5E5',
+    background: 'var(--color-white, #FFFFFF)',
+    flexShrink: 0
+  };
+
+  const inputStyle: React.CSSProperties = {
+    flex: 1,
+    border: `1px solid ${isInputFocused ? '#E90C17' : '#E5E5E5'}`,
+    borderRadius: '8px',
+    padding: '8px 12px',
+    fontFamily: "'Geist', sans-serif",
+    fontSize: '14px',
+    background: 'var(--color-white, #FFFFFF)',
+    color: 'var(--color-neutrals-1, #141416)',
+    outline: 'none',
+    transition: 'border-color 0.2s ease'
+  };
+
+  const sendBtnStyle: React.CSSProperties = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '8px',
+    background: !inputValue.trim() ? '#E90C17' : isSendHovered ? '#c00a13' : '#E90C17',
+    color: 'var(--color-white, #FFFFFF)',
+    border: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: !inputValue.trim() ? 'not-allowed' : 'pointer',
+    transition: 'background 0.2s ease',
+    flexShrink: 0,
+    opacity: !inputValue.trim() ? 0.5 : 1
+  };
+
+  const quickActionsStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: isMobile ? 'column' : 'row',
+    gap: '8px',
+    padding: isMobile ? '8px 16px' : '12px 20px',
+    borderTop: '1px solid #E5E5E5',
+    background: 'var(--color-white, #FFFFFF)',
+    flexShrink: 0
+  };
+
+  const getQuickActionStyle = (index: number): React.CSSProperties => ({
+    flex: 1,
+    padding: '8px 12px',
+    border: `1px solid ${hoveredQuickAction === index ? '#E90C17' : '#E5E5E5'}`,
+    borderRadius: '4px',
+    background: hoveredQuickAction === index ? '#F8F8F8' : '#FFFFFF',
+    color: hoveredQuickAction === index ? '#E90C17' : '#1A1B21',
+    fontFamily: "'Geist', sans-serif",
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  });
+
   return (
-    <div className={`ai-assistant ${className || ''}`}>
-      <div className="ai-assistant__header">
-        <div className="ai-assistant__header-content">
-          <div className="ai-assistant__avatar">
+    <div style={containerStyle} className={className || ''}>
+      <div style={headerStyle}>
+        <div style={headerContentStyle}>
+          <div style={avatarStyle}>
             <Icon name="auto_awesome" size={24} />
           </div>
-          <div className="ai-assistant__header-text">
-            <h3 className="ai-assistant__title">Ask MotorTrend</h3>
-            <p className="ai-assistant__subtitle">Get personalized car buying advice, available 24/7</p>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h3 style={titleStyle}>Ask MotorTrend</h3>
+            <p style={subtitleStyle}>Get personalized car buying advice, available 24/7</p>
           </div>
         </div>
       </div>
 
-      <div className="ai-assistant__chat" ref={chatContainerRef}>
+      <div style={chatStyle} ref={chatContainerRef} className="ai-assistant-chat-scroll">
         {messages.length === 1 && (
-          <div className="ai-assistant__presets">
+          <div style={presetsStyle}>
             {presetOptions.map((preset, index) => (
               <button
                 key={index}
-                className="ai-assistant__preset-button"
+                style={getPresetBtnStyle(index)}
                 onClick={() => handlePresetClick(preset.query)}
+                onMouseEnter={() => setHoveredPreset(index)}
+                onMouseLeave={() => setHoveredPreset(null)}
               >
                 {preset.label}
               </button>
             ))}
           </div>
         )}
-        <div className="ai-assistant__messages">
+        <div style={messagesStyle}>
           {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`ai-assistant__message ai-assistant__message--${message.type}`}
-            >
+            <div key={message.id} style={getMessageStyle(message.type)}>
               {message.type === 'ai' && (
-                <div className="ai-assistant__message-avatar">
+                <div style={messageAvatarStyle}>
                   <Icon name="auto_awesome" size={20} />
                 </div>
               )}
-              <div className="ai-assistant__message-content">
-                <div className="ai-assistant__message-text">
+              <div style={getMessageContentStyle(message.type)}>
+                <div style={messageTextStyle}>
                   {message.content.split('\n').map((line, index) => (
                     <React.Fragment key={index}>
                       {line}
@@ -359,12 +627,14 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
                   ))}
                 </div>
                 {message.vehicleLinks && message.vehicleLinks.length > 0 && (
-                  <div className="ai-assistant__vehicle-links">
+                  <div style={vehicleLinksStyle}>
                     {message.vehicleLinks.map((vehicleName, index) => (
                       <button
                         key={index}
-                        className="ai-assistant__vehicle-link"
+                        style={getVehicleLinkStyle(vehicleName)}
                         onClick={() => handleVehicleLinkClick(vehicleName)}
+                        onMouseEnter={() => setHoveredVehicleLink(vehicleName)}
+                        onMouseLeave={() => setHoveredVehicleLink(null)}
                       >
                         {vehicleName}
                       </button>
@@ -375,15 +645,15 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
             </div>
           ))}
           {isTyping && (
-            <div className="ai-assistant__message ai-assistant__message--ai">
-              <div className="ai-assistant__message-avatar">
+            <div style={getMessageStyle('ai')}>
+              <div style={messageAvatarStyle}>
                 <Icon name="auto_awesome" size={20} />
               </div>
-              <div className="ai-assistant__message-content">
-                <div className="ai-assistant__typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+              <div style={getMessageContentStyle('ai')}>
+                <div style={typingIndicatorStyle}>
+                  <span style={typingDotStyle('-0.32s')}></span>
+                  <span style={typingDotStyle('-0.16s')}></span>
+                  <span style={typingDotStyle('0s')}></span>
                 </div>
               </div>
             </div>
@@ -392,35 +662,43 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
         </div>
       </div>
 
-      <div className="ai-assistant__input-container">
+      <div style={inputContainerStyle}>
         <input
           type="text"
-          className="ai-assistant__input"
+          style={inputStyle}
           placeholder="Ask about cars, maintenance, buying advice..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
         />
         <button
-          className="ai-assistant__send-button"
+          style={sendBtnStyle}
           onClick={() => handleSendMessage()}
           disabled={!inputValue.trim()}
+          onMouseEnter={() => setIsSendHovered(true)}
+          onMouseLeave={() => setIsSendHovered(false)}
           aria-label="Send message"
         >
           <Icon name="send" size={20} variant="filled" />
         </button>
       </div>
 
-      <div className="ai-assistant__quick-actions">
+      <div style={quickActionsStyle}>
         <button
-          className="ai-assistant__quick-action"
+          style={getQuickActionStyle(0)}
           onClick={handleCompareClick}
+          onMouseEnter={() => setHoveredQuickAction(0)}
+          onMouseLeave={() => setHoveredQuickAction(null)}
         >
           Compare cars
         </button>
         <button
-          className="ai-assistant__quick-action"
+          style={getQuickActionStyle(1)}
           onClick={() => navigate('/vehicles')}
+          onMouseEnter={() => setHoveredQuickAction(1)}
+          onMouseLeave={() => setHoveredQuickAction(null)}
         >
           Browse vehicles
         </button>
@@ -430,4 +708,3 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
 };
 
 export default AIPersonalAssistant;
-

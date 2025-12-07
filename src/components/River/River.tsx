@@ -1,11 +1,10 @@
 /**
  * River Component
- * Horizontal card list for news content
+ * Migrated to inline styles for Tailwind compatibility
  */
 
 import React from 'react';
 import { HorizontalCard } from '../HorizontalCard';
-import './River.css';
 
 export interface RiverItem {
   imageUrl: string;
@@ -20,11 +19,17 @@ export interface RiverProps {
   items: RiverItem[];
 }
 
-export const River: React.FC<RiverProps> = ({
-  items,
-}) => {
+export const River: React.FC<RiverProps> = ({ items }) => {
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    gap: 'var(--spacing-3, 24px)',
+    background: 'var(--color-neutrals-8, #FCFCFD)',
+  };
+
   return (
-    <div className="river">
+    <div style={containerStyle}>
       {items.map((item, index) => (
         <HorizontalCard
           key={index}
@@ -41,6 +46,3 @@ export const River: React.FC<RiverProps> = ({
 };
 
 export default River;
-
-
-

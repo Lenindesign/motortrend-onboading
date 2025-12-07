@@ -1,0 +1,71 @@
+---
+alwaysApply: true
+---
+
+## 1. Design System Consistency
+
+### Layout
+- Maintain consistent max-width of 1280px using Container component
+- Use standardized vertical spacing (32px/2rem between sections)
+- Implement responsive layouts with mobile-first approach
+- Follow dark mode guidelines specific to Videos page
+
+### Components
+- Use standardized card components (ArticleCard, VideoCard, CarCard, PhotoCard)
+- Maintain consistent headline styles with icons and "View All" ghost buttons
+- Follow 3-column grid layout for card-based sections
+- Implement hover effects and transitions consistently
+
+## 2. Mobile Optimization
+- Use list layouts on mobile where appropriate
+- Implement conditional rendering for search (header vs. sticky mobile)
+- Ensure proper font sizes and spacing for mobile readability
+- Use responsive carousels for horizontal scrolling content
+
+## 3. Navigation & Interaction
+- Implement dropdown menus with smooth animations
+- Use hover-based interactions for navigation
+- Prevent event propagation in nested interactive elements
+- Hide navigation elements when redundant
+
+## 4. Visual Language
+- Follow established color tokens for neutral palette and semantic colors
+- Use consistent typography tokens for sizes, weights, and spacing
+- Apply standardized shadow and border tokens
+- Maintain brand identity with red accent colors
+
+## 5. Content Display
+- Display high-quality automotive imagery
+- Use consistent aspect ratios (16:9 for media)
+- Implement proper metadata display (dates, categories)
+- Follow established card layout patterns
+
+## 6. Performance & UX
+- Implement proper loading states
+- Use efficient search algorithms with fallbacks
+- Implement proper error handling
+- Use React Query for data fetching
+
+## 7. Code Standards
+- Use TypeScript for type safety
+- Follow React best practices
+- Implement proper prop typing
+- Use consistent naming conventions
+
+## 8. Search Functionality
+- Implement comprehensive search across all content types
+- Support special case handling for car makes/models
+- Use categorized search results
+- Implement proper filtering and sorting
+
+## 9. State Management
+- Use appropriate React hooks
+- Implement proper context usage
+- Maintain consistent state updates
+- Use proper cleanup in useEffect
+
+## 10. Accessibility
+- Ensure proper contrast ratios
+- Implement keyboard navigation
+- Use semantic HTML
+- Provide proper ARIA labels

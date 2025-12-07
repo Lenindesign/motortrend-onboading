@@ -1,10 +1,10 @@
 /**
  * ModalShell Atom
+ * Migrated to inline styles for Tailwind compatibility
  * Reusable modal wrapper with standardized overlay and shadow
  */
 
 import React, { useEffect } from 'react';
-import './ModalShell.css';
 
 export interface ModalShellProps {
   /** Whether the modal is open */
@@ -35,6 +35,60 @@ export interface ModalShellProps {
   zIndex?: number;
 }
 
+// Inject keyframe animations once
+const KEYFRAMES_ID = 'modal-shell-keyframes';
+const injectKeyframes = () => {
+  if (typeof document !== 'undefined' && !document.getElementById(KEYFRAMES_ID)) {
+    const style = document.createElement('style');
+    style.id = KEYFRAMES_ID;
+    style.textContent = `
+      @keyframes modalFadeSlide {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes modalSlideRight {
+        from { opacity: 0; transform: translateX(100%); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+};
+
+// Overlay background colors
+const overlayStyles: Record<'medium' | 'dark', React.CSSProperties> = {
+  medium: { 
+    background: 'rgba(20, 20, 22, 0.6)', 
+    backdropFilter: 'blur(4px)',
+    WebkitBackdropFilter: 'blur(4px)',
+  },
+  dark: { 
+    background: 'rgba(20, 20, 22, 0.8)', 
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+  },
+};
+
+// Position configurations
+const positionStyles: Record<'center' | 'side-right', React.CSSProperties> = {
+  center: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'var(--spacing-3, 24px)',
+  },
+  'side-right': {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    padding: 0,
+  },
+};
+
+// Animation names
+const animationNames: Record<'fade-slide' | 'slide-right', string> = {
+  'fade-slide': 'modalFadeSlide 0.3s ease-out',
+  'slide-right': 'modalSlideRight 0.3s ease-out',
+};
+
 export const ModalShell: React.FC<ModalShellProps> = ({
   isOpen,
   onClose,
@@ -50,6 +104,11 @@ export const ModalShell: React.FC<ModalShellProps> = ({
   animation = 'fade-slide',
   zIndex = 1000
 }) => {
+  // Inject keyframes on mount
+  useEffect(() => {
+    injectKeyframes();
+  }, []);
+
   // Handle escape key
   useEffect(() => {
     if (!isOpen || !closeOnEscape) return;
@@ -85,26 +144,43 @@ export const ModalShell: React.FC<ModalShellProps> = ({
     }
   };
 
-  const overlayClass = `modal-shell__overlay modal-shell__overlay--${overlayVariant}`;
-  const positionClass = `modal-shell__wrapper--${position}`;
-  const animationClass = `modal-shell__content--${animation}`;
+  // Build overlay styles
+  const shellStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    zIndex,
+    ...overlayStyles[overlayVariant],
+    ...positionStyles[position],
+  };
+
+  // Build content styles
+  const contentStyle: React.CSSProperties = {
+    position: 'relative',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    borderRadius: position === 'side-right' ? 0 : 'var(--border-radius-lg, 16px)',
+    boxShadow: 'var(--shadow-modal, 0 24px 48px rgba(20, 20, 22, 0.24))',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    maxWidth: position === 'side-right' ? '400px' : maxWidth,
+    maxHeight: position === 'side-right' ? '100%' : maxHeight,
+    width,
+    height: position === 'side-right' ? '100%' : undefined,
+    animation: animationNames[animation],
+  };
 
   return (
     <div
-      className={`modal-shell ${overlayClass} ${positionClass}`}
+      style={shellStyle}
       onClick={handleOverlayClick}
-      style={{ zIndex }}
       role="dialog"
       aria-modal="true"
     >
-      <div
-        className={`modal-shell__content ${animationClass} ${className}`}
-        style={{
-          maxWidth,
-          maxHeight,
-          width
-        }}
-      >
+      <div className={className} style={contentStyle}>
         {children}
       </div>
     </div>

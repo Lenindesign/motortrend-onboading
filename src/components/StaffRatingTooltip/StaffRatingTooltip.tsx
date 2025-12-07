@@ -1,5 +1,9 @@
-import React from 'react';
-import './StaffRatingTooltip.css';
+/**
+ * Staff Rating Tooltip Component
+ * Migrated to inline styles for Tailwind compatibility
+ */
+
+import React, { useState } from 'react';
 
 export interface StaffRatingScores {
   performance?: number;
@@ -12,7 +16,6 @@ export interface StaffRatingTooltipProps {
   overallRating: number;
   scores: StaffRatingScores;
   onRequestClose?: () => void;
-  // Legacy props
   isVisible?: boolean;
   triggerRef?: React.RefObject<HTMLElement | null>;
   onMouseEnter?: () => void;
@@ -26,6 +29,8 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
   onMouseEnter,
   onMouseLeave
 }) => {
+  const [isLinkHovered, setIsLinkHovered] = useState(false);
+
   // Category labels mapping
   const categoryLabels: { [key: string]: string } = {
     performance: 'Performance',
@@ -34,53 +39,138 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     value: 'Value'
   };
 
-  // Generate rating bars for each category
-  const ratingBars: React.ReactElement[] = [];
-  const categories = ['performance', 'efficiency', 'tech', 'value'] as const;
-  
-  categories.forEach((category) => {
-    const score = scores[category];
-    if (score !== undefined) {
-      const percentage = (score / 10) * 100;
-      ratingBars.push(
-        <div key={category} className="staff-rating-tooltip__bar-row">
-          <div className="staff-rating-tooltip__rating-label">
-            {categoryLabels[category]}
-          </div>
-          <div className="staff-rating-tooltip__bar-container">
-            <div 
-              className="staff-rating-tooltip__bar-fill"
-              style={{ width: `${percentage}%` }}
-            />
-          </div>
-          <div className="staff-rating-tooltip__score">{score.toFixed(1)}</div>
-        </div>
-      );
-    }
+  // Styles
+  const innerStyle: React.CSSProperties = {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  };
+
+  const headerStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '12px',
+    paddingBottom: '8px',
+    borderBottom: '1px solid #444444',
+  };
+
+  const titleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: '16px',
+    color: '#ffffff',
+  };
+
+  const totalStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontSize: '14px',
+    fontWeight: 600,
+    color: '#ffffff',
+  };
+
+  const contentStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    width: '100%',
+  };
+
+  const barRowStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    minHeight: '24px',
+    width: '100%',
+  };
+
+  const ratingLabelStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: '13px',
+    color: '#cccccc',
+    minWidth: '100px',
+    textAlign: 'left',
+  };
+
+  const barContainerStyle: React.CSSProperties = {
+    flex: 1,
+    height: '8px',
+    backgroundColor: '#282a30',
+    borderRadius: '4px',
+    overflow: 'hidden',
+    position: 'relative',
+    minWidth: '60px',
+  };
+
+  const getBarFillStyle = (percentage: number): React.CSSProperties => ({
+    height: '100%',
+    width: `${percentage}%`,
+    backgroundColor: '#FFB74D',
+    borderRadius: '4px',
+    transition: 'width 150ms ease-in-out',
   });
+
+  const scoreStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontSize: '13px',
+    fontWeight: 600,
+    color: '#ffffff',
+    minWidth: '28px',
+    textAlign: 'right',
+  };
+
+  const footerStyle: React.CSSProperties = {
+    marginTop: '12px',
+    paddingTop: '8px',
+    borderTop: '1px solid #333333',
+    textAlign: 'center',
+  };
+
+  const linkStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '12px',
+    fontWeight: 600,
+    color: '#FFB74D',
+    textDecoration: isLinkHovered ? 'underline' : 'none',
+    transition: 'color 0.2s ease',
+  };
+
+  const categories = ['performance', 'efficiency', 'tech', 'value'] as const;
 
   return (
     <div 
-      className="staff-rating-tooltip__inner"
+      style={innerStyle}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="staff-rating-tooltip__header">
-        <div className="staff-rating-tooltip__title">MotorTrend</div>
-        <div className="staff-rating-tooltip__total">{typeof overallRating === 'number' ? overallRating.toFixed(1) : overallRating}/10</div>
+      <div style={headerStyle}>
+        <div style={titleStyle}>MotorTrend</div>
+        <div style={totalStyle}>{typeof overallRating === 'number' ? overallRating.toFixed(1) : overallRating}/10</div>
       </div>
-      <div className="staff-rating-tooltip__content">
-        {ratingBars}
+      <div style={contentStyle}>
+        {categories.map((category) => {
+          const score = scores[category];
+          if (score === undefined) return null;
+          const percentage = (score / 10) * 100;
+          return (
+            <div key={category} style={barRowStyle}>
+              <div style={ratingLabelStyle}>{categoryLabels[category]}</div>
+              <div style={barContainerStyle}>
+                <div style={getBarFillStyle(percentage)} />
+              </div>
+              <div style={scoreStyle}>{score.toFixed(1)}</div>
+            </div>
+          );
+        })}
       </div>
-      <div className="staff-rating-tooltip__footer">
+      <div style={footerStyle}>
         <a
           href="#staff-rating"
-          className="staff-rating-tooltip__link"
-          onClick={() => {
-            if (onRequestClose) {
-              onRequestClose();
-            }
-          }}
+          style={linkStyle}
+          onMouseEnter={() => setIsLinkHovered(true)}
+          onMouseLeave={() => setIsLinkHovered(false)}
+          onClick={() => onRequestClose?.()}
         >
           See Full MotorTrend Review
         </a>

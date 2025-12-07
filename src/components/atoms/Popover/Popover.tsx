@@ -1,12 +1,12 @@
 /**
  * Popover Atom
+ * Migrated to inline styles for Tailwind compatibility
  * Interactive popover component for rich content
  * Uses React Portal for rendering outside the DOM hierarchy
  */
 
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
-import './Popover.css';
 
 export type PopoverPlacement = 'top' | 'bottom' | 'left' | 'right';
 export type PopoverTrigger = 'click' | 'hover';
@@ -38,6 +38,72 @@ export interface PopoverProps {
   offset?: number;
 }
 
+// Inject keyframe animations once
+const KEYFRAMES_ID = 'popover-keyframes';
+const injectKeyframes = () => {
+  if (typeof document !== 'undefined' && !document.getElementById(KEYFRAMES_ID)) {
+    const style = document.createElement('style');
+    style.id = KEYFRAMES_ID;
+    style.textContent = `
+      @keyframes popoverFadeIn {
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+};
+
+// Arrow positioning based on placement
+const getArrowStyle = (placement: PopoverPlacement): React.CSSProperties => {
+  const baseArrowStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: '12px',
+    height: '12px',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    transform: 'rotate(45deg)',
+    zIndex: 1,
+  };
+
+  const placementStyles: Record<PopoverPlacement, React.CSSProperties> = {
+    top: {
+      ...baseArrowStyle,
+      bottom: '-6px',
+      left: '50%',
+      marginLeft: '-6px',
+      borderTop: 'none',
+      borderLeft: 'none',
+    },
+    bottom: {
+      ...baseArrowStyle,
+      top: '-6px',
+      left: '50%',
+      marginLeft: '-6px',
+      borderBottom: 'none',
+      borderRight: 'none',
+    },
+    left: {
+      ...baseArrowStyle,
+      right: '-6px',
+      top: '50%',
+      marginTop: '-6px',
+      borderLeft: 'none',
+      borderBottom: 'none',
+    },
+    right: {
+      ...baseArrowStyle,
+      left: '-6px',
+      top: '50%',
+      marginTop: '-6px',
+      borderRight: 'none',
+      borderTop: 'none',
+    },
+  };
+
+  return placementStyles[placement];
+};
+
 export const Popover: React.FC<PopoverProps> = ({
   content,
   children,
@@ -59,6 +125,11 @@ export const Popover: React.FC<PopoverProps> = ({
   
   const triggerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+
+  // Inject keyframes on mount
+  useEffect(() => {
+    injectKeyframes();
+  }, []);
 
   const handleOpenChange = (open: boolean) => {
     if (controlledOpen === undefined) {
@@ -182,23 +253,50 @@ export const Popover: React.FC<PopoverProps> = ({
     }
   }, [isOpen, closeOnEsc]);
 
+  // Popover container styles
+  const popoverStyle: React.CSSProperties = {
+    position: 'absolute',
+    zIndex: 10000,
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    boxShadow: 'var(--shadow-dropdown, 0 4px 12px rgba(20, 20, 22, 0.15))',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    padding: 0,
+    minWidth: '200px',
+    maxWidth: '400px',
+    animation: 'popoverFadeIn 0.2s ease-out',
+    top: position.top,
+    left: position.left,
+  };
+
+  // Content wrapper styles
+  const contentStyle: React.CSSProperties = {
+    position: 'relative',
+    zIndex: 2,
+    overflow: 'hidden',
+    borderRadius: 'var(--border-radius-md, 8px)',
+  };
+
+  // Trigger styles
+  const triggerStyle: React.CSSProperties = {
+    display: 'inline-block',
+    cursor: 'pointer',
+  };
+
   const popoverContent = isOpen ? (
     <div
       ref={popoverRef}
-      className={`popover popover--${placement} ${className}`}
-      style={{
-        top: position.top,
-        left: position.left,
-      }}
+      className={className}
+      style={popoverStyle}
       role="dialog"
       aria-modal="true"
       onMouseEnter={trigger === 'hover' ? handleMouseEnter : undefined}
       onMouseLeave={trigger === 'hover' ? handleMouseLeave : undefined}
     >
-      <div className="popover__content">
+      <div style={contentStyle}>
         {content}
       </div>
-      {showArrow && <div className="popover__arrow" />}
+      {showArrow && <div style={getArrowStyle(placement)} />}
     </div>
   ) : null;
 
@@ -206,7 +304,7 @@ export const Popover: React.FC<PopoverProps> = ({
     <>
       <div
         ref={triggerRef}
-        className="popover-trigger"
+        style={triggerStyle}
         onClick={handleTriggerClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

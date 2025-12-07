@@ -46,6 +46,24 @@
   --color-rating-community: #33CCFF;
   --color-rating-staff: #FFB74D;
   
+  /* Colors - Medal/Trophy */
+  --color-medal-gold-start: #FFD700;
+  --color-medal-gold-end: #FFA500;
+  --color-medal-silver-start: #C0C0C0;
+  --color-medal-silver-end: #A8A8A8;
+  --color-medal-bronze-start: #CD7F32;
+  --color-medal-bronze-end: #B8860B;
+  
+  /* Colors - Gradient Components */
+  --color-purple-start: #6366f1;
+  --color-purple-end: #8b5cf6;
+  --color-teal-start: #10b981;
+  --color-teal-end: #059669;
+  --color-amber-start: #f59e0b;
+  --color-amber-end: #d97706;
+  --color-green-start: #34a853;
+  --color-green-end: #2d8f47;
+  
   /* Colors - State */
   --color-hover-overlay: rgba(0, 0, 0, 0.1);
   --color-hover-overlay-dark: rgba(0, 0, 0, 0.2);

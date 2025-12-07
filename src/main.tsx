@@ -1,5 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+// Tailwind CSS with custom design tokens
+import './styles/tailwind.css'
+// Design system global styles (CTA system, typography classes)
 import './design-system/global.css'
 import './index.css'
 import App from './App.tsx'

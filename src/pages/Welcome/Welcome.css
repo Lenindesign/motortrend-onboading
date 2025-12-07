@@ -77,7 +77,7 @@
   font-weight: 400;
   font-size: 16px;
   line-height: 1.4em;
-  color: #4B5563;
+  color: var(--color-neutrals-4);
   text-align: center;
   margin: 0;
   max-width: 100%;
@@ -198,7 +198,7 @@
   gap: 16px;
   padding: 20px;
   background-color: var(--color-white);
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-neutrals-6);
   border-radius: 12px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   position: relative;
@@ -237,7 +237,7 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 1.5em;
-  color: #212529;
+  color: var(--color-neutrals-1);
   margin: 0;
 }
 
@@ -248,7 +248,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 1.4em;
-  color: #6C757D;
+  color: var(--color-neutrals-4);
   cursor: pointer;
   padding: 0;
   text-align: left;
@@ -257,7 +257,7 @@
 }
 
 .change-vehicle-btn:hover {
-  color: #00C2FF;
+  color: var(--color-rating-community);
 }
 
 .ownership-options {
@@ -289,7 +289,7 @@
   font-weight: 400;
   font-size: 14px;
   line-height: 1.4em;
-  color: #212529;
+  color: var(--color-neutrals-1);
 }
 
 .selected-car-remove {
@@ -301,7 +301,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  background-color: #6C757D;
+  background-color: var(--color-neutrals-4);
   border: none;
   border-radius: 50%;
   color: white;
@@ -311,7 +311,7 @@
 }
 
 .selected-car-remove:hover {
-  background-color: #495057;
+  background-color: var(--color-neutrals-3);
 }
 
 /* Welcome Actions */
