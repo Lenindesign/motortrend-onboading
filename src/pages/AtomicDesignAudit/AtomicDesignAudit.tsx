@@ -31,6 +31,7 @@ import { AIInsights } from '../../components/AIInsights';
 import { TopTenCarousel } from '../../components/TopTenCarousel';
 import { MembershipCard } from '../../components/MembershipCard';
 import { BaTAuctionCard } from '../../components/BaTAuctionCard/BaTAuctionCard';
+import { KnowYourBudget } from '../../components/KnowYourBudget';
 import './AtomicDesignAudit.css';
 
 interface Section {
@@ -215,33 +216,33 @@ const AtomicDesignAudit: React.FC = () => {
             <div className="audit-level-card audit-level-card--atom">
               <div className="audit-level-card__header">
                 <Icon name="circle" size={24} />
-                <span className="audit-level-card__badge">6 components</span>
+                <span className="audit-level-card__badge">10 components</span>
               </div>
               <h3 className="audit-level-card__title">Atoms</h3>
               <p className="audit-level-card__description">
-                Basic building blocks: Icon, Badge, Button, TextField, CardShell, Tooltip
+                Basic building blocks: Icon, Badge, Button, TextField, CardShell, Tooltip, ModalShell, Popover, Toast, ScrollToTop
               </p>
             </div>
 
             <div className="audit-level-card audit-level-card--molecule">
               <div className="audit-level-card__header">
                 <Icon name="workspaces" size={24} />
-                <span className="audit-level-card__badge">15 components</span>
+                <span className="audit-level-card__badge">27 components</span>
               </div>
               <h3 className="audit-level-card__title">Molecules</h3>
               <p className="audit-level-card__description">
-                Composable groups: Cards, Inputs, Form Fields, Previews
+                Composable groups: Cards, Form Controls, Tooltips, Badges, Reactions
               </p>
             </div>
 
             <div className="audit-level-card audit-level-card--organism">
               <div className="audit-level-card__header">
                 <Icon name="grid_view" size={24} />
-                <span className="audit-level-card__badge">10 components</span>
+                <span className="audit-level-card__badge">29 components</span>
               </div>
               <h3 className="audit-level-card__title">Organisms</h3>
               <p className="audit-level-card__description">
-                Page sections: Header, Footer, Carousels, Reviews, Sections
+                Page sections: Header, Footer, Carousels, Reviews, Modals, Sidebars, AI Features
               </p>
             </div>
           </div>
@@ -440,6 +441,80 @@ const AtomicDesignAudit: React.FC = () => {
             </div>
             <div className="audit-preview__code">
               <code>{`<Tooltip content="Help text" placement="top">Hover me</Tooltip>`}</code>
+            </div>
+          </div>
+
+          {/* ModalShell */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ModalShell</h3>
+              <code className="audit-preview__path">components/atoms/ModalShell</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>ModalShell is a wrapper component for modals with overlay, animations, and escape key handling. See RatingModal, SavedModal, WriteReviewModal for usage examples.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<ModalShell isOpen={true} onClose={handleClose} maxWidth="500px">Content</ModalShell>`}</code>
+            </div>
+          </div>
+
+          {/* Popover */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Popover</h3>
+              <code className="audit-preview__path">components/atoms/Popover</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>Popover provides floating content anchored to a trigger element. Supports multiple placements and click-outside dismissal.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<Popover trigger={<button>Click</button>} placement="bottom">Content</Popover>`}</code>
+            </div>
+          </div>
+
+          {/* Toast */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Toast</h3>
+              <code className="audit-preview__path">components/Toast</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <div className="audit-preview__row" style={{ flexDirection: 'column', gap: '12px', alignItems: 'stretch' }}>
+                <div style={{ padding: '12px 16px', borderRadius: 'var(--border-radius-md, 8px)', background: 'var(--color-semantic-success-light, #E8F5E9)', border: '1px solid var(--color-semantic-success, #34A853)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Icon name="check_circle" size={20} style={{ color: 'var(--color-semantic-success, #34A853)' }} />
+                  <span style={{ color: 'var(--color-neutrals-1, #141416)' }}>Success toast message</span>
+                </div>
+                <div style={{ padding: '12px 16px', borderRadius: 'var(--border-radius-md, 8px)', background: 'var(--color-semantic-error-light, #FEF2F2)', border: '1px solid var(--color-semantic-error, #DC2626)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Icon name="error" size={20} style={{ color: 'var(--color-semantic-error, #DC2626)' }} />
+                  <span style={{ color: 'var(--color-neutrals-1, #141416)' }}>Error toast message</span>
+                </div>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<Toast type="success" message="Saved!" onClose={handleClose} />`}</code>
+            </div>
+          </div>
+
+          {/* ScrollToTop */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">ScrollToTop</h3>
+              <code className="audit-preview__path">components/ScrollToTop</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>Utility component that scrolls to top on route changes. Used in App.tsx to ensure pages start at the top.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<ScrollToTop /> {/* Place in router */}`}</code>
             </div>
           </div>
         </section>
@@ -917,6 +992,167 @@ const AtomicDesignAudit: React.FC = () => {
             </div>
             <div className="audit-preview__code">
               <code>{`<GlobalFooter />`}</code>
+            </div>
+          </div>
+
+          {/* UserReviews */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">UserReviews</h3>
+              <code className="audit-preview__path">components/UserReviews</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>Full-featured user reviews section with ratings, sorting, filtering, and review cards. Used on vehicle detail pages.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<UserReviews vehicleName="2024 Toyota Camry" vehicleId="camry-2024" />`}</code>
+            </div>
+          </div>
+
+          {/* PhotoGallery */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">PhotoGallery</h3>
+              <code className="audit-preview__path">components/PhotoGallery</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>Interactive photo gallery with lightbox, thumbnails, and navigation. Supports multiple image sources.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<PhotoGallery images={[...]} vehicleName="2024 BMW M3" />`}</code>
+            </div>
+          </div>
+
+          {/* LocalListingsSidebar */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">LocalListingsSidebar</h3>
+              <code className="audit-preview__path">components/LocalListingsSidebar</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>Displays local vehicle listings with dealer info, pricing, and contact options. Integrates with Marketcheck API.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<LocalListingsSidebar vehicleData={{ make: 'Toyota', model: 'Camry' }} />`}</code>
+            </div>
+          </div>
+
+          {/* AIPersonalAssistant */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">AIPersonalAssistant</h3>
+              <code className="audit-preview__path">components/AIPersonalAssistant</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>AI-powered chat interface for vehicle recommendations, comparisons, and automotive questions.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<AIPersonalAssistant />`}</code>
+            </div>
+          </div>
+
+          {/* KnowYourBudget */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">KnowYourBudget</h3>
+              <code className="audit-preview__path">components/KnowYourBudget</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--light">
+              <KnowYourBudget />
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<KnowYourBudget />`}</code>
+            </div>
+          </div>
+
+          {/* VehicleLeadsStripe */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">VehicleLeadsStripe</h3>
+              <code className="audit-preview__path">components/VehicleLeadsStripe</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info">
+                <Icon name="info" size={20} />
+                <span>Horizontal scrolling stripe of vehicle listings with save/bookmark functionality. Features dealer info and pricing.</span>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<VehicleLeadsStripe make="Honda" model="Accord" />`}</code>
+            </div>
+          </div>
+
+          {/* Modals Summary */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Modals</h3>
+              <code className="audit-preview__path">RatingModal, SavedModal, WriteReviewModal, AvatarBannerModal</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="star" size={18} />
+                  <span><strong>RatingModal</strong> - Star rating interface with review option</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="bookmark" size={18} />
+                  <span><strong>SavedModal</strong> - View and manage saved vehicles</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="edit" size={18} />
+                  <span><strong>WriteReviewModal</strong> - Full review composition interface</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="person" size={18} />
+                  <span><strong>AvatarBannerModal</strong> - Profile customization</span>
+                </div>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<RatingModal isOpen={true} vehicleName="..." onRate={...} />`}</code>
+            </div>
+          </div>
+
+          {/* Community Components */}
+          <div className="audit-preview">
+            <div className="audit-preview__header">
+              <h3 className="audit-preview__title">Community Components</h3>
+              <code className="audit-preview__path">components/Community/*</code>
+            </div>
+            <div className="audit-preview__canvas audit-preview__canvas--dark">
+              <div className="audit-preview__info" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="forum" size={18} />
+                  <span><strong>PostCard</strong> - Community post with votes and comments</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="comment" size={18} />
+                  <span><strong>CommentSection</strong> - Threaded comment display</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="thumb_up" size={18} />
+                  <span><strong>VoteControl</strong> - Upvote/downvote interaction</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="group" size={18} />
+                  <span><strong>CommunitySidebar</strong> - Community navigation</span>
+                </div>
+              </div>
+            </div>
+            <div className="audit-preview__code">
+              <code>{`<PostCard post={...} /> <CommentSection comments={[...]} />`}</code>
             </div>
           </div>
         </section>

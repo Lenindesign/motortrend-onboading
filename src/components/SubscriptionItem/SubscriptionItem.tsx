@@ -79,7 +79,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
   const logoStyle: React.CSSProperties = {
     width: '100%',
     height: '100%',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     objectFit: 'cover',
     backgroundColor: 'var(--color-neutrals-2, #23262F)',
     boxShadow: 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))',
@@ -89,7 +89,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
   const logoPlaceholderStyle: React.CSSProperties = {
     width: '100%',
     height: '100%',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     backgroundColor: 'var(--color-neutrals-2, #23262F)',
     display: 'flex',
     alignItems: 'center',
@@ -108,7 +108,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: isActive ? 'var(--color-white, #FFFFFF)' : 'transparent',
-    borderRadius: '100px',
+    borderRadius: 'var(--border-radius-full, 100px)',
     boxShadow: isActive ? 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))' : 'none',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
@@ -143,7 +143,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
                 alt="Find More" 
                 width="116" 
                 height="116"
-                style={{ borderRadius: '8px' }}
+                style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
               />
             )}
           </div>

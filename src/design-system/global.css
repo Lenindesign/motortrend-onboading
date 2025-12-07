@@ -44,7 +44,6 @@
   /* Colors - Rating */
   --color-rating-motortrend: #FFB74D;
   --color-rating-community: #33CCFF;
-  --color-rating-staff: #FFB74D;
   
   /* Colors - Medal/Trophy */
   --color-medal-gold-start: #FFD700;
@@ -92,8 +91,9 @@
   
   /* Typography - Font Weights */
   --font-weight-regular: 400;
-  --font-weight-medium: 600;
-  --font-weight-bold: 600;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
   
   /* Typography - Font Sizes */
   /* Based on Figma Ignition Design System */
@@ -167,11 +167,15 @@
   --spacing-grid-xxl: 48px;
   
   /* Effects - Border Radius */
+  --border-radius-xs: 2px;
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
+  --border-radius-md-lg: 12px;
   --border-radius-lg: 16px;
+  --border-radius-xl: 20px;
   --border-radius-full: 100px;
   --border-radius-circle: 400px;
+  --border-radius-pill: 999px;
   
   /* Effects - Shadows (Depth System) */
   --shadow-depth-0: none;
@@ -233,21 +237,21 @@ body {
 /* Typography Styles */
 .text-hero {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 96px;
   line-height: 1em;
 }
 
 .text-h5 {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.167em;
 }
 
 .text-subtitle1 {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.333em;
 }
@@ -268,7 +272,7 @@ body {
 
 .text-button1 {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1em;
 }
@@ -307,7 +311,7 @@ body {
   border: none;
   border-radius: var(--border-radius-sm);
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1em;
   cursor: pointer;
@@ -352,12 +356,12 @@ body {
 
 /* CTA Colors - Secondary Actions */
 .cta--secondary {
-  background-color: #353945;
+  background-color: var(--color-neutrals-3);
   color: var(--color-white);
 }
 
 .cta--secondary:hover:not(:disabled) {
-  background-color: #2a2d35;
+  background-color: var(--color-neutrals-2);
   transform: translateY(-1px);
 }
 
@@ -374,23 +378,23 @@ body {
 
 /* CTA Colors - Success Actions */
 .cta--success {
-  background-color: #34A853;
+  background-color: var(--color-semantic-success);
   color: var(--color-white);
 }
 
 .cta--success:hover:not(:disabled) {
-  background-color: #2d8f47;
+  background-color: var(--color-semantic-success-dark);
   transform: translateY(-1px);
 }
 
 /* CTA Colors - Warning Actions */
 .cta--warning {
-  background-color: #F59E0B;
+  background-color: var(--color-semantic-warning);
   color: var(--color-white);
 }
 
 .cta--warning:hover:not(:disabled) {
-  background-color: #D97706;
+  background-color: var(--color-semantic-warning-dark);
   transform: translateY(-1px);
 }
 

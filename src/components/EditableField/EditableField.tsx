@@ -137,7 +137,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
     width: '28px',
     height: '28px',
     border: 'none',
-    borderRadius: '100px',
+    borderRadius: 'var(--border-radius-full, 100px)',
     cursor: 'pointer',
     transition: 'transform 150ms ease-in-out',
   };

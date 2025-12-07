@@ -47,11 +47,11 @@ export const ArticleScoreCard: React.FC<ArticleScoreCardProps> = ({ score, vehic
   const breakdownStyle: React.CSSProperties = { flex: 1, minWidth: isMobile ? '100%' : '300px', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-3, 24px)', width: isMobile ? '100%' : 'auto' };
   const breakdownRowStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: isMobile ? '120px 1fr 35px' : '140px 1fr 40px', alignItems: 'center', gap: isMobile ? 'var(--spacing-1, 8px)' : 'var(--spacing-2, 16px)', fontFamily: 'var(--font-body)' };
   const breakdownLabelStyle: React.CSSProperties = { fontSize: isMobile ? '14px' : '16px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };
-  const barStyle: React.CSSProperties = { height: '12px', borderRadius: '100px', background: 'var(--color-neutrals-5, #B1B5C3)', overflow: 'hidden' };
-  const getBarFillStyle = (value: number): React.CSSProperties => ({ height: '100%', borderRadius: '100px', background: 'linear-gradient(90deg, var(--color-rating-motortrend, #FFB74D) 0%, var(--color-semantic-warning-dark, #F57C00) 100%)', width: `${(value / 10) * 100}%`, transition: 'width 150ms ease-in-out' });
+  const barStyle: React.CSSProperties = { height: '12px', borderRadius: 'var(--border-radius-full, 100px)', background: 'var(--color-neutrals-5, #B1B5C3)', overflow: 'hidden' };
+  const getBarFillStyle = (value: number): React.CSSProperties => ({ height: '100%', borderRadius: 'var(--border-radius-full, 100px)', background: 'linear-gradient(90deg, var(--color-rating-motortrend, #FFB74D) 0%, var(--color-semantic-warning-dark, #F57C00) 100%)', width: `${(value / 10) * 100}%`, transition: 'width 150ms ease-in-out' });
   const breakdownValueStyle: React.CSSProperties = { fontSize: isMobile ? '14px' : '16px', fontWeight: 600, color: 'var(--color-neutrals-2, #23262F)', textAlign: 'right' };
   const reviewerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-2, 16px)', marginTop: 'var(--spacing-4, 32px)', paddingTop: 'var(--spacing-4, 32px)', borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)' };
-  const avatarStyle: React.CSSProperties = { width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover' };
+  const avatarStyle: React.CSSProperties = { width: '56px', height: '56px', borderRadius: 'var(--border-radius-circle, 50%)', objectFit: 'cover' };
   const reviewerInfoStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '2px' };
   const reviewerNameStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', color: 'var(--color-neutrals-1, #141416)' };
   const reviewerBadgeStyle: React.CSSProperties = { width: '20px', height: '20px', objectFit: 'contain' };

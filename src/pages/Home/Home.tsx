@@ -65,8 +65,36 @@ interface Vehicle {
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { getUserRating } = useRating();
+  
+  // Initialize preferred body style from localStorage synchronously
+  const getInitialBodyStyle = (): 'SUV' | 'Sedan' | 'Truck' | 'Coupe' => {
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      if (onboardingData) {
+        const parsed = JSON.parse(onboardingData);
+        const vehicles = parsed.vehicles || [];
+        const wantVehicles = vehicles.filter((v: { ownership: string }) => v.ownership === 'want');
+        if (wantVehicles.length > 0) {
+          const firstWantVehicle = wantVehicles[0];
+          const bodyStyles = getVehicleBodyStyle(firstWantVehicle.name);
+          if (bodyStyles.length > 0) {
+            const style = bodyStyles[0];
+            if (style === 'SUV' || style === 'Sedan' || style === 'Truck' || style === 'Coupe') {
+              return style;
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error reading preferred body style:', error);
+    }
+    return 'SUV';
+  };
+  
   // Get user type from onboarding data - make it reactive
   const [userType, setUserType] = useState<string | null>(null);
+  // Preferred body style based on vehicles user wants to buy
+  const [preferredBodyStyle, setPreferredBodyStyle] = useState<'SUV' | 'Sedan' | 'Truck' | 'Coupe'>(getInitialBodyStyle);
   
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -95,6 +123,21 @@ export const Home: React.FC = () => {
   const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>('SUV');
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
 
+  // Ensure page starts at top on mount - use multiple methods for reliability
+  useEffect(() => {
+    // Immediate scroll
+    window.scrollTo(0, 0);
+    // Also scroll after a frame to override any browser behavior
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
+    // And after a short delay as fallback for async content
+    const timeoutId = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   useEffect(() => {
     const readUserType = () => {
       try {
@@ -103,6 +146,22 @@ export const Home: React.FC = () => {
           const parsed = JSON.parse(onboardingData);
           const type = parsed.userType || null;
           setUserType(type);
+          
+          // Determine preferred body style from vehicles user wants to buy
+          const vehicles = parsed.vehicles || [];
+          const wantVehicles = vehicles.filter((v: { ownership: string }) => v.ownership === 'want');
+          if (wantVehicles.length > 0) {
+            // Get the body style of the first "want" vehicle
+            const firstWantVehicle = wantVehicles[0];
+            const bodyStyles = getVehicleBodyStyle(firstWantVehicle.name);
+            if (bodyStyles.length > 0) {
+              const style = bodyStyles[0];
+              // Map to TopTenCarousel supported types
+              if (style === 'SUV' || style === 'Sedan' || style === 'Truck' || style === 'Coupe') {
+                setPreferredBodyStyle(style);
+              }
+            }
+          }
         } else {
           setUserType(null);
         }
@@ -1787,7 +1846,7 @@ export const Home: React.FC = () => {
               <VehicleLeadsStripe />
             </div>
           <div className="home__section home__section--full-width">
-            <TopTenCarousel showExpandButton={false} />
+            <TopTenCarousel showExpandButton={false} initialVehicleType={preferredBodyStyle} />
           </div>
           </>
         )}

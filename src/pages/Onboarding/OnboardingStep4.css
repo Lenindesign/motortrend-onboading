@@ -113,7 +113,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   border: 1px solid var(--color-neutrals-5);
   background-color: var(--color-neutrals-8);
   transition: all var(--transition-fast);
@@ -137,7 +137,7 @@
 /* Newsletter Title */
 .newsletter-card__title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.333em;
   color: var(--color-neutrals-2);
@@ -153,7 +153,7 @@
 /* Newsletter Description */
 .newsletter-card__description {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.3em;
   color: var(--color-neutrals-2);
@@ -191,7 +191,7 @@
 
 .privacy-message__text {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.3em;
   color: var(--color-neutrals-4);
@@ -231,7 +231,7 @@
   gap: 8px;
   padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1em;
   border: none;

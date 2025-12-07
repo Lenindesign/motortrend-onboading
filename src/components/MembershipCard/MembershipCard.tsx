@@ -46,7 +46,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
     minWidth: '320px',
     aspectRatio: '1.6 / 1',
     background: 'linear-gradient(145deg, #3a3a3c 0%, #2c2c2e 30%, #1c1c1e 70%, #141416 100%)',
-    borderRadius: '20px',
+    borderRadius: 'var(--border-radius-xl, 20px)',
     padding: '32px',
     display: 'flex',
     flexDirection: 'column',

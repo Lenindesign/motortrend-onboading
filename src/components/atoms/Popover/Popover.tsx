@@ -11,6 +11,8 @@ import { createPortal } from 'react-dom';
 export type PopoverPlacement = 'top' | 'bottom' | 'left' | 'right';
 export type PopoverTrigger = 'click' | 'hover';
 
+export type PopoverVariant = 'light' | 'dark';
+
 export interface PopoverProps {
   /** Popover content (rich text, components, etc.) */
   content: React.ReactNode;
@@ -36,6 +38,8 @@ export interface PopoverProps {
   className?: string;
   /** Offset from trigger element in pixels */
   offset?: number;
+  /** Color variant */
+  variant?: PopoverVariant;
 }
 
 // Inject keyframe animations once
@@ -54,14 +58,15 @@ const injectKeyframes = () => {
   }
 };
 
-// Arrow positioning based on placement
-const getArrowStyle = (placement: PopoverPlacement): React.CSSProperties => {
+// Arrow positioning based on placement and variant
+const getArrowStyle = (placement: PopoverPlacement, variant: PopoverVariant = 'light'): React.CSSProperties => {
+  const isDark = variant === 'dark';
   const baseArrowStyle: React.CSSProperties = {
     position: 'absolute',
     width: '12px',
     height: '12px',
-    backgroundColor: 'var(--color-white, #FFFFFF)',
-    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    backgroundColor: isDark ? 'var(--color-neutrals-1, #141416)' : 'var(--color-white, #FFFFFF)',
+    border: isDark ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)',
     transform: 'rotate(45deg)',
     zIndex: 1,
   };
@@ -117,6 +122,7 @@ export const Popover: React.FC<PopoverProps> = ({
   closeOnEsc = true,
   className = '',
   offset = 8,
+  variant = 'light',
 }) => {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -254,13 +260,14 @@ export const Popover: React.FC<PopoverProps> = ({
   }, [isOpen, closeOnEsc]);
 
   // Popover container styles
+  const isDark = variant === 'dark';
   const popoverStyle: React.CSSProperties = {
     position: 'absolute',
     zIndex: 10000,
-    backgroundColor: 'var(--color-white, #FFFFFF)',
+    backgroundColor: isDark ? 'var(--color-neutrals-1, #141416)' : 'var(--color-white, #FFFFFF)',
     borderRadius: 'var(--border-radius-md, 8px)',
-    boxShadow: 'var(--shadow-dropdown, 0 4px 12px rgba(20, 20, 22, 0.15))',
-    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    boxShadow: isDark ? '0 8px 24px rgba(0, 0, 0, 0.4)' : 'var(--shadow-dropdown, 0 4px 12px rgba(20, 20, 22, 0.15))',
+    border: isDark ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)',
     padding: 0,
     minWidth: '200px',
     maxWidth: '400px',
@@ -296,7 +303,7 @@ export const Popover: React.FC<PopoverProps> = ({
       <div style={contentStyle}>
         {content}
       </div>
-      {showArrow && <div style={getArrowStyle(placement)} />}
+      {showArrow && <div style={getArrowStyle(placement, variant)} />}
     </div>
   ) : null;
 

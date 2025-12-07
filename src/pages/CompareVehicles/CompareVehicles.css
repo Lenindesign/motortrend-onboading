@@ -47,7 +47,7 @@
 
 .compare-vehicles__section-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);

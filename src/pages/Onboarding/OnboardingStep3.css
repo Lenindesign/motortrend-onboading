@@ -58,7 +58,7 @@
 
 .onboarding-card__step-text {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 12px;
   line-height: 1.3em;
   color: var(--color-black);
@@ -82,7 +82,7 @@
 
 .onboarding-card__title {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -92,7 +92,7 @@
 
 .onboarding-card__subtitle {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.3em;
   color: var(--color-neutrals-4);
@@ -115,7 +115,7 @@
   margin-top: 24px;
   padding: 32px;
   background: var(--color-white);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -129,7 +129,7 @@
 
 .vehicle-search__label {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 12px;
   line-height: 1.3em;
   color: var(--color-black);
@@ -172,7 +172,7 @@
   outline: none;
   background: none;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.75em;
   color: var(--color-neutrals-2);
@@ -205,7 +205,7 @@
 .vehicle-search__dropdown-item {
   padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.75em;
   color: var(--color-neutrals-2);
@@ -241,7 +241,7 @@
   padding: 20px;
   background-color: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   position: relative;
   transition: all var(--transition-fast);
@@ -276,7 +276,7 @@
 
 .selected-car-name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-1);
@@ -287,7 +287,7 @@
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -328,7 +328,7 @@
 
 .radio-text {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-1);
@@ -345,7 +345,7 @@
   height: 24px;
   background-color: var(--color-neutrals-4);
   border: none;
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   color: white;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -370,7 +370,7 @@
 
 .add-another-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-1);
@@ -389,7 +389,7 @@
   border: 2px dashed var(--color-neutrals-5);
   border-radius: var(--border-radius-md);
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.3em;
   color: var(--color-neutrals-3);
@@ -413,7 +413,7 @@
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -457,7 +457,7 @@
   gap: 8px;
   padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1em;
   border: none;
@@ -504,7 +504,7 @@
 
 .onboarding-skip-btn {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.3em;
   color: var(--color-neutrals-4);

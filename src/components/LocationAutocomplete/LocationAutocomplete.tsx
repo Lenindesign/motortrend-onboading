@@ -165,7 +165,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
       : 'var(--color-neutrals-4, #6E7481)',
     cursor: isDetectingLocation ? 'not-allowed' : 'pointer',
     zIndex: 2,
-    borderRadius: '100px',
+    borderRadius: 'var(--border-radius-full, 100px)',
     boxShadow: 'var(--shadow-depth-1, 0 1px 2px rgba(20, 20, 22, 0.02))',
     opacity: isDetectingLocation ? 0.7 : 1,
   };

@@ -4,9 +4,10 @@
  * Supports both list view and detail view modes
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Post, Community } from '../../api/communityApi';
+import { isPostSaved, toggleSavePost } from '../../api/communityApi';
 import { VoteControl } from './VoteControl';
 import Icon from '../Icon';
 
@@ -14,26 +15,47 @@ interface PostCardProps {
   post: Post;
   community?: Community;
   onVote: (id: string, direction: 'up' | 'down') => void;
+  onSave?: (id: string, isSaved: boolean) => void;
+  onShare?: (id: string) => void;
   showCommunity?: boolean;
-  /** Detail view shows full content, larger title, and comment input */
+  /** Detail view shows full content and larger title */
   isDetailView?: boolean;
-  onComment?: (comment: string) => void;
+  /** Children (e.g., CommentSection) will be rendered inside the card in detail view */
+  children?: React.ReactNode;
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ 
   post, 
   community, 
   onVote, 
+  onSave,
+  onShare,
   showCommunity = true,
   isDetailView = false,
-  onComment
+  children
 }) => {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [isCommunityHovered, setIsCommunityHovered] = useState(false);
   const [hoveredAction, setHoveredAction] = useState<string | null>(null);
-  const [commentText, setCommentText] = useState('');
-  const [isCommentBtnHovered, setIsCommentBtnHovered] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  
+  // Load saved state on mount
+  useEffect(() => {
+    setIsSaved(isPostSaved(post.id));
+  }, [post.id]);
+  
+  const handleSaveClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newSavedState = toggleSavePost(post.id);
+    setIsSaved(newSavedState);
+    onSave?.(post.id, newSavedState);
+  };
+  
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onShare?.(post.id);
+  };
 
   const handleCardClick = () => {
     if (!isDetailView && community) navigate(`/community/${community.slug}/post/${post.id}`);
@@ -42,13 +64,6 @@ export const PostCard: React.FC<PostCardProps> = ({
   const handleCommunityClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (community) navigate(`/community/${community.slug}`);
-  };
-
-  const handleCommentSubmit = () => {
-    if (commentText.trim() && onComment) {
-      onComment(commentText.trim());
-      setCommentText('');
-    }
   };
 
   const formatDate = (dateString: string) => {
@@ -75,7 +90,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     flexDirection: 'row',
     backgroundColor: 'var(--color-white, #FFFFFF)', 
     border: `1px solid ${isHovered && !isDetailView ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, 
-    borderRadius: '8px', 
+    borderRadius: 'var(--border-radius-md, 8px)', 
     overflow: 'hidden', 
     cursor: isDetailView ? 'default' : 'pointer', 
     transition: 'border-color 0.2s ease', 
@@ -109,7 +124,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const communityInfoStyle: React.CSSProperties = { 
     display: 'flex', 
     alignItems: 'center', 
-    fontWeight: 700, 
+    fontWeight: 600, 
     color: 'var(--color-black, #000000)', 
     marginRight: '4px', 
     textDecoration: isCommunityHovered ? 'underline' : 'none',
@@ -118,12 +133,10 @@ export const PostCard: React.FC<PostCardProps> = ({
   const communityIconStyle: React.CSSProperties = { 
     width: '20px', 
     height: '20px', 
-    borderRadius: '50%', 
+    borderRadius: 'var(--border-radius-circle, 50%)', 
     marginRight: '6px', 
-    objectFit: 'contain', 
-    objectPosition: 'center', 
-    backgroundColor: 'var(--color-white, #FFFFFF)', 
-    padding: '2px' 
+    objectFit: 'cover', 
+    objectPosition: 'center'
   };
   const verifiedIconStyle: React.CSSProperties = { marginLeft: '4px', color: 'var(--color-blue, #186CEA)', flexShrink: 0 };
   const dotStyle: React.CSSProperties = { margin: '0 4px', color: 'var(--color-neutrals-5, #B1B5C3)' };
@@ -132,7 +145,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const titleStyle: React.CSSProperties = { 
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontSize: isDetailView ? '24px' : '18px', 
-    fontWeight: isDetailView ? 700 : 600, 
+    fontWeight: isDetailView ? 600 : 500, 
     color: 'var(--color-black, #000000)', 
     margin: isDetailView ? '0 0 16px 0' : '0 0 8px 0', 
     lineHeight: 1.3 
@@ -147,7 +160,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const mediaStyle: React.CSSProperties = { 
     width: '100%', 
     marginBottom: '16px', 
-    borderRadius: '8px', 
+    borderRadius: 'var(--border-radius-md, 8px)', 
     overflow: 'hidden', 
     maxHeight: isDetailView ? '600px' : '500px', 
     backgroundColor: 'var(--color-neutrals-7, #F4F5F6)', 
@@ -178,7 +191,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     fontWeight: 600, 
     color: 'var(--color-neutrals-4, #6E7481)', 
     padding: '8px 12px', 
-    borderRadius: '4px', 
+    borderRadius: 'var(--border-radius-sm, 4px)', 
     transition: 'background-color 0.2s', 
     backgroundColor: hoveredAction === actionId ? 'var(--color-neutrals-7, #F4F5F6)' : 'transparent', 
     cursor: 'pointer', 
@@ -186,48 +199,6 @@ export const PostCard: React.FC<PostCardProps> = ({
     whiteSpace: 'nowrap'
   });
   const metaStyle: React.CSSProperties = { color: 'var(--color-neutrals-4, #6E7481)' };
-
-  // Comment input styles
-  const commentSectionStyle: React.CSSProperties = {
-    marginTop: '20px',
-    paddingTop: '16px',
-    borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)'
-  };
-  const commentInputWrapperStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-    padding: '16px',
-    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
-    borderRadius: '8px',
-    border: '1px solid var(--color-neutrals-6, #E6E8EC)'
-  };
-  const commentTextareaStyle: React.CSSProperties = {
-    width: '100%',
-    minHeight: '80px',
-    padding: '12px',
-    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '6px',
-    backgroundColor: 'var(--color-white, #FFFFFF)',
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '14px',
-    color: 'var(--color-neutrals-2, #23262F)',
-    resize: 'vertical',
-    outline: 'none'
-  };
-  const commentBtnStyle: React.CSSProperties = {
-    alignSelf: 'flex-end',
-    padding: '10px 24px',
-    backgroundColor: isCommentBtnHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-primary-3, #ff858a)',
-    color: isCommentBtnHovered ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-2, #23262F)',
-    border: 'none',
-    borderRadius: '6px',
-    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-    fontSize: '14px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
-  };
 
   const isVerified = community && (community.id === 'comm_motortrend' || community.id === 'comm_caranddriver' || community.id === 'comm_hotrodpowertour');
 
@@ -303,40 +274,29 @@ export const PostCard: React.FC<PostCardProps> = ({
             style={getActionStyle('share')} 
             onMouseEnter={() => setHoveredAction('share')} 
             onMouseLeave={() => setHoveredAction(null)}
+            onClick={handleShareClick}
           >
             <Icon name="share" size={18} />
             <span>Share</span>
           </button>
           <button 
-            style={getActionStyle('save')} 
+            style={{
+              ...getActionStyle('save'),
+              color: isSaved ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)'
+            }} 
             onMouseEnter={() => setHoveredAction('save')} 
             onMouseLeave={() => setHoveredAction(null)}
+            onClick={handleSaveClick}
           >
-            <Icon name="bookmark_border" size={18} />
-            <span>Save</span>
+            <Icon name={isSaved ? 'bookmark' : 'bookmark_border'} variant={isSaved ? 'filled' : 'outlined'} size={18} />
+            <span>{isSaved ? 'Saved' : 'Save'}</span>
           </button>
         </div>
         
-        {/* Comment input section - only in detail view */}
-        {isDetailView && (
-          <div style={commentSectionStyle}>
-            <div style={commentInputWrapperStyle}>
-              <textarea
-                style={commentTextareaStyle}
-                placeholder="What are your thoughts?"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-              <button 
-                style={commentBtnStyle}
-                onClick={handleCommentSubmit}
-                onMouseEnter={() => setIsCommentBtnHovered(true)}
-                onMouseLeave={() => setIsCommentBtnHovered(false)}
-                disabled={!commentText.trim()}
-              >
-                Comment
-              </button>
-            </div>
+        {/* Children (e.g., CommentSection) - only in detail view */}
+        {isDetailView && children && (
+          <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)' }}>
+            {children}
           </div>
         )}
       </div>

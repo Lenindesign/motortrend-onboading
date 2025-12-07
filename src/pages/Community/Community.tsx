@@ -17,6 +17,8 @@ import { PostCard } from '../../components/Community/PostCard';
 import { CreatePostModal } from '../../components/Community/CreatePostModal';
 import { CreateCommunityModal } from '../../components/Community/CreateCommunityModal';
 import { CommentSection } from '../../components/Community/CommentSection';
+import { CommunityToast } from '../../components/Community/CommunityToast';
+import type { ToastType } from '../../components/Community/CommunityToast';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import './Community.css';
@@ -37,9 +39,30 @@ const CommunityPage: React.FC = () => {
   const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'hot' | 'new' | 'top'>('hot');
   const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Toast State
+  const [toast, setToast] = useState<{ message: string; type: ToastType; isVisible: boolean }>({
+    message: '',
+    type: 'info',
+    isVisible: false,
+  });
+  
+  const showToast = (message: string, type: ToastType = 'info') => {
+    setToast({ message, type, isVisible: true });
+  };
+  
+  const hideToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
+  };
 
   // Initial Load & Refresh
-  const loadData = () => {
+  const loadData = async (showLoading = true) => {
+    if (showLoading) setIsLoading(true);
+    
+    // Simulate async loading for better UX feedback
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
     setCommunities(getCommunities());
     
     if (postId) {
@@ -61,6 +84,8 @@ const CommunityPage: React.FC = () => {
       setCurrentCommunity(undefined);
       setPosts(getPosts());
     }
+    
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -102,25 +127,59 @@ const CommunityPage: React.FC = () => {
 
   // Handlers
   const handleJoinToggle = (id: string) => {
+    // Get community state before toggle
+    const community = communities.find(c => c.id === id);
+    const wasJoined = community?.isJoined;
+    
     toggleJoin(id);
-    loadData(); // Refresh to update UI state
+    loadData(false); // Refresh without loading indicator
+    
+    // Show toast
+    if (community) {
+      showToast(
+        wasJoined ? `Left ${community.name}` : `Joined ${community.name}!`,
+        wasJoined ? 'info' : 'success'
+      );
+    }
   };
 
   const handleVote = (id: string, direction: 'up' | 'down') => {
     toggleVote('post', id, direction);
-    loadData(); // Refresh
+    loadData(false); // Refresh without loading indicator
     if (currentPost && currentPost.id === id) {
         setCurrentPost(getPostById(id));
     }
+    // Note: No toast for votes - too noisy
   };
 
   const handlePostCreated = () => {
-    loadData();
+    loadData(false);
+    showToast('Post created successfully!', 'success');
   };
 
   const handleCommunityCreated = (newSlug: string) => {
-    loadData();
+    loadData(false);
+    showToast('Community created successfully!', 'success');
     navigate(`/community/${newSlug}`);
+  };
+  
+  const handleSavePost = (_postId: string, isSaved: boolean) => {
+    showToast(isSaved ? 'Post saved!' : 'Post removed from saved', isSaved ? 'success' : 'info');
+  };
+  
+  const handleSharePost = (postId: string) => {
+    // Get the post to find its community
+    const post = posts.find(p => p.id === postId);
+    const postCommunity = post ? communities.find(c => c.id === post.communityId) : null;
+    
+    if (postCommunity) {
+      const url = `${window.location.origin}/community/${postCommunity.slug}/post/${postId}`;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Link copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast('Failed to copy link', 'error');
+      });
+    }
   };
 
   // Derived Data
@@ -155,6 +214,14 @@ const CommunityPage: React.FC = () => {
         {/* Main Content */}
         <main className="community-page__main">
           
+          {/* Loading State */}
+          {isLoading ? (
+            <div className="community-page__loading">
+              <div className="community-page__loading-spinner"></div>
+              <p>Loading community...</p>
+            </div>
+          ) : (
+          <>
           {/* Header / Banner Area */}
           {currentCommunity ? (
             <div className="community-page__banner">
@@ -180,11 +247,48 @@ const CommunityPage: React.FC = () => {
                    {currentCommunity.isJoined ? 'Joined' : 'Join'}
                  </button>
                </div>
+               
+               {/* Mobile Community Info - Only visible on mobile */}
+               <div className="community-page__mobile-info">
+                 <p className="community-page__mobile-description">{currentCommunity.description}</p>
+                 <div className="community-page__mobile-stats">
+                   <div className="community-page__mobile-stat">
+                     <Icon name="group" size={16} />
+                     <span>{currentCommunity.memberCount.toLocaleString()} members</span>
+                   </div>
+                   <div className="community-page__mobile-stat">
+                     <Icon name="calendar_today" size={16} />
+                     <span>Created {new Date(currentCommunity.createdAt).toLocaleDateString()}</span>
+                   </div>
+                 </div>
+               </div>
             </div>
           ) : !postId && (
             <div className="community-page__feed-header">
                <h2>{slug === 'popular' ? 'Popular Posts' : 'Home Feed'}</h2>
                <p>Your daily dose of car culture.</p>
+            </div>
+          )}
+
+          {/* Mobile Communities Strip - Only visible on mobile when not in a community */}
+          {!postId && !currentCommunity && (
+            <div className="community-page__mobile-communities">
+              <div className="community-page__mobile-communities-scroll">
+                {communities.filter(c => c.isJoined).slice(0, 10).map(comm => (
+                  <button 
+                    key={comm.id}
+                    className="community-page__mobile-community-chip"
+                    onClick={() => navigate(`/community/${comm.slug}`)}
+                  >
+                    {comm.icon ? (
+                      <img src={comm.icon} alt={comm.name} className="community-page__mobile-community-icon" />
+                    ) : (
+                      <span className="community-page__mobile-community-placeholder">{comm.name[0]}</span>
+                    )}
+                    <span className="community-page__mobile-community-name">{comm.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -251,20 +355,46 @@ const CommunityPage: React.FC = () => {
           {/* Content: Post Detail or Feed */}
           {postId && currentPost ? (
             <div className="community-page__post-detail">
+              {/* Back Navigation */}
+              <button 
+                className="community-page__back-btn"
+                onClick={() => navigate(currentCommunity ? `/community/${currentCommunity.slug}` : '/community')}
+              >
+                <Icon name="arrow_back" size={20} />
+                <span>Back to {currentCommunity ? currentCommunity.name : 'Feed'}</span>
+              </button>
               <PostCard 
                 post={currentPost}
                 community={currentCommunity || undefined}
                 onVote={handleVote}
+                onSave={handleSavePost}
+                onShare={handleSharePost}
                 showCommunity={false}
                 isDetailView={true}
-              />
-              <CommentSection postId={currentPost.id} />
+              >
+                <CommentSection postId={currentPost.id} />
+              </PostCard>
             </div>
           ) : (
             <div className="community-page__feed">
               {sortedPosts.length === 0 ? (
                 <div className="community-page__empty">
-                   <p>No posts yet. Be the first to post!</p>
+                  <div className="community-page__empty-icon">
+                    <Icon name="forum" size={48} />
+                  </div>
+                  <h3 className="community-page__empty-title">No posts yet</h3>
+                  <p className="community-page__empty-text">
+                    {currentCommunity 
+                      ? `Be the first to share something in ${currentCommunity.name}!`
+                      : 'Join communities and start sharing your thoughts!'}
+                  </p>
+                  <button 
+                    className="community-page__empty-cta"
+                    onClick={() => setIsCreatePostOpen(true)}
+                  >
+                    <Icon name="add" size={20} />
+                    Create Post
+                  </button>
                 </div>
               ) : (
                 sortedPosts.map(post => {
@@ -276,12 +406,16 @@ const CommunityPage: React.FC = () => {
                       post={post} 
                       community={postCommunity}
                       onVote={handleVote}
+                      onSave={handleSavePost}
+                      onShare={handleSharePost}
                       showCommunity={!currentCommunity} // Don't show community name if we are IN that community page
                     />
                   );
                 })
               )}
             </div>
+          )}
+          </>
           )}
 
         </main>
@@ -421,6 +555,14 @@ const CommunityPage: React.FC = () => {
         isOpen={isCreateCommunityOpen}
         onClose={() => setIsCreateCommunityOpen(false)}
         onCommunityCreated={handleCommunityCreated}
+      />
+      
+      {/* Toast Notifications */}
+      <CommunityToast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
       />
     </div>
   );

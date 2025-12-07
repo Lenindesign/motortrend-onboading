@@ -43,7 +43,7 @@ export const ReviewSubmittedToast: React.FC<ReviewSubmittedToastProps> = ({
     justifyContent: 'center',
     width: '80px',
     height: '80px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     backgroundColor: 'var(--color-semantic-success-light, #E8F5E9)',
     color: 'var(--color-semantic-success, #34A853)',
     flexShrink: 0,

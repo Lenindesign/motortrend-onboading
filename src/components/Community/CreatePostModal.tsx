@@ -76,7 +76,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     width: '100%',
     maxWidth: '700px',
     backgroundColor: 'var(--color-white, #FFFFFF)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     display: 'flex',
     flexDirection: 'column',
@@ -118,7 +118,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const selectorStyle: React.CSSProperties = {
     width: '300px',
     padding: '8px 12px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
     fontSize: '14px',
     backgroundColor: 'var(--color-white, #FFFFFF)',
@@ -163,7 +163,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     border: focusedInput === 'title' 
       ? '2px solid var(--color-primary-1, #E90C17)' 
       : '1px solid var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     width: '100%',
     color: 'var(--color-black, #000000)',
     outline: 'none',
@@ -176,7 +176,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     border: focusedInput === 'content' 
       ? '2px solid var(--color-primary-1, #E90C17)' 
       : '1px solid var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     width: '100%',
     resize: 'vertical',
     fontFamily: 'inherit',
@@ -191,7 +191,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     border: focusedInput === 'url' 
       ? '2px solid var(--color-primary-1, #E90C17)' 
       : '1px solid var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     width: '100%',
     marginBottom: '16px',
     color: 'var(--color-black, #000000)',
@@ -218,7 +218,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
     padding: '8px 16px',
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
     background: isCancelHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
-    borderRadius: '999px',
+    borderRadius: 'var(--border-radius-pill, 999px)',
     cursor: 'pointer',
     fontWeight: 600,
     color: 'var(--color-neutrals-4, #6E7481)',
@@ -234,7 +234,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({
         : 'var(--color-primary-1, #E90C17)',
     color: 'white',
     border: 'none',
-    borderRadius: '999px',
+    borderRadius: 'var(--border-radius-pill, 999px)',
     cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
     fontWeight: 600,
     opacity: isSubmitDisabled ? 0.5 : 1,

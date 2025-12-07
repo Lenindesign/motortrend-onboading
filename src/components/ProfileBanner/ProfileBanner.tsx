@@ -101,7 +101,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'linear-gradient(to right, var(--color-gradient-overlay-start, rgba(244,245,246,1)), var(--color-gradient-overlay-mid, rgba(244,245,246,0.8)), var(--color-gradient-overlay-end, rgba(244,245,246,0)))',
+    background: 'linear-gradient(to right, rgba(20, 20, 22, 0.85), rgba(20, 20, 22, 0.6), rgba(20, 20, 22, 0.2))',
     zIndex: 1,
   };
 
@@ -121,7 +121,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     width: '96px',
     height: '96px',
     flexShrink: 0,
-    borderRadius: '400px',
+    borderRadius: 'var(--border-radius-circle, 400px)',
     overflow: 'hidden',
     background: 'linear-gradient(135deg, var(--color-primary-1, #E90C17), var(--color-primary-2, #C70A13))',
     boxShadow: 'var(--shadow-depth-3, 0 4px 12px rgba(20, 20, 22, 0.08))',
@@ -142,7 +142,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     alignItems: 'center',
     justifyContent: 'center',
     background: 'var(--color-primary-1, #E90C17)',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     padding: '10px',
   };
 
@@ -169,7 +169,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     fontSize: '32px',
     lineHeight: 1.2,
     letterSpacing: '-0.5px',
-    color: 'var(--color-neutrals-1, #141416)',
+    color: 'var(--color-white, #FFFFFF)',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -193,7 +193,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     width: '22px',
     height: '22px',
     flexShrink: 0,
-    color: 'var(--color-neutrals-1, #141416)',
+    color: 'var(--color-white, #FFFFFF)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -202,17 +202,17 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   const metaTextStyle: React.CSSProperties = {
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 400,
-    fontSize: '15px',
+    fontSize: '14px',
     lineHeight: 1,
-    color: 'var(--color-neutrals-1, #141416)',
+    color: 'var(--color-white, #FFFFFF)',
     whiteSpace: 'nowrap',
     display: 'flex',
     alignItems: 'center',
   };
 
   const separatorStyle: React.CSSProperties = {
-    fontSize: '15px',
-    color: 'var(--color-neutrals-1, #141416)',
+    fontSize: '14px',
+    color: 'var(--color-white, #FFFFFF)',
     userSelect: 'none',
   };
 

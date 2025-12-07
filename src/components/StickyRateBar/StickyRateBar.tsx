@@ -263,7 +263,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const ratingValueStyle: React.CSSProperties = {
     color: 'var(--color-neutrals-8, #FCFCFD)',
     fontSize: isMobile ? '20px' : '32px',
-    fontWeight: isMobile ? 700 : 600,
+    fontWeight: isMobile ? 600 : 500,
     fontFamily: "'Geist', system-ui, -apple-system, sans-serif",
     order: isMobile ? 2 : undefined,
     margin: isMobile ? 0 : undefined,
@@ -588,6 +588,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             trigger="click"
             placement="bottom"
             className={popoverClass}
+            variant="dark"
           >
             {content}
           </Popover>

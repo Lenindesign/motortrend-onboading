@@ -130,7 +130,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                       alt="MotorTrend Newsletter" 
                       width="72" 
                       height="72"
-                      style={{ borderRadius: '8px' }}
+                      style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
                     />
                   ) : newsletter.logo === 'hotrod' ? (
                     <img 
@@ -138,7 +138,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                       alt="HOT ROD Newsletter" 
                       width="72" 
                       height="72"
-                      style={{ borderRadius: '8px' }}
+                      style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
                     />
                   ) : (
                     <img 
@@ -146,7 +146,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                       alt="Our Events Newsletter" 
                       width="72" 
                       height="72"
-                      style={{ borderRadius: '8px' }}
+                      style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
                     />
                   )}
                 </div>

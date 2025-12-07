@@ -348,7 +348,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const containerStyle: React.CSSProperties = {
     background: 'var(--color-white, #FFFFFF)',
     border: '1px solid #E5E5E5',
-    borderRadius: '16px',
+    borderRadius: 'var(--border-radius-lg, 16px)',
     boxShadow: '0px 4px 8px 0px rgba(20, 20, 22, 0.1)',
     display: 'flex',
     flexDirection: 'column',
@@ -378,7 +378,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const avatarStyle: React.CSSProperties = {
     width: '40px',
     height: '40px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     background: 'var(--color-primary-1, #E90C17)',
     display: 'flex',
     alignItems: 'center',
@@ -390,7 +390,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const titleStyle: React.CSSProperties = {
     fontFamily: "'Poppins', sans-serif",
     fontSize: '20px',
-    fontWeight: 700,
+    fontWeight: 600,
     color: 'var(--color-neutrals-1, #141416)',
     margin: '0 0 8px 0',
     lineHeight: 1.2
@@ -425,7 +425,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const getPresetBtnStyle = (index: number): React.CSSProperties => ({
     padding: '8px 12px',
     border: `1px solid ${hoveredPreset === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     background: hoveredPreset === index ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-white, #FFFFFF)',
     color: hoveredPreset === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-1, #141416)',
     fontFamily: "'Geist', sans-serif",
@@ -455,7 +455,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const messageAvatarStyle: React.CSSProperties = {
     width: '28px',
     height: '28px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     background: 'var(--color-primary-1, #E90C17)',
     display: 'flex',
     alignItems: 'center',
@@ -493,7 +493,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
     border: '1px solid #E90C17',
     color: hoveredVehicleLink === vehicleName ? 'var(--color-white, #FFFFFF)' : 'var(--color-primary-1, #E90C17)',
     padding: '4px 8px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     fontFamily: "'Geist', sans-serif",
     fontSize: '14px',
     fontWeight: 500,
@@ -512,7 +512,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const typingDotStyle = (delay: string): React.CSSProperties => ({
     width: '8px',
     height: '8px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     background: 'var(--color-neutrals-4, #6E7481)',
     animation: `typing 1.4s infinite ease-in-out ${delay}`
   });
@@ -529,7 +529,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const inputStyle: React.CSSProperties = {
     flex: 1,
     border: `1px solid ${isInputFocused ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     padding: '8px 12px',
     fontFamily: "'Geist', sans-serif",
     fontSize: '14px',
@@ -542,7 +542,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const sendBtnStyle: React.CSSProperties = {
     width: '40px',
     height: '40px',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     background: !inputValue.trim() ? 'var(--color-primary-1, #E90C17)' : isSendHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)',
     color: 'var(--color-white, #FFFFFF)',
     border: 'none',
@@ -569,7 +569,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
     flex: 1,
     padding: '8px 12px',
     border: `1px solid ${hoveredQuickAction === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     background: hoveredQuickAction === index ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-white, #FFFFFF)',
     color: hoveredQuickAction === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-1, #141416)',
     fontFamily: "'Geist', sans-serif",

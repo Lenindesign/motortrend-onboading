@@ -5,8 +5,9 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Comment } from '../../api/communityApi';
-import { getComments, addComment, toggleVote } from '../../api/communityApi';
+import { getComments, addComment, addReply, toggleVote } from '../../api/communityApi';
 import { VoteControl } from './VoteControl';
+import Icon from '../Icon';
 
 interface CommentSectionProps {
   postId: string;
@@ -17,6 +18,9 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
   const [newComment, setNewComment] = useState('');
   const [isSubmitHovered, setIsSubmitHovered] = useState(false);
   const [hoveredReply, setHoveredReply] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState('');
+  const [isReplySubmitHovered, setIsReplySubmitHovered] = useState(false);
 
   useEffect(() => {
     setComments(getComments(postId));
@@ -35,6 +39,30 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
     toggleVote('comment', id, direction);
     // Refresh comments to get updated counts
     setComments(getComments(postId));
+  };
+  
+  const handleReplyClick = (commentId: string) => {
+    if (replyingTo === commentId) {
+      setReplyingTo(null);
+      setReplyText('');
+    } else {
+      setReplyingTo(commentId);
+      setReplyText('');
+    }
+  };
+  
+  const handleReplySubmit = (parentCommentId: string) => {
+    if (!replyText.trim()) return;
+    
+    addReply(postId, parentCommentId, replyText);
+    setComments(getComments(postId));
+    setReplyingTo(null);
+    setReplyText('');
+  };
+  
+  const handleCancelReply = () => {
+    setReplyingTo(null);
+    setReplyText('');
   };
 
   const timeAgo = (dateString: string) => {
@@ -63,7 +91,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
   const formStyle: React.CSSProperties = {
     marginBottom: '32px',
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     overflow: 'hidden'
   };
 
@@ -97,7 +125,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
     color: 'white',
     border: 'none',
     padding: '6px 16px',
-    borderRadius: '999px',
+    borderRadius: 'var(--border-radius-pill, 999px)',
     fontWeight: 600,
     fontSize: '12px',
     cursor: isSubmitDisabled ? 'not-allowed' : 'pointer',
@@ -118,21 +146,21 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
   const avatarImgStyle: React.CSSProperties = {
     width: '28px',
     height: '28px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     objectFit: 'cover'
   };
 
   const avatarPlaceholderStyle: React.CSSProperties = {
     width: '28px',
     height: '28px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     backgroundColor: 'var(--color-neutrals-3, #353945)',
     color: 'var(--color-neutrals-5, #B1B5C3)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '12px',
-    fontWeight: 700
+    fontWeight: 600
   };
 
   const contentStyle: React.CSSProperties = {
@@ -170,16 +198,83 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
   };
 
   const getReplyBtnStyle = (commentId: string): React.CSSProperties => ({
-    background: hoveredReply === commentId ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
+    background: hoveredReply === commentId || replyingTo === commentId ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
     border: 'none',
     fontSize: '12px',
     fontWeight: 600,
-    color: 'var(--color-neutrals-4, #6E7481)',
+    color: replyingTo === commentId ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)',
     cursor: 'pointer',
     padding: '4px 8px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     transition: 'background-color 0.2s'
   });
+  
+  const replyFormStyle: React.CSSProperties = {
+    marginTop: '12px',
+    marginLeft: '40px',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    overflow: 'hidden'
+  };
+  
+  const replyInputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '10px 12px',
+    border: 'none',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
+    resize: 'none',
+    fontFamily: 'inherit',
+    fontSize: '13px',
+    outline: 'none',
+    minHeight: '60px',
+    color: 'var(--color-black, #000000)',
+    boxSizing: 'border-box'
+  };
+  
+  const replyActionsStyle: React.CSSProperties = {
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+    padding: '6px 10px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '8px'
+  };
+  
+  const replyCancelBtnStyle: React.CSSProperties = {
+    background: 'transparent',
+    border: 'none',
+    padding: '4px 12px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
+    fontWeight: 600,
+    fontSize: '11px',
+    cursor: 'pointer',
+    color: 'var(--color-neutrals-4, #6E7481)'
+  };
+  
+  const isReplyDisabled = !replyText.trim();
+  
+  const replySubmitBtnStyle: React.CSSProperties = {
+    backgroundColor: isReplyDisabled 
+      ? 'var(--color-neutrals-5, #B1B5C3)' 
+      : isReplySubmitHovered 
+        ? 'var(--color-neutrals-1, #141416)' 
+        : 'var(--color-primary-1, #E90C17)',
+    color: 'white',
+    border: 'none',
+    padding: '4px 12px',
+    borderRadius: 'var(--border-radius-pill, 999px)',
+    fontWeight: 600,
+    fontSize: '11px',
+    cursor: isReplyDisabled ? 'not-allowed' : 'pointer',
+    opacity: isReplyDisabled ? 0.5 : 1,
+    transition: 'background-color 0.2s'
+  };
+  
+  const nestedRepliesStyle: React.CSSProperties = {
+    marginLeft: '40px',
+    paddingLeft: '16px',
+    borderLeft: '2px solid var(--color-neutrals-6, #E6E8EC)',
+    marginTop: '12px'
+  };
 
   return (
     <div style={sectionStyle}>
@@ -206,42 +301,114 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
 
       <div>
         {comments.map(comment => (
-          <div key={comment.id} style={commentItemStyle}>
-            <div style={avatarWrapperStyle}>
-               {comment.author.avatar ? (
-                 <img src={comment.author.avatar} alt={comment.author.name} style={avatarImgStyle} />
-               ) : (
-                 <div style={avatarPlaceholderStyle}>
-                   {comment.author.name[0]}
-                 </div>
-               )}
+          <div key={comment.id}>
+            <div style={commentItemStyle}>
+              <div style={avatarWrapperStyle}>
+                 {comment.author.avatar ? (
+                   <img src={comment.author.avatar} alt={comment.author.name} style={avatarImgStyle} />
+                 ) : (
+                   <div style={avatarPlaceholderStyle}>
+                     {comment.author.name[0]}
+                   </div>
+                 )}
+              </div>
+              <div style={contentStyle}>
+                <div style={headerStyle}>
+                  <span style={authorStyle}>{comment.author.name}</span>
+                  <span style={timeStyle}>{timeAgo(comment.createdAt)}</span>
+                </div>
+                <div style={bodyStyle}>
+                  {comment.content}
+                </div>
+                <div style={footerStyle}>
+                  <VoteControl 
+                    upvotes={comment.upvotes} 
+                    downvotes={comment.downvotes}
+                    userVote={comment.userVote}
+                    onVote={(dir) => handleVote(comment.id, dir)}
+                    orientation="horizontal"
+                    size="sm"
+                  />
+                  <button 
+                    style={getReplyBtnStyle(comment.id)}
+                    onMouseEnter={() => setHoveredReply(comment.id)}
+                    onMouseLeave={() => setHoveredReply(null)}
+                    onClick={() => handleReplyClick(comment.id)}
+                  >
+                    <Icon name={replyingTo === comment.id ? 'close' : 'reply'} size={14} style={{ marginRight: '4px' }} />
+                    {replyingTo === comment.id ? 'Cancel' : 'Reply'}
+                  </button>
+                </div>
+              </div>
             </div>
-            <div style={contentStyle}>
-              <div style={headerStyle}>
-                <span style={authorStyle}>{comment.author.name}</span>
-                <span style={timeStyle}>{timeAgo(comment.createdAt)}</span>
-              </div>
-              <div style={bodyStyle}>
-                {comment.content}
-              </div>
-              <div style={footerStyle}>
-                <VoteControl 
-                  upvotes={comment.upvotes} 
-                  downvotes={comment.downvotes}
-                  userVote={comment.userVote}
-                  onVote={(dir) => handleVote(comment.id, dir)}
-                  orientation="horizontal"
-                  size="sm"
+            
+            {/* Reply Form */}
+            {replyingTo === comment.id && (
+              <div style={replyFormStyle}>
+                <textarea
+                  style={replyInputStyle}
+                  placeholder={`Reply to ${comment.author.name}...`}
+                  value={replyText}
+                  onChange={e => setReplyText(e.target.value)}
+                  autoFocus
                 />
-                <button 
-                  style={getReplyBtnStyle(comment.id)}
-                  onMouseEnter={() => setHoveredReply(comment.id)}
-                  onMouseLeave={() => setHoveredReply(null)}
-                >
-                  Reply
-                </button>
+                <div style={replyActionsStyle}>
+                  <button 
+                    style={replyCancelBtnStyle}
+                    onClick={handleCancelReply}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    style={replySubmitBtnStyle}
+                    disabled={isReplyDisabled}
+                    onClick={() => handleReplySubmit(comment.id)}
+                    onMouseEnter={() => setIsReplySubmitHovered(true)}
+                    onMouseLeave={() => setIsReplySubmitHovered(false)}
+                  >
+                    Reply
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+            
+            {/* Nested Replies */}
+            {comment.replies && comment.replies.length > 0 && (
+              <div style={nestedRepliesStyle}>
+                {comment.replies.map(reply => (
+                  <div key={reply.id} style={{ ...commentItemStyle, marginBottom: '16px' }}>
+                    <div style={avatarWrapperStyle}>
+                       {reply.author.avatar ? (
+                         <img src={reply.author.avatar} alt={reply.author.name} style={avatarImgStyle} />
+                       ) : (
+                         <div style={avatarPlaceholderStyle}>
+                           {reply.author.name[0]}
+                         </div>
+                       )}
+                    </div>
+                    <div style={contentStyle}>
+                      <div style={headerStyle}>
+                        <span style={authorStyle}>{reply.author.name}</span>
+                        <span style={timeStyle}>{timeAgo(reply.createdAt)}</span>
+                      </div>
+                      <div style={bodyStyle}>
+                        {reply.content}
+                      </div>
+                      <div style={footerStyle}>
+                        <VoteControl 
+                          upvotes={reply.upvotes} 
+                          downvotes={reply.downvotes}
+                          userVote={reply.userVote}
+                          onVote={(dir) => handleVote(reply.id, dir)}
+                          orientation="horizontal"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>

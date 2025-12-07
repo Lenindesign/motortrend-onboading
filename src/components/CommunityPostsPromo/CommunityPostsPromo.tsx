@@ -84,7 +84,7 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
   const titleStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontSize: '28px',
-    fontWeight: 700,
+    fontWeight: 600,
     lineHeight: 1.2,
     color: 'var(--color-black, #000000)',
     margin: 0,
@@ -113,7 +113,7 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
     return {
       backgroundColor: 'var(--color-white, #FFFFFF)',
       border: `1px solid ${isHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-      borderRadius: '8px',
+      borderRadius: 'var(--border-radius-md, 8px)',
       overflow: 'hidden',
       cursor: 'pointer',
       transition: 'all 0.2s',
@@ -158,14 +158,14 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
   const communityIconStyle: React.CSSProperties = {
     width: '24px',
     height: '24px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     objectFit: 'cover',
   };
 
   const communityPlaceholderStyle: React.CSSProperties = {
     width: '24px',
     height: '24px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
     display: 'flex',
     alignItems: 'center',

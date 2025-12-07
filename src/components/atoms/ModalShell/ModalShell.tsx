@@ -33,6 +33,8 @@ export interface ModalShellProps {
   animation?: 'fade-slide' | 'slide-right';
   /** z-index for the modal (default: 1000) */
   zIndex?: number;
+  /** Custom styles for the modal content */
+  style?: React.CSSProperties;
 }
 
 // Inject keyframe animations once
@@ -102,7 +104,8 @@ export const ModalShell: React.FC<ModalShellProps> = ({
   closeOnEscape = true,
   className = '',
   animation = 'fade-slide',
-  zIndex = 1000
+  zIndex = 1000,
+  style
 }) => {
   // Inject keyframes on mount
   useEffect(() => {
@@ -171,6 +174,7 @@ export const ModalShell: React.FC<ModalShellProps> = ({
     width,
     height: position === 'side-right' ? '100%' : undefined,
     animation: animationNames[animation],
+    ...style, // Merge custom styles (allows overriding background, etc.)
   };
 
   return (

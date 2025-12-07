@@ -148,7 +148,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
   // Styles
   const sidebarStyle: React.CSSProperties = {
     background: 'var(--color-white, #FFFFFF)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     padding: isMobile ? '16px' : '20px',
     position: 'relative',
     width: '100%',
@@ -165,7 +165,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
   const titleStyle: React.CSSProperties = {
     fontFamily: "'Poppins', sans-serif",
     fontSize: isMobile ? '18px' : '20px',
-    fontWeight: 700,
+    fontWeight: 600,
     color: 'var(--color-neutrals-1, #141416)',
     margin: '0 0 8px 0',
     lineHeight: 1.2
@@ -187,7 +187,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
 
   const getItemStyle = (listingId: string): React.CSSProperties => ({
     background: 'var(--color-neutrals-7, #F4F5F6)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     overflow: 'hidden',
     transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
     border: '1px solid #E5E5E5',
@@ -222,7 +222,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
       left: '8px',
       width: '36px',
       height: '36px',
-      borderRadius: '50%',
+      borderRadius: 'var(--border-radius-circle, 50%)',
       backgroundColor: isSaved ? 'var(--color-primary-1, #E90C17)' : isHovered ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.6)',
       backdropFilter: 'blur(4px)',
       border: 'none',
@@ -248,7 +248,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
       right: direction === 'next' ? '8px' : 'auto',
       width: '32px',
       height: '32px',
-      borderRadius: '50%',
+      borderRadius: 'var(--border-radius-circle, 50%)',
       backgroundColor: isHovered ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.9)',
       border: '1px solid rgba(0, 0, 0, 0.1)',
       color: 'var(--color-neutrals-1, #141416)',
@@ -272,7 +272,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     color: 'var(--color-white, #FFFFFF)',
     fontSize: '12px',
     fontWeight: 500,
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     zIndex: 2
   };
 
@@ -284,9 +284,9 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     background: 'var(--color-primary-1, #E90C17)',
     color: 'var(--color-white, #FFFFFF)',
     padding: '4px 8px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     fontSize: '11px',
-    fontWeight: 700,
+    fontWeight: 600,
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
     zIndex: 3
@@ -327,7 +327,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     color: 'var(--color-neutrals-4, #6E7481)',
     background: 'var(--color-neutrals-6, #E6E8EC)',
     padding: '4px 8px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     whiteSpace: 'nowrap'
   };
 
@@ -343,7 +343,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
   const priceStyle: React.CSSProperties = {
     fontFamily: "'Geist', sans-serif",
     fontSize: isMobile ? '16px' : '18px',
-    fontWeight: 700,
+    fontWeight: 600,
     color: 'var(--color-black, #000000)'
   };
 
@@ -393,7 +393,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     background: hoveredCta === listingId ? 'var(--color-neutrals-1, #141416)' : 'var(--color-white, #FFFFFF)',
     color: hoveredCta === listingId ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-1, #141416)',
     border: '1px solid #E5E5E5',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     padding: '10px 16px',
     fontSize: '13px',
     fontWeight: 600,
@@ -412,7 +412,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     background: isViewAllHovered ? '#F8F8F8' : 'transparent',
     color: 'var(--color-neutrals-1, #141416)',
     border: `1px solid ${isViewAllHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     padding: '12px 16px',
     fontSize: '14px',
     fontWeight: 600,

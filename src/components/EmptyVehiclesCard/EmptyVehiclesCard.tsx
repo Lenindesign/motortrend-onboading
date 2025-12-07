@@ -79,7 +79,7 @@ export const EmptyVehiclesCard: React.FC<EmptyVehiclesCardProps> = ({
     width: '72px',
     height: '72px',
     backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '400px',
+    borderRadius: 'var(--border-radius-circle, 400px)',
     marginBottom: '16px',
   };
 

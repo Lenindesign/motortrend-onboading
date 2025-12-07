@@ -40,93 +40,91 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    padding: '16px',
   };
 
   const headerStyle: React.CSSProperties = {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '12px',
-    paddingBottom: '8px',
-    borderBottom: '1px solid #444444',
+    alignItems: 'baseline',
+    gap: '8px',
+    marginBottom: '16px',
   };
 
   const titleStyle: React.CSSProperties = {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontWeight: 600,
     fontSize: '16px',
     color: 'var(--color-white, #FFFFFF)',
   };
 
   const totalStyle: React.CSSProperties = {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    fontSize: '12px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '13px',
     color: 'var(--color-neutrals-4, #6E7481)',
   };
 
   const contentStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    gap: '6px',
+    gap: '8px',
     width: '100%',
   };
 
   const barRowStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    minHeight: '20px',
+    gap: '10px',
+    minHeight: '22px',
     width: '100%',
   };
 
   const ratingLabelStyle: React.CSSProperties = {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 600,
-    fontSize: '12px',
-    color: 'var(--color-neutrals-5, #B1B5C3)',
-    minWidth: '16px',
-    textAlign: 'center',
+    fontSize: '13px',
+    color: 'var(--color-white, #FFFFFF)',
+    minWidth: '14px',
+    textAlign: 'left',
   };
 
   const barContainerStyle: React.CSSProperties = {
     flex: 1,
-    height: '8px',
-    backgroundColor: 'var(--color-neutrals-2-5, #282a30)',
-    borderRadius: '4px',
+    height: '6px',
+    backgroundColor: '#333333',
+    borderRadius: '3px',
     overflow: 'hidden',
     position: 'relative',
-    minWidth: '60px',
+    minWidth: '80px',
   };
 
   const getBarFillStyle = (percentage: number): React.CSSProperties => ({
     height: '100%',
     width: `${percentage}%`,
-    backgroundColor: 'var(--color-rating-community, #33CCFF)',
-    borderRadius: '4px',
+    backgroundColor: '#4A9EFF',
+    borderRadius: '3px',
     transition: 'width 150ms ease-in-out',
   });
 
   const percentageStyle: React.CSSProperties = {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    fontSize: '11px',
-    color: 'var(--color-neutrals-4, #6E7481)',
-    minWidth: '32px',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '12px',
+    color: 'var(--color-neutrals-5, #B1B5C3)',
+    minWidth: '36px',
     textAlign: 'right',
   };
 
   const footerStyle: React.CSSProperties = {
-    marginTop: '12px',
-    paddingTop: '8px',
-    borderTop: '1px solid #333333',
+    marginTop: '16px',
     textAlign: 'center',
   };
 
   const linkStyle: React.CSSProperties = {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '12px',
     fontWeight: 600,
-    color: isLinkHovered ? 'var(--color-rating-community-hover, #66D9FF)' : 'var(--color-rating-community, #33CCFF)',
+    color: isLinkHovered ? '#66B3FF' : '#4A9EFF',
     textDecoration: isLinkHovered ? 'underline' : 'none',
+    cursor: 'pointer',
     transition: 'color 0.2s ease',
   };
 

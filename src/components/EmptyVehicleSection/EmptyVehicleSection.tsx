@@ -29,7 +29,7 @@ export const EmptyVehicleSection: React.FC<EmptyVehicleSectionProps> = ({
     minHeight: '168px',
     backgroundColor: 'var(--color-white, #FFFFFF)',
     border: `1px solid ${isHovered ? 'var(--color-neutrals-4, #6E7481)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-    borderRadius: '12px',
+    borderRadius: 'var(--border-radius-md-lg, 12px)',
     boxShadow: 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))',
     padding: '48px 24px',
     cursor: 'pointer',

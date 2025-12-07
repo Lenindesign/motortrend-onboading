@@ -64,7 +64,7 @@
 
 .welcome-title {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 28px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -74,7 +74,7 @@
 
 .welcome-subtitle {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 16px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -114,7 +114,7 @@
 
 .profile-summary__title {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.4em;
   color: var(--color-neutrals-1);
@@ -138,7 +138,7 @@
 
 .profile-detail {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 14px;
   line-height: 1.5em;
   color: var(--color-neutrals-1);
@@ -146,7 +146,7 @@
 }
 
 .profile-detail strong {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-1);
 }
 
@@ -177,7 +177,7 @@
 
 .vehicle-section__title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-2);
@@ -199,7 +199,7 @@
   padding: 20px;
   background-color: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   position: relative;
   transition: all var(--transition-fast);
@@ -234,7 +234,7 @@
 
 .selected-car-name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-1);
@@ -245,7 +245,7 @@
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -286,7 +286,7 @@
 
 .radio-text {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-1);
@@ -303,7 +303,7 @@
   height: 24px;
   background-color: var(--color-neutrals-4);
   border: none;
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   color: white;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -334,7 +334,7 @@
   padding: 8px 16px;
   width: 100%;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1em;
   border-radius: var(--border-radius-sm);

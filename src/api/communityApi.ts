@@ -121,7 +121,7 @@ const SEED_COMMUNITIES: Community[] = [
     slug: 'esquire',
     name: 'Esquire',
     description: 'Join the Esquire community for style, culture, and lifestyle discussions.',
-    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a14cf522b300025a1432/icon-0uk5pi9k.svg',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6935f3c7c3890d00021540dd/icon-0uk5pi9k1.svg',
     memberCount: 12000,
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
@@ -171,7 +171,7 @@ const SEED_COMMUNITIES: Community[] = [
     slug: 'delish',
     name: 'Delish',
     description: 'Join the Delish community for recipes, cooking tips, and food discussions.',
-    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a38385dbf90002d04ec9/logo-4efffb6.svg',
+    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6935f474d77d790002cc52b0/581865325-1223988786259059-7001347943341286496-n.jpg',
     memberCount: 16000,
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
@@ -1017,6 +1017,7 @@ const STORAGE_KEYS = {
   COMMENTS: 'community_app_comments',
   VOTES: 'community_app_votes', // Store user votes: { [itemId]: 'up' | 'down' }
   JOINS: 'community_app_joins', // Store joined communities: { [communityId]: boolean }
+  SAVED_POSTS: 'community_app_saved_posts', // Store saved posts: { [postId]: boolean }
 };
 
 // API Methods
@@ -1323,5 +1324,76 @@ export const toggleVote = (type: 'post' | 'comment', id: string, direction: 'up'
   });
 
   localStorage.setItem(storageKey, JSON.stringify(updatedItems));
+};
+
+// --- Saved Posts ---
+
+export const getSavedPosts = (): Record<string, boolean> => {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.SAVED_POSTS) || '{}');
+  } catch {
+    return {};
+  }
+};
+
+export const isPostSaved = (postId: string): boolean => {
+  const savedPosts = getSavedPosts();
+  return !!savedPosts[postId];
+};
+
+export const toggleSavePost = (postId: string): boolean => {
+  const savedPosts = getSavedPosts();
+  const isSaved = !savedPosts[postId];
+  
+  if (isSaved) {
+    savedPosts[postId] = true;
+  } else {
+    delete savedPosts[postId];
+  }
+  
+  localStorage.setItem(STORAGE_KEYS.SAVED_POSTS, JSON.stringify(savedPosts));
+  return isSaved;
+};
+
+// --- Replies ---
+
+export const addReply = (postId: string, parentCommentId: string, content: string): Comment => {
+  const allComments: Comment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.COMMENTS) || '[]');
+  const currentUser = getCurrentUser();
+  
+  const newReply: Comment = {
+    id: `comment_reply_${Date.now()}`,
+    postId,
+    author: currentUser,
+    content,
+    createdAt: new Date().toISOString(),
+    upvotes: 0,
+    downvotes: 0,
+  };
+  
+  // Find the parent comment and add the reply
+  const updatedComments = allComments.map(comment => {
+    if (comment.id === parentCommentId) {
+      return {
+        ...comment,
+        replies: [...(comment.replies || []), newReply]
+      };
+    }
+    return comment;
+  });
+  
+  localStorage.setItem(STORAGE_KEYS.COMMENTS, JSON.stringify(updatedComments));
+  
+  // Update post comment count
+  const posts: Post[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.POSTS) || '[]');
+  const updatedPosts = posts.map(p => {
+    if (p.id === postId) {
+      return { ...p, commentCount: (p.commentCount || 0) + 1 };
+    }
+    return p;
+  });
+  localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(updatedPosts));
+  
+  return newReply;
 };
 

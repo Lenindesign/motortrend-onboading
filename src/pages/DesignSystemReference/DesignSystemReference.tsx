@@ -145,6 +145,31 @@ const DesignSystemReference: React.FC = () => {
     { name: 'Info Light', var: '--color-semantic-info-light', value: '#E3F2FD' },
   ];
 
+  const ratingColors = [
+    { name: 'MotorTrend Rating', var: '--color-rating-motortrend', value: '#FFB74D' },
+    { name: 'Community Rating', var: '--color-rating-community', value: '#33CCFF' },
+  ];
+
+  const medalColors = [
+    { name: 'Gold Start', var: '--color-medal-gold-start', value: '#FFD700' },
+    { name: 'Gold End', var: '--color-medal-gold-end', value: '#FFA500' },
+    { name: 'Silver Start', var: '--color-medal-silver-start', value: '#C0C0C0' },
+    { name: 'Silver End', var: '--color-medal-silver-end', value: '#A8A8A8' },
+    { name: 'Bronze Start', var: '--color-medal-bronze-start', value: '#CD7F32' },
+    { name: 'Bronze End', var: '--color-medal-bronze-end', value: '#B8860B' },
+  ];
+
+  const gradientColors = [
+    { name: 'Purple Start', var: '--color-purple-start', value: '#6366f1' },
+    { name: 'Purple End', var: '--color-purple-end', value: '#8b5cf6' },
+    { name: 'Teal Start', var: '--color-teal-start', value: '#10b981' },
+    { name: 'Teal End', var: '--color-teal-end', value: '#059669' },
+    { name: 'Amber Start', var: '--color-amber-start', value: '#f59e0b' },
+    { name: 'Amber End', var: '--color-amber-end', value: '#d97706' },
+    { name: 'Green Start', var: '--color-green-start', value: '#34a853' },
+    { name: 'Green End', var: '--color-green-end', value: '#2d8f47' },
+  ];
+
   const spacingTokens = [
     { name: 'Spacing 1', var: '--spacing-1', value: '8px' },
     { name: 'Spacing 2', var: '--spacing-2', value: '16px' },
@@ -239,7 +264,7 @@ const DesignSystemReference: React.FC = () => {
           </div>
           <div className="ds-header__stats">
             <div className="ds-header__stat">
-              <span className="ds-header__stat-value">50+</span>
+              <span className="ds-header__stat-value">65+</span>
               <span className="ds-header__stat-label">Color Tokens</span>
             </div>
             <div className="ds-header__stat">
@@ -247,7 +272,7 @@ const DesignSystemReference: React.FC = () => {
               <span className="ds-header__stat-label">Spacing Tokens</span>
             </div>
             <div className="ds-header__stat">
-              <span className="ds-header__stat-value">12</span>
+              <span className="ds-header__stat-value">66</span>
               <span className="ds-header__stat-label">Components</span>
             </div>
           </div>
@@ -314,6 +339,57 @@ const DesignSystemReference: React.FC = () => {
             </h3>
             <div className="ds-color-grid ds-color-grid--compact">
               {semanticColors.map((color) => (
+                <ColorSwatch 
+                  key={color.var}
+                  name={color.name}
+                  variable={color.var}
+                  value={color.value}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">
+              <span className="ds-subsection__badge">Rating</span>
+              Rating Colors
+            </h3>
+            <div className="ds-color-grid ds-color-grid--compact">
+              {ratingColors.map((color) => (
+                <ColorSwatch 
+                  key={color.var}
+                  name={color.name}
+                  variable={color.var}
+                  value={color.value}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">
+              <span className="ds-subsection__badge">Medal</span>
+              Award Gradients
+            </h3>
+            <div className="ds-color-grid ds-color-grid--compact">
+              {medalColors.map((color) => (
+                <ColorSwatch 
+                  key={color.var}
+                  name={color.name}
+                  variable={color.var}
+                  value={color.value}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="ds-subsection">
+            <h3 className="ds-subsection__title">
+              <span className="ds-subsection__badge">Gradient</span>
+              UI Gradients
+            </h3>
+            <div className="ds-color-grid ds-color-grid--compact">
+              {gradientColors.map((color) => (
                 <ColorSwatch 
                   key={color.var}
                   name={color.name}
@@ -448,7 +524,7 @@ const DesignSystemReference: React.FC = () => {
                         width: token.value, 
                         height: token.value,
                         backgroundColor: 'var(--color-primary-1)',
-                        borderRadius: '4px'
+                        borderRadius: 'var(--border-radius-sm, 4px)'
                       }}
                     />
                   }

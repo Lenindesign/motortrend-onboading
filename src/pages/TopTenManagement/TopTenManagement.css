@@ -58,7 +58,7 @@
   color: var(--color-neutrals-4);
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,7 +81,7 @@
   color: var(--color-white);
   margin-bottom: 0;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   flex-shrink: 0;
 }
 
@@ -103,7 +103,7 @@
 .top-ten-management__sidebar-title {
   display: block;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 22px;
   color: var(--color-neutrals-1);
   margin-bottom: 6px;
@@ -130,7 +130,7 @@
   display: block;
   font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--color-neutrals-4);
@@ -152,7 +152,7 @@
   color: var(--color-neutrals-4);
   font-family: var(--font-body);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-align: left;
   margin-bottom: 4px;
   white-space: nowrap;
@@ -189,11 +189,11 @@
   margin-left: auto;
   font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   background: var(--color-neutrals-7);
   color: var(--color-neutrals-4);
   padding: 2px 8px;
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
 }
 
 .top-ten-management__sidebar-nav-item--active .top-ten-management__sidebar-nav-badge {
@@ -273,7 +273,7 @@
   display: inline-block;
   font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--color-primary-1);
@@ -282,7 +282,7 @@
 
 .top-ten-management__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 42px;
   color: var(--color-neutrals-1);
   margin: 0 0 12px;
@@ -310,7 +310,7 @@
   padding: 20px 24px;
   background: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   min-width: 100px;
 }
 
@@ -322,7 +322,7 @@
 .top-ten-management__stat-value {
   display: block;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   color: var(--color-neutrals-1);
   line-height: 1;
@@ -373,18 +373,18 @@
 
 .top-ten-management__control-label {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 13px;
   color: var(--color-neutrals-4);
 }
 
 .top-ten-management__control-select {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   font-size: 14px;
   padding: 10px 16px;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   background-color: var(--color-neutrals-8);
   color: var(--color-neutrals-1);
   cursor: pointer;
@@ -410,7 +410,7 @@
 .top-ten-management__section {
   background: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   padding: 32px;
   margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
@@ -434,7 +434,7 @@
   height: 48px;
   min-width: 48px;
   background: linear-gradient(135deg, var(--color-primary-1) 0%, var(--color-primary-3, #ff858a) 100%);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -447,18 +447,18 @@
   color: var(--color-neutrals-1);
   margin: 0;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
 }
 
 .top-ten-management__vehicle-count {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   font-size: 14px;
   color: var(--color-neutrals-4);
   background: var(--color-neutrals-7);
   padding: 4px 12px;
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
   margin-left: 12px;
 }
 
@@ -472,7 +472,7 @@
 .top-ten-management__category {
   background: var(--color-neutrals-8);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 24px;
 }
 
@@ -485,7 +485,7 @@
 
 .top-ten-management__category-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-neutrals-1);
   margin: 0;
@@ -497,7 +497,7 @@
 .top-ten-management__category-badge {
   font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-neutrals-4);
   background: var(--color-neutrals-6);
   padding: 4px 10px;
@@ -508,7 +508,7 @@
 .top-ten-management__table-container {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   border: 1px solid var(--color-neutrals-6);
 }
 
@@ -525,7 +525,7 @@
 
 .top-ten-management__table th {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -571,7 +571,7 @@
   color: var(--color-white);
   border-radius: 10px;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
 }
 
@@ -591,7 +591,7 @@
 }
 
 .top-ten-management__vehicle-name {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   min-width: 220px;
 }
 
@@ -615,7 +615,7 @@
   width: 72px;
   height: 48px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   border: 1px solid var(--color-neutrals-6);
   flex-shrink: 0;
   background: var(--color-neutrals-7);
@@ -628,7 +628,7 @@
 }
 
 .top-ten-management__vehicle-title {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-1);
 }
 
@@ -640,7 +640,7 @@
 .top-ten-management__rating {
   text-align: center;
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
 }
 
@@ -660,7 +660,7 @@
   text-align: right;
   font-family: var(--font-body);
   color: var(--color-neutrals-4);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   font-size: 13px;
 }
 
@@ -692,7 +692,7 @@
 .top-ten-management__filters {
   background: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 24px;
   margin-bottom: 24px;
 }
@@ -716,7 +716,7 @@
 
 .top-ten-management__filter-label {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 11px;
   color: var(--color-neutrals-4);
   text-transform: uppercase;
@@ -726,11 +726,11 @@
 .top-ten-management__filter-select,
 .top-ten-management__filter-input {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   font-size: 14px;
   padding: 10px 14px;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   background-color: var(--color-neutrals-8);
   color: var(--color-neutrals-1);
   width: 100%;
@@ -765,7 +765,7 @@
 
 .top-ten-management__filter-separator {
   color: var(--color-neutrals-4);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .top-ten-management__filter-actions {
@@ -778,11 +778,11 @@
 
 .top-ten-management__filter-clear {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   padding: 10px 20px;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   background: transparent;
   color: var(--color-neutrals-1);
   cursor: pointer;
@@ -804,13 +804,13 @@
 .top-ten-management__bento-category {
   background: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   padding: 28px;
 }
 
 .top-ten-management__bento-category-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-neutrals-1);
   margin: 0 0 24px 0;
@@ -823,7 +823,7 @@
   width: 32px;
   height: 32px;
   background: var(--color-neutrals-7);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -840,7 +840,7 @@
 
 .top-ten-management__bento-card {
   position: relative;
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
   background: var(--color-neutrals-7);
   text-decoration: none;
@@ -866,7 +866,7 @@
 .top-ten-management__bento-card.bento-card--primary,
 .top-ten-management__bento-card.bento-card--mosaic-hero,
 .top-ten-management__bento-card.bento-card--minimal-hero {
-  border-radius: 20px;
+  border-radius: var(--border-radius-xl);
 }
 
 .top-ten-management__bento-card.bento-card--hero .top-ten-management__bento-rank-badge,
@@ -885,7 +885,7 @@
 .top-ten-management__bento-card.bento-card--hero .top-ten-management__bento-name,
 .top-ten-management__bento-card.bento-card--feature .top-ten-management__bento-name {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
 }
 
 /* Accent cards - Secondary emphasis */
@@ -995,7 +995,7 @@
 
 .top-ten-management__bento-rank {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   color: var(--color-white);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -1012,7 +1012,7 @@
   padding: 8px 12px;
   border-radius: 10px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
@@ -1024,7 +1024,7 @@
 
 .top-ten-management__bento-rating {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 15px;
   color: var(--color-white);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
@@ -1085,7 +1085,7 @@
 
 .top-ten-management__bento-placeholder .top-ten-management__bento-name {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   color: var(--color-neutrals-1);
   text-align: center;
@@ -1115,7 +1115,7 @@
 
 .top-ten-management__bento-name {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   color: var(--color-neutrals-1);
   line-height: 1.35;
@@ -1146,18 +1146,18 @@
 
 .top-ten-management__rating-type-label {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 13px;
   color: var(--color-neutrals-4);
 }
 
 .top-ten-management__rating-type-select {
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   font-size: 14px;
   padding: 10px 16px;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   background-color: var(--color-neutrals-8);
   color: var(--color-neutrals-1);
   cursor: pointer;
@@ -1180,12 +1180,12 @@
   padding: 24px 32px;
   background: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
 }
 
 .top-ten-management__footer-note {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 14px;
   line-height: 1.6;
   color: var(--color-neutrals-4);
@@ -1194,7 +1194,7 @@
 
 .top-ten-management__footer-note strong {
   color: var(--color-neutrals-1);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 /* ============ Tabs (Hidden in new design - using sidebar) ============ */
@@ -1251,12 +1251,12 @@
 
   .top-ten-management__tab {
     font-family: var(--font-body);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     font-size: 14px;
     color: var(--color-neutrals-4);
     background: transparent;
     border: 1px solid var(--color-neutrals-6);
-    border-radius: 8px;
+    border-radius: var(--border-radius-md);
     padding: 10px 16px;
     cursor: pointer;
     white-space: nowrap;
@@ -1340,7 +1340,7 @@
 
   .top-ten-management__section {
     padding: 20px;
-    border-radius: 12px;
+    border-radius: var(--border-radius-md-lg);
   }
 
   .top-ten-management__section-header h2 {

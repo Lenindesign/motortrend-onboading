@@ -146,7 +146,7 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
 
   const newsletterTitleStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-    fontWeight: 700,
+    fontWeight: 600,
     fontSize: '18px',
     lineHeight: '1.333em',
     color: 'var(--color-neutrals-8, #FCFCFD)',

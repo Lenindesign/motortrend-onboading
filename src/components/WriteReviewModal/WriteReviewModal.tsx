@@ -482,7 +482,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     cursor: 'pointer',
     marginLeft: '4px',
     padding: '4px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     transition: 'background-color var(--transition-fast, all 150ms ease-in-out)',
     backgroundColor: isInfoIconHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'transparent',
   };
@@ -504,7 +504,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     background: 'var(--color-neutrals-2, #23262F)',
     color: 'var(--color-white, #FFFFFF)',
     padding: '12px 16px',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 400,
     fontSize: '12px',
@@ -542,7 +542,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     width: isMobile ? '100%' : '153.5px',
     height: isMobile ? '200px' : '104.34px',
     backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
@@ -593,7 +593,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
   const ratingSectionStyle: React.CSSProperties = {
     backgroundColor: 'var(--color-neutrals-3, #353945)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
@@ -751,7 +751,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     transition: 'all var(--transition-fast, all 150ms ease-in-out)',
   };
 
@@ -760,7 +760,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     padding: '6px 16px',
     backgroundColor: 'var(--color-neutrals-8, #FCFCFD)',
     border: `1px solid ${focusedInput === inputName ? 'var(--color-primary-500, #E90C17)' : 'var(--color-neutrals-5, #B1B5C3)'}`,
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 400,
     fontSize: '16px',
@@ -805,7 +805,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
   const categoryCardStyle: React.CSSProperties = {
     backgroundColor: 'var(--color-neutrals-3, #353945)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     padding: '16px',
     display: 'flex',
     flexDirection: 'column',
@@ -931,7 +931,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     minHeight: '120px',
     backgroundColor: isMediaPlaceholderHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-neutrals-8, #FCFCFD)',
     border: `1px solid ${isMediaPlaceholderHovered ? 'var(--color-primary-500, #E90C17)' : 'var(--color-neutrals-5, #B1B5C3)'}`,
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -950,7 +950,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     position: 'relative',
     width: '100%',
     aspectRatio: '16 / 9',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     overflow: 'hidden',
     backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
   };
@@ -970,7 +970,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     height: '28px',
     backgroundColor: hoveredMediaRemove === index ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.6)',
     border: 'none',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     color: 'var(--color-neutrals-8, #FCFCFD)',
     cursor: 'pointer',
     display: 'flex',
@@ -998,7 +998,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     padding: '12px',
     backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
     border: '1px solid var(--color-neutrals-5, #B1B5C3)',
-    borderRadius: '8px',
+    borderRadius: 'var(--border-radius-md, 8px)',
     marginTop: '8px',
   };
 
@@ -1035,7 +1035,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     height: '100%',
     maxHeight: '90vh',
     backgroundColor: 'var(--color-white, #FFFFFF)',
-    borderRadius: '12px',
+    borderRadius: 'var(--border-radius-md-lg, 12px)',
     display: 'flex',
     flexDirection: 'column',
     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
@@ -1067,7 +1067,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '6px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     transition: 'all var(--transition-fast, all 150ms ease-in-out)',
   };
 

@@ -129,7 +129,7 @@
 
 .profile-section__title {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.167em;
   color: var(--color-neutrals-7);
@@ -163,7 +163,7 @@
   border: none;
   border-radius: var(--border-radius-sm);
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1em;
   cursor: pointer;
@@ -179,7 +179,7 @@
 
 .profile-section__heading {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.4em;
   color: var(--color-neutrals-1);
@@ -214,7 +214,7 @@
 
 .profile-subsection__title {
   font-family: var(--font-geist);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.29em;
   color: var(--color-neutrals-2);
@@ -278,7 +278,7 @@
   right: 8px;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   border: none;
@@ -318,7 +318,7 @@
 .profile-listing-card__title {
   font-family: var(--font-body);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-1);
   margin: 0;
   line-height: 1.3;
@@ -331,13 +331,13 @@
   color: var(--color-neutrals-3);
   background: var(--color-neutrals-7);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   white-space: nowrap;
 }
 
 .profile-listing-card__price {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-neutrals-1);
 }
@@ -440,7 +440,7 @@
 
 .profile-connected-accounts-title {
   font-family: var(--font-gilroy);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.17em;
   color: var(--neutrals-1);
@@ -480,7 +480,7 @@
 
 .profile-form-title {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.4em;
   color: var(--color-neutrals-1);
@@ -523,7 +523,7 @@
 
 .profile-form-step {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 12px;
   line-height: 1.3em;
   text-align: center;
@@ -542,7 +542,7 @@
 
 .profile-form-heading {
   font-family: 'Poppins', var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.125em;
   text-align: center;
@@ -555,7 +555,7 @@
 
 .profile-form-subtitle {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.3em;
   text-align: center;
@@ -590,7 +590,7 @@
   width: 124px;
   height: 40px;
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1em;
   border-radius: 6px;
@@ -635,7 +635,7 @@
 
 .profile-form-skip {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 12px;
   line-height: 1.3em;
   text-align: center;
@@ -768,7 +768,7 @@
 
 .privacy-setting-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-2);
@@ -777,7 +777,7 @@
 
 .privacy-setting-description {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -839,7 +839,7 @@
   left: 3px;
   bottom: 3px;
   background-color: var(--color-white);
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   transition: var(--transition-fast);
 }
 
@@ -872,7 +872,7 @@
 
 .personal-setting-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-neutrals-2);
@@ -881,7 +881,7 @@
 
 .personal-setting-description {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-4);
@@ -940,7 +940,7 @@
 
 .delete-account-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.5em;
   color: var(--color-semantic-error);
@@ -949,7 +949,7 @@
 
 .delete-account-description {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.5em;
   color: var(--color-semantic-error-dark);
@@ -1007,7 +1007,7 @@
 
 .delete-account-label {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.4em;
   color: var(--color-neutrals-2);
@@ -1023,7 +1023,7 @@
   padding: 12px 24px;
   border-radius: var(--border-radius-md);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -1099,7 +1099,7 @@
 
 .profile-vehicle-search__header h4 {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.333em;
   color: var(--color-neutrals-2);

@@ -945,7 +945,7 @@ export const TopTenManagement: React.FC = () => {
                         <div className="top-ten-management__section-icon">
                           {vehicleType === 'SUV' ? '🚙' : vehicleType === 'Sedan' ? '🚗' : vehicleType === 'Truck' ? '🛻' : vehicleType === 'Coupe' ? '🏎️' : '⚡'}
                         </div>
-                        <h2 style={{ color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '24px' }}>
+                        <h2 style={{ color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '24px' }}>
                           Top Ten {vehicleType === 'Performance' ? 'Performance' : `${vehicleType}s`}
                         </h2>
                       </div>
@@ -1110,7 +1110,7 @@ export const TopTenManagement: React.FC = () => {
                         <div className="top-ten-management__section-icon">
                           {vehicleType === 'SUV' ? '🚙' : vehicleType === 'Sedan' ? '🚗' : vehicleType === 'Truck' ? '🛻' : vehicleType === 'Coupe' ? '🏎️' : '⚡'}
                         </div>
-                        <h2 style={{ color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '24px' }}>
+                        <h2 style={{ color: '#FFFFFF', margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '24px' }}>
                           Top Ten {vehicleType === 'Performance' ? 'Performance' : `${vehicleType}s`}
                         </h2>
                       </div>

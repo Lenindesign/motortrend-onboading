@@ -951,7 +951,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     color: 'var(--color-neutrals-3, #353945)',
     backgroundColor: 'var(--color-white, #FFFFFF)',
     border: '1px solid var(--color-primary-1, #E90C17)',
-    borderRadius: '9999px',
+    borderRadius: 'var(--border-radius-pill, 999px)',
     outline: 'none',
     transition: 'all var(--transition-fast, 150ms ease-in-out)',
     boxSizing: 'border-box',
@@ -996,7 +996,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     backgroundColor: isNewsletterHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)',
     border: 'none',
     padding: '8px 16px',
-    borderRadius: '4px',
+    borderRadius: 'var(--border-radius-sm, 4px)',
     cursor: 'pointer',
     transition: 'all var(--transition-fast, 150ms ease-in-out)',
     whiteSpace: 'nowrap',
@@ -1068,7 +1068,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     maxWidth: '320px',
     backgroundColor: 'var(--color-neutrals-1, #141416)',
     border: 'none',
-    borderRadius: '12px',
+    borderRadius: 'var(--border-radius-md-lg, 12px)',
     boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.15)',
     zIndex: 1000,
     overflow: 'hidden',
@@ -1661,7 +1661,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', textDecoration: 'none', color: 'inherit' }}
                               onClick={() => setActiveDropdown(null)}
                             >
-                              <div style={{ flexShrink: 0, width: '200px', height: '120px', borderRadius: '8px', overflow: 'hidden' }}>
+                              <div style={{ flexShrink: 0, width: '200px', height: '120px', borderRadius: 'var(--border-radius-md, 8px)', overflow: 'hidden' }}>
                                 <img
                                   src={(item as any).megaDropdown.featuredContent.image}
                                   alt={(item as any).megaDropdown.featuredContent.title}
@@ -1768,7 +1768,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                       backgroundColor: hoveredGridItem === bodyStyle.label ? 'var(--color-neutrals-3, #353945)' : 'var(--color-neutrals-2, #23262F)',
-                                      borderRadius: '4px',
+                                      borderRadius: 'var(--border-radius-sm, 4px)',
                                       padding: '10px',
                                       fontFamily: "'Geist', var(--font-body, sans-serif)",
                                       fontWeight: 500,
@@ -1797,14 +1797,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               <div style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontWeight: 600, fontSize: '16px', lineHeight: '20px', color: 'var(--color-white, #FFFFFF)', marginBottom: '12px' }}>
                                 {(item as any).megaDropdown.rightColumn.title}
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--color-neutrals-2, #23262F)', padding: '16px', borderRadius: '8px' }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--color-neutrals-2, #23262F)', padding: '16px', borderRadius: 'var(--border-radius-md, 8px)' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                   <label style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)' }}>Make</label>
                                   <select 
                                     style={{
                                       backgroundColor: 'var(--color-neutrals-1, #141416)',
                                       border: '1px solid var(--color-neutrals-3, #353945)',
-                                      borderRadius: '4px',
+                                      borderRadius: 'var(--border-radius-sm, 4px)',
                                       padding: '10px 12px',
                                       color: 'var(--color-white, #FFFFFF)',
                                       fontFamily: "'Geist', var(--font-body, sans-serif)",
@@ -1832,7 +1832,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     style={{
                                       backgroundColor: 'var(--color-neutrals-1, #141416)',
                                       border: '1px solid var(--color-neutrals-3, #353945)',
-                                      borderRadius: '4px',
+                                      borderRadius: 'var(--border-radius-sm, 4px)',
                                       padding: '10px 12px',
                                       color: 'var(--color-white, #FFFFFF)',
                                       fontFamily: "'Geist', var(--font-body, sans-serif)",
@@ -1862,7 +1862,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     style={{
                                       backgroundColor: 'var(--color-neutrals-1, #141416)',
                                       border: '1px solid var(--color-neutrals-3, #353945)',
-                                      borderRadius: '4px',
+                                      borderRadius: 'var(--border-radius-sm, 4px)',
                                       padding: '10px 12px',
                                       color: 'var(--color-white, #FFFFFF)',
                                       fontFamily: "'Geist', var(--font-body, sans-serif)",
@@ -1891,7 +1891,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     backgroundColor: (!researchYear || !researchMake || !researchModel) ? 'var(--color-neutrals-4, #6E7481)' : (isSubmitHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)'),
                                     color: 'var(--color-white, #FFFFFF)',
                                     border: 'none',
-                                    borderRadius: '4px',
+                                    borderRadius: 'var(--border-radius-sm, 4px)',
                                     padding: '12px',
                                     fontFamily: "'Geist', var(--font-body, sans-serif)",
                                     fontWeight: 600,
@@ -1949,7 +1949,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                       justifyContent: 'center',
                                       gap: '8px',
                                       backgroundColor: hoveredRankingItem === ranking.label ? 'var(--color-neutrals-3, #353945)' : 'var(--color-neutrals-2, #23262F)',
-                                      borderRadius: '4px',
+                                      borderRadius: 'var(--border-radius-sm, 4px)',
                                       padding: '16px',
                                       textDecoration: 'none',
                                       transition: 'background-color 0.2s',
@@ -2011,7 +2011,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                       justifyContent: 'center',
                                       gap: 0,
                                       backgroundColor: hoveredAwardItem === award.title ? 'var(--color-neutrals-3, #353945)' : 'var(--color-neutrals-2, #23262F)',
-                                      borderRadius: '4px',
+                                      borderRadius: 'var(--border-radius-sm, 4px)',
                                       padding: '24px',
                                       textDecoration: 'none',
                                       transition: 'background-color 0.2s',
@@ -2080,7 +2080,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               width: '100%',
                               height: '266px',
                               backgroundColor: 'var(--color-neutrals-2, #23262F)',
-                              borderRadius: '8px',
+                              borderRadius: 'var(--border-radius-md, 8px)',
                               padding: '24px',
                               boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                               boxSizing: 'border-box'
@@ -2109,7 +2109,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                         color: 'var(--color-white, #FFFFFF)',
                                         backgroundColor: 'var(--color-neutrals-1, #141416)',
                                         border: '1px solid var(--color-neutrals-3, #353945)',
-                                        borderRadius: '6px',
+                                        borderRadius: 'var(--border-radius-sm, 4px)',
                                         outline: 'none',
                                         cursor: 'pointer',
                                         appearance: 'none',
@@ -2140,7 +2140,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                         color: 'var(--color-white, #FFFFFF)',
                                         backgroundColor: 'var(--color-neutrals-1, #141416)',
                                         border: '1px solid var(--color-neutrals-3, #353945)',
-                                        borderRadius: '6px',
+                                        borderRadius: 'var(--border-radius-sm, 4px)',
                                         outline: 'none',
                                         cursor: buySellMake ? 'pointer' : 'not-allowed',
                                         opacity: buySellMake ? 1 : 0.5,
@@ -2176,7 +2176,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                         color: 'var(--color-white, #FFFFFF)',
                                         backgroundColor: 'var(--color-neutrals-1, #141416)',
                                         border: '1px solid var(--color-neutrals-3, #353945)',
-                                        borderRadius: '6px',
+                                        borderRadius: 'var(--border-radius-sm, 4px)',
                                         outline: 'none',
                                         transition: 'border-color 0.2s'
                                       }}
@@ -2191,7 +2191,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                         backgroundColor: isSubmitHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)',
                                         color: 'var(--color-white, #FFFFFF)',
                                         border: 'none',
-                                        borderRadius: '6px',
+                                        borderRadius: 'var(--border-radius-sm, 4px)',
                                         height: '40px',
                                         width: '100%',
                                         fontFamily: "'Geist', var(--font-body, sans-serif)",

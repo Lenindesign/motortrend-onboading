@@ -61,7 +61,7 @@
   color: var(--color-neutrals-5);
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -96,7 +96,7 @@
 .audit-sidebar__title {
   display: block;
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-white);
 }
@@ -108,7 +108,7 @@
   color: var(--color-neutrals-4);
   background: var(--color-neutrals-3);
   padding: 2px 8px;
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
   width: fit-content;
 }
 
@@ -168,13 +168,13 @@
   padding: 12px 16px;
   background: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   cursor: pointer;
   transition: all 0.15s ease;
   color: var(--color-neutrals-5);
   font-family: var(--font-body);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-align: left;
   white-space: nowrap;
 }
@@ -255,7 +255,7 @@
   display: block;
   font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--color-primary-1);
@@ -264,7 +264,7 @@
 
 .audit-header__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 42px;
   color: var(--color-white);
   margin: 0 0 12px;
@@ -290,7 +290,7 @@
   padding: 16px 20px;
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   min-width: 90px;
 }
 
@@ -307,7 +307,7 @@
 .audit-header__stat-value {
   display: block;
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 28px;
   color: var(--color-white);
 }
@@ -348,7 +348,7 @@
   width: 48px;
   height: 48px;
   background: var(--color-primary-1);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -381,7 +381,7 @@ h2.audit-section__title,
 .audit-section__header div h2.audit-section__title,
 .audit-section__header div .audit-section__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 28px;
   color: var(--color-white) !important;
   margin: 0 0 8px;
@@ -406,7 +406,7 @@ h2.audit-section__title,
 .audit-level-card {
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   padding: 24px;
   position: relative;
   overflow: hidden;
@@ -456,18 +456,18 @@ h2.audit-section__title,
 .audit-level-card__badge {
   font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   background: var(--color-neutrals-3);
   padding: 4px 10px;
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
   color: var(--color-neutrals-5);
 }
 
 .audit-level-card__title {
   font-family: var(--font-heading);
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   font-size: 22px;
   color: var(--color-white);
   margin: 0 0 12px;
@@ -484,7 +484,7 @@ h2.audit-section__title,
 .audit-level-card__count {
   font-family: var(--font-heading);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-4);
 }
 
@@ -492,7 +492,7 @@ h2.audit-section__title,
 .audit-progress {
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   padding: 24px;
 }
 
@@ -506,21 +506,21 @@ h2.audit-section__title,
 .audit-progress__label {
   font-family: var(--font-heading);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-white);
 }
 
 .audit-progress__value {
   font-family: var(--font-heading);
   font-size: 24px;
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-semantic-success);
 }
 
 .audit-progress__bar {
   height: 12px;
   background: var(--color-neutrals-3);
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
   overflow: hidden;
   margin-bottom: 12px;
 }
@@ -528,7 +528,7 @@ h2.audit-section__title,
 .audit-progress__fill {
   height: 100%;
   background: linear-gradient(90deg, var(--color-semantic-success) 0%, var(--color-green-end) 100%);
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
   transition: width 0.6s ease;
 }
 
@@ -548,7 +548,7 @@ h2.audit-section__title,
 .audit-component-card {
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 20px;
   transition: all 0.15s ease;
 }
@@ -567,7 +567,7 @@ h2.audit-section__title,
 
 .audit-component-card__name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   color: var(--color-white);
 }
@@ -589,11 +589,11 @@ h2.audit-section__title,
 .audit-component-card__token {
   font-family: var(--font-body);
   font-size: 11px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-neutrals-4);
   background: var(--color-neutrals-3);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 /* ============ Timeline ============ */
@@ -629,7 +629,7 @@ h2.audit-section__title,
   width: 32px;
   height: 32px;
   background: var(--color-semantic-success);
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -642,7 +642,7 @@ h2.audit-section__title,
   flex: 1;
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 20px;
 }
 
@@ -656,16 +656,16 @@ h2.audit-section__title,
 .audit-timeline-item__date {
   font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-primary-1);
   background: rgba(233, 12, 23, 0.15);
   padding: 4px 10px;
-  border-radius: 100px;
+  border-radius: var(--border-radius-full);
 }
 
 .audit-timeline-item__title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   color: var(--color-white);
 }
@@ -708,7 +708,7 @@ h2.audit-section__title,
   gap: 20px;
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 24px;
   opacity: 0.6;
   transition: all 0.15s ease;
@@ -730,13 +730,13 @@ h2.audit-section__title,
 .audit-roadmap-item__phase {
   font-family: var(--font-heading);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-primary-1);
   background: rgba(233, 12, 23, 0.15);
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   height: fit-content;
   white-space: nowrap;
 }
@@ -747,7 +747,7 @@ h2.audit-section__title,
 
 .audit-roadmap-item__content h3 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-white);
   margin: 0 0 8px;
@@ -767,7 +767,7 @@ h2.audit-section__title,
   gap: 6px;
   font-family: var(--font-body);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .audit-roadmap-item--current .audit-roadmap-item__status {
@@ -786,7 +786,7 @@ h2.audit-section__title,
 .audit-preview {
   background: var(--color-neutrals-2);
   border: 1px solid var(--color-neutrals-3);
-  border-radius: 16px;
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -802,7 +802,7 @@ h2.audit-section__title,
 
 .audit-preview__title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-white);
   margin: 0;
@@ -814,7 +814,7 @@ h2.audit-section__title,
   color: var(--color-neutrals-5);
   background: var(--color-neutrals-3);
   padding: 4px 10px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .audit-preview__canvas {

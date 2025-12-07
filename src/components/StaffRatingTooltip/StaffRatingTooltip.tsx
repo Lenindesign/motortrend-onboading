@@ -44,15 +44,14 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
+    padding: '16px',
   };
 
   const headerStyle: React.CSSProperties = {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '12px',
-    paddingBottom: '8px',
-    borderBottom: '1px solid #444444',
+    alignItems: 'baseline',
+    marginBottom: '16px',
   };
 
   const titleStyle: React.CSSProperties = {
@@ -64,23 +63,23 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
 
   const totalStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-    fontSize: '14px',
+    fontSize: '16px',
     fontWeight: 600,
-    color: 'var(--color-white, #FFFFFF)',
+    color: 'var(--color-rating-motortrend, #FFB74D)',
   };
 
   const contentStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
+    gap: '10px',
     width: '100%',
   };
 
   const barRowStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    minHeight: '24px',
+    gap: '12px',
+    minHeight: '22px',
     width: '100%',
   };
 
@@ -89,25 +88,25 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     fontWeight: 400,
     fontSize: '13px',
     color: 'var(--color-neutrals-5, #B1B5C3)',
-    minWidth: '100px',
+    minWidth: '110px',
     textAlign: 'left',
   };
 
   const barContainerStyle: React.CSSProperties = {
     flex: 1,
-    height: '8px',
-    backgroundColor: 'var(--color-neutrals-2-5, #282a30)',
-    borderRadius: '4px',
+    height: '6px',
+    backgroundColor: '#333333',
+    borderRadius: '3px',
     overflow: 'hidden',
     position: 'relative',
-    minWidth: '60px',
+    minWidth: '100px',
   };
 
   const getBarFillStyle = (percentage: number): React.CSSProperties => ({
     height: '100%',
     width: `${percentage}%`,
-    backgroundColor: 'var(--color-rating-motortrend, #FFB74D)',
-    borderRadius: '4px',
+    backgroundColor: '#FFB74D',
+    borderRadius: '3px',
     transition: 'width 150ms ease-in-out',
   });
 
@@ -121,9 +120,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
   };
 
   const footerStyle: React.CSSProperties = {
-    marginTop: '12px',
-    paddingTop: '8px',
-    borderTop: '1px solid #333333',
+    marginTop: '16px',
     textAlign: 'center',
   };
 
@@ -131,8 +128,9 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '12px',
     fontWeight: 600,
-    color: 'var(--color-rating-motortrend, #FFB74D)',
+    color: isLinkHovered ? '#66B3FF' : '#4A9EFF',
     textDecoration: isLinkHovered ? 'underline' : 'none',
+    cursor: 'pointer',
     transition: 'color 0.2s ease',
   };
 

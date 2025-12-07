@@ -239,7 +239,7 @@ export const Card: React.FC<CardProps> = ({
   const getOwnershipRadioStyle = (isActive: boolean): React.CSSProperties => ({
     width: '24px',
     height: '24px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     border: `2px solid ${isActive ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-5, #B1B5C3)'}`,
     display: 'flex',
     alignItems: 'center',
@@ -252,7 +252,7 @@ export const Card: React.FC<CardProps> = ({
   const ownershipRadioDotStyle: React.CSSProperties = {
     width: '12px',
     height: '12px',
-    borderRadius: '50%',
+    borderRadius: 'var(--border-radius-circle, 50%)',
     backgroundColor: 'var(--color-neutrals-1, #141416)',
   };
 

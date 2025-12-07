@@ -51,7 +51,7 @@ export const VoteControl: React.FC<VoteControlProps> = ({
       cursor: 'pointer',
       color: (isActive || isHovered) ? activeColor : 'var(--color-neutrals-4, #6E7481)',
       padding: '4px',
-      borderRadius: '4px',
+      borderRadius: 'var(--border-radius-sm, 4px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -60,7 +60,7 @@ export const VoteControl: React.FC<VoteControlProps> = ({
   };
 
   const scoreStyle: React.CSSProperties = {
-    fontWeight: 700,
+    fontWeight: 600,
     color: userVote === 'up' ? '#34A853' : userVote === 'down' ? 'var(--color-primary-1, #E90C17)' : 'var(--color-black, #000000)',
     minWidth: '2ch',
     textAlign: 'center',

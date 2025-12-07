@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLocalListings } from '../../utils/localListings';
 import { parseVehicleName } from '../../utils/vehicleImages';
+import { isLeadSaved, saveLead, unsaveLead, getSavedLeadIds } from '../../utils/savedLeads';
 import type { OnboardingData } from '../../types/user';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
 import Icon from '../Icon';
@@ -37,28 +38,40 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const [savedListings, setSavedListings] = useState<Set<string>>(new Set());
   const [isMobile, setIsMobile] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const scrollPositionRef = useRef<number>(0);
 
-  // Load saved listings from localStorage
+  // Load saved listings from shared utility
   useEffect(() => {
-    const saved = localStorage.getItem('savedListings');
-    if (saved) {
-      setSavedListings(new Set(JSON.parse(saved)));
-    }
+    const loadSaved = () => {
+      const savedIds = getSavedLeadIds();
+      setSavedListings(new Set(savedIds));
+    };
+    loadSaved();
+    
+    // Listen for changes from other components
+    window.addEventListener('savedLeadsUpdated', loadSaved);
+    return () => window.removeEventListener('savedLeadsUpdated', loadSaved);
   }, []);
 
-  // Save listing toggle handler
-  const handleSaveListing = (e: React.MouseEvent, listingId: string) => {
+  // Save listing toggle handler - uses shared utility so it appears in Profile
+  const handleSaveListing = (e: React.MouseEvent, listing: LocalListing, vehicleName: string) => {
     e.stopPropagation(); // Prevent card click
-    setSavedListings(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(listingId)) {
-        newSet.delete(listingId);
-      } else {
-        newSet.add(listingId);
-      }
-      localStorage.setItem('savedListings', JSON.stringify([...newSet]));
-      return newSet;
-    });
+    const isSaved = isLeadSaved(listing.id);
+    if (isSaved) {
+      unsaveLead(listing.id);
+      setSavedListings(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(listing.id);
+        return newSet;
+      });
+    } else {
+      saveLead(listing, vehicleName);
+      setSavedListings(prev => {
+        const newSet = new Set(prev);
+        newSet.add(listing.id);
+        return newSet;
+      });
+    }
   };
   
   const itemsPerSlide = 4;
@@ -72,6 +85,9 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
 
   useEffect(() => {
     const loadLeads = async () => {
+      // Save scroll position before loading
+      scrollPositionRef.current = window.scrollY;
+      
       try {
         const onboardingDataStr = localStorage.getItem('onboardingData');
         if (!onboardingDataStr) { setIsLoading(false); return; }
@@ -100,6 +116,12 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
         console.error('Error loading vehicle leads:', error);
       } finally {
         setIsLoading(false);
+        // Restore scroll position after state update to prevent auto-scroll
+        requestAnimationFrame(() => {
+          if (scrollPositionRef.current === 0) {
+            window.scrollTo(0, 0);
+          }
+        });
       }
     };
     loadLeads();
@@ -117,23 +139,23 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const formatPrice = (price: number): string => `$${price.toLocaleString()}`;
   const formatMileage = (mileage: number): string => mileage === 0 ? 'New' : `${mileage.toLocaleString()} mi`;
 
-  // Styles
-  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: isMobile ? '0 16px 16px 16px' : '0 0 16px 0' };
+  // Styles - overflow-anchor: none prevents browser scroll anchoring when content loads
+  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: isMobile ? '0 16px 0 16px' : 0, overflowAnchor: 'none' };
   const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-3, 16px)' : 'var(--spacing-4, 24px)', padding: 0 };
-  const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '24px' : '28px', fontWeight: 700, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 8px 0' };
+  const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '24px' : '28px', fontWeight: 600, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 8px 0' };
   const subtitleStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '14px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0 };
-  const loadingStyle: React.CSSProperties = { padding: '40px var(--spacing-4, 24px)', textAlign: 'center', color: 'var(--color-neutrals-4, #6E7481)', fontFamily: "'Geist', sans-serif", fontSize: '14px' };
+  const loadingStyle: React.CSSProperties = { padding: '40px var(--spacing-4, 24px)', textAlign: 'center', color: 'var(--color-neutrals-4, #6E7481)', fontFamily: "'Geist', sans-serif", fontSize: '14px', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' };
   const containerStyle: React.CSSProperties = { position: 'relative', width: '100%', overflow: 'hidden' };
   const scrollStyle: React.CSSProperties = { display: 'flex', gap: isMobile ? 'var(--spacing-2, 12px)' : 'var(--spacing-3, 16px)', padding: 0, transition: 'transform 0.5s ease-in-out', willChange: 'transform' };
 
   const getItemStyle = (index: number): React.CSSProperties => {
     const isHovered = hoveredItem === index;
-    return { flexShrink: 0, width: isMobile ? '280px' : 'calc((100% - 48px) / 4)', minWidth: '280px', background: 'var(--color-white, #FFFFFF)', border: `1px solid ${isHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', flexDirection: 'column', transform: isHovered ? 'translateY(-2px)' : 'none', boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none' };
+    return { flexShrink: 0, width: isMobile ? '280px' : 'calc((100% - 48px) / 4)', minWidth: '280px', background: 'var(--color-white, #FFFFFF)', border: `1px solid ${isHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, borderRadius: 'var(--border-radius-md-lg, 12px)', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', flexDirection: 'column', transform: isHovered ? 'translateY(-2px)' : 'none', boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none' };
   };
 
   const imageContainerStyle: React.CSSProperties = { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden', background: 'var(--color-neutrals-1, #141416)' };
   const getImageStyle = (index: number): React.CSSProperties => ({ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease', transform: hoveredItem === index ? 'scale(1.05)' : 'none' });
-  const getBadgeStyle = (isNew: boolean): React.CSSProperties => ({ position: 'absolute', top: '12px', right: '12px', background: isNew ? 'var(--color-blue, #186CEA)' : 'var(--color-primary-1, #E90C17)', color: 'var(--color-white, #FFFFFF)', padding: '4px 8px', borderRadius: '4px', fontFamily: "'Geist', sans-serif", fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', zIndex: 2 });
+  const getBadgeStyle = (isNew: boolean): React.CSSProperties => ({ position: 'absolute', top: '12px', right: '12px', background: isNew ? 'var(--color-blue, #186CEA)' : 'var(--color-primary-1, #E90C17)', color: 'var(--color-white, #FFFFFF)', padding: '4px 8px', borderRadius: 'var(--border-radius-sm, 4px)', fontFamily: "'Geist', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', zIndex: 2 });
   const getSaveBtnStyle = (index: number, isSaved: boolean): React.CSSProperties => {
     const isHovered = hoveredSaveBtn === index;
     return {
@@ -162,14 +184,14 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const contentStyle: React.CSSProperties = { padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 };
   const vehicleNameStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: '16px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)', margin: 0, lineHeight: 1.3 };
   const trimStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", color: 'var(--color-neutrals-4, #6E7481)', fontWeight: 400 };
-  const priceStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '20px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)' };
+  const priceStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '20px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };
   const detailsStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px' };
   const detailStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '13px', color: 'var(--color-neutrals-4, #6E7481)' };
   const dealerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)', marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #E5E5E5' };
 
   const getNavStyle = (isPrev: boolean): React.CSSProperties => {
     const isHovered = hoveredNav === (isPrev ? 'prev' : 'next');
-    return { position: 'absolute', top: '50%', transform: isHovered ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)', width: isMobile ? '40px' : '48px', height: isMobile ? '40px' : '48px', borderRadius: '50%', backgroundColor: isHovered ? 'rgba(30, 30, 32, 0.5)' : 'rgba(20, 20, 22, 0.3)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--color-white, #FFFFFF)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, transition: 'all 0.3s ease', boxShadow: isHovered ? '0 12px 40px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.4)', opacity: isContainerHovered ? 1 : 0, pointerEvents: isContainerHovered ? 'auto' : 'none', left: isPrev ? (isMobile ? '8px' : '16px') : 'auto', right: isPrev ? 'auto' : (isMobile ? '8px' : '16px') };
+    return { position: 'absolute', top: '50%', transform: isHovered ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)', width: isMobile ? '40px' : '48px', height: isMobile ? '40px' : '48px', borderRadius: 'var(--border-radius-circle, 50%)', backgroundColor: isHovered ? 'rgba(30, 30, 32, 0.5)' : 'rgba(20, 20, 22, 0.3)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--color-white, #FFFFFF)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, transition: 'all 0.3s ease', boxShadow: isHovered ? '0 12px 40px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.4)', opacity: isContainerHovered ? 1 : 0, pointerEvents: isContainerHovered ? 'auto' : 'none', left: isPrev ? (isMobile ? '8px' : '16px') : 'auto', right: isPrev ? 'auto' : (isMobile ? '8px' : '16px') };
   };
 
   const dotsStyle: React.CSSProperties = { display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px', padding: 0 };
@@ -209,8 +231,8 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
       <div style={containerStyle} ref={carouselRef} onMouseEnter={() => setIsContainerHovered(true)} onMouseLeave={() => setIsContainerHovered(false)}>
         {totalSlides > 1 && (
           <>
-            <button style={getNavStyle(true)} onClick={handlePrev} onMouseEnter={() => setHoveredNav('prev')} onMouseLeave={() => setHoveredNav(null)} aria-label="Previous slide"><Icon name="chevron_left" size={32} /></button>
-            <button style={getNavStyle(false)} onClick={handleNext} onMouseEnter={() => setHoveredNav('next')} onMouseLeave={() => setHoveredNav(null)} aria-label="Next slide"><Icon name="chevron_right" size={32} /></button>
+            <button style={getNavStyle(true)} onClick={handlePrev} onMouseEnter={() => setHoveredNav('prev')} onMouseLeave={() => setHoveredNav(null)} aria-label="Previous slide" tabIndex={-1}><Icon name="chevron_left" size={32} /></button>
+            <button style={getNavStyle(false)} onClick={handleNext} onMouseEnter={() => setHoveredNav('next')} onMouseLeave={() => setHoveredNav(null)} aria-label="Next slide" tabIndex={-1}><Icon name="chevron_right" size={32} /></button>
           </>
         )}
         <div style={scrollStyle}>
@@ -225,10 +247,11 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
                   <img src={listing.imageUrl} alt={`${listing.year} ${make} ${model}`} style={getImageStyle(index)} />
                   <button
                     style={getSaveBtnStyle(index, savedListings.has(listing.id))}
-                    onClick={(e) => handleSaveListing(e, listing.id)}
+                    onClick={(e) => handleSaveListing(e, listing, vehicleName)}
                     onMouseEnter={() => setHoveredSaveBtn(index)}
                     onMouseLeave={() => setHoveredSaveBtn(null)}
                     aria-label={savedListings.has(listing.id) ? 'Remove from saved' : 'Save listing'}
+                    tabIndex={-1}
                   >
                     <Icon 
                       name={savedListings.has(listing.id) ? 'bookmark' : 'bookmark_border'} 
@@ -256,7 +279,7 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
         {totalSlides > 1 && (
           <div style={dotsStyle}>
             {Array.from({ length: totalSlides }).map((_, index) => (
-              <button key={index} style={getDotStyle(index, index === currentSlide)} onClick={() => setCurrentSlide(index)} onMouseEnter={() => setHoveredDot(index)} onMouseLeave={() => setHoveredDot(null)} aria-label={`Go to slide ${index + 1}`} />
+              <button key={index} style={getDotStyle(index, index === currentSlide)} onClick={() => setCurrentSlide(index)} onMouseEnter={() => setHoveredDot(index)} onMouseLeave={() => setHoveredDot(null)} aria-label={`Go to slide ${index + 1}`} tabIndex={-1} />
             ))}
           </div>
         )}

@@ -163,7 +163,7 @@
 }
 
 .article__category {
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -175,7 +175,7 @@
 
 .article__title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 48px;
   line-height: 64px;
   color: var(--color-neutrals-1);
@@ -226,7 +226,7 @@
 
 .article__byline-author .article__author-name {
   color: var(--color-neutrals-2);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
 }
 
@@ -274,7 +274,7 @@
 }
 
 .article__author-name {
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-1);
 }
 
@@ -305,7 +305,7 @@
 
 .article__heading {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -389,11 +389,11 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--color-white);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 64px;
   line-height: 1;
   padding: 12px 24px;
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   letter-spacing: -0.02em;
   display: inline-flex;
   align-items: center;
@@ -446,7 +446,7 @@
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 24px 28px;
   z-index: 10;
   pointer-events: auto;
@@ -502,7 +502,7 @@
 
 .article__rating-overlay-name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.2;
   color: var(--color-white);
@@ -530,7 +530,7 @@
   gap: 8px;
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   line-height: 1.4;
   white-space: nowrap;
   flex-shrink: 0;
@@ -582,7 +582,7 @@
 .article__rating-score-large {
   color: var(--color-white);
   font-size: 26px !important;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-family: var(--font-heading);
   line-height: 1;
   display: flex;
@@ -594,7 +594,7 @@
 .article__rating-score-max {
   color: var(--color-white);
   font-size: 18px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   line-height: 1;
 }
 
@@ -628,7 +628,7 @@
 .article__rating-motortrend-text {
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -687,7 +687,7 @@
 .article__rating-text {
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   line-height: 1.2;
   display: flex;
   align-items: center;
@@ -703,9 +703,9 @@
   color: var(--color-white);
   border: none;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: background-color 0.2s ease;
   white-space: nowrap;
@@ -792,7 +792,7 @@
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
   padding: 24px 28px;
   z-index: 10;
   pointer-events: none;
@@ -807,12 +807,12 @@
 }
 
 .article__image-wrapper--premium .article__image-score-overlay {
-  border-radius: 12px;
+  border-radius: var(--border-radius-md-lg);
 }
 
 .article__image-score-vehicle-name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.2;
   color: var(--color-white);
@@ -841,7 +841,7 @@
   gap: 16px;
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.5;
   min-width: 0;
   flex-shrink: 0;
@@ -883,20 +883,20 @@
 .article__image-score-rating-label-top {
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
 }
 
 .article__image-score-rating-label-bottom {
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
 }
 
 .article__image-score-rating-count {
   font-size: 12px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   color: var(--color-neutrals-6);
 }
 
@@ -957,7 +957,7 @@
 .article__image-score-rating-value {
   color: var(--color-white);
   font-size: 32px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-family: var(--font-heading);
   line-height: 1;
 }
@@ -966,7 +966,7 @@
 .article__image-score-rating-score-large {
   color: var(--color-white);
   font-size: 32px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-family: var(--font-heading);
   line-height: 1;
   display: flex;
@@ -978,7 +978,7 @@
 .article__image-score-rating-score-max {
   color: var(--color-white);
   font-size: 18px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   line-height: 1;
 }
 
@@ -1030,7 +1030,7 @@
 .article__image-score-rating-motortrend-text {
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -1099,7 +1099,7 @@
 .article__image-score-rating-text {
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   line-height: 1.2;
   display: flex;
   align-items: center;
@@ -1110,7 +1110,7 @@
 
 .article__image-score-rating-highlight {
   color: var(--color-white);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .article__image-score-cta {
@@ -1133,7 +1133,7 @@
 
 .article__photo-gallery-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -1229,7 +1229,7 @@
 
 .article__photo-gallery-more-count {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 28px;
   line-height: 1;
   color: var(--color-neutrals-4);
@@ -1264,7 +1264,7 @@
 
 .article__specs-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -1286,7 +1286,7 @@
 
 .article__specs-label {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   color: var(--color-neutrals-2);
   padding: var(--spacing-2) var(--spacing-2) var(--spacing-2) 0;
@@ -1315,7 +1315,7 @@
 
 .article__author-bio-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -1429,7 +1429,7 @@
 
 .article__motortrend-score h2 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -1439,7 +1439,7 @@
 .article__score-card {
   padding: var(--spacing-3);
   background-color: var(--color-neutrals-7);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .article__score-header {
@@ -1451,7 +1451,7 @@
 
 .article__score-header h3 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-1);
@@ -1493,14 +1493,14 @@
   width: 189px;
   height: 160px;
   background-color: var(--color-neutrals-1);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   gap: 4px;
   position: relative;
 }
 
 .article__score-number {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 42px;
   color: var(--color-white);
   line-height: 1;
@@ -1546,7 +1546,7 @@
 
 .article__score-item span:first-child {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   color: var(--color-neutrals-2);
   width: 160px;
@@ -1556,20 +1556,20 @@
   flex: 1;
   height: 8px;
   background-color: var(--color-neutrals-4);
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
 }
 
 .article__score-bar-fill {
   height: 100%;
   background-color: var(--color-rating-motortrend);
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   transition: width var(--transition-fast);
 }
 
 .article__score-item span:last-child {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   color: var(--color-neutrals-2);
   width: 40px;
@@ -1580,7 +1580,7 @@
   margin-top: 24px;
   padding: 42px;
   background-color: var(--color-white);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .article__reviewer-section {
@@ -1600,7 +1600,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .article__reviewer-info {
@@ -1624,7 +1624,7 @@
 
 .article__reviewer-name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.375em;
   color: var(--color-neutrals-1);
@@ -1638,7 +1638,7 @@
 
 .article__reviewer-date {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 12px;
   line-height: 2em;
   color: var(--color-neutrals-2);
@@ -1646,7 +1646,7 @@
 
 .article__score-review h3 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -1673,10 +1673,10 @@
   padding: 12px 16px;
   background: none;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   font-family: var(--font-body);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-neutrals-2);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -1730,7 +1730,7 @@
 
 .article__review-accordion-text h4 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -1755,7 +1755,7 @@
 
 .article__review-section-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -1800,7 +1800,7 @@
 
 .article__vehicle-name {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.2em;
   color: var(--color-white);
@@ -1895,7 +1895,7 @@
 
 .article__vehicle-accordion-name {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.2em;
   color: var(--color-white);
@@ -1979,7 +1979,7 @@
 
 .article__sticky-vehicle-name {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.2em;
   color: var(--color-white);
@@ -2012,7 +2012,7 @@
   gap: 8px;
   color: var(--color-white);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: opacity var(--transition-fast);
   background: none;
@@ -2028,7 +2028,7 @@
 .article__sticky-rating-label {
   color: var(--color-white);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
   text-align: left;
 }
@@ -2044,7 +2044,7 @@
 .article__sticky-rating-label-top {
   color: var(--color-white);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   text-decoration: none;
 }
@@ -2052,7 +2052,7 @@
 .article__sticky-rating-label-bottom {
   color: var(--color-white);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   text-decoration: none;
 }
@@ -2076,7 +2076,7 @@
 .article__sticky-rating-value {
   color: var(--color-white);
   font-size: 32px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-family: var(--font-body);
 }
 
@@ -2180,7 +2180,7 @@
   border: none;
   border-radius: var(--border-radius-md);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   color: var(--color-white);
   cursor: pointer;
@@ -2204,7 +2204,7 @@
   border: none;
   border-radius: var(--border-radius-md);
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   color: var(--color-white);
   cursor: pointer;
@@ -2235,7 +2235,7 @@
 .article__rating-label {
   color: var(--color-white);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
   text-align: left;
 }
@@ -2251,7 +2251,7 @@
 .article__rating-label-top {
   color: var(--color-white);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   text-decoration: none;
 }
@@ -2259,7 +2259,7 @@
 .article__rating-label-bottom {
   color: var(--color-white);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   line-height: 1.2;
   text-decoration: none;
 }
@@ -2285,7 +2285,7 @@
 .article__rating-value {
   color: var(--color-white);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-family: var(--font-body);
 }
 
@@ -2306,7 +2306,7 @@
   color: var(--color-white);
   padding: 0;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition: opacity 0.2s;
 }
@@ -2545,7 +2545,7 @@
 
 .article__sidebar-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -2590,7 +2590,7 @@
 .article__sidebar-nav a.active {
   background-color: var(--color-primary-1);
   color: var(--color-white);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
 }
 
 /* Social Sharing */
@@ -2649,7 +2649,7 @@
 
 .article__sidebar-author-name {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -2669,7 +2669,7 @@
   border: 1px solid var(--color-primary-1);
   border-radius: var(--border-radius-md);
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   color: var(--color-primary-1);
   cursor: pointer;
@@ -2730,7 +2730,7 @@
 
 .article__sidebar-article-content h4 {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 14px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -2959,7 +2959,7 @@
 
 .article__listings-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -3010,7 +3010,7 @@
 
 .article__listing-price {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   color: var(--color-neutrals-2);
 }
@@ -3044,7 +3044,7 @@
 
 .article__lazy-articles-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -3102,7 +3102,7 @@
 
 .article__lazy-article-title {
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.3em;
   color: var(--color-neutrals-1);
@@ -3249,7 +3249,7 @@
   transform: translateY(-50%);
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   background-color: rgba(20, 20, 22, 0.9);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -3339,7 +3339,7 @@
 .article__gallery-dot {
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: var(--border-radius-circle);
   background-color: rgba(255, 255, 255, 0.4);
   border: none;
   cursor: pointer;
@@ -3404,7 +3404,7 @@
   border-radius: 6px;
   font-family: var(--font-body);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   line-height: 1.4;
   white-space: nowrap;
   pointer-events: none;
@@ -3458,7 +3458,7 @@
 
 .article__motortrend-score h2 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 32px;
   line-height: 1.125em;
   color: var(--color-neutrals-2);
@@ -3469,7 +3469,7 @@
   margin-top: 24px;
   padding: 42px;
   background-color: var(--color-white);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .article__reviewer-section {
@@ -3489,7 +3489,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
 }
 
 .article__reviewer-info {
@@ -3513,7 +3513,7 @@
 
 .article__reviewer-name {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   line-height: 1.375em;
   color: var(--color-neutrals-1);
@@ -3538,9 +3538,9 @@
   background: var(--color-neutrals-2);
   color: var(--color-white);
   padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 12px;
   line-height: 1.2;
   white-space: nowrap;
@@ -3576,7 +3576,7 @@
 
 .article__reviewer-date {
   font-family: var(--font-body);
-  font-weight: 400;
+  font-weight: var(--font-weight-regular);
   font-size: 12px;
   line-height: 2em;
   color: var(--color-neutrals-2);
@@ -3584,7 +3584,7 @@
 
 .article__score-review h3 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.125em;
   color: var(--color-neutrals-1);
@@ -3611,10 +3611,10 @@
   padding: 12px 16px;
   background: none;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   font-family: var(--font-body);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-neutrals-2);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -3668,7 +3668,7 @@
 
 .article__review-accordion-text h4 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 20px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -3693,7 +3693,7 @@
 
 .article__review-section-title {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 18px;
   line-height: 1.2em;
   color: var(--color-neutrals-1);
@@ -3715,7 +3715,7 @@
 .article__score-card {
   padding: var(--spacing-3);
   background-color: var(--color-neutrals-7);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
 }
 
 .article__score-header {
@@ -3727,7 +3727,7 @@
 
 .article__score-header h3 {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 24px;
   line-height: 1.1666666666666667em;
   color: var(--color-neutrals-1);
@@ -3769,14 +3769,14 @@
   width: 189px;
   height: 160px;
   background-color: var(--color-neutrals-2-5);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   gap: 4px;
   position: relative;
 }
 
 .article__score-number {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 42px;
   color: var(--color-white);
   line-height: 1;
@@ -3822,7 +3822,7 @@
 
 .article__score-item span:first-child {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   color: var(--color-neutrals-2);
   width: 160px;
@@ -3832,20 +3832,20 @@
   flex: 1;
   height: 8px;
   background-color: var(--color-neutrals-4);
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   overflow: hidden;
 }
 
 .article__score-bar-fill {
   height: 100%;
   background-color: var(--color-rating-motortrend);
-  border-radius: 4px;
+  border-radius: var(--border-radius-sm);
   transition: width var(--transition-fast);
 }
 
 .article__score-item span:last-child {
   font-family: var(--font-heading);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: 16px;
   color: var(--color-neutrals-2);
   width: 40px;
