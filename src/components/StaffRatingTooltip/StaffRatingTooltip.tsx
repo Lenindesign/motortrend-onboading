@@ -59,14 +59,14 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontWeight: 600,
     fontSize: '16px',
-    color: '#ffffff',
+    color: 'var(--color-white, #FFFFFF)',
   };
 
   const totalStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontSize: '14px',
     fontWeight: 600,
-    color: '#ffffff',
+    color: 'var(--color-white, #FFFFFF)',
   };
 
   const contentStyle: React.CSSProperties = {
@@ -88,7 +88,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 400,
     fontSize: '13px',
-    color: '#cccccc',
+    color: 'var(--color-neutrals-5, #B1B5C3)',
     minWidth: '100px',
     textAlign: 'left',
   };
@@ -96,7 +96,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
   const barContainerStyle: React.CSSProperties = {
     flex: 1,
     height: '8px',
-    backgroundColor: '#282a30',
+    backgroundColor: 'var(--color-neutrals-2-5, #282a30)',
     borderRadius: '4px',
     overflow: 'hidden',
     position: 'relative',
@@ -106,7 +106,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
   const getBarFillStyle = (percentage: number): React.CSSProperties => ({
     height: '100%',
     width: `${percentage}%`,
-    backgroundColor: '#FFB74D',
+    backgroundColor: 'var(--color-rating-motortrend, #FFB74D)',
     borderRadius: '4px',
     transition: 'width 150ms ease-in-out',
   });
@@ -115,7 +115,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontSize: '13px',
     fontWeight: 600,
-    color: '#ffffff',
+    color: 'var(--color-white, #FFFFFF)',
     minWidth: '28px',
     textAlign: 'right',
   };
@@ -131,7 +131,7 @@ export const StaffRatingTooltip: React.FC<StaffRatingTooltipProps> = ({
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '12px',
     fontWeight: 600,
-    color: '#FFB74D',
+    color: 'var(--color-rating-motortrend, #FFB74D)',
     textDecoration: isLinkHovered ? 'underline' : 'none',
     transition: 'color 0.2s ease',
   };

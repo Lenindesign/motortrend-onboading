@@ -38,8 +38,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   userRating
 }) => {
   const ratings = [];
-  if (rating1) ratings.push({ value: typeof rating1 === 'number' ? rating1.toFixed(1) : rating1, color: '#FFB74D' });
-  if (rating2) ratings.push({ value: typeof rating2 === 'number' ? (rating2 / 2).toFixed(1) : rating2, color: '#33C4FF' });
+  if (rating1) ratings.push({ value: typeof rating1 === 'number' ? rating1.toFixed(1) : rating1, color: 'var(--color-rating-motortrend, #FFB74D)' });
+  if (rating2) ratings.push({ value: typeof rating2 === 'number' ? (rating2 / 2).toFixed(1) : rating2, color: 'var(--color-rating-community, #33CCFF)' });
 
   // Get body style from vehicle name
   const bodyStyles = getVehicleBodyStyle(name);

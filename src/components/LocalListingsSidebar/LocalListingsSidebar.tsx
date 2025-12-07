@@ -353,7 +353,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     alignItems: 'center',
     gap: '4px',
     fontSize: '13px',
-    color: '#666666'
+    color: 'var(--color-neutrals-4, #6E7481)'
   };
 
   const infoRowStyle: React.CSSProperties = {
@@ -369,7 +369,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
   const dealerNameStyle: React.CSSProperties = {
     fontFamily: "'Geist', sans-serif",
     fontWeight: 500,
-    color: '#1A1B21'
+    color: 'var(--color-neutrals-1, #141416)'
   };
 
   const colorsStyle: React.CSSProperties = {
@@ -390,8 +390,8 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     alignItems: 'center',
     justifyContent: 'center',
     gap: '6px',
-    background: hoveredCta === listingId ? '#1A1B21' : '#FFFFFF',
-    color: hoveredCta === listingId ? '#FFFFFF' : '#1A1B21',
+    background: hoveredCta === listingId ? 'var(--color-neutrals-1, #141416)' : 'var(--color-white, #FFFFFF)',
+    color: hoveredCta === listingId ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-1, #141416)',
     border: '1px solid #E5E5E5',
     borderRadius: '4px',
     padding: '10px 16px',
@@ -411,7 +411,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     gap: '8px',
     background: isViewAllHovered ? '#F8F8F8' : 'transparent',
     color: 'var(--color-neutrals-1, #141416)',
-    border: `1px solid ${isViewAllHovered ? '#CCCCCC' : '#E5E5E5'}`,
+    border: `1px solid ${isViewAllHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
     borderRadius: '4px',
     padding: '12px 16px',
     fontSize: '14px',
@@ -427,7 +427,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     justifyContent: 'center',
     padding: '40px 16px',
     textAlign: 'center',
-    color: '#A0A1A7'
+    color: 'var(--color-neutrals-5, #B1B5C3)'
   };
 
   return (
@@ -578,9 +578,9 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
 
       {listings.length === 0 && (
         <div style={emptyStyle}>
-          <Icon name="search_off" size={48} style={{ color: '#6A6B71', marginBottom: '16px' }} />
-          <p style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 500, color: '#1A1B21' }}>No local listings found</p>
-          <p style={{ fontSize: '12px', color: '#6A6B71' }}>Try expanding your search radius or check back later</p>
+          <Icon name="search_off" size={48} style={{ color: 'var(--color-neutrals-4, #6E7481)', marginBottom: '16px' }} />
+          <p style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 500, color: 'var(--color-neutrals-1, #141416)' }}>No local listings found</p>
+          <p style={{ fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)' }}>Try expanding your search radius or check back later</p>
         </div>
       )}
 

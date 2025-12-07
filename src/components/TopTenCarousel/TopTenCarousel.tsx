@@ -616,7 +616,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     backdropFilter: 'blur(20px) saturate(180%)',
     WebkitBackdropFilter: 'blur(20px) saturate(180%)',
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -684,7 +684,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
   const nameLinkStyle: React.CSSProperties = {
     textDecoration: 'none',
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     pointerEvents: 'auto',
     transition: 'opacity 0.2s ease',
     cursor: 'pointer',
@@ -695,8 +695,8 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     fontWeight: 600,
     fontSize: isMobile ? '22px' : '24px',
     lineHeight: isMobile ? 1.3 : 1.2,
-    color: '#FFFFFF',
-    WebkitTextFillColor: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
+    WebkitTextFillColor: 'var(--color-white, #FFFFFF)',
     margin: 0,
     padding: 0,
     flexShrink: 0,
@@ -720,7 +720,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     flexDirection: 'column',
     alignItems: 'center',
     gap: isFirst ? '6px' : '12px',
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontSize: '14px',
     fontWeight: 500,
     lineHeight: 1.5,
@@ -746,7 +746,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     transform: 'translateY(-50%)',
     width: '1px',
     height: isMobile ? '50px' : '40px',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'var(--color-white, #FFFFFF)',
   };
 
   const scoreRowStyle: React.CSSProperties = {
@@ -774,7 +774,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   };
 
   const scoreLargeStyle: React.CSSProperties = {
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontSize: '26px',
     fontWeight: 600,
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
@@ -786,7 +786,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   };
 
   const scoreMaxStyle: React.CSSProperties = {
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontSize: '18px',
     fontWeight: 400,
     lineHeight: 1,
@@ -805,7 +805,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   };
 
   const motortrendTextStyle: React.CSSProperties = {
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontSize: '14px',
     fontWeight: 500,
     lineHeight: 1.2,
@@ -813,7 +813,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   };
 
   const ratingTextStyle: React.CSSProperties = {
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontSize: '14px',
     fontWeight: 400,
     lineHeight: 1.2,
@@ -837,7 +837,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     backdropFilter: 'blur(20px) saturate(180%)',
     WebkitBackdropFilter: 'blur(20px) saturate(180%)',
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -922,7 +922,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontSize: '14px',
     fontWeight: 'var(--font-weight-bold, 600)',
@@ -941,7 +941,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       backgroundColor: 'rgba(20, 20, 22, 0.95)',
       backdropFilter: 'blur(10px)',
       WebkitBackdropFilter: 'blur(10px)',
-      color: '#FFFFFF',
+      color: 'var(--color-white, #FFFFFF)',
       padding: '6px 12px',
       borderRadius: '6px',
       fontFamily: 'var(--font-body, Geist, sans-serif)',
@@ -970,7 +970,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     border: '1px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '20px',
     padding: '6px 14px',
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '13px',
     fontWeight: 600,

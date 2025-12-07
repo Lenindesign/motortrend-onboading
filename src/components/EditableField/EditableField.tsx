@@ -145,7 +145,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   // Save button styles
   const saveBtnStyle: React.CSSProperties = {
     ...actionBtnBaseStyle,
-    backgroundColor: '#34A853',
+    backgroundColor: 'var(--color-semantic-success, #34A853)',
     color: 'var(--color-white, #FFFFFF)',
     transform: isSaveHovered ? 'translateY(-1px)' : 'none',
   };

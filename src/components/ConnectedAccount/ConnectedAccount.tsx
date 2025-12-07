@@ -118,7 +118,7 @@ export const ConnectedAccount: React.FC<ConnectedAccountProps> = ({
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 500,
     fontSize: '14px',
-    color: '#2E7D32',
+    color: 'var(--color-semantic-success, #34A853)',
     textAlign: 'right',
   };
 

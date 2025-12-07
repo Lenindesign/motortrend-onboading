@@ -125,7 +125,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     backgroundColor: 'var(--color-white, #FFFFFF)', 
     padding: '2px' 
   };
-  const verifiedIconStyle: React.CSSProperties = { marginLeft: '4px', color: '#186CEA', flexShrink: 0 };
+  const verifiedIconStyle: React.CSSProperties = { marginLeft: '4px', color: 'var(--color-blue, #186CEA)', flexShrink: 0 };
   const dotStyle: React.CSSProperties = { margin: '0 4px', color: 'var(--color-neutrals-5, #B1B5C3)' };
   
   // Title style - larger and bolder for detail view
@@ -218,7 +218,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const commentBtnStyle: React.CSSProperties = {
     alignSelf: 'flex-end',
     padding: '10px 24px',
-    backgroundColor: isCommentBtnHovered ? 'var(--color-primary-1, #E90C17)' : '#FFB3B8',
+    backgroundColor: isCommentBtnHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-primary-3, #ff858a)',
     color: isCommentBtnHovered ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-2, #23262F)',
     border: 'none',
     borderRadius: '6px',

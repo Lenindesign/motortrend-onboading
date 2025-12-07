@@ -44,8 +44,8 @@ export const ReviewSubmittedToast: React.FC<ReviewSubmittedToastProps> = ({
     width: '80px',
     height: '80px',
     borderRadius: '50%',
-    backgroundColor: '#E8F5E9',
-    color: '#34A853',
+    backgroundColor: 'var(--color-semantic-success-light, #E8F5E9)',
+    color: 'var(--color-semantic-success, #34A853)',
     flexShrink: 0,
   };
 

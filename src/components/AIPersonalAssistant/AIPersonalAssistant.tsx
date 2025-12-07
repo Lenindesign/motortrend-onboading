@@ -424,10 +424,10 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
 
   const getPresetBtnStyle = (index: number): React.CSSProperties => ({
     padding: '8px 12px',
-    border: `1px solid ${hoveredPreset === index ? '#E90C17' : '#E5E5E5'}`,
+    border: `1px solid ${hoveredPreset === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
     borderRadius: '8px',
-    background: hoveredPreset === index ? '#F8F8F8' : '#FFFFFF',
-    color: hoveredPreset === index ? '#E90C17' : '#1A1B21',
+    background: hoveredPreset === index ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-white, #FFFFFF)',
+    color: hoveredPreset === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-1, #141416)',
     fontFamily: "'Geist', sans-serif",
     fontSize: '13px',
     fontWeight: 600,
@@ -470,8 +470,8 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
     padding: '12px 16px',
     wordWrap: 'break-word',
     lineHeight: 1.5,
-    background: type === 'user' ? '#1A1B21' : '#F8F8F8',
-    color: type === 'user' ? '#FFFFFF' : '#1A1B21',
+    background: type === 'user' ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-7, #F4F5F6)',
+    color: type === 'user' ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-1, #141416)',
     borderRadius: type === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px'
   });
 
@@ -489,9 +489,9 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   };
 
   const getVehicleLinkStyle = (vehicleName: string): React.CSSProperties => ({
-    background: hoveredVehicleLink === vehicleName ? '#E90C17' : 'transparent',
+    background: hoveredVehicleLink === vehicleName ? 'var(--color-primary-1, #E90C17)' : 'transparent',
     border: '1px solid #E90C17',
-    color: hoveredVehicleLink === vehicleName ? '#FFFFFF' : '#E90C17',
+    color: hoveredVehicleLink === vehicleName ? 'var(--color-white, #FFFFFF)' : 'var(--color-primary-1, #E90C17)',
     padding: '4px 8px',
     borderRadius: '4px',
     fontFamily: "'Geist', sans-serif",
@@ -528,7 +528,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
 
   const inputStyle: React.CSSProperties = {
     flex: 1,
-    border: `1px solid ${isInputFocused ? '#E90C17' : '#E5E5E5'}`,
+    border: `1px solid ${isInputFocused ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
     borderRadius: '8px',
     padding: '8px 12px',
     fontFamily: "'Geist', sans-serif",
@@ -543,7 +543,7 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
     width: '40px',
     height: '40px',
     borderRadius: '8px',
-    background: !inputValue.trim() ? '#E90C17' : isSendHovered ? '#c00a13' : '#E90C17',
+    background: !inputValue.trim() ? 'var(--color-primary-1, #E90C17)' : isSendHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)',
     color: 'var(--color-white, #FFFFFF)',
     border: 'none',
     display: 'flex',
@@ -568,10 +568,10 @@ export const AIPersonalAssistant: React.FC<AIPersonalAssistantProps> = ({ classN
   const getQuickActionStyle = (index: number): React.CSSProperties => ({
     flex: 1,
     padding: '8px 12px',
-    border: `1px solid ${hoveredQuickAction === index ? '#E90C17' : '#E5E5E5'}`,
+    border: `1px solid ${hoveredQuickAction === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
     borderRadius: '4px',
-    background: hoveredQuickAction === index ? '#F8F8F8' : '#FFFFFF',
-    color: hoveredQuickAction === index ? '#E90C17' : '#1A1B21',
+    background: hoveredQuickAction === index ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-white, #FFFFFF)',
+    color: hoveredQuickAction === index ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-1, #141416)',
     fontFamily: "'Geist', sans-serif",
     fontSize: '14px',
     fontWeight: 600,

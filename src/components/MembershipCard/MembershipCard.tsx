@@ -118,7 +118,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
     fontWeight: 600,
     fontSize: '32px',
     lineHeight: 1.1,
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     margin: 0,
     letterSpacing: '-0.5px',
   };
@@ -162,7 +162,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
     fontWeight: 600,
     fontSize: '22px',
     lineHeight: 1.2,
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     letterSpacing: '-0.3px',
   };
 

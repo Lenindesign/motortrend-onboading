@@ -290,7 +290,7 @@ export const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
         {isOpen && (suggestions.length > 0 || isLoading) && (
           <div style={suggestionsStyle}>
             {isLoading ? (
-              <div style={{ ...getSuggestionItemStyle(false, true), justifyContent: 'center', gap: '8px', color: '#6b7280' }}>
+              <div style={{ ...getSuggestionItemStyle(false, true), justifyContent: 'center', gap: '8px', color: 'var(--color-neutrals-4, #6E7481)' }}>
                 <Icon name="refresh" size={16} />
                 <span>Searching locations...</span>
               </div>

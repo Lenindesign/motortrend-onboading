@@ -69,20 +69,20 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
   // Styles
   const containerStyle: React.CSSProperties = { width: '100%', background: 'var(--color-white, #FFFFFF)', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: '16px', boxShadow: '0px 4px 8px 0px rgba(20, 20, 22, 0.1)', overflow: 'hidden' };
   const innerStyle: React.CSSProperties = { display: 'flex', minHeight: '500px' };
-  const leftStyle: React.CSSProperties = { flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', background: '#FFFFFF' };
+  const leftStyle: React.CSSProperties = { flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', background: 'var(--color-white, #FFFFFF)' };
   const badgeStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', background: 'var(--color-blue, #186CEA)', borderRadius: '100px', width: 'fit-content' };
   const badgeTextStyle: React.CSSProperties = { fontFamily: 'Poppins, sans-serif', fontSize: '11px', fontWeight: 700, color: 'var(--color-white, #FFFFFF)', textTransform: 'uppercase', letterSpacing: '0.5px' };
   const headerStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '12px' };
   const titleStyle: React.CSSProperties = { fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)', margin: 0, lineHeight: 1.2, display: 'flex', alignItems: 'center', gap: '8px' };
-  const infoBtnStyle: React.CSSProperties = { width: '24px', height: '24px', borderRadius: '50%', border: 'none', background: 'transparent', color: isInfoHovered ? 'var(--color-primary-1, #E90C17)' : '#666666', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, transition: 'color 0.2s ease' };
+  const infoBtnStyle: React.CSSProperties = { width: '24px', height: '24px', borderRadius: '50%', border: 'none', background: 'transparent', color: isInfoHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, transition: 'color 0.2s ease' };
   const descStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '16px', fontWeight: 400, color: 'var(--color-neutrals-4, #6E7481)', lineHeight: 1.5, margin: 0 };
   const imageContainerStyle: React.CSSProperties = { flex: 1, display: 'flex', alignItems: 'flex-end', minHeight: '300px' };
   const imageStyle: React.CSSProperties = { width: '100%', height: 'auto', objectFit: 'contain', borderRadius: '8px' };
   const rightStyle: React.CSSProperties = { flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', background: 'var(--color-neutrals-7, #F4F5F6)', borderLeft: '1px solid #E5E5E5' };
   const powerDisplayStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '24px', borderBottom: '1px solid #E5E5E5' };
   const powerAmountStyle: React.CSSProperties = { fontFamily: 'Poppins, sans-serif', fontSize: '64px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)', lineHeight: 1 };
-  const powerLabelStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '14px', fontWeight: 500, color: '#666666' };
-  const powerAprStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '12px', fontWeight: 400, color: '#666666' };
+  const powerLabelStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--color-neutrals-4, #6E7481)' };
+  const powerAprStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '12px', fontWeight: 400, color: 'var(--color-neutrals-4, #6E7481)' };
   const inputsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
   const fieldStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px' };
   const labelStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '14px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };

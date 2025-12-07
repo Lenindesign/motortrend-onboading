@@ -42,7 +42,7 @@ const injectKeyframes = () => {
 const typeColors: Record<'warning' | 'success' | 'error' | 'info', { icon: string; border?: string }> = {
   warning: { icon: 'var(--color-primary-1, #E90C17)' },
   error: { icon: 'var(--color-primary-1, #E90C17)', border: '4px solid var(--color-primary-1, #E90C17)' },
-  success: { icon: '#34A853', border: '4px solid #34A853' },
+  success: { icon: 'var(--color-semantic-success, #34A853)', border: '4px solid var(--color-semantic-success, #34A853)' },
   info: { icon: 'var(--color-blue, #186CEA)', border: '4px solid var(--color-blue, #186CEA)' },
 };
 

@@ -172,7 +172,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     fontWeight: 600,
     fontSize: isMobile ? '18px' : '24px',
     lineHeight: '1.2em',
-    color: '#E0E0E0',
+    color: 'var(--color-neutrals-6, #E6E8EC)',
     whiteSpace: 'nowrap',
     flexShrink: 0,
     textDecoration: 'none',
@@ -332,7 +332,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   };
 
   const motortrendTextStyle: React.CSSProperties = {
-    color: '#FFFFFF',
+    color: 'var(--color-white, #FFFFFF)',
     fontSize: '14px',
     fontWeight: 500,
     lineHeight: 1.2,

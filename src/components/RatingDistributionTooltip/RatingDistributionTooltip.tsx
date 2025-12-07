@@ -55,13 +55,13 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontWeight: 600,
     fontSize: '16px',
-    color: '#ffffff',
+    color: 'var(--color-white, #FFFFFF)',
   };
 
   const totalStyle: React.CSSProperties = {
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontSize: '12px',
-    color: '#999999',
+    color: 'var(--color-neutrals-4, #6E7481)',
   };
 
   const contentStyle: React.CSSProperties = {
@@ -83,7 +83,7 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontWeight: 600,
     fontSize: '12px',
-    color: '#cccccc',
+    color: 'var(--color-neutrals-5, #B1B5C3)',
     minWidth: '16px',
     textAlign: 'center',
   };
@@ -91,7 +91,7 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
   const barContainerStyle: React.CSSProperties = {
     flex: 1,
     height: '8px',
-    backgroundColor: '#282a30',
+    backgroundColor: 'var(--color-neutrals-2-5, #282a30)',
     borderRadius: '4px',
     overflow: 'hidden',
     position: 'relative',
@@ -101,7 +101,7 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
   const getBarFillStyle = (percentage: number): React.CSSProperties => ({
     height: '100%',
     width: `${percentage}%`,
-    backgroundColor: '#33CCFF',
+    backgroundColor: 'var(--color-rating-community, #33CCFF)',
     borderRadius: '4px',
     transition: 'width 150ms ease-in-out',
   });
@@ -109,7 +109,7 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
   const percentageStyle: React.CSSProperties = {
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontSize: '11px',
-    color: '#999999',
+    color: 'var(--color-neutrals-4, #6E7481)',
     minWidth: '32px',
     textAlign: 'right',
   };
@@ -125,7 +125,7 @@ export const RatingDistributionTooltip: React.FC<RatingDistributionTooltipProps>
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontSize: '12px',
     fontWeight: 600,
-    color: isLinkHovered ? '#66D9FF' : '#33CCFF',
+    color: isLinkHovered ? 'var(--color-rating-community-hover, #66D9FF)' : 'var(--color-rating-community, #33CCFF)',
     textDecoration: isLinkHovered ? 'underline' : 'none',
     transition: 'color 0.2s ease',
   };

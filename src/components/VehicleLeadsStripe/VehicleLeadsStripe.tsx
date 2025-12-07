@@ -120,15 +120,15 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   // Styles
   const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: isMobile ? '0 16px 16px 16px' : '0 0 16px 0' };
   const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-3, 16px)' : 'var(--spacing-4, 24px)', padding: 0 };
-  const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '24px' : '28px', fontWeight: 700, lineHeight: 1.2, color: '#1A1B21', margin: '0 0 8px 0' };
-  const subtitleStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '14px', color: '#666666', margin: 0 };
-  const loadingStyle: React.CSSProperties = { padding: '40px var(--spacing-4, 24px)', textAlign: 'center', color: '#666666', fontFamily: "'Geist', sans-serif", fontSize: '14px' };
+  const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '24px' : '28px', fontWeight: 700, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 8px 0' };
+  const subtitleStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '14px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0 };
+  const loadingStyle: React.CSSProperties = { padding: '40px var(--spacing-4, 24px)', textAlign: 'center', color: 'var(--color-neutrals-4, #6E7481)', fontFamily: "'Geist', sans-serif", fontSize: '14px' };
   const containerStyle: React.CSSProperties = { position: 'relative', width: '100%', overflow: 'hidden' };
   const scrollStyle: React.CSSProperties = { display: 'flex', gap: isMobile ? 'var(--spacing-2, 12px)' : 'var(--spacing-3, 16px)', padding: 0, transition: 'transform 0.5s ease-in-out', willChange: 'transform' };
 
   const getItemStyle = (index: number): React.CSSProperties => {
     const isHovered = hoveredItem === index;
-    return { flexShrink: 0, width: isMobile ? '280px' : 'calc((100% - 48px) / 4)', minWidth: '280px', background: '#FFFFFF', border: `1px solid ${isHovered ? '#CCCCCC' : '#E5E5E5'}`, borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', flexDirection: 'column', transform: isHovered ? 'translateY(-2px)' : 'none', boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none' };
+    return { flexShrink: 0, width: isMobile ? '280px' : 'calc((100% - 48px) / 4)', minWidth: '280px', background: 'var(--color-white, #FFFFFF)', border: `1px solid ${isHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, borderRadius: '12px', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', flexDirection: 'column', transform: isHovered ? 'translateY(-2px)' : 'none', boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none' };
   };
 
   const imageContainerStyle: React.CSSProperties = { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden', background: 'var(--color-neutrals-1, #141416)' };
@@ -160,22 +160,22 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
     };
   };
   const contentStyle: React.CSSProperties = { padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 };
-  const vehicleNameStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: '16px', fontWeight: 600, color: '#1A1B21', margin: 0, lineHeight: 1.3 };
-  const trimStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", color: '#666666', fontWeight: 400 };
-  const priceStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '20px', fontWeight: 700, color: '#1A1B21' };
+  const vehicleNameStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: '16px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)', margin: 0, lineHeight: 1.3 };
+  const trimStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", color: 'var(--color-neutrals-4, #6E7481)', fontWeight: 400 };
+  const priceStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '20px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)' };
   const detailsStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px' };
-  const detailStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '13px', color: '#666666' };
-  const dealerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '12px', color: '#666666', marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #E5E5E5' };
+  const detailStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '13px', color: 'var(--color-neutrals-4, #6E7481)' };
+  const dealerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)', marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #E5E5E5' };
 
   const getNavStyle = (isPrev: boolean): React.CSSProperties => {
     const isHovered = hoveredNav === (isPrev ? 'prev' : 'next');
-    return { position: 'absolute', top: '50%', transform: isHovered ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)', width: isMobile ? '40px' : '48px', height: isMobile ? '40px' : '48px', borderRadius: '50%', backgroundColor: isHovered ? 'rgba(30, 30, 32, 0.5)' : 'rgba(20, 20, 22, 0.3)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#FFFFFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, transition: 'all 0.3s ease', boxShadow: isHovered ? '0 12px 40px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.4)', opacity: isContainerHovered ? 1 : 0, pointerEvents: isContainerHovered ? 'auto' : 'none', left: isPrev ? (isMobile ? '8px' : '16px') : 'auto', right: isPrev ? 'auto' : (isMobile ? '8px' : '16px') };
+    return { position: 'absolute', top: '50%', transform: isHovered ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)', width: isMobile ? '40px' : '48px', height: isMobile ? '40px' : '48px', borderRadius: '50%', backgroundColor: isHovered ? 'rgba(30, 30, 32, 0.5)' : 'rgba(20, 20, 22, 0.3)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--color-white, #FFFFFF)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, transition: 'all 0.3s ease', boxShadow: isHovered ? '0 12px 40px rgba(0, 0, 0, 0.5)' : '0 8px 32px rgba(0, 0, 0, 0.4)', opacity: isContainerHovered ? 1 : 0, pointerEvents: isContainerHovered ? 'auto' : 'none', left: isPrev ? (isMobile ? '8px' : '16px') : 'auto', right: isPrev ? 'auto' : (isMobile ? '8px' : '16px') };
   };
 
   const dotsStyle: React.CSSProperties = { display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px', padding: 0 };
   const getDotStyle = (index: number, isActive: boolean): React.CSSProperties => {
     const isHovered = hoveredDot === index;
-    return { width: isActive ? '24px' : '8px', height: '8px', borderRadius: isActive ? '4px' : '50%', border: 'none', backgroundColor: isActive ? '#E90C17' : (isHovered ? '#6E7481' : '#B1B5C3'), cursor: 'pointer', transition: 'all 0.3s ease', padding: 0, transform: isHovered && !isActive ? 'scale(1.2)' : 'none' };
+    return { width: isActive ? '24px' : '8px', height: '8px', borderRadius: isActive ? '4px' : '50%', border: 'none', backgroundColor: isActive ? 'var(--color-primary-1, #E90C17)' : (isHovered ? 'var(--color-neutrals-4, #6E7481)' : 'var(--color-neutrals-5, #B1B5C3)'), cursor: 'pointer', transition: 'all 0.3s ease', padding: 0, transform: isHovered && !isActive ? 'scale(1.2)' : 'none' };
   };
 
   if (isLoading) {
