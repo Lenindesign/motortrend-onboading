@@ -31,6 +31,10 @@ export interface CardShellProps {
   tabIndex?: number;
   /** Additional inline styles */
   style?: React.CSSProperties;
+  /** Mouse enter handler */
+  onMouseEnter?: () => void;
+  /** Mouse leave handler */
+  onMouseLeave?: () => void;
 }
 
 // Padding map using design tokens
@@ -71,6 +75,8 @@ export const CardShell: React.FC<CardShellProps> = ({
   'aria-label': ariaLabel,
   tabIndex,
   style,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -117,8 +123,8 @@ export const CardShell: React.FC<CardShellProps> = ({
       style={cardStyle}
       onClick={handleClick}
       onKeyPress={handleKeyPress}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => { setIsHovered(false); setIsActive(false); }}
+      onMouseEnter={() => { setIsHovered(true); onMouseEnter?.(); }}
+      onMouseLeave={() => { setIsHovered(false); setIsActive(false); onMouseLeave?.(); }}
       onMouseDown={() => setIsActive(true)}
       onMouseUp={() => setIsActive(false)}
       role={role || (onClick ? 'button' : undefined)}

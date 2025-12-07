@@ -527,7 +527,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     minHeight: 0,
   };
 
-  const getListingCardStyle = (listingId: string, isBest: boolean): React.CSSProperties => ({
+  const getListingCardStyle = (listingId: string, _isBest: boolean): React.CSSProperties => ({
     display: 'flex',
     flexDirection: 'column',
     gap: 'var(--spacing-1, 8px)',

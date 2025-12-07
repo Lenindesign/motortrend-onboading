@@ -26,6 +26,7 @@ export interface BadgeProps {
   outline?: boolean;
   onClick?: () => void;
   'aria-label'?: string;
+  style?: React.CSSProperties;
 }
 
 // Size: padding-y padding-x font-size gap
@@ -80,6 +81,7 @@ export const Badge: React.FC<BadgeProps> = ({
   outline = false,
   onClick,
   'aria-label': ariaLabel,
+  style: customStyle,
 }) => {
   const sizeStyle = sizeStyles[size];
   const variantStyle = variantStyles[variant];
@@ -103,6 +105,7 @@ export const Badge: React.FC<BadgeProps> = ({
     backgroundColor: outline ? 'transparent' : variantStyle.bg,
     color: variantStyle.color,
     border: outline ? '1px solid currentColor' : 'none',
+    ...customStyle,
   };
 
   const handleClick = (e: React.MouseEvent) => {

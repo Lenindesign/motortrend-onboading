@@ -196,7 +196,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     boxShadow: hoveredListingId === listingId ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none'
   });
 
-  const getImageContainerStyle = (listingId: string): React.CSSProperties => ({
+  const getImageContainerStyle = (_listingId: string): React.CSSProperties => ({
     position: 'relative',
     width: '100%',
     aspectRatio: '16 / 9',

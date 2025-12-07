@@ -47,12 +47,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   // Hover states
   const [isCloseBtnHovered, setIsCloseBtnHovered] = useState(false);
   const [isInfoIconHovered, setIsInfoIconHovered] = useState(false);
-  const [isChangeVehicleHovered, setIsChangeVehicleHovered] = useState(false);
-  const [hoveredStarIndex, setHoveredStarIndex] = useState<number | null>(null);
-  const [hoveredCategoryStarIndex, setHoveredCategoryStarIndex] = useState<{category: string, index: number} | null>(null);
+  const [_isChangeVehicleHovered, _setIsChangeVehicleHovered] = useState(false);
+  const [_hoveredStarIndex, _setHoveredStarIndex] = useState<number | null>(null);
+  const [_hoveredCategoryStarIndex, _setHoveredCategoryStarIndex] = useState<{category: string, index: number} | null>(null);
   const [isExpandBtnHovered, setIsExpandBtnHovered] = useState(false);
   const [hoveredMediaRemove, setHoveredMediaRemove] = useState<number | null>(null);
-  const [isSubmitHovered, setIsSubmitHovered] = useState(false);
+  const [_isSubmitHovered, _setIsSubmitHovered] = useState(false);
   const [isFullscreenCloseHovered, setIsFullscreenCloseHovered] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [isMediaPlaceholderHovered, setIsMediaPlaceholderHovered] = useState(false);
@@ -654,22 +654,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     zIndex: 1,
   };
 
-  const getStarClickStyle = (isLeft: boolean, isActive: boolean): React.CSSProperties => ({
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: 0,
-    position: 'absolute',
-    top: 0,
-    width: '12px',
-    height: '24px',
-    zIndex: 2,
-    transition: 'transform var(--transition-fast, all 150ms ease-in-out)',
-    left: isLeft ? 0 : undefined,
-    right: !isLeft ? 0 : undefined,
-    transform: isActive ? 'scale(1.05)' : undefined,
-  });
-
   const starIconStyle: React.CSSProperties = {
     width: '24px',
     height: '24px',
@@ -886,22 +870,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     zIndex: 1,
   };
 
-  const getCategoryStarClickStyle = (isLeft: boolean, isActive: boolean): React.CSSProperties => ({
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: 0,
-    position: 'absolute',
-    top: 0,
-    width: '18px',
-    height: '36px',
-    zIndex: 2,
-    transition: 'transform var(--transition-fast, all 150ms ease-in-out)',
-    left: isLeft ? 0 : undefined,
-    right: !isLeft ? 0 : undefined,
-    transform: isActive ? 'scale(1.05)' : undefined,
-  });
-
   const categoryStarIconStyle: React.CSSProperties = {
     width: '36px',
     height: '36px',
@@ -1090,7 +1058,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
 
   // Star rating rendering helper
   const renderStars = (currentRating: number, onClickHandler: (rating: number) => void, size: 'small' | 'large' = 'small') => {
-    const starSize = size === 'large' ? '36px' : '24px';
     const wrapperSize = size === 'large' ? categoryStarWrapperStyle : starWrapperStyle;
     const visualSize = size === 'large' ? categoryStarVisualStyle : starVisualStyle;
     const iconSize = size === 'large' ? categoryStarIconStyle : starIconStyle;

@@ -4,7 +4,6 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 

@@ -63,12 +63,12 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   const [isDismissHovered, setIsDismissHovered] = useState(false);
   const [hoveredUserType, setHoveredUserType] = useState<string | null>(null);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
-  const [hoveredRadio, setHoveredRadio] = useState<string | null>(null);
+  const [_hoveredRadio, _setHoveredRadio] = useState<string | null>(null);
   const [isSaveHovered, setIsSaveHovered] = useState(false);
-  const [isAddBtnHovered, setIsAddBtnHovered] = useState(false);
-  const [isCancelBtnHovered, setIsCancelBtnHovered] = useState(false);
-  const [hoveredVehicleItem, setHoveredVehicleItem] = useState<string | null>(null);
-  const [hoveredRemoveBtn, setHoveredRemoveBtn] = useState<string | null>(null);
+  const [_isAddBtnHovered, _setIsAddBtnHovered] = useState(false);
+  const [_isCancelBtnHovered, _setIsCancelBtnHovered] = useState(false);
+  const [_hoveredVehicleItem, _setHoveredVehicleItem] = useState<string | null>(null);
+  const [_hoveredRemoveBtn, _setHoveredRemoveBtn] = useState<string | null>(null);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [isLocationBtnHovered, setIsLocationBtnHovered] = useState(false);
   
@@ -389,7 +389,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
     gap: '16px',
   };
 
-  const getStepStyle = (stepNumber: number, completed: boolean): React.CSSProperties => ({
+  const getStepStyle = (stepNumber: number, _completed: boolean): React.CSSProperties => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '12px',

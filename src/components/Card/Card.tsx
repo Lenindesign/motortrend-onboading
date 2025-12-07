@@ -289,7 +289,7 @@ export const Card: React.FC<CardProps> = ({
     overflow: 'visible',
   };
 
-  const getRatingStyle = (index: number): React.CSSProperties => ({
+  const getRatingStyle = (_index: number): React.CSSProperties => ({
     display: 'flex',
     alignItems: 'center',
     gap: 'var(--spacing-gap-xs, 4px)',

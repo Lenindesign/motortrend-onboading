@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useRating } from '../../contexts/RatingContext';
 import { StaffRatingTooltip } from '../StaffRatingTooltip';
 import { RatingDistributionTooltip } from '../RatingDistributionTooltip';
-import { Badge, Button } from '../../design-system/components';
+import { Badge } from '../../design-system/components';
 import { ActionBadge } from '../molecules/ActionBadge';
 import { Popover } from '../atoms/Popover';
 

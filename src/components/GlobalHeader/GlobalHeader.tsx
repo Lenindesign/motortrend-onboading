@@ -219,12 +219,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const [hoveredUserDropdownItem, setHoveredUserDropdownItem] = useState<string | null>(null);
   const [isNewsletterHovered, setIsNewsletterHovered] = useState(false);
   const [isSignInHovered, setIsSignInHovered] = useState(false);
-  const [isUserBtnHovered, setIsUserBtnHovered] = useState(false);
+  const [_isUserBtnHovered, setIsUserBtnHovered] = useState(false);
   const [hoveredMegaLink, setHoveredMegaLink] = useState<string | null>(null);
   const [hoveredGridItem, setHoveredGridItem] = useState<string | null>(null);
   const [hoveredRankingItem, setHoveredRankingItem] = useState<string | null>(null);
   const [hoveredAwardItem, setHoveredAwardItem] = useState<string | null>(null);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [_isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSubmitHovered, setIsSubmitHovered] = useState(false);
   
   // Responsive handler
@@ -1118,7 +1118,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     margin: 0
   };
 
-  const getDropdownItemStyle = (itemId: string, isSignOut?: boolean): React.CSSProperties => ({
+  const getDropdownItemStyle = (itemId: string, _isSignOut?: boolean): React.CSSProperties => ({
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
