@@ -67,6 +67,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [isVehicleNameHovered, setIsVehicleNameHovered] = useState(false);
   const [isBuyersGuideHovered, setIsBuyersGuideHovered] = useState(false);
+  const [isLocalListingsHovered, setIsLocalListingsHovered] = useState(false);
   
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const hideDistributionTooltipTimeout = useRef<number | null>(null);
@@ -165,6 +166,18 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     transition: 'opacity 0.2s ease',
     width: 'fit-content',
     opacity: isBuyersGuideHovered ? 0.8 : 1,
+  };
+
+  const localListingsBadgeStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    textDecoration: 'none',
+    transition: 'opacity var(--transition-fast, 150ms ease-in-out)',
+    cursor: 'pointer',
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    width: 'fit-content',
+    opacity: isLocalListingsHovered ? 0.8 : 1,
   };
 
   const vehicleNameStyle: React.CSSProperties = {
@@ -630,6 +643,20 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                 <Badge variant="info" size="sm">Buyers Guide</Badge>
               </div>
             )}
+            <button
+              style={localListingsBadgeStyle}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
+              }}
+              onMouseEnter={() => setIsLocalListingsHovered(true)}
+              onMouseLeave={() => setIsLocalListingsHovered(false)}
+            >
+              <ActionBadge
+                text="See Local Listings"
+                variant="secondary"
+              />
+            </button>
             {ctaText && isMobile && (
               <ActionBadge
                 onClick={(e) => {
