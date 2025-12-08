@@ -74,7 +74,7 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
     }
   };
   
-  const itemsPerSlide = 4;
+  const itemsPerSlide = isMobile ? 1 : 4;
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -140,17 +140,35 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const formatMileage = (mileage: number): string => mileage === 0 ? 'New' : `${mileage.toLocaleString()} mi`;
 
   // Styles - overflow-anchor: none prevents browser scroll anchoring when content loads
-  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: isMobile ? '0 16px 0 16px' : 0, overflowAnchor: 'none' };
-  const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-3, 16px)' : 'var(--spacing-4, 24px)', padding: 0 };
-  const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '24px' : '28px', fontWeight: 600, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 8px 0' };
-  const subtitleStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '14px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0 };
+  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: 0, overflowAnchor: 'none' };
+  const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-4, 24px)', padding: isMobile ? '0 16px' : 0 };
+  const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '20px' : '28px', fontWeight: 600, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 4px 0' };
+  const subtitleStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: isMobile ? '13px' : '14px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0 };
   const loadingStyle: React.CSSProperties = { padding: '40px var(--spacing-4, 24px)', textAlign: 'center', color: 'var(--color-neutrals-4, #6E7481)', fontFamily: "'Geist', sans-serif", fontSize: '14px', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' };
-  const containerStyle: React.CSSProperties = { position: 'relative', width: '100%', overflow: 'hidden' };
-  const scrollStyle: React.CSSProperties = { display: 'flex', gap: isMobile ? 'var(--spacing-2, 12px)' : 'var(--spacing-3, 16px)', padding: 0, transition: 'transform 0.5s ease-in-out', willChange: 'transform' };
+  const containerStyle: React.CSSProperties = { position: 'relative', width: '100%', overflow: isMobile ? 'visible' : 'hidden' };
+  const scrollStyle: React.CSSProperties = isMobile 
+    ? { display: 'flex', gap: '12px', padding: '0 16px', overflowX: 'auto', scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }
+    : { display: 'flex', gap: 'var(--spacing-3, 16px)', padding: 0, transition: 'transform 0.5s ease-in-out', willChange: 'transform' };
 
   const getItemStyle = (index: number): React.CSSProperties => {
     const isHovered = hoveredItem === index;
-    return { flexShrink: 0, width: isMobile ? '280px' : 'calc((100% - 48px) / 4)', minWidth: '280px', background: 'var(--color-white, #FFFFFF)', border: `1px solid ${isHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, borderRadius: 'var(--border-radius-md-lg, 12px)', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', flexDirection: 'column', transform: isHovered ? 'translateY(-2px)' : 'none', boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none' };
+    return { 
+      flexShrink: 0, 
+      width: isMobile ? 'calc(100vw - 48px)' : 'calc((100% - 48px) / 4)', 
+      maxWidth: isMobile ? '320px' : 'none',
+      minWidth: isMobile ? '260px' : '280px', 
+      background: 'var(--color-white, #FFFFFF)', 
+      border: `1px solid ${isHovered ? 'var(--color-neutrals-5, #B1B5C3)' : 'var(--color-neutrals-6, #E6E8EC)'}`, 
+      borderRadius: 'var(--border-radius-md-lg, 12px)', 
+      overflow: 'hidden', 
+      cursor: 'pointer', 
+      transition: 'all 0.2s ease', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      transform: isHovered && !isMobile ? 'translateY(-2px)' : 'none', 
+      boxShadow: isHovered && !isMobile ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'var(--shadow-depth-5, 0px 4px 20px 0px rgba(20, 20, 22, 0.06))',
+      scrollSnapAlign: isMobile ? 'start' : 'none'
+    };
   };
 
   const imageContainerStyle: React.CSSProperties = { position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden', background: 'var(--color-neutrals-1, #141416)' };
@@ -181,13 +199,13 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
       transform: isHovered ? 'scale(1.05)' : 'scale(1)'
     };
   };
-  const contentStyle: React.CSSProperties = { padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 };
-  const vehicleNameStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: '16px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)', margin: 0, lineHeight: 1.3 };
+  const contentStyle: React.CSSProperties = { padding: isMobile ? '12px' : '16px', display: 'flex', flexDirection: 'column', gap: isMobile ? '8px' : '12px', flex: 1 };
+  const vehicleNameStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '14px' : '16px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)', margin: 0, lineHeight: 1.3 };
   const trimStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", color: 'var(--color-neutrals-4, #6E7481)', fontWeight: 400 };
-  const priceStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: '20px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };
-  const detailsStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px' };
-  const detailStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '13px', color: 'var(--color-neutrals-4, #6E7481)' };
-  const dealerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)', marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #E5E5E5' };
+  const priceStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: isMobile ? '18px' : '20px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };
+  const detailsStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: isMobile ? '6px' : '8px' };
+  const detailStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: isMobile ? '12px' : '13px', color: 'var(--color-neutrals-4, #6E7481)' };
+  const dealerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Geist', sans-serif", fontSize: isMobile ? '11px' : '12px', color: 'var(--color-neutrals-4, #6E7481)', marginTop: 'auto', paddingTop: '8px', borderTop: '1px solid #E5E5E5' };
 
   const getNavStyle = (isPrev: boolean): React.CSSProperties => {
     const isHovered = hoveredNav === (isPrev ? 'prev' : 'next');
@@ -217,7 +235,8 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const totalSlides = Math.ceil(allListings.length / itemsPerSlide);
   const startIndex = currentSlide * itemsPerSlide;
   const endIndex = startIndex + itemsPerSlide;
-  const currentSlideItems = allListings.slice(startIndex, endIndex);
+  // On mobile, show all items for horizontal scroll; on desktop, paginate
+  const currentSlideItems = isMobile ? allListings : allListings.slice(startIndex, endIndex);
 
   const handlePrev = () => setCurrentSlide((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
   const handleNext = () => setCurrentSlide((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
@@ -229,7 +248,7 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
         <p style={subtitleStyle}>Based on vehicles you own or want</p>
       </div>
       <div style={containerStyle} ref={carouselRef} onMouseEnter={() => setIsContainerHovered(true)} onMouseLeave={() => setIsContainerHovered(false)}>
-        {totalSlides > 1 && (
+        {!isMobile && totalSlides > 1 && (
           <>
             <button style={getNavStyle(true)} onClick={handlePrev} onMouseEnter={() => setHoveredNav('prev')} onMouseLeave={() => setHoveredNav(null)} aria-label="Previous slide" tabIndex={-1}><Icon name="chevron_left" size={32} /></button>
             <button style={getNavStyle(false)} onClick={handleNext} onMouseEnter={() => setHoveredNav('next')} onMouseLeave={() => setHoveredNav(null)} aria-label="Next slide" tabIndex={-1}><Icon name="chevron_right" size={32} /></button>
@@ -276,11 +295,17 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
             );
           })}
         </div>
-        {totalSlides > 1 && (
+        {!isMobile && totalSlides > 1 && (
           <div style={dotsStyle}>
             {Array.from({ length: totalSlides }).map((_, index) => (
               <button key={index} style={getDotStyle(index, index === currentSlide)} onClick={() => setCurrentSlide(index)} onMouseEnter={() => setHoveredDot(index)} onMouseLeave={() => setHoveredDot(null)} aria-label={`Go to slide ${index + 1}`} tabIndex={-1} />
             ))}
+          </div>
+        )}
+        {isMobile && allListings.length > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px', marginTop: '12px', padding: '0 16px', color: 'var(--color-neutrals-4, #6E7481)', fontFamily: "'Geist', sans-serif", fontSize: '12px' }}>
+            <Icon name="swipe" size={16} />
+            <span>Swipe for more</span>
           </div>
         )}
       </div>
