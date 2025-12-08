@@ -31,6 +31,7 @@ interface CarouselVehicle {
   staffRating: number;
   communityRating: number;
   rank: number;
+  priceMin?: number;
 }
 
 interface TopTenCarouselProps {
@@ -305,7 +306,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       const vehicleImage = (vehicleItem.image && typeof vehicleItem.image === 'string' && vehicleItem.image.trim() !== '' && vehicleItem.image.startsWith('http'))
         ? vehicleItem.image : vehicleImageFor(vehicleItem.name);
       
-      return { id: `vehicle-${index}`, name: vehicleItem.name, year, make, model, image: vehicleImage, galleryImages: vehicleItem.galleryImages, bodyStyle: vehicleItem.bodyStyle, staffRating, communityRating, combinedRating, vehicleYear };
+      return { id: `vehicle-${index}`, name: vehicleItem.name, year, make, model, image: vehicleImage, galleryImages: vehicleItem.galleryImages, bodyStyle: vehicleItem.bodyStyle, staffRating, communityRating, combinedRating, vehicleYear, priceMin: vehicleItem.priceMin };
     });
 
     const uniqueVehicles = new Map<string, typeof vehiclesWithRatings[0]>();
@@ -346,7 +347,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
     return sortedVehicles.slice(0, 10).map((vehicle, index) => ({
       id: `${selectedVehicleType.toLowerCase()}-${index}`,
-      name: vehicle.name, year: vehicle.year, make: vehicle.make, model: vehicle.model, image: vehicle.image, galleryImages: vehicle.galleryImages, staffRating: vehicle.staffRating, communityRating: vehicle.communityRating, rank: index + 1
+      name: vehicle.name, year: vehicle.year, make: vehicle.make, model: vehicle.model, image: vehicle.image, galleryImages: vehicle.galleryImages, staffRating: vehicle.staffRating, communityRating: vehicle.communityRating, rank: index + 1, priceMin: vehicle.priceMin
     })).reverse();
   }, [selectedVehicleType, selectedSubcategory, ratingType, allVehicleItems]);
 
@@ -700,6 +701,22 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     margin: 0,
     padding: 0,
     flexShrink: 0,
+  };
+
+  const nameRowStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'baseline',
+    gap: '12px',
+    flexWrap: 'wrap',
+  };
+
+  const priceStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 500,
+    fontSize: '14px',
+    lineHeight: 1.2,
+    color: 'var(--color-white, #FFFFFF)',
+    whiteSpace: 'nowrap',
   };
 
   const ratingsListStyle: React.CSSProperties = {
@@ -1058,7 +1075,12 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                       <ActionBadge text="See Local Listings" variant="primary" onClick={(e) => { e.stopPropagation(); handleVehicleClick(vehicle); }} />
                     </div>
                     <a href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`} style={nameLinkStyle} onClick={(e) => e.stopPropagation()}>
-                      <h2 style={nameStyle}>#{vehicle.rank} {vehicle.name}</h2>
+                      <div style={nameRowStyle}>
+                        <h2 style={nameStyle}>#{vehicle.rank} {vehicle.name}</h2>
+                        {vehicle.priceMin && (
+                          <span style={priceStyle}>Starting at ${vehicle.priceMin.toLocaleString()}</span>
+                        )}
+                      </div>
                     </a>
                   </div>
                   <div style={ratingsListStyle}>
