@@ -24,6 +24,15 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
   const [buyingPower, setBuyingPower] = useState<number>(27411);
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [isInfoHovered, setIsInfoHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Inject toggle styles
   useEffect(() => {
@@ -67,33 +76,153 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
   };
 
   // Styles
-  const containerStyle: React.CSSProperties = { width: '100%', background: 'var(--color-white, #FFFFFF)', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-lg, 16px)', boxShadow: '0px 4px 8px 0px rgba(20, 20, 22, 0.1)', overflow: 'hidden' };
-  const innerStyle: React.CSSProperties = { display: 'flex', minHeight: '500px' };
-  const leftStyle: React.CSSProperties = { flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', background: 'var(--color-white, #FFFFFF)' };
+  const containerStyle: React.CSSProperties = { 
+    width: '100%', 
+    background: 'var(--color-white, #FFFFFF)', 
+    border: isMobile ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)', 
+    borderRadius: isMobile ? 'var(--border-radius-md, 8px)' : 'var(--border-radius-lg, 16px)', 
+    boxShadow: isMobile ? 'none' : '0px 4px 8px 0px rgba(20, 20, 22, 0.1)', 
+    overflow: 'hidden' 
+  };
+  const innerStyle: React.CSSProperties = { 
+    display: 'flex', 
+    flexDirection: isMobile ? 'column' : 'row',
+    minHeight: isMobile ? 'auto' : '500px' 
+  };
+  const leftStyle: React.CSSProperties = { 
+    flex: 1, 
+    padding: isMobile ? '20px 16px' : '32px', 
+    display: isMobile ? 'none' : 'flex', // Hide on mobile
+    flexDirection: 'column', 
+    gap: isMobile ? '16px' : '24px', 
+    background: 'var(--color-white, #FFFFFF)' 
+  };
   const badgeStyle: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', padding: '6px 12px', background: 'var(--color-blue, #186CEA)', borderRadius: 'var(--border-radius-full, 100px)', width: 'fit-content' };
   const badgeTextStyle: React.CSSProperties = { fontFamily: 'Poppins, sans-serif', fontSize: '11px', fontWeight: 600, color: 'var(--color-white, #FFFFFF)', textTransform: 'uppercase', letterSpacing: '0.5px' };
-  const headerStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '12px' };
-  const titleStyle: React.CSSProperties = { fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)', margin: 0, lineHeight: 1.2, display: 'flex', alignItems: 'center', gap: '8px' };
+  const headerStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: isMobile ? '8px' : '12px' };
+  const titleStyle: React.CSSProperties = { 
+    fontFamily: 'Poppins, sans-serif', 
+    fontSize: isMobile ? '20px' : '32px', 
+    fontWeight: 600, 
+    color: 'var(--color-neutrals-1, #141416)', 
+    margin: 0, 
+    lineHeight: 1.2, 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '8px',
+    flexWrap: isMobile ? 'wrap' : 'nowrap'
+  };
   const infoBtnStyle: React.CSSProperties = { width: '24px', height: '24px', borderRadius: 'var(--border-radius-circle, 50%)', border: 'none', background: 'transparent', color: isInfoHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0, transition: 'color 0.2s ease' };
-  const descStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '16px', fontWeight: 400, color: 'var(--color-neutrals-4, #6E7481)', lineHeight: 1.5, margin: 0 };
+  const descStyle: React.CSSProperties = { 
+    fontFamily: 'Geist, sans-serif', 
+    fontSize: isMobile ? '14px' : '16px', 
+    fontWeight: 400, 
+    color: 'var(--color-neutrals-4, #6E7481)', 
+    lineHeight: 1.5, 
+    margin: 0 
+  };
   const imageContainerStyle: React.CSSProperties = { flex: 1, display: 'flex', alignItems: 'flex-end', minHeight: '300px' };
   const imageStyle: React.CSSProperties = { width: '100%', height: 'auto', objectFit: 'contain', borderRadius: 'var(--border-radius-md, 8px)' };
-  const rightStyle: React.CSSProperties = { flex: 1, padding: '32px', display: 'flex', flexDirection: 'column', gap: '24px', background: 'var(--color-neutrals-7, #F4F5F6)', borderLeft: '1px solid #E5E5E5' };
-  const powerDisplayStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px', paddingBottom: '24px', borderBottom: '1px solid #E5E5E5' };
-  const powerAmountStyle: React.CSSProperties = { fontFamily: 'Poppins, sans-serif', fontSize: '64px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)', lineHeight: 1 };
+  const rightStyle: React.CSSProperties = { 
+    flex: 1, 
+    padding: isMobile ? '20px 16px' : '32px', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: isMobile ? '16px' : '24px', 
+    background: isMobile ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-7, #F4F5F6)', 
+    borderLeft: isMobile ? 'none' : '1px solid #E5E5E5' 
+  };
+  const powerDisplayStyle: React.CSSProperties = { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    gap: isMobile ? '4px' : '8px', 
+    paddingBottom: isMobile ? '16px' : '24px', 
+    borderBottom: '1px solid #E5E5E5',
+    alignItems: isMobile ? 'center' : 'flex-start',
+    textAlign: isMobile ? 'center' : 'left'
+  };
+  const powerAmountStyle: React.CSSProperties = { 
+    fontFamily: 'Poppins, sans-serif', 
+    fontSize: isMobile ? '40px' : '64px', 
+    fontWeight: 600, 
+    color: 'var(--color-neutrals-1, #141416)', 
+    lineHeight: 1 
+  };
   const powerLabelStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--color-neutrals-4, #6E7481)' };
   const powerAprStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '12px', fontWeight: 400, color: 'var(--color-neutrals-4, #6E7481)' };
-  const inputsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' };
+  const inputsStyle: React.CSSProperties = { 
+    display: 'grid', 
+    gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
+    gap: isMobile ? '16px' : '20px' 
+  };
   const fieldStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '8px' };
   const labelStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '14px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' };
-  const selectStyle: React.CSSProperties = { width: '100%', padding: '12px 40px 12px 16px', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-md, 8px)', background: 'var(--color-white, #FFFFFF)', fontFamily: 'Geist, sans-serif', fontSize: '16px', fontWeight: 400, color: 'var(--color-neutrals-1, #141416)', cursor: 'pointer', outline: 'none', appearance: 'none', backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%231A1B21' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center' };
+  const selectStyle: React.CSSProperties = { 
+    width: '100%', 
+    padding: isMobile ? '14px 40px 14px 16px' : '12px 40px 12px 16px', 
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)', 
+    borderRadius: 'var(--border-radius-md, 8px)', 
+    background: 'var(--color-white, #FFFFFF)', 
+    fontFamily: 'Geist, sans-serif', 
+    fontSize: '16px', 
+    fontWeight: 400, 
+    color: 'var(--color-neutrals-1, #141416)', 
+    cursor: 'pointer', 
+    outline: 'none', 
+    appearance: 'none', 
+    backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%231A1B21' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")", 
+    backgroundRepeat: 'no-repeat', 
+    backgroundPosition: 'right 16px center' 
+  };
   const inputWrapperStyle: React.CSSProperties = { position: 'relative', display: 'flex', alignItems: 'center' };
   const currencyStyle: React.CSSProperties = { position: 'absolute', left: '16px', fontFamily: 'Geist, sans-serif', fontSize: '16px', fontWeight: 400, color: 'var(--color-neutrals-1, #141416)', pointerEvents: 'none', zIndex: 1 };
-  const inputStyle: React.CSSProperties = { width: '100%', padding: '12px 16px 12px 32px', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-md, 8px)', background: 'var(--color-white, #FFFFFF)', fontFamily: 'Geist, sans-serif', fontSize: '16px', fontWeight: 400, color: 'var(--color-neutrals-1, #141416)', outline: 'none' };
+  const inputStyle: React.CSSProperties = { 
+    width: '100%', 
+    padding: isMobile ? '14px 16px 14px 32px' : '12px 16px 12px 32px', 
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)', 
+    borderRadius: 'var(--border-radius-md, 8px)', 
+    background: 'var(--color-white, #FFFFFF)', 
+    fontFamily: 'Geist, sans-serif', 
+    fontSize: '16px', 
+    fontWeight: 400, 
+    color: 'var(--color-neutrals-1, #141416)', 
+    outline: 'none' 
+  };
   const tradeInStyle: React.CSSProperties = { paddingTop: '8px' };
   const toggleLabelStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', userSelect: 'none' };
   const toggleTextStyle: React.CSSProperties = { fontFamily: 'Geist, sans-serif', fontSize: '14px', fontWeight: 500, color: 'var(--color-neutrals-1, #141416)' };
-  const ctaStyle: React.CSSProperties = { width: '100%', padding: '16px 24px', border: 'none', borderRadius: 'var(--border-radius-md, 8px)', background: isCtaHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-1, #141416)', color: 'var(--color-white, #FFFFFF)', fontFamily: 'Poppins, sans-serif', fontSize: '16px', fontWeight: 600, cursor: 'pointer', marginTop: 'auto', transform: isCtaHovered ? 'translateY(-1px)' : 'none', boxShadow: isCtaHovered ? '0 4px 12px rgba(233, 12, 23, 0.3)' : 'none', transition: 'all 0.2s ease' };
+  const ctaStyle: React.CSSProperties = { 
+    width: '100%', 
+    padding: isMobile ? '14px 20px' : '16px 24px', 
+    border: 'none', 
+    borderRadius: 'var(--border-radius-md, 8px)', 
+    background: isCtaHovered ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-1, #141416)', 
+    color: 'var(--color-white, #FFFFFF)', 
+    fontFamily: 'Poppins, sans-serif', 
+    fontSize: '16px', 
+    fontWeight: 600, 
+    cursor: 'pointer', 
+    marginTop: isMobile ? '8px' : 'auto', 
+    transform: isCtaHovered ? 'translateY(-1px)' : 'none', 
+    boxShadow: isCtaHovered ? '0 4px 12px rgba(233, 12, 23, 0.3)' : 'none', 
+    transition: 'all 0.2s ease' 
+  };
+  
+  // Mobile header style (shown only on mobile)
+  const mobileHeaderStyle: React.CSSProperties = {
+    display: isMobile ? 'flex' : 'none',
+    flexDirection: 'column',
+    gap: '8px',
+    marginBottom: '16px'
+  };
+  const mobileTitleStyle: React.CSSProperties = {
+    fontFamily: 'Poppins, sans-serif',
+    fontSize: '18px',
+    fontWeight: 600,
+    color: 'var(--color-neutrals-1, #141416)',
+    margin: 0,
+    lineHeight: 1.3
+  };
 
   return (
     <div className={className} style={containerStyle}>
@@ -115,6 +244,12 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
         </div>
 
         <div style={rightStyle}>
+          {/* Mobile header */}
+          <div style={mobileHeaderStyle}>
+            <h2 style={mobileTitleStyle}>See Your Buying Potential</h2>
+            <p style={descStyle}>Calculate your budget and see vehicles that fit.</p>
+          </div>
+          
           <div style={powerDisplayStyle}>
             <div style={powerAmountStyle}>{formatCurrency(buyingPower)}</div>
             <div style={powerLabelStyle}>Est. buying power</div>
