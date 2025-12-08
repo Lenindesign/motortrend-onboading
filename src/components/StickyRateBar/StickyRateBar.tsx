@@ -654,7 +654,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             >
               <ActionBadge
                 text="See Local Listings"
-                variant="secondary"
+                variant="primary"
               />
             </button>
             {ctaText && isMobile && (
