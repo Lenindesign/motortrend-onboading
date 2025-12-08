@@ -37,6 +37,7 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const [hoveredSaveBtn, setHoveredSaveBtn] = useState<number | null>(null);
   const [savedListings, setSavedListings] = useState<Set<string>>(new Set());
   const [isMobile, setIsMobile] = useState(false);
+  const [isWideDesktop, setIsWideDesktop] = useState(window.innerWidth >= 1280);
   const carouselRef = useRef<HTMLDivElement>(null);
   const scrollPositionRef = useRef<number>(0);
 
@@ -77,10 +78,13 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const itemsPerSlide = isMobile ? 1 : 4;
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkBreakpoints = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsWideDesktop(window.innerWidth >= 1280);
+    };
+    checkBreakpoints();
+    window.addEventListener('resize', checkBreakpoints);
+    return () => window.removeEventListener('resize', checkBreakpoints);
   }, []);
 
   useEffect(() => {
@@ -143,7 +147,8 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
   const formatMileage = (mileage: number): string => mileage === 0 ? 'New' : `${mileage.toLocaleString()} mi`;
 
   // Styles - overflow-anchor: none prevents browser scroll anchoring when content loads
-  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: 0, overflowAnchor: 'none' };
+  // Add 16px horizontal padding on desktop screens < 1280px
+  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: !isMobile && !isWideDesktop ? '0 16px' : 0, overflowAnchor: 'none' };
   const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-4, 24px)', padding: isMobile ? '0 16px' : 0 };
   const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '20px' : '28px', fontWeight: 600, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 4px 0' };
   const subtitleStyle: React.CSSProperties = { fontFamily: "'Geist', sans-serif", fontSize: isMobile ? '13px' : '14px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0 };
