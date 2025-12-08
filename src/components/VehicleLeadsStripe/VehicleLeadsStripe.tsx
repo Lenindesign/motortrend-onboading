@@ -97,13 +97,16 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
         const relevantVehicles = vehicles.filter(v => v.ownership === 'own' || v.ownership === 'want' || v.ownership === 'previously_owned');
         if (relevantVehicles.length === 0) { setIsLoading(false); return; }
         const zipCode = onboardingData.zipCode || '90001';
+        const minListings = 9; // Minimum number of listings to show
+        const listingsPerVehicle = Math.max(5, Math.ceil(minListings / relevantVehicles.length));
+        
         const leadsPromises = relevantVehicles.map(async (vehicle) => {
           try {
             const { year, make, model } = parseVehicleName(vehicle.name);
             const { vehicleImageFor } = await import('../../utils/vehicleImages');
             const vehicleImage = vehicleImageFor(vehicle.name);
             const listings = await getLocalListings(year, make, model, vehicleImage, zipCode);
-            return { vehicleName: vehicle.name, ownership: vehicle.ownership, listings: listings.slice(0, 3), isLoading: false };
+            return { vehicleName: vehicle.name, ownership: vehicle.ownership, listings: listings.slice(0, listingsPerVehicle), isLoading: false };
           } catch (error) {
             console.error(`Error fetching listings for ${vehicle.name}:`, error);
             return { vehicleName: vehicle.name, ownership: vehicle.ownership, listings: [], isLoading: false };
