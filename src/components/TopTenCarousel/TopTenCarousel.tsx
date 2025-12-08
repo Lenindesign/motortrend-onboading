@@ -1078,7 +1078,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                       <div style={nameRowStyle}>
                         <h2 style={nameStyle}>#{vehicle.rank} {vehicle.name}</h2>
                         {vehicle.priceMin && (
-                          <span style={priceStyle}>Starting at ${vehicle.priceMin.toLocaleString()}</span>
+                          <span style={priceStyle}>MSRP ${vehicle.priceMin.toLocaleString()}</span>
                         )}
                       </div>
                     </a>
