@@ -647,7 +647,13 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               style={localListingsBadgeStyle}
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
+                const localListingsSection = document.getElementById('local-listings');
+                if (localListingsSection) {
+                  localListingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  // Fallback to vehicle inventory if section not found
+                  navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
+                }
               }}
               onMouseEnter={() => setIsLocalListingsHovered(true)}
               onMouseLeave={() => setIsLocalListingsHovered(false)}
