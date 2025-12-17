@@ -15,6 +15,7 @@ import WriteReviewModal from '../WriteReviewModal';
 import { getVehicleBodyStyle, type BodyStyleCategory, BODY_STYLE_CATEGORIES } from '../../utils/vehicleBodyStyles';
 import { getVehicles, searchVehicles } from '../../api/vehiclesApi';
 import Icon from '../Icon';
+import { addSearchedVehicle } from '../PersonalizedVehicles';
 
 export interface VehicleItem {
   name: string;
@@ -342,8 +343,11 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   };
   
   const handleAutocompleteSelect = (vehicle: any) => {
-    setSearchQuery(`${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+    const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+    setSearchQuery(vehicleName);
     setShowAutocomplete(false);
+    // Track searched vehicle for personalization
+    addSearchedVehicle(searchQuery || vehicleName, vehicleName);
   };
   
   const handleSearchClear = () => {

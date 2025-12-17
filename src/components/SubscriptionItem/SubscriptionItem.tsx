@@ -170,8 +170,8 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
             onMouseLeave={() => setIsBadgeHovered(false)}
             title="Click to subscribe"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="11" stroke="#E6E8EC" strokeWidth="2"/>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ color: 'rgba(255, 255, 255, 1)' }}>
+              <circle cx="12" cy="12" r="11" fill="rgba(255, 255, 255, 1)" stroke="#E6E8EC" strokeWidth="2"/>
             </svg>
           </div>
         )}

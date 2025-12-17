@@ -1,0 +1,182 @@
+/**
+ * Rating Grid Styles
+ * 3-column, 2-row grid layout for ratings display
+ */
+
+.rating-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  width: 100%;
+  background-color: var(--color-neutrals-1);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-3);
+}
+
+/* Rows */
+.rating-grid__row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3);
+  width: 100%;
+}
+
+.rating-grid__row--top {
+  align-items: center;
+}
+
+.rating-grid__row--bottom {
+  align-items: flex-start;
+}
+
+/* Cells */
+.rating-grid__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+}
+
+/* Column 1: MotorTrend Rating */
+.rating-grid__cell--motortrend {
+  flex-direction: row;
+  gap: var(--spacing-2);
+}
+
+.rating-grid__mt-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.rating-grid__score {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.rating-grid__score-value {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: 32px;
+  line-height: 1;
+  color: var(--color-neutrals-8);
+}
+
+.rating-grid__score-max {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-neutrals-5);
+}
+
+/* Column 2 & 3: Stars */
+.rating-grid__cell--user-reviews,
+.rating-grid__cell--rate {
+  flex-direction: row;
+}
+
+.rating-grid__stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rating-grid__star--interactive {
+  transition: all var(--transition-fast);
+}
+
+.rating-grid__star--interactive:hover {
+  transform: scale(1.1);
+}
+
+/* Labels */
+.rating-grid__cell--label {
+  flex-direction: row;
+  gap: var(--spacing-1);
+  flex-wrap: wrap;
+}
+
+.rating-grid__label {
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-regular);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-neutrals-8);
+  text-align: center;
+}
+
+.rating-grid__score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  background-color: var(--color-neutrals-3);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-body);
+  font-weight: var(--font-weight-semibold);
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-neutrals-8);
+}
+
+/* Responsive: Mobile */
+@media (max-width: 768px) {
+  .rating-grid {
+    padding: var(--spacing-2);
+  }
+
+  .rating-grid__row {
+    gap: var(--spacing-2);
+  }
+
+  .rating-grid__mt-logo {
+    width: 24px;
+    height: 24px;
+  }
+
+  .rating-grid__score-value {
+    font-size: 24px;
+  }
+
+  .rating-grid__score-max {
+    font-size: 14px;
+  }
+
+  .rating-grid__stars svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .rating-grid__label {
+    font-size: 12px;
+  }
+
+  .rating-grid__score-badge {
+    font-size: 11px;
+    padding: 2px 6px;
+  }
+}
+
+/* Responsive: Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .rating-grid__mt-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .rating-grid__score-value {
+    font-size: 28px;
+  }
+
+  .rating-grid__stars svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+
+
+

@@ -25,13 +25,17 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [isInfoHovered, setIsInfoHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isNarrowScreen, setIsNarrowScreen] = useState(false);
 
-  // Check for mobile
+  // Check for mobile and narrow screens
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const checkBreakpoints = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsNarrowScreen(window.innerWidth < 1280);
+    };
+    checkBreakpoints();
+    window.addEventListener('resize', checkBreakpoints);
+    return () => window.removeEventListener('resize', checkBreakpoints);
   }, []);
 
   // Inject toggle styles
@@ -76,6 +80,17 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
   };
 
   // Styles
+  // Section wrapper provides consistent padding
+  // Side padding: 0px on screens >= 1280px, 16px on screens < 1280px
+  const sectionWrapperStyle: React.CSSProperties = {
+    width: '100%',
+    maxWidth: 'var(--max-width-container, 1280px)',
+    margin: '0 auto',
+    paddingTop: isMobile ? 'var(--section-padding-md, 24px)' : 'var(--section-padding-lg, 32px)',
+    paddingBottom: isMobile ? 'var(--section-padding-md, 24px)' : 'var(--section-padding-lg, 32px)',
+    paddingLeft: isNarrowScreen ? '16px' : '0px',
+    paddingRight: isNarrowScreen ? '16px' : '0px',
+  };
   const containerStyle: React.CSSProperties = { 
     width: '100%', 
     background: 'var(--color-white, #FFFFFF)', 
@@ -225,80 +240,82 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
   };
 
   return (
-    <div className={className} style={containerStyle}>
-      <div style={innerStyle}>
-        <div style={leftStyle}>
-          <div style={badgeStyle}><span style={badgeTextStyle}>NEW</span></div>
-          <div style={headerStyle}>
-            <h2 style={titleStyle}>
-              See Your Buying Potential
-              <button style={infoBtnStyle} onMouseEnter={() => setIsInfoHovered(true)} onMouseLeave={() => setIsInfoHovered(false)} aria-label="Learn more">
-                <Icon name="info" size={20} />
-              </button>
-            </h2>
-            <p style={descStyle}>Calculate your budget and instantly see vehicles that fit your financial comfort zone.</p>
-          </div>
-          <div style={imageContainerStyle}>
-            <img src="https://d2kde5ohu8qb21.cloudfront.net/files/693066aff847fd000218dd58/b958fa8b27417e4cfd952751e837d410.png" alt="Car" style={imageStyle} />
-          </div>
-        </div>
-
-        <div style={rightStyle}>
-          {/* Mobile header */}
-          <div style={mobileHeaderStyle}>
-            <h2 style={mobileTitleStyle}>See Your Buying Potential</h2>
-            <p style={descStyle}>Calculate your budget and see vehicles that fit.</p>
-          </div>
-          
-          <div style={powerDisplayStyle}>
-            <div style={powerAmountStyle}>{formatCurrency(buyingPower)}</div>
-            <div style={powerLabelStyle}>Est. buying power</div>
-            <div style={powerAprStyle}>Based on {getAPR()}% APR</div>
-          </div>
-
-          <div style={inputsStyle}>
-            <div style={fieldStyle}>
-              <label style={labelStyle}>Looking for</label>
-              <select style={selectStyle} value={carType} onChange={(e) => setCarType(e.target.value as CarType)}>
-                <option value="New car">New car</option>
-                <option value="Used car">Used car</option>
-              </select>
+    <div className={className} style={sectionWrapperStyle}>
+      <div style={containerStyle}>
+        <div style={innerStyle}>
+          <div style={leftStyle}>
+            <div style={badgeStyle}><span style={badgeTextStyle}>NEW</span></div>
+            <div style={headerStyle}>
+              <h2 style={titleStyle}>
+                See Your Buying Potential
+                <button style={infoBtnStyle} onMouseEnter={() => setIsInfoHovered(true)} onMouseLeave={() => setIsInfoHovered(false)} aria-label="Learn more">
+                  <Icon name="info" size={20} />
+                </button>
+              </h2>
+              <p style={descStyle}>Calculate your budget and instantly see vehicles that fit your financial comfort zone.</p>
             </div>
-            <div style={fieldStyle}>
-              <label style={labelStyle}>Down payment</label>
-              <div style={inputWrapperStyle}>
-                <span style={currencyStyle}>$</span>
-                <input type="text" style={inputStyle} value={downPayment} onChange={(e) => setDownPayment(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" />
+            <div style={imageContainerStyle}>
+              <img src="https://d2kde5ohu8qb21.cloudfront.net/files/693066aff847fd000218dd58/b958fa8b27417e4cfd952751e837d410.png" alt="Car" style={imageStyle} />
+            </div>
+          </div>
+
+          <div style={rightStyle}>
+            {/* Mobile header */}
+            <div style={mobileHeaderStyle}>
+              <h2 style={mobileTitleStyle}>See Your Buying Potential</h2>
+              <p style={descStyle}>Calculate your budget and see vehicles that fit.</p>
+            </div>
+            
+            <div style={powerDisplayStyle}>
+              <div style={powerAmountStyle}>{formatCurrency(buyingPower)}</div>
+              <div style={powerLabelStyle}>Est. buying power</div>
+              <div style={powerAprStyle}>Based on {getAPR()}% APR</div>
+            </div>
+
+            <div style={inputsStyle}>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>Looking for</label>
+                <select style={selectStyle} value={carType} onChange={(e) => setCarType(e.target.value as CarType)}>
+                  <option value="New car">New car</option>
+                  <option value="Used car">Used car</option>
+                </select>
+              </div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>Down payment</label>
+                <div style={inputWrapperStyle}>
+                  <span style={currencyStyle}>$</span>
+                  <input type="text" style={inputStyle} value={downPayment} onChange={(e) => setDownPayment(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" />
+                </div>
+              </div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>Credit score</label>
+                <select style={selectStyle} value={creditScore} onChange={(e) => setCreditScore(e.target.value as CreditScore)}>
+                  <option value="Excellent (740+)">Excellent (740+)</option>
+                  <option value="Good (670-739)">Good (670-739)</option>
+                  <option value="Fair (580-669)">Fair (580-669)</option>
+                  <option value="Poor (Below 580)">Poor (Below 580)</option>
+                </select>
+              </div>
+              <div style={fieldStyle}>
+                <label style={labelStyle}>Monthly payment</label>
+                <div style={inputWrapperStyle}>
+                  <span style={currencyStyle}>$</span>
+                  <input type="text" style={inputStyle} value={monthlyPayment} onChange={(e) => setMonthlyPayment(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" />
+                </div>
               </div>
             </div>
-            <div style={fieldStyle}>
-              <label style={labelStyle}>Credit score</label>
-              <select style={selectStyle} value={creditScore} onChange={(e) => setCreditScore(e.target.value as CreditScore)}>
-                <option value="Excellent (740+)">Excellent (740+)</option>
-                <option value="Good (670-739)">Good (670-739)</option>
-                <option value="Fair (580-669)">Fair (580-669)</option>
-                <option value="Poor (Below 580)">Poor (Below 580)</option>
-              </select>
-            </div>
-            <div style={fieldStyle}>
-              <label style={labelStyle}>Monthly payment</label>
-              <div style={inputWrapperStyle}>
-                <span style={currencyStyle}>$</span>
-                <input type="text" style={inputStyle} value={monthlyPayment} onChange={(e) => setMonthlyPayment(e.target.value.replace(/[^0-9]/g, ''))} placeholder="0" />
-              </div>
-            </div>
-          </div>
 
-          <div style={tradeInStyle}>
-            <label style={toggleLabelStyle}>
-              <input type="checkbox" className="kyb-toggle" checked={includeTradeIn} onChange={(e) => setIncludeTradeIn(e.target.checked)} />
-              <span style={toggleTextStyle}>Include trade-in</span>
-            </label>
-          </div>
+            <div style={tradeInStyle}>
+              <label style={toggleLabelStyle}>
+                <input type="checkbox" className="kyb-toggle" checked={includeTradeIn} onChange={(e) => setIncludeTradeIn(e.target.checked)} />
+                <span style={toggleTextStyle}>Include trade-in</span>
+              </label>
+            </div>
 
-          <button style={ctaStyle} onClick={handleSeeMatches} onMouseEnter={() => setIsCtaHovered(true)} onMouseLeave={() => setIsCtaHovered(false)}>
-            See your matches
-          </button>
+            <button style={ctaStyle} onClick={handleSeeMatches} onMouseEnter={() => setIsCtaHovered(true)} onMouseLeave={() => setIsCtaHovered(false)}>
+              See your matches
+            </button>
+          </div>
         </div>
       </div>
     </div>

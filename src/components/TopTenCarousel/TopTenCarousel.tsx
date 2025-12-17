@@ -436,6 +436,21 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
 
   useEffect(() => { setCurrentSlide(0); }, [carouselVehicles]);
 
+  // Auto-skip empty subcategories to prevent carousel from disappearing
+  useEffect(() => {
+    if (carouselVehicles.length === 0 && selectedVehicleType !== 'Performance' && selectedVehicleType !== 'Recommended For You') {
+      const subcategories = getSubcategoriesForType(selectedVehicleType);
+      const currentIndex = subcategories.indexOf(selectedSubcategory);
+      const nextSubcategory = subcategories[(currentIndex + 1) % subcategories.length];
+      // If we've cycled back to 'All', stay there
+      if (nextSubcategory === 'All' || currentIndex === -1) {
+        setSelectedSubcategory('All');
+      } else {
+        setSelectedSubcategory(nextSubcategory);
+      }
+    }
+  }, [carouselVehicles.length, selectedSubcategory, selectedVehicleType]);
+
   const onTouchStart = (e: React.TouchEvent) => { setTouchEnd(null); setTouchStart(e.targetTouches[0].clientX); };
   const onTouchMove = (e: React.TouchEvent) => { setTouchEnd(e.targetTouches[0].clientX); };
   const onTouchEnd = () => {
@@ -995,7 +1010,13 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
     pointerEvents: 'none',
   };
 
-  if (carouselVehicles.length === 0) return null;
+  // Don't return null immediately - let auto-skip effect handle empty subcategories
+  if (carouselVehicles.length === 0) {
+    // If we're on 'All' and still have no vehicles, then return null
+    if (selectedSubcategory === 'All') return null;
+    // Otherwise, the auto-skip effect will handle it
+    return null;
+  }
 
   return (
     <div ref={carouselRef} style={containerStyle} className={className}>

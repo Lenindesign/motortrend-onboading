@@ -29,6 +29,7 @@ import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import { Popover } from '../../components/atoms/Popover';
 import { LocalListingsSidebar } from '../../components/LocalListingsSidebar';
 import { getLocalListings } from '../../utils/localListings';
+import { addViewedVehicle } from '../../components/PersonalizedVehicles';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -122,6 +123,13 @@ export const VehicleDetails: React.FC = () => {
   // Normalize: replace dashes with spaces in model to ensure consistent format
   // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
+
+  // Track viewed vehicle for personalization
+  useEffect(() => {
+    if (vehicleName) {
+      addViewedVehicle(vehicleName);
+    }
+  }, [vehicleName]);
 
   // Generate local listings
   const [localListings, setLocalListings] = useState<any[]>([]);
@@ -1353,10 +1361,12 @@ export const VehicleDetails: React.FC = () => {
                     height={30}
                   />
                 </button>
+{/* HIDDEN: ArticleReactions thumbs up
                 <ArticleReactions
                   articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
                   vehicleName={vehicleName}
                 />
+                */}
               </div>
             </div>
           )}

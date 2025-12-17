@@ -506,10 +506,11 @@ export const generateUserReviews = (vehicleName: string): ReviewData[] => {
   const templates = generateReviewTemplates(year, make, model, segment);
   
   // Convert templates to ReviewData format
+  // Note: template.rating is on 0-10 scale, but ReviewData expects 0-100 scale (where /20 gives 0-5 display)
   return templates.map((template, index) => ({
     id: `${make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}-${index + 1}`,
     reviewerName: template.reviewerName,
-    rating: template.rating,
+    rating: template.rating * 10,
     title: template.title,
     content: template.content,
     vehicleType: segment === 'truck' ? 'truck' : segment === 'suv' ? 'suv' : 'sedan',

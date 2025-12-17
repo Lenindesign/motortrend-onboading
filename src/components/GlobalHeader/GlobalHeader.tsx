@@ -12,6 +12,7 @@ import Icon from '../Icon';
 import { Badge } from '../../design-system/components';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { searchVehicles, getFilterOptions, getVehicles } from '../../api/vehiclesApi';
+import { addSearchedVehicle } from '../PersonalizedVehicles';
 
 export interface GlobalHeaderProps {
   onSignInClick?: () => void;
@@ -814,6 +815,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
   const handleVehicleSelect = (vehicleName: string) => {
     const { year, make, model } = parseVehicleName(vehicleName);
+    // Track searched vehicle for personalization
+    addSearchedVehicle(searchQuery || vehicleName, vehicleName);
     setSearchQuery('');
     setShowSearchDropdown(false);
     navigate(`/vehicles/${year}/${make}/${model}`);
@@ -1193,18 +1196,20 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             )}
           </div>
           
-          {/* Join Newsletter Button */}
-          <button 
-            style={newsletterBtnStyle}
-            onMouseEnter={() => setIsNewsletterHovered(true)}
-            onMouseLeave={() => setIsNewsletterHovered(false)}
-            onClick={() => {
-              // TODO: Implement newsletter signup
-              console.log('Join Newsletter clicked');
-            }}
-          >
-            Join Newsletter
-          </button>
+          {/* Subscribe Button - Only show if user is not authenticated */}
+          {!isAuthenticated && (
+            <button 
+              style={newsletterBtnStyle}
+              onMouseEnter={() => setIsNewsletterHovered(true)}
+              onMouseLeave={() => setIsNewsletterHovered(false)}
+              onClick={() => {
+                // TODO: Implement newsletter signup
+                console.log('Subscribe clicked');
+              }}
+            >
+              Subscribe
+            </button>
+          )}
           
           {isAuthenticated ? (
             <div style={userMenuStyle} ref={userMenuRef}>
@@ -1232,7 +1237,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   )}
                   {notificationCount > 0 && (
                     <div style={notificationBadgeStyle}>
-                      <Badge variant="error" size="sm" aria-label={`${notificationCount} new notification${notificationCount > 1 ? 's' : ''}`}>
+                      <Badge variant="error" size="sm" circle aria-label={`${notificationCount} new notification${notificationCount > 1 ? 's' : ''}`}>
                         {notificationCount}
                       </Badge>
                     </div>

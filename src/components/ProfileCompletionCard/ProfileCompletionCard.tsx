@@ -169,9 +169,37 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   };
 
   const handleSaveStep3 = () => {
-    if (step3Vehicles.length > 0 && onUpdateStep3) {
-      const firstVehicle = step3Vehicles[0];
-      onUpdateStep3({ vehicleType: firstVehicle.ownership, vehicle: firstVehicle.name });
+    if (step3Vehicles.length > 0) {
+      // Save all vehicles to localStorage directly
+      try {
+        const existingDataStr = localStorage.getItem('onboardingData');
+        const existingData = existingDataStr ? JSON.parse(existingDataStr) : {};
+        const existingVehicles = existingData.vehicles || [];
+        
+        // Add new vehicles, avoiding duplicates
+        const newVehicles = step3Vehicles.filter(
+          newV => !existingVehicles.some((existingV: { name: string }) => existingV.name === newV.name)
+        );
+        
+        const updatedData = {
+          ...existingData,
+          vehicles: [...existingVehicles, ...newVehicles]
+        };
+        
+        localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+        setLocalOnboardingData(updatedData);
+        
+        // Dispatch event to notify other components
+        window.dispatchEvent(new CustomEvent('onboardingDataUpdated'));
+        
+        // Also call the callback for backward compatibility
+        if (onUpdateStep3) {
+          const firstVehicle = step3Vehicles[0];
+          onUpdateStep3({ vehicleType: firstVehicle.ownership, vehicle: firstVehicle.name });
+        }
+      } catch (e) {
+        console.error('Failed to save vehicles:', e);
+      }
       setExpandedStep(null);
     }
   };

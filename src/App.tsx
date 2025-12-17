@@ -35,10 +35,12 @@ import Sitemap from './pages/Sitemap';
 import AtomicDesignAudit from './pages/AtomicDesignAudit';
 import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
 import { RatingProvider } from './contexts/RatingContext';
+import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
 
 function App() {
   return (
+    <AuthProvider>
     <RatingProvider>
       <Router>
         <ScrollToTop />
@@ -144,6 +146,7 @@ function App() {
         </div>
       </Router>
     </RatingProvider>
+    </AuthProvider>
   );
 }
 

@@ -51,11 +51,13 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   const [_hoveredStarIndex, _setHoveredStarIndex] = useState<number | null>(null);
   const [_hoveredCategoryStarIndex, _setHoveredCategoryStarIndex] = useState<{category: string, index: number} | null>(null);
   const [isExpandBtnHovered, setIsExpandBtnHovered] = useState(false);
+  /* HIDDEN: Media-related state - commented out with Additional Information section
   const [hoveredMediaRemove, setHoveredMediaRemove] = useState<number | null>(null);
+  const [isMediaPlaceholderHovered, setIsMediaPlaceholderHovered] = useState(false);
+  */
   const [_isSubmitHovered, _setIsSubmitHovered] = useState(false);
   const [isFullscreenCloseHovered, setIsFullscreenCloseHovered] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
-  const [isMediaPlaceholderHovered, setIsMediaPlaceholderHovered] = useState(false);
   
   // Responsive handler
   useEffect(() => {
@@ -232,6 +234,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     setIsManualRating(false);
   };
 
+  /* HIDDEN: Media handlers - commented out with Additional Information section
   const handleMediaUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -256,6 +259,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     setMediaFiles((prev) => prev.filter((_, i) => i !== index));
     setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
   };
+  */
 
   const getVerificationLevel = (): VerificationLevel => {
     if (vinNumber.trim().length > 0) {
@@ -672,11 +676,13 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
   };
 
+  /* HIDDEN: sectionGroupOptionalStyle - commented out with Additional Information section
   const sectionGroupOptionalStyle: React.CSSProperties = {
     ...sectionGroupStyle,
     backgroundColor: 'transparent',
     border: '1px dashed var(--color-neutrals-5, #B1B5C3)',
   };
+  */
 
   const sectionGroupHeaderStyle: React.CSSProperties = {
     display: 'flex',
@@ -877,6 +883,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     pointerEvents: 'none',
   };
 
+  /* HIDDEN: Media and VIN styles - commented out with Additional Information section
   const mediaUploadStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -969,6 +976,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
     borderRadius: 'var(--border-radius-md, 8px)',
     marginTop: '8px',
   };
+  */
 
   const footerStyle: React.CSSProperties = {
     position: 'sticky',
@@ -1355,7 +1363,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               {renderCategoryCard('budgetFriendly', 'Budget Friendly', 'Cost of ownership and overall value')}
             </div>
 
-            {/* Optional Information Section */}
+{/* HIDDEN: Additional Information Section
             <div style={sectionGroupOptionalStyle}>
               <div style={sectionGroupHeaderStyle}>
                 <h3 style={sectionGroupTitleStyle}>
@@ -1367,7 +1375,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 <p style={sectionGroupSubtitleStyle}>Help others by providing more details</p>
               </div>
 
-              {/* Model Selection */}
               <div style={fieldStyle}>
                 <label style={fieldLabelStyle}>Model</label>
                 <select
@@ -1385,7 +1392,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 </select>
               </div>
 
-              {/* Media Upload Section */}
               <div style={fieldStyle}>
                 <label style={fieldLabelStyle}>Share a video or photo of your car</label>
                 <div style={mediaUploadStyle}>
@@ -1412,7 +1418,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     </div>
                   </label>
                   
-                  {/* Media Previews */}
                   {mediaPreviews.length > 0 && (
                     <div style={mediaPreviewsStyle}>
                       {mediaPreviews.map((preview, index) => (
@@ -1441,7 +1446,6 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 </div>
               </div>
 
-              {/* VIN Verification Section */}
               <TextField
                 label={
                   <>
@@ -1472,6 +1476,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 }
               />
             </div>
+            */}
           </div>
         </div>
 

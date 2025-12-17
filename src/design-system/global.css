@@ -22,6 +22,9 @@
   --color-primary-1: #E90C17;
   --color-primary-2: #E90C17;
   
+  /* Accent color alias - for theming flexibility */
+  --accent: var(--color-primary-1);
+  
   /* Colors - Semantic */
   --color-blue: #186CEA;
   --color-white: #FFFFFF;
@@ -215,6 +218,30 @@
   /* Section Spacing */
   --section-spacing-vertical: 32px;
   --section-spacing-horizontal: 24px;
+  
+  /* ========================================
+     Uniform Section Spacing System
+     ======================================== 
+     Use these variables for consistent spacing
+     between all page sections and components.
+  */
+  
+  /* Section Gap - Space between major page sections */
+  --section-gap-sm: 24px;      /* Tight spacing between related sections */
+  --section-gap-md: 40px;      /* Standard spacing between sections */
+  --section-gap-lg: 56px;      /* Large spacing for major section breaks */
+  --section-gap-xl: 72px;      /* Extra large for hero/featured sections */
+  
+  /* Section Padding - Internal padding within sections */
+  --section-padding-sm: 16px;  /* Compact section padding */
+  --section-padding-md: 24px;  /* Standard section padding */
+  --section-padding-lg: 32px;  /* Large section padding */
+  --section-padding-xl: 48px;  /* Extra large for featured sections */
+  
+  /* Page Container Padding */
+  --page-padding-mobile: 16px;
+  --page-padding-tablet: 24px;
+  --page-padding-desktop: 0px;
 }
 
 /* Global Resets */
@@ -442,6 +469,181 @@ body {
   
   .text-h5 {
     font-size: 20px;
+  }
+}
+
+/* ========================================
+   STANDARDIZED SECTION SPACING SYSTEM
+   ======================================== 
+   
+   RULES:
+   1. Parent containers use `gap` for spacing BETWEEN sections
+   2. Sections use padding for INTERNAL spacing only
+   3. NEVER add margin-top/margin-bottom to sections
+   4. Use these classes or the Section component
+   
+   USAGE:
+   - Wrap content with .section or <Section> component
+   - Parent should have display: flex; flex-direction: column; gap: var(--section-gap-md);
+*/
+
+/* Section Base - No external margins, only internal padding */
+.section {
+  width: 100%;
+  /* NO margin-top or margin-bottom - parent's gap handles spacing */
+}
+
+/* Section Padding Variants */
+.section--padding-none {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.section--padding-sm {
+  padding-top: var(--section-padding-sm);
+  padding-bottom: var(--section-padding-sm);
+}
+
+.section--padding-md {
+  padding-top: var(--section-padding-md);
+  padding-bottom: var(--section-padding-md);
+}
+
+.section--padding-lg {
+  padding-top: var(--section-padding-lg);
+  padding-bottom: var(--section-padding-lg);
+}
+
+.section--padding-xl {
+  padding-top: var(--section-padding-xl);
+  padding-bottom: var(--section-padding-xl);
+}
+
+/* Section Background Variants */
+.section--bg-transparent {
+  background-color: transparent;
+}
+
+.section--bg-white {
+  background-color: var(--color-white);
+}
+
+.section--bg-light {
+  background-color: var(--color-neutrals-7);
+}
+
+.section--bg-dark {
+  background-color: var(--color-neutrals-2);
+}
+
+.section--bg-primary {
+  background-color: var(--color-primary-1);
+}
+
+/* Section Width Variants */
+.section--contained {
+  max-width: var(--max-width-container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-padding-desktop);
+  padding-right: var(--page-padding-desktop);
+}
+
+.section--full-width {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Section Inner Container (for full-width sections that need centered content) */
+.section__inner {
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+  padding-left: var(--page-padding-desktop);
+  padding-right: var(--page-padding-desktop);
+}
+
+/* Responsive Section Padding */
+@media (max-width: 1279px) {
+  .section--contained,
+  .section__inner {
+    padding-left: var(--page-padding-tablet);
+    padding-right: var(--page-padding-tablet);
+  }
+}
+
+@media (max-width: 768px) {
+  .section--padding-sm {
+    padding-top: var(--spacing-2);
+    padding-bottom: var(--spacing-2);
+  }
+  
+  .section--padding-md {
+    padding-top: var(--spacing-3);
+    padding-bottom: var(--spacing-3);
+  }
+  
+  .section--padding-lg {
+    padding-top: var(--section-padding-md);
+    padding-bottom: var(--section-padding-md);
+  }
+  
+  .section--padding-xl {
+    padding-top: var(--section-padding-lg);
+    padding-bottom: var(--section-padding-lg);
+  }
+  
+  .section--contained,
+  .section__inner {
+    padding-left: var(--page-padding-mobile);
+    padding-right: var(--page-padding-mobile);
+  }
+}
+
+/* ========================================
+   PAGE LAYOUT CONTAINERS
+   ======================================== 
+   Use these for page-level layout with automatic section spacing
+*/
+
+/* Page Container - Flexbox with gap for automatic section spacing */
+.page-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap-md);
+  width: 100%;
+}
+
+/* Tighter spacing variant */
+.page-sections--tight {
+  gap: var(--section-gap-sm);
+}
+
+/* Looser spacing variant */
+.page-sections--loose {
+  gap: var(--section-gap-lg);
+}
+
+/* Extra loose for hero pages */
+.page-sections--hero {
+  gap: var(--section-gap-xl);
+}
+
+@media (max-width: 768px) {
+  .page-sections {
+    gap: var(--section-gap-sm);
+  }
+  
+  .page-sections--tight {
+    gap: var(--spacing-2);
+  }
+  
+  .page-sections--loose {
+    gap: var(--section-gap-md);
+  }
+  
+  .page-sections--hero {
+    gap: var(--section-gap-lg);
   }
 }
 

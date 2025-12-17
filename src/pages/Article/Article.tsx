@@ -24,7 +24,7 @@ import { getArticleBySlug, getDefaultArticle, articles } from '../../utils/artic
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { vehicleImageFor } from '../../utils/vehicleImages';
-import { ArticleReactions } from '../../components/ArticleReactions';
+// HIDDEN: import { ArticleReactions } from '../../components/ArticleReactions';
 import StickyRateBar from '../../components/StickyRateBar';
 import ArticleHero from '../../components/ArticleHero/ArticleHero';
 import './Article.css';
@@ -1054,11 +1054,13 @@ export const Article: React.FC = () => {
                 >
                   <MessageCircle size={18} />
                 </span>
+                {/* HIDDEN: ArticleReactions thumbs up
                 <span className="article__byline-separator">|</span>
                 <ArticleReactions 
                   articleSlug={slug || 'default'} 
                   vehicleName={primaryVehicle || vehicleName || undefined} 
                 />
+                */}
               </div>
               <button 
                 className={`article__save-btn ${isSaved ? 'saved' : ''}`}

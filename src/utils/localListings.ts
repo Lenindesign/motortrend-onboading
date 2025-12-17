@@ -67,10 +67,16 @@ const trims = [
 export function generateLocalListings(
   vehicleYear: string,
   vehicleImage: string,
-  count: number = 5
+  count: number = 5,
+  fallbackImages?: string[]
 ): LocalListing[] {
   const listings: LocalListing[] = [];
   const baseYear = parseInt(vehicleYear);
+  
+  // Build available images pool from fallback images or just the main image
+  const availableImages = fallbackImages && fallbackImages.length > 0 
+    ? fallbackImages 
+    : [vehicleImage];
 
   for (let i = 0; i < count; i++) {
     const isNew = i < 2; // First 2 listings are new
@@ -87,10 +93,16 @@ export function generateLocalListings(
     
     const distance = Math.round(Math.random() * 50 + 1);
     
-    // Generate multiple photo URLs (for demo, we'll use the same image)
-    // In production, this would be different photos of the same vehicle
-    const photoCount = Math.floor(Math.random() * 5) + 3; // 3-7 photos per listing
-    const photoUrls = Array(photoCount).fill(vehicleImage);
+    // Use the main listing image (cycle through available images for each listing)
+    const mainImage = availableImages[i % availableImages.length];
+    
+    // Generate photo URLs using all available images for gallery
+    // Start from a different offset for each listing to add variety
+    const photoCount = Math.min(availableImages.length, Math.floor(Math.random() * 5) + 3);
+    const startOffset = i % availableImages.length;
+    const photoUrls = Array(photoCount).fill(null).map((_, idx) => 
+      availableImages[(startOffset + idx) % availableImages.length]
+    );
     
     listings.push({
       id: `listing-${i}-${Date.now()}`,
@@ -101,7 +113,7 @@ export function generateLocalListings(
       condition,
       location: locations[Math.floor(Math.random() * locations.length)],
       distance,
-      imageUrl: vehicleImage,
+      imageUrl: mainImage,
       photoUrls,
       trim: trims[Math.floor(Math.random() * trims.length)],
       exteriorColor: exteriorColors[Math.floor(Math.random() * exteriorColors.length)],
@@ -117,44 +129,98 @@ export function generateLocalListings(
 
 /**
  * Get local listings for a specific vehicle
- * Tries Marketcheck API first, falls back to mock data
+ * Tries MotorTrend API first (rydeshopper photos), falls back to MarketCheck, then mock data
  */
 export async function getLocalListings(
   year: string,
   make: string,
   model: string,
   vehicleImage: string,
-  zipCode?: string
+  zipCode?: string,
+  fallbackImages?: string[]
 ): Promise<LocalListing[]> {
   console.log(`🔍 Fetching listings for: ${year} ${make} ${model}`);
   
+  // Build available images pool from fallback images or just the main image
+  const availableImages = fallbackImages && fallbackImages.length > 0 
+    ? fallbackImages 
+    : [vehicleImage];
+  
+  // Try MotorTrend API first (preferred - rydeshopper inventory photos)
   try {
-    // Try to import and use Marketcheck API
+    const { fetchMotortrendListings } = await import('../api/motortrendListingsApi');
+    const listings = await fetchMotortrendListings(year, make, model, zipCode || '90001', 5);
+    
+    console.log(`📊 MotorTrend API returned ${listings.length} listings`);
+    
+    if (listings.length > 0) {
+      // If images are placeholders or broken, use images from our vehicles database
+      const listingsWithImages = listings.map((l, idx) => {
+        const hasValidImage = l.imageUrl && !l.imageUrl.includes('placeholder');
+        const hasValidPhotos = l.photoUrls && l.photoUrls.length > 0 && !l.photoUrls[0]?.includes('placeholder');
+        
+        const fallbackImage = availableImages[idx % availableImages.length];
+        const fallbackPhotos = availableImages.length > 1 
+          ? Array(Math.min(availableImages.length, 5)).fill(null).map((_, i) => availableImages[(idx + i) % availableImages.length])
+          : [fallbackImage];
+        
+        return {
+          ...l,
+          imageUrl: hasValidImage ? l.imageUrl : fallbackImage,
+          photoUrls: hasValidPhotos ? l.photoUrls : fallbackPhotos
+        };
+      });
+      console.log('✅ Using real listings from MotorTrend API with fallback images from vehicles DB');
+      return listingsWithImages;
+    } else {
+      console.log('⚠️ MotorTrend returned 0 listings, trying MarketCheck...');
+    }
+  } catch (error: any) {
+    console.warn('⚠️ MotorTrend API error, trying MarketCheck:', error?.message);
+  }
+  
+  // Try MarketCheck API as fallback
+  try {
     const { getMarketcheckListings } = await import('../api/marketcheckApi');
     const listings = await getMarketcheckListings(year, make, model, zipCode);
     
     console.log(`📊 Marketcheck returned ${listings.length} listings`);
     
     if (listings.length > 0) {
-      console.log('✅ Using real listings from Marketcheck API with photos:', 
-        listings.map(l => ({ name: l.dealerName, photos: l.photoUrls?.length || 0 }))
+      // Use fallback images if API images are missing
+      const listingsWithFallback = listings.map((l, idx) => {
+        const hasValidImage = l.imageUrl && l.imageUrl.length > 0;
+        const hasValidPhotos = l.photoUrls && l.photoUrls.length > 0;
+        
+        const fallbackImage = availableImages[idx % availableImages.length];
+        const fallbackPhotos = availableImages.length > 1 
+          ? Array(Math.min(availableImages.length, 5)).fill(null).map((_, i) => availableImages[(idx + i) % availableImages.length])
+          : [fallbackImage];
+        
+        return {
+          ...l,
+          imageUrl: hasValidImage ? l.imageUrl : fallbackImage,
+          photoUrls: hasValidPhotos ? l.photoUrls : fallbackPhotos
+        };
+      });
+      console.log('✅ Using real listings from Marketcheck API with fallback images:', 
+        listingsWithFallback.map(l => ({ name: l.dealerName, photos: l.photoUrls?.length || 0 }))
       );
-      return listings;
+      return listingsWithFallback;
     } else {
       console.log('⚠️ Marketcheck returned 0 listings, falling back to mock data');
     }
   } catch (error: any) {
     if (error?.message === 'QUOTA_EXHAUSTED') {
-      console.warn('⚠️ Marketcheck API monthly quota exhausted. Using mock data with sample photos.');
-      console.warn('💡 The free tier includes 100 requests/day. Wait until next month or upgrade your plan.');
+      console.warn('⚠️ Marketcheck API quota exhausted.');
     } else {
-      console.warn('❌ Marketcheck API error, using mock data:', error);
+      console.warn('❌ Marketcheck API error, using mock data:', error?.message);
     }
   }
   
-  // Fallback to mock data
-  console.log('📝 Using mock listings data');
-  return generateLocalListings(year, vehicleImage, 5);
+  // Fallback to mock data with vehicle gallery images
+  console.log('📝 Using mock listings data with', availableImages.length, 'fallback images');
+  return generateLocalListings(year, vehicleImage, 5, fallbackImages);
 }
 
 /**
@@ -164,8 +230,9 @@ export function getLocalListingsSync(
   year: string,
   _make: string,
   _model: string,
-  vehicleImage: string
+  vehicleImage: string,
+  fallbackImages?: string[]
 ): LocalListing[] {
-  return generateLocalListings(year, vehicleImage, 5);
+  return generateLocalListings(year, vehicleImage, 5, fallbackImages);
 }
 

@@ -63,6 +63,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const [isDistributionTooltipVisible, setIsDistributionTooltipVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isNarrowScreen, setIsNarrowScreen] = useState(window.innerWidth < 1280);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [isVehicleNameHovered, setIsVehicleNameHovered] = useState(false);
@@ -73,7 +74,10 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const hideDistributionTooltipTimeout = useRef<number | null>(null);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      setIsNarrowScreen(window.innerWidth < 1280);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -110,7 +114,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
 
   const barStyle: React.CSSProperties = {
     width: isSticky ? undefined : '100vw',
-    backgroundColor: 'var(--color-neutrals-1, #141416)',
+    backgroundColor: 'var(--color-neutrals-2, #353945)',
     boxShadow: 'var(--shadow-depth-5, 0px 4px 20px 0px rgba(20, 20, 22, 0.06))',
     position: isSticky ? 'fixed' : 'relative',
     top: isSticky ? 0 : undefined,
@@ -131,25 +135,25 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     maxWidth: 'var(--max-width-content, 1280px)',
     width: '100%',
     margin: '0 auto',
-    padding: isMobile ? '10px 12px' : 'var(--spacing-2, 16px) var(--spacing-3, 24px)',
-    paddingLeft: !isMobile && window.innerWidth >= 1280 ? 0 : undefined,
-    paddingRight: !isMobile && window.innerWidth >= 1280 ? 0 : undefined,
+    padding: isMobile ? '10px 12px' : `${isSticky ? '16px' : '32px'} ${isNarrowScreen ? '16px' : '0'}`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: isMobile ? '12px' : 'var(--spacing-3, 24px)',
     flexDirection: 'row',
     flexWrap: isMobile ? 'wrap' : 'nowrap',
+    transition: 'padding var(--transition-normal, 250ms ease-in-out)',
   };
 
   const nameContainerStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    gap: isMobile ? '6px' : 'var(--spacing-1, 8px)',
+    gap: isMobile ? '6px' : (isSticky ? '8px' : '16px'),
     flexShrink: 0,
     order: isMobile ? 1 : undefined,
     flex: isMobile ? '1 1 auto' : undefined,
     minWidth: isMobile ? 0 : undefined,
+    transition: 'gap var(--transition-normal, 250ms ease-in-out)',
   };
 
   const badgesRowStyle: React.CSSProperties = {
@@ -183,7 +187,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const vehicleNameStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontWeight: 600,
-    fontSize: isMobile ? '18px' : '24px',
+    fontSize: isMobile ? '18px' : (isSticky ? '24px' : '36px'),
     lineHeight: '1.2em',
     color: 'var(--color-neutrals-6, #E6E8EC)',
     whiteSpace: 'nowrap',
@@ -192,7 +196,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     textAlign: isMobile ? 'left' : undefined,
     order: isMobile ? 2 : undefined,
     width: isMobile ? '100%' : undefined,
-    transition: 'opacity var(--transition-fast, all 150ms ease-in-out)',
+    transition: 'font-size var(--transition-normal, 250ms ease-in-out), opacity var(--transition-fast, all 150ms ease-in-out)',
     opacity: isVehicleNameHovered ? 0.8 : 1,
   };
 
@@ -220,10 +224,18 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     const isVertical = type === 'user-reviews' || type === 'your-rating';
     const isMotortrend = type === 'motortrend';
     
+    // Determine gap based on type
+    const getGap = () => {
+      if (isMobile) return '3px';
+      if (isMotortrend) return '4px'; // Closer gap for MotorTrend rating
+      if (isVertical) return '12px';
+      return 'var(--spacing-2, 16px)';
+    };
+    
     return {
       display: isMobile && isYourRating ? 'none' : 'flex',
       alignItems: 'center',
-      gap: isMobile ? '3px' : (isVertical ? '12px' : 'var(--spacing-2, 16px)'),
+      gap: getGap(),
       cursor: 'pointer',
       transition: 'opacity var(--transition-fast, all 150ms ease-in-out)',
       background: 'none',
@@ -320,7 +332,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
 
   const scoreLargeStyle: React.CSSProperties = {
     color: 'var(--color-neutrals-8, #FCFCFD)',
-    fontSize: '26px',
+    fontSize: isSticky ? '24px' : '36px',
     fontWeight: 600,
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     lineHeight: 1,
@@ -328,6 +340,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     alignItems: 'baseline',
     gap: 'var(--spacing-gap-xs, 4px)',
     whiteSpace: 'nowrap',
+    transition: 'font-size var(--transition-normal, 250ms ease-in-out)',
   };
 
   const scoreMaxStyle: React.CSSProperties = {

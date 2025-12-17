@@ -24,6 +24,8 @@ export interface BadgeProps {
   className?: string;
   icon?: React.ReactNode;
   outline?: boolean;
+  /** Makes the badge circular - ideal for notification counts */
+  circle?: boolean;
   onClick?: () => void;
   'aria-label'?: string;
   style?: React.CSSProperties;
@@ -31,9 +33,16 @@ export interface BadgeProps {
 
 // Size: padding-y padding-x font-size gap
 const sizeStyles: Record<BadgeSize, React.CSSProperties> = {
-  sm: { padding: '6px 16px', fontSize: '11px', gap: '4px' },
+  sm: { padding: '6px 12px', fontSize: '11px', gap: '4px' },
   md: { padding: '8px 20px', fontSize: '12px', gap: '4px' },
   lg: { padding: '10px 24px', fontSize: '14px', gap: '4px' },
+};
+
+// Circle badge sizes - fixed dimensions for circular badges
+const circleSizeStyles: Record<BadgeSize, React.CSSProperties> = {
+  sm: { width: '18px', height: '18px', fontSize: '10px', padding: '0' },
+  md: { width: '22px', height: '22px', fontSize: '11px', padding: '0' },
+  lg: { width: '28px', height: '28px', fontSize: '13px', padding: '0' },
 };
 
 // Variant colors - Using CSS variables from design system
@@ -79,11 +88,12 @@ export const Badge: React.FC<BadgeProps> = ({
   className = '',
   icon,
   outline = false,
+  circle = false,
   onClick,
   'aria-label': ariaLabel,
   style: customStyle,
 }) => {
-  const sizeStyle = sizeStyles[size];
+  const sizeStyle = circle ? circleSizeStyles[size] : sizeStyles[size];
   const variantStyle = variantStyles[variant];
 
   const style: React.CSSProperties = {
@@ -91,8 +101,8 @@ export const Badge: React.FC<BadgeProps> = ({
     alignItems: 'center',
     justifyContent: 'center',
     fontFamily: 'var(--font-body, Geist, system-ui, sans-serif)',
-    fontWeight: 500,
-    borderRadius: 'var(--border-radius-sm, 4px)',
+    fontWeight: circle ? 600 : 800,
+    borderRadius: circle ? '50%' : 'var(--border-radius-sm, 4px)',
     transition: 'var(--transition-fast, 150ms ease-in-out)',
     whiteSpace: 'nowrap',
     lineHeight: 1,
@@ -100,7 +110,14 @@ export const Badge: React.FC<BadgeProps> = ({
     // Size
     padding: sizeStyle.padding,
     fontSize: sizeStyle.fontSize,
-    gap: sizeStyle.gap,
+    gap: circle ? '0' : (sizeStyles[size].gap || '4px'),
+    // Circle-specific sizing
+    ...(circle && {
+      width: sizeStyle.width,
+      height: sizeStyle.height,
+      minWidth: sizeStyle.width,
+      minHeight: sizeStyle.height,
+    }),
     // Variant
     backgroundColor: outline ? 'transparent' : variantStyle.bg,
     color: variantStyle.color,

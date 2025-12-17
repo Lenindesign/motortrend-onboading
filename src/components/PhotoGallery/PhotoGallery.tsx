@@ -8,8 +8,8 @@ import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 import { Badge } from '../atoms/Badge/Badge';
 import { SavedModal } from '../SavedModal';
+import { ListingCard } from '../ListingCard';
 import type { LocalListing } from '../LocalListingsSidebar/LocalListingsSidebar';
-import { isLeadSaved, toggleSaveLead } from '../../utils/savedLeads';
 
 interface PhotoGalleryProps {
   images: string[];
@@ -39,8 +39,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   const [sortBy, setSortBy] = useState<SortOption>('price-low');
   const [filterCondition, setFilterCondition] = useState<FilterCondition>('all');
   const [activeTab, setActiveTab] = useState<'photos' | 'listings'>('photos');
-  const [currentListingPhotoIndex, setCurrentListingPhotoIndex] = useState<Record<string, number>>({});
-  const [savedLeads, setSavedLeads] = useState<Set<string>>(new Set());
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [savedLeadTitle, setSavedLeadTitle] = useState('');
   const [localImages, setLocalImages] = useState<string[]>(images);
@@ -57,10 +55,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [hoveredFilter, setHoveredFilter] = useState<string | null>(null);
-  const [hoveredListingCard, setHoveredListingCard] = useState<string | null>(null);
-  const [hoveredListingNav, setHoveredListingNav] = useState<string | null>(null);
-  const [hoveredListingSave, setHoveredListingSave] = useState<string | null>(null);
-  const [hoveredListingCta, setHoveredListingCta] = useState<string | null>(null);
   const [isViewAllHovered, setIsViewAllHovered] = useState(false);
   const [isResetHovered, setIsResetHovered] = useState(false);
   const [isMainImageHovered, setIsMainImageHovered] = useState(false);
@@ -109,17 +103,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     setCurrentIndex(0);
   }, [images]);
 
-  useEffect(() => {
-    if (localListings.length > 0) {
-      const saved = new Set<string>();
-      localListings.forEach(listing => {
-        if (isLeadSaved(listing.id)) {
-          saved.add(listing.id);
-        }
-      });
-      setSavedLeads(saved);
-    }
-  }, [localListings]);
 
   useEffect(() => {
     setCurrentIndex(initialIndex);
@@ -210,50 +193,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     return filtered;
   }, [localListings, sortBy, filterCondition]);
 
-  const formatPrice = (price: number): string => `$${price.toLocaleString()}`;
-  const formatMileage = (mileage: number): string => mileage === 0 ? 'New' : `${mileage.toLocaleString()} mi`;
-
-  const handleListingPhotoNav = (listingId: string, direction: 'prev' | 'next', photoCount: number) => {
-    setCurrentListingPhotoIndex(prev => {
-      const current = prev[listingId] || 0;
-      const next = direction === 'next' 
-        ? (current + 1) % photoCount
-        : (current - 1 + photoCount) % photoCount;
-      return { ...prev, [listingId]: next };
-    });
-  };
-
-  const handleListingCardClick = (listing: LocalListing) => {
-    const listingPhotos = listing.photoUrls || [listing.imageUrl];
-    if (listingPhotos.length > 0) {
-      setLocalImages(listingPhotos);
-      setCurrentIndex(0);
-      setActiveTab('photos');
-      if (onListingClick) {
-        onListingClick(listing);
-      }
-    }
-  };
-
-  const handleSaveLead = (listing: LocalListing, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
-    const wasSaved = toggleSaveLead(listing, vehicleName || '');
-    const listingTitle = `${listing.year} ${vehicleName}${listing.trim ? ` ${listing.trim}` : ''}`;
-    
-    if (wasSaved) {
-      setSavedLeads(prev => new Set(prev).add(listing.id));
-      setSavedLeadTitle(listingTitle);
-      setIsSavedModalOpen(true);
-    } else {
-      setSavedLeads(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(listing.id);
-        return newSet;
-      });
-    }
-  };
-
   // ==================== INLINE STYLES ====================
 
   const containerStyle: React.CSSProperties = {
@@ -339,10 +278,11 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
 
   const contentStyle: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: isMobile ? '1fr' : (isTablet ? '1fr 280px' : '1fr 300px'),
+    gridTemplateColumns: isMobile ? '1fr' : (isTablet ? '1fr 280px' : '1fr 320px'),
     flex: 1,
     overflow: 'hidden',
     minHeight: 0,
+    maxHeight: '100%',
     position: isMobile ? 'relative' : undefined,
   };
 
@@ -460,6 +400,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     overflow: 'hidden',
     minHeight: 0,
     height: '100%',
+    maxHeight: '100%',
   };
 
   const controlsStyle: React.CSSProperties = {
@@ -527,165 +468,6 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     minHeight: 0,
   };
 
-  const getListingCardStyle = (listingId: string, _isBest: boolean): React.CSSProperties => ({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 'var(--spacing-1, 8px)',
-    flexShrink: 0,
-    position: 'relative',
-    cursor: 'pointer',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-    borderRadius: 'var(--border-radius-md, 8px)',
-    overflow: 'hidden',
-    transform: hoveredListingCard === listingId ? 'translateY(-2px)' : 'translateY(0)',
-    boxShadow: hoveredListingCard === listingId ? '0 4px 12px rgba(0, 0, 0, 0.15)' : 'none',
-  });
-
-  const listingImageContainerStyle: React.CSSProperties = {
-    position: 'relative',
-    width: '100%',
-    aspectRatio: '16 / 9',
-    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
-    borderRadius: 'var(--border-radius-md, 8px)',
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  };
-
-  const listingImageStyle: React.CSSProperties = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    objectPosition: 'center bottom',
-  };
-
-  const getListingNavStyle = (listingId: string, direction: 'prev' | 'next'): React.CSSProperties => ({
-    position: 'absolute',
-    top: '50%',
-    transform: hoveredListingNav === `${listingId}-${direction}` ? 'translateY(-50%) scale(1.1)' : 'translateY(-50%)',
-    left: direction === 'prev' ? '8px' : undefined,
-    right: direction === 'next' ? '8px' : undefined,
-    width: '28px',
-    height: '28px',
-    borderRadius: 'var(--border-radius-circle, 50%)',
-    backgroundColor: hoveredListingNav === `${listingId}-${direction}` ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.6)',
-    backdropFilter: 'blur(4px)',
-    border: 'none',
-    color: 'var(--color-white, #FFFFFF)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.2s ease',
-    opacity: hoveredListingCard ? 1 : 0,
-    zIndex: 2,
-  });
-
-  const getListingSaveStyle = (listingId: string, isSaved: boolean): React.CSSProperties => ({
-    position: 'absolute',
-    top: '8px',
-    left: '8px',
-    width: '36px',
-    height: '36px',
-    borderRadius: 'var(--border-radius-circle, 50%)',
-    backgroundColor: isSaved ? 'var(--color-primary-1, #E90C17)' : (hoveredListingSave === listingId ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.6)'),
-    backdropFilter: 'blur(4px)',
-    border: 'none',
-    color: 'var(--color-white, #FFFFFF)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.2s ease',
-    opacity: isSaved || hoveredListingCard === listingId ? 1 : 0,
-    zIndex: 3,
-    transform: hoveredListingSave === listingId ? 'scale(1.1)' : 'scale(1)',
-  });
-
-  const listingPhotoCounterStyle: React.CSSProperties = {
-    position: 'absolute',
-    bottom: '8px',
-    right: '8px',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    backdropFilter: 'blur(4px)',
-    borderRadius: 'var(--border-radius-sm, 4px)',
-    padding: '4px 8px',
-    color: 'var(--color-white, #FFFFFF)',
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '11px',
-    fontWeight: 600,
-    zIndex: 2,
-  };
-
-  const listingDetailsStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    padding: '12px',
-  };
-
-  const listingHeaderStyle: React.CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '4px',
-  };
-
-  const listingTitleStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '14px',
-    fontWeight: 600,
-    color: 'var(--color-neutrals-1, #141416)',
-    margin: 0,
-    lineHeight: 1.3,
-  };
-
-  const listingPriceStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-    fontWeight: 600,
-    fontSize: '18px',
-    color: 'var(--color-neutrals-1, #141416)',
-    marginBottom: '4px',
-  };
-
-  const listingInfoStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '12px',
-    color: 'var(--color-neutrals-3, #353945)',
-    paddingBottom: '8px',
-    borderBottom: '1px solid var(--color-neutrals-7, #F4F5F6)',
-  };
-
-  const listingInfoItemStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  };
-
-  const getListingCtaStyle = (listingId: string): React.CSSProperties => ({
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px',
-    background: hoveredListingCta === listingId ? 'var(--color-neutrals-1, #141416)' : 'var(--color-white, #FFFFFF)',
-    color: hoveredListingCta === listingId ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-1, #141416)',
-    border: `1px solid ${hoveredListingCta === listingId ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
-    borderRadius: 'var(--border-radius-sm, 4px)',
-    padding: '10px 16px',
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '13px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    marginTop: 'auto',
-  });
-
   const noResultsStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -737,136 +519,35 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
     transform: isViewAllHovered ? 'translateY(-2px)' : 'translateY(0)',
   };
 
-  const bestDealBadgeStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: '8px',
-    left: '8px',
-    background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-    color: 'var(--color-black, #000000)',
-    padding: '4px 10px',
-    borderRadius: 'var(--border-radius-sm, 4px)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '11px',
-    fontWeight: 600,
-    zIndex: 3,
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  };
-
-  const renderListingCard = (listing: LocalListing, isBestDeal: boolean = false) => {
-    const photos = listing.photoUrls || [listing.imageUrl];
-    const currentPhotoIdx = currentListingPhotoIndex[listing.id] || 0;
-    const hasMultiplePhotos = photos.length > 1;
-    const isSaved = savedLeads.has(listing.id);
-
+  const renderListingCard = (listing: LocalListing, _isBestDeal: boolean = false) => {
+    // Extract make/model from vehicleName (which may include year like "2025 Kia Stinger")
+    const nameWithoutYear = vehicleName?.replace(/^\d{4}\s+/, '') || '';
+    
     return (
-      <div 
-        key={listing.id} 
-        style={getListingCardStyle(listing.id, isBestDeal)}
-        onClick={() => handleListingCardClick(listing)}
-        onMouseEnter={() => setHoveredListingCard(listing.id)}
-        onMouseLeave={() => setHoveredListingCard(null)}
-      >
-        {isBestDeal && (
-          <div style={bestDealBadgeStyle}>
-            <Icon name="star" variant="filled" size={16} />
-            <span>Best Deal</span>
-          </div>
-        )}
-
-        <div style={listingImageContainerStyle}>
-          <img src={photos[currentPhotoIdx]} alt={`${listing.year} ${vehicleName}`} style={listingImageStyle} />
-          
-          <button
-            style={getListingSaveStyle(listing.id, isSaved)}
-            onClick={(e) => handleSaveLead(listing, e)}
-            onMouseEnter={() => setHoveredListingSave(listing.id)}
-            onMouseLeave={() => setHoveredListingSave(null)}
-            aria-label={isSaved ? 'Unsave lead' : 'Save lead'}
-          >
-            <Icon name={isSaved ? 'bookmark' : 'bookmark_border'} variant={isSaved ? 'filled' : 'outlined'} size={20} />
-          </button>
-          
-          {hasMultiplePhotos && (
-            <>
-              <button
-                style={getListingNavStyle(listing.id, 'prev')}
-                onClick={(e) => { e.stopPropagation(); handleListingPhotoNav(listing.id, 'prev', photos.length); }}
-                onMouseEnter={() => setHoveredListingNav(`${listing.id}-prev`)}
-                onMouseLeave={() => setHoveredListingNav(null)}
-                aria-label="Previous photo"
-              >
-                <Icon name="chevron_left" size={20} />
-              </button>
-              <button
-                style={getListingNavStyle(listing.id, 'next')}
-                onClick={(e) => { e.stopPropagation(); handleListingPhotoNav(listing.id, 'next', photos.length); }}
-                onMouseEnter={() => setHoveredListingNav(`${listing.id}-next`)}
-                onMouseLeave={() => setHoveredListingNav(null)}
-                aria-label="Next photo"
-              >
-                <Icon name="chevron_right" size={20} />
-              </button>
-              <div style={listingPhotoCounterStyle}>{currentPhotoIdx + 1}/{photos.length}</div>
-            </>
-          )}
-        </div>
-
-        <div style={listingDetailsStyle}>
-          <div style={listingHeaderStyle}>
-            <div style={listingTitleStyle}>{listing.year} {vehicleName}{listing.trim ? ` ${listing.trim}` : ''}</div>
-            <Badge variant={listing.condition === 'New' ? 'success' : listing.condition === 'Certified Pre-Owned' ? 'info' : 'neutral'} size="sm">
-              {listing.condition === 'Certified Pre-Owned' ? 'CPO' : listing.condition}
-            </Badge>
-          </div>
-          
-          <div style={listingPriceStyle}>{formatPrice(listing.price)}</div>
-          
-          <div style={listingInfoStyle}>
-            <div style={listingInfoItemStyle}>
-              <Icon name="speed" size={16} />
-              <span>{formatMileage(listing.mileage)}</span>
-            </div>
-          </div>
-          
-          <div style={{ ...listingInfoItemStyle, marginBottom: '6px' }}>
-            <Icon name="store" size={16} />
-            <span style={{ fontWeight: 500, color: 'var(--color-neutrals-1, #141416)' }}>{listing.dealerName}</span>
-          </div>
-          
-          <div style={{ ...listingInfoItemStyle, marginBottom: '6px' }}>
-            <Icon name="location_on" size={16} />
-            <span>{listing.location} • {listing.distance} mi away</span>
-          </div>
-          
-          {listing.exteriorColor && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--color-neutrals-3, #353945)', marginBottom: '10px', flexWrap: 'wrap' }}>
-              <span style={{ fontWeight: 500 }}>Exterior:</span>
-              <span style={{ color: 'var(--color-neutrals-1, #141416)' }}>{listing.exteriorColor}</span>
-              {listing.interiorColor && (
-                <>
-                  <span style={{ margin: '0 4px' }}>•</span>
-                  <span style={{ fontWeight: 500 }}>Interior:</span>
-                  <span style={{ color: 'var(--color-neutrals-1, #141416)' }}>{listing.interiorColor}</span>
-                </>
-              )}
-            </div>
-          )}
-          
-          <button 
-            style={getListingCtaStyle(listing.id)}
-            onClick={(e) => e.stopPropagation()}
-            onMouseEnter={() => setHoveredListingCta(listing.id)}
-            onMouseLeave={() => setHoveredListingCta(null)}
-          >
-            View Details
-            <Icon name="arrow_forward" size={16} />
-          </button>
-        </div>
-      </div>
+      <ListingCard
+        key={listing.id}
+        listing={listing}
+        vehicleName={nameWithoutYear}
+        vehicleYear={listing.year}
+        variant="compact"
+        onImageClick={(photos) => {
+          setLocalImages(photos);
+          setCurrentIndex(0);
+          setActiveTab('photos');
+          if (onListingClick) {
+            onListingClick(listing);
+          }
+        }}
+        onSaveChange={(isSaved) => {
+          if (isSaved) {
+            setSavedLeadTitle(`${listing.year} ${nameWithoutYear}`);
+            setIsSavedModalOpen(true);
+          }
+        }}
+        onViewDetails={() => {
+          // View details handler
+        }}
+      />
     );
   };
 

@@ -18,7 +18,10 @@ import { CreatePostModal } from '../../components/Community/CreatePostModal';
 import { CreateCommunityModal } from '../../components/Community/CreateCommunityModal';
 import { CommentSection } from '../../components/Community/CommentSection';
 import { CommunityToast } from '../../components/Community/CommunityToast';
+import { AuthModal } from '../../components/Community/AuthModal';
+import { UserProfileMenu } from '../../components/Community/UserProfileMenu';
 import type { ToastType } from '../../components/Community/CommunityToast';
+import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import './Community.css';
@@ -27,6 +30,7 @@ const CommunityPage: React.FC = () => {
   const { slug, postId } = useParams<{ slug?: string; postId?: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isAuthenticated } = useAuth();
   
   // Data State
   const [communities, setCommunities] = useState<ICommunity[]>([]);
@@ -37,6 +41,7 @@ const CommunityPage: React.FC = () => {
   // UI State
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'hot' | 'new' | 'top'>('hot');
   const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -92,9 +97,16 @@ const CommunityPage: React.FC = () => {
     loadData();
   }, [slug, postId, location.pathname]); // Re-run when route changes
 
-  // Load user avatar from localStorage
+  // Load user avatar from auth context or localStorage
   useEffect(() => {
     const loadUserAvatar = () => {
+      // First check auth context
+      if (user?.avatarUrl) {
+        setUserAvatar(user.avatarUrl);
+        return;
+      }
+      
+      // Fall back to localStorage
       try {
         const onboardingData = localStorage.getItem('onboardingData');
         if (onboardingData) {
@@ -123,10 +135,20 @@ const CommunityPage: React.FC = () => {
     return () => {
       window.removeEventListener('onboardingDataUpdated', handleUpdate);
     };
-  }, []);
+  }, [user]);
+
+  // Helper to require authentication before an action
+  const requireAuth = (action: () => void) => {
+    if (!isAuthenticated) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+    action();
+  };
 
   // Handlers
   const handleJoinToggle = (id: string) => {
+    requireAuth(() => {
     // Get community state before toggle
     const community = communities.find(c => c.id === id);
     const wasJoined = community?.isJoined;
@@ -141,6 +163,7 @@ const CommunityPage: React.FC = () => {
         wasJoined ? 'info' : 'success'
       );
     }
+    });
   };
 
   const handleVote = (id: string, direction: 'up' | 'down') => {
@@ -155,6 +178,14 @@ const CommunityPage: React.FC = () => {
   const handlePostCreated = () => {
     loadData(false);
     showToast('Post created successfully!', 'success');
+  };
+
+  const handleOpenCreatePost = () => {
+    requireAuth(() => setIsCreatePostOpen(true));
+  };
+
+  const handleOpenCreateCommunity = () => {
+    requireAuth(() => setIsCreateCommunityOpen(true));
   };
 
   const handleCommunityCreated = (newSlug: string) => {
@@ -208,7 +239,7 @@ const CommunityPage: React.FC = () => {
         <CommunitySidebar 
           communities={communities} 
           onJoinToggle={handleJoinToggle} 
-          onCreateCommunity={() => setIsCreateCommunityOpen(true)}
+          onCreateCommunity={handleOpenCreateCommunity}
         />
 
         {/* Main Content */}
@@ -314,14 +345,16 @@ const CommunityPage: React.FC = () => {
               </div>
               <input 
                 type="text" 
-                placeholder="Create Post" 
+                placeholder={isAuthenticated ? "Create Post" : "Sign in to create a post"} 
                 className="community-page__create-input"
-                onClick={() => setIsCreatePostOpen(true)}
+                onClick={handleOpenCreatePost}
                 readOnly
               />
-              <button className="community-page__media-btn" onClick={() => setIsCreatePostOpen(true)}>
+              <button className="community-page__media-btn" onClick={handleOpenCreatePost}>
                 <Icon name="image" size={24} />
               </button>
+              {/* User Profile Menu */}
+              <UserProfileMenu onSignInClick={() => setIsAuthModalOpen(true)} />
             </div>
           )}
 
@@ -390,10 +423,10 @@ const CommunityPage: React.FC = () => {
                   </p>
                   <button 
                     className="community-page__empty-cta"
-                    onClick={() => setIsCreatePostOpen(true)}
+                    onClick={handleOpenCreatePost}
                   >
                     <Icon name="add" size={20} />
-                    Create Post
+                    {isAuthenticated ? 'Create Post' : 'Sign In to Post'}
                   </button>
                 </div>
               ) : (
@@ -447,9 +480,9 @@ const CommunityPage: React.FC = () => {
                 </div>
                 <button 
                   className="community-info-card__create-btn"
-                  onClick={() => setIsCreatePostOpen(true)}
+                  onClick={handleOpenCreatePost}
                 >
-                  Create Post
+                  {isAuthenticated ? 'Create Post' : 'Sign In to Post'}
                 </button>
               </div>
             </div>
@@ -555,6 +588,12 @@ const CommunityPage: React.FC = () => {
         isOpen={isCreateCommunityOpen}
         onClose={() => setIsCreateCommunityOpen(false)}
         onCommunityCreated={handleCommunityCreated}
+      />
+      
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="signin"
       />
       
       {/* Toast Notifications */}

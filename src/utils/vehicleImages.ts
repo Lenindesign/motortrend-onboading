@@ -662,6 +662,15 @@ const vehicleImageMap: Record<string, string> = {
   '2022 ford explorer': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4c63228292d000815e944/6-2024-ford-explorer-front-view.jpg',
   '2021 ford explorer': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4c63228292d000815e944/6-2024-ford-explorer-front-view.jpg',
   '2020 ford explorer': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4c63228292d000815e944/6-2024-ford-explorer-front-view.jpg',
+  // Ford Expedition
+  'expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  'ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  '2025 ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  '2024 ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  '2023 ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  '2022 ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  '2021 ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
+  '2020 ford expedition': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4a9b552f2c7000819a2ad/2024-ford-expedition-timberline-front-view-4.jpg',
   'escape': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a479cdfc8dbb0008e5ccaf/002-2024-ford-escape-phev-front-three-quarters-in-action-scaled.jpg',
   '2024 ford escape': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a479cdfc8dbb0008e5ccaf/002-2024-ford-escape-phev-front-three-quarters-in-action-scaled.jpg',
   '2023 ford escape': 'https://d2kde5ohu8qb21.cloudfront.net/files/65a07b144cb8920008829782/2023-ford-escape-st-line-12.jpg',
@@ -917,7 +926,55 @@ const vehicleImageMap: Record<string, string> = {
   'ct6': 'https://d2kde5ohu8qb21.cloudfront.net/files/65caa9930b94520008716341/2018-cadillac-ct6-with-super-cruise-22.jpg'
 };
 
+// Import raw JSON data directly (not processed) to avoid circular dependency
+import sedansData from '../data/vehicles/sedans.json';
+import suvsData from '../data/vehicles/suvs.json';
+import trucksData from '../data/vehicles/trucks.json';
+import coupesData from '../data/vehicles/coupes.json';
+import hatchbacksData from '../data/vehicles/hatchbacks.json';
+import convertiblesData from '../data/vehicles/convertibles.json';
+import wagonsData from '../data/vehicles/wagons.json';
+
+// Combine all raw vehicle data for image lookup
+interface RawVehicleData {
+  year: string;
+  make: string;
+  model: string;
+  image?: string | null;
+}
+const rawVehicleData: RawVehicleData[] = [
+  ...(sedansData as RawVehicleData[]),
+  ...(suvsData as RawVehicleData[]),
+  ...(trucksData as RawVehicleData[]),
+  ...(coupesData as RawVehicleData[]),
+  ...(hatchbacksData as RawVehicleData[]),
+  ...(convertiblesData as RawVehicleData[]),
+  ...(wagonsData as RawVehicleData[]),
+];
+
 export const vehicleImageFor = (vehicleName: string): string => {
+  // First, try to get the image from the raw vehicles JSON data
+  const parts = vehicleName.trim().split(/\s+/);
+  if (parts.length >= 3) {
+    const year = parts[0];
+    const make = parts[1];
+    const model = parts.slice(2).join(' ');
+    const normalizedModel = model.replace(/-/g, ' ').toLowerCase();
+    
+    const rawVehicle = rawVehicleData.find(v => {
+      const yearMatch = v.year === year;
+      const makeMatch = v.make.toLowerCase() === make.toLowerCase();
+      const normalizedDbModel = v.model.replace(/-/g, ' ').toLowerCase();
+      const modelMatch = normalizedDbModel === normalizedModel;
+      return yearMatch && makeMatch && modelMatch;
+    });
+    
+    if (rawVehicle?.image) {
+      return rawVehicle.image;
+    }
+  }
+  
+  // Fall back to static vehicleImageMap
   const name = vehicleName.toLowerCase();
   const keysBySpecificity = Object.keys(vehicleImageMap).sort((a, b) => b.length - a.length);
   for (const key of keysBySpecificity) {

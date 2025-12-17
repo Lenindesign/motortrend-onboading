@@ -12,6 +12,7 @@ import { AdContainer } from '../../components/AdContainer';
 import Icon from '../../components/Icon';
 import { Badge } from '../../design-system/components/Badge/Badge';
 import { TopTenCarousel } from '../../components/TopTenCarousel/TopTenCarousel';
+import { TopTenCarouselLeads } from '../../components/TopTenCarouselLeads';
 import type { RiverItem } from '../../components/River';
 import { sortContentForPersonalization, type ContentCategory } from '../../utils/contentFiltering';
 import { getVehicleLifestyles, type LifestyleCategory } from '../../utils/vehicleLifestyles';
@@ -24,9 +25,12 @@ import { getVehicleSpecs } from '../../utils/vehicleSpecs';
 import { getArticleBySlug } from '../../utils/articles';
 import { getVehicles } from '../../api/vehiclesApi';
 import { CommunityPostsPromo } from '../../components/CommunityPostsPromo';
-import { AIPersonalAssistant } from '../../components/AIPersonalAssistant';
 import { KnowYourBudget } from '../../components/KnowYourBudget';
 import { VehicleLeadsStripe } from '../../components/VehicleLeadsStripe';
+import { WhatIsMyCarWorth } from '../../components/WhatIsMyCarWorth';
+import { UserRatingsReviews } from '../../components/UserRatingsReviews';
+import { PersonalizedVehicles, getViewedVehicles } from '../../components/PersonalizedVehicles';
+import { TrendingStories } from '../../components/TrendingStories';
 import './Home.css';
 
 // Get vehicle database from API - NO HARDCODED DATA
@@ -122,6 +126,32 @@ export const Home: React.FC = () => {
   
   const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>('SUV');
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
+
+  // Track viewed vehicles count for conditional PersonalizedVehicles placement
+  const [viewedVehiclesCount, setViewedVehiclesCount] = useState(() => getViewedVehicles().length);
+  
+  // Update viewed vehicles count when it changes
+  useEffect(() => {
+    const updateCount = () => {
+      const count = getViewedVehicles().length;
+      setViewedVehiclesCount(count);
+    };
+    
+    // Sync count immediately on mount (in case localStorage wasn't ready during initial render)
+    updateCount();
+    
+    // Listen for viewed vehicles updates
+    window.addEventListener('viewedVehiclesUpdated', updateCount);
+    window.addEventListener('storage', updateCount);
+    
+    return () => {
+      window.removeEventListener('viewedVehiclesUpdated', updateCount);
+      window.removeEventListener('storage', updateCount);
+    };
+  }, []);
+  
+  // Show PersonalizedVehicles at top when user has 4+ viewed vehicles
+  const showPersonalizedAtTop = viewedVehiclesCount >= 4;
 
   // Ensure page starts at top on mount - use multiple methods for reliability
   useEffect(() => {
@@ -929,10 +959,24 @@ export const Home: React.FC = () => {
     return finalSortedItems;
   }, [userType, newsItems, persona, heroData, verticalCards]);
 
-  // Split news items into sets of 6 for each river
-  const sortedNewsItemsRiver1 = useMemo(() => sortedNewsItems.slice(0, 6), [sortedNewsItems]);
-  const sortedNewsItemsRiver2 = useMemo(() => sortedNewsItems.slice(6, 12), [sortedNewsItems]);
-  const sortedNewsItemsRiver3 = useMemo(() => sortedNewsItems.slice(12, 18), [sortedNewsItems]);
+  // Split news items for Latest Car News river (up to 10 stories)
+  const sortedNewsItemsRiver3 = useMemo(() => {
+    const desiredCount = 10;
+    const preferredStart = 12;
+    const availableAfterPreferred = sortedNewsItems.length - preferredStart;
+    
+    if (availableAfterPreferred >= desiredCount) {
+      // Enough items after index 12, use the preferred slice
+      return sortedNewsItems.slice(preferredStart, preferredStart + desiredCount);
+    } else if (sortedNewsItems.length > preferredStart) {
+      // Some items available after index 12, but less than 10 - start earlier to get more
+      const startIndex = Math.max(0, sortedNewsItems.length - desiredCount);
+      return sortedNewsItems.slice(startIndex);
+    } else {
+      // Not enough items in total, return what we have from the end
+      return sortedNewsItems.slice(Math.max(0, sortedNewsItems.length - desiredCount));
+    }
+  }, [sortedNewsItems]);
 
   // Rankings & Awards articles for first river - personalized based on persona
   const rankingsArticles = useMemo(() => {
@@ -1834,21 +1878,33 @@ export const Home: React.FC = () => {
 
   // Check if user is Practical Paula (Car Buyers persona)
   const isCarBuyers = personaName === 'Practical Paula';
+  
+  // Check if user is a shopper (buyer or both) - only explicitly selected shoppers see Top Ten Carousel at top
+  // Enthusiasts and users who haven't completed onboarding don't see it
+  const isShopper = userType === 'buyer' || userType === 'both';
 
   return (
     <div className="home">
       <div className="home__container">
-        {/* For Car Buyers (Practical Paula): Show Available Listings first */}
-        {isCarBuyers && (
-          <>
-            {/* Vehicle Leads Stripe - Above Top Ten Carousel */}
-            <div className="home__section home__section--full-width">
-              <VehicleLeadsStripe />
-            </div>
+        {/* Personalized Vehicles at VERY TOP - Show when user is a shopper AND has 4+ viewed vehicles */}
+        {isShopper && showPersonalizedAtTop && (
           <div className="home__section home__section--full-width">
-            <TopTenCarousel showExpandButton={false} initialVehicleType={preferredBodyStyle} />
+            <PersonalizedVehicles />
           </div>
-          </>
+        )}
+
+        {/* Top Ten Carousel with Listings - Featured at the top of the page (Shoppers only) */}
+        {isShopper && (
+          <div className="home__section home__section--full-width">
+            <TopTenCarouselLeads initialVehicleType={preferredBodyStyle} initialSubcategory="All" />
+          </div>
+        )}
+
+        {/* For Car Buyers (Practical Paula): Show Available Listings */}
+        {isCarBuyers && (
+          <div className="home__section home__section--full-width">
+            <VehicleLeadsStripe />
+          </div>
         )}
 
         {/* Top Section: Hero + 3 Cards with Right Column Ad - Hidden for Car Buyers */}
@@ -1856,6 +1912,7 @@ export const Home: React.FC = () => {
           <div className="home__section">
             <div className="home__left-column">
               <HeroPlusThree
+                title="Recommended For You"
                 hero={heroData}
                 cards={sortedVerticalCards}
               />
@@ -1872,37 +1929,42 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Latest From MotorTrend Section - Right after Hero (River 1: First 6 stories) */}
-        <div className="home__section">
-          <div className="home__left-column">
-            <NewsSection
-              title="Latest Car News From our Experts"
-              items={sortedNewsItemsRiver1}
-            />
-          </div>
-          <div className="home__right-column">
-            {isCarBuyers ? (
-              <AIPersonalAssistant />
-            ) : (
-            <AdContainer
-              width={300}
-              height={600}
-              label="SVOD 200 x 420"
-              position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
-            />
-            )}
-          </div>
-        </div>
-
-        {/* For Car Buyers (Practical Paula): Show Know Your Budget widget after Latest Car News */}
-        {isCarBuyers && (
+        {/* Trending Stories - Full width strip for enthusiasts */}
+        {(userType === 'enthusiast' || userType === 'both') && (
           <div className="home__section home__section--full-width">
-            <KnowYourBudget />
+            <TrendingStories />
           </div>
         )}
 
-        {/* Vehicles Section with Right Column Ad */}
+        {/* Top Ten Carousel - Full width for enthusiasts (under Trending Stories) */}
+        {(userType === 'enthusiast' || userType === 'both') && (
+          <div className="home__section home__section--full-width">
+            <TopTenCarousel initialVehicleType="Performance" initialSubcategory="All" />
+          </div>
+        )}
+
+        {/* Your Activity - Full width for enthusiasts (under Top Ten Carousel) */}
+        {(userType === 'enthusiast' || userType === 'both') && (
+          <div className="home__section home__section--full-width">
+            <PersonalizedVehicles />
+          </div>
+        )}
+
+        {/* What Is My Car Worth - Trade-in value calculator for Shoppers */}
+        {isShopper && (
+          <div className="home__section home__section--full-width">
+            <WhatIsMyCarWorth />
+          </div>
+        )}
+
+        {/* User Ratings & Reviews - For users shopping for cars */}
+        {isShopper && (
+          <div className="home__section home__section--full-width">
+            <UserRatingsReviews />
+          </div>
+        )}
+
+        {/* Vehicles Section with Right Column Ad - Top Ranked Vehicles */}
         <div className="home__section">
           <div className="home__left-column">
             <VehiclesSection
@@ -1923,12 +1985,47 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
+        {/* Personalized Vehicles - Viewed, Searched, You Might Like (only show for shoppers, here if not at top) */}
+        {isShopper && !showPersonalizedAtTop && (
+          <div className="home__section home__section--full-width">
+            <PersonalizedVehicles />
+          </div>
+        )}
+
+        {/* Latest Car News Section (10 stories) - Under Your Activity */}
+        {sortedNewsItemsRiver3.length > 0 && (
+          <div className="home__section">
+            <div className="home__left-column">
+              <NewsSection
+                title="Latest Car News From our Experts"
+                items={sortedNewsItemsRiver3}
+              />
+            </div>
+            <div className="home__right-column">
+              <AdContainer
+                width={300}
+                height={600}
+                label="SVOD 200 x 420"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* For Car Buyers (Practical Paula): Know Your Budget widget */}
+        {isCarBuyers && (
+          <div className="home__section home__section--full-width">
+            <KnowYourBudget />
+          </div>
+        )}
+
         {/* Community Posts Promo Section */}
         <div className="home__section">
           <div className="home__left-column">
             <CommunityPostsPromo 
               title="Trending in Community"
-              maxPosts={4}
+              maxPosts={6}
             />
           </div>
           <div className="home__right-column">
@@ -1967,14 +2064,6 @@ export const Home: React.FC = () => {
               imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
-        </div>
-
-        {/* Top Ten Trucks Carousel - Below Rankings & Awards */}
-        <div className="home__section home__section--full-width">
-          <TopTenCarousel 
-            initialVehicleType="Truck"
-            initialSubcategory="All"
-          />
         </div>
 
         {/* Vehicle Carousel Section - Full width - Top Ten SUVs (Hidden for Car Buyers) */}
@@ -2177,27 +2266,6 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Additional News Section (River 2: Stories 7-12) */}
-        {sortedNewsItemsRiver2.length > 0 && (
-          <div className="home__section">
-            <div className="home__left-column">
-              <NewsSection
-                title="Latest Car News From our Experts"
-                items={sortedNewsItemsRiver2}
-              />
-            </div>
-            <div className="home__right-column">
-              <AdContainer
-                width={300}
-                height={600}
-                label="SVOD 200 x 420"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
-              />
-            </div>
-          </div>
-        )}
-
         {/* Sedan Carousel Section - Full width */}
         {false && sedanCarouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
@@ -2330,27 +2398,6 @@ export const Home: React.FC = () => {
                     </div>
                   </>
                 )}
-            </div>
-          </div>
-        )}
-
-        {/* Additional News Section (River 3: Stories 13-18) */}
-        {sortedNewsItemsRiver3.length > 0 && (
-          <div className="home__section">
-            <div className="home__left-column">
-              <NewsSection
-                title="Latest Car News From our Experts"
-                items={sortedNewsItemsRiver3}
-              />
-            </div>
-            <div className="home__right-column">
-              <AdContainer
-                width={300}
-                height={600}
-                label="SVOD 200 x 420"
-                position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
-              />
             </div>
           </div>
         )}
@@ -2753,6 +2800,7 @@ export const Home: React.FC = () => {
 };
 
 export default Home;
+
 
 
 

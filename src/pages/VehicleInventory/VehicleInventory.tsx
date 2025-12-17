@@ -6,7 +6,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VehicleCard } from '../../components/VehicleCard';
-import { TopTenCarousel } from '../../components/TopTenCarousel';
+import { TopTenCarouselLeads } from '../../components/TopTenCarouselLeads';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { LIFESTYLE_CATEGORIES, type LifestyleCategory, filterVehiclesByLifestyle } from '../../utils/vehicleLifestyles';
 import { PRICE_RANGE_CATEGORIES, type PriceRangeCategory } from '../../utils/vehiclePriceRanges';
@@ -671,14 +671,11 @@ export const VehicleInventory: React.FC = () => {
   return (
     <div className="vehicle-inventory">
       <div className="container">
-        {/* Top Ten Carousel with Filters */}
-        <TopTenCarousel 
+        {/* Top Ten Carousel with Leads Sidebar */}
+        <TopTenCarouselLeads 
           className="vehicle-inventory__top-ten-carousel" 
-          showExpandButton={true}
-          onExpandClick={(vehicle) => {
-            const { year, make, model } = parseVehicleName(vehicle.name);
-            navigate(`/vehicles/${year}/${make}/${model}`);
-          }}
+          initialVehicleType="SUV"
+          initialSubcategory="All"
         />
 
         <div className="vehicle-inventory__header">

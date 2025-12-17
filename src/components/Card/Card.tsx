@@ -538,8 +538,8 @@ export const Card: React.FC<CardProps> = ({
               {hasMultipleRatings && ratings.length > 0 && (
                 <>
                   {ratings.map((rating, index) => {
-                    const tooltipText = rating.color === '#FFB74D' ? 'MotorTrend Rating' : 'Community Rating (25)';
-                    const isMotorTrendRating = rating.color === '#FFB74D';
+                    const isMotorTrendRating = index === 0 || rating.color === '#FFB74D';
+                    const tooltipText = isMotorTrendRating ? 'MotorTrend Rating' : 'Community Rating (25)';
                     return (
                       <div 
                         key={index} 
@@ -559,7 +559,7 @@ export const Card: React.FC<CardProps> = ({
                         ) : (
                           <img
                             src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                            alt="Star rating"
+                            alt="User Rating"
                             style={ratingStarStyle}
                           />
                         )}

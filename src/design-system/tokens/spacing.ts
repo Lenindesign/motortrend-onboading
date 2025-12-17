@@ -1,6 +1,12 @@
 /**
  * Design Tokens - Spacing
  * Extracted from Figma Community design system
+ * 
+ * USAGE GUIDELINES:
+ * - Use base spacing (1-6) for component-level spacing
+ * - Use section.gap for spacing between major page sections
+ * - Use section.padding for internal section padding
+ * - Use page.padding for container horizontal padding
  */
 
 export const spacing = {
@@ -69,10 +75,47 @@ export const spacing = {
     xxl: '48px',
   },
   
-  // Section spacing
+  // Section spacing (legacy - use section.gap/padding instead)
   section: {
     vertical: '32px',      // 2rem standard vertical spacing between sections
     horizontal: '24px',
+  },
+} as const;
+
+/**
+ * UNIFORM SECTION SPACING SYSTEM
+ * 
+ * Use these values for consistent spacing between page sections.
+ * All values follow an 8px base system for harmony.
+ * 
+ * CSS Variables:
+ * - --section-gap-sm: 24px  (tight spacing)
+ * - --section-gap-md: 40px  (standard spacing) 
+ * - --section-gap-lg: 56px  (major breaks)
+ * - --section-gap-xl: 72px  (hero sections)
+ */
+export const sectionSpacing = {
+  // Gap between major page sections
+  gap: {
+    sm: '24px',   // Tight spacing between related sections
+    md: '40px',   // Standard spacing between sections (DEFAULT)
+    lg: '56px',   // Large spacing for major section breaks
+    xl: '72px',   // Extra large for hero/featured sections
+  },
+  
+  // Internal padding within sections
+  padding: {
+    sm: '16px',   // Compact section padding
+    md: '24px',   // Standard section padding
+    lg: '32px',   // Large section padding
+    xl: '48px',   // Extra large for featured sections
+  },
+  
+  // Page container horizontal padding
+  page: {
+    mobile: '16px',   // Mobile horizontal padding
+    tablet: '24px',   // Tablet horizontal padding
+    desktop: '0px',   // Desktop (uses max-width constraint)
   },
 } as const;
 

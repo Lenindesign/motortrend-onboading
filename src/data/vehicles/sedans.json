@@ -232,6 +232,12 @@
     "bodyStyle": "Sedan",
     "imageSource": null,
     "image": "https://d2kde5ohu8qb21.cloudfront.net/files/65a4ab44cd06f600080e4953/14-2024-kia-forte-front-view.jpg",
+    "galleryImages": [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4ab44cd06f600080e4953/14-2024-kia-forte-front-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4ab3d9677b70008821b36/12-2024-kia-forte-side-view.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4ab43e6ee9d0008b6d24f/6-2024-kia-forte-interior.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/65a4ab3d38ca5d0008f620b5/7-2024-kia-forte-interior.jpg"
+    ],
     "priceRange": "$19,890 - $26,490",
     "priceMin": 19890,
     "priceMax": 26490,
@@ -608,10 +614,16 @@
     "id": "69a",
     "year": "2025",
     "make": "Audi",
-    "model": "S3 / RS3",
+    "model": "S3-RS3",
     "bodyStyle": "Sedan",
     "imageSource": null,
-    "image": "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5cb0f26d2500020c7ab1/008-2025-audi-s3.jpg",
+    "image": "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d3d477f080002fdb617/001-2025-audi-s3.jpg",
+    "galleryImages": [
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d3d477f080002fdb617/001-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d4981670a0002b39bc8/005-2025-audi-s3.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67cb4f1a291b76000874d2bd/027-2025-audi-s3-us-version.jpg",
+      "https://d2kde5ohu8qb21.cloudfront.net/files/67cb4f1e291b76000874d2bf/028-2025-audi-s3-us-version.jpg"
+    ],
     "priceRange": "$46,900 - $49,900",
     "priceMin": 46900,
     "priceMax": 49900,
@@ -630,7 +642,7 @@
       "Virtual Cockpit Plus",
       "Bang & Olufsen Sound"
     ],
-    "slug": "2025/Audi/S3 / RS3"
+    "slug": "2025/Audi/S3-RS3"
   },
   {
     "id": "cor1",

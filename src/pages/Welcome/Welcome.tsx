@@ -10,6 +10,7 @@ import confetti from 'canvas-confetti';
 const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import { MembershipCard } from '../../components/MembershipCard';
 import RatingModal from '../../components/RatingModal';
+import { RatingGrid } from '../../components/RatingGrid';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
 import { useRating } from '../../contexts/RatingContext';
 import { parseVehicleName } from '../../utils/vehicleImages';
@@ -149,6 +150,23 @@ export const Welcome: React.FC<WelcomeProps> = () => {
               Enjoy your MotorTrend member benefits.
             </p>
           </div>
+
+          {/* Rating Grid */}
+          <RatingGrid
+            motorTrendRating={9.2}
+            userReviewsRating={4.5}
+            userReviewsCount={25}
+            onRateClick={() => {
+              // Handle rate click - could open rating modal
+              if (vehicles.length > 0) {
+                setRatingModal({
+                  isOpen: true,
+                  vehicleName: vehicles[0].name,
+                  currentRating: vehicles[0].rating || 0
+                });
+              }
+            }}
+          />
 
           {/* Membership Card Section */}
           <div className="membership-section">

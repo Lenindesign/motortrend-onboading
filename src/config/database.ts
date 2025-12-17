@@ -1,6 +1,23 @@
 /**
  * Database Configuration
  * Central configuration for data access across the application
+ * 
+ * === COMMUNITY FEATURE BACKEND SETUP ===
+ * 
+ * The Community feature supports two modes:
+ * 
+ * 1. DEMO MODE (Default) - Uses localStorage
+ *    - No configuration needed
+ *    - Data persists locally in your browser
+ *    - Perfect for development and testing
+ * 
+ * 2. SUPABASE MODE - Real backend with authentication
+ *    - Create a free project at https://supabase.com
+ *    - Run the schema from /supabase/schema.sql in Supabase SQL Editor
+ *    - Set environment variables:
+ *      VITE_SUPABASE_URL=https://your-project.supabase.co
+ *      VITE_SUPABASE_ANON_KEY=your-anon-key-here
+ *    - Features: Real-time updates, user auth, persistent data
  */
 
 export const DATABASE_CONFIG = {

@@ -368,8 +368,9 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const reviewDatesStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-1, 8px)', flexWrap: 'wrap' };
   const reviewDateStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: 'var(--font-size-xs, 12px)', lineHeight: '1.5em', color: 'var(--color-neutrals-4, #6E7481)' };
   const reviewUpdatedStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '11px', lineHeight: '1.5em', color: 'var(--color-neutrals-4, #6E7481)', fontStyle: 'italic' };
-  const reviewerExperienceStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-1, 8px)', flexWrap: 'wrap' };
-  const durationInfoStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: 'var(--font-size-xs, 12px)', lineHeight: '1.5em', color: 'var(--color-neutrals-3, #353945)' };
+  // HIDDEN: reviewerExperienceStyle and durationInfoStyle - commented out with vehicle relationship badges
+  // const reviewerExperienceStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-1, 8px)', flexWrap: 'wrap' };
+  // const durationInfoStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: 'var(--font-size-xs, 12px)', lineHeight: '1.5em', color: 'var(--color-neutrals-3, #353945)' };
   const reviewTitleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: 'var(--font-size-md, 18px)', lineHeight: '1.333em', color: 'var(--color-neutrals-1, #141416)', marginBottom: 'var(--spacing-component-md, 12px)' };
   const reviewContentStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: 'var(--font-size-base, 16px)', lineHeight: '1.6em', color: 'var(--color-neutrals-2, #23262F)', marginBottom: 'var(--spacing-2, 16px)' };
   const categoryRatingsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: '48px', rowGap: '12px', marginTop: 'var(--spacing-2, 16px)', marginBottom: 'var(--spacing-2, 16px)', paddingTop: 'var(--spacing-2, 16px)', borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)', minWidth: 0 };
@@ -583,9 +584,11 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                         <div style={reviewerNameRowStyle}>
                           <div style={reviewerNameGroupStyle}>
                             <span style={reviewerNameStyle}>{review.reviewerName}</span>
+                            {/* HIDDEN: Verification badges
                             {review.verificationLevel === 'owner' && <Badge variant="neutral" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Owner</Badge>}
                             {review.verificationLevel === 'verified' && <Badge variant="verified" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Verified Owner</Badge>}
                             {review.verificationLevel === 'verified_documents' && <Badge variant="success" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Verified Owner — Documents Verified</Badge>}
+                            */}
                           </div>
                           <div style={reviewRatingRowStyle}>
                             <div style={reviewRatingGroupStyle}>
@@ -599,6 +602,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                             <span style={reviewDateStyle}>{review.date}</span>
                             {review.updatedDate && <span style={reviewUpdatedStyle}>Updated {review.updatedDate}</span>}
                           </div>
+{/* HIDDEN: Vehicle relationship and duration badges
                           {(review.vehicleRelationship || review.experienceDuration) && (
                             <span style={reviewerExperienceStyle}>
                               {review.vehicleRelationship === 'own' && <Badge variant="neutral" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Current Owner</Badge>}
@@ -610,6 +614,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                               {review.experienceDuration && <span style={durationInfoStyle}>{review.vehicleRelationship === 'own' ? 'Owned for' : review.vehicleRelationship === 'previously_owned' ? 'Owned for' : review.vehicleRelationship === 'leased' ? 'Leased for' : review.vehicleRelationship === 'rented' ? 'Rented for' : review.vehicleRelationship === 'test_drove' ? 'Test drove' : 'Experienced for'} {review.experienceDuration}</span>}
                             </span>
                           )}
+                          */}
                         </div>
                       </div>
                     </div>

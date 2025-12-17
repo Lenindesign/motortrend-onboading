@@ -117,11 +117,11 @@
   },
   {
     "id": "18",
-    "year": "2025",
+    "year": "2024",
     "make": "Chevrolet",
     "model": "Camaro",
     "bodyStyle": "Coupe",
-    "imageSource": "2025 Chevrolet Camaro",
+    "imageSource": "2024 Chevrolet Camaro",
     "image": null,
     "priceRange": "$26,100 - $71,895",
     "priceMin": 26100,
@@ -140,7 +140,7 @@
       "Performance Data Recorder",
       "Brembo Brakes"
     ],
-    "slug": "2025/Chevrolet/Camaro"
+    "slug": "2024/Chevrolet/Camaro"
   },
   {
     "id": "19",
@@ -279,11 +279,11 @@
   },
   {
     "id": "coupe2",
-    "year": "2025",
+    "year": "2024",
     "make": "Chevrolet",
     "model": "Camaro",
     "bodyStyle": "Coupe",
-    "imageSource": "2025 Chevrolet Camaro",
+    "imageSource": "2024 Chevrolet Camaro",
     "image": null,
     "priceRange": "$26,900 - $69,900",
     "priceMin": 26900,
@@ -302,7 +302,7 @@
       "Performance Data Recorder",
       "Magnetic Ride Control"
     ],
-    "slug": "2025/Chevrolet/Camaro"
+    "slug": "2024/Chevrolet/Camaro"
   },
   {
     "id": "coupe3",
@@ -411,33 +411,6 @@
       "M Sport Package"
     ],
     "slug": "2025/BMW/M2"
-  },
-  {
-    "id": "coupe7",
-    "year": "2025",
-    "make": "Audi",
-    "model": "TT",
-    "bodyStyle": "Coupe",
-    "imageSource": "2025 Audi TT",
-    "image": null,
-    "priceRange": "$45,500 - $57,900",
-    "priceMin": 45500,
-    "priceMax": 57900,
-    "staffRating": 8.4,
-    "communityRating": 8.2,
-    "reviewCount": 234,
-    "fuelType": "Gas",
-    "drivetrain": "AWD",
-    "transmission": "Automatic",
-    "mpg": "23/30",
-    "horsepower": 228,
-    "seatingCapacity": 4,
-    "features": [
-      "Audi Virtual Cockpit",
-      "MMI Touch",
-      "Audi Pre Sense"
-    ],
-    "slug": "2025/Audi/TT"
   },
   {
     "id": "coupe8",

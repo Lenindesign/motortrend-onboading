@@ -9,6 +9,75 @@ import type { Post, Community } from '../../api/communityApi';
 import { getPosts, getCommunities } from '../../api/communityApi';
 import Icon from '../Icon';
 
+// Primary shopping community ID - highest priority for shoppers
+const WHAT_CAR_COMMUNITY_ID = 'comm_whatcar';
+
+// Secondary shopping-related community IDs
+const SECONDARY_SHOPPING_COMMUNITY_IDS = ['comm_autos'];
+
+// Shopping-related keywords to identify relevant posts
+const SHOPPING_KEYWORDS = [
+  'buy', 'buying', 'purchase', 'under $', 'budget', 'price', 'value',
+  'deal', 'recommend', 'should i', 'best', 'vs', 'compare', 'looking for',
+  'family', 'reliable', 'affordable', 'new vs used', 'lease', 'finance'
+];
+
+/**
+ * Check if a post is from the "What Car Should I Buy?" community
+ */
+const isWhatCarPost = (post: Post): boolean => {
+  return post.communityId === WHAT_CAR_COMMUNITY_ID;
+};
+
+/**
+ * Check if a post is shopping-related (but not from What Car community)
+ */
+const isSecondaryShoppingRelated = (post: Post): boolean => {
+  // Check if post is from secondary shopping-related community
+  if (SECONDARY_SHOPPING_COMMUNITY_IDS.includes(post.communityId)) {
+    return true;
+  }
+  
+  // Check if post title or content contains shopping keywords
+  const titleLower = post.title.toLowerCase();
+  const contentLower = post.content?.toLowerCase() || '';
+  
+  return SHOPPING_KEYWORDS.some(keyword => 
+    titleLower.includes(keyword) || contentLower.includes(keyword)
+  );
+};
+
+/**
+ * Check if a post is shopping-related (any tier)
+ */
+const isShoppingRelated = (post: Post): boolean => {
+  return isWhatCarPost(post) || isSecondaryShoppingRelated(post);
+};
+
+/**
+ * Get user type from localStorage
+ */
+const getUserType = (): 'buyer' | 'enthusiast' | 'both' | null => {
+  try {
+    const onboardingData = localStorage.getItem('onboardingData');
+    if (onboardingData) {
+      const parsed = JSON.parse(onboardingData);
+      return parsed.userType || null;
+    }
+  } catch (error) {
+    console.error('Error reading user type:', error);
+  }
+  return null;
+};
+
+/**
+ * Check if user is in shopping experience (buyer or both)
+ */
+const isShoppingExperience = (): boolean => {
+  const userType = getUserType();
+  return userType === 'buyer' || userType === 'both';
+};
+
 export interface CommunityPostsPromoProps {
   title?: string;
   maxPosts?: number;
@@ -17,7 +86,7 @@ export interface CommunityPostsPromoProps {
 
 export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
   title = 'Trending in Community',
-  maxPosts = 3,
+  maxPosts = 6,
   className = '',
 }) => {
   const navigate = useNavigate();
@@ -29,9 +98,41 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
 
   useEffect(() => {
     const allPosts = getPosts();
-    const sortedPosts = [...allPosts]
-      .sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
-      .slice(0, maxPosts);
+    const isShopping = isShoppingExperience();
+    
+    let sortedPosts: Post[];
+    
+    if (isShopping) {
+      // For shopping experience: prioritize "What Car Should I Buy?" posts first
+      // Then secondary shopping posts, then other posts
+      
+      // Tier 1: Posts from "What Car Should I Buy?" community (highest priority)
+      const whatCarPosts = allPosts.filter(isWhatCarPost);
+      
+      // Tier 2: Other shopping-related posts (secondary priority)
+      const secondaryShoppingPosts = allPosts.filter(post => 
+        !isWhatCarPost(post) && isSecondaryShoppingRelated(post)
+      );
+      
+      // Tier 3: All other posts
+      const otherPosts = allPosts.filter(post => !isShoppingRelated(post));
+      
+      // Sort each group by score
+      const sortByScore = (a: Post, b: Post) => 
+        (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+      
+      whatCarPosts.sort(sortByScore);
+      secondaryShoppingPosts.sort(sortByScore);
+      otherPosts.sort(sortByScore);
+      
+      // Combine: What Car posts first, then secondary shopping posts, then other posts
+      sortedPosts = [...whatCarPosts, ...secondaryShoppingPosts, ...otherPosts].slice(0, maxPosts);
+    } else {
+      // For enthusiast experience: just sort by score
+      sortedPosts = [...allPosts]
+        .sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes))
+        .slice(0, maxPosts);
+    }
     
     setPosts(sortedPosts);
     setCommunities(getCommunities());
@@ -72,6 +173,7 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
   // Styles
   const containerStyle: React.CSSProperties = {
     marginBottom: '48px',
+    padding: 0,
   };
 
   const headerStyle: React.CSSProperties = {

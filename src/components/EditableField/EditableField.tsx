@@ -109,7 +109,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
   const inputStyle: React.CSSProperties = {
     flex: 1,
     padding: '8px 12px',
-    border: `2px solid ${isFocused ? 'var(--color-primary-1, #E90C17)' : 'var(--color-primary-1, #E90C17)'}`,
+    border: `2px solid ${isFocused ? 'var(--color-neutrals-3, #353945)' : 'var(--color-neutrals-5, #353945)'}`,
     borderRadius: 'var(--border-radius-md, 8px)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 400,
@@ -119,7 +119,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
     backgroundColor: 'var(--color-white, #FFFFFF)',
     outline: 'none',
     transition: 'border-color 150ms ease-in-out, box-shadow 150ms ease-in-out',
-    boxShadow: isFocused ? '0 0 0 3px rgba(233, 12, 23, 0.15)' : 'none',
+    boxShadow: isFocused ? '0 0 0 3px rgba(53, 57, 69, 0.15)' : 'none',
   };
 
   // Edit actions styles
