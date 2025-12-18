@@ -262,6 +262,9 @@
   border-right: 1px solid var(--color-neutrals-3, #353945);
   padding: 20px;
   overflow-y: auto;
+  height: calc(100vh - 180px);
+  position: sticky;
+  top: 0;
 }
 
 .journey-builder__palette-title {
@@ -376,6 +379,7 @@
   background: var(--color-neutrals-1, #141416);
   padding: 20px;
   overflow-y: auto;
+  height: calc(100vh - 180px);
 }
 
 .journey-builder__canvas-header {
@@ -579,6 +583,7 @@
   border-left: 1px solid var(--color-neutrals-3, #353945);
   padding: 20px;
   overflow-y: auto;
+  height: calc(100vh - 180px);
 }
 
 .journey-builder__preview-title {
@@ -662,6 +667,7 @@
   border-left: 1px solid var(--color-neutrals-3, #353945);
   padding: 20px;
   overflow-y: auto;
+  height: calc(100vh - 180px);
 }
 
 .journey-builder__versions {

@@ -1,10 +1,16 @@
 /**
  * Home Page Component
  * MotorTrend home page based on Figma design
+ * 
+ * This page supports two rendering modes:
+ * 1. Dynamic Mode (Journey Builder): Controlled by layouts from Supabase/localStorage
+ *    - Enable with URL param: ?useDynamicLayout=true
+ *    - Or set localStorage: dynamicLayoutEnabled=true
+ * 2. Legacy Mode: Hardcoded conditional rendering (default)
  */
 
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeroPlusThree } from '../../components/HeroPlusThree';
 import { NewsSection } from '../../components/NewsSection';
 import { VehiclesSection, type VehicleItem } from '../../components/VehiclesSection';
@@ -31,6 +37,7 @@ import { WhatIsMyCarWorth } from '../../components/WhatIsMyCarWorth';
 import { UserRatingsReviews } from '../../components/UserRatingsReviews';
 import { PersonalizedVehicles, getViewedVehicles } from '../../components/PersonalizedVehicles';
 import { TrendingStories } from '../../components/TrendingStories';
+import { DynamicHomeRenderer } from '../../components/DynamicHomeRenderer';
 import './Home.css';
 
 // Get vehicle database from API - NO HARDCODED DATA
@@ -69,6 +76,22 @@ interface Vehicle {
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { getUserRating } = useRating();
+  const [searchParams] = useSearchParams();
+  
+  // Check if dynamic layout is enabled via URL param or localStorage
+  const useDynamicLayout = useMemo(() => {
+    // URL param takes precedence
+    const urlParam = searchParams.get('useDynamicLayout');
+    if (urlParam === 'true') return true;
+    if (urlParam === 'false') return false;
+    
+    // Check localStorage setting
+    try {
+      return localStorage.getItem('dynamicLayoutEnabled') === 'true';
+    } catch {
+      return false;
+    }
+  }, [searchParams]);
   
   // Initialize preferred body style from localStorage synchronously
   const getInitialBodyStyle = (): 'SUV' | 'Sedan' | 'Truck' | 'Coupe' => {
@@ -1899,6 +1922,28 @@ export const Home: React.FC = () => {
   // Note: isEnthusiastOnly can be used for future experience differentiation
   // const isEnthusiastOnly = userType === 'enthusiast';
 
+  // ============================================================================
+  // DYNAMIC LAYOUT MODE (Journey Builder)
+  // When enabled, renders sections based on Supabase/localStorage configuration
+  // ============================================================================
+  if (useDynamicLayout) {
+    return (
+      <div className="home">
+        <div className="home__container">
+          <DynamicHomeRenderer
+            heroData={heroData}
+            verticalCards={sortedVerticalCards}
+            debug={searchParams.get('debug') === 'true'}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ============================================================================
+  // LEGACY MODE (Hardcoded conditional rendering)
+  // Default behavior - sections are rendered based on userType/persona logic
+  // ============================================================================
   return (
     <div className="home">
       <div className="home__container">

@@ -566,14 +566,36 @@ export const JourneyBuilder: React.FC = () => {
     }
   };
 
-  // Preview URL
+  // Preview URL - includes useDynamicLayout=true to enable Journey Builder rendering
   const getPreviewUrl = () => {
     const params = new URLSearchParams({
       experience: currentLayout.experience,
       isShopper: String(currentLayout.isShopper),
       preview: 'true',
+      useDynamicLayout: 'true', // Enable dynamic rendering from Journey Builder
     });
     return `/?${params.toString()}`;
+  };
+  
+  // Enable dynamic layout mode globally
+  const enableDynamicMode = () => {
+    localStorage.setItem('dynamicLayoutEnabled', 'true');
+    alert('Dynamic Layout Mode enabled! The home page will now use Journey Builder configurations.');
+  };
+  
+  // Disable dynamic layout mode
+  const disableDynamicMode = () => {
+    localStorage.removeItem('dynamicLayoutEnabled');
+    alert('Dynamic Layout Mode disabled. The home page will use default rendering.');
+  };
+  
+  // Check if dynamic mode is enabled
+  const isDynamicModeEnabled = () => {
+    try {
+      return localStorage.getItem('dynamicLayoutEnabled') === 'true';
+    } catch {
+      return false;
+    }
   };
 
   if (isLoading) {
@@ -631,6 +653,17 @@ export const JourneyBuilder: React.FC = () => {
             <Icon name="open_in_new" size={16} />
             Preview
           </a>
+          
+          {/* Dynamic Mode Toggle */}
+          <button
+            className={`journey-builder__btn ${isDynamicModeEnabled() ? 'journey-builder__btn--primary' : 'journey-builder__btn--ghost'}`}
+            onClick={isDynamicModeEnabled() ? disableDynamicMode : enableDynamicMode}
+            title={isDynamicModeEnabled() ? 'Click to disable dynamic mode' : 'Click to enable dynamic mode'}
+          >
+            <Icon name={isDynamicModeEnabled() ? 'toggle_on' : 'toggle_off'} size={16} />
+            {isDynamicModeEnabled() ? 'Live' : 'Enable'}
+          </button>
+          
           <button
             className={`journey-builder__btn journey-builder__btn--primary ${saveStatus === 'saving' ? 'journey-builder__btn--loading' : ''}`}
             onClick={handleSave}

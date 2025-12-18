@@ -1,10 +1,14 @@
 /**
  * Experience Manager
  * Determines which home page layout to show based on user's vehicle data and shopping intent
+ * 
+ * This module bridges the Journey Builder (which saves layouts) with the Home page (which renders them).
+ * It supports both Supabase (production) and localStorage (fallback) for layout storage.
  */
 
 import homePageLayoutsDefault from '../config/homePageLayouts.json';
 import { getVehicleBodyStyle } from './vehicleBodyStyles';
+import { getLayouts as getLayoutsFromService, type LayoutKey as ServiceLayoutKey } from '../services/journeyLayoutService';
 
 export type ExperienceKey = 'A' | 'B' | 'C' | 'D';
 export type LayoutKey = 'A-shopper' | 'A-browser' | 'B-shopper' | 'B-browser' | 'C-shopper' | 'C-browser' | 'D-shopper' | 'D-browser';
@@ -32,6 +36,11 @@ export interface OnboardingData {
   }>;
   persona?: string;
 }
+
+// Cache for layouts to avoid repeated fetches
+let layoutsCache: Record<LayoutKey, LayoutConfig> | null = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 30000; // 30 seconds
 
 /**
  * Get the user's experience based on their vehicle data
@@ -87,7 +96,7 @@ export const getOnboardingData = (): OnboardingData | null => {
 };
 
 /**
- * Get the current layout configuration based on user state
+ * Get the current layout configuration based on user state (synchronous - uses cache)
  */
 export const getCurrentLayout = (): LayoutConfig => {
   const onboardingData = getOnboardingData();
@@ -95,7 +104,12 @@ export const getCurrentLayout = (): LayoutConfig => {
   const isShopperUser = isShopper(onboardingData?.userType);
   const layoutKey = getLayoutKey(experience, isShopperUser);
 
-  // Try to get saved layouts from localStorage first
+  // Use cached layouts if available and fresh
+  if (layoutsCache && Date.now() - cacheTimestamp < CACHE_DURATION) {
+    return layoutsCache[layoutKey] || layoutsCache['D-browser'];
+  }
+
+  // Fallback to localStorage/default if cache is stale
   let layouts = homePageLayoutsDefault.layouts as Record<LayoutKey, LayoutConfig>;
   
   try {
@@ -111,6 +125,57 @@ export const getCurrentLayout = (): LayoutConfig => {
   }
 
   return layouts[layoutKey] || layouts['D-browser'];
+};
+
+/**
+ * Get the current layout configuration asynchronously (fetches from Supabase)
+ */
+export const getCurrentLayoutAsync = async (): Promise<LayoutConfig> => {
+  const onboardingData = getOnboardingData();
+  const experience = getExperience(onboardingData);
+  const isShopperUser = isShopper(onboardingData?.userType);
+  const layoutKey = getLayoutKey(experience, isShopperUser);
+
+  try {
+    // Fetch from Supabase via journeyLayoutService
+    const layouts = await getLayoutsFromService();
+    
+    // Update cache
+    layoutsCache = layouts as Record<LayoutKey, LayoutConfig>;
+    cacheTimestamp = Date.now();
+    
+    return layouts[layoutKey as ServiceLayoutKey] || layouts['D-browser'];
+  } catch (error) {
+    console.error('Error fetching layouts from service:', error);
+    // Fallback to synchronous method
+    return getCurrentLayout();
+  }
+};
+
+/**
+ * Get all layouts asynchronously (for components that need all layouts)
+ */
+export const getAllLayoutsAsync = async (): Promise<Record<LayoutKey, LayoutConfig>> => {
+  try {
+    const layouts = await getLayoutsFromService();
+    
+    // Update cache
+    layoutsCache = layouts as Record<LayoutKey, LayoutConfig>;
+    cacheTimestamp = Date.now();
+    
+    return layouts as Record<LayoutKey, LayoutConfig>;
+  } catch (error) {
+    console.error('Error fetching all layouts:', error);
+    return homePageLayoutsDefault.layouts as Record<LayoutKey, LayoutConfig>;
+  }
+};
+
+/**
+ * Invalidate the layouts cache (call this when layouts are updated)
+ */
+export const invalidateLayoutsCache = (): void => {
+  layoutsCache = null;
+  cacheTimestamp = 0;
 };
 
 /**
