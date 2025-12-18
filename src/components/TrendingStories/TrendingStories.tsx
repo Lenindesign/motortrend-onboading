@@ -27,6 +27,10 @@ export interface TrendingStoriesProps {
   stories?: TrendingStory[];
   title?: string;
   maxStories?: number;
+  /** When enabled, this component can move to top of page when user has enough activity */
+  moveToTopOnActivity?: boolean;
+  /** Number of viewed vehicles needed to trigger move to top (default: 4) */
+  activityThreshold?: number;
 }
 
 export const TrendingStories: React.FC<TrendingStoriesProps> = ({

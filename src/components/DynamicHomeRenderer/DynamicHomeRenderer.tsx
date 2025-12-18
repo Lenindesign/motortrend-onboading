@@ -116,6 +116,7 @@ const COMPONENT_MAP: Record<string, ComponentMapEntry> = {
   TrendingStories: {
     component: TrendingStories,
     type: 'full-width',
+    defaultProps: { moveToTopOnActivity: false, activityThreshold: 4 },
   },
   PersonalizedVehicles: {
     component: PersonalizedVehicles,
@@ -331,40 +332,57 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   //   return getDebugInfo();
   // }, [debug]);
 
-  // Filter enabled sections and handle PersonalizedVehicles move-to-top logic
+  // Filter enabled sections and handle move-to-top logic for components
   // IMPORTANT: This useMemo must be called before any early returns to follow Rules of Hooks
   const enabledSections = useMemo(() => {
     if (!layout?.sections) return [];
     
-    const sections = layout.sections.filter(s => s.enabled);
+    let sections = layout.sections.filter(s => s.enabled);
     
-    // Find PersonalizedVehicles section and check if it should move to top
-    const personalizedIndex = sections.findIndex(s => s.componentId === 'PersonalizedVehicles');
-    
-    if (personalizedIndex > 0) { // Only if it exists and is not already at top
-      const personalizedSection = sections[personalizedIndex];
-      const componentEntry = COMPONENT_MAP[personalizedSection.componentId];
+    // Helper function to check if a component should move to top
+    const shouldMoveToTop = (componentId: string, defaultMoveToTop: boolean) => {
+      const index = sections.findIndex(s => s.componentId === componentId);
+      if (index <= 0) return null; // Not found or already at top
+      
+      const section = sections[index];
+      const componentEntry = COMPONENT_MAP[section.componentId];
       const defaultProps = componentEntry?.defaultProps || {};
       
       // Merge props: section props override defaults
-      const moveToTopOnActivity = personalizedSection.props.moveToTopOnActivity ?? defaultProps.moveToTopOnActivity ?? true;
-      const activityThresholdRaw = personalizedSection.props.activityThreshold ?? defaultProps.activityThreshold ?? 4;
+      const moveToTopOnActivity = section.props.moveToTopOnActivity ?? defaultProps.moveToTopOnActivity ?? defaultMoveToTop;
+      const activityThresholdRaw = section.props.activityThreshold ?? defaultProps.activityThreshold ?? 4;
       const activityThreshold = typeof activityThresholdRaw === 'number' ? activityThresholdRaw : Number(activityThresholdRaw) || 4;
       
-      // Check if we should move to top based on user activity
       if (moveToTopOnActivity && viewedVehiclesCount >= activityThreshold) {
-        console.log('[DynamicHomeRenderer] Moving PersonalizedVehicles to top', {
-          viewedVehiclesCount,
-          activityThreshold,
-          moveToTopOnActivity,
-        });
-        
-        // Create new array with PersonalizedVehicles at top
-        const reorderedSections = [...sections];
-        const [removed] = reorderedSections.splice(personalizedIndex, 1);
-        reorderedSections.unshift(removed);
-        return reorderedSections;
+        return { index, activityThreshold };
       }
+      return null;
+    };
+    
+    // Check PersonalizedVehicles (default: enabled)
+    const personalizedMove = shouldMoveToTop('PersonalizedVehicles', true);
+    if (personalizedMove) {
+      console.log('[DynamicHomeRenderer] Moving PersonalizedVehicles to top', {
+        viewedVehiclesCount,
+        activityThreshold: personalizedMove.activityThreshold,
+      });
+      const reorderedSections = [...sections];
+      const [removed] = reorderedSections.splice(personalizedMove.index, 1);
+      reorderedSections.unshift(removed);
+      sections = reorderedSections;
+    }
+    
+    // Check TrendingStories (default: disabled)
+    const trendingMove = shouldMoveToTop('TrendingStories', false);
+    if (trendingMove) {
+      console.log('[DynamicHomeRenderer] Moving TrendingStories to top', {
+        viewedVehiclesCount,
+        activityThreshold: trendingMove.activityThreshold,
+      });
+      const reorderedSections = [...sections];
+      const [removed] = reorderedSections.splice(trendingMove.index, 1);
+      reorderedSections.unshift(removed);
+      sections = reorderedSections;
     }
     
     return sections;
