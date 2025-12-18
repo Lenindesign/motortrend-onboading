@@ -301,12 +301,9 @@ const ExperienceTab: React.FC<{
   isActive: boolean;
   onClick: () => void;
 }> = ({ layout, isActive, onClick }) => {
-  const experienceLabels: Record<string, string> = {
-    'A': 'Want ✓ Own ✓',
-    'B': 'Want ✓ Own ✗',
-    'C': 'Want ✗ Own ✓',
-    'D': 'Want ✗ Own ✗',
-  };
+  // Determine Want/Own status based on experience
+  const hasWant = layout.experience === 'A' || layout.experience === 'B';
+  const hasOwn = layout.experience === 'A' || layout.experience === 'C';
 
   return (
     <button
@@ -319,8 +316,21 @@ const ExperienceTab: React.FC<{
           {layout.isShopper ? 'Shopper' : 'Browser'}
         </span>
       </div>
-      <div className="journey-builder__tab-info">
-        <span className="journey-builder__tab-vehicles">{experienceLabels[layout.experience]}</span>
+      <div className="journey-builder__tab-vehicles">
+        <div className="journey-builder__tab-vehicle">
+          <Icon name="favorite" size={14} />
+          <span>Want</span>
+          <span style={{ color: hasWant ? 'var(--color-success, #58BD7D)' : 'var(--color-error, #E53935)' }}>
+            <Icon name={hasWant ? 'check_circle' : 'cancel'} size={14} />
+          </span>
+        </div>
+        <div className="journey-builder__tab-vehicle">
+          <Icon name="directions_car" size={14} />
+          <span>Own</span>
+          <span style={{ color: hasOwn ? 'var(--color-success, #58BD7D)' : 'var(--color-error, #E53935)' }}>
+            <Icon name={hasOwn ? 'check_circle' : 'cancel'} size={14} />
+          </span>
+        </div>
       </div>
     </button>
   );
