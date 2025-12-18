@@ -39,12 +39,14 @@ interface TopTenCarouselLeadsProps {
   className?: string;
   initialVehicleType?: VehicleType;
   initialSubcategory?: Subcategory;
+  showLeads?: boolean;
 }
 
 export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({ 
   className = '', 
   initialVehicleType = 'SUV',
-  initialSubcategory = 'All'
+  initialSubcategory = 'All',
+  showLeads = true
 }) => {
   const navigate = useNavigate();
   
@@ -554,21 +556,23 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
 
   const layoutStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: isTablet ? 'column' : 'row',
-    gap: isTablet ? '16px' : '24px',
+    flexDirection: (isTablet || !showLeads) ? 'column' : 'row',
+    gap: (isTablet || !showLeads) ? '16px' : '24px',
     width: '100%',
-    alignItems: isTablet ? 'stretch' : 'flex-start',
+    alignItems: (isTablet || !showLeads) ? 'stretch' : 'flex-start',
   };
 
   const carouselContainerStyle: React.CSSProperties = {
-    flex: isTablet ? 'none' : '1 1 65%',
+    flex: (isTablet || !showLeads) ? 'none' : '1 1 65%',
     minWidth: 0,
+    width: showLeads ? undefined : '100%',
   };
 
   const sidebarContainerStyle: React.CSSProperties = {
     flex: isTablet ? 'none' : '0 0 28%',
     maxWidth: isTablet ? '100%' : '320px',
     minWidth: isTablet ? '100%' : '260px',
+    display: showLeads ? 'block' : 'none',
   };
 
   const sliderStyle: React.CSSProperties = {

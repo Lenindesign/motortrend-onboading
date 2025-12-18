@@ -10,7 +10,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeroPlusThree } from '../HeroPlusThree';
 import { NewsSection } from '../NewsSection';
 import { VehiclesSection } from '../VehiclesSection';
-import { TopTenCarousel } from '../TopTenCarousel/TopTenCarousel';
 import { TopTenCarouselLeads } from '../TopTenCarouselLeads';
 import { CommunityPostsPromo } from '../CommunityPostsPromo';
 import { KnowYourBudget } from '../KnowYourBudget';
@@ -89,15 +88,17 @@ interface ComponentMapEntry {
 
 // Map component IDs to actual React components
 const COMPONENT_MAP: Record<string, ComponentMapEntry> = {
+  // TopTenCarousel now uses TopTenCarouselLeads with showLeads prop
+  TopTenCarousel: {
+    component: TopTenCarouselLeads,
+    type: 'full-width',
+    defaultProps: { initialVehicleType: 'SUV', initialSubcategory: 'All', showLeads: false },
+  },
+  // Legacy support for TopTenCarouselLeads
   TopTenCarouselLeads: {
     component: TopTenCarouselLeads,
     type: 'full-width',
-    defaultProps: { initialVehicleType: 'SUV', initialSubcategory: 'All' },
-  },
-  TopTenCarousel: {
-    component: TopTenCarousel,
-    type: 'full-width',
-    defaultProps: { initialVehicleType: 'SUV', initialSubcategory: 'All' },
+    defaultProps: { initialVehicleType: 'SUV', initialSubcategory: 'All', showLeads: true },
   },
   VehicleLeadsStripe: {
     component: VehicleLeadsStripe,

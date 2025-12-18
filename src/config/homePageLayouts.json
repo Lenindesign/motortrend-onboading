@@ -2,41 +2,27 @@
   "version": "1.0.0",
   "lastUpdated": "2025-12-18T00:00:00.000Z",
   "components": {
-    "TopTenCarouselLeads": {
-      "id": "TopTenCarouselLeads",
-      "name": "Top Ten Carousel with Leads",
-      "description": "Top 10 vehicles carousel with local listings sidebar",
-      "type": "full-width",
-      "icon": "view_carousel",
-      "props": {
-        "initialVehicleType": {
-          "type": "select",
-          "options": ["SUV", "Sedan", "Truck", "Coupe"],
-          "default": "SUV"
-        },
-        "initialSubcategory": {
-          "type": "select",
-          "options": ["All", "Subcompact", "Compact", "Midsize", "Full-Size", "Luxury", "Electric"],
-          "default": "All"
-        }
-      }
-    },
     "TopTenCarousel": {
       "id": "TopTenCarousel",
       "name": "Top Ten Carousel",
-      "description": "Top 10 vehicles carousel without listings",
+      "description": "Top 10 vehicles carousel with optional local listings sidebar",
       "type": "full-width",
       "icon": "view_carousel",
       "props": {
         "initialVehicleType": {
           "type": "select",
-          "options": ["SUV", "Sedan", "Truck", "Coupe", "Performance"],
+          "options": ["SUV", "Sedan", "Truck", "Coupe", "Performance", "Recommended For You"],
           "default": "SUV"
         },
         "initialSubcategory": {
           "type": "select",
           "options": ["All", "Subcompact", "Compact", "Midsize", "Full-Size", "Luxury", "Electric"],
           "default": "All"
+        },
+        "showLeads": {
+          "type": "boolean",
+          "default": false,
+          "label": "Show Leads Sidebar"
         }
       }
     },
@@ -178,10 +164,11 @@
       "isShopper": true,
       "sections": [
         {
-          "componentId": "TopTenCarouselLeads",
+          "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "dynamic:preferredBodyStyle",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": true
           },
           "enabled": true
         },
@@ -238,7 +225,8 @@
           "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "Sedan",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": true
           },
           "enabled": true
         }
@@ -260,7 +248,8 @@
           "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "Performance",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": false
           },
           "enabled": true
         },
@@ -318,10 +307,11 @@
       "isShopper": true,
       "sections": [
         {
-          "componentId": "TopTenCarouselLeads",
+          "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "dynamic:preferredBodyStyle",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": true
           },
           "enabled": true
         },
@@ -384,10 +374,11 @@
       "isShopper": false,
       "sections": [
         {
-          "componentId": "TopTenCarouselLeads",
+          "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "dynamic:preferredBodyStyle",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": false
           },
           "enabled": true
         },
@@ -458,10 +449,11 @@
           "enabled": true
         },
         {
-          "componentId": "TopTenCarouselLeads",
+          "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "SUV",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": true
           },
           "enabled": true
         },
@@ -519,7 +511,8 @@
           "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "Performance",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": false
           },
           "enabled": true
         },
@@ -577,10 +570,11 @@
       "isShopper": true,
       "sections": [
         {
-          "componentId": "TopTenCarouselLeads",
+          "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "SUV",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": true
           },
           "enabled": true
         },
@@ -627,7 +621,8 @@
           "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "Sedan",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": true
           },
           "enabled": true
         }
@@ -657,7 +652,8 @@
           "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "SUV",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": false
           },
           "enabled": true
         },
@@ -691,7 +687,8 @@
           "componentId": "TopTenCarousel",
           "props": {
             "initialVehicleType": "Sedan",
-            "initialSubcategory": "All"
+            "initialSubcategory": "All",
+            "showLeads": false
           },
           "enabled": true
         }
