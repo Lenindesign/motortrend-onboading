@@ -189,8 +189,8 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
           
           setHasOwnedVehicle(owned.length > 0);
           
-          // Pre-select the first owned vehicle
-          if (owned.length > 0 && !selectedVehicle) {
+          // Pre-select the first owned vehicle (always update if we have owned vehicles)
+          if (owned.length > 0) {
             setSelectedVehicle(owned[0].name);
           }
         }
@@ -209,7 +209,7 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
       window.removeEventListener('storage', loadUserVehicles);
       window.removeEventListener('onboardingDataUpdated', loadUserVehicles);
     };
-  }, [selectedVehicle]);
+  }, []); // Remove selectedVehicle dependency to avoid stale closure
 
   // Calculate value based on selected vehicle
   const valueEstimate = useMemo(() => {
