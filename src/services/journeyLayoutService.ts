@@ -131,7 +131,7 @@ export async function updateLayout(
       // Get current user
       const { data: { user } } = await supabase!.auth.getUser();
 
-      const { error, count } = await db
+      const { data, error } = await db
         .from('journey_layouts')
         .update({
           sections,
@@ -142,7 +142,7 @@ export async function updateLayout(
         .select();
 
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:afterSupabase',message:'Supabase update result',data:{error:error?.message||null,count,layoutKey},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:afterSupabase',message:'Supabase update result',data:{error:error?.message||null,rowsUpdated:data?.length||0,layoutKey,updatedSections:data?.[0]?.sections?.map((s:{componentId:string})=>s.componentId)||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
       // #endregion
 
       if (error) throw error;
