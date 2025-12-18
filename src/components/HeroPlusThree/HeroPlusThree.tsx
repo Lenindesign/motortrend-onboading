@@ -65,10 +65,10 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
   }, []);
 
   // Determine number of cards to show based on container width
+  // Hero always shows, cards adapt: 3 when enough space, 2 when constrained
   const getCardCount = () => {
     if (isMobile) return 1;
-    if (containerWidth < 500) return 1;
-    if (containerWidth < 700) return 2;
+    if (containerWidth > 0 && containerWidth < 600) return 2; // Not enough space for 3 cards
     return 3;
   };
   
