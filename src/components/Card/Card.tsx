@@ -4,7 +4,7 @@
  * Based on VehicleCard structure following atomic design principles
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Icon from '../Icon';
 import { CardShell } from '../atoms/CardShell/CardShell';
 import { useImageFallback } from '../../hooks/useImageFallback';
@@ -62,9 +62,11 @@ export const Card: React.FC<CardProps> = ({
   variant = 'default'
 }) => {
   const { imgSrc, handleImageError } = useImageFallback(image);
+  const cardRef = useRef<HTMLDivElement>(null);
   
   // Responsive state
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [cardWidth, setCardWidth] = useState(0);
   
   // Hover states
   const [isImageHovered, setIsImageHovered] = useState(false);
@@ -82,6 +84,27 @@ export const Card: React.FC<CardProps> = ({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Track card width for responsive button text
+  useEffect(() => {
+    if (!cardRef.current) return;
+    
+    const updateWidth = () => {
+      if (cardRef.current) {
+        setCardWidth(cardRef.current.getBoundingClientRect().width);
+      }
+    };
+    
+    updateWidth();
+    
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(cardRef.current);
+    
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Determine if we should use short button text (< 450px card width)
+  const useShortButtonText = cardWidth > 0 && cardWidth < 450;
 
   const isCompact = variant === 'compact';
 
@@ -444,6 +467,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   return (
+    <div ref={cardRef} style={{ width: '100%' }}>
     <CardShell
       padding="sm"
       hasHover={true}
@@ -629,13 +653,14 @@ export const Card: React.FC<CardProps> = ({
               onMouseDown={() => setIsButtonPressed(true)}
               onMouseUp={() => setIsButtonPressed(false)}
             >
-              {actionText}
+              {useShortButtonText && actionText === 'View Details' ? 'Details' : actionText}
               <Icon name="chevron_right" size={18} />
             </button>
           )}
         </div>
       </div>
     </CardShell>
+    </div>
   );
 };
 
