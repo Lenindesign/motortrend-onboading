@@ -327,17 +327,19 @@ export const PersonalizedVehicles: React.FC<PersonalizedVehiclesProps> = ({ clas
 
   // Styles - Dark Mode Version
   // Section wrapper with dark background, rounded corners like TrendingStories
+  // No side margin - full width within container
   const containerStyle: React.CSSProperties = {
-    width: 'calc(100% - 48px)', // Account for 24px padding on each side
+    width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
-    margin: '0 24px', // 24px horizontal margin
+    margin: '0 auto',
     background: 'var(--color-neutrals-1, #141416)',
     borderRadius: 'var(--border-radius-lg, 16px)',
     paddingTop: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)',
     paddingBottom: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)',
     paddingLeft: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-4, 32px)',
     paddingRight: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-4, 32px)',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    boxSizing: 'border-box',
   };
 
   const headerStyle: React.CSSProperties = {
