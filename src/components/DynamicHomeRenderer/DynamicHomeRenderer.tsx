@@ -439,7 +439,8 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
       
       // Merge props: section props override defaults
       const moveToTopOnActivity = personalizedSection.props.moveToTopOnActivity ?? defaultProps.moveToTopOnActivity ?? true;
-      const activityThreshold = personalizedSection.props.activityThreshold ?? defaultProps.activityThreshold ?? 4;
+      const activityThresholdRaw = personalizedSection.props.activityThreshold ?? defaultProps.activityThreshold ?? 4;
+      const activityThreshold = typeof activityThresholdRaw === 'number' ? activityThresholdRaw : Number(activityThresholdRaw) || 4;
       
       // Check if we should move to top based on user activity
       if (moveToTopOnActivity && viewedVehiclesCount >= activityThreshold) {
