@@ -318,15 +318,6 @@ export const PersonalizedVehicles: React.FC<PersonalizedVehiclesProps> = ({ clas
     }
   };
 
-  // Check if viewport is below max container width for responsive padding
-  const [isNarrowScreen, setIsNarrowScreen] = useState(window.innerWidth < 1280);
-
-  useEffect(() => {
-    const checkWidth = () => setIsNarrowScreen(window.innerWidth < 1280);
-    window.addEventListener('resize', checkWidth);
-    return () => window.removeEventListener('resize', checkWidth);
-  }, []);
-
   // Tab configuration
   const tabs: { id: TabType; label: string; icon: string }[] = [
     { id: 'youMightLike', label: 'You Might Like', icon: 'auto_awesome' },
