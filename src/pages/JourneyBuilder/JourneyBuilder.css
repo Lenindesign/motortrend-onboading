@@ -122,6 +122,21 @@
   border-color: var(--color-primary-1, #E90C17);
 }
 
+/* Dynamic Mode Toggle - Live State */
+.journey-builder__btn--live {
+  background: rgba(88, 189, 125, 0.15) !important;
+  color: var(--color-success, #58BD7D) !important;
+  border: 1px solid var(--color-success, #58BD7D) !important;
+}
+
+.journey-builder__btn--live:hover {
+  background: rgba(88, 189, 125, 0.25) !important;
+}
+
+.journey-builder__btn--live .icon {
+  color: var(--color-success, #58BD7D);
+}
+
 /* Connection Status */
 .journey-builder__connection {
   display: flex;

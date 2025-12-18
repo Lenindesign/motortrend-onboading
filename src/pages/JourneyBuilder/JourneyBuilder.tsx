@@ -656,11 +656,11 @@ export const JourneyBuilder: React.FC = () => {
           
           {/* Dynamic Mode Toggle */}
           <button
-            className={`journey-builder__btn ${isDynamicModeEnabled() ? 'journey-builder__btn--primary' : 'journey-builder__btn--ghost'}`}
+            className={`journey-builder__btn ${isDynamicModeEnabled() ? 'journey-builder__btn--live' : 'journey-builder__btn--ghost'}`}
             onClick={isDynamicModeEnabled() ? disableDynamicMode : enableDynamicMode}
-            title={isDynamicModeEnabled() ? 'Click to disable dynamic mode' : 'Click to enable dynamic mode'}
+            title={isDynamicModeEnabled() ? 'Dynamic mode is ACTIVE - Click to disable' : 'Click to enable dynamic mode'}
           >
-            <Icon name={isDynamicModeEnabled() ? 'toggle_on' : 'toggle_off'} size={16} />
+            <Icon name={isDynamicModeEnabled() ? 'check_circle' : 'toggle_off'} size={16} />
             {isDynamicModeEnabled() ? 'Live' : 'Enable'}
           </button>
           
