@@ -256,24 +256,19 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
     navigate('/profile?section=vehicles&action=add&ownership=own');
   };
 
-  // Styles - Using standardized section padding from design system
-  // Full-width sections break out of container, so need their own side padding
-  const sectionWrapperStyle: React.CSSProperties = {
-    width: '100%',
-    maxWidth: 'var(--max-width-container, 1280px)',
-    margin: '0 auto',
-    boxSizing: 'border-box',
-    paddingLeft: '24px',
-    paddingRight: '24px',
-  };
-
+  // Styles - container is the outermost element now
+  // Full-width sections break out of container, margin handles centering and edge spacing
   const containerStyle: React.CSSProperties = { 
-    width: '100%', 
+    width: 'calc(100% - 48px)',
+    maxWidth: 'var(--max-width-container, 1280px)',
+    marginLeft: '24px',
+    marginRight: '24px',
     background: 'var(--color-white, #FFFFFF)', 
     border: isMobile ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)', 
     borderRadius: isMobile ? 'var(--border-radius-md, 8px)' : 'var(--border-radius-lg, 16px)', 
     boxShadow: isMobile ? 'none' : '0px 4px 8px 0px rgba(20, 20, 22, 0.1)', 
-    overflow: 'hidden' 
+    overflow: 'hidden',
+    boxSizing: 'border-box',
   };
 
   const innerStyle: React.CSSProperties = { 
@@ -538,9 +533,8 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   // If user has no owned vehicle, show incentive state
   if (!hasOwnedVehicle) {
     return (
-      <div className={className} style={sectionWrapperStyle}>
-        <div style={containerStyle}>
-          <div style={{ ...innerStyle, minHeight: isMobile ? 'auto' : '400px' }}>
+      <div className={className} style={containerStyle}>
+        <div style={{ ...innerStyle, minHeight: isMobile ? 'auto' : '400px' }}>
           {/* Left side with gradient - desktop only */}
           <div style={{ ...leftStyle, display: isMobile ? 'none' : 'flex', position: 'relative', overflow: 'visible' }}>
             <div style={badgeStyle}>
@@ -608,9 +602,8 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
 
   // Main state with owned vehicle
   return (
-    <div className={className} style={sectionWrapperStyle}>
-      <div style={containerStyle}>
-        <div style={innerStyle}>
+    <div className={className} style={containerStyle}>
+      <div style={innerStyle}>
         {/* Left side with gradient and illustration - desktop only */}
         <div style={{ ...leftStyle, position: 'relative', overflow: 'visible' }}>
           <div style={badgeStyle}>
@@ -796,7 +789,6 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
             Get Instant Trade-In Offers
           </button>
         </div>
-      </div>
       </div>
     </div>
   );
