@@ -44,6 +44,8 @@
   grid-template-columns: 2fr 1fr;
   gap: var(--spacing-4);
   /* Remove margin - spacing handled by parent container's gap */
+  overflow: hidden; /* Prevent content from overflowing */
+  max-width: 100%;
 }
 
 .home__section:last-child {
@@ -92,6 +94,8 @@
   flex-direction: column;
   gap: var(--section-gap-sm); /* Consistent gap within columns */
   min-width: 0;
+  overflow: hidden; /* Prevent content from overflowing */
+  max-width: 100%;
 }
 
 .home__right-column {
