@@ -531,7 +531,16 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   };
 
   // Don't render if no vehicles are available
+  console.log('[TopTenCarouselLeads] Vehicle count:', {
+    allVehicleItems: allVehicleItems.length,
+    carouselVehicles: carouselVehicles.length,
+    selectedVehicleType,
+    selectedSubcategory,
+    initialVehicleType,
+  });
+  
   if (carouselVehicles.length === 0) {
+    console.log('[TopTenCarouselLeads] No vehicles found, returning null');
     return null;
   }
 
