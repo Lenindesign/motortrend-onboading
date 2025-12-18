@@ -586,6 +586,8 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     maxWidth: '100%',
     alignItems: shouldStackLayout ? 'stretch' : 'flex-start', // Sidebar uses explicit height
     boxSizing: 'border-box',
+    paddingLeft: '24px',
+    paddingRight: '24px',
   };
 
   const carouselContainerStyle: React.CSSProperties = {
