@@ -257,14 +257,14 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   };
 
   // Styles - Using standardized section padding from design system
-  // Outer wrapper - NO internal padding, parent container's gap handles spacing
-  // No side padding - parent full-width section handles edge spacing
+  // Outer wrapper with 24px side padding for consistent spacing
   const sectionWrapperStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
-    paddingLeft: '0',
-    paddingRight: '0',
+    paddingLeft: '24px',
+    paddingRight: '24px',
+    boxSizing: 'border-box',
   };
 
   const containerStyle: React.CSSProperties = { 
