@@ -328,9 +328,9 @@ export const PersonalizedVehicles: React.FC<PersonalizedVehiclesProps> = ({ clas
   // Styles - Dark Mode Version
   // Section wrapper with dark background, rounded corners like TrendingStories
   const containerStyle: React.CSSProperties = {
-    width: '100%',
+    width: 'calc(100% - 48px)', // Account for 24px padding on each side
     maxWidth: 'var(--max-width-container, 1280px)',
-    margin: '0 auto',
+    margin: '0 24px', // 24px horizontal margin
     background: 'var(--color-neutrals-1, #141416)',
     borderRadius: 'var(--border-radius-lg, 16px)',
     paddingTop: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)',
