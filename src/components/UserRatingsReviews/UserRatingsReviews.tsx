@@ -250,13 +250,12 @@ export const UserRatingsReviews: React.FC<UserRatingsReviewsProps> = ({ classNam
 
   // Styles - Using standardized section padding from design system
   // NO internal vertical padding - parent container's gap handles spacing between sections
-  // Horizontal padding handled by parent container or page padding variables
+  // Horizontal padding handled by parent container via --page-padding-desktop
   const containerStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
-    paddingLeft: isFullWidth ? '0' : (isMobile ? 'var(--page-padding-mobile, 16px)' : 'var(--page-padding-tablet, 24px)'),
-    paddingRight: isFullWidth ? '0' : (isMobile ? 'var(--page-padding-mobile, 16px)' : 'var(--page-padding-tablet, 24px)'),
+    boxSizing: 'border-box',
   };
 
   const headerStyle: React.CSSProperties = {

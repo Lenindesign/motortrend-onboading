@@ -257,13 +257,11 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   };
 
   // Styles - Using standardized section padding from design system
-  // Outer wrapper with 24px side padding for consistent spacing
+  // Outer wrapper - container handles side padding via --page-padding-desktop
   const sectionWrapperStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
-    paddingLeft: '24px',
-    paddingRight: '24px',
     boxSizing: 'border-box',
   };
 
