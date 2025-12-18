@@ -266,6 +266,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   const experienceOverride = searchParams.get('experience');
   const isShopperParam = searchParams.get('isShopper');
   const isShopperOverride = isShopperParam !== null ? isShopperParam === 'true' : undefined;
+  const componentPreviewId = searchParams.get('componentPreview');
   
   // Get articles data for NewsSection and HeroPlusThree
   const { heroData, verticalCards, newsItems } = useMemo(() => getArticlesData(navigate), [navigate]);
@@ -334,6 +335,38 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
           animation: 'spin 1s linear infinite'
         }} />
         <span>Loading layout...</span>
+      </div>
+    );
+  }
+
+  // Single component preview mode - render just one component
+  if (componentPreviewId && COMPONENT_MAP[componentPreviewId]) {
+    const componentEntry = COMPONENT_MAP[componentPreviewId];
+    const Component = componentEntry.component;
+    const defaultProps = componentEntry.defaultProps || {};
+    
+    // Merge with some sample props for better preview
+    const previewProps = {
+      ...defaultProps,
+      // Add any additional preview-specific props here
+    };
+    
+    // For components that need data, provide it
+    const dataProps: Record<string, unknown> = {};
+    if (componentPreviewId === 'NewsSection') {
+      dataProps.items = newsItems;
+    } else if (componentPreviewId === 'HeroPlusThree') {
+      dataProps.hero = heroData;
+      dataProps.cards = verticalCards;
+    }
+    
+    return (
+      <div style={{ 
+        padding: '20px',
+        minHeight: '100vh',
+        background: 'var(--color-neutrals-8, #FCFCFD)'
+      }}>
+        <Component {...previewProps} {...dataProps} />
       </div>
     );
   }

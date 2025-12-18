@@ -131,23 +131,33 @@ const SortableItem: React.FC<{
 const PaletteItem: React.FC<{
   component: ComponentDefinition;
   onAdd: (componentId: string) => void;
-}> = ({ component, onAdd }) => {
+  onPreview: (component: ComponentDefinition) => void;
+}> = ({ component, onAdd, onPreview }) => {
   return (
     <div
       className="journey-builder__palette-item"
-      onClick={() => onAdd(component.id)}
       draggable
     >
-      <div className="journey-builder__palette-item-icon">
-        <Icon name={component.icon || 'widgets'} size={24} />
+      <div 
+        className="journey-builder__palette-item-info"
+        onClick={() => onPreview(component)}
+        title="Click to preview component"
+      >
+        <div className="journey-builder__palette-item-icon">
+          <Icon name={component.icon || 'widgets'} size={24} />
+        </div>
+        <div className="journey-builder__palette-item-content">
+          <span className="journey-builder__palette-item-name">{component.name}</span>
+          <span className={`journey-builder__palette-item-type journey-builder__palette-item-type--${component.type}`}>
+            {component.type === 'two-column' ? '2-col' : 'full'}
+          </span>
+        </div>
       </div>
-      <div className="journey-builder__palette-item-content">
-        <span className="journey-builder__palette-item-name">{component.name}</span>
-        <span className={`journey-builder__palette-item-type journey-builder__palette-item-type--${component.type}`}>
-          {component.type === 'two-column' ? '2-col' : 'full'}
-        </span>
-      </div>
-      <button className="journey-builder__palette-item-add">
+      <button 
+        className="journey-builder__palette-item-add"
+        onClick={(e) => { e.stopPropagation(); onAdd(component.id); }}
+        title="Add to layout"
+      >
         <Icon name="add" size={16} />
       </button>
     </div>
@@ -232,6 +242,88 @@ const PropsEditor: React.FC<{
           </button>
           <button className="journey-builder__btn journey-builder__btn--primary" onClick={() => { onSave(editedProps); onClose(); }}>
             Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Component Preview Modal
+const ComponentPreviewModal: React.FC<{
+  component: ComponentDefinition;
+  onClose: () => void;
+  onAdd: (componentId: string) => void;
+}> = ({ component, onClose, onAdd }) => {
+  // Generate preview URL for the component
+  const getPreviewUrl = () => {
+    // We'll use a special preview route that renders just this component
+    const baseUrl = window.location.origin;
+    return `${baseUrl}/?componentPreview=${component.id}&preview=true`;
+  };
+
+  return (
+    <div className="journey-builder__modal-overlay" onClick={onClose}>
+      <div className="journey-builder__preview-modal" onClick={e => e.stopPropagation()}>
+        <div className="journey-builder__modal-header">
+          <div className="journey-builder__preview-modal-title">
+            <Icon name={component.icon || 'widgets'} size={24} />
+            <div>
+              <h3>{component.name}</h3>
+              <span className={`journey-builder__palette-item-type journey-builder__palette-item-type--${component.type}`}>
+                {component.type === 'two-column' ? 'Two Column' : 'Full Width'}
+              </span>
+            </div>
+          </div>
+          <button className="journey-builder__modal-close" onClick={onClose}>
+            <Icon name="close" size={20} />
+          </button>
+        </div>
+        
+        <div className="journey-builder__preview-modal-content">
+          <p className="journey-builder__preview-modal-description">{component.description}</p>
+          
+          {/* Live Preview iframe */}
+          <div className="journey-builder__preview-modal-iframe-container">
+            <iframe
+              src={getPreviewUrl()}
+              className="journey-builder__preview-modal-iframe"
+              title={`Preview: ${component.name}`}
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            />
+          </div>
+          
+          {/* Props info */}
+          {Object.keys(component.props).length > 0 && (
+            <div className="journey-builder__preview-modal-props">
+              <h4>Configurable Properties</h4>
+              <div className="journey-builder__preview-modal-props-list">
+                {Object.entries(component.props).map(([key, propDef]) => (
+                  <div key={key} className="journey-builder__preview-modal-prop">
+                    <span className="journey-builder__preview-modal-prop-name">{key}</span>
+                    <span className="journey-builder__preview-modal-prop-type">{propDef.type}</span>
+                    {propDef.options && (
+                      <span className="journey-builder__preview-modal-prop-options">
+                        {propDef.options.slice(0, 3).join(', ')}{propDef.options.length > 3 ? '...' : ''}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className="journey-builder__modal-footer">
+          <button className="journey-builder__btn journey-builder__btn--secondary" onClick={onClose}>
+            Close
+          </button>
+          <button 
+            className="journey-builder__btn journey-builder__btn--primary" 
+            onClick={() => { onAdd(component.id); onClose(); }}
+          >
+            <Icon name="add" size={16} />
+            Add to Layout
           </button>
         </div>
       </div>
@@ -354,6 +446,7 @@ export const JourneyBuilder: React.FC = () => {
   const [isRestoring, setIsRestoring] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
   const [previewMode, setPreviewMode] = useState<'live' | 'blocks'>('live');
+  const [previewComponent, setPreviewComponent] = useState<ComponentDefinition | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -702,6 +795,7 @@ export const JourneyBuilder: React.FC = () => {
                 key={component.id}
                 component={component}
                 onAdd={handleAddComponent}
+                onPreview={setPreviewComponent}
               />
             ))}
           </div>
@@ -907,6 +1001,15 @@ export const JourneyBuilder: React.FC = () => {
           section={sections[editingIndex]}
           onSave={(props) => handleUpdateProps(editingIndex, props)}
           onClose={() => setEditingIndex(null)}
+        />
+      )}
+
+      {/* Component Preview Modal */}
+      {previewComponent && (
+        <ComponentPreviewModal
+          component={previewComponent}
+          onClose={() => setPreviewComponent(null)}
+          onAdd={handleAddComponent}
         />
       )}
     </div>

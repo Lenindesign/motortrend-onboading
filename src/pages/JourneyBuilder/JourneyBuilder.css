@@ -1027,6 +1027,143 @@
   border-top: 1px solid var(--color-neutrals-3, #353945);
 }
 
+/* Component Preview Modal */
+.journey-builder__preview-modal {
+  background: var(--color-neutrals-2, #23262F);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.journey-builder__preview-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.journey-builder__preview-modal-title h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-neutrals-8, #FCFCFD);
+}
+
+.journey-builder__preview-modal-title > .material-symbols-outlined {
+  color: var(--color-primary-1, #E90C17);
+}
+
+.journey-builder__preview-modal-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.journey-builder__preview-modal-description {
+  font-size: 14px;
+  color: var(--color-neutrals-5, #B1B5C3);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.journey-builder__preview-modal-iframe-container {
+  position: relative;
+  background: var(--color-neutrals-1, #141416);
+  border: 1px solid var(--color-neutrals-3, #353945);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px;
+}
+
+.journey-builder__preview-modal-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  transform-origin: top left;
+  transform: scale(0.5);
+  width: 200%;
+  height: 200%;
+}
+
+.journey-builder__preview-modal-props {
+  background: var(--color-neutrals-1, #141416);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.journey-builder__preview-modal-props h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-neutrals-6, #E6E8EC);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.journey-builder__preview-modal-props-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.journey-builder__preview-modal-prop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--color-neutrals-2, #23262F);
+  border-radius: 6px;
+}
+
+.journey-builder__preview-modal-prop-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-neutrals-8, #FCFCFD);
+  flex: 1;
+}
+
+.journey-builder__preview-modal-prop-type {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-primary-1, #E90C17);
+  background: rgba(233, 12, 23, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.journey-builder__preview-modal-prop-options {
+  font-size: 11px;
+  color: var(--color-neutrals-5, #B1B5C3);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Updated Palette Item for clickable preview */
+.journey-builder__palette-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.journey-builder__palette-item-info:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 /* Responsive */
 @media (max-width: 1400px) {
   .journey-builder__content--with-versions {
