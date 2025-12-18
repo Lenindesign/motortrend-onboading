@@ -567,12 +567,15 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   }
 
   // Main container styles - NO internal vertical padding, parent container's gap handles spacing
+  // Full-width sections break out of container, so need their own side padding
   const containerStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: '100%',
     marginBottom: 0,
     overflow: 'hidden', // Prevent horizontal overflow
     boxSizing: 'border-box',
+    paddingLeft: '24px',
+    paddingRight: '24px',
   };
 
   // Stack layout when slider width < 1028px OR when explicitly no leads

@@ -257,12 +257,14 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   };
 
   // Styles - Using standardized section padding from design system
-  // Outer wrapper - container handles side padding via --page-padding-desktop
+  // Full-width sections break out of container, so need their own side padding
   const sectionWrapperStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
     boxSizing: 'border-box',
+    paddingLeft: '24px',
+    paddingRight: '24px',
   };
 
   const containerStyle: React.CSSProperties = { 
