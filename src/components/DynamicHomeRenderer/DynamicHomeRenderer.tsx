@@ -401,82 +401,83 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
 
   return (
     <>
-      {/* Sticky Experience Indicator - Always visible for testing */}
-      <div style={{
-        position: 'fixed',
-        bottom: 20,
-        right: 20,
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-        color: '#fff',
-        padding: '16px 20px',
-        borderRadius: '12px',
-        fontSize: '12px',
-        zIndex: 9999,
-        maxWidth: '280px',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        backdropFilter: 'blur(10px)',
-        fontFamily: 'var(--font-body)',
-      }}>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '8px', 
-          marginBottom: '12px',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
-          paddingBottom: '10px'
+      {/* Sticky Experience Indicator - Only visible in preview mode */}
+      {isPreviewMode && (
+        <div style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+          color: '#fff',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          fontSize: '12px',
+          zIndex: 9999,
+          maxWidth: '280px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          backdropFilter: 'blur(10px)',
+          fontFamily: 'var(--font-body)',
         }}>
-          <span style={{ 
-            width: '8px', 
-            height: '8px', 
-            borderRadius: '50%', 
-            background: '#58BD7D',
-            boxShadow: '0 0 8px #58BD7D'
-          }} />
-          <strong style={{ fontSize: '13px', letterSpacing: '0.5px' }}>Journey Builder Active</strong>
-        </div>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)' }}>Experience:</span>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            marginBottom: '12px',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
+            paddingBottom: '10px'
+          }}>
             <span style={{ 
-              background: 'var(--color-primary-1, #E90C17)', 
-              padding: '2px 8px', 
-              borderRadius: '4px',
-              fontWeight: '600',
-              fontSize: '11px'
-            }}>{layout.experience}</span>
+              width: '8px', 
+              height: '8px', 
+              borderRadius: '50%', 
+              background: '#58BD7D',
+              boxShadow: '0 0 8px #58BD7D'
+            }} />
+            <strong style={{ fontSize: '13px', letterSpacing: '0.5px' }}>Journey Builder Preview</strong>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)' }}>Intent:</span>
-            <span style={{ 
-              background: layout.isShopper ? '#58BD7D' : '#3B82F6', 
-              padding: '2px 8px', 
-              borderRadius: '4px',
-              fontWeight: '600',
-              fontSize: '11px'
-            }}>{layout.isShopper ? 'Shopper' : 'Browser'}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Experience:</span>
+              <span style={{ 
+                background: 'var(--color-primary-1, #E90C17)', 
+                padding: '2px 8px', 
+                borderRadius: '4px',
+                fontWeight: '600',
+                fontSize: '11px'
+              }}>{layout.experience}</span>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Intent:</span>
+              <span style={{ 
+                background: layout.isShopper ? '#58BD7D' : '#3B82F6', 
+                padding: '2px 8px', 
+                borderRadius: '4px',
+                fontWeight: '600',
+                fontSize: '11px'
+              }}>{layout.isShopper ? 'Shopper' : 'Browser'}</span>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Layout:</span>
+              <span style={{ fontWeight: '500', fontSize: '11px' }}>{layout.id}</span>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Sections:</span>
+              <span style={{ fontWeight: '500', fontSize: '11px' }}>{enabledSections.length} active</span>
+            </div>
           </div>
           
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)' }}>Layout:</span>
-            <span style={{ fontWeight: '500', fontSize: '11px' }}>{layout.id}</span>
-          </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)' }}>Sections:</span>
-            <span style={{ fontWeight: '500', fontSize: '11px' }}>{enabledSections.length} active</span>
-          </div>
-        </div>
-        
-        <div style={{ 
-          marginTop: '12px', 
-          paddingTop: '10px', 
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-          fontSize: '10px',
-          color: 'rgba(255,255,255,0.4)',
-          textAlign: 'center'
+          <div style={{ 
+            marginTop: '12px', 
+            paddingTop: '10px', 
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '10px',
+            color: 'rgba(255,255,255,0.4)',
+            textAlign: 'center'
         }}>
           <a 
             href="/journey-builder" 
@@ -489,7 +490,8 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
             Open Journey Builder →
           </a>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Render sections dynamically */}
       {enabledSections.map((section, index) => (
