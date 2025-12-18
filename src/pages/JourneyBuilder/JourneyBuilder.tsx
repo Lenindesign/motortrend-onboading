@@ -528,6 +528,10 @@ export const JourneyBuilder: React.FC = () => {
   // Subscribe to real-time changes
   useEffect(() => {
     const unsubscribe = subscribeToLayoutChanges((layoutKey, newSections) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:realtimeSubscription',message:'Real-time update received',data:{layoutKey,newOrder:newSections.map(s=>s.componentId),isSaving:isSavingRef.current},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H5'})}).catch(()=>{});
+      // #endregion
+      
       // Ignore real-time updates while saving to prevent overwriting local changes
       if (isSavingRef.current) {
         console.log('[JourneyBuilder] Ignoring real-time update during save');
@@ -657,9 +661,16 @@ export const JourneyBuilder: React.FC = () => {
         currentOrder: sections.map(s => s.componentId)
       });
 
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:handleDragEnd',message:'Drag reorder triggered',data:{oldIndex,newIndex,activeId:String(active.id),overId:String(over.id),currentOrder:sections.map(s=>s.componentId)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H4'})}).catch(()=>{});
+      // #endregion
+
       if (oldIndex !== -1 && newIndex !== -1) {
         const newSections = arrayMove(sections, oldIndex, newIndex);
         console.log('[JourneyBuilder] New order:', newSections.map(s => s.componentId));
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:handleDragEnd:afterArrayMove',message:'After arrayMove',data:{newOrder:newSections.map(s=>s.componentId)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H4'})}).catch(()=>{});
+        // #endregion
         updateSections(newSections);
       }
     }
@@ -671,6 +682,9 @@ export const JourneyBuilder: React.FC = () => {
       activeLayout,
       newSectionsOrder: newSections.map(s => s.componentId),
     });
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:updateSections',message:'updateSections called',data:{activeLayout,newOrder:newSections.map(s=>s.componentId)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
     setLayouts(prev => {
       const updated = {
         ...prev,
@@ -683,6 +697,9 @@ export const JourneyBuilder: React.FC = () => {
         layoutKey: activeLayout,
         newOrder: updated[activeLayout]?.sections?.map(s => s.componentId),
       });
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:updateSections:setLayouts',message:'setLayouts updater executed',data:{layoutKey:activeLayout,newOrder:updated[activeLayout]?.sections?.map(s=>s.componentId)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H2'})}).catch(()=>{});
+      // #endregion
       return updated;
     });
     setHasChanges(true);
@@ -733,6 +750,10 @@ export const JourneyBuilder: React.FC = () => {
   const handleSave = async () => {
     setSaveStatus('saving');
     isSavingRef.current = true; // Block real-time updates during save
+    
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:handleSave',message:'handleSave called',data:{activeLayout,sectionsCount:sections.length,sectionOrder:sections.map(s=>s.componentId)},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H1'})}).catch(()=>{});
+    // #endregion
     
     console.log('[JourneyBuilder] Saving layout:', {
       activeLayout,

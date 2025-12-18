@@ -121,20 +121,29 @@ export async function updateLayout(
     hasDb: !!db
   });
 
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout',message:'updateLayout service called',data:{layoutKey,sectionsCount:sections.length,sectionOrder:sections.map(s=>s.componentId),canUseSupabase:canUseSupabase(),hasDb:!!db},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
+  // #endregion
+
   if (canUseSupabase() && db) {
     try {
       console.log('[journeyLayoutService] Saving to Supabase...');
       // Get current user
       const { data: { user } } = await supabase!.auth.getUser();
 
-      const { error } = await db
+      const { error, count } = await db
         .from('journey_layouts')
         .update({
           sections,
           updated_by: user?.id || null,
           updated_at: new Date().toISOString(),
         })
-        .eq('layout_key', layoutKey);
+        .eq('layout_key', layoutKey)
+        .select();
+
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:afterSupabase',message:'Supabase update result',data:{error:error?.message||null,count,layoutKey},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
+      // #endregion
 
       if (error) throw error;
 
@@ -142,6 +151,9 @@ export async function updateLayout(
       return { success: true };
     } catch (error) {
       console.error('Error updating layout in Supabase:', error);
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:catch',message:'Supabase update error',data:{error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
+      // #endregion
       return { 
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown error' 
