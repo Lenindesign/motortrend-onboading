@@ -202,6 +202,14 @@ const DynamicSection: React.FC<DynamicSectionProps> = ({
   // Determine if this section should show an ad
   const showAd = section.props.showAd === true;
 
+  // Debug logging
+  console.log(`[DynamicSection] Rendering ${section.componentId}:`, {
+    sectionProps: section.props,
+    resolvedProps,
+    finalProps,
+    type,
+  });
+
   if (type === 'full-width') {
     return (
       <div key={`section-${index}`} className="home__section home__section--full-width">
