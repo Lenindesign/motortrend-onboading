@@ -40,8 +40,14 @@ const LOCAL_STORAGE_KEY = 'homePageLayouts';
  * Get all layouts from Supabase or localStorage
  */
 export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
+  console.log('[journeyLayoutService] getLayouts called:', { 
+    canUseSupabase: canUseSupabase(), 
+    hasDb: !!db 
+  });
+
   if (canUseSupabase() && db) {
     try {
+      console.log('[journeyLayoutService] Fetching from Supabase...');
       const { data, error } = await db
         .from('journey_layouts')
         .select('*')
@@ -50,6 +56,7 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
       if (error) throw error;
 
       if (data && data.length > 0) {
+        console.log('[journeyLayoutService] Loaded from Supabase:', { count: data.length });
         const layouts: Record<string, LayoutConfig> = {};
         data.forEach((layout: JourneyLayout) => {
           layouts[layout.layout_key as LayoutKey] = {
@@ -69,6 +76,7 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
   }
 
   // Fallback to localStorage
+  console.log('[journeyLayoutService] Falling back to localStorage');
   return getLayoutsFromLocalStorage();
 }
 
@@ -81,9 +89,14 @@ function getLayoutsFromLocalStorage(): Record<LayoutKey, LayoutConfig> {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (parsed.layouts) {
+        console.log('[journeyLayoutService] Loaded from localStorage:', { 
+          lastUpdated: parsed.lastUpdated,
+          layoutKeys: Object.keys(parsed.layouts)
+        });
         return parsed.layouts as Record<LayoutKey, LayoutConfig>;
       }
     }
+    console.log('[journeyLayoutService] No saved layouts in localStorage, using defaults');
   } catch (e) {
     console.error('Error loading from localStorage:', e);
   }
@@ -100,8 +113,16 @@ export async function updateLayout(
   sections: SectionConfig[],
   _changeDescription?: string
 ): Promise<{ success: boolean; error?: string }> {
+  console.log('[journeyLayoutService] updateLayout called:', { 
+    layoutKey, 
+    sectionsCount: sections.length,
+    canUseSupabase: canUseSupabase(),
+    hasDb: !!db
+  });
+
   if (canUseSupabase() && db) {
     try {
+      console.log('[journeyLayoutService] Saving to Supabase...');
       // Get current user
       const { data: { user } } = await supabase!.auth.getUser();
 
@@ -116,6 +137,7 @@ export async function updateLayout(
 
       if (error) throw error;
 
+      console.log('[journeyLayoutService] Saved to Supabase successfully');
       return { success: true };
     } catch (error) {
       console.error('Error updating layout in Supabase:', error);
@@ -127,6 +149,7 @@ export async function updateLayout(
   }
 
   // Fallback to localStorage
+  console.log('[journeyLayoutService] Using localStorage fallback');
   return updateLayoutInLocalStorage(layoutKey, sections);
 }
 
@@ -138,6 +161,8 @@ function updateLayoutInLocalStorage(
   sections: SectionConfig[]
 ): { success: boolean; error?: string } {
   try {
+    console.log('[journeyLayoutService] Saving to localStorage:', { layoutKey, sectionsCount: sections.length });
+    
     const layouts = getLayoutsFromLocalStorage();
     layouts[layoutKey] = {
       ...layouts[layoutKey],
@@ -151,6 +176,15 @@ function updateLayoutInLocalStorage(
     };
 
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedConfig));
+    
+    // Verify save
+    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const verified = saved ? JSON.parse(saved) : null;
+    console.log('[journeyLayoutService] Save verified:', { 
+      layoutKey, 
+      savedSectionsCount: verified?.layouts?.[layoutKey]?.sections?.length 
+    });
+    
     return { success: true };
   } catch (error) {
     console.error('Error saving to localStorage:', error);
