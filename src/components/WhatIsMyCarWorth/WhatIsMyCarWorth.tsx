@@ -259,10 +259,11 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   // Styles - container is the outermost element now
   // Full-width sections break out of container, margin handles centering and edge spacing
   const containerStyle: React.CSSProperties = { 
-    width: 'calc(100% - 48px)',
+    width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
-    marginLeft: '24px',
-    marginRight: '24px',
+    margin: '0 auto',
+    paddingLeft: 0,
+    paddingRight: 0,
     background: 'var(--color-white, #FFFFFF)', 
     border: isMobile ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)', 
     borderRadius: isMobile ? 'var(--border-radius-md, 8px)' : 'var(--border-radius-lg, 16px)', 

@@ -18,7 +18,9 @@
 .home__container {
   max-width: var(--max-width-container);
   margin: 0 auto;
-  padding: 0 24px; /* Consistent 24px side padding */
+  padding: 0; /* Remove side padding - handled by individual components */
+  padding-left: 0;
+  padding-right: 0;
   overflow-anchor: none; /* Prevent browser scroll anchoring */
   /* Use flexbox for uniform section spacing */
   display: flex;
@@ -28,13 +30,13 @@
 
 @media (max-width: 1279px) {
   .home__container {
-    padding: 0 var(--page-padding-tablet);
+    padding: 0; /* Remove side padding - handled by individual components */
   }
 }
 
 @media (max-width: 1023px) {
   .home__container {
-    padding: 0 var(--page-padding-tablet);
+    padding: 0; /* Remove side padding - handled by individual components */
     gap: var(--section-gap-sm); /* Tighter spacing on tablet */
   }
 }
@@ -55,9 +57,9 @@
 .home__section--full-width {
   grid-template-columns: 1fr;
   padding: 0;
-  margin-left: -24px;
-  margin-right: -24px;
-  width: calc(100% + 48px);
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -69,25 +71,25 @@
 /* Break out of container padding on all breakpoints for full-width sections */
 @media (max-width: 1279px) {
   .home__section--full-width {
-    margin-left: calc(-1 * var(--page-padding-tablet));
-    margin-right: calc(-1 * var(--page-padding-tablet));
-    width: calc(100% + (var(--page-padding-tablet) * 2));
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 100%;
   }
 }
 
 @media (max-width: 1023px) {
   .home__section--full-width {
-    margin-left: calc(-1 * var(--page-padding-tablet));
-    margin-right: calc(-1 * var(--page-padding-tablet));
-    width: calc(100% + (var(--page-padding-tablet) * 2));
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .home__section--full-width {
-    margin-left: calc(-1 * var(--page-padding-mobile));
-    margin-right: calc(-1 * var(--page-padding-mobile));
-    width: calc(100% + (var(--page-padding-mobile) * 2));
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 100%;
   }
 }
 
@@ -132,7 +134,7 @@
   }
 
   .home__container {
-    padding: 0 var(--page-padding-mobile);
+    padding: 0; /* Remove side padding - handled by individual components */
     gap: var(--section-gap-sm); /* Uniform 24px gap on mobile */
   }
 

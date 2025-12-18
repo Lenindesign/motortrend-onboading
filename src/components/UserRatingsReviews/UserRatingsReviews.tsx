@@ -256,8 +256,8 @@ export const UserRatingsReviews: React.FC<UserRatingsReviewsProps> = ({ classNam
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
     boxSizing: 'border-box',
-    paddingLeft: '24px',
-    paddingRight: '24px',
+    paddingLeft: 0,
+    paddingRight: 0,
   };
 
   const headerStyle: React.CSSProperties = {

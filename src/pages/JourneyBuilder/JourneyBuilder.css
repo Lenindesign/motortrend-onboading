@@ -21,6 +21,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  color: var(--color-black);
 }
 
 .journey-builder__header-left {
@@ -37,11 +38,11 @@
   font-size: 24px;
   font-weight: 600;
   margin: 0;
-  color: var(--color-neutrals-8, #FCFCFD);
+  color: var(--color-disabled-text);
 }
 
 .journey-builder__title .icon {
-  color: var(--color-primary-1, #E90C17);
+  color: var(--color-primary-2);
 }
 
 .journey-builder__subtitle {

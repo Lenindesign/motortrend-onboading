@@ -136,6 +136,7 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
     display: 'grid',
     gridTemplateColumns: `repeat(${cardCount}, 1fr)`,
     gap: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-3, 24px)',
+    rowGap: 0,
     width: '100%',
   };
 

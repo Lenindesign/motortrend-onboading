@@ -329,10 +329,10 @@ export const PersonalizedVehicles: React.FC<PersonalizedVehiclesProps> = ({ clas
   // Section wrapper with dark background, rounded corners like TrendingStories
   // Full-width sections break out of container - use margin for outer spacing, padding for inner
   const containerStyle: React.CSSProperties = {
-    width: 'calc(100% - 48px)', // Account for 24px margin on each side
+    width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
-    marginLeft: '24px',
-    marginRight: '24px',
+    marginLeft: 0,
+    marginRight: 0,
     background: 'var(--color-neutrals-1, #141416)',
     borderRadius: 'var(--border-radius-lg, 16px)',
     paddingTop: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)',

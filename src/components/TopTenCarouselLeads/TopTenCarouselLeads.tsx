@@ -574,8 +574,8 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     marginBottom: 0,
     overflow: 'hidden', // Prevent horizontal overflow
     boxSizing: 'border-box',
-    paddingLeft: '24px',
-    paddingRight: '24px',
+    paddingLeft: 0,
+    paddingRight: 0,
   };
 
   // Stack layout when slider width < 1028px OR when explicitly no leads
