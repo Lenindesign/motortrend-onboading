@@ -487,7 +487,11 @@ export const JourneyBuilder: React.FC = () => {
   const [dropTargetIndex, setDropTargetIndex] = useState<number | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before drag starts, allows clicks to work
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
