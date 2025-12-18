@@ -1931,8 +1931,6 @@ export const Home: React.FC = () => {
       <div className="home">
         <div className="home__container">
           <DynamicHomeRenderer
-            heroData={heroData}
-            verticalCards={sortedVerticalCards}
             debug={searchParams.get('debug') === 'true'}
           />
         </div>

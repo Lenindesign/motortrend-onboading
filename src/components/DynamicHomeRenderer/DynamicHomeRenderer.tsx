@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HeroPlusThree } from '../HeroPlusThree';
 import { NewsSection } from '../NewsSection';
 import { VehiclesSection } from '../VehiclesSection';
@@ -19,6 +20,8 @@ import { UserRatingsReviews } from '../UserRatingsReviews';
 import { PersonalizedVehicles } from '../PersonalizedVehicles';
 import { TrendingStories } from '../TrendingStories';
 import { AdContainer } from '../AdContainer';
+import { articles } from '../../utils/articles';
+import type { RiverItem } from '../River';
 import {
   getCurrentLayoutAsync,
   resolveDynamicProps,
@@ -26,6 +29,51 @@ import {
   type LayoutConfig,
   type SectionConfig,
 } from '../../utils/experienceManager';
+
+/**
+ * Get articles data for NewsSection and HeroPlusThree
+ */
+const getArticlesData = (navigate: ReturnType<typeof useNavigate>) => {
+  // Get all news articles sorted by date
+  const allArticles = Object.entries(articles)
+    .filter(([, article]) => 
+      article.category === 'News' || article.category === 'Features' || article.category === 'Reviews'
+    )
+    .map(([slug, article]) => ({ slug, article }))
+    .sort((a, b) => {
+      const dateA = new Date(a.article.date).getTime();
+      const dateB = new Date(b.article.date).getTime();
+      return dateB - dateA;
+    });
+
+  // Hero data - use first article
+  const heroArticle = allArticles[0];
+  const heroData = heroArticle ? {
+    imageUrl: heroArticle.article.heroImage,
+    title: heroArticle.article.title,
+    onClick: () => navigate(`/article/${heroArticle.slug}`),
+  } : { imageUrl: '', title: '', onClick: () => {} };
+
+  // Vertical cards - next 3 articles
+  const verticalCards = allArticles.slice(1, 4).map(({ slug, article }) => ({
+    imageUrl: article.heroImage,
+    title: article.title,
+    type: article.category === 'Reviews' ? 'Article' as const : 'Article' as const,
+    onClick: () => navigate(`/article/${slug}`),
+  }));
+
+  // News items for river - next 10 articles
+  const newsItems: RiverItem[] = allArticles.slice(4, 14).map(({ slug, article }) => ({
+    imageUrl: article.heroImage,
+    title: article.title,
+    author: article.author,
+    date: article.date,
+    category: `MotorTrend | ${article.category}`,
+    onClick: () => navigate(`/article/${slug}`),
+  }));
+
+  return { heroData, verticalCards, newsItems };
+};
 
 // Component type definitions
 type LayoutType = 'full-width' | 'two-column';
@@ -104,8 +152,9 @@ const COMPONENT_MAP: Record<string, ComponentMapEntry> = {
 interface DynamicSectionProps {
   section: SectionConfig;
   index: number;
-  heroData?: unknown;
-  verticalCards?: unknown[];
+  heroData: { imageUrl: string; title: string; onClick: () => void };
+  verticalCards: Array<{ imageUrl: string; title: string; type?: 'Video' | 'Article'; onClick: () => void }>;
+  newsItems: RiverItem[];
 }
 
 /**
@@ -116,6 +165,7 @@ const DynamicSection: React.FC<DynamicSectionProps> = ({
   index,
   heroData,
   verticalCards,
+  newsItems,
 }) => {
   const componentEntry = COMPONENT_MAP[section.componentId];
   
@@ -140,8 +190,13 @@ const DynamicSection: React.FC<DynamicSectionProps> = ({
   };
 
   // Special handling for HeroPlusThree which needs hero and cards data
-  if (section.componentId === 'HeroPlusThree' && heroData && verticalCards) {
+  if (section.componentId === 'HeroPlusThree') {
     Object.assign(finalProps, { hero: heroData, cards: verticalCards });
+  }
+  
+  // Special handling for NewsSection which needs items data
+  if (section.componentId === 'NewsSection') {
+    Object.assign(finalProps, { items: newsItems });
   }
 
   // Determine if this section should show an ad
@@ -177,14 +232,8 @@ const DynamicSection: React.FC<DynamicSectionProps> = ({
 };
 
 interface DynamicHomeRendererProps {
-  /** Hero data for HeroPlusThree component */
-  heroData?: unknown;
-  /** Vertical cards data for HeroPlusThree component */
-  verticalCards?: unknown[];
   /** Enable debug mode to show layout info */
   debug?: boolean;
-  /** Force a specific layout key (for preview) */
-  forceLayoutKey?: string;
 }
 
 /**
@@ -194,13 +243,15 @@ interface DynamicHomeRendererProps {
  * and renders the appropriate sections dynamically.
  */
 export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
-  heroData,
-  verticalCards,
   debug = false,
 }) => {
+  const navigate = useNavigate();
   const [layout, setLayout] = useState<LayoutConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Get articles data for NewsSection and HeroPlusThree
+  const { heroData, verticalCards, newsItems } = useMemo(() => getArticlesData(navigate), [navigate]);
 
   // Fetch layout on mount
   useEffect(() => {
@@ -354,6 +405,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
           index={index}
           heroData={heroData}
           verticalCards={verticalCards}
+          newsItems={newsItems}
         />
       ))}
     </>
