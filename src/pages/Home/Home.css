@@ -18,7 +18,7 @@
 .home__container {
   max-width: var(--max-width-container);
   margin: 0 auto;
-  padding: 0 var(--page-padding-desktop);
+  padding: 0 24px; /* Consistent 24px side padding */
   overflow-anchor: none; /* Prevent browser scroll anchoring */
   /* Use flexbox for uniform section spacing */
   display: flex;
@@ -55,9 +55,9 @@
 .home__section--full-width {
   grid-template-columns: 1fr;
   padding: 0;
-  margin-left: 0;
-  margin-right: 0;
-  width: 100%;
+  margin-left: -24px;
+  margin-right: -24px;
+  width: calc(100% + 48px);
   display: flex;
   justify-content: center;
 }

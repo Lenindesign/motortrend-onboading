@@ -241,7 +241,7 @@
   /* Page Container Padding */
   --page-padding-mobile: 16px;
   --page-padding-tablet: 24px;
-  --page-padding-desktop: 24px;
+  --page-padding-desktop: 0px;
 }
 
 /* Global Resets */
