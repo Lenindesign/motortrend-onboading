@@ -172,7 +172,6 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
 
   // Styles
   const containerStyle: React.CSSProperties = {
-    marginBottom: '48px',
     padding: 0,
   };
 

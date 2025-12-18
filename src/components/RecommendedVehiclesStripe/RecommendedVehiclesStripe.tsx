@@ -104,7 +104,7 @@ export const RecommendedVehiclesStripe: React.FC<RecommendedVehiclesStripeProps>
   if (!vehicles || vehicles.length === 0) return null;
 
   // Styles
-  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)' };
+  const stripeStyle: React.CSSProperties = { width: '100%' };
   const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)', padding: isMobile ? '0 var(--spacing-3, 24px)' : '0 var(--spacing-4, 32px)' };
   const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontSize: isMobile ? 'var(--font-size-xl, 20px)' : 'var(--font-size-2xl, 24px)', fontWeight: 600, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: 0 };
   const containerStyle: React.CSSProperties = { width: '100%', overflowX: 'auto', overflowY: 'hidden', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'thin', scrollbarColor: 'var(--color-neutrals-4, #6E7481) transparent', paddingBottom: 'var(--spacing-2, 16px)' };

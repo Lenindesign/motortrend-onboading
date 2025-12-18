@@ -515,7 +515,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   const containerStyle: React.CSSProperties = {
     width: '100%',
     marginBottom: 0,
-    padding: isWideDesktop ? '0 0 16px 0' : '0 16px 16px 16px',
+    padding: isWideDesktop ? '0' : '0 16px',
   };
 
   const sliderStyle: React.CSSProperties = {

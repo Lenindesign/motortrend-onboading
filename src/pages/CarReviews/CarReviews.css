@@ -12,6 +12,9 @@
   max-width: var(--max-width-container);
   margin: 0 auto;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap-md);
 }
 
 @media (max-width: 1279px) {
@@ -30,7 +33,6 @@
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: var(--spacing-4);
-  margin-bottom: var(--section-spacing-vertical);
 }
 
 .car-reviews__left-column {
@@ -62,10 +64,10 @@
 
   .car-reviews__container {
     padding: 0 16px;
+    gap: var(--section-gap-sm);
   }
 
   .car-reviews__section {
-    margin-bottom: var(--spacing-3);
     gap: var(--spacing-2);
   }
 
@@ -73,12 +75,4 @@
     width: 100%;
   }
 }
-
-/* Small mobile */
-
-
-  .car-reviews__section {
-    margin-bottom: var(--spacing-2);
-    gap: var(--spacing-2);
-  }
 

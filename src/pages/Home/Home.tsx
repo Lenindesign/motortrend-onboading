@@ -1876,12 +1876,28 @@ export const Home: React.FC = () => {
     );
   };
 
-  // Check if user is Practical Paula (Car Buyers persona)
-  const isCarBuyers = personaName === 'Practical Paula';
+  // Check if user explicitly selected Practical Paula (Car Buyers persona)
+  // Only true when user has explicitly chosen this persona, not when inferred from userType
+  const isCarBuyers = useMemo(() => {
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      if (onboardingData) {
+        const parsed = JSON.parse(onboardingData);
+        // Only consider as Car Buyers if they explicitly selected Practical Paula
+        return parsed.persona === 'Practical Paula';
+      }
+    } catch (error) {
+      console.error('Error checking persona:', error);
+    }
+    return false;
+  }, []);
   
-  // Check if user is a shopper (buyer or both) - only explicitly selected shoppers see Top Ten Carousel at top
-  // Enthusiasts and users who haven't completed onboarding don't see it
-  const isShopper = userType === 'buyer' || userType === 'both';
+  // Check if user is a shopper (buyer or both) OR hasn't completed onboarding
+  // Show Top Ten Carousel with Leads for shoppers and new/anonymous users
+  const isShopper = userType === 'buyer' || userType === 'both' || userType === null;
+  
+  // Note: isEnthusiastOnly can be used for future experience differentiation
+  // const isEnthusiastOnly = userType === 'enthusiast';
 
   return (
     <div className="home">
@@ -1893,7 +1909,7 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Top Ten Carousel with Listings - For non-Car Buyers shoppers (at top) */}
+        {/* Top Ten Carousel with Listings - For shoppers and new users (not Car Buyers persona) */}
         {isShopper && !isCarBuyers && (
           <div className="home__section home__section--full-width">
             <TopTenCarouselLeads initialVehicleType={preferredBodyStyle} initialSubcategory="All" />

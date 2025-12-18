@@ -3,7 +3,7 @@
  * Integrates Figma design system with React Router
  */
 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -34,9 +34,29 @@ import DesignSystemReference from './pages/DesignSystemReference';
 import Sitemap from './pages/Sitemap';
 import AtomicDesignAudit from './pages/AtomicDesignAudit';
 import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
+import { JourneyBuilder } from './pages/JourneyBuilder';
 import { RatingProvider } from './contexts/RatingContext';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
+
+// Layout component that conditionally renders header/footer
+const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  
+  // Pages that should hide the global header and footer
+  const fullScreenPages = ['/journey-builder'];
+  const isFullScreenPage = fullScreenPages.includes(location.pathname);
+
+  return (
+    <div className="app">
+      {!isFullScreenPage && <GlobalHeader />}
+      <main className="app__main">
+        {children}
+      </main>
+      {!isFullScreenPage && <GlobalFooter />}
+    </div>
+  );
+};
 
 function App() {
   return (
@@ -44,11 +64,8 @@ function App() {
     <RatingProvider>
       <Router>
         <ScrollToTop />
-        <div className="app">
-          <GlobalHeader />
-          
-          <main className="app__main">
-            <Routes>
+        <AppLayout>
+          <Routes>
               {/* Default route - show home page */}
               <Route path="/" element={<Home />} />
               
@@ -137,13 +154,13 @@ function App() {
               <Route path="/top-ten-management" element={<TopTenManagement />} />
               <Route path="/docs/top-ten-management" element={<TopTenManagement />} />
               
+              {/* Page Builder */}
+              <Route path="/journey-builder" element={<JourneyBuilder />} />
+              
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />
             </Routes>
-          </main>
-
-          <GlobalFooter />
-        </div>
+        </AppLayout>
       </Router>
     </RatingProvider>
     </AuthProvider>

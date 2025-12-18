@@ -331,7 +331,6 @@ export const PersonalizedVehicles: React.FC<PersonalizedVehiclesProps> = ({ clas
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
-    marginBottom: 'var(--section-spacing-vertical, 32px)',
     background: 'var(--color-neutrals-1, #141416)',
     borderRadius: 'var(--border-radius-lg, 16px)',
     paddingTop: isMobile ? 'var(--spacing-3, 24px)' : 'var(--spacing-4, 32px)',

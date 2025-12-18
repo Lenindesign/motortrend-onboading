@@ -127,7 +127,7 @@ export const VehicleLeadsStripe: React.FC<VehicleLeadsStripeProps> = ({ classNam
 
   // Styles - overflow-anchor: none prevents browser scroll anchoring when content loads
   // Add 16px horizontal padding on desktop screens < 1280px
-  const stripeStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--spacing-6, 48px)', padding: !isMobile && !isWideDesktop ? '0 16px' : 0, overflowAnchor: 'none' };
+  const stripeStyle: React.CSSProperties = { width: '100%', padding: !isMobile && !isWideDesktop ? '0 16px' : 0, overflowAnchor: 'none' };
   const headerStyle: React.CSSProperties = { marginBottom: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-4, 24px)', padding: isMobile ? '0 16px' : 0 };
   const titleStyle: React.CSSProperties = { fontFamily: "'Poppins', sans-serif", fontSize: isMobile ? '20px' : '28px', fontWeight: 600, lineHeight: 1.2, color: 'var(--color-neutrals-1, #141416)', margin: '0 0 4px 0' };
   const subtitleRowStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' };

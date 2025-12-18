@@ -9,11 +9,9 @@ import confetti from 'canvas-confetti';
 // Using MotorTrend main logo from URL
 const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import { MembershipCard } from '../../components/MembershipCard';
-import RatingModal from '../../components/RatingModal';
-import { RatingGrid } from '../../components/RatingGrid';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
-import { useRating } from '../../contexts/RatingContext';
-import { parseVehicleName } from '../../utils/vehicleImages';
+// parseVehicleName was previously used for vehicle image lookups
+// import { parseVehicleName } from '../../utils/vehicleImages';
 import './Welcome.css';
 
 export interface WelcomeProps {
@@ -39,14 +37,6 @@ interface OnboardingData {
 export const Welcome: React.FC<WelcomeProps> = () => {
   const navigate = useNavigate();
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({});
-  
-  // Rating modal state
-  const [ratingModal, setRatingModal] = useState<{isOpen: boolean, vehicleName: string, currentRating?: number}>({
-    isOpen: false,
-    vehicleName: '',
-    currentRating: 0
-  });
-  const { setUserRating } = useRating();
 
   // Load onboarding data from localStorage
   useEffect(() => {
@@ -104,32 +94,6 @@ export const Welcome: React.FC<WelcomeProps> = () => {
 
   const { name = 'Guest', vehicles = [] } = onboardingData;
 
-  // Rating handlers
-
-  const handleRatingSubmit = (rating: number) => {
-    setUserRating(ratingModal.vehicleName, rating);
-    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
-  };
-
-  const handleRateAndReview = (rating: number) => {
-    // Submit the rating first
-    setUserRating(ratingModal.vehicleName, rating);
-    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
-    
-    // Navigate to vehicle details page where they can write a review
-    try {
-      const { year, make, model } = parseVehicleName(ratingModal.vehicleName);
-      navigate(`/vehicles/${year}/${make}/${model}`);
-    } catch (error) {
-      console.error('Error parsing vehicle name:', error);
-      // If parsing fails, just stay on current page
-    }
-  };
-
-  const handleRatingModalClose = () => {
-    setRatingModal({ isOpen: false, vehicleName: '', currentRating: 0 });
-  };
-
   return (
     <div className="welcome-page">
       <div className="welcome-card">
@@ -150,23 +114,6 @@ export const Welcome: React.FC<WelcomeProps> = () => {
               Enjoy your MotorTrend member benefits.
             </p>
           </div>
-
-          {/* Rating Grid */}
-          <RatingGrid
-            motorTrendRating={9.2}
-            userReviewsRating={4.5}
-            userReviewsCount={25}
-            onRateClick={() => {
-              // Handle rate click - could open rating modal
-              if (vehicles.length > 0) {
-                setRatingModal({
-                  isOpen: true,
-                  vehicleName: vehicles[0].name,
-                  currentRating: vehicles[0].rating || 0
-                });
-              }
-            }}
-          />
 
           {/* Membership Card Section */}
           <div className="membership-section">
@@ -213,16 +160,6 @@ export const Welcome: React.FC<WelcomeProps> = () => {
           </button>
         </div>
       </div>
-      
-      {/* Rating Modal */}
-      <RatingModal
-        isOpen={ratingModal.isOpen}
-        onClose={handleRatingModalClose}
-        onRate={handleRatingSubmit}
-        vehicleName={ratingModal.vehicleName}
-        currentRating={ratingModal.currentRating}
-        onRateAndReview={handleRateAndReview}
-      />
     </div>
   );
 };

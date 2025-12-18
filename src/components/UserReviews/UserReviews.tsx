@@ -314,7 +314,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
 
   // ==================== INLINE STYLES ====================
 
-  const containerStyle: React.CSSProperties = { marginBottom: 'var(--spacing-6, 48px)' };
+  const containerStyle: React.CSSProperties = {};
   const headerStyle: React.CSSProperties = { marginBottom: 'var(--spacing-3, 24px)' };
   const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: 'var(--font-size-xl, 20px)', lineHeight: '1.125em', color: 'var(--color-neutrals-2, #23262F)', margin: 0, display: 'flex', alignItems: 'center', gap: 'var(--spacing-1, 8px)' };
   const infoIconWrapperStyle: React.CSSProperties = { position: 'relative', display: 'inline-flex', alignItems: 'center' };

@@ -1,0 +1,798 @@
+/**
+ * Journey Builder
+ * Visual drag-and-drop interface for managing personalized home page experiences
+ * Supports 8 experience versions based on user vehicle data and shopping intent
+ * 
+ * Uses Supabase for persistence when configured, falls back to localStorage
+ */
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { DndContext, DragOverlay, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import Icon from '../../components/Icon';
+import homePageLayouts from '../../config/homePageLayouts.json';
+import {
+  getLayouts,
+  updateLayout,
+  getVersionHistory,
+  restoreVersion,
+  seedInitialData,
+  checkConnection,
+  subscribeToLayoutChanges,
+  type LayoutKey,
+  type LayoutConfig,
+  type VersionInfo,
+} from '../../services/journeyLayoutService';
+import type { SectionConfig } from '../../lib/supabase';
+import './JourneyBuilder.css';
+
+// Types
+interface ComponentProp {
+  type: 'text' | 'number' | 'boolean' | 'select';
+  default: string | number | boolean;
+  options?: string[];
+  min?: number;
+  max?: number;
+}
+
+interface ComponentDefinition {
+  id: string;
+  name: string;
+  description: string;
+  type: 'full-width' | 'two-column';
+  icon: string;
+  props: Record<string, ComponentProp>;
+}
+
+// Component definitions from config
+const componentDefinitions = homePageLayouts.components as Record<string, ComponentDefinition>;
+
+// Sortable Item Component
+const SortableItem: React.FC<{
+  id: string;
+  section: SectionConfig;
+  index: number;
+  onToggle: (index: number) => void;
+  onRemove: (index: number) => void;
+  onEditProps: (index: number) => void;
+  isSelected: boolean;
+  onSelect: (index: number) => void;
+}> = ({ id, section, index, onToggle, onRemove, onEditProps, isSelected, onSelect }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const component = componentDefinitions[section.componentId];
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`journey-builder__canvas-item ${!section.enabled ? 'journey-builder__canvas-item--disabled' : ''} ${isSelected ? 'journey-builder__canvas-item--selected' : ''}`}
+      onClick={() => onSelect(index)}
+    >
+      <div className="journey-builder__canvas-item-drag" {...attributes} {...listeners}>
+        <Icon name="drag_indicator" size={20} />
+      </div>
+      <div className="journey-builder__canvas-item-icon">
+        <Icon name={component?.icon || 'widgets'} size={24} />
+      </div>
+      <div className="journey-builder__canvas-item-content">
+        <div className="journey-builder__canvas-item-header">
+          <span className="journey-builder__canvas-item-index">{index + 1}</span>
+          <span className="journey-builder__canvas-item-name">{component?.name || section.componentId}</span>
+          <span className={`journey-builder__canvas-item-type journey-builder__canvas-item-type--${component?.type || 'full-width'}`}>
+            {component?.type === 'two-column' ? '2-col' : 'full'}
+          </span>
+        </div>
+        <p className="journey-builder__canvas-item-description">{component?.description}</p>
+      </div>
+      <div className="journey-builder__canvas-item-actions">
+        <button
+          className="journey-builder__canvas-item-btn"
+          onClick={(e) => { e.stopPropagation(); onEditProps(index); }}
+          title="Edit Props"
+        >
+          <Icon name="settings" size={16} />
+        </button>
+        <button
+          className={`journey-builder__canvas-item-btn ${section.enabled ? '' : 'journey-builder__canvas-item-btn--inactive'}`}
+          onClick={(e) => { e.stopPropagation(); onToggle(index); }}
+          title={section.enabled ? 'Disable' : 'Enable'}
+        >
+          <Icon name={section.enabled ? 'visibility' : 'visibility_off'} size={16} />
+        </button>
+        <button
+          className="journey-builder__canvas-item-btn journey-builder__canvas-item-btn--danger"
+          onClick={(e) => { e.stopPropagation(); onRemove(index); }}
+          title="Remove"
+        >
+          <Icon name="delete" size={16} />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Draggable Palette Item
+const PaletteItem: React.FC<{
+  component: ComponentDefinition;
+  onAdd: (componentId: string) => void;
+}> = ({ component, onAdd }) => {
+  return (
+    <div
+      className="journey-builder__palette-item"
+      onClick={() => onAdd(component.id)}
+      draggable
+    >
+      <div className="journey-builder__palette-item-icon">
+        <Icon name={component.icon || 'widgets'} size={24} />
+      </div>
+      <div className="journey-builder__palette-item-content">
+        <span className="journey-builder__palette-item-name">{component.name}</span>
+        <span className={`journey-builder__palette-item-type journey-builder__palette-item-type--${component.type}`}>
+          {component.type === 'two-column' ? '2-col' : 'full'}
+        </span>
+      </div>
+      <button className="journey-builder__palette-item-add">
+        <Icon name="add" size={16} />
+      </button>
+    </div>
+  );
+};
+
+// Props Editor Modal
+const PropsEditor: React.FC<{
+  section: SectionConfig;
+  onSave: (props: Record<string, string | number | boolean>) => void;
+  onClose: () => void;
+}> = ({ section, onSave, onClose }) => {
+  const [editedProps, setEditedProps] = useState<Record<string, string | number | boolean>>(section.props);
+  const component = componentDefinitions[section.componentId];
+
+  const handleChange = (key: string, value: string | number | boolean) => {
+    setEditedProps(prev => ({ ...prev, [key]: value }));
+  };
+
+  return (
+    <div className="journey-builder__modal-overlay" onClick={onClose}>
+      <div className="journey-builder__modal" onClick={e => e.stopPropagation()}>
+        <div className="journey-builder__modal-header">
+          <h3>Edit {component?.name} Props</h3>
+          <button className="journey-builder__modal-close" onClick={onClose}>
+            <Icon name="close" size={20} />
+          </button>
+        </div>
+        <div className="journey-builder__modal-content">
+          {component && Object.entries(component.props).map(([key, propDef]) => (
+            <div key={key} className="journey-builder__prop-field">
+              <label>{key}</label>
+              {propDef.type === 'text' && (
+                <input
+                  type="text"
+                  value={String(editedProps[key] ?? propDef.default)}
+                  onChange={e => handleChange(key, e.target.value)}
+                />
+              )}
+              {propDef.type === 'number' && (
+                <input
+                  type="number"
+                  value={Number(editedProps[key] ?? propDef.default)}
+                  min={propDef.min}
+                  max={propDef.max}
+                  onChange={e => handleChange(key, parseInt(e.target.value))}
+                />
+              )}
+              {propDef.type === 'boolean' && (
+                <label className="journey-builder__checkbox">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(editedProps[key] ?? propDef.default)}
+                    onChange={e => handleChange(key, e.target.checked)}
+                  />
+                  <span>{editedProps[key] ? 'Enabled' : 'Disabled'}</span>
+                </label>
+              )}
+              {propDef.type === 'select' && propDef.options && (
+                <select
+                  value={String(editedProps[key] ?? propDef.default)}
+                  onChange={e => handleChange(key, e.target.value)}
+                >
+                  {/* Add dynamic option for preferredBodyStyle */}
+                  {key === 'initialVehicleType' && (
+                    <option value="dynamic:preferredBodyStyle">Dynamic (User's Preferred)</option>
+                  )}
+                  {propDef.options.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              )}
+            </div>
+          ))}
+          {Object.keys(component?.props || {}).length === 0 && (
+            <p className="journey-builder__no-props">This component has no configurable props.</p>
+          )}
+        </div>
+        <div className="journey-builder__modal-footer">
+          <button className="journey-builder__btn journey-builder__btn--secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="journey-builder__btn journey-builder__btn--primary" onClick={() => { onSave(editedProps); onClose(); }}>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Version History Panel
+const VersionHistoryPanel: React.FC<{
+  versions: VersionInfo[];
+  isLoading: boolean;
+  onRestore: (versionId: string) => void;
+  isRestoring: boolean;
+}> = ({ versions, isLoading, onRestore, isRestoring }) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  return (
+    <div className="journey-builder__versions">
+      <h3 className="journey-builder__versions-title">
+        <Icon name="history" size={18} />
+        Version History
+      </h3>
+      {isLoading ? (
+        <div className="journey-builder__versions-loading">
+          <Icon name="sync" size={20} />
+          Loading...
+        </div>
+      ) : versions.length === 0 ? (
+        <p className="journey-builder__versions-empty">
+          No version history yet. Changes will be tracked after first save.
+        </p>
+      ) : (
+        <div className="journey-builder__versions-list">
+          {versions.map((version) => (
+            <div key={version.id} className="journey-builder__version-item">
+              <div className="journey-builder__version-info">
+                <span className="journey-builder__version-number">v{version.versionNumber}</span>
+                <span className="journey-builder__version-date">{formatDate(version.createdAt)}</span>
+              </div>
+              <button
+                className="journey-builder__version-restore"
+                onClick={() => onRestore(version.id)}
+                disabled={isRestoring}
+                title="Restore this version"
+              >
+                <Icon name="restore" size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Experience Tab
+const ExperienceTab: React.FC<{
+  layout: LayoutConfig;
+  isActive: boolean;
+  onClick: () => void;
+}> = ({ layout, isActive, onClick }) => {
+  const experienceLabels: Record<string, string> = {
+    'A': 'Want ✓ Own ✓',
+    'B': 'Want ✓ Own ✗',
+    'C': 'Want ✗ Own ✓',
+    'D': 'Want ✗ Own ✗',
+  };
+
+  return (
+    <button
+      className={`journey-builder__tab ${isActive ? 'journey-builder__tab--active' : ''}`}
+      onClick={onClick}
+    >
+      <div className="journey-builder__tab-experience">
+        <span className="journey-builder__tab-letter">{layout.experience}</span>
+        <span className={`journey-builder__tab-shopper ${layout.isShopper ? 'journey-builder__tab-shopper--yes' : ''}`}>
+          {layout.isShopper ? 'Shopper' : 'Browser'}
+        </span>
+      </div>
+      <div className="journey-builder__tab-info">
+        <span className="journey-builder__tab-vehicles">{experienceLabels[layout.experience]}</span>
+      </div>
+    </button>
+  );
+};
+
+// Main Journey Builder Component
+export const JourneyBuilder: React.FC = () => {
+  const [activeLayout, setActiveLayout] = useState<LayoutKey>('D-browser');
+  const [layouts, setLayouts] = useState<Record<LayoutKey, LayoutConfig>>(
+    homePageLayouts.layouts as Record<LayoutKey, LayoutConfig>
+  );
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
+  const [versions, setVersions] = useState<VersionInfo[]>([]);
+  const [isLoadingVersions, setIsLoadingVersions] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [showVersions, setShowVersions] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const currentLayout = layouts[activeLayout];
+  const sections = currentLayout?.sections || [];
+
+  // Load layouts on mount
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        // Check connection
+        const connected = await checkConnection();
+        setIsConnected(connected);
+
+        // Load layouts
+        const loadedLayouts = await getLayouts();
+        setLayouts(loadedLayouts);
+      } catch (error) {
+        console.error('Error loading layouts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Subscribe to real-time changes
+  useEffect(() => {
+    const unsubscribe = subscribeToLayoutChanges((layoutKey, newSections) => {
+      setLayouts(prev => ({
+        ...prev,
+        [layoutKey]: {
+          ...prev[layoutKey],
+          sections: newSections,
+        },
+      }));
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
+
+  // Load version history when layout changes
+  useEffect(() => {
+    const loadVersions = async () => {
+      if (!isConnected) return;
+      
+      setIsLoadingVersions(true);
+      try {
+        const history = await getVersionHistory(activeLayout);
+        setVersions(history);
+      } catch (error) {
+        console.error('Error loading versions:', error);
+      } finally {
+        setIsLoadingVersions(false);
+      }
+    };
+
+    if (showVersions) {
+      loadVersions();
+    }
+  }, [activeLayout, isConnected, showVersions]);
+
+  // Handle drag start
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
+  };
+
+  // Handle drag end
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (over && active.id !== over.id) {
+      const oldIndex = sections.findIndex((_, i) => `section-${i}` === active.id);
+      const newIndex = sections.findIndex((_, i) => `section-${i}` === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newSections = arrayMove(sections, oldIndex, newIndex);
+        updateSections(newSections);
+      }
+    }
+  };
+
+  // Update sections
+  const updateSections = useCallback((newSections: SectionConfig[]) => {
+    setLayouts(prev => ({
+      ...prev,
+      [activeLayout]: {
+        ...prev[activeLayout],
+        sections: newSections,
+      },
+    }));
+    setHasChanges(true);
+  }, [activeLayout]);
+
+  // Toggle section enabled
+  const handleToggle = (index: number) => {
+    const newSections = [...sections];
+    newSections[index] = { ...newSections[index], enabled: !newSections[index].enabled };
+    updateSections(newSections);
+  };
+
+  // Remove section
+  const handleRemove = (index: number) => {
+    const newSections = sections.filter((_, i) => i !== index);
+    updateSections(newSections);
+    setSelectedIndex(null);
+  };
+
+  // Add component
+  const handleAddComponent = (componentId: string) => {
+    const component = componentDefinitions[componentId];
+    const defaultProps: Record<string, string | number | boolean> = {};
+    
+    if (component) {
+      Object.entries(component.props).forEach(([key, propDef]) => {
+        defaultProps[key] = propDef.default;
+      });
+    }
+
+    const newSection: SectionConfig = {
+      componentId,
+      props: defaultProps,
+      enabled: true,
+    };
+
+    updateSections([...sections, newSection]);
+  };
+
+  // Update props
+  const handleUpdateProps = (index: number, props: Record<string, string | number | boolean>) => {
+    const newSections = [...sections];
+    newSections[index] = { ...newSections[index], props };
+    updateSections(newSections);
+  };
+
+  // Save changes
+  const handleSave = async () => {
+    setSaveStatus('saving');
+    try {
+      const result = await updateLayout(activeLayout, sections);
+      
+      if (result.success) {
+        setSaveStatus('saved');
+        setHasChanges(false);
+        
+        // Reload versions
+        if (isConnected) {
+          const history = await getVersionHistory(activeLayout);
+          setVersions(history);
+        }
+        
+        setTimeout(() => setSaveStatus('idle'), 3000);
+      } else {
+        console.error('Save error:', result.error);
+        setSaveStatus('error');
+        setTimeout(() => setSaveStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    }
+  };
+
+  // Restore version
+  const handleRestoreVersion = async (versionId: string) => {
+    setIsRestoring(true);
+    try {
+      const result = await restoreVersion(activeLayout, versionId);
+      
+      if (result.success && result.sections) {
+        setLayouts(prev => ({
+          ...prev,
+          [activeLayout]: {
+            ...prev[activeLayout],
+            sections: result.sections!,
+          },
+        }));
+        setHasChanges(false);
+        
+        // Reload versions
+        const history = await getVersionHistory(activeLayout);
+        setVersions(history);
+      } else {
+        console.error('Restore error:', result.error);
+      }
+    } catch (error) {
+      console.error('Error restoring version:', error);
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
+  // Seed initial data
+  const handleSeedData = async () => {
+    const result = await seedInitialData();
+    if (result.success) {
+      // Reload layouts
+      const loadedLayouts = await getLayouts();
+      setLayouts(loadedLayouts);
+    }
+  };
+
+  // Preview URL
+  const getPreviewUrl = () => {
+    const params = new URLSearchParams({
+      experience: currentLayout.experience,
+      isShopper: String(currentLayout.isShopper),
+      preview: 'true',
+    });
+    return `/?${params.toString()}`;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="journey-builder journey-builder--loading">
+        <div className="journey-builder__loading-content">
+          <Icon name="sync" size={48} />
+          <p>Loading Journey Builder...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="journey-builder">
+      {/* Header */}
+      <header className="journey-builder__header">
+        <div className="journey-builder__header-left">
+          <h1 className="journey-builder__title">
+            <Icon name="route" size={28} />
+            Journey Builder
+          </h1>
+          <span className="journey-builder__subtitle">
+            Design personalized experiences for different user journeys
+          </span>
+        </div>
+        <div className="journey-builder__header-actions">
+          {/* Connection status */}
+          <span className={`journey-builder__connection ${isConnected ? 'journey-builder__connection--connected' : ''}`}>
+            <Icon name={isConnected ? 'cloud_done' : 'cloud_off'} size={16} />
+            {isConnected ? 'Supabase' : 'Local'}
+          </span>
+          
+          {hasChanges && (
+            <span className="journey-builder__unsaved">Unsaved changes</span>
+          )}
+          
+          {isConnected && (
+            <button
+              className={`journey-builder__btn journey-builder__btn--ghost ${showVersions ? 'journey-builder__btn--active' : ''}`}
+              onClick={() => setShowVersions(!showVersions)}
+              title="Version History"
+            >
+              <Icon name="history" size={16} />
+              History
+            </button>
+          )}
+          
+          <a
+            href={getPreviewUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="journey-builder__btn journey-builder__btn--secondary"
+          >
+            <Icon name="open_in_new" size={16} />
+            Preview
+          </a>
+          <button
+            className={`journey-builder__btn journey-builder__btn--primary ${saveStatus === 'saving' ? 'journey-builder__btn--loading' : ''}`}
+            onClick={handleSave}
+            disabled={!hasChanges || saveStatus === 'saving'}
+          >
+            {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'saved' ? 'Saved!' : saveStatus === 'error' ? 'Error!' : 'Save Changes'}
+          </button>
+        </div>
+      </header>
+
+      {/* Experience Tabs */}
+      <div className="journey-builder__tabs">
+        {(Object.entries(layouts) as [LayoutKey, LayoutConfig][]).map(([key, layout]) => (
+          <ExperienceTab
+            key={key}
+            layout={layout}
+            isActive={activeLayout === key}
+            onClick={() => setActiveLayout(key)}
+          />
+        ))}
+      </div>
+
+      {/* Main Content */}
+      <div className={`journey-builder__content ${showVersions ? 'journey-builder__content--with-versions' : ''}`}>
+        {/* Component Palette */}
+        <aside className="journey-builder__palette">
+          <h2 className="journey-builder__palette-title">
+            <Icon name="widgets" size={20} />
+            Components
+          </h2>
+          <p className="journey-builder__palette-hint">Click to add to canvas</p>
+          <div className="journey-builder__palette-list">
+            {Object.values(componentDefinitions).map(component => (
+              <PaletteItem
+                key={component.id}
+                component={component}
+                onAdd={handleAddComponent}
+              />
+            ))}
+          </div>
+          
+          {/* Seed data button (only show when connected but no sections) */}
+          {isConnected && sections.length === 0 && (
+            <button
+              className="journey-builder__btn journey-builder__btn--secondary journey-builder__seed-btn"
+              onClick={handleSeedData}
+            >
+              <Icon name="upload" size={16} />
+              Import from JSON
+            </button>
+          )}
+        </aside>
+
+        {/* Canvas */}
+        <main className="journey-builder__canvas">
+          <div className="journey-builder__canvas-header">
+            <h2 className="journey-builder__canvas-title">
+              {currentLayout.name}
+            </h2>
+            <p className="journey-builder__canvas-description">
+              {currentLayout.description}
+            </p>
+          </div>
+
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={sections.map((_, i) => `section-${i}`)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="journey-builder__canvas-list">
+                {sections.length === 0 ? (
+                  <div className="journey-builder__canvas-empty">
+                    <Icon name="add_circle_outline" size={48} />
+                    <p>No components yet</p>
+                    <span>Click a component from the palette to add it</span>
+                  </div>
+                ) : (
+                  sections.map((section, index) => (
+                    <SortableItem
+                      key={`section-${index}`}
+                      id={`section-${index}`}
+                      section={section}
+                      index={index}
+                      onToggle={handleToggle}
+                      onRemove={handleRemove}
+                      onEditProps={setEditingIndex}
+                      isSelected={selectedIndex === index}
+                      onSelect={setSelectedIndex}
+                    />
+                  ))
+                )}
+              </div>
+            </SortableContext>
+
+            <DragOverlay>
+              {activeId && sections[parseInt(activeId.replace('section-', ''))] && (
+                <div className="journey-builder__canvas-item journey-builder__canvas-item--dragging">
+                  <div className="journey-builder__canvas-item-drag">
+                    <Icon name="drag_indicator" size={20} />
+                  </div>
+                  <div className="journey-builder__canvas-item-content">
+                    <span className="journey-builder__canvas-item-name">
+                      {componentDefinitions[sections[parseInt(activeId.replace('section-', ''))].componentId]?.name}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </DragOverlay>
+          </DndContext>
+        </main>
+
+        {/* Preview Panel */}
+        <aside className="journey-builder__preview">
+          <h2 className="journey-builder__preview-title">
+            <Icon name="preview" size={20} />
+            Preview
+          </h2>
+          <div className="journey-builder__preview-frame">
+            <div className="journey-builder__preview-content">
+              {sections.filter(s => s.enabled).map((section, index) => {
+                const component = componentDefinitions[section.componentId];
+                return (
+                  <div
+                    key={index}
+                    className={`journey-builder__preview-item journey-builder__preview-item--${component?.type || 'full-width'}`}
+                  >
+                    <span className="journey-builder__preview-item-name">{component?.name}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div className="journey-builder__preview-legend">
+            <div className="journey-builder__preview-legend-item">
+              <span className="journey-builder__preview-legend-color journey-builder__preview-legend-color--full"></span>
+              Full Width
+            </div>
+            <div className="journey-builder__preview-legend-item">
+              <span className="journey-builder__preview-legend-color journey-builder__preview-legend-color--two-col"></span>
+              Two Column
+            </div>
+          </div>
+        </aside>
+
+        {/* Version History Panel */}
+        {showVersions && (
+          <aside className="journey-builder__versions-panel">
+            <VersionHistoryPanel
+              versions={versions}
+              isLoading={isLoadingVersions}
+              onRestore={handleRestoreVersion}
+              isRestoring={isRestoring}
+            />
+          </aside>
+        )}
+      </div>
+
+      {/* Props Editor Modal */}
+      {editingIndex !== null && sections[editingIndex] && (
+        <PropsEditor
+          section={sections[editingIndex]}
+          onSave={(props) => handleUpdateProps(editingIndex, props)}
+          onClose={() => setEditingIndex(null)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default JourneyBuilder;

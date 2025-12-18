@@ -530,19 +530,15 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     );
   };
 
-  // Don't return null - show loading or let the auto-skip effect handle empty subcategories
+  // Don't render if no vehicles are available
   if (carouselVehicles.length === 0) {
-    // If we're on 'All' and still have no vehicles, then return null
-    if (selectedSubcategory === 'All') return null;
-    // Otherwise, the auto-skip effect will handle it - show a brief loading state
     return null;
   }
 
-  // Main container styles
+  // Main container styles - NO internal vertical padding, parent container's gap handles spacing
   const containerStyle: React.CSSProperties = {
     width: '100%',
     marginBottom: 0,
-    padding: '0 0 16px 0',
     paddingLeft: isNarrowScreen ? '16px' : '0',
     paddingRight: isNarrowScreen ? '16px' : '0',
   };

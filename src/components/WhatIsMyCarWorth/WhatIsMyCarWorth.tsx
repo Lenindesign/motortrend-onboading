@@ -257,17 +257,14 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   };
 
   // Styles - Using standardized section padding from design system
-  // Outer wrapper provides consistent vertical padding for section spacing
+  // Outer wrapper - NO internal padding, parent container's gap handles spacing
   // Side padding: 0px on screens >= 1280px, 16px on screens < 1280px
   const sectionWrapperStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
-    paddingTop: isMobile ? 'var(--section-padding-md, 24px)' : 'var(--section-padding-lg, 32px)',
-    paddingBottom: isMobile ? 'var(--section-padding-md, 24px)' : 'var(--section-padding-lg, 32px)',
     paddingLeft: isNarrowScreen ? '16px' : '0px',
     paddingRight: isNarrowScreen ? '16px' : '0px',
-    // NO margin-top or margin-bottom - parent container's gap handles spacing between sections
   };
 
   const containerStyle: React.CSSProperties = { 

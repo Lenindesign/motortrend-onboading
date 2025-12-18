@@ -1,6 +1,7 @@
 /**
  * Supabase Client Configuration
  * Provides database, authentication, and real-time functionality for the Community feature
+ * Extended for Journey Builder functionality
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -130,5 +131,37 @@ export function onAuthStateChange(callback: (user: any) => void) {
   });
 }
 
-export default supabase;
+// ============================================
+// Journey Builder Types
+// ============================================
 
+export interface JourneyLayout {
+  id: string;
+  layout_key: string;
+  name: string;
+  description: string;
+  experience: string;
+  is_shopper: boolean;
+  sections: SectionConfig[];
+  updated_by: string | null;
+  updated_at: string;
+  created_at: string;
+}
+
+export interface LayoutVersion {
+  id: string;
+  layout_id: string;
+  version_number: number;
+  sections: SectionConfig[];
+  changed_by: string | null;
+  change_description: string | null;
+  created_at: string;
+}
+
+export interface SectionConfig {
+  componentId: string;
+  props: Record<string, string | number | boolean>;
+  enabled: boolean;
+}
+
+export default supabase;

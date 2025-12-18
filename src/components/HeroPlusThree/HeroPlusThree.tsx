@@ -68,8 +68,8 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: isMobile ? '32px' : '36px',
-    height: isMobile ? '32px' : '36px',
+    width: isMobile ? '28px' : '36px',
+    height: isMobile ? '28px' : '36px',
     backgroundColor: 'var(--color-neutrals-1, #141416)',
     borderRadius: 'var(--border-radius-md, 8px)',
     color: 'var(--color-white, #FFFFFF)',
@@ -124,7 +124,7 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
         <div style={headerStyle}>
           <div style={titleContainerStyle}>
             <div style={iconStyle}>
-              <Icon name="thumb_up" size={isMobile ? 18 : 22} />
+              <Icon name="thumb_up" size={isMobile ? 16 : 22} />
             </div>
             <h2 style={titleStyle}>{title}</h2>
           </div>

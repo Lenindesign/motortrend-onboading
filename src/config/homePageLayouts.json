@@ -1,0 +1,702 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-18T00:00:00.000Z",
+  "components": {
+    "TopTenCarouselLeads": {
+      "id": "TopTenCarouselLeads",
+      "name": "Top Ten Carousel with Leads",
+      "description": "Top 10 vehicles carousel with local listings sidebar",
+      "type": "full-width",
+      "icon": "view_carousel",
+      "props": {
+        "initialVehicleType": {
+          "type": "select",
+          "options": ["SUV", "Sedan", "Truck", "Coupe"],
+          "default": "SUV"
+        },
+        "initialSubcategory": {
+          "type": "select",
+          "options": ["All", "Subcompact", "Compact", "Midsize", "Full-Size", "Luxury", "Electric"],
+          "default": "All"
+        }
+      }
+    },
+    "TopTenCarousel": {
+      "id": "TopTenCarousel",
+      "name": "Top Ten Carousel",
+      "description": "Top 10 vehicles carousel without listings",
+      "type": "full-width",
+      "icon": "view_carousel",
+      "props": {
+        "initialVehicleType": {
+          "type": "select",
+          "options": ["SUV", "Sedan", "Truck", "Coupe", "Performance"],
+          "default": "SUV"
+        },
+        "initialSubcategory": {
+          "type": "select",
+          "options": ["All", "Subcompact", "Compact", "Midsize", "Full-Size", "Luxury", "Electric"],
+          "default": "All"
+        }
+      }
+    },
+    "VehicleLeadsStripe": {
+      "id": "VehicleLeadsStripe",
+      "name": "Vehicle Leads Stripe",
+      "description": "Available vehicle listings stripe",
+      "type": "full-width",
+      "icon": "directions_car",
+      "props": {}
+    },
+    "HeroPlusThree": {
+      "id": "HeroPlusThree",
+      "name": "Hero + 3 Cards",
+      "description": "Hero article with 3 vertical cards",
+      "type": "two-column",
+      "icon": "dashboard",
+      "props": {
+        "title": {
+          "type": "text",
+          "default": "Recommended For You"
+        },
+        "showAd": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "TrendingStories": {
+      "id": "TrendingStories",
+      "name": "Trending Stories",
+      "description": "Trending stories carousel",
+      "type": "full-width",
+      "icon": "trending_up",
+      "props": {}
+    },
+    "PersonalizedVehicles": {
+      "id": "PersonalizedVehicles",
+      "name": "Personalized Vehicles",
+      "description": "Viewed, Searched, You Might Like sections",
+      "type": "full-width",
+      "icon": "person_search",
+      "props": {}
+    },
+    "WhatIsMyCarWorth": {
+      "id": "WhatIsMyCarWorth",
+      "name": "What Is My Car Worth",
+      "description": "Trade-in value calculator",
+      "type": "full-width",
+      "icon": "price_change",
+      "props": {}
+    },
+    "UserRatingsReviews": {
+      "id": "UserRatingsReviews",
+      "name": "User Ratings & Reviews",
+      "description": "User ratings and reviews section",
+      "type": "full-width",
+      "icon": "star_rate",
+      "props": {}
+    },
+    "KnowYourBudget": {
+      "id": "KnowYourBudget",
+      "name": "Know Your Budget",
+      "description": "Budget calculator widget",
+      "type": "full-width",
+      "icon": "savings",
+      "props": {}
+    },
+    "NewsSection": {
+      "id": "NewsSection",
+      "name": "News Section",
+      "description": "News articles list",
+      "type": "two-column",
+      "icon": "newspaper",
+      "props": {
+        "title": {
+          "type": "text",
+          "default": "Latest Car News"
+        },
+        "maxItems": {
+          "type": "number",
+          "default": 10,
+          "min": 3,
+          "max": 20
+        },
+        "showAd": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "VehiclesSection": {
+      "id": "VehiclesSection",
+      "name": "Vehicles Section",
+      "description": "Vehicle cards grid",
+      "type": "two-column",
+      "icon": "grid_view",
+      "props": {
+        "title": {
+          "type": "text",
+          "default": "Top Ranked Vehicles"
+        },
+        "showAd": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "CommunityPostsPromo": {
+      "id": "CommunityPostsPromo",
+      "name": "Community Posts",
+      "description": "Trending community posts",
+      "type": "two-column",
+      "icon": "forum",
+      "props": {
+        "title": {
+          "type": "text",
+          "default": "Trending in Community"
+        },
+        "maxPosts": {
+          "type": "number",
+          "default": 6,
+          "min": 3,
+          "max": 12
+        },
+        "showAd": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  },
+  "layouts": {
+    "A-shopper": {
+      "id": "A-shopper",
+      "name": "Experience A - Shopper",
+      "description": "Full data (Want ✓ + Own ✓) + Shopping intent",
+      "experience": "A",
+      "isShopper": true,
+      "sections": [
+        {
+          "componentId": "TopTenCarouselLeads",
+          "props": {
+            "initialVehicleType": "dynamic:preferredBodyStyle",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "WhatIsMyCarWorth",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "UserRatingsReviews",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "PersonalizedVehicles",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarousel",
+          "props": {
+            "initialVehicleType": "Sedan",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "A-browser": {
+      "id": "A-browser",
+      "name": "Experience A - Browser",
+      "description": "Full data (Want ✓ + Own ✓) + Enthusiast/Browsing",
+      "experience": "A",
+      "isShopper": false,
+      "sections": [
+        {
+          "componentId": "TrendingStories",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarousel",
+          "props": {
+            "initialVehicleType": "Performance",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "PersonalizedVehicles",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "WhatIsMyCarWorth",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "B-shopper": {
+      "id": "B-shopper",
+      "name": "Experience B - Shopper",
+      "description": "Want only (Want ✓ + Own ✗) + Shopping intent",
+      "experience": "B",
+      "isShopper": true,
+      "sections": [
+        {
+          "componentId": "TopTenCarouselLeads",
+          "props": {
+            "initialVehicleType": "dynamic:preferredBodyStyle",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "UserRatingsReviews",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "KnowYourBudget",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "PersonalizedVehicles",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "B-browser": {
+      "id": "B-browser",
+      "name": "Experience B - Browser",
+      "description": "Want only (Want ✓ + Own ✗) + Enthusiast/Browsing",
+      "experience": "B",
+      "isShopper": false,
+      "sections": [
+        {
+          "componentId": "TopTenCarouselLeads",
+          "props": {
+            "initialVehicleType": "dynamic:preferredBodyStyle",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "TrendingStories",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "PersonalizedVehicles",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "C-shopper": {
+      "id": "C-shopper",
+      "name": "Experience C - Shopper",
+      "description": "Own only (Want ✗ + Own ✓) + Shopping intent",
+      "experience": "C",
+      "isShopper": true,
+      "sections": [
+        {
+          "componentId": "WhatIsMyCarWorth",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarouselLeads",
+          "props": {
+            "initialVehicleType": "SUV",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "UserRatingsReviews",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "PersonalizedVehicles",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "C-browser": {
+      "id": "C-browser",
+      "name": "Experience C - Browser",
+      "description": "Own only (Want ✗ + Own ✓) + Enthusiast/Browsing",
+      "experience": "C",
+      "isShopper": false,
+      "sections": [
+        {
+          "componentId": "TrendingStories",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarousel",
+          "props": {
+            "initialVehicleType": "Performance",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "WhatIsMyCarWorth",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "PersonalizedVehicles",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "D-shopper": {
+      "id": "D-shopper",
+      "name": "Experience D - Shopper",
+      "description": "No data (Want ✗ + Own ✗) + Shopping intent",
+      "experience": "D",
+      "isShopper": true,
+      "sections": [
+        {
+          "componentId": "TopTenCarouselLeads",
+          "props": {
+            "initialVehicleType": "SUV",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "KnowYourBudget",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarousel",
+          "props": {
+            "initialVehicleType": "Sedan",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        }
+      ]
+    },
+    "D-browser": {
+      "id": "D-browser",
+      "name": "Experience D - Browser",
+      "description": "No data (Want ✗ + Own ✗) + Anonymous/Browsing (Default)",
+      "experience": "D",
+      "isShopper": false,
+      "sections": [
+        {
+          "componentId": "HeroPlusThree",
+          "props": {
+            "title": "Recommended For You",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "TrendingStories",
+          "props": {},
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarousel",
+          "props": {
+            "initialVehicleType": "SUV",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "NewsSection",
+          "props": {
+            "title": "Latest Car News From our Experts",
+            "maxItems": 10,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "VehiclesSection",
+          "props": {
+            "title": "Top Ranked Vehicles",
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "CommunityPostsPromo",
+          "props": {
+            "title": "Trending in Community",
+            "maxPosts": 6,
+            "showAd": true
+          },
+          "enabled": true
+        },
+        {
+          "componentId": "TopTenCarousel",
+          "props": {
+            "initialVehicleType": "Sedan",
+            "initialSubcategory": "All"
+          },
+          "enabled": true
+        }
+      ]
+    }
+  }
+}
+

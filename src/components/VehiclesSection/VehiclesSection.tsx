@@ -363,7 +363,7 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   const [isDisplayMoreHovered, setIsDisplayMoreHovered] = useState(false);
 
   // Styles
-  const sectionStyle: React.CSSProperties = { width: '100%', marginBottom: 'var(--section-spacing-vertical, 32px)', padding: 0 };
+  const sectionStyle: React.CSSProperties = { width: '100%', padding: 0 };
   const headerStyle: React.CSSProperties = { marginBottom: 'var(--spacing-3, 24px)' };
   const titleRowStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--spacing-2, 16px)', gap: 'var(--spacing-3, 24px)' };
   const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '24px', lineHeight: '1.2em', color: 'var(--color-neutrals-1, #141416)', margin: 0, textAlign: 'left', flexShrink: 0 };

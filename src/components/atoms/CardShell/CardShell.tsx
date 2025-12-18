@@ -57,8 +57,8 @@ const borderRadiusMap: Record<'sm' | 'md' | 'lg' | 'xl', string> = {
 // Background color map
 const backgroundMap: Record<'white' | 'neutral-light' | 'neutral-lighter' | 'transparent', string> = {
   white: 'var(--color-white, #FFFFFF)',
-  'neutral-light': 'var(--color-neutrals-7, #F4F5F6)',
-  'neutral-lighter': 'var(--color-neutrals-6, #E6E8EC)',
+  'neutral-light': 'var(--color-neutrals-8, #FCFCFD)',
+  'neutral-lighter': 'var(--color-neutrals-7, #F4F5F6)',
   transparent: 'transparent',
 };
 
