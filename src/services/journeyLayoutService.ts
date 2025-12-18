@@ -147,10 +147,11 @@ export async function updateLayout(
       const { data: { user } } = await supabase!.auth.getUser();
 
       // Get layout metadata from config for upsert
-      const layoutConfig = (homePageLayouts.layouts as Record<string, LayoutConfig>)[layoutKey];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const layoutConfig = (homePageLayouts.layouts as any)[layoutKey] as LayoutConfig | undefined;
       
       // Use UPSERT to handle case where row doesn't exist yet
-      const { data, error } = await db
+      const { error } = await db
         .from('journey_layouts')
         .upsert({
           layout_key: layoutKey,

@@ -243,7 +243,7 @@ const ExperienceTab: React.FC<{
   layout: LayoutConfig;
   isActive: boolean;
   onClick: () => void;
-}> = ({ layoutKey, layout, isActive, onClick }) => {
+}> = ({ layout, isActive, onClick }) => {
   const experienceLabels: Record<string, string> = {
     'A': 'Want ✓ Own ✓',
     'B': 'Want ✓ Own ✗',
