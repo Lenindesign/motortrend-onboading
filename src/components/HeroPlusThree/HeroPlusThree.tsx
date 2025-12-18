@@ -64,12 +64,13 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Determine number of cards to show based on container width
+  // Determine number of cards to show based on container width (not window width)
   // Hero always shows, cards adapt: 3 when enough space, 2 when constrained
   const getCardCount = () => {
-    if (isMobile) return 1;
-    if (containerWidth > 0 && containerWidth < 600) return 2; // Not enough space for 3 cards
-    return 3;
+    if (containerWidth === 0) return 3; // Default before measurement
+    if (containerWidth < 400) return 1; // Very narrow - single column
+    if (containerWidth < 600) return 2; // Not enough space for 3 cards
+    return 3; // Full width - show all 3
   };
   
   const cardCount = getCardCount();
