@@ -549,9 +549,10 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   // Main container styles - NO internal vertical padding, parent container's gap handles spacing
   const containerStyle: React.CSSProperties = {
     width: '100%',
+    maxWidth: '100%',
     marginBottom: 0,
-    paddingLeft: isNarrowScreen ? '16px' : '0',
-    paddingRight: isNarrowScreen ? '16px' : '0',
+    overflow: 'hidden', // Prevent horizontal overflow
+    boxSizing: 'border-box',
   };
 
   // Stack layout on narrow screens (< 1280) when showing leads, or when explicitly no leads
@@ -562,13 +563,17 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     flexDirection: shouldStackLayout ? 'column' : 'row',
     gap: shouldStackLayout ? '16px' : '24px',
     width: '100%',
+    maxWidth: '100%',
     alignItems: shouldStackLayout ? 'stretch' : 'flex-start',
+    boxSizing: 'border-box',
   };
 
   const carouselContainerStyle: React.CSSProperties = {
     flex: shouldStackLayout ? 'none' : '1 1 65%',
     minWidth: 0,
     width: shouldStackLayout ? '100%' : undefined,
+    maxWidth: '100%',
+    boxSizing: 'border-box',
   };
 
   const sidebarContainerStyle: React.CSSProperties = {
@@ -576,11 +581,13 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     maxWidth: shouldStackLayout ? '100%' : '320px',
     minWidth: shouldStackLayout ? '100%' : '260px',
     display: showLeads ? 'block' : 'none',
+    boxSizing: 'border-box',
   };
 
   const sliderStyle: React.CSSProperties = {
     position: 'relative',
     width: '100%',
+    maxWidth: '100%',
     overflow: 'hidden',
     borderRadius: 'var(--border-radius-md, 8px)',
     backgroundColor: 'var(--color-neutrals-8, #FCFCFD)',
@@ -589,6 +596,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     minHeight: isMobile ? '338px' : (isTablet ? '400px' : undefined),
     maxHeight: isMobile ? undefined : (isTablet ? '400px' : '600px'), // Prevent content from expanding
     touchAction: isMobile ? 'pan-y pinch-zoom' : undefined,
+    boxSizing: 'border-box',
   };
 
   const trackStyle: React.CSSProperties = {
