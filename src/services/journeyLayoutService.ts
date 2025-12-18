@@ -45,6 +45,13 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
     hasDb: !!db 
   });
 
+  // Always get localStorage data first (this is where saves go when Supabase RLS blocks)
+  const localStorageLayouts = getLayoutsFromLocalStorage();
+  
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:getLayouts',message:'localStorage layouts loaded',data:{layoutKeys:Object.keys(localStorageLayouts),sampleSections:localStorageLayouts['D-browser']?.sections?.map((s:{componentId:string})=>s.componentId)||[]},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H7-READ'})}).catch(()=>{});
+  // #endregion
+
   if (canUseSupabase() && db) {
     try {
       console.log('[journeyLayoutService] Fetching from Supabase...');
@@ -57,9 +64,9 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
 
       if (data && data.length > 0) {
         console.log('[journeyLayoutService] Loaded from Supabase:', { count: data.length });
-        const layouts: Record<string, LayoutConfig> = {};
+        const supabaseLayouts: Record<string, LayoutConfig> = {};
         data.forEach((layout: JourneyLayout) => {
-          layouts[layout.layout_key as LayoutKey] = {
+          supabaseLayouts[layout.layout_key as LayoutKey] = {
             id: layout.layout_key,
             name: layout.name,
             description: layout.description,
@@ -68,7 +75,27 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
             sections: layout.sections || [],
           };
         });
-        return layouts as Record<LayoutKey, LayoutConfig>;
+        
+        // Merge: Use localStorage sections if they exist (more recent), otherwise use Supabase
+        const mergedLayouts: Record<string, LayoutConfig> = {};
+        for (const key of Object.keys(supabaseLayouts)) {
+          const localLayout = localStorageLayouts[key as LayoutKey];
+          const supabaseLayout = supabaseLayouts[key];
+          
+          // If localStorage has sections for this layout, use those (they're more recent due to RLS blocking Supabase writes)
+          const useLocalSections = localLayout?.sections && localLayout.sections.length > 0;
+          
+          mergedLayouts[key] = {
+            ...supabaseLayout,
+            sections: useLocalSections ? localLayout.sections : supabaseLayout.sections,
+          };
+        }
+        
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:getLayouts:merged',message:'Merged Supabase + localStorage',data:{mergedSections:mergedLayouts['D-browser']?.sections?.map((s:{componentId:string})=>s.componentId)||[]},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H7-READ'})}).catch(()=>{});
+        // #endregion
+        
+        return mergedLayouts as Record<LayoutKey, LayoutConfig>;
       }
     } catch (error) {
       console.error('Error fetching layouts from Supabase:', error);
@@ -77,7 +104,7 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
 
   // Fallback to localStorage
   console.log('[journeyLayoutService] Falling back to localStorage');
-  return getLayoutsFromLocalStorage();
+  return localStorageLayouts;
 }
 
 /**
