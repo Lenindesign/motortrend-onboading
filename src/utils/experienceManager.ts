@@ -128,13 +128,35 @@ export const getCurrentLayout = (): LayoutConfig => {
 };
 
 /**
- * Get the current layout configuration asynchronously (fetches from Supabase)
+ * Options for getting the current layout
  */
-export const getCurrentLayoutAsync = async (): Promise<LayoutConfig> => {
-  const onboardingData = getOnboardingData();
-  const experience = getExperience(onboardingData);
-  const isShopperUser = isShopper(onboardingData?.userType);
-  const layoutKey = getLayoutKey(experience, isShopperUser);
+export interface GetLayoutOptions {
+  /** Override experience from URL params (for preview mode) */
+  experienceOverride?: string;
+  /** Override isShopper from URL params (for preview mode) */
+  isShopperOverride?: boolean;
+}
+
+/**
+ * Get the current layout configuration asynchronously (fetches from Supabase)
+ * Supports preview mode via URL parameters
+ */
+export const getCurrentLayoutAsync = async (options?: GetLayoutOptions): Promise<LayoutConfig> => {
+  let layoutKey: LayoutKey;
+  
+  // Check if we have URL parameter overrides (preview mode)
+  if (options?.experienceOverride) {
+    const experience = options.experienceOverride as ExperienceKey;
+    const isShopperUser = options.isShopperOverride ?? false;
+    layoutKey = getLayoutKey(experience, isShopperUser);
+    console.log('[experienceManager] Using preview mode:', { experience, isShopperUser, layoutKey });
+  } else {
+    // Normal mode - use onboarding data
+    const onboardingData = getOnboardingData();
+    const experience = getExperience(onboardingData);
+    const isShopperUser = isShopper(onboardingData?.userType);
+    layoutKey = getLayoutKey(experience, isShopperUser);
+  }
 
   try {
     // Fetch from Supabase via journeyLayoutService

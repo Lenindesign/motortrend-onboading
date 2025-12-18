@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { HeroPlusThree } from '../HeroPlusThree';
 import { NewsSection } from '../NewsSection';
 import { VehiclesSection } from '../VehiclesSection';
@@ -254,20 +254,38 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   debug: _debug = false, // Prefixed with _ to indicate intentionally unused
 }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [layout, setLayout] = useState<LayoutConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
+  // Check for preview mode URL parameters
+  const isPreviewMode = searchParams.get('preview') === 'true';
+  const experienceOverride = searchParams.get('experience');
+  const isShopperParam = searchParams.get('isShopper');
+  const isShopperOverride = isShopperParam !== null ? isShopperParam === 'true' : undefined;
+  
   // Get articles data for NewsSection and HeroPlusThree
   const { heroData, verticalCards, newsItems } = useMemo(() => getArticlesData(navigate), [navigate]);
 
-  // Fetch layout on mount
+  // Fetch layout on mount (or when preview params change)
   useEffect(() => {
     const fetchLayout = async () => {
       try {
         setLoading(true);
-        console.log('[DynamicHomeRenderer] Fetching layout...');
-        const currentLayout = await getCurrentLayoutAsync();
+        console.log('[DynamicHomeRenderer] Fetching layout...', {
+          isPreviewMode,
+          experienceOverride,
+          isShopperOverride,
+        });
+        
+        // Pass preview mode options if available
+        const options = isPreviewMode && experienceOverride ? {
+          experienceOverride,
+          isShopperOverride,
+        } : undefined;
+        
+        const currentLayout = await getCurrentLayoutAsync(options);
         console.log('[DynamicHomeRenderer] Layout fetched:', {
           id: currentLayout?.id,
           name: currentLayout?.name,
@@ -285,7 +303,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
     };
 
     fetchLayout();
-  }, []);
+  }, [isPreviewMode, experienceOverride, isShopperOverride]);
 
   // Debug info (keeping for potential future use)
   // const debugInfo = useMemo(() => {
