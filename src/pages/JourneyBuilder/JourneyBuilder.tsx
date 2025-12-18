@@ -502,6 +502,10 @@ export const JourneyBuilder: React.FC = () => {
 
   // Load layouts on mount
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:mount',message:'JourneyBuilder component mounted',data:{activeLayout},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'MOUNT'})}).catch((e)=>{console.error('Debug log failed:',e);});
+    // #endregion
+    
     const loadData = async () => {
       setIsLoading(true);
       try {
@@ -511,6 +515,9 @@ export const JourneyBuilder: React.FC = () => {
 
         // Load layouts
         const loadedLayouts = await getLayouts();
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'JourneyBuilder.tsx:loadData',message:'Layouts loaded',data:{layoutKeys:Object.keys(loadedLayouts),activeLayout},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'MOUNT'})}).catch((e)=>{console.error('Debug log failed:',e);});
+        // #endregion
         setLayouts(loadedLayouts);
       } catch (error) {
         console.error('Error loading layouts:', error);
