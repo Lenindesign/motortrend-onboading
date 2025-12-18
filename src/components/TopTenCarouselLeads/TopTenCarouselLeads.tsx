@@ -554,24 +554,27 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     paddingRight: isNarrowScreen ? '16px' : '0',
   };
 
+  // Stack layout on narrow screens (< 1280) when showing leads, or when explicitly no leads
+  const shouldStackLayout = isNarrowScreen || !showLeads;
+  
   const layoutStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: (isTablet || !showLeads) ? 'column' : 'row',
-    gap: (isTablet || !showLeads) ? '16px' : '24px',
+    flexDirection: shouldStackLayout ? 'column' : 'row',
+    gap: shouldStackLayout ? '16px' : '24px',
     width: '100%',
-    alignItems: (isTablet || !showLeads) ? 'stretch' : 'flex-start',
+    alignItems: shouldStackLayout ? 'stretch' : 'flex-start',
   };
 
   const carouselContainerStyle: React.CSSProperties = {
-    flex: (isTablet || !showLeads) ? 'none' : '1 1 65%',
+    flex: shouldStackLayout ? 'none' : '1 1 65%',
     minWidth: 0,
-    width: showLeads ? undefined : '100%',
+    width: shouldStackLayout ? '100%' : undefined,
   };
 
   const sidebarContainerStyle: React.CSSProperties = {
-    flex: isTablet ? 'none' : '0 0 28%',
-    maxWidth: isTablet ? '100%' : '320px',
-    minWidth: isTablet ? '100%' : '260px',
+    flex: shouldStackLayout ? 'none' : '0 0 28%',
+    maxWidth: shouldStackLayout ? '100%' : '320px',
+    minWidth: shouldStackLayout ? '100%' : '260px',
     display: showLeads ? 'block' : 'none',
   };
 
@@ -616,7 +619,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   const getImageStyle = (isActive: boolean): React.CSSProperties => ({
     width: '100%',
     height: '100%',
-    objectFit: isMobile ? 'cover' : 'contain',
+    objectFit: 'cover',
     objectPosition: 'center',
     transition: 'transform 0.3s ease',
     animation: isActive && !isSliderHovered ? 'kenBurnsZoom 6s ease-in-out infinite' : 'none',
