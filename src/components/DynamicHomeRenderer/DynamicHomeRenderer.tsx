@@ -58,7 +58,11 @@ const COMPONENT_MAP: Record<string, ComponentMapEntry> = {
   HeroPlusThree: {
     component: HeroPlusThree,
     type: 'two-column',
-    defaultProps: { title: 'Recommended For You' },
+    defaultProps: { 
+      title: 'Recommended For You',
+      hero: { imageUrl: '', title: '', onClick: () => {} },
+      cards: [],
+    },
   },
   TrendingStories: {
     component: TrendingStories,
@@ -71,12 +75,12 @@ const COMPONENT_MAP: Record<string, ComponentMapEntry> = {
   NewsSection: {
     component: NewsSection,
     type: 'two-column',
-    defaultProps: { title: 'Latest Car News From our Experts', maxItems: 10 },
+    defaultProps: { title: 'Latest Car News From our Experts', items: [] },
   },
   VehiclesSection: {
     component: VehiclesSection,
     type: 'two-column',
-    defaultProps: { title: 'Top Ranked Vehicles' },
+    defaultProps: { title: 'Top Ranked Vehicles', vehicles: [], useApi: true },
   },
   CommunityPostsPromo: {
     component: CommunityPostsPromo,
