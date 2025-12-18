@@ -258,13 +258,13 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
 
   // Styles - Using standardized section padding from design system
   // Outer wrapper - NO internal padding, parent container's gap handles spacing
-  // Side padding: 0px on screens >= 1280px, 16px on screens < 1280px
+  // Side padding: 24px on all screens for consistent spacing
   const sectionWrapperStyle: React.CSSProperties = {
     width: '100%',
     maxWidth: 'var(--max-width-container, 1280px)',
     margin: '0 auto',
-    paddingLeft: isNarrowScreen ? '16px' : '0px',
-    paddingRight: isNarrowScreen ? '16px' : '0px',
+    paddingLeft: '24px',
+    paddingRight: '24px',
   };
 
   const containerStyle: React.CSSProperties = { 
