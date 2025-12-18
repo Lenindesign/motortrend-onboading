@@ -879,56 +879,56 @@ export const JourneyBuilder: React.FC = () => {
         ))}
       </div>
 
-      {/* Main Content */}
-      <div className={`journey-builder__content ${showVersions ? 'journey-builder__content--with-versions' : ''}`}>
-        {/* Component Palette */}
-        <aside className="journey-builder__palette">
-          <h2 className="journey-builder__palette-title">
-            <Icon name="widgets" size={20} />
-            Components
-          </h2>
-          <p className="journey-builder__palette-hint">Click to add to canvas</p>
-          <div className="journey-builder__palette-list">
-            {Object.values(componentDefinitions).map(component => (
-              <PaletteItem
-                key={component.id}
-                component={component}
-                onAdd={handleAddComponent}
-                onPreview={setPreviewComponent}
-              />
-            ))}
-          </div>
-          
-          {/* Seed data button (only show when connected but no sections) */}
-          {isConnected && sections.length === 0 && (
-            <button
-              className="journey-builder__btn journey-builder__btn--secondary journey-builder__seed-btn"
-              onClick={handleSeedData}
-            >
-              <Icon name="upload" size={16} />
-              Import from JSON
-            </button>
-          )}
-        </aside>
-
-        {/* Canvas */}
-        <main className="journey-builder__canvas">
-          <div className="journey-builder__canvas-header">
-            <h2 className="journey-builder__canvas-title">
-              {currentLayout.name}
+      {/* Main Content - Wrapped in DndContext for drag-and-drop */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <div className={`journey-builder__content ${showVersions ? 'journey-builder__content--with-versions' : ''}`}>
+          {/* Component Palette */}
+          <aside className="journey-builder__palette">
+            <h2 className="journey-builder__palette-title">
+              <Icon name="widgets" size={20} />
+              Components
             </h2>
-            <p className="journey-builder__canvas-description">
-              {currentLayout.description}
-            </p>
-          </div>
+            <p className="journey-builder__palette-hint">Drag to canvas or click + to add</p>
+            <div className="journey-builder__palette-list">
+              {Object.values(componentDefinitions).map(component => (
+                <PaletteItem
+                  key={component.id}
+                  component={component}
+                  onAdd={handleAddComponent}
+                  onPreview={setPreviewComponent}
+                />
+              ))}
+            </div>
+            
+            {/* Seed data button (only show when connected but no sections) */}
+            {isConnected && sections.length === 0 && (
+              <button
+                className="journey-builder__btn journey-builder__btn--secondary journey-builder__seed-btn"
+                onClick={handleSeedData}
+              >
+                <Icon name="upload" size={16} />
+                Import from JSON
+              </button>
+            )}
+          </aside>
 
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDragEnd={handleDragEnd}
-          >
+          {/* Canvas */}
+          <main className="journey-builder__canvas">
+            <div className="journey-builder__canvas-header">
+              <h2 className="journey-builder__canvas-title">
+                {currentLayout.name}
+              </h2>
+              <p className="journey-builder__canvas-description">
+                {currentLayout.description}
+              </p>
+            </div>
+
             <SortableContext
               items={sections.map((_, i) => `section-${i}`)}
               strategy={verticalListSortingStrategy}
@@ -989,11 +989,10 @@ export const JourneyBuilder: React.FC = () => {
                 </div>
               )}
             </DragOverlay>
-          </DndContext>
-        </main>
+          </main>
 
-        {/* Preview Panel */}
-        <aside className="journey-builder__preview">
+          {/* Preview Panel */}
+          <aside className="journey-builder__preview">
           <div className="journey-builder__preview-header">
             <h2 className="journey-builder__preview-title">
               <Icon name="preview" size={20} />
@@ -1097,20 +1096,21 @@ export const JourneyBuilder: React.FC = () => {
               Two Column
             </div>
           </div>
-        </aside>
-
-        {/* Version History Panel */}
-        {showVersions && (
-          <aside className="journey-builder__versions-panel">
-            <VersionHistoryPanel
-              versions={versions}
-              isLoading={isLoadingVersions}
-              onRestore={handleRestoreVersion}
-              isRestoring={isRestoring}
-            />
           </aside>
-        )}
-      </div>
+
+          {/* Version History Panel */}
+          {showVersions && (
+            <aside className="journey-builder__versions-panel">
+              <VersionHistoryPanel
+                versions={versions}
+                isLoading={isLoadingVersions}
+                onRestore={handleRestoreVersion}
+                isRestoring={isRestoring}
+              />
+            </aside>
+          )}
+        </div>
+      </DndContext>
 
       {/* Props Editor Modal */}
       {editingIndex !== null && sections[editingIndex] && (
