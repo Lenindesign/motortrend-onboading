@@ -36,6 +36,8 @@ export interface HeroPlusThreeProps {
 export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards, vehicleSliders = [], onViewAll }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isViewAllHovered, setIsViewAllHovered] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -43,6 +45,34 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Track container width for responsive card count
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.getBoundingClientRect().width);
+      }
+    };
+    
+    updateWidth();
+    
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(containerRef.current);
+    
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Determine number of cards to show based on container width
+  const getCardCount = () => {
+    if (isMobile) return 1;
+    if (containerWidth < 500) return 1;
+    if (containerWidth < 700) return 2;
+    return 3;
+  };
+  
+  const cardCount = getCardCount();
 
   const containerStyle: React.CSSProperties = {
     display: 'flex',
@@ -103,7 +133,7 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
 
   const cardsStyle: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+    gridTemplateColumns: `repeat(${cardCount}, 1fr)`,
     gap: isMobile ? 'var(--spacing-2, 16px)' : 'var(--spacing-3, 24px)',
     width: '100%',
   };
@@ -119,7 +149,7 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
   const vehicleSliderStyle: React.CSSProperties = { width: '100%' };
 
   return (
-    <div style={containerStyle}>
+    <div ref={containerRef} style={containerStyle}>
       {title && (
         <div style={headerStyle}>
           <div style={titleContainerStyle}>
@@ -145,7 +175,7 @@ export const HeroPlusThree: React.FC<HeroPlusThreeProps> = ({ title, hero, cards
         <HeroCard imageUrl={hero.imageUrl} title={hero.title} onClick={hero.onClick} />
       </div>
       <div style={cardsStyle}>
-        {cards.slice(0, 3).map((card, index) => (
+        {cards.slice(0, cardCount).map((card, index) => (
           <VerticalCard key={index} imageUrl={card.imageUrl} title={card.title} type={card.type} onClick={card.onClick} />
         ))}
       </div>
