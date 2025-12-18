@@ -61,12 +61,15 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   const carouselRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const [sliderHeight, setSliderHeight] = useState<number | null>(null);
+  const [sliderWidth, setSliderWidth] = useState<number>(0);
   const [isInView, setIsInView] = useState(false);
   
   // Responsive state
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isTablet, setIsTablet] = useState(window.innerWidth <= 1024);
-  const [isNarrowScreen, setIsNarrowScreen] = useState(window.innerWidth < 1280);
+  
+  // Determine if leads should stack based on slider width (< 1028px)
+  const shouldStackLeads = sliderWidth > 0 && sliderWidth < 1028;
   
   // Hover states
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
@@ -123,38 +126,41 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
       setIsTablet(window.innerWidth <= 1024);
-      setIsNarrowScreen(window.innerWidth < 1280);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Track slider height to sync with sidebar (calculate from width × 9/16 aspect ratio)
+  // Track slider dimensions (width for layout decisions, height for sidebar sync)
   useEffect(() => {
-    if (!sliderRef.current || isMobile || isTablet) return;
+    if (!carouselRef.current) return;
     
-    const updateHeight = () => {
-      if (sliderRef.current) {
-        // Calculate height from width using 16:9 aspect ratio
-        const width = sliderRef.current.getBoundingClientRect().width;
-        const calculatedHeight = Math.round(width * (9 / 16));
-        setSliderHeight(calculatedHeight);
+    const updateDimensions = () => {
+      if (carouselRef.current) {
+        const width = carouselRef.current.getBoundingClientRect().width;
+        setSliderWidth(width);
+        
+        // Calculate height from width using 16:9 aspect ratio (for sidebar sync)
+        if (!isMobile && !isTablet) {
+          const calculatedHeight = Math.round(width * (9 / 16));
+          setSliderHeight(calculatedHeight);
+        }
       }
     };
     
     // Initial measurement after a small delay to ensure layout is complete
-    requestAnimationFrame(updateHeight);
+    requestAnimationFrame(updateDimensions);
     
     // Use ResizeObserver to track width changes
-    const resizeObserver = new ResizeObserver(updateHeight);
-    resizeObserver.observe(sliderRef.current);
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    resizeObserver.observe(carouselRef.current);
     
     // Also update on window resize
-    window.addEventListener('resize', updateHeight);
+    window.addEventListener('resize', updateDimensions);
     
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener('resize', updateHeight);
+      window.removeEventListener('resize', updateDimensions);
     };
   }, [isMobile, isTablet]);
 
@@ -555,8 +561,8 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     boxSizing: 'border-box',
   };
 
-  // Stack layout on narrow screens (< 1280) when showing leads, or when explicitly no leads
-  const shouldStackLayout = isNarrowScreen || !showLeads;
+  // Stack layout when slider width < 1028px OR when explicitly no leads
+  const shouldStackLayout = shouldStackLeads || !showLeads;
   
   const layoutStyle: React.CSSProperties = {
     display: 'flex',
@@ -576,11 +582,13 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     boxSizing: 'border-box',
   };
 
+  // When stacked, sidebar becomes a horizontal carousel
   const sidebarContainerStyle: React.CSSProperties = {
     flex: shouldStackLayout ? 'none' : '0 0 28%',
     maxWidth: shouldStackLayout ? '100%' : '320px',
     minWidth: shouldStackLayout ? '100%' : '260px',
-    display: showLeads ? 'block' : 'none',
+    display: showLeads ? (shouldStackLayout ? 'block' : 'flex') : 'none',
+    flexDirection: shouldStackLayout ? undefined : 'column',
     boxSizing: 'border-box',
   };
 
@@ -805,33 +813,40 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     };
   };
 
-  // Sidebar styles - height dynamically matches slider height
+  // Sidebar styles - when stacked, becomes horizontal carousel; otherwise vertical sidebar
   const sidebarStyle: React.CSSProperties = {
-    background: 'var(--color-white, #FFFFFF)',
-    borderRadius: 'var(--border-radius-md, 8px)',
-    padding: 'var(--spacing-component-md, 12px)',
+    background: shouldStackLayout ? 'transparent' : 'var(--color-white, #FFFFFF)',
+    borderRadius: shouldStackLayout ? '0' : 'var(--border-radius-md, 8px)',
+    padding: shouldStackLayout ? '0' : 'var(--spacing-component-md, 12px)',
     position: 'relative',
     width: '100%',
-    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
-    height: isMobile || isTablet ? 'auto' : (sliderHeight ? `${sliderHeight}px` : 'auto'),
-    maxHeight: isMobile || isTablet ? 'none' : (sliderHeight ? `${sliderHeight}px` : 'none'),
+    border: shouldStackLayout ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)',
+    height: shouldStackLayout ? 'auto' : (sliderHeight ? `${sliderHeight}px` : 'auto'),
+    maxHeight: shouldStackLayout ? 'none' : (sliderHeight ? `${sliderHeight}px` : 'none'),
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
   };
 
   const sidebarHeaderStyle: React.CSSProperties = {
-    marginBottom: '16px',
-    paddingBottom: '12px',
-    borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    marginBottom: shouldStackLayout ? '12px' : '16px',
+    paddingBottom: shouldStackLayout ? '0' : '12px',
+    borderBottom: shouldStackLayout ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)',
+    display: 'flex',
+    flexDirection: shouldStackLayout ? 'row' : 'column',
+    alignItems: shouldStackLayout ? 'center' : 'flex-start',
+    justifyContent: shouldStackLayout ? 'space-between' : 'flex-start',
+    gap: shouldStackLayout ? '16px' : '0',
   };
 
   const sidebarTitleStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-    fontSize: '16px',
+    fontSize: shouldStackLayout ? '18px' : '16px',
     fontWeight: 600,
     color: 'var(--color-neutrals-1, #141416)',
-    margin: '0 0 4px 0',
+    margin: '0',
+    display: 'flex',
+    alignItems: 'center',
   };
 
   const sidebarSubtitleStyle: React.CSSProperties = {
@@ -841,15 +856,18 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     margin: 0,
   };
 
+  // When stacked, listings become a horizontal scrollable carousel
   const listingsListStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: isTablet ? 'row' : 'column',
+    flexDirection: shouldStackLayout ? 'row' : 'column',
     gap: '12px',
-    overflowX: isTablet ? 'auto' : 'visible',
-    overflowY: isTablet ? 'visible' : 'auto',
-    paddingBottom: isTablet ? '8px' : '0',
+    overflowX: shouldStackLayout ? 'auto' : 'visible',
+    overflowY: shouldStackLayout ? 'visible' : 'auto',
+    paddingBottom: shouldStackLayout ? '8px' : '0',
     flex: 1,
     minHeight: 0, // Important for flex overflow to work
+    scrollSnapType: shouldStackLayout ? 'x mandatory' : undefined,
+    WebkitOverflowScrolling: 'touch',
   };
 
   const loadingStyle: React.CSSProperties = {
@@ -1184,13 +1202,14 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
               </div>
             ) : (
               <div style={listingsListStyle}>
-                {currentListings.slice(0, 3).map((listing) => (
+                {currentListings.slice(0, shouldStackLayout ? 5 : 3).map((listing) => (
                   <div 
                     key={listing.id}
                     style={{
-                      flex: isTablet ? '0 0 auto' : undefined,
-                      width: isTablet ? '320px' : undefined,
-                      minWidth: isTablet ? '280px' : undefined,
+                      flex: shouldStackLayout ? '0 0 auto' : undefined,
+                      width: shouldStackLayout ? '280px' : undefined,
+                      minWidth: shouldStackLayout ? '260px' : undefined,
+                      scrollSnapAlign: shouldStackLayout ? 'start' : undefined,
                     }}
                   >
                     <ListingCard
@@ -1217,30 +1236,45 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                   </div>
                 ))}
                 
-                {currentListings.length > 3 && (
-                  <button 
+                {currentListings.length > (shouldStackLayout ? 5 : 3) && (
+                  <div 
                     style={{
-                      fontFamily: 'var(--font-body, Geist, sans-serif)',
-                      width: '100%',
+                      flex: shouldStackLayout ? '0 0 auto' : undefined,
+                      width: shouldStackLayout ? '140px' : '100%',
+                      minWidth: shouldStackLayout ? '120px' : undefined,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '6px',
-                      background: 'transparent',
-                      color: 'var(--color-primary-1, #E90C17)',
-                      border: '1px solid var(--color-primary-1, #E90C17)',
-                      borderRadius: 'var(--border-radius-sm, 4px)',
-                      padding: '10px 16px',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
+                      scrollSnapAlign: shouldStackLayout ? 'start' : undefined,
                     }}
-                    onClick={() => currentVehicle && navigate(`/vehicles/${currentVehicle.year}/${currentVehicle.make}/${currentVehicle.model}`)}
                   >
-                    View All {currentListings.length} Listings
-                    <Icon name="arrow_forward" size={16} />
-                  </button>
+                    <button 
+                      style={{
+                        fontFamily: 'var(--font-body, Geist, sans-serif)',
+                        width: shouldStackLayout ? 'auto' : '100%',
+                        height: shouldStackLayout ? '100%' : 'auto',
+                        display: 'flex',
+                        flexDirection: shouldStackLayout ? 'column' : 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        background: shouldStackLayout ? 'var(--color-neutrals-7, #F4F5F6)' : 'transparent',
+                        color: 'var(--color-primary-1, #E90C17)',
+                        border: shouldStackLayout ? 'none' : '1px solid var(--color-primary-1, #E90C17)',
+                        borderRadius: shouldStackLayout ? 'var(--border-radius-md, 8px)' : 'var(--border-radius-sm, 4px)',
+                        padding: shouldStackLayout ? '20px 16px' : '10px 16px',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        minHeight: shouldStackLayout ? '180px' : undefined,
+                      }}
+                      onClick={() => currentVehicle && navigate(`/vehicles/${currentVehicle.year}/${currentVehicle.make}/${currentVehicle.model}`)}
+                    >
+                      <Icon name="arrow_forward" size={shouldStackLayout ? 24 : 16} />
+                      View All {currentListings.length}
+                    </button>
+                  </div>
                 )}
               </div>
             )}
