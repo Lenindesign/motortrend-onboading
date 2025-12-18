@@ -1985,10 +1985,10 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Top Ten Carousel with Listings - For Car Buyers (under User Ratings & Reviews) */}
+        {/* Top Ten Carousel (no leads) - For Car Buyers (under User Ratings & Reviews) */}
         {isCarBuyers && (
           <div className="home__section home__section--full-width">
-            <TopTenCarouselLeads initialVehicleType={preferredBodyStyle} initialSubcategory="All" />
+            <TopTenCarousel initialVehicleType={preferredBodyStyle} initialSubcategory="All" />
           </div>
         )}
 
