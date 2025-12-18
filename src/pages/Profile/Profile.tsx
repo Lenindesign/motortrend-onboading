@@ -295,6 +295,13 @@ export const Profile: React.FC<ProfileProps> = ({
   const [showToast, setShowToast] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<{ type: string; id: string } | null>(null);
   
+  // Subscription toast state
+  const [subscriptionToast, setSubscriptionToast] = useState<{ show: boolean; name: string; subscribed: boolean }>({
+    show: false,
+    name: '',
+    subscribed: false
+  });
+  
   // Avatar/Banner Modal state
   const [showAvatarBannerModal, setShowAvatarBannerModal] = useState(false);
   const [userAvatar, setUserAvatar] = useState(userData?.avatar);
@@ -458,17 +465,31 @@ export const Profile: React.FC<ProfileProps> = ({
 
   // Subscription toggle handlers
   const handleNewsletterToggle = (name: string, isActive: boolean) => {
+    const newSubscribedState = !isActive;
     setNewsletterSubscriptions(prev => ({
       ...prev,
-      [name]: !isActive
+      [name]: newSubscribedState
     }));
+    // Show subscription toast
+    setSubscriptionToast({ show: true, name, subscribed: newSubscribedState });
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      setSubscriptionToast(prev => ({ ...prev, show: false }));
+    }, 3000);
   };
 
   const handleMagazineToggle = (name: string, isActive: boolean) => {
+    const newSubscribedState = !isActive;
     setMagazineSubscriptions(prev => ({
       ...prev,
-      [name]: !isActive
+      [name]: newSubscribedState
     }));
+    // Show subscription toast
+    setSubscriptionToast({ show: true, name, subscribed: newSubscribedState });
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+      setSubscriptionToast(prev => ({ ...prev, show: false }));
+    }, 3000);
   };
 
   // Bookmark handlers
@@ -1141,6 +1162,40 @@ export const Profile: React.FC<ProfileProps> = ({
         cancelText="Cancel"
         type="warning"
       />
+
+      {/* Subscription Toast Notification */}
+      {subscriptionToast.show && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 'var(--spacing-4, 32px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: subscriptionToast.subscribed ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-2, #23262F)',
+            color: 'var(--color-white, #FFFFFF)',
+            padding: 'var(--spacing-2, 16px) var(--spacing-4, 32px)',
+            borderRadius: 'var(--border-radius-md, 8px)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 'var(--spacing-2, 16px)',
+            zIndex: 9999,
+            animation: 'fadeInUp 300ms ease-out',
+            fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+            fontWeight: 600,
+            fontSize: '14px',
+          }}
+        >
+          <Icon 
+            name={subscriptionToast.subscribed ? 'check_circle' : 'remove_circle'} 
+            size={20} 
+          />
+          {subscriptionToast.subscribed 
+            ? `Subscribed to ${subscriptionToast.name}!` 
+            : `Unsubscribed from ${subscriptionToast.name}`
+          }
+        </div>
+      )}
 
       {/* Avatar Banner Modal */}
       <AvatarBannerModal
