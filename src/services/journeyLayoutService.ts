@@ -160,14 +160,12 @@ export async function updateLayout(
       console.log('[journeyLayoutService] Saved to Supabase successfully');
       return { success: true };
     } catch (error) {
-      console.error('Error updating layout in Supabase:', error);
+      console.error('Error updating layout in Supabase, falling back to localStorage:', error);
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:catch',message:'Supabase upsert error',data:{error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3-FIX'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:catch',message:'Supabase upsert error - falling back to localStorage',data:{error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H6-FALLBACK'})}).catch(()=>{});
       // #endregion
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
-      };
+      // Fall back to localStorage instead of failing
+      return updateLayoutInLocalStorage(layoutKey, sections);
     }
   }
 
@@ -208,9 +206,16 @@ function updateLayoutInLocalStorage(
       savedSectionsCount: verified?.layouts?.[layoutKey]?.sections?.length 
     });
     
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayoutInLocalStorage',message:'localStorage save successful',data:{layoutKey,sectionsCount:sections.length,sectionOrder:sections.map(s=>s.componentId),verifiedCount:verified?.layouts?.[layoutKey]?.sections?.length||0},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H6-FALLBACK'})}).catch(()=>{});
+    // #endregion
+    
     return { success: true };
   } catch (error) {
     console.error('Error saving to localStorage:', error);
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayoutInLocalStorage:error',message:'localStorage save failed',data:{layoutKey,error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H6-FALLBACK'})}).catch(()=>{});
+    // #endregion
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
