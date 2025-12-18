@@ -1900,8 +1900,8 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Vehicles For You Strip - Under Top Ten Carousel (All Shoppers) */}
-        {isShopper && (
+        {/* For Car Buyers (Practical Paula): Show Available Listings */}
+        {isCarBuyers && (
           <div className="home__section home__section--full-width">
             <VehicleLeadsStripe />
           </div>
