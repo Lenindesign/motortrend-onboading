@@ -566,30 +566,32 @@ export const Profile: React.FC<ProfileProps> = ({
 
   // Vehicle search handlers
   const handleVehicleSelect = (vehicle: { name: string; ownership: 'own' | 'want' }) => {
-    const existingVehicles = localOnboardingData.vehicles || [];
+    // Get fresh data from localStorage to avoid stale state issues
+    const freshData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
+    const existingVehicles = freshData.vehicles || [];
     
     // Check if vehicle already exists to avoid duplicates
-    const vehicleExists = existingVehicles.some(v => v.name === vehicle.name);
+    const vehicleExists = existingVehicles.some((v: { name: string }) => v.name === vehicle.name);
+    
+    let updatedVehicles;
     if (vehicleExists) {
       // Update ownership if vehicle exists
-      const updatedVehicles = existingVehicles.map(v => 
+      updatedVehicles = existingVehicles.map((v: { name: string }) => 
         v.name === vehicle.name ? vehicle : v
       );
-      const updatedData = {
-        ...localOnboardingData,
-        vehicles: updatedVehicles
-      };
-      setLocalOnboardingData(updatedData);
-      localStorage.setItem('onboardingData', JSON.stringify(updatedData));
     } else {
       // Add new vehicle
-      const updatedData = {
-        ...localOnboardingData,
-        vehicles: [...existingVehicles, vehicle]
-      };
-      setLocalOnboardingData(updatedData);
-      localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+      updatedVehicles = [...existingVehicles, vehicle];
     }
+    
+    const updatedData = {
+      ...freshData,
+      vehicles: updatedVehicles
+    };
+    
+    // Update both localStorage and state
+    localStorage.setItem('onboardingData', JSON.stringify(updatedData));
+    setLocalOnboardingData(updatedData);
     
     setActiveVehicleSearch(null); // Hide search after selection
     // Dispatch event to notify other components
