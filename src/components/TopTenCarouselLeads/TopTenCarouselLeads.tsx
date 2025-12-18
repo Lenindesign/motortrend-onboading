@@ -60,7 +60,6 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   const slideIntervalRef = useRef<number | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const [sliderHeight, setSliderHeight] = useState<number | null>(null);
   const [sliderWidth, setSliderWidth] = useState<number>(0);
   const [isInView, setIsInView] = useState(false);
   
@@ -131,38 +130,30 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Track slider dimensions (width for layout decisions, height for sidebar sync)
+  // Track container width for layout decisions
   useEffect(() => {
     if (!carouselRef.current) return;
     
-    const updateDimensions = () => {
+    const updateWidth = () => {
       if (carouselRef.current) {
         const width = carouselRef.current.getBoundingClientRect().width;
         setSliderWidth(width);
-        
-        // Calculate height from width using 16:9 aspect ratio (for sidebar sync)
-        if (!isMobile && !isTablet) {
-          const calculatedHeight = Math.round(width * (9 / 16));
-          setSliderHeight(calculatedHeight);
-        }
       }
     };
     
-    // Initial measurement after a small delay to ensure layout is complete
-    requestAnimationFrame(updateDimensions);
+    requestAnimationFrame(updateWidth);
     
-    // Use ResizeObserver to track width changes
-    const resizeObserver = new ResizeObserver(updateDimensions);
+    const resizeObserver = new ResizeObserver(updateWidth);
     resizeObserver.observe(carouselRef.current);
     
-    // Also update on window resize
-    window.addEventListener('resize', updateDimensions);
+    window.addEventListener('resize', updateWidth);
     
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener('resize', updateWidth);
     };
-  }, [isMobile, isTablet]);
+  }, []);
+
 
   // Load saved vehicles from localStorage
   useEffect(() => {
@@ -570,7 +561,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     gap: shouldStackLayout ? '16px' : '24px',
     width: '100%',
     maxWidth: '100%',
-    alignItems: shouldStackLayout ? 'stretch' : 'flex-start',
+    alignItems: 'stretch', // Always stretch to match heights
     boxSizing: 'border-box',
   };
 
@@ -587,9 +578,10 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     flex: shouldStackLayout ? 'none' : '0 0 28%',
     maxWidth: shouldStackLayout ? '100%' : '320px',
     minWidth: shouldStackLayout ? '100%' : '260px',
-    display: showLeads ? (shouldStackLayout ? 'block' : 'flex') : 'none',
-    flexDirection: shouldStackLayout ? undefined : 'column',
+    display: showLeads ? 'flex' : 'none',
+    flexDirection: 'column',
     boxSizing: 'border-box',
+    alignSelf: shouldStackLayout ? 'stretch' : 'stretch', // Match slider height
   };
 
   const sliderStyle: React.CSSProperties = {
@@ -821,11 +813,11 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     position: 'relative',
     width: '100%',
     border: shouldStackLayout ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)',
-    height: shouldStackLayout ? 'auto' : (sliderHeight ? `${sliderHeight}px` : 'auto'),
-    maxHeight: shouldStackLayout ? 'none' : (sliderHeight ? `${sliderHeight}px` : 'none'),
+    height: shouldStackLayout ? 'auto' : '100%', // Fill container height
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden',
+    boxSizing: 'border-box',
   };
 
   const sidebarHeaderStyle: React.CSSProperties = {
