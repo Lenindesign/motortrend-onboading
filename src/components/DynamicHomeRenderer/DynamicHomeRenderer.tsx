@@ -505,9 +505,83 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
     );
   }
 
+  // Add keyframes for animations
+  useEffect(() => {
+    const styleId = 'dynamic-home-renderer-animations';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+
+  // Determine experience description for user-friendly display
+  const getExperienceDescription = () => {
+    const exp = layout.experience;
+    const isShopper = layout.isShopper;
+    
+    const expDescriptions: Record<string, string> = {
+      'A': 'Full Profile', // Want ✓ + Own ✓
+      'B': 'Shopping Focus', // Want ✓ + Own ✗
+      'C': 'Owner Focus', // Want ✗ + Own ✓
+      'D': 'Discovery', // Want ✗ + Own ✗
+    };
+    
+    return `${expDescriptions[exp] || 'Custom'} • ${isShopper ? 'Shopper' : 'Browser'}`;
+  };
+
   return (
     <>
-      {/* Sticky Experience Indicator - Only visible in preview mode */}
+      {/* Subtle Personalization Badge - Always visible */}
+      {!isPreviewMode && (
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: 20,
+            right: 20,
+            background: 'rgba(20, 20, 22, 0.85)',
+            color: '#fff',
+            padding: '8px 14px',
+            borderRadius: '20px',
+            fontSize: '11px',
+            zIndex: 9998,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            backdropFilter: 'blur(8px)',
+            fontFamily: 'var(--font-body)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}
+          onClick={() => window.location.href = '/journey-builder'}
+          title="Click to customize your experience"
+        >
+          <span style={{ 
+            width: '6px', 
+            height: '6px', 
+            borderRadius: '50%', 
+            background: '#58BD7D',
+            animation: 'pulse 2s infinite'
+          }} />
+          <span style={{ opacity: 0.9 }}>
+            Personalized: <strong style={{ color: 'var(--color-primary-1, #E90C17)' }}>{getExperienceDescription()}</strong>
+          </span>
+        </div>
+      )}
+
+      {/* Detailed Experience Indicator - Only visible in preview mode */}
       {isPreviewMode && (
         <div style={{
           position: 'fixed',

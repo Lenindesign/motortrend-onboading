@@ -78,18 +78,22 @@ export const Home: React.FC = () => {
   const { getUserRating } = useRating();
   const [searchParams] = useSearchParams();
   
-  // Check if dynamic layout is enabled via URL param or localStorage
+  // Dynamic layout is now enabled by default (Journey Builder integration)
+  // Can be disabled via URL param: ?useDynamicLayout=false
+  // Or localStorage: dynamicLayoutEnabled=false
   const useDynamicLayout = useMemo(() => {
     // URL param takes precedence
     const urlParam = searchParams.get('useDynamicLayout');
     if (urlParam === 'true') return true;
     if (urlParam === 'false') return false;
     
-    // Check localStorage setting
+    // Check localStorage setting - default to true (enabled)
     try {
-      return localStorage.getItem('dynamicLayoutEnabled') === 'true';
+      const storedValue = localStorage.getItem('dynamicLayoutEnabled');
+      // If explicitly set to 'false', disable. Otherwise enable by default.
+      return storedValue !== 'false';
     } catch {
-      return false;
+      return true; // Default to enabled
     }
   }, [searchParams]);
   
