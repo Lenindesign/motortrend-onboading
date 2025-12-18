@@ -258,7 +258,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   const [layout, setLayout] = useState<LayoutConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isIndicatorCollapsed, setIsIndicatorCollapsed] = useState(false);
+  const [isIndicatorCollapsed, setIsIndicatorCollapsed] = useState(true); // Start collapsed by default
   
   // Check for preview mode URL parameters
   const isPreviewMode = searchParams.get('preview') === 'true';
