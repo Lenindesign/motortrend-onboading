@@ -153,7 +153,7 @@ function calculateTradeInValue(
 export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className }) => {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
-  const [isNarrowScreen, setIsNarrowScreen] = useState(false);
+  const [_isNarrowScreen, setIsNarrowScreen] = useState(false);
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [isAddCarHovered, setIsAddCarHovered] = useState(false);
   const [isInfoHovered, setIsInfoHovered] = useState(false);

@@ -240,7 +240,7 @@ export const UserRatingsReviews: React.FC<UserRatingsReviewsProps> = ({ classNam
   };
 
   // Check if viewport is at or above max container width
-  const [isFullWidth, setIsFullWidth] = useState(window.innerWidth >= 1280);
+  const [_isFullWidth, setIsFullWidth] = useState(window.innerWidth >= 1280);
   
   useEffect(() => {
     const checkWidth = () => setIsFullWidth(window.innerWidth >= 1280);
