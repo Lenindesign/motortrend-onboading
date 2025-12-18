@@ -1950,6 +1950,27 @@ export const Home: React.FC = () => {
           </div>
         )}
 
+        {/* Latest Car News Section - For enthusiasts (under Your Activity) */}
+        {(userType === 'enthusiast' || userType === 'both') && sortedNewsItemsRiver3.length > 0 && (
+          <div className="home__section">
+            <div className="home__left-column">
+              <NewsSection
+                title="Latest Car News From our Experts"
+                items={sortedNewsItemsRiver3}
+              />
+            </div>
+            <div className="home__right-column">
+              <AdContainer
+                width={300}
+                height={600}
+                label="SVOD 200 x 420"
+                position="right-column"
+                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+              />
+            </div>
+          </div>
+        )}
+
         {/* What Is My Car Worth - Trade-in value calculator for Shoppers */}
         {isShopper && (
           <div className="home__section home__section--full-width">
@@ -1992,8 +2013,8 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Latest Car News Section (10 stories) - Under Your Activity */}
-        {sortedNewsItemsRiver3.length > 0 && (
+        {/* Latest Car News Section (10 stories) - For non-enthusiasts (shoppers, car buyers) */}
+        {userType !== 'enthusiast' && userType !== 'both' && sortedNewsItemsRiver3.length > 0 && (
           <div className="home__section">
             <div className="home__left-column">
               <NewsSection
