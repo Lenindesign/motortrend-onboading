@@ -353,6 +353,7 @@ export const JourneyBuilder: React.FC = () => {
   const [isLoadingVersions, setIsLoadingVersions] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
   const [showVersions, setShowVersions] = useState(false);
+  const [previewMode, setPreviewMode] = useState<'live' | 'blocks'>('live');
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -780,26 +781,45 @@ export const JourneyBuilder: React.FC = () => {
           </DndContext>
         </main>
 
-        {/* Live Preview Panel */}
+        {/* Preview Panel */}
         <aside className="journey-builder__preview">
           <div className="journey-builder__preview-header">
             <h2 className="journey-builder__preview-title">
               <Icon name="preview" size={20} />
-              Live Preview
+              Preview
             </h2>
             <div className="journey-builder__preview-actions">
-              <button
-                className="journey-builder__preview-refresh"
-                onClick={() => {
-                  const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
-                  if (iframe) {
-                    iframe.src = iframe.src;
-                  }
-                }}
-                title="Refresh preview"
-              >
-                <Icon name="refresh" size={16} />
-              </button>
+              {/* Preview Mode Toggle */}
+              <div className="journey-builder__preview-toggle">
+                <button
+                  className={`journey-builder__preview-toggle-btn ${previewMode === 'blocks' ? 'journey-builder__preview-toggle-btn--active' : ''}`}
+                  onClick={() => setPreviewMode('blocks')}
+                  title="Block view"
+                >
+                  <Icon name="view_agenda" size={14} />
+                </button>
+                <button
+                  className={`journey-builder__preview-toggle-btn ${previewMode === 'live' ? 'journey-builder__preview-toggle-btn--active' : ''}`}
+                  onClick={() => setPreviewMode('live')}
+                  title="Live view"
+                >
+                  <Icon name="web" size={14} />
+                </button>
+              </div>
+              {previewMode === 'live' && (
+                <button
+                  className="journey-builder__preview-refresh"
+                  onClick={() => {
+                    const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
+                    if (iframe) {
+                      iframe.src = iframe.src;
+                    }
+                  }}
+                  title="Refresh preview"
+                >
+                  <Icon name="refresh" size={16} />
+                </button>
+              )}
               <a
                 href={getPreviewUrl()}
                 target="_blank"
@@ -822,16 +842,40 @@ export const JourneyBuilder: React.FC = () => {
               {sections.filter(s => s.enabled).length} sections
             </span>
           </div>
-          <div className="journey-builder__preview-iframe-container">
-            <iframe
-              id="preview-iframe"
-              key={`${activeLayout}-${sections.length}-${hasChanges}`}
-              src={getPreviewUrl()}
-              className="journey-builder__preview-iframe"
-              title="Page Preview"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-            />
-          </div>
+          
+          {/* Live Preview (iframe) */}
+          {previewMode === 'live' && (
+            <div className="journey-builder__preview-iframe-container">
+              <iframe
+                id="preview-iframe"
+                key={`${activeLayout}-${sections.length}-${hasChanges}`}
+                src={getPreviewUrl()}
+                className="journey-builder__preview-iframe"
+                title="Page Preview"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+              />
+            </div>
+          )}
+          
+          {/* Blocks Preview */}
+          {previewMode === 'blocks' && (
+            <div className="journey-builder__preview-frame">
+              <div className="journey-builder__preview-content">
+                {sections.filter(s => s.enabled).map((section, index) => {
+                  const component = componentDefinitions[section.componentId];
+                  return (
+                    <div
+                      key={index}
+                      className={`journey-builder__preview-item journey-builder__preview-item--${component?.type || 'full-width'}`}
+                    >
+                      <span className="journey-builder__preview-item-name">{component?.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          
           <div className="journey-builder__preview-legend">
             <div className="journey-builder__preview-legend-item">
               <span className="journey-builder__preview-legend-color journey-builder__preview-legend-color--full"></span>

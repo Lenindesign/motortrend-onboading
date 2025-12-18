@@ -622,7 +622,39 @@
 
 .journey-builder__preview-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
+}
+
+.journey-builder__preview-toggle {
+  display: flex;
+  background: var(--color-neutrals-3, #353945);
+  border-radius: 6px;
+  padding: 2px;
+  margin-right: 4px;
+}
+
+.journey-builder__preview-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 24px;
+  border-radius: 4px;
+  background: transparent;
+  border: none;
+  color: var(--color-neutrals-5, #B1B5C3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.journey-builder__preview-toggle-btn:hover {
+  color: var(--color-neutrals-8, #FCFCFD);
+}
+
+.journey-builder__preview-toggle-btn--active {
+  background: var(--color-neutrals-1, #141416);
+  color: var(--color-neutrals-8, #FCFCFD);
 }
 
 .journey-builder__preview-refresh,
@@ -694,11 +726,13 @@
 }
 
 .journey-builder__preview-frame {
+  flex: 1;
   background: var(--color-neutrals-1, #141416);
   border: 1px solid var(--color-neutrals-3, #353945);
   border-radius: 8px;
   padding: 12px;
-  min-height: 400px;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .journey-builder__preview-content {
