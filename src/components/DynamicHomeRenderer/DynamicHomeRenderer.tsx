@@ -258,6 +258,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   const [layout, setLayout] = useState<LayoutConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isIndicatorCollapsed, setIsIndicatorCollapsed] = useState(false);
   
   // Check for preview mode URL parameters
   const isPreviewMode = searchParams.get('preview') === 'true';
@@ -409,87 +410,128 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
           right: 20,
           background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
           color: '#fff',
-          padding: '16px 20px',
+          padding: isIndicatorCollapsed ? '8px 12px' : '16px 20px',
           borderRadius: '12px',
           fontSize: '12px',
           zIndex: 9999,
-          maxWidth: '280px',
+          maxWidth: isIndicatorCollapsed ? 'auto' : '280px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
           border: '1px solid rgba(255,255,255,0.1)',
           backdropFilter: 'blur(10px)',
           fontFamily: 'var(--font-body)',
-        }}>
+          transition: 'all 0.2s ease',
+          cursor: isIndicatorCollapsed ? 'pointer' : 'default',
+        }}
+        onClick={isIndicatorCollapsed ? () => setIsIndicatorCollapsed(false) : undefined}
+        >
+          {/* Header - Always visible */}
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
+            justifyContent: 'space-between',
             gap: '8px', 
-            marginBottom: '12px',
-            borderBottom: '1px solid rgba(255,255,255,0.1)',
-            paddingBottom: '10px'
+            marginBottom: isIndicatorCollapsed ? 0 : '12px',
+            borderBottom: isIndicatorCollapsed ? 'none' : '1px solid rgba(255,255,255,0.1)',
+            paddingBottom: isIndicatorCollapsed ? 0 : '10px'
           }}>
-            <span style={{ 
-              width: '8px', 
-              height: '8px', 
-              borderRadius: '50%', 
-              background: '#58BD7D',
-              boxShadow: '0 0 8px #58BD7D'
-            }} />
-            <strong style={{ fontSize: '13px', letterSpacing: '0.5px' }}>Journey Builder Preview</strong>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ 
+                width: '8px', 
+                height: '8px', 
+                borderRadius: '50%', 
+                background: '#58BD7D',
+                boxShadow: '0 0 8px #58BD7D'
+              }} />
+              {isIndicatorCollapsed ? (
+                <span style={{ fontSize: '11px', fontWeight: '600' }}>{layout.experience}-{layout.isShopper ? 'S' : 'B'}</span>
+              ) : (
+                <strong style={{ fontSize: '13px', letterSpacing: '0.5px' }}>Journey Builder Preview</strong>
+              )}
+            </div>
+            {!isIndicatorCollapsed && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsIndicatorCollapsed(true);
+                }}
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  border: 'none',
+                  borderRadius: '4px',
+                  color: 'rgba(255,255,255,0.6)',
+                  cursor: 'pointer',
+                  padding: '4px 6px',
+                  fontSize: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.15s ease',
+                }}
+                title="Collapse"
+              >
+                ✕
+              </button>
+            )}
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Experience:</span>
-              <span style={{ 
-                background: 'var(--color-primary-1, #E90C17)', 
-                padding: '2px 8px', 
-                borderRadius: '4px',
-                fontWeight: '600',
-                fontSize: '11px'
-              }}>{layout.experience}</span>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Intent:</span>
-              <span style={{ 
-                background: layout.isShopper ? '#58BD7D' : '#3B82F6', 
-                padding: '2px 8px', 
-                borderRadius: '4px',
-                fontWeight: '600',
-                fontSize: '11px'
-              }}>{layout.isShopper ? 'Shopper' : 'Browser'}</span>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Layout:</span>
-              <span style={{ fontWeight: '500', fontSize: '11px' }}>{layout.id}</span>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.6)' }}>Sections:</span>
-              <span style={{ fontWeight: '500', fontSize: '11px' }}>{enabledSections.length} active</span>
-            </div>
-          </div>
-          
-          <div style={{ 
-            marginTop: '12px', 
-            paddingTop: '10px', 
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            fontSize: '10px',
-            color: 'rgba(255,255,255,0.4)',
-            textAlign: 'center'
-        }}>
-          <a 
-            href="/journey-builder" 
-            style={{ 
-              color: 'var(--color-primary-1, #E90C17)', 
-              textDecoration: 'none',
-              fontWeight: '600'
-            }}
-          >
-            Open Journey Builder →
-          </a>
-        </div>
+          {/* Expanded content */}
+          {!isIndicatorCollapsed && (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Experience:</span>
+                  <span style={{ 
+                    background: 'var(--color-primary-1, #E90C17)', 
+                    padding: '2px 8px', 
+                    borderRadius: '4px',
+                    fontWeight: '600',
+                    fontSize: '11px'
+                  }}>{layout.experience}</span>
+                </div>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Intent:</span>
+                  <span style={{ 
+                    background: layout.isShopper ? '#58BD7D' : '#3B82F6', 
+                    padding: '2px 8px', 
+                    borderRadius: '4px',
+                    fontWeight: '600',
+                    fontSize: '11px'
+                  }}>{layout.isShopper ? 'Shopper' : 'Browser'}</span>
+                </div>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Layout:</span>
+                  <span style={{ fontWeight: '500', fontSize: '11px' }}>{layout.id}</span>
+                </div>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>Sections:</span>
+                  <span style={{ fontWeight: '500', fontSize: '11px' }}>{enabledSections.length} active</span>
+                </div>
+              </div>
+              
+              <div style={{ 
+                marginTop: '12px', 
+                paddingTop: '10px', 
+                borderTop: '1px solid rgba(255,255,255,0.1)',
+                fontSize: '10px',
+                color: 'rgba(255,255,255,0.4)',
+                textAlign: 'center'
+              }}>
+                <a 
+                  href="/journey-builder" 
+                  style={{ 
+                    color: 'var(--color-primary-1, #E90C17)', 
+                    textDecoration: 'none',
+                    fontWeight: '600'
+                  }}
+                >
+                  Open Journey Builder →
+                </a>
+              </div>
+            </>
+          )}
         </div>
       )}
 
