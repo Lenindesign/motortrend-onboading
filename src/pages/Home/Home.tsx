@@ -1893,8 +1893,8 @@ export const Home: React.FC = () => {
           </div>
         )}
 
-        {/* Top Ten Carousel with Listings - Featured at the top of the page (Shoppers only) */}
-        {isShopper && (
+        {/* Top Ten Carousel with Listings - For non-Car Buyers shoppers (at top) */}
+        {isShopper && !isCarBuyers && (
           <div className="home__section home__section--full-width">
             <TopTenCarouselLeads initialVehicleType={preferredBodyStyle} initialSubcategory="All" />
           </div>
@@ -1982,6 +1982,13 @@ export const Home: React.FC = () => {
         {isShopper && (
           <div className="home__section home__section--full-width">
             <UserRatingsReviews />
+          </div>
+        )}
+
+        {/* Top Ten Carousel with Listings - For Car Buyers (under User Ratings & Reviews) */}
+        {isCarBuyers && (
+          <div className="home__section home__section--full-width">
+            <TopTenCarouselLeads initialVehicleType={preferredBodyStyle} initialSubcategory="All" />
           </div>
         )}
 
