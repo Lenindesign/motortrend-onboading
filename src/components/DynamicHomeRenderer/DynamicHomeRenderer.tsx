@@ -289,6 +289,26 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
     };
   }, []);
 
+  // Add keyframes for animations (must be before any early returns to follow Rules of Hooks)
+  useEffect(() => {
+    const styleId = 'dynamic-home-renderer-animations';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+
   // Fetch layout on mount (or when preview params change)
   useEffect(() => {
     const fetchLayout = async () => {
@@ -504,26 +524,6 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
       </div>
     );
   }
-
-  // Add keyframes for animations
-  useEffect(() => {
-    const styleId = 'dynamic-home-renderer-animations';
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement('style');
-      style.id = styleId;
-      style.textContent = `
-        @keyframes pulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(1.2); }
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-  }, []);
 
   // Determine experience description for user-friendly display
   const getExperienceDescription = () => {
