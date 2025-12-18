@@ -522,9 +522,23 @@ export const JourneyBuilder: React.FC = () => {
     loadData();
   }, []);
 
+  // Track if we're currently saving to ignore real-time updates
+  const isSavingRef = React.useRef(false);
+
   // Subscribe to real-time changes
   useEffect(() => {
     const unsubscribe = subscribeToLayoutChanges((layoutKey, newSections) => {
+      // Ignore real-time updates while saving to prevent overwriting local changes
+      if (isSavingRef.current) {
+        console.log('[JourneyBuilder] Ignoring real-time update during save');
+        return;
+      }
+      
+      console.log('[JourneyBuilder] Real-time update received:', {
+        layoutKey,
+        newSectionsOrder: newSections.map(s => s.componentId),
+      });
+      
       setLayouts(prev => ({
         ...prev,
         [layoutKey]: {
@@ -718,6 +732,8 @@ export const JourneyBuilder: React.FC = () => {
   // Save changes
   const handleSave = async () => {
     setSaveStatus('saving');
+    isSavingRef.current = true; // Block real-time updates during save
+    
     console.log('[JourneyBuilder] Saving layout:', {
       activeLayout,
       sectionsCount: sections.length,
@@ -727,6 +743,7 @@ export const JourneyBuilder: React.FC = () => {
       const result = await updateLayout(activeLayout, sections);
       
       if (result.success) {
+        console.log('[JourneyBuilder] Save successful');
         setSaveStatus('saved');
         setHasChanges(false);
         
@@ -736,14 +753,20 @@ export const JourneyBuilder: React.FC = () => {
           setVersions(history);
         }
         
-        setTimeout(() => setSaveStatus('idle'), 3000);
+        // Re-enable real-time updates after a short delay
+        setTimeout(() => {
+          isSavingRef.current = false;
+          setSaveStatus('idle');
+        }, 1000);
       } else {
         console.error('Save error:', result.error);
+        isSavingRef.current = false;
         setSaveStatus('error');
         setTimeout(() => setSaveStatus('idle'), 3000);
       }
     } catch (error) {
       console.error('Error saving:', error);
+      isSavingRef.current = false;
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     }

@@ -116,6 +116,7 @@ export async function updateLayout(
   console.log('[journeyLayoutService] updateLayout called:', { 
     layoutKey, 
     sectionsCount: sections.length,
+    sectionOrder: sections.map(s => s.componentId),
     canUseSupabase: canUseSupabase(),
     hasDb: !!db
   });
