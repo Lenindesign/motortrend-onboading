@@ -203,11 +203,18 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
     const fetchLayout = async () => {
       try {
         setLoading(true);
+        console.log('[DynamicHomeRenderer] Fetching layout...');
         const currentLayout = await getCurrentLayoutAsync();
+        console.log('[DynamicHomeRenderer] Layout fetched:', {
+          id: currentLayout?.id,
+          name: currentLayout?.name,
+          sectionsCount: currentLayout?.sections?.length || 0,
+          enabledSections: currentLayout?.sections?.filter(s => s.enabled).length || 0,
+        });
         setLayout(currentLayout);
         setError(null);
       } catch (err) {
-        console.error('Error fetching layout:', err);
+        console.error('[DynamicHomeRenderer] Error fetching layout:', err);
         setError(err instanceof Error ? err.message : 'Failed to load layout');
       } finally {
         setLoading(false);
@@ -226,20 +233,90 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="home__loading">
-        <div className="home__loading-spinner" />
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '400px',
+        color: 'var(--color-neutrals-5)',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        <div style={{ 
+          width: '40px', 
+          height: '40px', 
+          border: '3px solid var(--color-neutrals-6)', 
+          borderTopColor: 'var(--color-primary-1)', 
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }} />
+        <span>Loading layout...</span>
       </div>
     );
   }
 
-  // Error state - fall back to default rendering
-  if (error || !layout) {
-    console.warn('DynamicHomeRenderer: Using fallback rendering due to error:', error);
-    return null; // Let parent handle fallback
+  // Error state - show error message
+  if (error) {
+    console.error('DynamicHomeRenderer error:', error);
+    return (
+      <div style={{ 
+        padding: '40px', 
+        textAlign: 'center', 
+        color: 'var(--color-error, #E53935)',
+        background: 'rgba(229, 57, 53, 0.1)',
+        borderRadius: '8px',
+        margin: '20px'
+      }}>
+        <p><strong>Error loading layout:</strong> {error}</p>
+        <p style={{ fontSize: '14px', color: 'var(--color-neutrals-5)', marginTop: '8px' }}>
+          Try disabling dynamic mode or check the console for details.
+        </p>
+      </div>
+    );
+  }
+
+  // No layout found
+  if (!layout) {
+    console.warn('DynamicHomeRenderer: No layout found');
+    return (
+      <div style={{ 
+        padding: '40px', 
+        textAlign: 'center', 
+        color: 'var(--color-neutrals-5)'
+      }}>
+        <p>No layout configuration found.</p>
+        <p style={{ fontSize: '14px', marginTop: '8px' }}>
+          Please configure layouts in the Journey Builder.
+        </p>
+      </div>
+    );
   }
 
   // Filter enabled sections
-  const enabledSections = layout.sections.filter(s => s.enabled);
+  const enabledSections = layout.sections?.filter(s => s.enabled) || [];
+  
+  // No sections configured
+  if (enabledSections.length === 0) {
+    console.warn('DynamicHomeRenderer: Layout has no enabled sections', layout);
+    return (
+      <div style={{ 
+        padding: '40px', 
+        textAlign: 'center', 
+        color: 'var(--color-neutrals-5)',
+        background: 'var(--color-neutrals-7)',
+        borderRadius: '8px',
+        margin: '20px'
+      }}>
+        <p><strong>No components configured for this experience.</strong></p>
+        <p style={{ fontSize: '14px', marginTop: '8px' }}>
+          Layout: {layout.name} ({layout.id})
+        </p>
+        <p style={{ fontSize: '14px', marginTop: '4px' }}>
+          Go to Journey Builder to add components to this experience.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
