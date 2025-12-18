@@ -635,8 +635,17 @@ export const JourneyBuilder: React.FC = () => {
       const oldIndex = sections.findIndex((_, i) => `section-${i}` === active.id);
       const newIndex = sections.findIndex((_, i) => `section-${i}` === over.id);
 
+      console.log('[JourneyBuilder] Reordering:', { 
+        activeId: active.id, 
+        overId: over.id, 
+        oldIndex, 
+        newIndex,
+        currentOrder: sections.map(s => s.componentId)
+      });
+
       if (oldIndex !== -1 && newIndex !== -1) {
         const newSections = arrayMove(sections, oldIndex, newIndex);
+        console.log('[JourneyBuilder] New order:', newSections.map(s => s.componentId));
         updateSections(newSections);
       }
     }
@@ -644,13 +653,24 @@ export const JourneyBuilder: React.FC = () => {
 
   // Update sections
   const updateSections = useCallback((newSections: SectionConfig[]) => {
-    setLayouts(prev => ({
-      ...prev,
-      [activeLayout]: {
-        ...prev[activeLayout],
-        sections: newSections,
-      },
-    }));
+    console.log('[JourneyBuilder] updateSections called:', {
+      activeLayout,
+      newSectionsOrder: newSections.map(s => s.componentId),
+    });
+    setLayouts(prev => {
+      const updated = {
+        ...prev,
+        [activeLayout]: {
+          ...prev[activeLayout],
+          sections: newSections,
+        },
+      };
+      console.log('[JourneyBuilder] Updated layouts state:', {
+        layoutKey: activeLayout,
+        newOrder: updated[activeLayout]?.sections?.map(s => s.componentId),
+      });
+      return updated;
+    });
     setHasChanges(true);
   }, [activeLayout]);
 
@@ -698,6 +718,11 @@ export const JourneyBuilder: React.FC = () => {
   // Save changes
   const handleSave = async () => {
     setSaveStatus('saving');
+    console.log('[JourneyBuilder] Saving layout:', {
+      activeLayout,
+      sectionsCount: sections.length,
+      sectionIds: sections.map(s => s.componentId),
+    });
     try {
       const result = await updateLayout(activeLayout, sections);
       
