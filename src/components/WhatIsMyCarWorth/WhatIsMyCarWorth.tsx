@@ -595,7 +595,6 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
             </div>
           </div>
         </div>
-        </div>
       </div>
     );
   }
