@@ -279,7 +279,9 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   const innerStyle: React.CSSProperties = { 
     display: 'flex', 
     flexDirection: isMobile ? 'column' : 'row',
-    minHeight: isMobile ? 'auto' : '480px' 
+    minHeight: isMobile ? 'auto' : '480px',
+    gap: 0,
+    padding: 0,
   };
 
   const leftStyle: React.CSSProperties = { 
