@@ -291,3 +291,4 @@ const vehicleRatings = getVehicleRatings(vehicle.name);
 
 
 
+

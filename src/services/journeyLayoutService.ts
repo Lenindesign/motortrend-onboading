@@ -131,18 +131,28 @@ export async function updateLayout(
       // Get current user
       const { data: { user } } = await supabase!.auth.getUser();
 
+      // Get layout metadata from config for upsert
+      const layoutConfig = (homePageLayouts.layouts as Record<string, LayoutConfig>)[layoutKey];
+      
+      // Use UPSERT to handle case where row doesn't exist yet
       const { data, error } = await db
         .from('journey_layouts')
-        .update({
+        .upsert({
+          layout_key: layoutKey,
+          name: layoutConfig?.name || layoutKey,
+          description: layoutConfig?.description || '',
+          experience: layoutConfig?.experience || layoutKey.charAt(0),
+          is_shopper: layoutConfig?.isShopper || layoutKey.includes('shopper'),
           sections,
           updated_by: user?.id || null,
           updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'layout_key',
         })
-        .eq('layout_key', layoutKey)
         .select();
 
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:afterSupabase',message:'Supabase update result',data:{error:error?.message||null,rowsUpdated:data?.length||0,layoutKey,updatedSections:data?.[0]?.sections?.map((s:{componentId:string})=>s.componentId)||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:afterSupabase',message:'Supabase upsert result',data:{error:error?.message||null,rowsUpserted:data?.length||0,layoutKey,upsertedSections:data?.[0]?.sections?.map((s:{componentId:string})=>s.componentId)||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3-FIX'})}).catch(()=>{});
       // #endregion
 
       if (error) throw error;
@@ -152,7 +162,7 @@ export async function updateLayout(
     } catch (error) {
       console.error('Error updating layout in Supabase:', error);
       // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:catch',message:'Supabase update error',data:{error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:catch',message:'Supabase upsert error',data:{error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3-FIX'})}).catch(()=>{});
       // #endregion
       return { 
         success: false, 
