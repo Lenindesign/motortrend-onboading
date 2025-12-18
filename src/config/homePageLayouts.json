@@ -65,7 +65,20 @@
       "description": "Viewed, Searched, You Might Like sections",
       "type": "full-width",
       "icon": "person_search",
-      "props": {}
+      "props": {
+        "moveToTopOnActivity": {
+          "type": "boolean",
+          "default": true,
+          "label": "Move to Top on Activity",
+          "description": "When enabled, moves this component to the top of the page when user has 4+ viewed vehicles"
+        },
+        "activityThreshold": {
+          "type": "number",
+          "default": 4,
+          "label": "Activity Threshold",
+          "description": "Number of viewed vehicles needed to trigger move to top (only applies when Move to Top is enabled)"
+        }
+      }
     },
     "WhatIsMyCarWorth": {
       "id": "WhatIsMyCarWorth",

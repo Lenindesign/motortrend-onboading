@@ -15,6 +15,10 @@ import { useRating } from '../../contexts/RatingContext';
 
 export interface PersonalizedVehiclesProps {
   className?: string;
+  /** When enabled, this component can move to top of page when user has enough activity */
+  moveToTopOnActivity?: boolean;
+  /** Number of viewed vehicles needed to trigger move to top (default: 4) */
+  activityThreshold?: number;
 }
 
 type TabType = 'viewed' | 'searched' | 'youMightLike';

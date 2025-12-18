@@ -16,7 +16,7 @@ import { KnowYourBudget } from '../KnowYourBudget';
 import { VehicleLeadsStripe } from '../VehicleLeadsStripe';
 import { WhatIsMyCarWorth } from '../WhatIsMyCarWorth';
 import { UserRatingsReviews } from '../UserRatingsReviews';
-import { PersonalizedVehicles } from '../PersonalizedVehicles';
+import { PersonalizedVehicles, getViewedVehicles } from '../PersonalizedVehicles';
 import { TrendingStories } from '../TrendingStories';
 import { AdContainer } from '../AdContainer';
 import { articles } from '../../utils/articles';
@@ -120,6 +120,7 @@ const COMPONENT_MAP: Record<string, ComponentMapEntry> = {
   PersonalizedVehicles: {
     component: PersonalizedVehicles,
     type: 'full-width',
+    defaultProps: { moveToTopOnActivity: true, activityThreshold: 4 },
   },
   NewsSection: {
     component: NewsSection,
@@ -260,6 +261,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isIndicatorCollapsed, setIsIndicatorCollapsed] = useState(true); // Start collapsed by default
+  const [viewedVehiclesCount, setViewedVehiclesCount] = useState(() => getViewedVehicles().length);
   
   // Check for preview mode URL parameters
   const isPreviewMode = searchParams.get('preview') === 'true';
@@ -270,6 +272,21 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   
   // Get articles data for NewsSection and HeroPlusThree
   const { heroData, verticalCards, newsItems } = useMemo(() => getArticlesData(navigate), [navigate]);
+  
+  // Track viewed vehicles count for PersonalizedVehicles move-to-top logic
+  useEffect(() => {
+    const updateCount = () => {
+      setViewedVehiclesCount(getViewedVehicles().length);
+    };
+    
+    window.addEventListener('viewedVehiclesUpdated', updateCount);
+    window.addEventListener('storage', updateCount);
+    
+    return () => {
+      window.removeEventListener('viewedVehiclesUpdated', updateCount);
+      window.removeEventListener('storage', updateCount);
+    };
+  }, []);
 
   // Fetch layout on mount (or when preview params change)
   useEffect(() => {
@@ -408,8 +425,40 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
     );
   }
 
-  // Filter enabled sections
-  const enabledSections = layout.sections?.filter(s => s.enabled) || [];
+  // Filter enabled sections and handle PersonalizedVehicles move-to-top logic
+  const enabledSections = useMemo(() => {
+    const sections = layout.sections?.filter(s => s.enabled) || [];
+    
+    // Find PersonalizedVehicles section and check if it should move to top
+    const personalizedIndex = sections.findIndex(s => s.componentId === 'PersonalizedVehicles');
+    
+    if (personalizedIndex > 0) { // Only if it exists and is not already at top
+      const personalizedSection = sections[personalizedIndex];
+      const componentEntry = COMPONENT_MAP[personalizedSection.componentId];
+      const defaultProps = componentEntry?.defaultProps || {};
+      
+      // Merge props: section props override defaults
+      const moveToTopOnActivity = personalizedSection.props.moveToTopOnActivity ?? defaultProps.moveToTopOnActivity ?? true;
+      const activityThreshold = personalizedSection.props.activityThreshold ?? defaultProps.activityThreshold ?? 4;
+      
+      // Check if we should move to top based on user activity
+      if (moveToTopOnActivity && viewedVehiclesCount >= activityThreshold) {
+        console.log('[DynamicHomeRenderer] Moving PersonalizedVehicles to top', {
+          viewedVehiclesCount,
+          activityThreshold,
+          moveToTopOnActivity,
+        });
+        
+        // Create new array with PersonalizedVehicles at top
+        const reorderedSections = [...sections];
+        const [removed] = reorderedSections.splice(personalizedIndex, 1);
+        reorderedSections.unshift(removed);
+        return reorderedSections;
+      }
+    }
+    
+    return sections;
+  }, [layout?.sections, viewedVehiclesCount]);
   
   // No sections configured
   if (enabledSections.length === 0) {
