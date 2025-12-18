@@ -82,7 +82,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
     width: '100%',
   };
 
-  // Value styles
+  // Value styles - with text overflow handling for long content
   const valueStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontWeight: 600,
@@ -93,6 +93,10 @@ export const EditableField: React.FC<EditableFieldProps> = ({
     display: 'flex',
     alignItems: 'center',
     flex: 1,
+    minWidth: 0, // Allow flex item to shrink below content size
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   };
 
   // Edit container styles
@@ -198,7 +202,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
           </div>
         ) : (
           <>
-            <span style={valueStyle}>
+            <span style={valueStyle} title={isPassword ? undefined : value}>
               {isPassword ? '****************' : value}
             </span>
             <Button 
@@ -206,6 +210,7 @@ export const EditableField: React.FC<EditableFieldProps> = ({
               variant="solid" 
               size="default"
               onClick={handleEdit}
+              style={{ flexShrink: 0 }}
             >
               Edit
             </Button>
