@@ -61,6 +61,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   const carouselRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const [sliderWidth, setSliderWidth] = useState<number>(0);
+  const [sliderHeight, setSliderHeight] = useState<number | null>(null);
   const [isInView, setIsInView] = useState(false);
   
   // Responsive state
@@ -151,6 +152,28 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updateWidth);
+    };
+  }, []);
+
+  // Track slider height for sidebar sync
+  useEffect(() => {
+    if (!sliderRef.current) return;
+    
+    const updateHeight = () => {
+      if (sliderRef.current) {
+        const height = sliderRef.current.getBoundingClientRect().height;
+        setSliderHeight(height);
+      }
+    };
+    
+    // Use requestAnimationFrame to ensure layout is complete
+    requestAnimationFrame(updateHeight);
+    
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(sliderRef.current);
+    
+    return () => {
+      resizeObserver.disconnect();
     };
   }, []);
 
@@ -561,7 +584,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     gap: shouldStackLayout ? '16px' : '24px',
     width: '100%',
     maxWidth: '100%',
-    alignItems: 'stretch', // Always stretch to match heights
+    alignItems: shouldStackLayout ? 'stretch' : 'flex-start', // Sidebar uses explicit height
     boxSizing: 'border-box',
   };
 
@@ -581,7 +604,8 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     display: showLeads ? 'flex' : 'none',
     flexDirection: 'column',
     boxSizing: 'border-box',
-    alignSelf: shouldStackLayout ? 'stretch' : 'stretch', // Match slider height
+    // Use measured slider height for exact match
+    height: shouldStackLayout ? 'auto' : (sliderHeight ? `${sliderHeight}px` : 'auto'),
   };
 
   const sliderStyle: React.CSSProperties = {
@@ -813,10 +837,10 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     position: 'relative',
     width: '100%',
     border: shouldStackLayout ? 'none' : '1px solid var(--color-neutrals-6, #E6E8EC)',
-    height: shouldStackLayout ? 'auto' : '100%', // Fill container height
+    height: '100%', // Fill container height (container has explicit px height)
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
+    overflow: 'hidden', // Clip content, child handles scroll
     boxSizing: 'border-box',
   };
 
@@ -853,11 +877,12 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     display: 'flex',
     flexDirection: shouldStackLayout ? 'row' : 'column',
     gap: '12px',
-    overflowX: shouldStackLayout ? 'auto' : 'visible',
-    overflowY: shouldStackLayout ? 'visible' : 'auto',
+    overflowX: shouldStackLayout ? 'auto' : 'hidden',
+    overflowY: shouldStackLayout ? 'hidden' : 'auto', // Vertical scroll when not stacked
     paddingBottom: shouldStackLayout ? '8px' : '0',
+    paddingRight: shouldStackLayout ? '0' : '4px', // Space for scrollbar
     flex: 1,
-    minHeight: 0, // Important for flex overflow to work
+    minHeight: 0, // Critical for flex overflow to work
     scrollSnapType: shouldStackLayout ? 'x mandatory' : undefined,
     WebkitOverflowScrolling: 'touch',
   };
