@@ -82,21 +82,27 @@ export const EditableField: React.FC<EditableFieldProps> = ({
     width: '100%',
   };
 
-  // Value styles - with text overflow handling for long content
+  // Value container styles - flex wrapper for alignment
+  const valueContainerStyle: React.CSSProperties = {
+    flex: 1,
+    minWidth: 0, // Critical: allows flex item to shrink below content size
+    display: 'flex',
+    alignItems: 'center',
+    minHeight: '44px',
+  };
+
+  // Value text styles - with text overflow handling for long content
   const valueStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontWeight: 600,
     fontSize: '18px',
     lineHeight: '1.56em',
     color: 'var(--color-neutrals-1, #141416)',
-    minHeight: '44px',
-    display: 'flex',
-    alignItems: 'center',
-    flex: 1,
-    minWidth: 0, // Allow flex item to shrink below content size
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+    display: 'block', // Block display required for text-overflow to work
+    maxWidth: '100%',
   };
 
   // Edit container styles
@@ -202,9 +208,11 @@ export const EditableField: React.FC<EditableFieldProps> = ({
           </div>
         ) : (
           <>
-            <span style={valueStyle} title={isPassword ? undefined : value}>
-              {isPassword ? '****************' : value}
-            </span>
+            <div style={valueContainerStyle}>
+              <span style={valueStyle} title={isPassword ? undefined : value}>
+                {isPassword ? '****************' : value}
+              </span>
+            </div>
             <Button 
               color="neutrals3" 
               variant="solid" 
