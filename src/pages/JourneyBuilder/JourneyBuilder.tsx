@@ -7,8 +7,8 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { DndContext, DragOverlay, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, useDraggable, useDroppable } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent, DragOverEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Icon from '../../components/Icon';
@@ -127,21 +127,58 @@ const SortableItem: React.FC<{
   );
 };
 
+// Drop Indicator Component
+const DropIndicator: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+  return (
+    <div className={`journey-builder__drop-indicator ${isActive ? 'journey-builder__drop-indicator--active' : ''}`}>
+      <div className="journey-builder__drop-indicator-line" />
+      <span className="journey-builder__drop-indicator-text">Drop here</span>
+    </div>
+  );
+};
+
+// Canvas Drop Zone (for dropping at the end)
+const CanvasDropZone: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: 'canvas-drop-zone',
+  });
+
+  return (
+    <div 
+      ref={setNodeRef}
+      className={`journey-builder__canvas-drop-zone ${isOver || isActive ? 'journey-builder__canvas-drop-zone--active' : ''}`}
+    >
+      <Icon name="add_circle_outline" size={24} />
+      <span>Drop component here to add at end</span>
+    </div>
+  );
+};
+
 // Draggable Palette Item
 const PaletteItem: React.FC<{
   component: ComponentDefinition;
   onAdd: (componentId: string) => void;
   onPreview: (component: ComponentDefinition) => void;
 }> = ({ component, onAdd, onPreview }) => {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `palette-${component.id}`,
+    data: {
+      type: 'palette',
+      componentId: component.id,
+    },
+  });
+
   return (
     <div
-      className="journey-builder__palette-item"
-      draggable
+      ref={setNodeRef}
+      className={`journey-builder__palette-item ${isDragging ? 'journey-builder__palette-item--dragging' : ''}`}
+      {...listeners}
+      {...attributes}
     >
       <div 
         className="journey-builder__palette-item-info"
         onClick={() => onPreview(component)}
-        title="Click to preview component"
+        title="Click to preview, drag to add"
       >
         <div className="journey-builder__palette-item-icon">
           <Icon name={component.icon || 'widgets'} size={24} />
@@ -156,7 +193,7 @@ const PaletteItem: React.FC<{
       <button 
         className="journey-builder__palette-item-add"
         onClick={(e) => { e.stopPropagation(); onAdd(component.id); }}
-        title="Add to layout"
+        title="Add to end of layout"
       >
         <Icon name="add" size={16} />
       </button>
@@ -447,6 +484,7 @@ export const JourneyBuilder: React.FC = () => {
   const [showVersions, setShowVersions] = useState(false);
   const [previewMode, setPreviewMode] = useState<'live' | 'blocks'>('live');
   const [previewComponent, setPreviewComponent] = useState<ComponentDefinition | null>(null);
+  const [dropTargetIndex, setDropTargetIndex] = useState<number | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -523,11 +561,72 @@ export const JourneyBuilder: React.FC = () => {
     setActiveId(String(event.active.id));
   };
 
+  // Handle drag over - for showing drop indicators
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    
+    // Only show drop indicator when dragging from palette
+    if (String(active.id).startsWith('palette-') && over) {
+      const overId = String(over.id);
+      if (overId.startsWith('section-')) {
+        const index = parseInt(overId.replace('section-', ''));
+        setDropTargetIndex(index);
+      } else if (overId === 'canvas-drop-zone') {
+        setDropTargetIndex(sections.length);
+      } else {
+        setDropTargetIndex(null);
+      }
+    } else {
+      setDropTargetIndex(null);
+    }
+  };
+
   // Handle drag end
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    const activeIdStr = String(active.id);
     setActiveId(null);
+    setDropTargetIndex(null);
 
+    // Check if dragging from palette
+    if (activeIdStr.startsWith('palette-')) {
+      const componentId = activeIdStr.replace('palette-', '');
+      
+      if (over) {
+        const overId = String(over.id);
+        let insertIndex = sections.length; // Default to end
+        
+        if (overId.startsWith('section-')) {
+          insertIndex = parseInt(overId.replace('section-', ''));
+        } else if (overId === 'canvas-drop-zone') {
+          insertIndex = sections.length;
+        }
+        
+        // Create new section
+        const component = componentDefinitions[componentId];
+        const defaultProps: Record<string, string | number | boolean> = {};
+        
+        if (component) {
+          Object.entries(component.props).forEach(([key, propDef]) => {
+            defaultProps[key] = propDef.default;
+          });
+        }
+
+        const newSection: SectionConfig = {
+          componentId,
+          props: defaultProps,
+          enabled: true,
+        };
+
+        // Insert at the correct position
+        const newSections = [...sections];
+        newSections.splice(insertIndex, 0, newSection);
+        updateSections(newSections);
+      }
+      return;
+    }
+
+    // Handle reordering existing sections
     if (over && active.id !== over.id) {
       const oldIndex = sections.findIndex((_, i) => `section-${i}` === active.id);
       const newIndex = sections.findIndex((_, i) => `section-${i}` === over.id);
@@ -827,6 +926,7 @@ export const JourneyBuilder: React.FC = () => {
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >
             <SortableContext
@@ -835,31 +935,48 @@ export const JourneyBuilder: React.FC = () => {
             >
               <div className="journey-builder__canvas-list">
                 {sections.length === 0 ? (
-                  <div className="journey-builder__canvas-empty">
-                    <Icon name="add_circle_outline" size={48} />
-                    <p>No components yet</p>
-                    <span>Click a component from the palette to add it</span>
-                  </div>
+                  <CanvasDropZone isActive={dropTargetIndex === 0} />
                 ) : (
-                  sections.map((section, index) => (
-                    <SortableItem
-                      key={`section-${index}`}
-                      id={`section-${index}`}
-                      section={section}
-                      index={index}
-                      onToggle={handleToggle}
-                      onRemove={handleRemove}
-                      onEditProps={setEditingIndex}
-                      isSelected={selectedIndex === index}
-                      onSelect={setSelectedIndex}
-                    />
-                  ))
+                  <>
+                    {sections.map((section, index) => (
+                      <React.Fragment key={`section-${index}`}>
+                        {/* Drop indicator before this item */}
+                        {dropTargetIndex === index && (
+                          <DropIndicator isActive={true} />
+                        )}
+                        <SortableItem
+                          id={`section-${index}`}
+                          section={section}
+                          index={index}
+                          onToggle={handleToggle}
+                          onRemove={handleRemove}
+                          onEditProps={setEditingIndex}
+                          isSelected={selectedIndex === index}
+                          onSelect={setSelectedIndex}
+                        />
+                      </React.Fragment>
+                    ))}
+                    {/* Drop zone at the end */}
+                    <CanvasDropZone isActive={dropTargetIndex === sections.length} />
+                  </>
                 )}
               </div>
             </SortableContext>
 
             <DragOverlay>
-              {activeId && sections[parseInt(activeId.replace('section-', ''))] && (
+              {activeId && activeId.startsWith('palette-') && (
+                <div className="journey-builder__palette-item journey-builder__palette-item--overlay">
+                  <div className="journey-builder__palette-item-icon">
+                    <Icon name={componentDefinitions[activeId.replace('palette-', '')]?.icon || 'widgets'} size={24} />
+                  </div>
+                  <div className="journey-builder__palette-item-content">
+                    <span className="journey-builder__palette-item-name">
+                      {componentDefinitions[activeId.replace('palette-', '')]?.name}
+                    </span>
+                  </div>
+                </div>
+              )}
+              {activeId && activeId.startsWith('section-') && sections[parseInt(activeId.replace('section-', ''))] && (
                 <div className="journey-builder__canvas-item journey-builder__canvas-item--dragging">
                   <div className="journey-builder__canvas-item-drag">
                     <Icon name="drag_indicator" size={20} />

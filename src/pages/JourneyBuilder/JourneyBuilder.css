@@ -592,6 +592,80 @@
   color: white;
 }
 
+/* Drop Indicator */
+.journey-builder__drop-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.journey-builder__drop-indicator--active {
+  opacity: 1;
+  height: 32px;
+  padding: 8px 0;
+}
+
+.journey-builder__drop-indicator-line {
+  flex: 1;
+  height: 2px;
+  background: var(--color-primary-1, #E90C17);
+  border-radius: 1px;
+}
+
+.journey-builder__drop-indicator-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary-1, #E90C17);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Canvas Drop Zone */
+.journey-builder__canvas-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  border: 2px dashed var(--color-neutrals-4, #6E7481);
+  border-radius: 8px;
+  color: var(--color-neutrals-5, #B1B5C3);
+  font-size: 13px;
+  transition: all 0.2s ease;
+  min-height: 80px;
+}
+
+.journey-builder__canvas-drop-zone--active {
+  border-color: var(--color-primary-1, #E90C17);
+  background: rgba(233, 12, 23, 0.05);
+  color: var(--color-primary-1, #E90C17);
+}
+
+.journey-builder__canvas-drop-zone--active .material-symbols-outlined {
+  color: var(--color-primary-1, #E90C17);
+}
+
+/* Palette Item Dragging State */
+.journey-builder__palette-item--dragging {
+  opacity: 0.5;
+}
+
+.journey-builder__palette-item--overlay {
+  background: var(--color-neutrals-2, #23262F);
+  border: 2px solid var(--color-primary-1, #E90C17);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  cursor: grabbing;
+}
+
 /* Preview Panel */
 .journey-builder__preview {
   background: var(--color-neutrals-2, #23262F);
