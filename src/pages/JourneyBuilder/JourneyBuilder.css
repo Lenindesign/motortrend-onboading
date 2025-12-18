@@ -596,19 +596,101 @@
 .journey-builder__preview {
   background: var(--color-neutrals-2, #23262F);
   border-left: 1px solid var(--color-neutrals-3, #353945);
-  padding: 20px;
-  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
   height: calc(100vh - 180px);
+  overflow: hidden;
+}
+
+.journey-builder__preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .journey-builder__preview-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  margin: 0 0 16px 0;
+  margin: 0;
   color: var(--color-neutrals-8, #FCFCFD);
+}
+
+.journey-builder__preview-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.journey-builder__preview-refresh,
+.journey-builder__preview-expand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--color-neutrals-3, #353945);
+  border: none;
+  color: var(--color-neutrals-5, #B1B5C3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.journey-builder__preview-refresh:hover,
+.journey-builder__preview-expand:hover {
+  background: var(--color-neutrals-4, #6E7481);
+  color: var(--color-neutrals-8, #FCFCFD);
+}
+
+.journey-builder__preview-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 11px;
+}
+
+.journey-builder__preview-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: white;
+}
+
+.journey-builder__preview-experience {
+  color: var(--color-neutrals-5, #B1B5C3);
+}
+
+.journey-builder__preview-sections {
+  color: var(--color-neutrals-5, #B1B5C3);
+  margin-left: auto;
+}
+
+.journey-builder__preview-iframe-container {
+  flex: 1;
+  background: var(--color-neutrals-1, #141416);
+  border: 1px solid var(--color-neutrals-3, #353945);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  min-height: 0; /* Important for flex child */
+}
+
+.journey-builder__preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+  transform-origin: top left;
+  /* Scale down to fit in the panel - creates a zoomed out view */
+  transform: scale(0.35);
+  width: 285%; /* 100% / 0.35 = ~285% to compensate for scale */
+  height: 285%;
 }
 
 .journey-builder__preview-frame {
@@ -651,20 +733,22 @@
 .journey-builder__preview-legend {
   display: flex;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-neutrals-3, #353945);
 }
 
 .journey-builder__preview-legend-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--color-neutrals-5, #B1B5C3);
 }
 
 .journey-builder__preview-legend-color {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 2px;
 }
 

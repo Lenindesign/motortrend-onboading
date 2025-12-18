@@ -780,26 +780,57 @@ export const JourneyBuilder: React.FC = () => {
           </DndContext>
         </main>
 
-        {/* Preview Panel */}
+        {/* Live Preview Panel */}
         <aside className="journey-builder__preview">
-          <h2 className="journey-builder__preview-title">
-            <Icon name="preview" size={20} />
-            Preview
-          </h2>
-          <div className="journey-builder__preview-frame">
-            <div className="journey-builder__preview-content">
-              {sections.filter(s => s.enabled).map((section, index) => {
-                const component = componentDefinitions[section.componentId];
-                return (
-                  <div
-                    key={index}
-                    className={`journey-builder__preview-item journey-builder__preview-item--${component?.type || 'full-width'}`}
-                  >
-                    <span className="journey-builder__preview-item-name">{component?.name}</span>
-                  </div>
-                );
-              })}
+          <div className="journey-builder__preview-header">
+            <h2 className="journey-builder__preview-title">
+              <Icon name="preview" size={20} />
+              Live Preview
+            </h2>
+            <div className="journey-builder__preview-actions">
+              <button
+                className="journey-builder__preview-refresh"
+                onClick={() => {
+                  const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
+                  if (iframe) {
+                    iframe.src = iframe.src;
+                  }
+                }}
+                title="Refresh preview"
+              >
+                <Icon name="refresh" size={16} />
+              </button>
+              <a
+                href={getPreviewUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="journey-builder__preview-expand"
+                title="Open in new tab"
+              >
+                <Icon name="open_in_new" size={16} />
+              </a>
             </div>
+          </div>
+          <div className="journey-builder__preview-info">
+            <span className="journey-builder__preview-badge" style={{ background: currentLayout.isShopper ? '#58BD7D' : '#3B82F6' }}>
+              {currentLayout.isShopper ? 'Shopper' : 'Browser'}
+            </span>
+            <span className="journey-builder__preview-experience">
+              Experience {currentLayout.experience}
+            </span>
+            <span className="journey-builder__preview-sections">
+              {sections.filter(s => s.enabled).length} sections
+            </span>
+          </div>
+          <div className="journey-builder__preview-iframe-container">
+            <iframe
+              id="preview-iframe"
+              key={`${activeLayout}-${sections.length}-${hasChanges}`}
+              src={getPreviewUrl()}
+              className="journey-builder__preview-iframe"
+              title="Page Preview"
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+            />
           </div>
           <div className="journey-builder__preview-legend">
             <div className="journey-builder__preview-legend-item">
