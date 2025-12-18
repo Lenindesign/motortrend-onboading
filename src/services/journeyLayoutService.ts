@@ -47,10 +47,6 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
 
   // Always get localStorage data first (this is where saves go when Supabase RLS blocks)
   const localStorageLayouts = getLayoutsFromLocalStorage();
-  
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:getLayouts',message:'localStorage layouts loaded',data:{layoutKeys:Object.keys(localStorageLayouts),sampleSections:localStorageLayouts['D-browser']?.sections?.map((s:{componentId:string})=>s.componentId)||[]},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H7-READ'})}).catch(()=>{});
-  // #endregion
 
   if (canUseSupabase() && db) {
     try {
@@ -90,10 +86,6 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
             sections: useLocalSections ? localLayout.sections : supabaseLayout.sections,
           };
         }
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:getLayouts:merged',message:'Merged Supabase + localStorage',data:{mergedSections:mergedLayouts['D-browser']?.sections?.map((s:{componentId:string})=>s.componentId)||[]},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H7-READ'})}).catch(()=>{});
-        // #endregion
         
         return mergedLayouts as Record<LayoutKey, LayoutConfig>;
       }
@@ -148,10 +140,6 @@ export async function updateLayout(
     hasDb: !!db
   });
 
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout',message:'updateLayout service called',data:{layoutKey,sectionsCount:sections.length,sectionOrder:sections.map(s=>s.componentId),canUseSupabase:canUseSupabase(),hasDb:!!db},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3'})}).catch(()=>{});
-  // #endregion
-
   if (canUseSupabase() && db) {
     try {
       console.log('[journeyLayoutService] Saving to Supabase...');
@@ -178,19 +166,12 @@ export async function updateLayout(
         })
         .select();
 
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:afterSupabase',message:'Supabase upsert result',data:{error:error?.message||null,rowsUpserted:data?.length||0,layoutKey,upsertedSections:data?.[0]?.sections?.map((s:{componentId:string})=>s.componentId)||null},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H3-FIX'})}).catch(()=>{});
-      // #endregion
-
       if (error) throw error;
 
       console.log('[journeyLayoutService] Saved to Supabase successfully');
       return { success: true };
     } catch (error) {
       console.error('Error updating layout in Supabase, falling back to localStorage:', error);
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayout:catch',message:'Supabase upsert error - falling back to localStorage',data:{error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H6-FALLBACK'})}).catch(()=>{});
-      // #endregion
       // Fall back to localStorage instead of failing
       return updateLayoutInLocalStorage(layoutKey, sections);
     }
@@ -233,16 +214,9 @@ function updateLayoutInLocalStorage(
       savedSectionsCount: verified?.layouts?.[layoutKey]?.sections?.length 
     });
     
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayoutInLocalStorage',message:'localStorage save successful',data:{layoutKey,sectionsCount:sections.length,sectionOrder:sections.map(s=>s.componentId),verifiedCount:verified?.layouts?.[layoutKey]?.sections?.length||0},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H6-FALLBACK'})}).catch(()=>{});
-    // #endregion
-    
     return { success: true };
   } catch (error) {
     console.error('Error saving to localStorage:', error);
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/ea2cb3d8-73ff-4cad-8c8d-a241debed5cc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'journeyLayoutService.ts:updateLayoutInLocalStorage:error',message:'localStorage save failed',data:{layoutKey,error:error instanceof Error?error.message:'Unknown'},timestamp:Date.now(),sessionId:'debug-session',hypothesisId:'H6-FALLBACK'})}).catch(()=>{});
-    // #endregion
     return { 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
