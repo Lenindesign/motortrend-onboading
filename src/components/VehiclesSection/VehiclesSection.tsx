@@ -8,10 +8,12 @@ import { VehicleCard } from '../VehicleCard';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { useRating } from '../../contexts/RatingContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { RatingModal } from '../RatingModal';
 import WriteReviewModal from '../WriteReviewModal';
+import { AuthPromptModal } from '../AuthPromptModal';
 import { getVehicleBodyStyle, type BodyStyleCategory, BODY_STYLE_CATEGORIES } from '../../utils/vehicleBodyStyles';
 import { getVehicles, searchVehicles } from '../../api/vehiclesApi';
 import Icon from '../Icon';
@@ -48,6 +50,11 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
 }) => {
   const navigate = useNavigate();
   const { getUserRating, setUserRating, clearRating } = useRating();
+  const { isAuthenticated } = useAuth();
+  
+  // Auth prompt modal state
+  const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
+  const [authPromptAction, setAuthPromptAction] = useState<'rate' | 'bookmark'>('rate');
   
   // Pagination state - show 6 initially
   const [vehiclesToShow, setVehiclesToShow] = useState(6);
@@ -221,6 +228,11 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   };
 
   const handleRate = (vehicleName: string) => {
+    if (!isAuthenticated) {
+      setAuthPromptAction('rate');
+      setIsAuthPromptOpen(true);
+      return;
+    }
     setRatingVehicle(vehicleName);
     setIsRatingModalOpen(true);
   };
@@ -295,6 +307,11 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
   }, []);
 
   const handleBookmark = (vehicleName: string) => {
+    if (!isAuthenticated) {
+      setAuthPromptAction('bookmark');
+      setIsAuthPromptOpen(true);
+      return;
+    }
     // Toggle bookmark status
     try {
       const onboardingData = localStorage.getItem('onboardingData');
@@ -461,6 +478,11 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
       )}
       <RatingModal isOpen={isRatingModalOpen} onClose={handleCloseRatingModal} onRate={handleSubmitRating} vehicleName={ratingVehicle} currentRating={ratingVehicle ? getUserRating(ratingVehicle) : 0} onRateAndReview={handleRateAndReview} onClear={handleClearRating} />
       <WriteReviewModal key={`${ratingVehicle}-${reviewModalRating || 'new'}`} isOpen={isWriteReviewModalOpen} onClose={() => { setIsWriteReviewModalOpen(false); setReviewModalRating(undefined); }} vehicleName={ratingVehicle} vehicleImage={ratingVehicle ? vehicleImageFor(ratingVehicle) : undefined} onSubmit={handleSubmitReview} initialRating={reviewModalRating} />
+      <AuthPromptModal 
+        isOpen={isAuthPromptOpen} 
+        onClose={() => setIsAuthPromptOpen(false)} 
+        action={authPromptAction} 
+      />
     </section>
   );
 };

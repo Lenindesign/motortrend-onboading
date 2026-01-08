@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '../../design-system/components';
+import { useAuth } from '../../contexts/AuthContext';
 import './SignIn.css';
 // Using MotorTrend main logo from URL
 const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
@@ -23,20 +24,29 @@ export interface SignInProps {
 
 export const SignIn: React.FC<SignInProps> = () => {
   const navigate = useNavigate();
+  const { signIn, setDemoUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Sign in with:', email, password);
-    // Navigate to onboarding step 1
-    navigate('/onboarding/step1');
+    try {
+      await signIn(email, password);
+      navigate('/');
+    } catch (err) {
+      console.error('Sign in failed:', err);
+    }
   };
 
   const handleSocialSignIn = (provider: 'google' | 'facebook' | 'apple') => {
-    console.log('Sign in with:', provider);
-    // Navigate to onboarding step 1
+    // Create a demo user with provider-like data (they have an account now)
+    const userName = provider === 'google' 
+      ? `Google User ${Math.floor(Math.random() * 1000)}`
+      : `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`;
+    setDemoUser(userName);
+    // Navigate to onboarding step 1 to start the onboarding experience
+    // User already has an account, but we want them to go through onboarding
     navigate('/onboarding/step1');
   };
 

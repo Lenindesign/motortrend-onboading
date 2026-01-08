@@ -10,6 +10,8 @@ import { Badge } from '../atoms/Badge/Badge';
 import { ActionBadge } from '../molecules/ActionBadge';
 import { PhotoGallery } from '../PhotoGallery';
 import SavedModal from '../SavedModal';
+import { AuthPromptModal } from '../AuthPromptModal';
+import { useAuth } from '../../contexts/AuthContext';
 import { parseVehicleName, vehicleImageFor } from '../../utils/vehicleImages';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
@@ -50,6 +52,10 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   initialSubcategory = 'All'
 }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  
+  // Auth prompt modal state
+  const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
   
   const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>(initialVehicleType);
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(initialSubcategory);
@@ -143,6 +149,10 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
   }, []);
 
   const handleSaveVehicle = (vehicle: CarouselVehicle) => {
+    if (!isAuthenticated) {
+      setIsAuthPromptOpen(true);
+      return;
+    }
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       let data = onboardingData ? JSON.parse(onboardingData) : { vehicles: [] };
@@ -1199,6 +1209,11 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
       />
 
       <SavedModal isOpen={isSavedModalOpen} onClose={() => setIsSavedModalOpen(false)} itemTitle={savedVehicleName} itemType="vehicle" />
+      <AuthPromptModal 
+        isOpen={isAuthPromptOpen} 
+        onClose={() => setIsAuthPromptOpen(false)} 
+        action="bookmark" 
+      />
     </div>
   );
 };
