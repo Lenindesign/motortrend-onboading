@@ -15,10 +15,12 @@ import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
 import { Badge } from '../../components/atoms/Badge/Badge';
 import { ActionBadge } from '../../components/molecules/ActionBadge';
+import { AuthPromptModal } from '../../components/AuthPromptModal';
 import { generateUserReviews } from '../../utils/vehicleUserReviews';
 import { generateCommunityRating, generateStaffRating } from '../../utils/vehicleRatings';
 import { getVehicleByName } from '../../api/vehiclesApi';
 import { useRating } from '../../contexts/RatingContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { type ReviewData } from '../../components/UserReviews';
 import { getArticleBySlug, getDefaultArticle, articles } from '../../utils/articles';
 import { parseVehicleName } from '../../utils/vehicleImages';
@@ -83,6 +85,11 @@ export const Article: React.FC = () => {
   const justSavedReviewRef = useRef<boolean>(false);
   const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
   const { getUserRating, setUserRating, clearRating } = useRating();
+  const { isAuthenticated } = useAuth();
+  
+  // Auth prompt modal state
+  const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
+  const [authPromptAction, setAuthPromptAction] = useState<'rate' | 'review' | 'save' | 'comment'>('rate');
   
   // Photo gallery state
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -281,6 +288,12 @@ export const Article: React.FC = () => {
   const handleBookmark = () => {
     if (!slug) return;
     
+    if (!isAuthenticated) {
+      setAuthPromptAction('save');
+      setIsAuthPromptOpen(true);
+      return;
+    }
+    
     const newBookmarkState = !isSaved;
     setIsSaved(newBookmarkState);
     
@@ -445,6 +458,11 @@ export const Article: React.FC = () => {
   
   // Handlers for rating modal
   const handleOpenRatingModal = () => {
+    if (!isAuthenticated) {
+      setAuthPromptAction('rate');
+      setIsAuthPromptOpen(true);
+      return;
+    }
     setIsRatingModalOpen(true);
   };
 
@@ -2008,6 +2026,13 @@ export const Article: React.FC = () => {
           View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
         </div>
       )}
+
+      {/* Auth Prompt Modal */}
+      <AuthPromptModal
+        isOpen={isAuthPromptOpen}
+        onClose={() => setIsAuthPromptOpen(false)}
+        action={authPromptAction}
+      />
     </div>
   );
 };

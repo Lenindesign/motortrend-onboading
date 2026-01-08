@@ -39,13 +39,22 @@ function getDemoUser(): AuthUser | null {
     const onboardingData = localStorage.getItem('onboardingData');
     if (onboardingData) {
       const data = JSON.parse(onboardingData);
-      return {
-        id: 'demo_user',
-        email: data.email || 'demo@motortrend.com',
-        displayName: data.name || 'Demo User',
-        avatarUrl: data.avatar,
-        isAnonymous: true,
-      };
+      
+      // Only consider authenticated if user has explicitly set up their profile
+      // This requires a name (from onboarding or profile setup)
+      const hasName = data.name && typeof data.name === 'string' && data.name.trim() !== '';
+      const hasFullName = data.fullName && typeof data.fullName === 'string' && data.fullName.trim() !== '';
+      
+      // User must have a name to be considered authenticated
+      if (hasName || hasFullName) {
+        return {
+          id: 'demo_user',
+          email: data.email || 'demo@motortrend.com',
+          displayName: data.name || data.fullName || 'Demo User',
+          avatarUrl: data.avatar,
+          isAnonymous: true,
+        };
+      }
     }
   } catch {
     // Ignore parsing errors
