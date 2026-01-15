@@ -105,6 +105,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const [commentText, setCommentText] = useState<string>('');
   const [commentSortBy, setCommentSortBy] = useState<'newest' | 'oldest' | 'most_liked'>('newest');
   const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({});
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
   const { getUserRating, setUserRating } = useRating();
   const userRating = getUserRating(vehicleName);
   
@@ -696,14 +697,25 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       </div>
                       <div style={commenterInfoStyle}><span style={commenterNameStyle}>{comment.commenterName}</span><span style={commentDateStyle}>{comment.date}</span></div>
                     </div>
-                    <div style={commentContentStyle}>{comment.content}</div>
+                    <div style={commentContentStyle}>
+                      {comment.content.length > 150 && !expandedComments[comment.id] 
+                        ? `${comment.content.slice(0, 150)}...` 
+                        : comment.content}
+                    </div>
                     <div style={commentActionsStyle}>
                       <button style={commentActionBtnStyle(commentLikes[comment.id])} onClick={() => handleCommentLike(comment.id)}>
                         <img src="https://d2kde5ohu8qb21.cloudfront.net/files/69024b627e39a30002ddc45d/thumbsup.svg" alt="Like" style={commentLikeIconStyle(commentLikes[comment.id])} />
                         {comment.likes || 0}
                       </button>
                       <button style={commentActionBtnStyle()}>Reply</button>
-                      {comment.content.length > 150 && <button style={{ ...commentActionBtnStyle(), color: 'var(--color-primary-500, #E90C17)' }}>Read More</button>}
+                      {comment.content.length > 150 && (
+                        <button 
+                          style={{ ...commentActionBtnStyle(), color: 'var(--color-primary-500, #E90C17)' }}
+                          onClick={() => setExpandedComments(prev => ({ ...prev, [comment.id]: !prev[comment.id] }))}
+                        >
+                          {expandedComments[comment.id] ? 'Show Less' : 'Read More'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))
