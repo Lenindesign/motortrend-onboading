@@ -125,10 +125,9 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     opacity: isSticky ? (isVisible ? 1 : 0) : 1,
     pointerEvents: isSticky && !isVisible ? 'none' : 'auto',
     transition: isSticky ? 'transform var(--transition-normal, 250ms ease-in-out), opacity var(--transition-normal, 250ms ease-in-out)' : 'none',
-    marginTop: isSticky ? undefined : 0,
-    marginBottom: isSticky ? undefined : 0,
-    marginLeft: isSticky ? undefined : 'calc(-50vw + 50%)',
-    marginRight: isSticky ? undefined : 'calc(-50vw + 50%)',
+    margin: isSticky ? undefined : 0,
+    marginLeft: isSticky || isMobile ? undefined : 'calc(-50vw + 50%)',
+    marginRight: isSticky || isMobile ? undefined : 'calc(-50vw + 50%)',
   };
 
   const contentStyle: React.CSSProperties = {
@@ -148,11 +147,10 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const nameContainerStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
-    gap: isMobile ? '6px' : (isSticky ? '8px' : '16px'),
-    flexShrink: 0,
-    order: isMobile ? 1 : undefined,
-    flex: isMobile ? '1 1 auto' : undefined,
+    gap: isMobile ? '4px' : (isSticky ? '8px' : '16px'),
+    flexShrink: isMobile ? 1 : 0,
     minWidth: isMobile ? 0 : undefined,
+    flex: isMobile ? '1 1 0' : undefined,
     transition: 'gap var(--transition-normal, 250ms ease-in-out)',
   };
 
@@ -160,8 +158,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    flexWrap: isMobile ? 'wrap' : 'nowrap',
-    order: isMobile ? 1 : undefined,
+    flexWrap: 'wrap',
   };
 
   const buyersGuideBadgeStyle: React.CSSProperties = {
@@ -186,16 +183,13 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
 
   const vehicleNameStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-    fontWeight: 600,
-    fontSize: isMobile ? '18px' : (isSticky ? '24px' : '36px'),
+    fontWeight: 700,
+    fontSize: isMobile ? '24px' : (isSticky ? '24px' : '36px'),
     lineHeight: '1.2em',
-    color: 'var(--color-neutrals-6, #E6E8EC)',
-    whiteSpace: 'nowrap',
+    color: 'var(--color-white, #FFFFFF)',
+    whiteSpace: isMobile ? 'normal' : 'nowrap',
     flexShrink: 0,
     textDecoration: 'none',
-    textAlign: isMobile ? 'left' : undefined,
-    order: isMobile ? 2 : undefined,
-    width: isMobile ? '100%' : undefined,
     transition: 'font-size var(--transition-normal, 250ms ease-in-out), opacity var(--transition-fast, all 150ms ease-in-out)',
     opacity: isVehicleNameHovered ? 0.8 : 1,
   };
@@ -204,17 +198,15 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: isMobile ? '8px' : 'var(--spacing-4, 32px)',
-    flex: isMobile ? 1 : 1,
+    flexShrink: 0,
     justifyContent: 'flex-end',
     flexWrap: 'nowrap',
-    order: isMobile ? 2 : undefined,
-    minWidth: isMobile ? 0 : undefined,
   };
 
   const separatorStyle: React.CSSProperties = {
     width: '1px',
-    height: isMobile ? '30px' : '40px',
-    backgroundColor: 'var(--color-neutrals-3, #353945)',
+    height: isMobile ? '24px' : '40px',
+    backgroundColor: 'var(--color-neutrals-4, #6E7481)',
     margin: isMobile ? '0 4px' : '0 var(--spacing-3, 24px)',
     flexShrink: 0,
   };
@@ -226,8 +218,8 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     
     // Determine gap based on type
     const getGap = () => {
-      if (isMobile) return '3px';
-      if (isMotortrend) return '4px'; // Closer gap for MotorTrend rating
+      if (isMobile) return '2px';
+      if (isMotortrend) return '4px';
       if (isVertical) return '12px';
       return 'var(--spacing-2, 16px)';
     };
@@ -244,9 +236,9 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       minWidth: 0,
       flexShrink: 0,
       height: 'fit-content',
-      flexDirection: isMobile || isVertical || isMotortrend ? 'column' : 'row',
-      textAlign: isMobile ? 'center' : undefined,
-      fontSize: isMobile ? '11px' : undefined,
+      flexDirection: isMobile ? 'row' : (isVertical || isMotortrend ? 'column' : 'row'),
+      textAlign: isMobile ? 'left' : undefined,
+      fontSize: isMobile ? '12px' : undefined,
       opacity: hoveredItem === index ? 0.8 : 1,
     };
   };
@@ -332,34 +324,34 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
 
   const scoreLargeStyle: React.CSSProperties = {
     color: 'var(--color-neutrals-8, #FCFCFD)',
-    fontSize: isSticky ? '24px' : '36px',
+    fontSize: isMobile ? '20px' : (isSticky ? '24px' : '36px'),
     fontWeight: 600,
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     lineHeight: 1,
     display: 'flex',
     alignItems: 'baseline',
-    gap: 'var(--spacing-gap-xs, 4px)',
+    gap: isMobile ? '1px' : 'var(--spacing-gap-xs, 4px)',
     whiteSpace: 'nowrap',
     transition: 'font-size var(--transition-normal, 250ms ease-in-out)',
   };
 
   const scoreMaxStyle: React.CSSProperties = {
     color: 'var(--color-neutrals-4, #6E7481)',
-    fontSize: '18px',
+    fontSize: isMobile ? '11px' : '18px',
     fontWeight: 400,
     lineHeight: 1,
   };
 
   const mtBadgeStyle: React.CSSProperties = {
-    width: '16px',
-    height: '16px',
+    width: isMobile ? '14px' : '16px',
+    height: isMobile ? '14px' : '16px',
     flexShrink: 0,
     objectFit: 'contain',
   };
 
   const motortrendTextStyle: React.CSSProperties = {
     color: 'var(--color-white, #FFFFFF)',
-    fontSize: '14px',
+    fontSize: isMobile ? '11px' : '14px',
     fontWeight: 500,
     lineHeight: 1.2,
     whiteSpace: 'nowrap',
@@ -385,21 +377,24 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     boxShadow: isCtaHovered ? 'var(--shadow-button-hover, 0 4px 12px rgba(0,0,0,0.15))' : undefined,
   };
 
-  const renderStarRating = (ratingValue: number, showHalfStars: boolean = true) => {
+  const renderStarRating = (ratingValue: number, showHalfStars: boolean = true, singleStar: boolean = false) => {
     const normalizedRating = ratingValue / 20;
+    const starSize = isMobile ? 14 : 18;
+    const starsToShow = singleStar ? [1] : [1, 2, 3, 4, 5];
 
     return (
       <div style={ratingStarsStyle}>
-        {[1, 2, 3, 4, 5].map((star) => {
-          const isFilled = star <= normalizedRating;
-          const isHalf = showHalfStars && star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
+        {starsToShow.map((star) => {
+          // For single star mode, always show filled
+          const isFilled = singleStar ? true : star <= normalizedRating;
+          const isHalf = !singleStar && showHalfStars && star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
 
           return (
-            <div key={star} style={starWrapperStyle}>
+            <div key={star} style={{ ...starWrapperStyle, width: starSize, height: starSize }}>
               {/* Outline star */}
               <svg 
-                width="18" 
-                height="18" 
+                width={starSize} 
+                height={starSize} 
                 viewBox="0 0 24 24" 
                 fill="none" 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -417,8 +412,8 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               {/* Filled star */}
               {isFilled && (
                 <svg 
-                  width="18" 
-                  height="18" 
+                  width={starSize} 
+                  height={starSize} 
                   viewBox="0 0 24 24" 
                   fill="none" 
                   xmlns="http://www.w3.org/2000/svg" 
@@ -433,8 +428,8 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               {isHalf && (
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '100%', overflow: 'hidden' }}>
                   <svg 
-                    width="18" 
-                    height="18" 
+                    width={starSize} 
+                    height={starSize} 
                     viewBox="0 0 24 24" 
                     fill="none" 
                     xmlns="http://www.w3.org/2000/svg"
@@ -500,24 +495,42 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                 <span style={scoreMaxStyle}>/10</span>
               </div>
             </div>
-            <span style={motortrendTextStyle}>MotorTrend Rating</span>
+            {!isMobile && <span style={motortrendTextStyle}>MotorTrend Rating</span>}
           </>
         );
       }
     } else if (rating.type === 'user-reviews') {
       const ratingValue = typeof displayRating === 'number' ? displayRating / 2 : parseFloat(String(displayRating)) / 2;
       const ratingForStars = ratingValue * 20;
-      ratingDisplay = (
-        <>
-          {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
-          <div style={ratingTextStyle}>
-            {rating.label || 'User Reviews'}{' '}
-            <Badge variant="neutral" size="sm">
-              {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
-            </Badge>
+      
+      if (isMobile) {
+        // Compact mobile: single star + value
+        ratingDisplay = (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            {renderStarRating(ratingForStars, false, true)}
+            <span style={{ 
+              color: 'var(--color-neutrals-8, #FCFCFD)', 
+              fontSize: '14px', 
+              fontWeight: 600,
+              fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+            }}>
+              {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}
+            </span>
           </div>
-        </>
-      );
+        );
+      } else {
+        ratingDisplay = (
+          <>
+            {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
+            <div style={ratingTextStyle}>
+              {rating.label || 'User Reviews'}{' '}
+              <Badge variant="neutral" size="sm">
+                {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
+              </Badge>
+            </div>
+          </>
+        );
+      }
     } else if (rating.type === 'your-rating') {
       const ratingValue = typeof displayRating === 'number' ? displayRating / 20 : 0;
       ratingDisplay = (
@@ -635,7 +648,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       <div style={contentStyle}>
         <div style={nameContainerStyle}>
           <div style={badgesRowStyle}>
-            {vehiclePath ? (
+            {!isMobile && vehiclePath ? (
               <a
                 href={vehiclePath}
                 style={buyersGuideBadgeStyle}
@@ -651,11 +664,11 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                   variant="secondary"
                 />
               </a>
-            ) : (
+            ) : !isMobile ? (
               <div style={buyersGuideBadgeStyle}>
                 <Badge variant="info" size="sm">Buyers Guide</Badge>
               </div>
-            )}
+            ) : null}
             <button
               style={localListingsBadgeStyle}
               onClick={(e) => {
@@ -672,11 +685,11 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               onMouseLeave={() => setIsLocalListingsHovered(false)}
             >
               <ActionBadge
-                text="See Local Listings"
+                text={isMobile ? "Local Listings" : "See Local Listings"}
                 variant="primary"
               />
             </button>
-            {ctaText && isMobile && (
+            {ctaText && isMobile && !hideCtaButton && (
               <ActionBadge
                 onClick={(e) => {
                   e.stopPropagation();
@@ -687,20 +700,22 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               />
             )}
           </div>
-          {vehiclePath ? (
-            <Link 
-              to={vehiclePath} 
-              style={vehicleNameStyle}
-              onMouseEnter={() => setIsVehicleNameHovered(true)}
-              onMouseLeave={() => setIsVehicleNameHovered(false)}
-            >
-              {vehicleName}
-            </Link>
-          ) : (
-            <div style={vehicleNameStyle}>
-              {vehicleName}
-            </div>
-          )}
+          <h1 style={{ margin: 0 }}>
+            {vehiclePath ? (
+              <Link 
+                to={vehiclePath} 
+                style={vehicleNameStyle}
+                onMouseEnter={() => setIsVehicleNameHovered(true)}
+                onMouseLeave={() => setIsVehicleNameHovered(false)}
+              >
+                {vehicleName}
+              </Link>
+            ) : (
+              <span style={vehicleNameStyle}>
+                {vehicleName}
+              </span>
+            )}
+          </h1>
         </div>
         <div style={ratingsStyle}>
           {ratings.map((rating, index) => renderRatingItem(rating, index))}

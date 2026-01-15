@@ -6,10 +6,8 @@
 .vehicle-details {
   max-width: var(--max-width-container);
   margin: 0 auto;
-  padding-top: 0;
+  padding: 0;
   padding-bottom: var(--section-spacing-horizontal);
-  padding-left: 0;
-  padding-right: 0;
   background-color: var(--color-white);
   overflow: visible;
 }
@@ -2136,20 +2134,33 @@
 /* Responsive */
 @media (max-width: 768px) {
   .vehicle-details {
-    padding-top: 16px;
+    padding-top: 0;
     padding-bottom: 16px;
     padding-left: 0;
     padding-right: 0;
   }
 
+  /* Content layout mobile padding */
+  .vehicle-details__content-layout,
+  .vehicle-details__content-layout--prime {
+    padding: 0 16px;
+    gap: 24px;
+  }
+  
+  .vehicle-details__left-content {
+    padding: 0;
+  }
+
   .vehicle-details__top-section {
     flex-wrap: wrap;
     gap: var(--spacing-2);
+    padding: 12px 0;
   }
 
   .vehicle-details__breadcrumbs {
-    font-size: 11px;
+    font-size: 12px;
     flex-wrap: wrap;
+    gap: 4px;
   }
 
   .vehicle-details__top-actions {
@@ -2247,22 +2258,214 @@
     font-size: 14px;
   }
 
+  /* Price section mobile */
   .vehicle-details__price-section {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  
+  .vehicle-details__price {
+    font-size: 22px;
+  }
+  
+  .vehicle-details__price-range {
+    font-size: 22px;
   }
 
   .vehicle-details__actions {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    justify-content: stretch;
+    width: 100%;
+  }
+  
+  .vehicle-details__action-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 8px;
+    font-size: 13px;
+    justify-content: center;
+    white-space: nowrap;
   }
 
   .vehicle-details__pros-cons {
     flex-direction: column;
+    margin: 0 0 24px 0;
+  }
+  
+  .vehicle-details__pros-cons-inner {
+    padding: 20px;
+    flex-direction: column;
+    gap: 20px;
   }
 
   .vehicle-details__divider {
     width: 100%;
     height: 1px;
+  }
+  
+  /* MotorTrend Review mobile */
+  .vehicle-details__motortrend-score {
+    margin-bottom: 24px;
+  }
+  
+  .vehicle-details__motortrend-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .vehicle-details__motortrend-score h2 {
+    font-size: 20px;
+  }
+  
+  .vehicle-details__motortrend-logo {
+    height: 20px;
+  }
+  
+  .vehicle-details__score-review {
+    padding: 16px;
+  }
+  
+  /* Rating grid mobile */
+  .vehicle-details__rating-grid {
+    padding: 16px;
+  }
+  
+  .vehicle-details__rating-grid-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .vehicle-details__rating-grid-title {
+    font-size: 18px;
+  }
+  
+  .vehicle-details__rating-categories {
+    gap: 8px;
+  }
+  
+  .vehicle-details__rating-category-label {
+    font-size: 13px;
+  }
+  
+  .vehicle-details__rating-category-value {
+    font-size: 14px;
+  }
+  
+  /* Hero image mobile */
+  .vehicle-details__prime-hero-image {
+    aspect-ratio: 4 / 3;
+  }
+  
+  /* Score breakdown mobile */
+  .vehicle-details__score-breakdown {
+    gap: 12px;
+  }
+  
+  .vehicle-details__score-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .vehicle-details__score-item span:first-child {
+    width: auto;
+    min-width: 120px;
+    font-size: 14px;
+    flex: 1;
+  }
+  
+  .vehicle-details__score-item span:last-child {
+    width: auto;
+    min-width: 32px;
+    font-size: 14px;
+  }
+  
+  .vehicle-details__score-bar {
+    flex: none;
+    width: 100%;
+    order: 3;
+  }
+  
+  /* Reviewer section mobile */
+  .vehicle-details__reviewer-section {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .vehicle-details__reviewer-avatar-group {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .vehicle-details__reviewer-name {
+    font-size: 14px;
+  }
+  
+  .vehicle-details__reviewer-title {
+    font-size: 12px;
+  }
+  
+  /* Score review text mobile */
+  .vehicle-details__score-review h3 {
+    font-size: 16px;
+  }
+  
+  .vehicle-details__score-review p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* Score content layout mobile */
+  .vehicle-details__score-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .vehicle-details__overall-score {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .vehicle-details__score-circle {
+    width: 140px;
+    height: 140px;
+    padding: 16px;
+  }
+  
+  .vehicle-details__score-circle-value {
+    font-size: 42px;
+  }
+  
+  .vehicle-details__score-circle-label {
+    font-size: 11px;
+  }
+  
+  /* Score award mobile */
+  .vehicle-details__score-award {
+    font-size: 14px;
+  }
+  
+  .vehicle-details__score-award img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Score header mobile */
+  .vehicle-details__score-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .vehicle-details__score-header h3 {
+    font-size: 18px;
   }
 }
 
