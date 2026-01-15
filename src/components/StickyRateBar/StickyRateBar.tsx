@@ -120,7 +120,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     top: isSticky ? 0 : undefined,
     left: isSticky ? 0 : undefined,
     right: isSticky ? 0 : undefined,
-    zIndex: isSticky ? 1000 : 10,
+    zIndex: isSticky ? 1010 : 10,
     transform: isSticky ? (isVisible ? 'translateY(0)' : 'translateY(-100%)') : undefined,
     opacity: isSticky ? (isVisible ? 1 : 0) : 1,
     pointerEvents: isSticky && !isVisible ? 'none' : 'auto',
