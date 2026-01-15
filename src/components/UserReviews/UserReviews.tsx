@@ -97,7 +97,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number } | null>(null);
-  const [sortBy, setSortBy] = useState<'best' | 'latest_owners' | 'verified_owners' | 'all'>('best');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'most_liked'>('newest');
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [internalActiveTab, setInternalActiveTab] = useState<'reviews' | 'comments'>(defaultTab);
@@ -225,38 +225,33 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const calculatePercentage = (count: number) => totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
 
   const getSortedReviews = (): ReviewData[] => {
-    let filteredReviews = [...reviews];
+    const sorted = [...reviews];
     switch (sortBy) {
-      case 'latest_owners':
-        filteredReviews = reviews.filter(r => r.vehicleRelationship === 'own');
-        filteredReviews.sort((a, b) => new Date(b.updatedDate || b.date).getTime() - new Date(a.updatedDate || a.date).getTime());
+      case 'oldest':
+        sorted.sort((a, b) => new Date(a.updatedDate || a.date).getTime() - new Date(b.updatedDate || b.date).getTime());
         break;
-      case 'verified_owners':
-        filteredReviews = reviews.filter(r => r.verificationLevel === 'verified' || r.verificationLevel === 'verified_documents');
-        filteredReviews.sort((a, b) => { if (b.rating !== a.rating) return b.rating - a.rating; return ((b.thumbsUpCount || 0) + (thumbsUpStates[b.id] ? 1 : 0)) - ((a.thumbsUpCount || 0) + (thumbsUpStates[a.id] ? 1 : 0)); });
+      case 'most_liked':
+        sorted.sort((a, b) => ((b.thumbsUpCount || 0) + (thumbsUpStates[b.id] ? 1 : 0)) - ((a.thumbsUpCount || 0) + (thumbsUpStates[a.id] ? 1 : 0)));
         break;
-      case 'all':
-        filteredReviews.sort((a, b) => new Date(b.updatedDate || b.date).getTime() - new Date(a.updatedDate || a.date).getTime());
-        break;
-      case 'best':
+      case 'newest':
       default:
-        filteredReviews.sort((a, b) => { if (b.rating !== a.rating) return b.rating - a.rating; return ((b.thumbsUpCount || 0) + (thumbsUpStates[b.id] ? 1 : 0)) - ((a.thumbsUpCount || 0) + (thumbsUpStates[a.id] ? 1 : 0)); });
+        sorted.sort((a, b) => new Date(b.updatedDate || b.date).getTime() - new Date(a.updatedDate || a.date).getTime());
         break;
     }
-    return filteredReviews;
+    return sorted;
   };
 
   const sortedReviews = getSortedReviews();
   const displayedReviews = showAllReviews ? sortedReviews : sortedReviews.slice(0, 3);
   const hasMoreReviews = sortedReviews.length > 3;
 
-  const handleSortChange = (option: 'best' | 'latest_owners' | 'verified_owners' | 'all', event?: React.MouseEvent) => {
+  const handleSortChange = (option: 'newest' | 'oldest' | 'most_liked', event?: React.MouseEvent) => {
     if (event) event.stopPropagation();
     setSortBy(option); setIsSortDropdownOpen(false); setShowAllReviews(false);
   };
 
   const getSortLabel = () => {
-    switch (sortBy) { case 'latest_owners': return 'Latest Owners'; case 'verified_owners': return 'Verified Owners'; case 'all': return 'All'; default: return 'Best'; }
+    switch (sortBy) { case 'oldest': return 'Oldest'; case 'most_liked': return 'Most Liked'; default: return 'Newest'; }
   };
 
   const getDefaultComments = (name: string): CommentData[] => [
@@ -563,9 +558,9 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       <Icon name="keyboard_arrow_down" size={20} style={sortChevronStyle} />
                       {isSortDropdownOpen && (
                         <div style={sortDropdownMenuStyle}>
-                          {(['best', 'latest_owners', 'verified_owners', 'all'] as const).map(option => (
+                          {(['newest', 'oldest', 'most_liked'] as const).map(option => (
                             <button key={option} style={getSortOptionStyle(option, sortBy === option)} onClick={(e) => handleSortChange(option, e)} onMouseEnter={() => setHoveredSortOption(option)} onMouseLeave={() => setHoveredSortOption(null)}>
-                              {option === 'best' ? 'Best' : option === 'latest_owners' ? 'Latest Owners' : option === 'verified_owners' ? 'Verified Owners' : 'All'}
+                              {option === 'newest' ? 'Newest' : option === 'oldest' ? 'Oldest' : 'Most Liked'}
                             </button>
                           ))}
                         </div>
