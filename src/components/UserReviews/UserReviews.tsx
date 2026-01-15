@@ -698,8 +698,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       <div style={commenterInfoStyle}><span style={commenterNameStyle}>{comment.commenterName}</span><span style={commentDateStyle}>{comment.date}</span></div>
                     </div>
                     <div style={commentContentStyle}>
-                      {comment.content.length > 150 && !expandedComments[comment.id] 
-                        ? `${comment.content.slice(0, 150)}...` 
+                      {comment.content.length > 100 && !expandedComments[comment.id] 
+                        ? `${comment.content.slice(0, 100)}...` 
                         : comment.content}
                     </div>
                     <div style={commentActionsStyle}>
@@ -708,7 +708,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                         {comment.likes || 0}
                       </button>
                       <button style={commentActionBtnStyle()}>Reply</button>
-                      {comment.content.length > 150 && (
+                      {comment.content.length > 100 && (
                         <button 
                           style={{ ...commentActionBtnStyle(), color: 'var(--color-primary-500, #E90C17)' }}
                           onClick={() => setExpandedComments(prev => ({ ...prev, [comment.id]: !prev[comment.id] }))}
