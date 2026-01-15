@@ -30,6 +30,9 @@ import { Popover } from '../../components/atoms/Popover';
 import { LocalListingsSidebar } from '../../components/LocalListingsSidebar';
 import { getLocalListings } from '../../utils/localListings';
 import { addViewedVehicle } from '../../components/PersonalizedVehicles';
+import { GoogleOneTap } from '../../components/GoogleOneTap';
+import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
+import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -61,6 +64,20 @@ export const VehicleDetails: React.FC = () => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentGalleryImages, setCurrentGalleryImages] = useState<string[]>([]);
+  
+  // Google One Tap for high-intent MMP page
+  const vehicleInfo = useMemo(() => ({
+    year: parseInt(decodedYear, 10),
+    make: decodedMake,
+    model: decodedModel,
+  }), [decodedYear, decodedMake, decodedModel]);
+
+  const { showOneTap, dismissOneTap } = useGoogleOneTap({
+    pageType: HIGH_INTENT_PAGES.MMP,
+    vehicleInfo,
+    autoTrigger: true,
+    triggerDelay: 3000, // Show after 3 seconds on page
+  });
   
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
@@ -1183,6 +1200,22 @@ export const VehicleDetails: React.FC = () => {
 
   return (
     <div className="vehicle-details">
+      {/* Google One Tap - High-intent MMP page trigger */}
+      {showOneTap && (
+        <GoogleOneTap
+          mode="prompt"
+          pageType={HIGH_INTENT_PAGES.MMP}
+          vehicleInfo={vehicleInfo}
+          context="signin"
+          autoSelect={false}
+          promptDelay={3000}
+          onSuccess={(user) => {
+            console.log('G1T Success on MMP:', user);
+          }}
+          onDismiss={dismissOneTap}
+        />
+      )}
+
       {/* Sticky Rate Bar - appears below header on load, becomes sticky when scrolling */}
       <StickyRateBar
         vehicleName={displayName}

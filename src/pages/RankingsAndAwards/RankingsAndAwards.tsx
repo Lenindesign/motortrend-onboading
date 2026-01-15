@@ -8,10 +8,20 @@ import { useNavigate } from 'react-router-dom';
 import { ArticleCard } from '../../components/ArticleCard';
 import { SavedModal } from '../../components/SavedModal';
 import { getArticleBySlug } from '../../utils/articles';
+import { GoogleOneTap } from '../../components/GoogleOneTap';
+import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
+import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import './RankingsAndAwards.css';
 
 const RankingsAndAwards: React.FC = () => {
   const navigate = useNavigate();
+
+  // Google One Tap for high-intent Car Rankings page
+  const { showOneTap, dismissOneTap } = useGoogleOneTap({
+    pageType: HIGH_INTENT_PAGES.CAR_RANKINGS,
+    autoTrigger: true,
+    triggerDelay: 2500, // Show after 2.5 seconds on page
+  });
 
   // List of all Top 10 article slugs
   const rankingArticles = [
@@ -123,6 +133,21 @@ const RankingsAndAwards: React.FC = () => {
 
   return (
     <div className="rankings-awards">
+      {/* Google One Tap - High-intent Car Rankings page trigger */}
+      {showOneTap && (
+        <GoogleOneTap
+          mode="prompt"
+          pageType={HIGH_INTENT_PAGES.CAR_RANKINGS}
+          context="signin"
+          autoSelect={false}
+          promptDelay={2500}
+          onSuccess={(user) => {
+            console.log('G1T Success on Rankings:', user);
+          }}
+          onDismiss={dismissOneTap}
+        />
+      )}
+
       <div className="rankings-awards__container">
         {/* Hero Section */}
         <div className="rankings-awards__hero">
