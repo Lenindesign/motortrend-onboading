@@ -201,7 +201,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     setReplyText(''); setReplyingToReview(null);
   };
   const handleReplyCancel = () => { setReplyText(''); setReplyingToReview(null); };
-  const handleShare = (reviewId: string) => console.log('Share review:', reviewId);
+  // Share functionality removed - keeping for potential future use
+  // const handleShare = (reviewId: string) => console.log('Share review:', reviewId);
   const handleEditReview = (review: ReviewData) => { setEditingReview(review); setIsEditReviewModalOpen(true); };
   const handleCloseEditReviewModal = () => { setIsEditReviewModalOpen(false); setEditingReview(null); };
   const handleUpdateReview = (updatedReview: ReviewData) => {

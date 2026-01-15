@@ -130,17 +130,17 @@ export const Home: React.FC = () => {
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
-  const slideIntervalRef = useRef<number | null>(null);
+  const slideIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   
   // Sedan carousel state
   const [currentSlideSedan, setCurrentSlideSedan] = useState(0);
   const [isSliderHoveredSedan, setIsSliderHoveredSedan] = useState(false);
-  const slideIntervalRefSedan = useRef<number | null>(null);
+  const slideIntervalRefSedan = useRef<ReturnType<typeof setInterval> | null>(null);
   
   // Truck carousel state
   const [currentSlideTruck, setCurrentSlideTruck] = useState(0);
   const [isSliderHoveredTruck, setIsSliderHoveredTruck] = useState(false);
-  const slideIntervalRefTruck = useRef<number | null>(null);
+  const slideIntervalRefTruck = useRef<ReturnType<typeof setInterval> | null>(null);
   
   // Fullscreen state
   const [fullscreenVehicle, setFullscreenVehicle] = useState<Vehicle | null>(null);

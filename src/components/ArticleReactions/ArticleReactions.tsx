@@ -45,7 +45,7 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
     }));
   });
   const containerRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<number | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Inject keyframes
   useEffect(() => {
