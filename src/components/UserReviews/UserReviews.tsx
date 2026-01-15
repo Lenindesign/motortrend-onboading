@@ -255,17 +255,17 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   };
 
   const getDefaultComments = (name: string): CommentData[] => [
-    { id: 'comment_default_1', commenterName: 'one2three', content: `Edgy design makes this the most head-turning ${name} yet. But it's more than just stylish—the ${name} is comfortable and offers many features.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] },
-    { id: 'comment_default_2', commenterName: 'Ajm4042', content: `I've been driving the ${name} for a few months now and I'm really impressed with the build quality and feature set for the price point.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] }
+    { id: 'comment_default_v2_1', commenterName: 'one2three', content: `Edgy design makes this the most head-turning ${name} yet. But it's more than just stylish—the ${name} is comfortable and offers many features.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] },
+    { id: 'comment_default_v2_2', commenterName: 'Ajm4042', content: `I've been driving the ${name} for a few months now and I'm really impressed with the build quality and feature set for the price point.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] }
   ];
 
   useEffect(() => {
     try {
-      const commentsKey = `comments_contextual_${vehicleName}`;
+      const commentsKey = `comments_v2_${vehicleName}`;
       const savedCommentsJson = localStorage.getItem(commentsKey);
       if (savedCommentsJson) {
         setComments(JSON.parse(savedCommentsJson));
-        const likesKey = `commentLikes_contextual_${vehicleName}`;
+        const likesKey = `commentLikes_v2_${vehicleName}`;
         const savedLikesJson = localStorage.getItem(likesKey);
         if (savedLikesJson) setCommentLikes(JSON.parse(savedLikesJson));
       } else {
@@ -286,7 +286,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
       const newComment: CommentData = { id: `comment_${Date.now()}`, commenterName: userName, content: commentText.trim(), date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }), likes: 0, isLiked: false, replies: [] };
       const updatedComments = [newComment, ...comments];
       setComments(updatedComments); setCommentText('');
-      localStorage.setItem(`comments_contextual_${vehicleName}`, JSON.stringify(updatedComments));
+      localStorage.setItem(`comments_v2_${vehicleName}`, JSON.stringify(updatedComments));
     } catch (error) { console.error('Error posting comment:', error); }
   };
 
@@ -297,7 +297,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     const updatedComments = comments.map(c => c.id === commentId ? { ...c, likes: (c.likes || 0) + (isLiked ? -1 : 1) } : c);
     setComments(updatedComments);
     localStorage.setItem(`comments_contextual_${vehicleName}`, JSON.stringify(updatedComments));
-    localStorage.setItem(`commentLikes_contextual_${vehicleName}`, JSON.stringify(newLikes));
+    localStorage.setItem(`commentLikes_v2_${vehicleName}`, JSON.stringify(newLikes));
   };
 
   const getSortedComments = (): CommentData[] => {
