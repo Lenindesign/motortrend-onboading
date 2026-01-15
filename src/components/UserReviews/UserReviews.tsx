@@ -255,8 +255,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   };
 
   const getDefaultComments = (name: string): CommentData[] => [
-    { id: 'comment_default_1', commenterName: 'one2three', content: `Edgy design makes this the most head-turning ${name} yet. But it's more than just stylish—the ${name} is comfortable and offers many features.`, date: '4 days ago', likes: 30, isLiked: false, replies: [] },
-    { id: 'comment_default_2', commenterName: 'Ajm4042', content: `I've been driving the ${name} for a few months now and I'm really impressed with the build quality and feature set for the price point.`, date: '4 days ago', likes: 30, isLiked: false, replies: [] }
+    { id: 'comment_default_1', commenterName: 'one2three', content: `Edgy design makes this the most head-turning ${name} yet. But it's more than just stylish—the ${name} is comfortable and offers many features.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] },
+    { id: 'comment_default_2', commenterName: 'Ajm4042', content: `I've been driving the ${name} for a few months now and I'm really impressed with the build quality and feature set for the price point.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] }
   ];
 
   useEffect(() => {
