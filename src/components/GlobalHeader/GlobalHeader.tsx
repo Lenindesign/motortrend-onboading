@@ -1508,8 +1508,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     setActiveDropdown(item.label);
                   }}
                   onMouseLeave={(e) => {
-                    const relatedTarget = e.relatedTarget as HTMLElement;
-                    if (newsStoriesNavRef.current && relatedTarget && newsStoriesNavRef.current.contains(relatedTarget)) {
+                    const relatedTarget = e.relatedTarget;
+                    if (newsStoriesNavRef.current && relatedTarget instanceof Node && newsStoriesNavRef.current.contains(relatedTarget)) {
                       return;
                     }
                     setTimeout(() => {

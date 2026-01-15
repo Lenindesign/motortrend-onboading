@@ -669,26 +669,26 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                 <Badge variant="info" size="sm">Buyers Guide</Badge>
               </div>
             ) : null}
-            <button
+            <div
               style={localListingsBadgeStyle}
-              onClick={(e) => {
-                e.stopPropagation();
-                const localListingsSection = document.getElementById('local-listings');
-                if (localListingsSection) {
-                  localListingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                  // Fallback to vehicle inventory if section not found
-                  navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
-                }
-              }}
               onMouseEnter={() => setIsLocalListingsHovered(true)}
               onMouseLeave={() => setIsLocalListingsHovered(false)}
             >
               <ActionBadge
                 text={isMobile ? "Local Listings" : "See Local Listings"}
                 variant="primary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const localListingsSection = document.getElementById('local-listings');
+                  if (localListingsSection) {
+                    localListingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    // Fallback to vehicle inventory if section not found
+                    navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
+                  }
+                }}
               />
-            </button>
+            </div>
             {ctaText && isMobile && !hideCtaButton && (
               <ActionBadge
                 onClick={(e) => {
