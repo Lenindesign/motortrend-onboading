@@ -1328,53 +1328,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 </select>
               </div>
 
-              {/* Experience Duration Section */}
-              {vehicleRelationship && vehicleRelationship !== 'passenger' && (
-                <div style={fieldStyle}>
-                  <label style={fieldLabelStyle}>
-                    {vehicleRelationship === 'own' ? 'How long have you owned this vehicle?' :
-                     vehicleRelationship === 'previously_owned' ? 'How long did you own this vehicle?' :
-                     vehicleRelationship === 'leased' ? 'How long did you lease this vehicle?' :
-                     vehicleRelationship === 'rented' ? 'How long did you rent this vehicle?' :
-                     vehicleRelationship === 'test_drove' ? 'When did you test drive this vehicle?' :
-                     'How long have you experienced this vehicle?'}
-                  </label>
-                  <select
-                    style={selectStyle}
-                    value={experienceDuration}
-                    onChange={(e) => setExperienceDuration(e.target.value)}
-                    onFocus={() => setFocusedInput('duration')}
-                    onBlur={() => setFocusedInput(null)}
-                  >
-                    {vehicleRelationship === 'test_drove' ? (
-                      <>
-                        <option value="">Select timeframe</option>
-                        <option value="within_week">Within the past week</option>
-                        <option value="within_month">Within the past month</option>
-                        <option value="within_3_months">Within the past 3 months</option>
-                        <option value="over_3_months">More than 3 months ago</option>
-                      </>
-                    ) : vehicleRelationship === 'rented' ? (
-                      <>
-                        <option value="">Select duration</option>
-                        <option value="few_days">A few days</option>
-                        <option value="1_week">About a week</option>
-                        <option value="2_weeks">About 2 weeks</option>
-                        <option value="1_month">About a month</option>
-                        <option value="over_1_month">More than a month</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="">Select duration</option>
-                        <option value="less_than_1_year">Less than 1 year</option>
-                        <option value="1_to_3_years">1-3 years</option>
-                        <option value="3_to_5_years">3-5 years</option>
-                        <option value="over_5_years">More than 5 years</option>
-                      </>
-                    )}
-                  </select>
-                </div>
-              )}
+              {/* Experience Duration Section - Hidden for now */}
             </div>
 
             {/* Experience Rating Section */}
