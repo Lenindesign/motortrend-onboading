@@ -33,6 +33,8 @@ import { addViewedVehicle } from '../../components/PersonalizedVehicles';
 import { GoogleOneTap } from '../../components/GoogleOneTap';
 import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
 import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
+import { useAuthPrompt } from '../../hooks/useAuthPrompt';
+import { AuthPromptModal } from '../../components/AuthPromptModal';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -80,6 +82,9 @@ export const VehicleDetails: React.FC = () => {
     autoTrigger: true,
     triggerDelay: 3000, // Show after 3 seconds on page
   });
+
+  // Auth prompt for unauthenticated user actions
+  const { isAuthPromptOpen, promptAction, openAuthPrompt, closeAuthPrompt, requireAuth } = useAuthPrompt();
   
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
@@ -934,6 +939,7 @@ export const VehicleDetails: React.FC = () => {
   }, [decodedYear, decodedMake, decodedModel]);
 
   const handleSave = () => {
+    if (!requireAuth('bookmark')) return;
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       const data = onboardingData ? JSON.parse(onboardingData) : {};
@@ -984,6 +990,7 @@ export const VehicleDetails: React.FC = () => {
   };
 
   const handleOpenRatingModal = () => {
+    if (!requireAuth('rate')) return;
     setIsRatingModalOpen(true);
   };
 
@@ -2289,6 +2296,13 @@ export const VehicleDetails: React.FC = () => {
         onClose={() => setIsSavedModalOpen(false)}
         itemTitle={vehicleName}
         itemType="vehicle"
+      />
+
+      {/* Auth Prompt Modal for unauthenticated users */}
+      <AuthPromptModal
+        isOpen={isAuthPromptOpen}
+        onClose={closeAuthPrompt}
+        action={promptAction}
       />
 
       {/* Photo Gallery */}
