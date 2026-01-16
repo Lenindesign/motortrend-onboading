@@ -261,6 +261,26 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     { id: 'comment_default_v2_2', commenterName: 'Ajm4042', content: `I've been driving the ${name} for a few months now and I'm really impressed with the build quality and feature set for the price point.`, date: 'Jan 11, 2026', likes: 30, isLiked: false, replies: [] }
   ];
 
+  // Generate default sub-comments (replies) for reviews
+  const getDefaultRepliesForReview = (reviewId: string, reviewerName: string): ReplyData[] => {
+    const replyTemplates = [
+      { name: 'CarEnthusiast22', content: 'Great review! I had a similar experience with mine. The reliability has been outstanding.' },
+      { name: 'AutoFan_Mike', content: 'Thanks for sharing. How has the fuel economy been for you in real-world driving?' },
+      { name: 'DrivingDaily', content: 'Appreciate the detailed breakdown. This helped me make my decision!' },
+    ];
+    
+    // Use reviewId to deterministically select replies
+    const hash = reviewId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const numReplies = (hash % 3) + 1; // 1-3 replies per review
+    
+    return replyTemplates.slice(0, numReplies).map((template, index) => ({
+      id: `${reviewId}-reply-${index}`,
+      replierName: template.name,
+      content: template.content,
+      date: new Date(Date.now() - (index + 1) * 86400000 * (hash % 5 + 1)).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+    }));
+  };
+
   useEffect(() => {
     // If empty state mode is enabled, don't load any comments
     if (showEmptyState) {
@@ -285,6 +305,23 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
       setComments(getDefaultComments(vehicleName));
     }
   }, [vehicleName, showEmptyState]);
+
+  // Initialize default replies for reviews
+  useEffect(() => {
+    if (showEmptyState || reviews.length === 0) return;
+    
+    const defaultReplies: Record<string, ReplyData[]> = {};
+    reviews.forEach(review => {
+      // Only add default replies if no user-added replies exist
+      if (!replies[review.id] || replies[review.id].length === 0) {
+        defaultReplies[review.id] = getDefaultRepliesForReview(review.id, review.reviewerName);
+      }
+    });
+    
+    if (Object.keys(defaultReplies).length > 0) {
+      setReplies(prev => ({ ...defaultReplies, ...prev }));
+    }
+  }, [reviews, showEmptyState]);
 
   const handlePostComment = () => {
     if (!commentText.trim()) return;
@@ -724,8 +761,15 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                         </div>
                       </div>
                     )}
-                    {replies[review.id] && replies[review.id].length > 0 && (
+                    {/* Show replies only when expanded */}
+                    {expandedReview === review.id && replies[review.id] && replies[review.id].length > 0 && (
                       <div style={repliesStyle}>
+                        <div style={{ fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: 'var(--font-size-sm, 14px)', color: 'var(--color-neutrals-2, #23262F)', marginBottom: 'var(--spacing-2, 16px)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-1, 8px)' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          {replies[review.id].length} {replies[review.id].length === 1 ? 'Comment' : 'Comments'}
+                        </div>
                         {replies[review.id].map((reply, i) => (
                           <div key={reply.id} style={{ ...replyStyle, marginBottom: i === replies[review.id].length - 1 ? 0 : 'var(--spacing-2, 16px)' }}>
                             <div style={replyHeaderStyle}><span style={replyAuthorStyle}>{reply.replierName}</span><span style={replyDateStyle}>{reply.date}</span></div>
@@ -734,7 +778,21 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                         ))}
                       </div>
                     )}
-                    {review.content.length > 200 && <button style={expandBtnStyle} onClick={() => toggleExpanded(review.id)}>{expandedReview === review.id ? 'Show Less' : 'Read More'}</button>}
+                    {/* Show Read More button if content is long OR if there are replies */}
+                    {(review.content.length > 200 || (replies[review.id] && replies[review.id].length > 0)) && (
+                      <button style={expandBtnStyle} onClick={() => toggleExpanded(review.id)}>
+                        {expandedReview === review.id ? 'Show Less' : (
+                          <>
+                            Read More
+                            {replies[review.id] && replies[review.id].length > 0 && (
+                              <span style={{ marginLeft: '4px', color: 'var(--color-neutrals-4, #777E90)' }}>
+                                · {replies[review.id].length} {replies[review.id].length === 1 ? 'comment' : 'comments'}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
