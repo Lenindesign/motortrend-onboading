@@ -262,7 +262,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   ];
 
   // Generate default sub-comments (replies) for reviews
-  const getDefaultRepliesForReview = (reviewId: string, reviewerName: string): ReplyData[] => {
+  const getDefaultRepliesForReview = (reviewId: string): ReplyData[] => {
     const replyTemplates = [
       { name: 'CarEnthusiast22', content: 'Great review! I had a similar experience with mine. The reliability has been outstanding.' },
       { name: 'AutoFan_Mike', content: 'Thanks for sharing. How has the fuel economy been for you in real-world driving?' },
@@ -314,7 +314,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     reviews.forEach(review => {
       // Only add default replies if no user-added replies exist
       if (!replies[review.id] || replies[review.id].length === 0) {
-        defaultReplies[review.id] = getDefaultRepliesForReview(review.id, review.reviewerName);
+        defaultReplies[review.id] = getDefaultRepliesForReview(review.id);
       }
     });
     
