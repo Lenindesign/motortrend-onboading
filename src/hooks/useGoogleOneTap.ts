@@ -167,7 +167,8 @@ export function useGoogleOneTap(options: UseGoogleOneTapOptions = {}): UseGoogle
     respectCooldown = true,
     onShow,
     onDismiss,
-    onSignIn,
+    // onSignIn is available for future use when actual Google auth is implemented
+    onSignIn: _onSignIn,
   } = options;
 
   const { isAuthenticated } = useAuth();

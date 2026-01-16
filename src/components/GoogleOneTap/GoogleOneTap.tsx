@@ -179,7 +179,7 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
 }) => {
   const { isAuthenticated, setDemoUser } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isPromptShown, setIsPromptShown] = useState(false);
+  const [, setIsPromptShown] = useState(false);
   const promptTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scriptLoadedRef = useRef(false);
 

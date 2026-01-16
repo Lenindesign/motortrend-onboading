@@ -471,7 +471,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     transition: 'all var(--transition-fast, 150ms ease-in-out)',
     marginTop: 'var(--spacing-1, 8px)',
   };
-  const noCommentsStyle: React.CSSProperties = { padding: 'var(--spacing-3, 24px)', textAlign: 'center', color: 'var(--color-neutrals-3, #353945)', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: 'var(--font-size-sm, 14px)' };
+  // noCommentsStyle removed - now using emptyStateContainerStyle for empty comments
   const commentCardStyle: React.CSSProperties = { padding: 'var(--spacing-2, 16px)', backgroundColor: 'var(--color-neutrals-8, #FCFCFD)', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-md, 8px)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-component-md, 12px)' };
   const commentHeaderStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-component-md, 12px)' };
   const commenterAvatarStyle: React.CSSProperties = { width: '40px', height: '40px', borderRadius: 'var(--border-radius-circle, 400px)', overflow: 'hidden', flexShrink: 0, backgroundColor: 'var(--color-neutrals-6, #E6E8EC)', display: 'flex', alignItems: 'center', justifyContent: 'center' };
