@@ -8,6 +8,9 @@ import RatingModal from '../RatingModal';
 import WriteReviewModal from '../WriteReviewModal';
 import { Badge } from '../atoms/Badge/Badge';
 import { useRating } from '../../contexts/RatingContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useAuthPrompt } from '../../hooks/useAuthPrompt';
+import { AuthPromptModal } from '../AuthPromptModal';
 
 export interface ReplyData {
   id: string;
@@ -111,6 +114,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const { getUserRating, setUserRating } = useRating();
   const userRating = getUserRating(vehicleName);
   
+  // Auth state for gating community actions
+  const { isAuthenticated } = useAuth();
+  const { isAuthPromptOpen, promptAction, openAuthPrompt, closeAuthPrompt, requireAuth } = useAuthPrompt();
+  
   // Responsive and hover states
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isWriteReviewHovered, setIsWriteReviewHovered] = useState(false);
@@ -186,7 +193,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   }, [isSortDropdownOpen]);
 
   const toggleExpanded = (reviewId: string) => setExpandedReview(expandedReview === reviewId ? null : reviewId);
-  const handleOpenRatingModal = () => setIsRatingModalOpen(true);
+  const handleOpenRatingModal = () => {
+    if (!requireAuth('rate')) return;
+    setIsRatingModalOpen(true);
+  };
   const handleCloseRatingModal = () => setIsRatingModalOpen(false);
   const handleRatingSubmit = (rating: number) => { setUserRating(vehicleName, rating); setIsRatingModalOpen(false); };
   const handleRateAndReview = (rating: number) => {
@@ -195,8 +205,15 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     if (currentUserReview && onUpdateReview) handleEditReview(currentUserReview);
     else if (onWriteReview) onWriteReview();
   };
-  const handleThumbsUp = (reviewId: string) => setThumbsUpStates(prev => ({ ...prev, [reviewId]: !prev[reviewId] }));
-  const handleReply = (reviewId: string) => { setReplyingToReview(replyingToReview === reviewId ? null : reviewId); setReplyText(''); };
+  const handleThumbsUp = (reviewId: string) => {
+    if (!requireAuth('rate')) return;
+    setThumbsUpStates(prev => ({ ...prev, [reviewId]: !prev[reviewId] }));
+  };
+  const handleReply = (reviewId: string) => {
+    if (!requireAuth('comment')) return;
+    setReplyingToReview(replyingToReview === reviewId ? null : reviewId);
+    setReplyText('');
+  };
   const handleReplySubmit = (reviewId: string) => {
     if (!replyText.trim()) return;
     const newReply: ReplyData = { id: `reply-${Date.now()}`, replierName: 'You', content: replyText.trim(), date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) };
@@ -325,6 +342,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
 
   const handlePostComment = () => {
     if (!commentText.trim()) return;
+    if (!requireAuth('comment')) return;
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       const userName = onboardingData ? JSON.parse(onboardingData).fullName || 'You' : 'You';
@@ -336,6 +354,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   };
 
   const handleCommentLike = (commentId: string) => {
+    if (!requireAuth('rate')) return;
     const isLiked = commentLikes[commentId] || false;
     const newLikes = { ...commentLikes, [commentId]: !isLiked };
     setCommentLikes(newLikes);
@@ -599,7 +618,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
             <div style={vehicleHeaderStyle}>
               <h3 style={vehicleNameStyle}>{vehicleName}</h3>
               {onWriteReview && (
-                <button style={writeReviewBtnStyle} onClick={() => currentUserReview && onUpdateReview ? handleEditReview(currentUserReview) : onWriteReview?.()} onMouseEnter={() => setIsWriteReviewHovered(true)} onMouseLeave={() => setIsWriteReviewHovered(false)}>
+                <button style={writeReviewBtnStyle} onClick={() => {
+                  if (!requireAuth('review')) return;
+                  currentUserReview && onUpdateReview ? handleEditReview(currentUserReview) : onWriteReview?.();
+                }} onMouseEnter={() => setIsWriteReviewHovered(true)} onMouseLeave={() => setIsWriteReviewHovered(false)}>
                   <Icon name={currentUserReview ? "edit_note" : "add"} size={20} />
                   {currentUserReview ? 'Edit Your Review' : 'Write a Vehicle Review'}
                 </button>
@@ -684,7 +706,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                     </p>
                     <button 
                       style={emptyStateCtaStyle}
-                      onClick={() => setIsRatingModalOpen(true)}
+                      onClick={() => {
+                        if (!requireAuth('review')) return;
+                        setIsRatingModalOpen(true);
+                      }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
                     >
@@ -876,6 +901,13 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
 
       <RatingModal isOpen={isRatingModalOpen} onClose={handleCloseRatingModal} onRate={handleRatingSubmit} vehicleName={vehicleName} currentRating={userRating} onRateAndReview={handleRateAndReview} />
       {isEditReviewModalOpen && editingReview && <WriteReviewModal isOpen={isEditReviewModalOpen} onClose={handleCloseEditReviewModal} vehicleName={vehicleName} vehicleImage={vehicleImage} onSubmit={handleUpdateReview} existingReview={editingReview} isEditMode={true} />}
+      
+      {/* Auth Prompt Modal for unauthenticated users */}
+      <AuthPromptModal
+        isOpen={isAuthPromptOpen}
+        onClose={closeAuthPrompt}
+        action={promptAction}
+      />
     </div>
   );
 };
