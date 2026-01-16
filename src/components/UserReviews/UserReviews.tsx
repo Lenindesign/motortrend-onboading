@@ -8,7 +8,6 @@ import RatingModal from '../RatingModal';
 import WriteReviewModal from '../WriteReviewModal';
 import { Badge } from '../atoms/Badge/Badge';
 import { useRating } from '../../contexts/RatingContext';
-import { useAuth } from '../../contexts/AuthContext';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
 import { AuthPromptModal } from '../AuthPromptModal';
 
@@ -115,8 +114,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const userRating = getUserRating(vehicleName);
   
   // Auth state for gating community actions
-  const { isAuthenticated } = useAuth();
-  const { isAuthPromptOpen, promptAction, openAuthPrompt, closeAuthPrompt, requireAuth } = useAuthPrompt();
+  const { isAuthPromptOpen, promptAction, closeAuthPrompt, requireAuth } = useAuthPrompt();
   
   // Responsive and hover states
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

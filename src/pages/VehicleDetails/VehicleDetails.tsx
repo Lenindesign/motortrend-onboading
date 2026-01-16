@@ -84,7 +84,7 @@ export const VehicleDetails: React.FC = () => {
   });
 
   // Auth prompt for unauthenticated user actions
-  const { isAuthPromptOpen, promptAction, openAuthPrompt, closeAuthPrompt, requireAuth } = useAuthPrompt();
+  const { isAuthPromptOpen, promptAction, closeAuthPrompt, requireAuth } = useAuthPrompt();
   
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
