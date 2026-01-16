@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import { UserReviews } from '../../components/UserReviews';
 import { AIInsights } from '../../components/AIInsights';
@@ -37,6 +37,8 @@ import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
   const { year, make, model } = useParams<{ year: string; make: string; model: string }>();
+  const [searchParams] = useSearchParams();
+  const showEmptyState = searchParams.get('empty') === 'true';
   const decodedYear = decodeURIComponent(year || '2025');
   const decodedMake = decodeURIComponent(make || 'BMW');
   const decodedModel = decodeURIComponent(model || '3-Series');
@@ -337,6 +339,12 @@ export const VehicleDetails: React.FC = () => {
   }, [galleryImages]);
 
   const getInitialReviews = (): ReviewData[] => {
+    // If empty state is requested via URL param, return empty array for testing
+    if (showEmptyState) {
+      console.log('VehicleDetails: Empty state mode enabled via ?empty=true');
+      return [];
+    }
+
     // First, load any user-submitted reviews from localStorage
     try {
       const savedReviewsKey = `vehicleReviews_${vehicleName}`;
@@ -2034,6 +2042,7 @@ export const VehicleDetails: React.FC = () => {
               onWriteReview={() => setIsWriteReviewModalOpen(true)}
               onUpdateReview={handleUpdateReview}
               defaultTab="reviews"
+              showEmptyState={showEmptyState}
             />
           </div>
 

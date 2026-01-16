@@ -71,6 +71,7 @@ interface UserReviewsProps {
   onUpdateReview?: (reviewId: string, updatedReview: ReviewData) => void;
   defaultTab?: 'reviews' | 'comments';
   activeTab?: 'reviews' | 'comments';
+  showEmptyState?: boolean;
 }
 
 export const UserReviews: React.FC<UserReviewsProps> = ({ 
@@ -83,7 +84,8 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   onWriteReview,
   onUpdateReview,
   defaultTab = 'reviews',
-  activeTab: controlledActiveTab
+  activeTab: controlledActiveTab,
+  showEmptyState = false
 }) => {
   const [expandedReview, setExpandedReview] = useState<string | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -260,6 +262,12 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   ];
 
   useEffect(() => {
+    // If empty state mode is enabled, don't load any comments
+    if (showEmptyState) {
+      setComments([]);
+      return;
+    }
+
     try {
       const commentsKey = `comments_v2_${vehicleName}`;
       const savedCommentsJson = localStorage.getItem(commentsKey);
@@ -276,7 +284,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     } catch (error) {
       setComments(getDefaultComments(vehicleName));
     }
-  }, [vehicleName]);
+  }, [vehicleName, showEmptyState]);
 
   const handlePostComment = () => {
     if (!commentText.trim()) return;
