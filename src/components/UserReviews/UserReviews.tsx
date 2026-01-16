@@ -408,6 +408,61 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const commentInputStyle: React.CSSProperties = { width: '100%', padding: 'var(--spacing-component-md, 12px)', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-md, 8px)', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: 'var(--font-size-sm, 14px)', color: 'var(--color-neutrals-2, #23262F)', backgroundColor: 'var(--color-neutrals-8, #FCFCFD)', resize: 'vertical', minHeight: '80px', outline: 'none' };
   const commentSubmitBtnStyle = (disabled: boolean): React.CSSProperties => ({ alignSelf: 'flex-start', padding: '10px var(--spacing-3, 24px)', backgroundColor: 'var(--color-neutrals-2, #23262F)', color: 'var(--color-white, #FFFFFF)', border: 'none', borderRadius: 'var(--border-radius-md, 8px)', fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: 'var(--font-size-sm, 14px)', cursor: disabled ? 'not-allowed' : 'pointer', transition: 'all var(--transition-fast, 150ms ease-in-out)', opacity: disabled ? 0.5 : (isCommentSubmitHovered ? 0.9 : 1) });
   const commentsListStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2, 16px)' };
+  // Empty state styles
+  const emptyStateContainerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 'var(--spacing-5, 48px) var(--spacing-3, 24px)',
+    backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+    borderRadius: 'var(--border-radius-lg, 12px)',
+    border: '2px dashed var(--color-neutrals-5, #B1B5C3)',
+    textAlign: 'center',
+    gap: 'var(--spacing-2, 16px)',
+  };
+  const emptyStateIconStyle: React.CSSProperties = {
+    width: '64px',
+    height: '64px',
+    borderRadius: 'var(--border-radius-circle, 400px)',
+    backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 'var(--spacing-1, 8px)',
+  };
+  const emptyStateTitleStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: 'var(--font-size-lg, 18px)',
+    color: 'var(--color-neutrals-2, #23262F)',
+    margin: 0,
+  };
+  const emptyStateDescStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 400,
+    fontSize: 'var(--font-size-sm, 14px)',
+    color: 'var(--color-neutrals-3, #353945)',
+    maxWidth: '320px',
+    lineHeight: '1.5',
+    margin: 0,
+  };
+  const emptyStateCtaStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'var(--spacing-1, 8px)',
+    padding: '12px var(--spacing-3, 24px)',
+    backgroundColor: 'var(--color-primary-1, #E90C17)',
+    color: 'var(--color-white, #FFFFFF)',
+    border: 'none',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontWeight: 600,
+    fontSize: 'var(--font-size-sm, 14px)',
+    cursor: 'pointer',
+    transition: 'all var(--transition-fast, 150ms ease-in-out)',
+    marginTop: 'var(--spacing-1, 8px)',
+  };
   const noCommentsStyle: React.CSSProperties = { padding: 'var(--spacing-3, 24px)', textAlign: 'center', color: 'var(--color-neutrals-3, #353945)', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: 'var(--font-size-sm, 14px)' };
   const commentCardStyle: React.CSSProperties = { padding: 'var(--spacing-2, 16px)', backgroundColor: 'var(--color-neutrals-8, #FCFCFD)', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-md, 8px)', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-component-md, 12px)' };
   const commentHeaderStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-component-md, 12px)' };
@@ -571,7 +626,30 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
               </div>
 
               <div style={reviewsListStyle}>
-                {displayedReviews.map((review, index) => (
+                {displayedReviews.length === 0 ? (
+                  <div style={emptyStateContainerStyle}>
+                    <div style={emptyStateIconStyle}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="var(--color-neutrals-4, #777E90)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <h3 style={emptyStateTitleStyle}>No Reviews Yet</h3>
+                    <p style={emptyStateDescStyle}>
+                      Be the first to share your experience with the {vehicleName}. Your review helps other buyers make informed decisions.
+                    </p>
+                    <button 
+                      style={emptyStateCtaStyle}
+                      onClick={() => setIsRatingModalOpen(true)}
+                      onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Write the First Review
+                    </button>
+                  </div>
+                ) : displayedReviews.map((review, index) => (
                   <div key={review.id} style={getReviewCardStyle(index)}>
                     <div style={reviewHeaderStyle}>
                       <div style={reviewerAvatarStyle}>
@@ -682,7 +760,17 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
             </div>
             <div style={commentsListStyle}>
               {getSortedComments().length === 0 ? (
-                <div style={noCommentsStyle}>No comments yet. Be the first to comment!</div>
+                <div style={emptyStateContainerStyle}>
+                  <div style={emptyStateIconStyle}>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="var(--color-neutrals-4, #777E90)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <h3 style={emptyStateTitleStyle}>No Comments Yet</h3>
+                  <p style={emptyStateDescStyle}>
+                    Start the conversation! Share your thoughts about this vehicle and engage with other enthusiasts.
+                  </p>
+                </div>
               ) : (
                 getSortedComments().map((comment) => (
                   <div key={comment.id} style={commentCardStyle}>
