@@ -23,20 +23,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { trackHighIntentPageView, HIGH_INTENT_PAGES, type HighIntentPage } from '../utils/cdpTracking';
 
 // Cooldown configuration - DISABLED for aggressive G1T display
+// These keys are kept for the resetCooldown function
 const G1T_COOLDOWN_KEY = 'g1t_cooldown_until';
 const G1T_DISMISS_COUNT_KEY = 'g1t_dismiss_count';
 const G1T_LAST_SHOWN_KEY = 'g1t_last_shown';
-
-// Cooldown periods - ALL SET TO 0 to show G1T on every visit
-const COOLDOWN_HOURS = {
-  first: 0,       // No cooldown
-  second: 0,      // No cooldown
-  third: 0,       // No cooldown
-  max: 0,         // No cooldown
-};
-
-// Minimum time between prompts (in minutes) - set to 0 for immediate re-display
-const MIN_TIME_BETWEEN_PROMPTS = 0;
 
 export interface UseGoogleOneTapOptions {
   /** The type of page (for CDP tracking and trigger logic) */

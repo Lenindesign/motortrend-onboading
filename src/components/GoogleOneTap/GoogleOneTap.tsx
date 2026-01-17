@@ -141,10 +141,7 @@ function decodeJWT(token: string): Record<string, unknown> {
   }
 }
 
-// Check if user has dismissed G1T recently (cooldown period)
-// DISABLED: Show G1T on every visit for non-authenticated users
-const G1T_COOLDOWN_KEY = 'g1t_cooldown_until';
-const G1T_COOLDOWN_HOURS = 0; // No cooldown - show every time
+// Cooldown functions - DISABLED to show G1T on every visit for non-authenticated users
 
 function isInCooldown(): boolean {
   // Always return false to show G1T on every visit
@@ -153,8 +150,6 @@ function isInCooldown(): boolean {
 
 function setCooldown(): void {
   // No-op: Don't set cooldown, allow G1T to show on next visit
-  // const cooldownUntil = Date.now() + (G1T_COOLDOWN_HOURS * 60 * 60 * 1000);
-  // localStorage.setItem(G1T_COOLDOWN_KEY, cooldownUntil.toString());
 }
 
 export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
