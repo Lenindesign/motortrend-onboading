@@ -110,6 +110,18 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
     return 'Vehicle';
   };
 
+  // Helper to generate MMP URL from vehicle name (e.g., "2026 Honda Pilot" -> "/vehicles/2026/Honda/Pilot")
+  const getVehicleUrl = (vehicleName: string): string => {
+    const parts = vehicleName.split(' ');
+    if (parts.length >= 3) {
+      const year = parts[0];
+      const make = parts[1];
+      const model = parts.slice(2).join('-'); // Handle multi-word models like "3-Series"
+      return `/vehicles/${year}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`;
+    }
+    return '/vehicles';
+  };
+
   // Get user's car (first interested vehicle or default)
   const userCar = viewedVehicles[0] 
     ? getVehicleName(viewedVehicles[0])
@@ -297,7 +309,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
   const recommendedImageStyle: React.CSSProperties = {
     width: '100%',
     height: '100%',
-    objectFit: 'contain',
+    objectFit: 'cover', // Fill the container, cropping if needed
     objectPosition: 'center',
   };
 
@@ -436,6 +448,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
         {viewedVehicles.map((vehicle: ViewedVehicle, index: number) => {
           const vehicleName = getVehicleName(vehicle);
           const imageUrl = vehicleImageFor(vehicleName);
+          const vehicleUrl = getVehicleUrl(vehicleName);
           
           return (
             <div key={index} style={recommendedCardStyle}>
@@ -451,7 +464,17 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
                 <div style={recommendedSubtitleStyle}>
                   Based on your recent interest
                 </div>
-                <button style={{ ...buttonStyle, width: 'fit-content' }}>Read More</button>
+                <a 
+                  href={vehicleUrl}
+                  style={{ 
+                    ...buttonStyle, 
+                    width: 'fit-content', 
+                    textDecoration: 'none',
+                    display: 'inline-block',
+                  }}
+                >
+                  Read More
+                </a>
               </div>
             </div>
           );
