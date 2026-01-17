@@ -178,7 +178,6 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
   const [, setIsPromptShown] = useState(false);
   const promptTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scriptLoadedRef = useRef(false);
-  const hasInitializedRef = useRef(false); // Prevent multiple initializations
 
   // Get Google Client ID from environment
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -329,11 +328,8 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
 
   // Initialize Google One Tap
   useEffect(() => {
-    if (!isLoaded || !window.google || !clientId || isAuthenticated) return;
-    
-    // Prevent multiple initializations
-    if (hasInitializedRef.current) {
-      console.log('Google One Tap already initialized');
+    if (!isLoaded || !window.google || !clientId || isAuthenticated) {
+      console.log('Google One Tap: Not ready or user authenticated', { isLoaded, hasGoogle: !!window.google, clientId: !!clientId, isAuthenticated });
       return;
     }
 
@@ -343,7 +339,7 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
       return;
     }
 
-    hasInitializedRef.current = true;
+    console.log('Google One Tap: Initializing...');
 
     try {
       window.google.accounts.id.initialize({
@@ -354,15 +350,13 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
         context,
         itp_support: true,
         ux_mode: 'popup',
-        // Prevent the prompt from auto-closing
-        intermediate_iframe_close_callback: () => {
-          console.log('Google One Tap iframe closed');
-        },
       });
 
       // Show prompt with delay
       if (mode === 'prompt' || mode === 'both') {
+        console.log(`Google One Tap: Will show prompt in ${promptDelay}ms`);
         promptTimeoutRef.current = setTimeout(() => {
+          console.log('Google One Tap: Triggering prompt now');
           window.google?.accounts.id.prompt(handlePromptMoment);
           
           // Track prompt display attempt
@@ -391,8 +385,6 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
       if (promptTimeoutRef.current) {
         clearTimeout(promptTimeoutRef.current);
       }
-      // Don't cancel the prompt on cleanup - let it stay visible
-      // window.google?.accounts.id.cancel();
     };
   }, [
     isLoaded,
@@ -402,13 +394,13 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
     autoSelect,
     context,
     pageType,
-    // Removed vehicleInfo from dependencies to prevent re-renders
     promptDelay,
     buttonContainerId,
     buttonConfig,
     handleCredentialResponse,
     handlePromptMoment,
     onError,
+    vehicleInfo,
   ]);
 
   // Don't render anything if disabled or no client ID
