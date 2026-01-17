@@ -40,7 +40,7 @@ export const EmailPreviewPage: React.FC = () => {
   return (
     <div className="email-preview-page">
       <div className="email-preview-page__header">
-        <h1>📧 Personalized Email Preview</h1>
+        <h1>Personalized Email Preview</h1>
         <p>
           This page shows what personalized re-engagement emails would look like 
           based on the user's CDP (Customer Data Platform) data.
