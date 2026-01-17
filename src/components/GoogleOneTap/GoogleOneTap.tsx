@@ -178,6 +178,7 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
   const [, setIsPromptShown] = useState(false);
   const promptTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scriptLoadedRef = useRef(false);
+  const hasInitializedRef = useRef(false); // Prevent multiple initializations
 
   // Get Google Client ID from environment
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -329,12 +330,20 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
   // Initialize Google One Tap
   useEffect(() => {
     if (!isLoaded || !window.google || !clientId || isAuthenticated) return;
+    
+    // Prevent multiple initializations
+    if (hasInitializedRef.current) {
+      console.log('Google One Tap already initialized');
+      return;
+    }
 
     // Don't show if in cooldown
     if (isInCooldown() && mode === 'prompt') {
       console.log('Google One Tap in cooldown period');
       return;
     }
+
+    hasInitializedRef.current = true;
 
     try {
       window.google.accounts.id.initialize({
@@ -345,6 +354,10 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
         context,
         itp_support: true,
         ux_mode: 'popup',
+        // Prevent the prompt from auto-closing
+        intermediate_iframe_close_callback: () => {
+          console.log('Google One Tap iframe closed');
+        },
       });
 
       // Show prompt with delay
@@ -378,8 +391,8 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
       if (promptTimeoutRef.current) {
         clearTimeout(promptTimeoutRef.current);
       }
-      // Cancel any pending prompts
-      window.google?.accounts.id.cancel();
+      // Don't cancel the prompt on cleanup - let it stay visible
+      // window.google?.accounts.id.cancel();
     };
   }, [
     isLoaded,
@@ -389,7 +402,7 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
     autoSelect,
     context,
     pageType,
-    vehicleInfo,
+    // Removed vehicleInfo from dependencies to prevent re-renders
     promptDelay,
     buttonContainerId,
     buttonConfig,
