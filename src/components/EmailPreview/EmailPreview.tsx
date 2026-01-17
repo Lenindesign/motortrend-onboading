@@ -274,11 +274,23 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
     marginBottom: '16px',
   };
 
-  const recommendedImageStyle: React.CSSProperties = {
+  const recommendedImageContainerStyle: React.CSSProperties = {
     width: '200px',
-    height: '168px',
-    objectFit: 'cover',
+    height: '150px',
     flexShrink: 0,
+    overflow: 'hidden',
+    borderRadius: '8px 0 0 8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f0f0f0',
+  };
+
+  const recommendedImageStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    objectFit: 'contain',
+    objectPosition: 'center',
   };
 
   const recommendedContentStyle: React.CSSProperties = {
@@ -424,11 +436,13 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
           
           return (
             <div key={index} style={recommendedCardStyle}>
-              <img 
-                src={imageUrl || `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop`}
-                alt={vehicleName}
-                style={recommendedImageStyle}
-              />
+              <div style={recommendedImageContainerStyle}>
+                <img 
+                  src={imageUrl || `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop`}
+                  alt={vehicleName}
+                  style={recommendedImageStyle}
+                />
+              </div>
               <div style={recommendedContentStyle}>
                 <div style={recommendedTitleStyle}>{vehicleName}</div>
                 <div style={recommendedSubtitleStyle}>
