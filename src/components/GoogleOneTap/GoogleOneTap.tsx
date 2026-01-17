@@ -107,7 +107,7 @@ export interface GoogleOneTapProps {
   buttonContainerId?: string;
   /** Button configuration */
   buttonConfig?: GoogleButtonConfig;
-  /** Delay before showing prompt (ms) */
+  /** Delay before showing prompt (ms) - default 500ms for fast appearance */
   promptDelay?: number;
   /** Whether to show on this render */
   enabled?: boolean;
@@ -142,18 +142,19 @@ function decodeJWT(token: string): Record<string, unknown> {
 }
 
 // Check if user has dismissed G1T recently (cooldown period)
+// DISABLED: Show G1T on every visit for non-authenticated users
 const G1T_COOLDOWN_KEY = 'g1t_cooldown_until';
-const G1T_COOLDOWN_HOURS = 24;
+const G1T_COOLDOWN_HOURS = 0; // No cooldown - show every time
 
 function isInCooldown(): boolean {
-  const cooldownUntil = localStorage.getItem(G1T_COOLDOWN_KEY);
-  if (!cooldownUntil) return false;
-  return Date.now() < parseInt(cooldownUntil, 10);
+  // Always return false to show G1T on every visit
+  return false;
 }
 
 function setCooldown(): void {
-  const cooldownUntil = Date.now() + (G1T_COOLDOWN_HOURS * 60 * 60 * 1000);
-  localStorage.setItem(G1T_COOLDOWN_KEY, cooldownUntil.toString());
+  // No-op: Don't set cooldown, allow G1T to show on next visit
+  // const cooldownUntil = Date.now() + (G1T_COOLDOWN_HOURS * 60 * 60 * 1000);
+  // localStorage.setItem(G1T_COOLDOWN_KEY, cooldownUntil.toString());
 }
 
 export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
@@ -174,7 +175,7 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
     shape: 'rectangular',
     logo_alignment: 'left',
   },
-  promptDelay = 1500,
+  promptDelay = 500, // Show quickly - 0.5 seconds after page load
   enabled = true,
 }) => {
   const { isAuthenticated, setDemoUser } = useAuth();
@@ -345,7 +346,7 @@ export const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
         client_id: clientId,
         callback: handleCredentialResponse,
         auto_select: autoSelect,
-        cancel_on_tap_outside: true,
+        cancel_on_tap_outside: false, // Don't cancel when clicking outside - stays longer
         context,
         itp_support: true,
         ux_mode: 'popup',

@@ -22,21 +22,21 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { trackHighIntentPageView, HIGH_INTENT_PAGES, type HighIntentPage } from '../utils/cdpTracking';
 
-// Cooldown configuration
+// Cooldown configuration - DISABLED for aggressive G1T display
 const G1T_COOLDOWN_KEY = 'g1t_cooldown_until';
 const G1T_DISMISS_COUNT_KEY = 'g1t_dismiss_count';
 const G1T_LAST_SHOWN_KEY = 'g1t_last_shown';
 
-// Cooldown periods (in hours) based on dismiss count
+// Cooldown periods - ALL SET TO 0 to show G1T on every visit
 const COOLDOWN_HOURS = {
-  first: 24,      // 24 hours after first dismiss
-  second: 72,     // 3 days after second dismiss
-  third: 168,     // 1 week after third dismiss
-  max: 720,       // 30 days max cooldown
+  first: 0,       // No cooldown
+  second: 0,      // No cooldown
+  third: 0,       // No cooldown
+  max: 0,         // No cooldown
 };
 
-// Minimum time between prompts (in minutes)
-const MIN_TIME_BETWEEN_PROMPTS = 5;
+// Minimum time between prompts (in minutes) - set to 0 for immediate re-display
+const MIN_TIME_BETWEEN_PROMPTS = 0;
 
 export interface UseGoogleOneTapOptions {
   /** The type of page (for CDP tracking and trigger logic) */
@@ -85,32 +85,20 @@ export interface UseGoogleOneTapReturn {
 
 /**
  * Check if currently in cooldown period
+ * DISABLED: Always return false to show G1T on every visit
  */
 function checkCooldown(): { isInCooldown: boolean; remaining: number } {
-  const cooldownUntil = localStorage.getItem(G1T_COOLDOWN_KEY);
-  if (!cooldownUntil) {
-    return { isInCooldown: false, remaining: 0 };
-  }
-  
-  const until = parseInt(cooldownUntil, 10);
-  const now = Date.now();
-  
-  if (now >= until) {
-    return { isInCooldown: false, remaining: 0 };
-  }
-  
-  return { isInCooldown: true, remaining: until - now };
+  // Always allow G1T to show - no cooldown
+  return { isInCooldown: false, remaining: 0 };
 }
 
 /**
  * Check if enough time has passed since last prompt
+ * DISABLED: Always return true to show G1T on every visit
  */
 function canShowAgain(): boolean {
-  const lastShown = localStorage.getItem(G1T_LAST_SHOWN_KEY);
-  if (!lastShown) return true;
-  
-  const minInterval = MIN_TIME_BETWEEN_PROMPTS * 60 * 1000;
-  return Date.now() - parseInt(lastShown, 10) >= minInterval;
+  // Always allow G1T to show
+  return true;
 }
 
 /**
@@ -123,24 +111,11 @@ function getDismissCount(): number {
 
 /**
  * Set cooldown based on dismiss count
+ * DISABLED: No cooldown to show G1T on every visit
  */
 function setCooldown(): void {
-  const dismissCount = getDismissCount() + 1;
-  localStorage.setItem(G1T_DISMISS_COUNT_KEY, dismissCount.toString());
-  
-  let cooldownHours: number;
-  if (dismissCount === 1) {
-    cooldownHours = COOLDOWN_HOURS.first;
-  } else if (dismissCount === 2) {
-    cooldownHours = COOLDOWN_HOURS.second;
-  } else if (dismissCount === 3) {
-    cooldownHours = COOLDOWN_HOURS.third;
-  } else {
-    cooldownHours = COOLDOWN_HOURS.max;
-  }
-  
-  const cooldownUntil = Date.now() + (cooldownHours * 60 * 60 * 1000);
-  localStorage.setItem(G1T_COOLDOWN_KEY, cooldownUntil.toString());
+  // No-op: Don't set any cooldown
+  // This allows G1T to appear on every page visit for non-authenticated users
 }
 
 /**
@@ -163,7 +138,7 @@ export function useGoogleOneTap(options: UseGoogleOneTapOptions = {}): UseGoogle
     pageType,
     vehicleInfo,
     autoTrigger = true,
-    triggerDelay = 2000,
+    triggerDelay = 500, // Show quickly - 0.5 seconds
     respectCooldown = true,
     onShow,
     onDismiss,
