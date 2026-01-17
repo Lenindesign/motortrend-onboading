@@ -9,6 +9,7 @@
 import React, { useState } from 'react';
 import { EmailPreview } from '../../components/EmailPreview';
 import { getUserCDPProfile, getCDPEvents, exportCDPData, clearCDPEvents } from '../../utils/cdpTracking';
+import { getViewedVehicles } from '../../components/PersonalizedVehicles';
 import './EmailPreviewPage.css';
 
 export const EmailPreviewPage: React.FC = () => {
@@ -19,16 +20,7 @@ export const EmailPreviewPage: React.FC = () => {
   const cdpEvents = getCDPEvents();
   const cdpExport = exportCDPData();
 
-  // Get viewed vehicles from localStorage
-  const getViewedVehicles = () => {
-    try {
-      const stored = localStorage.getItem('motortrend_viewed_vehicles');
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  };
-
+  // Get viewed vehicles using the proper user-specific function
   const viewedVehicles = getViewedVehicles();
 
   const handleClearCDP = () => {

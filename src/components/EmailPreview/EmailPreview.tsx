@@ -16,19 +16,27 @@
 import React, { useMemo } from 'react';
 import { getUserCDPProfile, type CDPUserProfile } from '../../utils/cdpTracking';
 import { vehicleImageFor } from '../../utils/vehicleImages';
+import { getViewedVehicles } from '../PersonalizedVehicles';
 
 interface EmailPreviewProps {
   /** Override user profile for preview purposes */
   previewProfile?: Partial<CDPUserProfile>;
 }
 
-interface ViewedVehicle {
+// ViewedVehicle can come from different sources with different shapes
+interface ViewedVehicleFromPersonalized {
+  name: string;
+  timestamp?: number;
+}
+
+interface ViewedVehicleFromCDP {
   year?: number;
   make?: string;
   model?: string;
   viewedAt?: string;
-  name?: string;
 }
+
+type ViewedVehicle = ViewedVehicleFromPersonalized | ViewedVehicleFromCDP;
 
 export const EmailPreview: React.FC<EmailPreviewProps> = ({ 
   previewProfile,
@@ -57,17 +65,12 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
     };
   }, [cdpProfile, previewProfile]);
 
-  // Get viewed vehicles from CDP events or profile
+  // Get viewed vehicles from PersonalizedVehicles (user-specific storage)
   const viewedVehicles = useMemo(() => {
-    // First try to get from localStorage (motortrend_viewed_vehicles)
-    try {
-      const stored = localStorage.getItem('motortrend_viewed_vehicles');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return parsed.slice(0, 3); // Get last 3 viewed
-      }
-    } catch (e) {
-      console.error('Error parsing viewed vehicles:', e);
+    // Use the proper getViewedVehicles function which handles user-specific storage
+    const viewed = getViewedVehicles();
+    if (viewed.length > 0) {
+      return viewed.slice(0, 3); // Get last 3 viewed
     }
     
     // Fallback to CDP profile
@@ -96,9 +99,20 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
   // Get user's first name
   const firstName = userProfile.name?.split(' ')[0] || 'there';
 
+  // Helper to get vehicle name from different formats
+  const getVehicleName = (vehicle: ViewedVehicle): string => {
+    if ('name' in vehicle && vehicle.name) {
+      return vehicle.name;
+    }
+    if ('year' in vehicle && 'make' in vehicle && 'model' in vehicle) {
+      return `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+    }
+    return 'Vehicle';
+  };
+
   // Get user's car (first interested vehicle or default)
   const userCar = viewedVehicles[0] 
-    ? `${viewedVehicles[0].year} ${viewedVehicles[0].make} ${viewedVehicles[0].model}`
+    ? getVehicleName(viewedVehicles[0])
     : '2021 Subaru WRX';
 
   // Styles
@@ -420,7 +434,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
         <div style={sectionTitleStyle}>Recommended For You</div>
 
         {viewedVehicles.map((vehicle: ViewedVehicle, index: number) => {
-          const vehicleName = vehicle.name || `${vehicle.year || ''} ${vehicle.make || ''} ${vehicle.model || ''}`.trim();
+          const vehicleName = getVehicleName(vehicle);
           const imageUrl = vehicleImageFor(vehicleName);
           
           return (
