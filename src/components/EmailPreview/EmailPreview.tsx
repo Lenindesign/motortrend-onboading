@@ -111,12 +111,6 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
     overflow: 'hidden',
   };
 
-  const headerStyle: React.CSSProperties = {
-    background: 'linear-gradient(135deg, #141416 0%, #4a4a4a 100%), linear-gradient(135deg, #373737 0%, #000000 100%)',
-    padding: '24px 0',
-    textAlign: 'center',
-  };
-
   const logoBarStyle: React.CSSProperties = {
     backgroundColor: '#E90C17',
     padding: '16px 0',
@@ -347,11 +341,6 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
             MOTORTREND
           </text>
         </svg>
-      </div>
-
-      {/* Header with gradient */}
-      <div style={headerStyle}>
-        {/* Decorative element could go here */}
       </div>
 
       {/* Main Content */}
