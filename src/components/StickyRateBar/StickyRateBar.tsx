@@ -519,17 +519,17 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
           </div>
         );
       } else {
-        ratingDisplay = (
-          <>
-            {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
-            <div style={ratingTextStyle}>
-              {rating.label || 'User Reviews'}{' '}
-              <Badge variant="neutral" size="sm">
-                {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
-              </Badge>
-            </div>
-          </>
-        );
+      ratingDisplay = (
+        <>
+          {renderStarRating(ratingForStars, rating.showHalfStars !== false)}
+          <div style={ratingTextStyle}>
+            {rating.label || 'User Reviews'}{' '}
+            <Badge variant="neutral" size="sm">
+              {Number.isInteger(ratingValue) ? ratingValue : ratingValue.toFixed(1)}/5
+            </Badge>
+          </div>
+        </>
+      );
       }
     } else if (rating.type === 'your-rating') {
       const ratingValue = typeof displayRating === 'number' ? displayRating / 20 : 0;
@@ -677,16 +677,16 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               <ActionBadge
                 text={isMobile ? "Local Listings" : "See Local Listings"}
                 variant="primary"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const localListingsSection = document.getElementById('local-listings');
-                  if (localListingsSection) {
-                    localListingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  } else {
-                    // Fallback to vehicle inventory if section not found
-                    navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
-                  }
-                }}
+              onClick={(e) => {
+                e.stopPropagation();
+                const localListingsSection = document.getElementById('local-listings');
+                if (localListingsSection) {
+                  localListingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                  // Fallback to vehicle inventory if section not found
+                  navigate(`/vehicle-inventory?search=${encodeURIComponent(vehicleName)}`);
+                }
+              }}
               />
             </div>
             {ctaText && isMobile && !hideCtaButton && (
@@ -701,20 +701,20 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             )}
           </div>
           <h1 style={{ margin: 0 }}>
-            {vehiclePath ? (
-              <Link 
-                to={vehiclePath} 
-                style={vehicleNameStyle}
-                onMouseEnter={() => setIsVehicleNameHovered(true)}
-                onMouseLeave={() => setIsVehicleNameHovered(false)}
-              >
-                {vehicleName}
-              </Link>
-            ) : (
+          {vehiclePath ? (
+            <Link 
+              to={vehiclePath} 
+              style={vehicleNameStyle}
+              onMouseEnter={() => setIsVehicleNameHovered(true)}
+              onMouseLeave={() => setIsVehicleNameHovered(false)}
+            >
+              {vehicleName}
+            </Link>
+          ) : (
               <span style={vehicleNameStyle}>
-                {vehicleName}
+              {vehicleName}
               </span>
-            )}
+          )}
           </h1>
         </div>
         <div style={ratingsStyle}>
