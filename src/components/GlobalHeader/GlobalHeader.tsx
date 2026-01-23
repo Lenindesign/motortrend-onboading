@@ -1581,8 +1581,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   </>
                 )}
                 
-                {/* Shop Categories Section */}
-                {filteredVehicles.length > 0 && (
+                {/* Shop Categories Section - Only show when user types "best" */}
+                {(() => {
+                  const queryLower = searchQuery.toLowerCase().trim();
+                  const isBestQuery = queryLower === 'best' || queryLower.startsWith('best ');
+                  return isBestQuery && filteredVehicles.length > 0;
+                })() && (
                   <>
                     <div style={{ 
                       padding: '12px 16px 8px 16px', 
