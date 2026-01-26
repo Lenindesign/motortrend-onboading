@@ -347,6 +347,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [autocompleteSuggestions, setAutocompleteSuggestions] = useState<string[]>([]);
   const [researchArticles, setResearchArticles] = useState<Array<{ article: Article; slug: string }>>([]);
+  const [detectedMake, setDetectedMake] = useState<string | null>(null);
+  const [makeModels, setMakeModels] = useState<Vehicle[]>([]);
+  const [detectedCategory, setDetectedCategory] = useState<string | null>(null);
+  const [categoryVehicles, setCategoryVehicles] = useState<Vehicle[]>([]);
+  const [isBestQuery, setIsBestQuery] = useState(false);
+  const [bestQueryCategory, setBestQueryCategory] = useState<string | null>(null);
+  const [bestVehicles, setBestVehicles] = useState<Vehicle[]>([]);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const [highlightedSearchIndex, setHighlightedSearchIndex] = useState(-1); // -1 = chatbot, 0+ = vehicles
   const [isChatbotHovered, setIsChatbotHovered] = useState(false);
@@ -380,9 +387,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const [availableBuySellModels, setAvailableBuySellModels] = useState<string[]>([]);
 
   // Initialize makes
+  const [allMakes, setAllMakes] = useState<string[]>([]);
   useEffect(() => {
     const { makes } = getFilterOptions();
     setAvailableMakes(makes);
+    setAllMakes(makes);
   }, []);
 
   // Update models when make changes
@@ -688,21 +697,111 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       const autocomplete = generateAutocompleteSuggestions(searchQuery);
       setAutocompleteSuggestions(autocomplete);
       
-      // Search for research articles when user types "best"
+      // Detect if query is a generic make
       const queryLower = searchQuery.toLowerCase().trim();
-      if (queryLower === 'best' || queryLower.startsWith('best ')) {
+      const matchedMake = allMakes.find(make => make.toLowerCase() === queryLower);
+      
+      if (matchedMake) {
+        // User is researching a generic make
+        setDetectedMake(matchedMake);
+        // Get top models for this make (6 for carousel + 4 for list)
+        const makeVehicles = getVehicles({ make: [matchedMake], sortBy: 'rating', sortOrder: 'desc', limit: 8 });
+        setMakeModels(makeVehicles);
+        setDetectedCategory(null);
+        setCategoryVehicles([]);
+      } else {
+        setDetectedMake(null);
+        setMakeModels([]);
+        
+        // Detect if query is a vehicle category
+        // Note: bodyStyle values in data are: SUV, Truck, Coupe, Hatchback, Sedan
+        // For EV, we filter by fuelType instead
+        const categoryMappings: Record<string, { bodyStyle?: string; fuelType?: string; displayName: string; landingPage: string }> = {
+          'suv': { bodyStyle: 'SUV', displayName: 'SUV', landingPage: '/suv' },
+          'suvs': { bodyStyle: 'SUV', displayName: 'SUV', landingPage: '/suv' },
+          'sedan': { bodyStyle: 'Sedan', displayName: 'Sedan', landingPage: '/sedan' },
+          'sedans': { bodyStyle: 'Sedan', displayName: 'Sedan', landingPage: '/sedan' },
+          'truck': { bodyStyle: 'Truck', displayName: 'Truck', landingPage: '/truck' },
+          'trucks': { bodyStyle: 'Truck', displayName: 'Truck', landingPage: '/truck' },
+          'coupe': { bodyStyle: 'Coupe', displayName: 'Coupe', landingPage: '/coupe' },
+          'coupes': { bodyStyle: 'Coupe', displayName: 'Coupe', landingPage: '/coupe' },
+          'ev': { fuelType: 'Electric', displayName: 'Electric Vehicle', landingPage: '/electric' },
+          'evs': { fuelType: 'Electric', displayName: 'Electric Vehicle', landingPage: '/electric' },
+          'electric': { fuelType: 'Electric', displayName: 'Electric Vehicle', landingPage: '/electric' },
+          'electric vehicle': { fuelType: 'Electric', displayName: 'Electric Vehicle', landingPage: '/electric' },
+          'electric vehicles': { fuelType: 'Electric', displayName: 'Electric Vehicle', landingPage: '/electric' },
+          'hatchback': { bodyStyle: 'Hatchback', displayName: 'Hatchback', landingPage: '/hatchback' },
+          'hatchbacks': { bodyStyle: 'Hatchback', displayName: 'Hatchback', landingPage: '/hatchback' },
+        };
+        
+        const matchedCategory = categoryMappings[queryLower];
+        
+        if (matchedCategory) {
+          setDetectedCategory(JSON.stringify(matchedCategory));
+          // Get top vehicles in this category - use bodyStyle or fuelType
+          let catVehicles: Vehicle[];
+          if (matchedCategory.bodyStyle) {
+            catVehicles = getVehicles({ bodyStyle: [matchedCategory.bodyStyle], sortBy: 'rating', sortOrder: 'desc', limit: 6 });
+          } else if (matchedCategory.fuelType) {
+            catVehicles = getVehicles({ fuelType: [matchedCategory.fuelType], sortBy: 'rating', sortOrder: 'desc', limit: 6 });
+          } else {
+            catVehicles = [];
+          }
+          setCategoryVehicles(catVehicles);
+        } else {
+          setDetectedCategory(null);
+          setCategoryVehicles([]);
+        }
+      }
+      
+      // Detect "best" queries (e.g., "best", "best suvs", "best sedans")
+      const isBest = queryLower === 'best' || queryLower.startsWith('best ');
+      setIsBestQuery(isBest);
+      
+      if (isBest) {
         // Extract the category from "best suvs", "best trucks", etc.
-        const category = queryLower.replace('best', '').trim();
-        const searchTerm = category || 'best';
+        const categoryPart = queryLower.replace('best', '').trim();
+        const searchTerm = categoryPart || 'best';
+        
+        // Search for relevant articles
         const articles = searchArticles(searchTerm, 5);
-        // Find slugs for articles
         const articlesWithSlugs = articles.map(article => {
           const slug = Object.keys(articlesData).find(key => articlesData[key] === article) || '';
           return { article, slug };
         }).filter(item => item.slug);
         setResearchArticles(articlesWithSlugs);
+        
+        // Determine body style from the query
+        const categoryMappingsForBest: Record<string, string> = {
+          'suv': 'SUV', 'suvs': 'SUV',
+          'sedan': 'Sedan', 'sedans': 'Sedan',
+          'truck': 'Truck', 'trucks': 'Truck',
+          'coupe': 'Coupe', 'coupes': 'Coupe',
+          'hatchback': 'Hatchback', 'hatchbacks': 'Hatchback',
+          'ev': 'Electric', 'evs': 'Electric', 'electric': 'Electric',
+        };
+        
+        const detectedBodyStyle = categoryMappingsForBest[categoryPart] || null;
+        setBestQueryCategory(detectedBodyStyle);
+        
+        // Get top vehicles for this category (or general top vehicles if no category)
+        let topVehicles: Vehicle[];
+        if (detectedBodyStyle) {
+          if (detectedBodyStyle === 'Electric') {
+            // Electric is a fuelType, not bodyStyle
+            topVehicles = getVehicles({ fuelType: ['Electric'], sortBy: 'rating', sortOrder: 'desc', limit: 6 });
+          } else {
+            topVehicles = getVehicles({ bodyStyle: [detectedBodyStyle], sortBy: 'rating', sortOrder: 'desc', limit: 6 });
+          }
+        } else {
+          // General "best" - get top rated vehicles across all categories
+          topVehicles = getVehicles({ sortBy: 'rating', sortOrder: 'desc', limit: 6 });
+        }
+        setBestVehicles(topVehicles);
       } else {
         setResearchArticles([]);
+        setBestQueryCategory(null);
+        setBestVehicles([]);
       }
       
       setShowSearchDropdown(true);
@@ -711,6 +810,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       setFilteredVehicles([]);
       setAutocompleteSuggestions([]);
       setResearchArticles([]);
+      setDetectedMake(null);
+      setMakeModels([]);
+      setDetectedCategory(null);
+      setCategoryVehicles([]);
+      setIsBestQuery(false);
+      setBestQueryCategory(null);
+      setBestVehicles([]);
       setShowSearchDropdown(false);
     }
     setHighlightedSearchIndex(-1); // Default to chatbot suggestion
@@ -1313,119 +1419,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             {/* Search Dropdown */}
             {showSearchDropdown && searchQuery.length > 0 && (
               <div style={searchDropdownStyle}>
-                {/* Assistant Label */}
-                <div style={{
-                  padding: '12px 16px 8px 16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                }}>
-                  <span style={{
-                    fontSize: '12px',
-                    color: 'var(--color-white, #FFFFFF)',
-                    fontFamily: 'var(--font-body, sans-serif)',
-                    fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    ASSISTANT
-                  </span>
-                </div>
-                
-                {/* Chatbot Suggestion - Always show first */}
-                <div
-                  style={{
-                    padding: '12px 16px',
-                    fontFamily: 'var(--font-body, sans-serif)',
-                    fontWeight: 500,
-                    fontSize: '14px',
-                    color: 'var(--color-white, #FFFFFF)',
-                    cursor: 'pointer',
-                    transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                    border: highlightedSearchIndex === -1 || isChatbotHovered ? '1px solid #33CCFF' : '1px solid transparent',
-                    margin: '8px 12px',
-                    borderRadius: 'var(--border-radius-sm, 4px)',
-                    backgroundColor: highlightedSearchIndex === -1 || isChatbotHovered ? 'var(--color-neutrals-2, #23262F)' : 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}
-                  onClick={handleChatbotSelect}
-                  onMouseEnter={() => {
-                    setHighlightedSearchIndex(-1);
-                    setIsChatbotHovered(true);
-                  }}
-                  onMouseLeave={() => setIsChatbotHovered(false)}
-                >
-                  <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
-                  <span style={{
-                    fontSize: '14px',
-                    color: 'var(--color-white, #FFFFFF)',
-                    fontFamily: 'var(--font-body, sans-serif)',
-                    fontWeight: 500,
-                    flex: 1
-                  }}>
-                    Are you shopping for "{searchQuery}"?
-                  </span>
-                  <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                </div>
-                
-                {/* Autocomplete Suggestions */}
-                {autocompleteSuggestions.length > 0 && (
+                {/* Make-Specific Layout - Show when user researches a generic make */}
+                {detectedMake && makeModels.length > 0 && (
                   <>
-                    {autocompleteSuggestions.map((suggestion) => (
-                      <div
-                        key={suggestion}
-                        style={{
-                          padding: '12px 16px',
-                          fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 500,
-                          fontSize: '14px',
-                          color: 'var(--color-white, #FFFFFF)',
-                          cursor: 'pointer',
-                          transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                          border: '1px solid transparent',
-                          margin: '8px 12px',
-                          borderRadius: 'var(--border-radius-sm, 4px)',
-                          backgroundColor: 'transparent',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px'
-                        }}
-                        onClick={() => handleAutocompleteSelect(suggestion)}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.border = '1px solid #33CCFF';
-                          e.currentTarget.style.backgroundColor = 'var(--color-neutrals-2, #23262F)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.border = '1px solid transparent';
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                        }}
-                      >
-                        <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
-                        <span style={{
-                          fontSize: '14px',
-                          color: 'var(--color-white, #FFFFFF)',
-                          fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 500,
-                          flex: 1
-                        }}>
-                          {suggestion}
-                        </span>
-                        <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                      </div>
-                    ))}
-                  </>
-                )}
-                
-                {/* Best Categories Section - Show when user types "best" */}
-                {(() => {
-                  const queryLower = searchQuery.toLowerCase().trim();
-                  const isBestQuery = queryLower === 'best' || queryLower.startsWith('best ');
-                  return isBestQuery;
-                })() && (
-                  <>
+                    {/* Vehicles Section (Primary) */}
                     <div style={{ 
                       padding: '12px 16px 8px 16px', 
                       fontSize: '11px', 
@@ -1436,27 +1433,258 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
                       borderBottom: '1px solid var(--color-neutrals-3, #353945)'
                     }}>
-                      CATEGORIES
+                      VEHICLES
                     </div>
-                    {['SUV', 'Sedan', 'Truck', 'Coupe', 'Electric'].map((category, index) => (
+                    {/* Link to make page */}
+                    <div
+                      style={{
+                        padding: '12px 16px',
+                        fontFamily: 'var(--font-body, sans-serif)',
+                        fontWeight: 500,
+                        fontSize: '14px',
+                        color: 'var(--color-white, #FFFFFF)',
+                        cursor: 'pointer',
+                        transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                        borderBottom: '1px solid var(--color-neutrals-3, #353945)',
+                        backgroundColor: 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px'
+                      }}
+                      onClick={() => {
+                        navigate(`/vehicles?make=${encodeURIComponent(detectedMake)}`);
+                        setSearchQuery('');
+                        setShowSearchDropdown(false);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}
+                    >
+                      <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                      <span style={{ flex: 1 }}>View all {detectedMake} vehicles</span>
+                      <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                    </div>
+                    {/* Top 3-4 Models */}
+                    {makeModels.slice(0, 4).map((vehicle, index) => {
+                      const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+                      return (
+                        <div
+                          key={vehicle.id}
+                          style={{
+                            padding: '12px 16px',
+                            fontFamily: 'var(--font-body, sans-serif)',
+                            fontWeight: 400,
+                            fontSize: '14px',
+                            color: 'var(--color-white, #FFFFFF)',
+                            cursor: 'pointer',
+                            transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                            borderBottom: index < Math.min(makeModels.length, 4) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                            backgroundColor: 'transparent',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px'
+                          }}
+                          onClick={() => handleVehicleSelect(vehicleName)}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'transparent';
+                          }}
+                        >
+                          <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                          <span>{vehicleName}</span>
+                        </div>
+                      );
+                    })}
+                    
+                    {/* Shop Section (Secondary) - Carousel with top vehicles */}
+                    <div style={{ 
+                      padding: '12px 16px 8px 16px', 
+                      fontSize: '11px', 
+                      color: 'var(--color-neutrals-5, #B1B5C3)', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.5px',
+                      fontWeight: 600,
+                      borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                      borderBottom: '1px solid var(--color-neutrals-3, #353945)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <span>SHOP</span>
+                      <span 
+                        style={{ 
+                          cursor: 'pointer', 
+                          color: 'var(--color-primary-1, #E90C17)',
+                          fontSize: '11px',
+                          fontWeight: 500
+                        }}
+                        onClick={() => {
+                          navigate(`/cars-for-sale/${detectedMake}`);
+                          setSearchQuery('');
+                          setShowSearchDropdown(false);
+                        }}
+                      >
+                        View All →
+                      </span>
+                    </div>
+                    {/* Shop Carousel with top vehicles for the make */}
+                    <div 
+                      className="search-carousel"
+                      style={{
+                        display: 'flex',
+                        gap: '12px',
+                        padding: '12px',
+                        overflowX: 'auto',
+                        overflowY: 'hidden',
+                        scrollSnapType: 'x mandatory',
+                        WebkitOverflowScrolling: 'touch',
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: 'var(--color-neutrals-3, #353945) var(--color-neutrals-1, #141416)'
+                      }}
+                    >
+                      {makeModels.slice(0, 6).map((vehicle) => {
+                        const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+                        const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
+                        return (
+                          <div
+                            key={vehicle.id}
+                            onClick={() => handleVehicleSelect(vehicleName)}
+                            style={{
+                              flexShrink: 0,
+                              width: '200px',
+                              backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                              borderRadius: 'var(--border-radius-md, 8px)',
+                              overflow: 'hidden',
+                              cursor: 'pointer',
+                              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                              scrollSnapAlign: 'start',
+                              border: '1px solid var(--color-neutrals-3, #353945)'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.transform = 'translateY(-2px)';
+                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.transform = 'translateY(0)';
+                              e.currentTarget.style.boxShadow = 'none';
+                            }}
+                          >
+                            {/* Image */}
+                            <div style={{
+                              width: '100%',
+                              height: '110px',
+                              overflow: 'hidden',
+                              backgroundColor: 'var(--color-neutrals-3, #353945)',
+                              position: 'relative'
+                            }}>
+                              <img
+                                src={vehicle.image}
+                                alt={vehicleName}
+                                style={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover'
+                                }}
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x110?text=No+Image';
+                                }}
+                              />
+                            </div>
+                            
+                            {/* Content */}
+                            <div style={{
+                              padding: '10px'
+                            }}>
+                              {/* Rating */}
+                              {rating && (
+                                <div style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  marginBottom: '4px',
+                                  fontSize: '10px',
+                                  color: 'var(--color-neutrals-5, #B1B5C3)',
+                                  fontFamily: 'var(--font-body, sans-serif)'
+                                }}>
+                                  <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
+                                  <span style={{ fontWeight: 500 }}>MT RATING</span>
+                                  <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
+                                </div>
+                              )}
+                              
+                              {/* Make and Model */}
+                              <div style={{
+                                fontSize: '13px',
+                                fontWeight: 700,
+                                color: 'var(--color-white, #FFFFFF)',
+                                fontFamily: 'var(--font-body, sans-serif)',
+                                marginBottom: '2px',
+                                lineHeight: '1.3',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                              }}>
+                                {vehicleName}
+                              </div>
+                              
+                              {/* Price Range */}
+                              <div style={{
+                                fontSize: '11px',
+                                color: 'var(--color-neutrals-5, #B1B5C3)',
+                                fontFamily: 'var(--font-body, sans-serif)',
+                                fontWeight: 400
+                              }}>
+                                {vehicle.priceRange || `$${vehicle.priceMin?.toLocaleString() || 'N/A'}`}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+                
+                {/* Category-Specific Layout - Show when user searches for a category (SUV, sedan, EV, etc.) */}
+                {detectedCategory && categoryVehicles.length > 0 && (() => {
+                  const categoryData = JSON.parse(detectedCategory) as { bodyStyle?: string; fuelType?: string; displayName: string; landingPage: string };
+                  return (
+                    <>
+                      {/* Vehicles Section (Primary) */}
+                      <div style={{ 
+                        padding: '12px 16px 8px 16px', 
+                        fontSize: '11px', 
+                        color: 'var(--color-neutrals-5, #B1B5C3)', 
+                        textTransform: 'uppercase', 
+                        letterSpacing: '0.5px',
+                        fontWeight: 600,
+                        borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                        borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                      }}>
+                        VEHICLES
+                      </div>
+                      {/* Link to category landing page */}
                       <div
-                        key={category}
                         style={{
                           padding: '12px 16px',
                           fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 400,
+                          fontWeight: 500,
                           fontSize: '14px',
                           color: 'var(--color-white, #FFFFFF)',
                           cursor: 'pointer',
                           transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                          borderBottom: index < 4 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                          borderBottom: '1px solid var(--color-neutrals-3, #353945)',
                           backgroundColor: 'transparent',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '12px'
                         }}
                         onClick={() => {
-                          navigate(`/${category.toLowerCase()}`);
+                          navigate(categoryData.landingPage);
                           setSearchQuery('');
                           setShowSearchDropdown(false);
                         }}
@@ -1467,55 +1695,75 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           e.currentTarget.style.backgroundColor = 'transparent';
                         }}
                       >
-                        <Icon name="grid_view" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                        <span style={{
-                          fontSize: '14px',
-                          color: 'var(--color-white, #FFFFFF)',
-                          fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 400,
-                          flex: 1
-                        }}>
-                          {category}
-                        </span>
+                        <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                        <span style={{ flex: 1 }}>View all {categoryData.displayName}s</span>
+                        <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
                       </div>
-                    ))}
-                  </>
-                )}
-                
-                {/* Research Section - Show when user types "best" */}
-                {researchArticles.length > 0 && (
-                  <>
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
-                      letterSpacing: '0.5px',
-                      fontWeight: 600,
-                      borderTop: researchArticles.length > 0 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
-                      borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                    }}>
-                      RESEARCH
-                    </div>
-                    {researchArticles.slice(0, 5).map(({ article, slug }, index) => (
+                      {/* Top 4 representative vehicles in category */}
+                      {categoryVehicles.slice(0, 4).map((vehicle, index) => {
+                        const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+                        return (
+                          <div
+                            key={vehicle.id}
+                            style={{
+                              padding: '12px 16px',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              cursor: 'pointer',
+                              transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                              borderBottom: index < Math.min(categoryVehicles.length, 4) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                              backgroundColor: 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px'
+                            }}
+                            onClick={() => handleVehicleSelect(vehicleName)}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                          >
+                            <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                            <span>{vehicleName}</span>
+                          </div>
+                        );
+                      })}
+                      
+                      {/* Editorial Section (Secondary) */}
+                      <div style={{ 
+                        padding: '12px 16px 8px 16px', 
+                        fontSize: '11px', 
+                        color: 'var(--color-neutrals-5, #B1B5C3)', 
+                        textTransform: 'uppercase', 
+                        letterSpacing: '0.5px',
+                        fontWeight: 600,
+                        borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                        borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                      }}>
+                        EDITORIAL
+                      </div>
+                      {/* Link to editorial category page */}
                       <div
-                        key={slug || index}
                         style={{
                           padding: '12px 16px',
                           fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 400,
+                          fontWeight: 500,
                           fontSize: '14px',
                           color: 'var(--color-white, #FFFFFF)',
                           cursor: 'pointer',
                           transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                          borderBottom: index < Math.min(researchArticles.length, 5) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                          borderBottom: '1px solid var(--color-neutrals-3, #353945)',
                           backgroundColor: 'transparent',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '12px'
                         }}
                         onClick={() => {
-                          navigate(`/article/${slug}`);
+                          navigate(`/cars${categoryData.landingPage}`);
                           setSearchQuery('');
                           setShowSearchDropdown(false);
                         }}
@@ -1527,22 +1775,478 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         }}
                       >
                         <Icon name="article" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                        <span style={{
-                          fontSize: '14px',
-                          color: 'var(--color-white, #FFFFFF)',
-                          fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 400,
-                          flex: 1
-                        }}>
-                          {article.title}
+                        <span style={{ flex: 1 }}>{categoryData.displayName} News & Reviews</span>
+                        <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                      </div>
+                      
+                      {/* Shop Section - Carousel with top vehicles in category */}
+                      <div style={{ 
+                        padding: '12px 16px 8px 16px', 
+                        fontSize: '11px', 
+                        color: 'var(--color-neutrals-5, #B1B5C3)', 
+                        textTransform: 'uppercase', 
+                        letterSpacing: '0.5px',
+                        fontWeight: 600,
+                        borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                        borderBottom: '1px solid var(--color-neutrals-3, #353945)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                      }}>
+                        <span>SHOP</span>
+                        <span 
+                          style={{ 
+                            cursor: 'pointer', 
+                            color: 'var(--color-primary-1, #E90C17)',
+                            fontSize: '11px',
+                            fontWeight: 500
+                          }}
+                          onClick={() => {
+                            const filterParam = categoryData.bodyStyle 
+                              ? `bodyStyle=${categoryData.bodyStyle.toLowerCase()}`
+                              : `fuelType=${categoryData.fuelType?.toLowerCase() || 'electric'}`;
+                            navigate(`/cars-for-sale?${filterParam}`);
+                            setSearchQuery('');
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          View All →
                         </span>
                       </div>
-                    ))}
+                      {/* Shop Carousel with top vehicles in category */}
+                      <div 
+                        className="search-carousel"
+                        style={{
+                          display: 'flex',
+                          gap: '12px',
+                          padding: '12px',
+                          overflowX: 'auto',
+                          overflowY: 'hidden',
+                          scrollSnapType: 'x mandatory',
+                          WebkitOverflowScrolling: 'touch',
+                          scrollbarWidth: 'thin',
+                          scrollbarColor: 'var(--color-neutrals-3, #353945) var(--color-neutrals-1, #141416)'
+                        }}
+                      >
+                        {categoryVehicles.slice(0, 6).map((vehicle) => {
+                          const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+                          const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
+                          return (
+                            <div
+                              key={vehicle.id}
+                              onClick={() => handleVehicleSelect(vehicleName)}
+                              style={{
+                                flexShrink: 0,
+                                width: '200px',
+                                backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                                borderRadius: 'var(--border-radius-md, 8px)',
+                                overflow: 'hidden',
+                                cursor: 'pointer',
+                                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                                scrollSnapAlign: 'start',
+                                border: '1px solid var(--color-neutrals-3, #353945)'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'none';
+                              }}
+                            >
+                              {/* Image */}
+                              <div style={{
+                                width: '100%',
+                                height: '110px',
+                                overflow: 'hidden',
+                                backgroundColor: 'var(--color-neutrals-3, #353945)',
+                                position: 'relative'
+                              }}>
+                                <img
+                                  src={vehicle.image}
+                                  alt={vehicleName}
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover'
+                                  }}
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x110?text=No+Image';
+                                  }}
+                                />
+                              </div>
+                              
+                              {/* Content */}
+                              <div style={{
+                                padding: '10px'
+                              }}>
+                                {/* Rating */}
+                                {rating && (
+                                  <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    marginBottom: '4px',
+                                    fontSize: '10px',
+                                    color: 'var(--color-neutrals-5, #B1B5C3)',
+                                    fontFamily: 'var(--font-body, sans-serif)'
+                                  }}>
+                                    <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
+                                    <span style={{ fontWeight: 500 }}>MT RATING</span>
+                                    <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
+                                  </div>
+                                )}
+                                
+                                {/* Make and Model */}
+                                <div style={{
+                                  fontSize: '13px',
+                                  fontWeight: 700,
+                                  color: 'var(--color-white, #FFFFFF)',
+                                  fontFamily: 'var(--font-body, sans-serif)',
+                                  marginBottom: '2px',
+                                  lineHeight: '1.3',
+                                  whiteSpace: 'nowrap',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis'
+                                }}>
+                                  {vehicleName}
+                                </div>
+                                
+                                {/* Price Range */}
+                                <div style={{
+                                  fontSize: '11px',
+                                  color: 'var(--color-neutrals-5, #B1B5C3)',
+                                  fontFamily: 'var(--font-body, sans-serif)',
+                                  fontWeight: 400
+                                }}>
+                                  {vehicle.priceRange || `$${vehicle.priceMin?.toLocaleString() || 'N/A'}`}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                })()}
+                
+                {/* Best Query Layout - Editorial-led discovery for "best suvs", "best sedans", etc. */}
+                {isBestQuery && (
+                  <>
+                    {/* Editorial Section (Primary) - Best-of or ranking articles */}
+                    <div style={{ 
+                      padding: '12px 16px 8px 16px', 
+                      fontSize: '11px', 
+                      color: 'var(--color-neutrals-5, #B1B5C3)', 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.5px',
+                      fontWeight: 600,
+                      borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                      borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                    }}>
+                      EDITORIAL
+                    </div>
+                    {/* Best-of categories if no specific category detected - limit to 4 */}
+                    {!bestQueryCategory && (
+                      <>
+                        {['SUV', 'Sedan', 'Truck', 'Electric'].slice(0, 4).map((category, index) => (
+                          <div
+                            key={category}
+                            style={{
+                              padding: '12px 16px',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              cursor: 'pointer',
+                              transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                              borderBottom: index < 3 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                              backgroundColor: 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px'
+                            }}
+                            onClick={() => {
+                              navigate(`/${category.toLowerCase()}`);
+                              setSearchQuery('');
+                              setShowSearchDropdown(false);
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                          >
+                            <Icon name="emoji_events" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                            <span style={{
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              flex: 1
+                            }}>
+                              Best {category}s
+                            </span>
+                            <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    {/* Research articles if specific category - limit to 3-4 */}
+                    {bestQueryCategory && researchArticles.length > 0 && (
+                      <>
+                        {researchArticles.slice(0, 4).map(({ article, slug }, index) => (
+                          <div
+                            key={slug || index}
+                            style={{
+                              padding: '12px 16px',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              cursor: 'pointer',
+                              transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                              borderBottom: index < Math.min(researchArticles.length, 4) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                              backgroundColor: 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px'
+                            }}
+                            onClick={() => {
+                              navigate(`/article/${slug}`);
+                              setSearchQuery('');
+                              setShowSearchDropdown(false);
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                          >
+                            <Icon name="article" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                            <span style={{
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              flex: 1
+                            }}>
+                              {article.title}
+                            </span>
+                            <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    
+                    {/* Vehicles Section (Secondary) - Top 3-4 vehicles from ranking */}
+                    {bestVehicles.length > 0 && (
+                      <>
+                        <div style={{ 
+                          padding: '12px 16px 8px 16px', 
+                          fontSize: '11px', 
+                          color: 'var(--color-neutrals-5, #B1B5C3)', 
+                          textTransform: 'uppercase', 
+                          letterSpacing: '0.5px',
+                          fontWeight: 600,
+                          borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                          borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                        }}>
+                          {bestQueryCategory ? `TOP ${bestQueryCategory.toUpperCase()}S` : 'TOP RATED VEHICLES'}
+                        </div>
+                        {bestVehicles.slice(0, 4).map((vehicle, index) => {
+                          const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+                          return (
+                            <div
+                              key={vehicle.id}
+                              style={{
+                                padding: '12px 16px',
+                                fontFamily: 'var(--font-body, sans-serif)',
+                                fontWeight: 400,
+                                fontSize: '14px',
+                                color: 'var(--color-white, #FFFFFF)',
+                                cursor: 'pointer',
+                                transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                                borderBottom: index < Math.min(bestVehicles.length, 4) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                                backgroundColor: 'transparent',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px'
+                              }}
+                              onClick={() => handleVehicleSelect(vehicleName)}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = 'transparent';
+                              }}
+                            >
+                              <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                              <span style={{ flex: 1 }}>{vehicleName}</span>
+                              {vehicle.staffRating && (
+                                <span style={{ 
+                                  fontSize: '12px', 
+                                  color: '#33CCFF',
+                                  fontWeight: 600
+                                }}>
+                                  {vehicle.staffRating.toFixed(1)}/10
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </>
+                    )}
+                    
+                    {/* Shop Section - Carousel with best vehicles */}
+                    {bestVehicles.length > 0 && (
+                      <>
+                        <div style={{ 
+                          padding: '12px 16px 8px 16px', 
+                          fontSize: '11px', 
+                          color: 'var(--color-neutrals-5, #B1B5C3)', 
+                          textTransform: 'uppercase', 
+                          letterSpacing: '0.5px',
+                          fontWeight: 600,
+                          borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                          borderBottom: '1px solid var(--color-neutrals-3, #353945)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between'
+                        }}>
+                          <span>SHOP</span>
+                          <span 
+                            style={{ 
+                              cursor: 'pointer', 
+                              color: 'var(--color-primary-1, #E90C17)',
+                              fontSize: '11px',
+                              fontWeight: 500
+                            }}
+                            onClick={() => {
+                              const shopPath = bestQueryCategory 
+                                ? `/cars-for-sale?bodyStyle=${bestQueryCategory.toLowerCase()}`
+                                : '/cars-for-sale';
+                              navigate(shopPath);
+                              setSearchQuery('');
+                              setShowSearchDropdown(false);
+                            }}
+                          >
+                            View All →
+                          </span>
+                        </div>
+                        <div 
+                          className="search-carousel"
+                          style={{
+                            display: 'flex',
+                            gap: '12px',
+                            padding: '12px',
+                            overflowX: 'auto',
+                            overflowY: 'hidden',
+                            scrollSnapType: 'x mandatory',
+                            WebkitOverflowScrolling: 'touch',
+                            scrollbarWidth: 'thin',
+                            scrollbarColor: 'var(--color-neutrals-3, #353945) var(--color-neutrals-1, #141416)'
+                          }}
+                        >
+                          {bestVehicles.slice(0, 6).map((vehicle) => {
+                            const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
+                            const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
+                            return (
+                              <div
+                                key={vehicle.id}
+                                onClick={() => handleVehicleSelect(vehicleName)}
+                                style={{
+                                  flexShrink: 0,
+                                  width: '200px',
+                                  backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                                  borderRadius: 'var(--border-radius-md, 8px)',
+                                  overflow: 'hidden',
+                                  cursor: 'pointer',
+                                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                                  scrollSnapAlign: 'start',
+                                  border: '1px solid var(--color-neutrals-3, #353945)'
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.transform = 'translateY(-2px)';
+                                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.transform = 'translateY(0)';
+                                  e.currentTarget.style.boxShadow = 'none';
+                                }}
+                              >
+                                <div style={{
+                                  width: '100%',
+                                  height: '110px',
+                                  overflow: 'hidden',
+                                  backgroundColor: 'var(--color-neutrals-3, #353945)',
+                                  position: 'relative'
+                                }}>
+                                  <img
+                                    src={vehicle.image}
+                                    alt={vehicleName}
+                                    style={{
+                                      width: '100%',
+                                      height: '100%',
+                                      objectFit: 'cover'
+                                    }}
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x110?text=No+Image';
+                                    }}
+                                  />
+                                </div>
+                                <div style={{ padding: '10px' }}>
+                                  {rating && (
+                                    <div style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '4px',
+                                      marginBottom: '4px',
+                                      fontSize: '10px',
+                                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                                      fontFamily: 'var(--font-body, sans-serif)'
+                                    }}>
+                                      <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
+                                      <span style={{ fontWeight: 500 }}>MT RATING</span>
+                                      <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
+                                    </div>
+                                  )}
+                                  <div style={{
+                                    fontSize: '13px',
+                                    fontWeight: 700,
+                                    color: 'var(--color-white, #FFFFFF)',
+                                    fontFamily: 'var(--font-body, sans-serif)',
+                                    marginBottom: '2px',
+                                    lineHeight: '1.3',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                  }}>
+                                    {vehicleName}
+                                  </div>
+                                  <div style={{
+                                    fontSize: '11px',
+                                    color: 'var(--color-neutrals-5, #B1B5C3)',
+                                    fontFamily: 'var(--font-body, sans-serif)',
+                                    fontWeight: 400
+                                  }}>
+                                    {vehicle.priceRange || `$${vehicle.priceMin?.toLocaleString() || 'N/A'}`}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
                 
-                {/* Vehicle Results */}
-                {filteredCars.length > 0 && (
+                {/* Vehicle Results - Hide when make, category, or best query is detected */}
+                {!detectedMake && !detectedCategory && !isBestQuery && filteredCars.length > 0 && (
                   <>
                     <div style={{ 
                       padding: '8px 16px', 
@@ -1581,71 +2285,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   </>
                 )}
                 
-                {/* Shop Categories Section - Only show when user types "best" */}
-                {(() => {
-                  const queryLower = searchQuery.toLowerCase().trim();
-                  const isBestQuery = queryLower === 'best' || queryLower.startsWith('best ');
-                  return isBestQuery && filteredVehicles.length > 0;
-                })() && (
-                  <>
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
-                      letterSpacing: '0.5px',
-                      fontWeight: 600,
-                      borderTop: '1px solid var(--color-neutrals-3, #353945)',
-                      borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                    }}>
-                      SHOP BY TYPE
-                    </div>
-                    {['SUV', 'Truck', 'Sedan', 'Coupe', 'Electric'].map((category, index) => (
-                      <div
-                        key={category}
-                        style={{
-                          padding: '12px 16px',
-                          fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 400,
-                          fontSize: '14px',
-                          color: 'var(--color-white, #FFFFFF)',
-                          cursor: 'pointer',
-                          transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                          borderBottom: index < 4 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
-                          backgroundColor: 'transparent',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px'
-                        }}
-                        onClick={() => {
-                          navigate(`/vehicles?bodyStyle=${category.toLowerCase()}`);
-                          setSearchQuery('');
-                          setShowSearchDropdown(false);
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                        }}
-                      >
-                        <Icon name="grid_view" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                        <span style={{
-                          fontSize: '14px',
-                          color: 'var(--color-white, #FFFFFF)',
-                          fontFamily: 'var(--font-body, sans-serif)',
-                          fontWeight: 400,
-                          flex: 1
-                        }}>
-                          Shop {category}s
-                        </span>
-                      </div>
-                    ))}
-                  </>
-                )}
-                
-                {/* Carousel Section */}
-                {filteredVehicles.length > 0 && (() => {
+                {/* Carousel Section - Hide when make, category, or best query is detected */}
+                {!detectedMake && !detectedCategory && !isBestQuery && filteredVehicles.length > 0 && (() => {
                   // Determine if vehicles are 2+ years old
                   const currentYear = new Date().getFullYear();
                   const oldestVehicleYear = Math.min(...filteredVehicles.map(v => parseInt(v.year) || currentYear));
@@ -1746,7 +2387,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                   fontFamily: 'var(--font-body, sans-serif)'
                                 }}>
                                   <Icon name="check_circle" size={12} style={{ color: '#33CCFF' }} />
-                                  <span style={{ fontWeight: 500 }}>C/D RATING</span>
+                                  <span style={{ fontWeight: 500 }}>MT RATING</span>
                                   <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
                                 </div>
                               )}
@@ -1780,6 +2421,127 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     </>
                   );
                 })()}
+                
+                {/* Assistant Section - Always at the end of dropdown for all queries */}
+                <div style={{
+                  padding: '12px 16px 8px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                  borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                }}>
+                  <span style={{
+                    fontSize: '12px',
+                    color: 'var(--color-white, #FFFFFF)',
+                    fontFamily: 'var(--font-body, sans-serif)',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    ASSISTANT
+                  </span>
+                </div>
+                
+                {/* AI Chatbot Suggestion */}
+                <div
+                  style={{
+                    padding: '12px 16px',
+                    fontFamily: 'var(--font-body, sans-serif)',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    color: 'var(--color-white, #FFFFFF)',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                    border: highlightedSearchIndex === -1 || isChatbotHovered ? '1px solid #33CCFF' : '1px solid transparent',
+                    margin: '8px 12px',
+                    borderRadius: 'var(--border-radius-sm, 4px)',
+                    backgroundColor: highlightedSearchIndex === -1 || isChatbotHovered ? 'var(--color-neutrals-2, #23262F)' : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}
+                  onClick={handleChatbotSelect}
+                  onMouseEnter={() => {
+                    setHighlightedSearchIndex(-1);
+                    setIsChatbotHovered(true);
+                  }}
+                  onMouseLeave={() => setIsChatbotHovered(false)}
+                >
+                  <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
+                  <span style={{
+                    fontSize: '14px',
+                    color: 'var(--color-white, #FFFFFF)',
+                    fontFamily: 'var(--font-body, sans-serif)',
+                    fontWeight: 500,
+                    flex: 1
+                  }}>
+                    {(() => {
+                      // Generate contextual AI prompt based on query type
+                      if (isBestQuery && bestQueryCategory) {
+                        return `Looking for the right ${bestQueryCategory}?`;
+                      } else if (isBestQuery) {
+                        return 'Looking for the best vehicle for you?';
+                      } else if (detectedCategory) {
+                        const catData = JSON.parse(detectedCategory) as { displayName: string };
+                        return `Looking for the right ${catData.displayName}?`;
+                      } else if (detectedMake) {
+                        return `Looking for the right ${detectedMake}?`;
+                      } else {
+                        return `Are you shopping for "${searchQuery}"?`;
+                      }
+                    })()}
+                  </span>
+                  <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                </div>
+                
+                {/* Autocomplete Suggestions - Show after main AI suggestion (hide for best queries since EDITORIAL already shows categories) */}
+                {autocompleteSuggestions.length > 0 && !isBestQuery && (
+                  <>
+                    {autocompleteSuggestions.map((suggestion) => (
+                      <div
+                        key={suggestion}
+                        style={{
+                          padding: '12px 16px',
+                          fontFamily: 'var(--font-body, sans-serif)',
+                          fontWeight: 500,
+                          fontSize: '14px',
+                          color: 'var(--color-white, #FFFFFF)',
+                          cursor: 'pointer',
+                          transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                          border: '1px solid transparent',
+                          margin: '8px 12px',
+                          borderRadius: 'var(--border-radius-sm, 4px)',
+                          backgroundColor: 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px'
+                        }}
+                        onClick={() => handleAutocompleteSelect(suggestion)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.border = '1px solid #33CCFF';
+                          e.currentTarget.style.backgroundColor = 'var(--color-neutrals-2, #23262F)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.border = '1px solid transparent';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
+                        <span style={{
+                          fontSize: '14px',
+                          color: 'var(--color-white, #FFFFFF)',
+                          fontFamily: 'var(--font-body, sans-serif)',
+                          fontWeight: 500,
+                          flex: 1
+                        }}>
+                          {suggestion}
+                        </span>
+                        <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
             )}
           </div>
