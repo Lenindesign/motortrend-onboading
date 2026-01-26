@@ -648,6 +648,29 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       return suggestions;
     }
     
+    // Handle partial compare queries (e.g., "civic vs", "f-150 vs ")
+    // When user types "X vs" without a second vehicle, suggest comparisons
+    const partialVsMatch = queryLower.match(/^(.+?)\s+(?:vs\.?|versus|v\.?s\.?)\s*$/i);
+    if (partialVsMatch) {
+      const vehicle1Query = partialVsMatch[1].trim();
+      const vehicle1Results = searchVehicles(vehicle1Query, 1);
+      
+      if (vehicle1Results.length > 0) {
+        const vehicle1 = vehicle1Results[0];
+        const vehicle1Name = `${vehicle1.year} ${vehicle1.make} ${vehicle1.model}`;
+        
+        // Get similar vehicles to suggest comparisons
+        const similarVehicles = getSimilarVehicles(vehicle1.id, 3);
+        
+        similarVehicles.forEach(similarVehicle => {
+          const similarName = `${similarVehicle.year} ${similarVehicle.make} ${similarVehicle.model}`;
+          suggestions.push(`Compare ${vehicle1Name} vs ${similarName}`);
+        });
+        
+        return suggestions;
+      }
+    }
+    
     // Try to detect vehicle name (e.g., "f-150", "camry", "accord", "2025 f-150")
     // Search for vehicles that match the query
     const matchingVehicles = searchVehicles(query, 5);
@@ -680,7 +703,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         if (similarVehicles.length > 0) {
           const similarVehicle = similarVehicles[0];
           const similarVehicleName = `${similarVehicle.year} ${similarVehicle.make} ${similarVehicle.model}`;
-          suggestions.push(`Do you want to compare ${vehicleName} to ${similarVehicleName}?`);
+          suggestions.push(`Compare ${vehicleName} vs ${similarVehicleName}`);
         }
       }
     }
@@ -705,13 +728,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       const queryLower = searchQuery.toLowerCase().trim();
       
       // Detect compare queries (e.g., "f-150 vs ram", "camry versus accord", "mustang vs camaro")
-      const vsMatch = queryLower.match(/^(.+?)\s+(?:vs\.?|versus|v\.?s\.?)\s+(.+)$/i);
+      // Also handles partial queries like "civic vs" or "civic vs "
+      const vsMatch = queryLower.match(/^(.+?)\s+(?:vs\.?|versus|v\.?s\.?)\s*(.*)$/i);
       if (vsMatch) {
         const [, vehicle1Query, vehicle2Query] = vsMatch;
         
-        // Search for both vehicles
+        // Search for both vehicles (vehicle2Query may be empty for partial queries)
         const vehicle1Results = searchVehicles(vehicle1Query.trim(), 1);
-        const vehicle2Results = searchVehicles(vehicle2Query.trim(), 1);
+        const vehicle2Results = vehicle2Query.trim() ? searchVehicles(vehicle2Query.trim(), 1) : [];
         
         const vehicle1 = vehicle1Results.length > 0 ? vehicle1Results[0] : null;
         const vehicle2 = vehicle2Results.length > 0 ? vehicle2Results[0] : null;
@@ -723,8 +747,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           // Search for comparison articles
           const comparisonSearchTerms = [
             vehicle1Query.trim(),
-            vehicle2Query.trim(),
-            `${vehicle1Query.trim()} vs ${vehicle2Query.trim()}`,
+            ...(vehicle2Query.trim() ? [vehicle2Query.trim(), `${vehicle1Query.trim()} vs ${vehicle2Query.trim()}`] : []),
             'comparison',
             'compare'
           ];
@@ -2348,6 +2371,68 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         );
                       })}
                     </div>
+                    
+                    {/* Autocomplete Suggestions for partial compare queries (when only one vehicle detected) */}
+                    {!compareVehicles.vehicle2 && autocompleteSuggestions.length > 0 && (
+                      <>
+                        <div style={{ 
+                          padding: '12px 16px 8px 16px', 
+                          fontSize: '11px', 
+                          color: 'var(--color-neutrals-5, #B1B5C3)', 
+                          textTransform: 'uppercase', 
+                          letterSpacing: '0.5px',
+                          fontWeight: 600,
+                          borderTop: '1px solid var(--color-neutrals-3, #353945)',
+                          borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                        }}>
+                          SUGGESTIONS
+                        </div>
+                        {autocompleteSuggestions.slice(0, 3).map((suggestion, index) => (
+                          <div
+                            key={suggestion}
+                            style={{
+                              padding: '12px 16px',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              cursor: 'pointer',
+                              transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                              borderBottom: index < Math.min(autocompleteSuggestions.length, 3) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
+                              backgroundColor: 'transparent',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px'
+                            }}
+                            onClick={() => {
+                              // Extract the full comparison query and set it as search
+                              setSearchQuery(suggestion);
+                              if (searchInputRef.current) {
+                                searchInputRef.current.focus();
+                              }
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                            }}
+                          >
+                            <Icon name="compare_arrows" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                            <span style={{
+                              fontSize: '14px',
+                              color: 'var(--color-white, #FFFFFF)',
+                              fontFamily: 'var(--font-body, sans-serif)',
+                              fontWeight: 400,
+                              flex: 1
+                            }}>
+                              {suggestion}
+                            </span>
+                            <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </>
                 )}
                 
