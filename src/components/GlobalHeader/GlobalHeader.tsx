@@ -1513,6 +1513,135 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             {/* Search Dropdown */}
             {showSearchDropdown && searchQuery.length > 0 && (
               <div style={searchDropdownStyle}>
+                {/* AI Assistant Section - ALWAYS SHOWN FIRST */}
+                <div style={{
+                  padding: '12px 16px 8px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderBottom: '1px solid var(--color-neutrals-3, #353945)'
+                }}>
+                  <span style={{
+                    fontSize: '12px',
+                    color: 'var(--color-white, #FFFFFF)',
+                    fontFamily: 'var(--font-body, sans-serif)',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    AI ASSISTANT
+                  </span>
+                </div>
+                
+                {/* AI Chatbot Suggestion - Always First */}
+                <div
+                  style={{
+                    padding: '12px 16px',
+                    fontFamily: 'var(--font-body, sans-serif)',
+                    fontWeight: 500,
+                    fontSize: '14px',
+                    color: 'var(--color-white, #FFFFFF)',
+                    cursor: 'pointer',
+                    transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                    border: highlightedSearchIndex === -1 || isChatbotHovered ? '1px solid #33CCFF' : '1px solid transparent',
+                    margin: '8px 12px',
+                    borderRadius: 'var(--border-radius-sm, 4px)',
+                    backgroundColor: highlightedSearchIndex === -1 || isChatbotHovered ? 'var(--color-neutrals-2, #23262F)' : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}
+                  onClick={() => handleChatbotSelect()}
+                  onMouseEnter={() => {
+                    setHighlightedSearchIndex(-1);
+                    setIsChatbotHovered(true);
+                  }}
+                  onMouseLeave={() => setIsChatbotHovered(false)}
+                >
+                  <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
+                  <span style={{
+                    fontSize: '14px',
+                    color: 'var(--color-white, #FFFFFF)',
+                    fontFamily: 'var(--font-body, sans-serif)',
+                    fontWeight: 500,
+                    flex: 1
+                  }}>
+                    {(() => {
+                      // Generate contextual AI prompt based on query type
+                      if (isCompareQuery) {
+                        const v1 = compareVehicles.vehicle1;
+                        const v2 = compareVehicles.vehicle2;
+                        const v1Name = v1 ? `${v1.make} ${v1.model}` : '';
+                        const v2Name = v2 ? `${v2.make} ${v2.model}` : '';
+                        if (v1Name && v2Name) {
+                          return `Want to compare the ${v1Name} and ${v2Name} side by side?`;
+                        }
+                        return `Want to compare ${v1Name || v2Name} to similar vehicles?`;
+                      } else if (isBestQuery && bestQueryCategory) {
+                        return `Looking for the right ${bestQueryCategory}?`;
+                      } else if (isBestQuery) {
+                        return 'Looking for the best vehicle for you?';
+                      } else if (detectedCategory) {
+                        const catData = JSON.parse(detectedCategory) as { displayName: string };
+                        return `Looking for the right ${catData.displayName}?`;
+                      } else if (detectedMake) {
+                        return `Looking for the right ${detectedMake}?`;
+                      } else {
+                        return `Are you shopping for "${searchQuery}"?`;
+                      }
+                    })()}
+                  </span>
+                  <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                </div>
+                
+                {/* Autocomplete Suggestions - Show up to 3 suggestions after AI Assistant */}
+                {autocompleteSuggestions.length > 0 && !isBestQuery && (
+                  <>
+                    {autocompleteSuggestions.slice(0, 3).map((suggestion) => (
+                      <div
+                        key={suggestion}
+                        style={{
+                          padding: '12px 16px',
+                          fontFamily: 'var(--font-body, sans-serif)',
+                          fontWeight: 500,
+                          fontSize: '14px',
+                          color: 'var(--color-white, #FFFFFF)',
+                          cursor: 'pointer',
+                          transition: 'all var(--transition-fast, 150ms ease-in-out)',
+                          border: '1px solid transparent',
+                          margin: '8px 12px',
+                          borderRadius: 'var(--border-radius-sm, 4px)',
+                          backgroundColor: 'transparent',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px'
+                        }}
+                        onClick={() => handleAutocompleteSelect(suggestion)}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.border = '1px solid #33CCFF';
+                          e.currentTarget.style.backgroundColor = 'var(--color-neutrals-2, #23262F)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.border = '1px solid transparent';
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                      >
+                        <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
+                        <span style={{
+                          fontSize: '14px',
+                          color: 'var(--color-white, #FFFFFF)',
+                          fontFamily: 'var(--font-body, sans-serif)',
+                          fontWeight: 500,
+                          flex: 1
+                        }}>
+                          {suggestion}
+                        </span>
+                        <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
+                      </div>
+                    ))}
+                  </>
+                )}
+
                 {/* Make-Specific Layout - Show when user researches a generic make */}
                 {detectedMake && makeModels.length > 0 && (
                   <>
@@ -2028,77 +2157,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 {/* Compare Query Layout - Side-by-side comparison for "f-150 vs ram", "camry versus accord" */}
                 {isCompareQuery && (compareVehicles.vehicle1 || compareVehicles.vehicle2) && (
                   <>
-                    {/* AI Prompt Section (Primary) - Opens chatbot modal */}
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
-                      letterSpacing: '0.5px',
-                      fontWeight: 600,
-                      borderTop: '1px solid var(--color-neutrals-3, #353945)',
-                      borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                    }}>
-                      AI ASSISTANT
-                    </div>
-                    <div
-                      style={{
-                        padding: '14px 16px',
-                        fontFamily: 'var(--font-body, sans-serif)',
-                        fontWeight: 400,
-                        fontSize: '14px',
-                        color: 'var(--color-white, #FFFFFF)',
-                        cursor: 'pointer',
-                        transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                        backgroundColor: 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                      }}
-                      onClick={() => {
-                        // Open chatbot modal with comparison context
-                        const vehicle1Name = compareVehicles.vehicle1 
-                          ? `${compareVehicles.vehicle1.year} ${compareVehicles.vehicle1.make} ${compareVehicles.vehicle1.model}`
-                          : '';
-                        const vehicle2Name = compareVehicles.vehicle2 
-                          ? `${compareVehicles.vehicle2.year} ${compareVehicles.vehicle2.make} ${compareVehicles.vehicle2.model}`
-                          : '';
-                        const compareQuery = vehicle1Name && vehicle2Name 
-                          ? `Compare ${vehicle1Name} vs ${vehicle2Name}`
-                          : `Compare ${vehicle1Name || vehicle2Name}`;
-                        handleChatbotSelect(compareQuery);
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                      }}
-                    >
-                      <Icon name="auto_awesome" size={18} style={{ color: '#33CCFF', flexShrink: 0 }} />
-                      <span style={{
-                        fontSize: '14px',
-                        color: 'var(--color-white, #FFFFFF)',
-                        fontFamily: 'var(--font-body, sans-serif)',
-                        fontWeight: 400,
-                        flex: 1
-                      }}>
-                        {(() => {
-                          const v1 = compareVehicles.vehicle1;
-                          const v2 = compareVehicles.vehicle2;
-                          const v1Name = v1 ? `${v1.make} ${v1.model}` : '';
-                          const v2Name = v2 ? `${v2.make} ${v2.model}` : '';
-                          if (v1Name && v2Name) {
-                            return `Want to compare the ${v1Name} and ${v2Name} side by side?`;
-                          }
-                          return `Want to compare ${v1Name || v2Name} to similar vehicles?`;
-                        })()}
-                      </span>
-                      <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                    </div>
-                    
-                    {/* Vehicles Section (Secondary) - Direct links to each model page */}
+                    {/* Vehicles Section - Direct links to each model page */}
                     <div style={{ 
                       padding: '12px 16px 8px 16px', 
                       fontSize: '11px', 
@@ -2372,67 +2431,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       })}
                     </div>
                     
-                    {/* Autocomplete Suggestions for partial compare queries (when only one vehicle detected) */}
-                    {!compareVehicles.vehicle2 && autocompleteSuggestions.length > 0 && (
-                      <>
-                        <div style={{ 
-                          padding: '12px 16px 8px 16px', 
-                          fontSize: '11px', 
-                          color: 'var(--color-neutrals-5, #B1B5C3)', 
-                          textTransform: 'uppercase', 
-                          letterSpacing: '0.5px',
-                          fontWeight: 600,
-                          borderTop: '1px solid var(--color-neutrals-3, #353945)',
-                          borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                        }}>
-                          SUGGESTIONS
-                        </div>
-                        {autocompleteSuggestions.slice(0, 3).map((suggestion, index) => (
-                          <div
-                            key={suggestion}
-                            style={{
-                              padding: '12px 16px',
-                              fontFamily: 'var(--font-body, sans-serif)',
-                              fontWeight: 400,
-                              fontSize: '14px',
-                              color: 'var(--color-white, #FFFFFF)',
-                              cursor: 'pointer',
-                              transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                              borderBottom: index < Math.min(autocompleteSuggestions.length, 3) - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none',
-                              backgroundColor: 'transparent',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '12px'
-                            }}
-                            onClick={() => {
-                              // Extract the full comparison query and set it as search
-                              setSearchQuery(suggestion);
-                              if (searchInputRef.current) {
-                                searchInputRef.current.focus();
-                              }
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = 'var(--color-neutrals-3, #353945)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                            }}
-                          >
-                            <Icon name="compare_arrows" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                            <span style={{
-                              fontSize: '14px',
-                              color: 'var(--color-white, #FFFFFF)',
-                              fontFamily: 'var(--font-body, sans-serif)',
-                              fontWeight: 400,
-                              flex: 1
-                            }}>
-                              {suggestion}
-                            </span>
-                            <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                          </div>
-                        ))}
-                      </>
-                    )}
                   </>
                 )}
                 
@@ -2927,130 +2925,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   );
                 })()}
                 
-                {/* Assistant Section - Always at the end of dropdown for all queries (except compare queries which have AI at top) */}
-                {!isCompareQuery && (
-                  <>
-                    <div style={{
-                      padding: '12px 16px 8px 16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      borderTop: '1px solid var(--color-neutrals-3, #353945)',
-                      borderBottom: '1px solid var(--color-neutrals-3, #353945)'
-                    }}>
-                      <span style={{
-                        fontSize: '12px',
-                        color: 'var(--color-white, #FFFFFF)',
-                        fontFamily: 'var(--font-body, sans-serif)',
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        ASSISTANT
-                      </span>
-                    </div>
-                    
-                    {/* AI Chatbot Suggestion */}
-                    <div
-                  style={{
-                    padding: '12px 16px',
-                    fontFamily: 'var(--font-body, sans-serif)',
-                    fontWeight: 500,
-                    fontSize: '14px',
-                    color: 'var(--color-white, #FFFFFF)',
-                    cursor: 'pointer',
-                    transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                    border: highlightedSearchIndex === -1 || isChatbotHovered ? '1px solid #33CCFF' : '1px solid transparent',
-                    margin: '8px 12px',
-                    borderRadius: 'var(--border-radius-sm, 4px)',
-                    backgroundColor: highlightedSearchIndex === -1 || isChatbotHovered ? 'var(--color-neutrals-2, #23262F)' : 'transparent',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}
-                  onClick={() => handleChatbotSelect()}
-                  onMouseEnter={() => {
-                    setHighlightedSearchIndex(-1);
-                    setIsChatbotHovered(true);
-                  }}
-                  onMouseLeave={() => setIsChatbotHovered(false)}
-                >
-                  <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
-                  <span style={{
-                    fontSize: '14px',
-                    color: 'var(--color-white, #FFFFFF)',
-                    fontFamily: 'var(--font-body, sans-serif)',
-                    fontWeight: 500,
-                    flex: 1
-                  }}>
-                    {(() => {
-                      // Generate contextual AI prompt based on query type
-                      if (isBestQuery && bestQueryCategory) {
-                        return `Looking for the right ${bestQueryCategory}?`;
-                      } else if (isBestQuery) {
-                        return 'Looking for the best vehicle for you?';
-                      } else if (detectedCategory) {
-                        const catData = JSON.parse(detectedCategory) as { displayName: string };
-                        return `Looking for the right ${catData.displayName}?`;
-                      } else if (detectedMake) {
-                        return `Looking for the right ${detectedMake}?`;
-                      } else {
-                        return `Are you shopping for "${searchQuery}"?`;
-                      }
-                    })()}
-                  </span>
-                  <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                </div>
-                
-                    {/* Autocomplete Suggestions - Show after main AI suggestion (hide for best queries since EDITORIAL already shows categories) */}
-                    {autocompleteSuggestions.length > 0 && !isBestQuery && (
-                      <>
-                        {autocompleteSuggestions.map((suggestion) => (
-                          <div
-                            key={suggestion}
-                            style={{
-                              padding: '12px 16px',
-                              fontFamily: 'var(--font-body, sans-serif)',
-                              fontWeight: 500,
-                              fontSize: '14px',
-                              color: 'var(--color-white, #FFFFFF)',
-                              cursor: 'pointer',
-                              transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                              border: '1px solid transparent',
-                              margin: '8px 12px',
-                              borderRadius: 'var(--border-radius-sm, 4px)',
-                              backgroundColor: 'transparent',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '12px'
-                            }}
-                            onClick={() => handleAutocompleteSelect(suggestion)}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.border = '1px solid #33CCFF';
-                              e.currentTarget.style.backgroundColor = 'var(--color-neutrals-2, #23262F)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.border = '1px solid transparent';
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                            }}
-                          >
-                            <Icon name="auto_awesome" size={20} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
-                            <span style={{
-                              fontSize: '14px',
-                              color: 'var(--color-white, #FFFFFF)',
-                              fontFamily: 'var(--font-body, sans-serif)',
-                              fontWeight: 500,
-                              flex: 1
-                            }}>
-                              {suggestion}
-                            </span>
-                            <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
-                          </div>
-                        ))}
-                      </>
-                    )}
-                  </>
-                )}
               </div>
             )}
           </div>
