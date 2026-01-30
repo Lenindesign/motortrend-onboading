@@ -1645,7 +1645,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 {/* Make-Specific Layout - Show when user researches a generic make */}
                 {detectedMake && makeModels.length > 0 && (
                   <>
-                    {/* Vehicles Section (Primary) */}
+                    {/* News + Stories Section (Primary) */}
                     <div style={{ 
                       padding: '12px 16px 8px 16px', 
                       fontSize: '11px', 
@@ -1656,7 +1656,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
                       borderBottom: '1px solid var(--color-neutrals-3, #353945)'
                     }}>
-                      VEHICLES
+                      NEWS + STORIES
                     </div>
                     {/* Link to make page */}
                     <div
