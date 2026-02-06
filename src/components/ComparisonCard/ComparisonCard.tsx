@@ -46,13 +46,68 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const topRowStyle: React.CSSProperties = { display: 'flex', gap: '16px', alignItems: isMobile ? 'stretch' : 'center', flexDirection: isMobile ? 'column' : 'row' };
   const imageContainerStyle: React.CSSProperties = { position: 'relative', width: isMobile ? '100%' : '150px', maxWidth: isMobile ? '100%' : '150px', height: isMobile ? '200px' : '100px', borderRadius: 'var(--border-radius-md, 8px)', overflow: 'hidden', cursor: onViewComparison ? 'pointer' : 'default' };
   const imageStyle: React.CSSProperties = { width: '100%', height: '100%', objectFit: 'cover' };
-  const bookmarkBtnStyle: React.CSSProperties = { position: 'absolute', top: '8px', right: '8px', width: '32px', height: '32px', borderRadius: 'var(--border-radius-circle, 50%)', border: 'none', background: isBookmarked ? 'var(--color-primary-1, #E90C17)' : (isBookmarkHovered ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.9)'), cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isBookmarked ? '#fff' : 'var(--color-neutrals-3, #353945)', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', transition: 'all 150ms ease-in-out' };
+  const bookmarkBtnStyle: React.CSSProperties = { 
+    position: 'absolute', 
+    top: 'var(--spacing-component-md, 12px)', 
+    left: 'var(--spacing-component-md, 12px)', 
+    width: '32px', 
+    height: '32px', 
+    padding: '6px',
+    borderRadius: 'var(--border-radius-sm, 4px)', 
+    border: 'none', 
+    background: isBookmarkHovered 
+      ? (isBookmarked ? 'var(--color-overlay-dark, rgba(0,0,0,0.7))' : 'var(--color-overlay-medium, rgba(0,0,0,0.6))')
+      : (isBookmarked ? 'var(--color-overlay-medium, rgba(0,0,0,0.5))' : 'var(--color-overlay-light, rgba(0,0,0,0.4))'),
+    cursor: 'pointer', 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    color: 'var(--color-white, #FFFFFF)', 
+    backdropFilter: 'blur(4px)',
+    zIndex: 10,
+    transition: 'all 150ms ease-in-out',
+    transform: isBookmarkHovered ? 'scale(1.05)' : 'scale(1)'
+  };
   const contentStyle: React.CSSProperties = { flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' };
-  const infoStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: '4px' };
-  const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', lineHeight: 1.3, color: 'var(--color-neutrals-1, #141416)', margin: 0 };
-  const typeStyle: React.CSSProperties = { fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '14px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0 };
-  const bottomRowStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center' };
-  const buttonStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '4px', padding: '8px 16px', background: isButtonHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'none', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-sm, 4px)', fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '14px', color: 'var(--color-neutrals-2, #23262F)', cursor: 'pointer', transition: 'all 150ms ease-in-out', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'center' : 'flex-start' };
+  const infoStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-gap-xs, 4px)' };
+  const titleStyle: React.CSSProperties = { 
+    fontFamily: 'var(--font-heading, Poppins, sans-serif)', 
+    fontWeight: 'var(--font-weight-bold, 600)', 
+    fontSize: isMobile ? '20px' : '18px', 
+    lineHeight: isMobile ? '1.3em' : '1.2em', 
+    color: 'var(--color-neutrals-1, #141416)', 
+    margin: '0 0 var(--spacing-1, 8px) 0' 
+  };
+  const typeStyle: React.CSSProperties = { 
+    fontFamily: 'var(--font-body, Geist, sans-serif)', 
+    fontWeight: 'var(--font-weight-regular, 400)', 
+    fontSize: isMobile ? '13px' : '14px', 
+    lineHeight: '1.33em', 
+    color: 'var(--color-neutrals-4, #6E7481)', 
+    margin: 0 
+  };
+  const bottomRowStyle: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--spacing-2, 16px)', minHeight: '34px' };
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
+  const buttonStyle: React.CSSProperties = { 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: 0, 
+    padding: isMobile ? 'var(--spacing-1, 8px) var(--spacing-2, 16px)' : 'var(--spacing-2, 16px) var(--spacing-3, 24px)', 
+    background: 'var(--color-neutrals-1, #141416)', 
+    border: 'none', 
+    borderRadius: 'var(--border-radius-md, 8px)', 
+    fontFamily: 'var(--font-body, Geist, sans-serif)', 
+    fontWeight: 'var(--font-weight-bold, 600)', 
+    fontSize: isMobile ? '12px' : '14px', 
+    color: 'var(--color-white, #FFFFFF)', 
+    cursor: 'pointer', 
+    transition: 'all var(--transition-fast, all 150ms ease-in-out)', 
+    whiteSpace: 'nowrap',
+    height: '36px',
+    boxShadow: 'var(--shadow-depth-5, 0px 4px 20px 0px rgba(20, 20, 22, 0.06))',
+    transform: isButtonPressed ? 'translateY(0)' : (isButtonHovered ? 'translateY(-1px)' : 'translateY(0)'),
+    width: isMobile ? 'auto' : undefined
+  };
 
   return (
     <CardShell padding="sm" hasHover={true} hasShadow={true} borderRadius="md" background="neutral-lighter" style={{ maxWidth: isMobile ? '100%' : '650px' }}>
@@ -76,7 +131,14 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <div style={bottomRowStyle}>
           <div></div>
           {onViewComparison && (
-            <button style={buttonStyle} onClick={(e) => { e.stopPropagation(); onViewComparison(); }} onMouseEnter={() => setIsButtonHovered(true)} onMouseLeave={() => setIsButtonHovered(false)}>
+            <button 
+              style={buttonStyle} 
+              onClick={(e) => { e.stopPropagation(); onViewComparison(); }} 
+              onMouseEnter={() => setIsButtonHovered(true)} 
+              onMouseLeave={() => { setIsButtonHovered(false); setIsButtonPressed(false); }}
+              onMouseDown={() => setIsButtonPressed(true)}
+              onMouseUp={() => setIsButtonPressed(false)}
+            >
               View Comparison
               <Icon name="chevron_right" size={18} />
             </button>

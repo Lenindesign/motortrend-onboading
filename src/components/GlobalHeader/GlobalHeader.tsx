@@ -1656,7 +1656,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
                       borderBottom: '1px solid var(--color-neutrals-3, #353945)'
                     }}>
-                      NEWS + STORIES
+                      RESEARCH VEHICLES
                     </div>
                     {/* Link to make page */}
                     <div
@@ -1738,24 +1738,31 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       alignItems: 'center',
                       justifyContent: 'space-between'
                     }}>
-                      <span>SHOP</span>
-                      <span 
-                        style={{ 
-                          cursor: 'pointer', 
-                          color: 'var(--color-primary-1, #E90C17)',
-                          fontSize: '11px',
-                          fontWeight: 500
-                        }}
-                        onClick={() => {
-                          navigate(`/cars-for-sale/${detectedMake}`);
-                          setSearchQuery('');
-                          setShowSearchDropdown(false);
-                        }}
-                      >
-                        View All →
-                      </span>
+                      <span>BUY + SELL</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span 
+                          style={{ 
+                            cursor: 'pointer', 
+                            color: 'var(--color-primary-1, #E90C17)',
+                            fontSize: '11px',
+                            fontWeight: 500
+                          }}
+                          onClick={() => {
+                            navigate(`/cars-for-sale/${detectedMake}`);
+                            setSearchQuery('');
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          View All →
+                        </span>
+                        <img 
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
+                          alt="MotorTrend Marketplace" 
+                          style={{ height: '16px', width: 'auto' }}
+                        />
+                      </div>
                     </div>
-                    {/* Shop Carousel with top vehicles for the make */}
+                    {/* Buy + Sell Carousel with leads-style cards for the make */}
                     <div 
                       className="search-carousel"
                       style={{
@@ -1771,26 +1778,31 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       }}
                     >
                       {makeModels.slice(0, 6).map((vehicle) => {
-                        const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-                        const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
+                        const modelName = vehicle.model;
+                        const makeName = vehicle.make;
                         return (
                           <div
                             key={vehicle.id}
-                            onClick={() => handleVehicleSelect(vehicleName)}
+                            onClick={() => {
+                              // Navigate to marketplace filtered by make and model
+                              navigate(`/cars-for-sale?make=${encodeURIComponent(makeName)}&model=${encodeURIComponent(modelName)}`);
+                              setSearchQuery('');
+                              setShowSearchDropdown(false);
+                            }}
                             style={{
                               flexShrink: 0,
                               width: '200px',
-                              backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                              backgroundColor: 'var(--color-white, #FFFFFF)',
                               borderRadius: 'var(--border-radius-md, 8px)',
                               overflow: 'hidden',
                               cursor: 'pointer',
                               transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                               scrollSnapAlign: 'start',
-                              border: '1px solid var(--color-neutrals-3, #353945)'
+                              border: '1px solid var(--color-neutrals-3, #E6E8EC)'
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.transform = 'translateY(0)';
@@ -1800,69 +1812,72 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                             {/* Image */}
                             <div style={{
                               width: '100%',
-                              height: '110px',
+                              height: '100px',
                               overflow: 'hidden',
-                              backgroundColor: 'var(--color-neutrals-3, #353945)',
+                              backgroundColor: '#F4F5F6',
                               position: 'relative'
                             }}>
                               <img
                                 src={vehicle.image}
-                                alt={vehicleName}
+                                alt={`${makeName} ${modelName}`}
                                 style={{
                                   width: '100%',
                                   height: '100%',
                                   objectFit: 'cover'
                                 }}
                                 onError={(e) => {
-                                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x110?text=No+Image';
+                                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x100?text=No+Image';
                                 }}
                               />
+                              {/* Listings badge */}
+                              <div style={{
+                                position: 'absolute',
+                                bottom: '8px',
+                                left: '8px',
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                color: 'white',
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                fontSize: '10px',
+                                fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
+                              }}>
+                                <Icon name="local_offer" size={10} />
+                                <span>View Listings</span>
+                              </div>
                             </div>
                             
                             {/* Content */}
                             <div style={{
-                              padding: '10px'
+                              padding: '12px',
+                              backgroundColor: 'var(--color-white, #FFFFFF)'
                             }}>
-                              {/* Rating */}
-                              {rating && (
-                                <div style={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '4px',
-                                  marginBottom: '4px',
-                                  fontSize: '10px',
-                                  color: 'var(--color-neutrals-5, #B1B5C3)',
-                                  fontFamily: 'var(--font-body, sans-serif)'
-                                }}>
-                                  <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
-                                  <span style={{ fontWeight: 500 }}>MT RATING</span>
-                                  <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
-                                </div>
-                              )}
-                              
-                              {/* Make and Model */}
+                              {/* Model Name */}
                               <div style={{
-                                fontSize: '13px',
+                                fontSize: '14px',
                                 fontWeight: 700,
-                                color: 'var(--color-white, #FFFFFF)',
+                                color: '#141416',
                                 fontFamily: 'var(--font-body, sans-serif)',
-                                marginBottom: '2px',
-                                lineHeight: '1.3',
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis'
+                                marginBottom: '4px',
+                                lineHeight: '1.3'
                               }}>
-                                {vehicleName}
+                                {makeName} {modelName}
                               </div>
                               
-                              {/* Price Range */}
+                              {/* Shop CTA */}
                               <div style={{
-                                fontSize: '11px',
-                                color: 'var(--color-neutrals-5, #B1B5C3)',
+                                fontSize: '12px',
+                                color: 'var(--color-primary-1, #E90C17)',
                                 fontFamily: 'var(--font-body, sans-serif)',
-                                fontWeight: 400
+                                fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
                               }}>
-                                {vehicle.priceRange || `$${vehicle.priceMin?.toLocaleString() || 'N/A'}`}
+                                <span>Shop Now</span>
+                                <Icon name="arrow_forward" size={12} />
                               </div>
                             </div>
                           </div>
@@ -2016,27 +2031,34 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         alignItems: 'center',
                         justifyContent: 'space-between'
                       }}>
-                        <span>SHOP</span>
-                        <span 
-                          style={{ 
-                            cursor: 'pointer', 
-                            color: 'var(--color-primary-1, #E90C17)',
-                            fontSize: '11px',
-                            fontWeight: 500
-                          }}
-                          onClick={() => {
-                            const filterParam = categoryData.bodyStyle 
-                              ? `bodyStyle=${categoryData.bodyStyle.toLowerCase()}`
-                              : `fuelType=${categoryData.fuelType?.toLowerCase() || 'electric'}`;
-                            navigate(`/cars-for-sale?${filterParam}`);
-                            setSearchQuery('');
-                            setShowSearchDropdown(false);
-                          }}
-                        >
-                          View All →
-                        </span>
+                        <span>BUY + SELL</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span 
+                            style={{ 
+                              cursor: 'pointer', 
+                              color: 'var(--color-primary-1, #E90C17)',
+                              fontSize: '11px',
+                              fontWeight: 500
+                            }}
+                            onClick={() => {
+                              const filterParam = categoryData.bodyStyle 
+                                ? `bodyStyle=${categoryData.bodyStyle.toLowerCase()}`
+                                : `fuelType=${categoryData.fuelType?.toLowerCase() || 'electric'}`;
+                              navigate(`/cars-for-sale?${filterParam}`);
+                              setSearchQuery('');
+                              setShowSearchDropdown(false);
+                            }}
+                          >
+                            View All →
+                          </span>
+                          <img 
+                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
+                            alt="MotorTrend Marketplace" 
+                            style={{ height: '16px', width: 'auto' }}
+                          />
+                        </div>
                       </div>
-                      {/* Shop Carousel with top vehicles in category */}
+                      {/* Buy + Sell Carousel with leads-style cards in category */}
                       <div 
                         className="search-carousel"
                         style={{
@@ -2052,26 +2074,31 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         }}
                       >
                         {categoryVehicles.slice(0, 6).map((vehicle) => {
-                          const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-                          const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
+                          const modelName = vehicle.model;
+                          const makeName = vehicle.make;
                           return (
                             <div
                               key={vehicle.id}
-                              onClick={() => handleVehicleSelect(vehicleName)}
+                              onClick={() => {
+                                // Navigate to marketplace filtered by make and model
+                                navigate(`/cars-for-sale?make=${encodeURIComponent(makeName)}&model=${encodeURIComponent(modelName)}`);
+                                setSearchQuery('');
+                                setShowSearchDropdown(false);
+                              }}
                               style={{
                                 flexShrink: 0,
                                 width: '200px',
-                                backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                                backgroundColor: 'var(--color-white, #FFFFFF)',
                                 borderRadius: 'var(--border-radius-md, 8px)',
                                 overflow: 'hidden',
                                 cursor: 'pointer',
                                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                                 scrollSnapAlign: 'start',
-                                border: '1px solid var(--color-neutrals-3, #353945)'
+                                border: '1px solid var(--color-neutrals-3, #E6E8EC)'
                               }}
                               onMouseEnter={(e) => {
                                 e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
                               }}
                               onMouseLeave={(e) => {
                                 e.currentTarget.style.transform = 'translateY(0)';
@@ -2081,69 +2108,72 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               {/* Image */}
                               <div style={{
                                 width: '100%',
-                                height: '110px',
+                                height: '100px',
                                 overflow: 'hidden',
-                                backgroundColor: 'var(--color-neutrals-3, #353945)',
+                                backgroundColor: '#F4F5F6',
                                 position: 'relative'
                               }}>
                                 <img
                                   src={vehicle.image}
-                                  alt={vehicleName}
+                                  alt={`${makeName} ${modelName}`}
                                   style={{
                                     width: '100%',
                                     height: '100%',
                                     objectFit: 'cover'
                                   }}
                                   onError={(e) => {
-                                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x110?text=No+Image';
+                                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x100?text=No+Image';
                                   }}
                                 />
+                                {/* Listings badge */}
+                                <div style={{
+                                  position: 'absolute',
+                                  bottom: '8px',
+                                  left: '8px',
+                                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                  color: 'white',
+                                  padding: '2px 8px',
+                                  borderRadius: '4px',
+                                  fontSize: '10px',
+                                  fontWeight: 600,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
+                                }}>
+                                  <Icon name="local_offer" size={10} />
+                                  <span>View Listings</span>
+                                </div>
                               </div>
                               
                               {/* Content */}
                               <div style={{
-                                padding: '10px'
+                                padding: '12px',
+                                backgroundColor: 'var(--color-white, #FFFFFF)'
                               }}>
-                                {/* Rating */}
-                                {rating && (
-                                  <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '4px',
-                                    marginBottom: '4px',
-                                    fontSize: '10px',
-                                    color: 'var(--color-neutrals-5, #B1B5C3)',
-                                    fontFamily: 'var(--font-body, sans-serif)'
-                                  }}>
-                                    <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
-                                    <span style={{ fontWeight: 500 }}>MT RATING</span>
-                                    <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
-                                  </div>
-                                )}
-                                
-                                {/* Make and Model */}
+                                {/* Model Name */}
                                 <div style={{
-                                  fontSize: '13px',
+                                  fontSize: '14px',
                                   fontWeight: 700,
-                                  color: 'var(--color-white, #FFFFFF)',
+                                  color: '#141416',
                                   fontFamily: 'var(--font-body, sans-serif)',
-                                  marginBottom: '2px',
-                                  lineHeight: '1.3',
-                                  whiteSpace: 'nowrap',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis'
+                                  marginBottom: '4px',
+                                  lineHeight: '1.3'
                                 }}>
-                                  {vehicleName}
+                                  {makeName} {modelName}
                                 </div>
                                 
-                                {/* Price Range */}
+                                {/* Shop CTA */}
                                 <div style={{
-                                  fontSize: '11px',
-                                  color: 'var(--color-neutrals-5, #B1B5C3)',
+                                  fontSize: '12px',
+                                  color: 'var(--color-primary-1, #E90C17)',
                                   fontFamily: 'var(--font-body, sans-serif)',
-                                  fontWeight: 400
+                                  fontWeight: 600,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px'
                                 }}>
-                                  {vehicle.priceRange || `$${vehicle.priceMin?.toLocaleString() || 'N/A'}`}
+                                  <span>Shop Now</span>
+                                  <Icon name="arrow_forward" size={12} />
                                 </div>
                               </div>
                             </div>
@@ -2289,22 +2319,29 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       alignItems: 'center',
                       justifyContent: 'space-between'
                     }}>
-                      <span>SHOP</span>
-                      <span 
-                        style={{ 
-                          cursor: 'pointer', 
-                          color: 'var(--color-primary-1, #E90C17)',
-                          fontSize: '11px',
-                          fontWeight: 500
-                        }}
-                        onClick={() => {
-                          navigate('/cars-for-sale');
-                          setSearchQuery('');
-                          setShowSearchDropdown(false);
-                        }}
-                      >
-                        View All →
-                      </span>
+                      <span>BUY + SELL</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span 
+                          style={{ 
+                            cursor: 'pointer', 
+                            color: 'var(--color-primary-1, #E90C17)',
+                            fontSize: '11px',
+                            fontWeight: 500
+                          }}
+                          onClick={() => {
+                            navigate('/cars-for-sale');
+                            setSearchQuery('');
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          View All →
+                        </span>
+                        <img 
+                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
+                          alt="MotorTrend Marketplace" 
+                          style={{ height: '16px', width: 'auto' }}
+                        />
+                      </div>
                     </div>
                     <div 
                       className="search-carousel"
@@ -2322,29 +2359,31 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     >
                       {[compareVehicles.vehicle1, compareVehicles.vehicle2].filter(Boolean).map((vehicle) => {
                         if (!vehicle) return null;
-                        const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-                        const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
-                        const currentYear = new Date().getFullYear();
-                        const vehicleYear = typeof vehicle.year === 'string' ? parseInt(vehicle.year, 10) : vehicle.year;
-                        const isUsed = vehicleYear <= currentYear - 2;
+                        const modelName = vehicle.model;
+                        const makeName = vehicle.make;
                         return (
                           <div
                             key={vehicle.id}
-                            onClick={() => handleVehicleSelect(vehicleName)}
+                            onClick={() => {
+                              // Navigate to marketplace filtered by make and model
+                              navigate(`/cars-for-sale?make=${encodeURIComponent(makeName)}&model=${encodeURIComponent(modelName)}`);
+                              setSearchQuery('');
+                              setShowSearchDropdown(false);
+                            }}
                             style={{
                               flexShrink: 0,
                               width: '200px',
-                              backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                              backgroundColor: 'var(--color-white, #FFFFFF)',
                               borderRadius: 'var(--border-radius-md, 8px)',
                               overflow: 'hidden',
                               cursor: 'pointer',
                               transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                               scrollSnapAlign: 'start',
-                              border: '1px solid var(--color-neutrals-3, #353945)'
+                              border: '1px solid var(--color-neutrals-3, #E6E8EC)'
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
                             }}
                             onMouseLeave={(e) => {
                               e.currentTarget.style.transform = 'translateY(0)';
@@ -2352,78 +2391,67 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                             }}
                           >
                             <div style={{ 
-                              height: '110px', 
+                              height: '100px', 
                               overflow: 'hidden',
-                              backgroundColor: 'var(--color-neutrals-3, #353945)',
+                              backgroundColor: '#F4F5F6',
                               position: 'relative'
                             }}>
                               <img 
                                 src={vehicle.image} 
-                                alt={vehicleName}
+                                alt={`${makeName} ${modelName}`}
                                 style={{
                                   width: '100%',
                                   height: '100%',
                                   objectFit: 'cover'
                                 }}
                               />
-                              {/* Shop badge */}
+                              {/* Listings badge */}
                               <div style={{
                                 position: 'absolute',
-                                top: '8px',
+                                bottom: '8px',
                                 left: '8px',
-                                backgroundColor: isUsed ? 'var(--color-neutrals-6, #777E90)' : 'var(--color-primary-1, #E90C17)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
                                 color: 'white',
-                                padding: '2px 6px',
+                                padding: '2px 8px',
                                 borderRadius: '4px',
-                                fontSize: '9px',
+                                fontSize: '10px',
                                 fontWeight: 600,
-                                textTransform: 'uppercase'
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
                               }}>
-                                {isUsed ? 'SHOP USED' : 'SHOP NEW'}
+                                <Icon name="local_offer" size={10} />
+                                <span>View Listings</span>
                               </div>
                             </div>
-                            <div style={{ padding: '10px' }}>
-                              {rating && (
-                                <div style={{ 
-                                  display: 'flex', 
-                                  alignItems: 'center', 
-                                  gap: '4px',
-                                  marginBottom: '4px'
-                                }}>
-                                  <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
-                                  <span style={{ 
-                                    fontSize: '9px', 
-                                    color: 'var(--color-neutrals-5, #B1B5C3)',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px'
-                                  }}>
-                                    MT RATING
-                                  </span>
-                                  <span style={{ 
-                                    fontSize: '11px', 
-                                    color: '#33CCFF',
-                                    fontWeight: 600
-                                  }}>
-                                    {rating}/10
-                                  </span>
-                                </div>
-                              )}
-                              <div style={{ 
-                                fontSize: '12px', 
-                                fontWeight: 600, 
-                                color: 'var(--color-white, #FFFFFF)',
-                                marginBottom: '2px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
+                            <div style={{ 
+                              padding: '12px',
+                              backgroundColor: 'var(--color-white, #FFFFFF)'
+                            }}>
+                              {/* Model Name */}
+                              <div style={{
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                color: '#141416',
+                                fontFamily: 'var(--font-body, sans-serif)',
+                                marginBottom: '4px',
+                                lineHeight: '1.3'
                               }}>
-                                {vehicleName}
+                                {makeName} {modelName}
                               </div>
-                              <div style={{ 
-                                fontSize: '11px', 
-                                color: 'var(--color-neutrals-5, #B1B5C3)'
+                              
+                              {/* Shop CTA */}
+                              <div style={{
+                                fontSize: '12px',
+                                color: 'var(--color-primary-1, #E90C17)',
+                                fontFamily: 'var(--font-body, sans-serif)',
+                                fontWeight: 600,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
                               }}>
-                                {vehicle.priceRange || (vehicle.priceMin ? `$${vehicle.priceMin.toLocaleString()}` : 'Price TBD')}
+                                <span>Shop Now</span>
+                                <Icon name="arrow_forward" size={12} />
                               </div>
                             </div>
                           </div>
@@ -2620,25 +2648,32 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           alignItems: 'center',
                           justifyContent: 'space-between'
                         }}>
-                          <span>SHOP</span>
-                          <span 
-                            style={{ 
-                              cursor: 'pointer', 
-                              color: 'var(--color-primary-1, #E90C17)',
-                              fontSize: '11px',
-                              fontWeight: 500
-                            }}
-                            onClick={() => {
-                              const shopPath = bestQueryCategory 
-                                ? `/cars-for-sale?bodyStyle=${bestQueryCategory.toLowerCase()}`
-                                : '/cars-for-sale';
-                              navigate(shopPath);
-                              setSearchQuery('');
-                              setShowSearchDropdown(false);
-                            }}
-                          >
-                            View All →
-                          </span>
+                          <span>BUY + SELL</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span 
+                              style={{ 
+                                cursor: 'pointer', 
+                                color: 'var(--color-primary-1, #E90C17)',
+                                fontSize: '11px',
+                                fontWeight: 500
+                              }}
+                              onClick={() => {
+                                const shopPath = bestQueryCategory 
+                                  ? `/cars-for-sale?bodyStyle=${bestQueryCategory.toLowerCase()}`
+                                  : '/cars-for-sale';
+                                navigate(shopPath);
+                                setSearchQuery('');
+                                setShowSearchDropdown(false);
+                              }}
+                            >
+                              View All →
+                            </span>
+                            <img 
+                              src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
+                              alt="MotorTrend Marketplace" 
+                              style={{ height: '16px', width: 'auto' }}
+                            />
+                          </div>
                         </div>
                         <div 
                           className="search-carousel"
@@ -2655,26 +2690,31 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           }}
                         >
                           {bestVehicles.slice(0, 6).map((vehicle) => {
-                            const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-                            const rating = vehicle.staffRating ? vehicle.staffRating.toFixed(1) : null;
+                            const modelName = vehicle.model;
+                            const makeName = vehicle.make;
                             return (
                               <div
                                 key={vehicle.id}
-                                onClick={() => handleVehicleSelect(vehicleName)}
+                                onClick={() => {
+                                  // Navigate to marketplace filtered by make and model
+                                  navigate(`/cars-for-sale?make=${encodeURIComponent(makeName)}&model=${encodeURIComponent(modelName)}`);
+                                  setSearchQuery('');
+                                  setShowSearchDropdown(false);
+                                }}
                                 style={{
                                   flexShrink: 0,
                                   width: '200px',
-                                  backgroundColor: 'var(--color-neutrals-2, #23262F)',
+                                  backgroundColor: 'var(--color-white, #FFFFFF)',
                                   borderRadius: 'var(--border-radius-md, 8px)',
                                   overflow: 'hidden',
                                   cursor: 'pointer',
                                   transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                                   scrollSnapAlign: 'start',
-                                  border: '1px solid var(--color-neutrals-3, #353945)'
+                                  border: '1px solid var(--color-neutrals-3, #E6E8EC)'
                                 }}
                                 onMouseEnter={(e) => {
                                   e.currentTarget.style.transform = 'translateY(-2px)';
-                                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+                                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
                                 }}
                                 onMouseLeave={(e) => {
                                   e.currentTarget.style.transform = 'translateY(0)';
@@ -2683,60 +2723,70 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               >
                                 <div style={{
                                   width: '100%',
-                                  height: '110px',
+                                  height: '100px',
                                   overflow: 'hidden',
-                                  backgroundColor: 'var(--color-neutrals-3, #353945)',
+                                  backgroundColor: '#F4F5F6',
                                   position: 'relative'
                                 }}>
                                   <img
                                     src={vehicle.image}
-                                    alt={vehicleName}
+                                    alt={`${makeName} ${modelName}`}
                                     style={{
                                       width: '100%',
                                       height: '100%',
                                       objectFit: 'cover'
                                     }}
                                     onError={(e) => {
-                                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x110?text=No+Image';
+                                      (e.target as HTMLImageElement).src = 'https://via.placeholder.com/200x100?text=No+Image';
                                     }}
                                   />
-                                </div>
-                                <div style={{ padding: '10px' }}>
-                                  {rating && (
-                                    <div style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: '4px',
-                                      marginBottom: '4px',
-                                      fontSize: '10px',
-                                      color: 'var(--color-neutrals-5, #B1B5C3)',
-                                      fontFamily: 'var(--font-body, sans-serif)'
-                                    }}>
-                                      <Icon name="check_circle" size={10} style={{ color: '#33CCFF' }} />
-                                      <span style={{ fontWeight: 500 }}>MT RATING</span>
-                                      <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
-                                    </div>
-                                  )}
+                                  {/* Listings badge */}
                                   <div style={{
-                                    fontSize: '13px',
-                                    fontWeight: 700,
-                                    color: 'var(--color-white, #FFFFFF)',
-                                    fontFamily: 'var(--font-body, sans-serif)',
-                                    marginBottom: '2px',
-                                    lineHeight: '1.3',
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis'
+                                    position: 'absolute',
+                                    bottom: '8px',
+                                    left: '8px',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                    color: 'white',
+                                    padding: '2px 8px',
+                                    borderRadius: '4px',
+                                    fontSize: '10px',
+                                    fontWeight: 600,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px'
                                   }}>
-                                    {vehicleName}
+                                    <Icon name="local_offer" size={10} />
+                                    <span>View Listings</span>
                                   </div>
+                                </div>
+                                <div style={{ 
+                                  padding: '12px',
+                                  backgroundColor: 'var(--color-white, #FFFFFF)'
+                                }}>
+                                  {/* Model Name */}
                                   <div style={{
-                                    fontSize: '11px',
-                                    color: 'var(--color-neutrals-5, #B1B5C3)',
+                                    fontSize: '14px',
+                                    fontWeight: 700,
+                                    color: '#141416',
                                     fontFamily: 'var(--font-body, sans-serif)',
-                                    fontWeight: 400
+                                    marginBottom: '4px',
+                                    lineHeight: '1.3'
                                   }}>
-                                    {vehicle.priceRange || `$${vehicle.priceMin?.toLocaleString() || 'N/A'}`}
+                                    {makeName} {modelName}
+                                  </div>
+                                  
+                                  {/* Shop CTA */}
+                                  <div style={{
+                                    fontSize: '12px',
+                                    color: 'var(--color-primary-1, #E90C17)',
+                                    fontFamily: 'var(--font-body, sans-serif)',
+                                    fontWeight: 600,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '4px'
+                                  }}>
+                                    <span>Shop Now</span>
+                                    <Icon name="arrow_forward" size={12} />
                                   </div>
                                 </div>
                               </div>
