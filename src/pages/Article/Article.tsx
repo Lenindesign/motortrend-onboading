@@ -27,6 +27,7 @@ import { parseVehicleName } from '../../utils/vehicleImages';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 // HIDDEN: import { ArticleReactions } from '../../components/ArticleReactions';
+import { QAModal, type QAItem } from '../../components/QAModal';
 import StickyRateBar from '../../components/StickyRateBar';
 import ArticleHero from '../../components/ArticleHero/ArticleHero';
 import './Article.css';
@@ -91,6 +92,10 @@ export const Article: React.FC = () => {
   const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
   const [authPromptAction, setAuthPromptAction] = useState<'rate' | 'review' | 'save' | 'comment'>('rate');
   
+  // Q&A modal state
+  const [isQAModalOpen, setIsQAModalOpen] = useState(false);
+  const [qaQuestions, setQaQuestions] = useState<QAItem[]>([]);
+
   // Photo gallery state
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -352,6 +357,206 @@ export const Article: React.FC = () => {
         url: window.location.href,
       });
     }
+  };
+
+  // Generate sample Q&A data based on the article/vehicle
+  useEffect(() => {
+    const generateQAData = (): QAItem[] => {
+      const vName = vehicleName || articleData.title;
+      const hash = (slug || 'default').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      
+      // Load user-submitted questions from localStorage
+      const savedQAKey = `articleQA_${slug || 'default'}`;
+      let savedQuestions: QAItem[] = [];
+      try {
+        const savedJson = localStorage.getItem(savedQAKey);
+        if (savedJson) {
+          savedQuestions = JSON.parse(savedJson);
+        }
+      } catch (e) {
+        console.error('Error loading saved Q&A:', e);
+      }
+
+      // Generate seed questions based on the article
+      const seedQuestions: QAItem[] = [
+        {
+          id: `q-seed-1-${hash}`,
+          question: `How does the ${vName} compare to its competitors in terms of daily drivability?`,
+          author: 'CarEnthusiast42',
+          date: 'Jan 15, 2026',
+          upvotes: 24,
+          isEditorPick: true,
+          answers: [
+            {
+              id: `a-seed-1-1-${hash}`,
+              text: `Great question! In our testing, the ${vName} excels in daily driving scenarios. The ride quality is smooth, visibility is good, and the infotainment system is intuitive. It handles highway cruising and city traffic equally well.`,
+              author: articleData.author,
+              isEditor: true,
+              date: 'Jan 16, 2026',
+              upvotes: 18,
+            },
+            {
+              id: `a-seed-1-2-${hash}`,
+              text: `I've owned one for 3 months now and it's been fantastic for my commute. The adaptive cruise control works flawlessly in stop-and-go traffic.`,
+              author: 'DailyDriver2025',
+              date: 'Jan 17, 2026',
+              upvotes: 7,
+            },
+          ],
+        },
+        {
+          id: `q-seed-2-${hash}`,
+          question: `What's the real-world fuel economy/range like compared to the EPA estimates?`,
+          author: 'EcoMinded',
+          date: 'Jan 12, 2026',
+          upvotes: 19,
+          answers: [
+            {
+              id: `a-seed-2-1-${hash}`,
+              text: `During our long-term testing, we found the real-world numbers to be within 5-8% of EPA estimates, which is pretty typical. Highway driving tends to match closely, while city driving can vary more depending on your habits.`,
+              author: articleData.author,
+              isEditor: true,
+              date: 'Jan 13, 2026',
+              upvotes: 12,
+            },
+          ],
+        },
+        {
+          id: `q-seed-3-${hash}`,
+          question: `Is the base model worth it, or should I step up to the mid trim?`,
+          author: 'SmartBuyer',
+          date: 'Jan 10, 2026',
+          upvotes: 15,
+          answers: [
+            {
+              id: `a-seed-3-1-${hash}`,
+              text: `The mid trim adds meaningful features like heated seats, a larger display, and better driver assistance tech. If it fits your budget, the mid trim offers the best value-to-features ratio in the lineup.`,
+              author: articleData.author,
+              isEditor: true,
+              date: 'Jan 11, 2026',
+              upvotes: 9,
+            },
+            {
+              id: `a-seed-3-2-${hash}`,
+              text: `I went with the base and honestly I'm happy. The standard features are solid and the ride quality is the same across trims. Save the money unless you really want the tech package.`,
+              author: 'BudgetFirst',
+              date: 'Jan 12, 2026',
+              upvotes: 5,
+            },
+            {
+              id: `a-seed-3-3-${hash}`,
+              text: `Mid trim all the way. The wireless CarPlay alone is worth it, plus the premium audio system is significantly better.`,
+              author: 'TechLover99',
+              date: 'Jan 13, 2026',
+              upvotes: 3,
+            },
+          ],
+        },
+        {
+          id: `q-seed-4-${hash}`,
+          question: `How's the back seat space for car seats and kids?`,
+          author: 'ParentLife',
+          date: 'Jan 8, 2026',
+          upvotes: 11,
+          answers: [],
+        },
+        {
+          id: `q-seed-5-${hash}`,
+          question: `Are there any common reliability concerns to watch out for?`,
+          author: 'ReliabilityMatters',
+          date: 'Jan 5, 2026',
+          upvotes: 8,
+          answers: [
+            {
+              id: `a-seed-5-1-${hash}`,
+              text: `It's still relatively early to make long-term reliability claims, but so far we haven't encountered any major issues during our extended testing period. The build quality feels solid overall.`,
+              author: articleData.author,
+              isEditor: true,
+              date: 'Jan 6, 2026',
+              upvotes: 6,
+            },
+          ],
+        },
+      ];
+
+      // Merge saved questions with seed questions (saved take priority by ID)
+      const savedIds = new Set(savedQuestions.map(q => q.id));
+      const uniqueSeedQuestions = seedQuestions.filter(q => !savedIds.has(q.id));
+      return [...savedQuestions, ...uniqueSeedQuestions];
+    };
+
+    setQaQuestions(generateQAData());
+  }, [slug, vehicleName, articleData]);
+
+  // Q&A handlers
+  const handleSubmitQuestion = (questionText: string) => {
+    if (!isAuthenticated) {
+      setAuthPromptAction('comment');
+      setIsAuthPromptOpen(true);
+      return;
+    }
+
+    const newQ: QAItem = {
+      id: `q-user-${Date.now()}`,
+      question: questionText,
+      author: 'You',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      upvotes: 0,
+      answers: [],
+    };
+
+    setQaQuestions(prev => {
+      const updated = [newQ, ...prev];
+      // Save to localStorage
+      try {
+        const savedQAKey = `articleQA_${slug || 'default'}`;
+        const userQuestions = updated.filter(q => q.id.startsWith('q-user-'));
+        localStorage.setItem(savedQAKey, JSON.stringify(userQuestions));
+      } catch (e) {
+        console.error('Error saving Q&A:', e);
+      }
+      return updated;
+    });
+  };
+
+  const handleSubmitAnswer = (questionId: string, answerText: string) => {
+    if (!isAuthenticated) {
+      setAuthPromptAction('comment');
+      setIsAuthPromptOpen(true);
+      return;
+    }
+
+    const newAnswer = {
+      id: `a-user-${Date.now()}`,
+      text: answerText,
+      author: 'You',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      upvotes: 0,
+    };
+
+    setQaQuestions(prev =>
+      prev.map(q =>
+        q.id === questionId ? { ...q, answers: [...q.answers, newAnswer] } : q
+      )
+    );
+  };
+
+  const handleUpvoteQuestion = (questionId: string) => {
+    setQaQuestions(prev =>
+      prev.map(q =>
+        q.id === questionId ? { ...q, upvotes: q.upvotes + 1 } : q
+      )
+    );
+  };
+
+  const handleUpvoteAnswer = (questionId: string, answerId: string) => {
+    setQaQuestions(prev =>
+      prev.map(q =>
+        q.id === questionId
+          ? { ...q, answers: q.answers.map(a => a.id === answerId ? { ...a, upvotes: a.upvotes + 1 } : a) }
+          : q
+      )
+    );
   };
 
   // MotorTrend Score data - from article data or fallback
@@ -1080,14 +1285,42 @@ export const Article: React.FC = () => {
                 />
                 */}
               </div>
-              <button 
-                className={`article__save-btn ${isSaved ? 'saved' : ''}`}
-                onClick={handleBookmark}
-                aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
-              >
-                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
-                <span>{isSaved ? 'Saved!' : 'Save'}</span>
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  className="article__save-btn article__save-btn--qa"
+                  onClick={() => setIsQAModalOpen(true)}
+                  aria-label="Open Q&A"
+                >
+                  <Icon name="auto_awesome" size={20} />
+                  <span>Q&A</span>
+                  {qaQuestions.length > 0 && (
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minWidth: '18px',
+                      height: '18px',
+                      padding: '0 5px',
+                      backgroundColor: 'var(--color-primary-1, #E90C17)',
+                      borderRadius: '10px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      color: 'white',
+                      lineHeight: 1,
+                    }}>
+                      {qaQuestions.length}
+                    </span>
+                  )}
+                </button>
+                <button 
+                  className={`article__save-btn ${isSaved ? 'saved' : ''}`}
+                  onClick={handleBookmark}
+                  aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
+                >
+                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                  <span>{isSaved ? 'Saved!' : 'Save'}</span>
+                </button>
+              </div>
             </div>
 
             {/* Hero Section */}
@@ -2032,6 +2265,20 @@ export const Article: React.FC = () => {
         isOpen={isAuthPromptOpen}
         onClose={() => setIsAuthPromptOpen(false)}
         action={authPromptAction}
+      />
+
+      {/* Q&A Modal */}
+      <QAModal
+        isOpen={isQAModalOpen}
+        onClose={() => setIsQAModalOpen(false)}
+        articleTitle={article.title}
+        articleSlug={slug || 'default'}
+        vehicleName={vehicleName}
+        questions={qaQuestions}
+        onSubmitQuestion={handleSubmitQuestion}
+        onSubmitAnswer={handleSubmitAnswer}
+        onUpvoteQuestion={handleUpvoteQuestion}
+        onUpvoteAnswer={handleUpvoteAnswer}
       />
     </div>
   );
