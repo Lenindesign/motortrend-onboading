@@ -488,6 +488,34 @@ export const Article: React.FC = () => {
     setQaQuestions(generateQAData());
   }, [slug, vehicleName, articleData]);
 
+  // Save Q&A activity to user profile in localStorage
+  const saveQAToProfile = (activity: {
+    type: 'asked' | 'liked';
+    questionId: string;
+    questionText: string;
+    articleSlug: string;
+    articleTitle: string;
+    date: string;
+  }) => {
+    try {
+      const key = 'userQAActivity';
+      const existing = localStorage.getItem(key);
+      const activities: typeof activity[] = existing ? JSON.parse(existing) : [];
+      
+      // Avoid duplicates (same question + same type)
+      const isDuplicate = activities.some(
+        a => a.questionId === activity.questionId && a.type === activity.type
+      );
+      if (!isDuplicate) {
+        activities.unshift(activity);
+        // Keep only last 50 activities
+        localStorage.setItem(key, JSON.stringify(activities.slice(0, 50)));
+      }
+    } catch (e) {
+      console.error('Error saving Q&A activity to profile:', e);
+    }
+  };
+
   // Q&A handlers
   const handleSubmitQuestion = (questionText: string) => {
     if (!isAuthenticated) {
@@ -496,14 +524,25 @@ export const Article: React.FC = () => {
       return;
     }
 
+    const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const newQ: QAItem = {
       id: `q-user-${Date.now()}`,
       question: questionText,
       author: 'You',
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      date: now,
       upvotes: 0,
       answers: [],
     };
+
+    // Save to user profile
+    saveQAToProfile({
+      type: 'asked',
+      questionId: newQ.id,
+      questionText: questionText,
+      articleSlug: slug || 'default',
+      articleTitle: article.title,
+      date: now,
+    });
 
     setQaQuestions(prev => {
       const updated = [newQ, ...prev];
@@ -542,6 +581,19 @@ export const Article: React.FC = () => {
   };
 
   const handleUpvoteQuestion = (questionId: string) => {
+    // Find the question to save to profile
+    const question = qaQuestions.find(q => q.id === questionId);
+    if (question) {
+      saveQAToProfile({
+        type: 'liked',
+        questionId: question.id,
+        questionText: question.question,
+        articleSlug: slug || 'default',
+        articleTitle: article.title,
+        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      });
+    }
+
     setQaQuestions(prev =>
       prev.map(q =>
         q.id === questionId ? { ...q, upvotes: q.upvotes + 1 } : q
@@ -554,6 +606,53 @@ export const Article: React.FC = () => {
       prev.map(q =>
         q.id === questionId
           ? { ...q, answers: q.answers.map(a => a.id === answerId ? { ...a, upvotes: a.upvotes + 1 } : a) }
+          : q
+      )
+    );
+  };
+
+  // AI answer generator - creates contextual responses based on the question and vehicle/article
+  const handleAskAI = (questionId: string, questionText: string) => {
+    const vName = vehicleName || articleData.title;
+    const qLower = questionText.toLowerCase();
+
+    // Generate a contextual AI response based on question keywords
+    let aiResponse = '';
+
+    if (qLower.includes('fuel') || qLower.includes('mpg') || qLower.includes('range') || qLower.includes('economy') || qLower.includes('efficient')) {
+      aiResponse = `Based on the article and available data for the ${vName}, fuel efficiency is competitive within its segment. EPA estimates should be taken as a guideline — real-world results typically vary by 5-10% depending on driving conditions, terrain, and driving style. For the most accurate numbers, consider MotorTrend's long-term testing data which reflects mixed real-world driving scenarios.`;
+    } else if (qLower.includes('price') || qLower.includes('cost') || qLower.includes('worth') || qLower.includes('value') || qLower.includes('afford')) {
+      aiResponse = `The ${vName} offers solid value in its price bracket. When evaluating cost, consider the total ownership picture: insurance rates, expected maintenance costs, resale value, and available incentives or rebates. The mid-trim often represents the best value-to-feature ratio. Check our local listings for current market pricing in your area.`;
+    } else if (qLower.includes('reliab') || qLower.includes('problem') || qLower.includes('issue') || qLower.includes('recall') || qLower.includes('break')) {
+      aiResponse = `Reliability data for the ${vName} is based on manufacturer track records, early owner reports, and industry projections. While it's still early for long-term data on newer models, the platform and powertrain have proven dependable in MotorTrend's extended testing. Always check for any open recalls or TSBs (Technical Service Bulletins) before purchasing.`;
+    } else if (qLower.includes('compare') || qLower.includes('vs') || qLower.includes('versus') || qLower.includes('competitor') || qLower.includes('better than')) {
+      aiResponse = `The ${vName} competes well in its segment. Key differentiators include its design philosophy, tech integration, and driving dynamics. For a detailed head-to-head comparison, check out MotorTrend's comparison tool where you can evaluate specs, ratings, and pricing side by side. Each competitor has unique strengths depending on your priorities.`;
+    } else if (qLower.includes('family') || qLower.includes('kid') || qLower.includes('car seat') || qLower.includes('space') || qLower.includes('room') || qLower.includes('cargo')) {
+      aiResponse = `For family use, the ${vName} offers a practical interior layout. Key considerations include LATCH system accessibility for car seats, rear legroom measurements, cargo volume with seats up and folded, and the number of USB ports for passengers. MotorTrend's review covers the interior dimensions in detail — we recommend test-fitting your specific car seats during a dealership visit.`;
+    } else if (qLower.includes('drive') || qLower.includes('handle') || qLower.includes('ride') || qLower.includes('comfort') || qLower.includes('steer')) {
+      aiResponse = `According to MotorTrend's testing of the ${vName}, the driving experience prioritizes a balance of comfort and engagement. The suspension tuning provides composed handling without sacrificing ride comfort on rough surfaces. Steering feel is responsive and well-weighted. For specific driving impressions, refer to our detailed performance scores in the MotorTrend Review section of this article.`;
+    } else if (qLower.includes('tech') || qLower.includes('screen') || qLower.includes('infotainment') || qLower.includes('carplay') || qLower.includes('android')) {
+      aiResponse = `The ${vName}'s technology suite is a strong point. It features modern infotainment with responsive touchscreen controls, wireless smartphone integration (Apple CarPlay and Android Auto), and a comprehensive driver assistance package. The user interface is intuitive, though some deeper settings require menu navigation. OTA updates keep the system current with new features over time.`;
+    } else if (qLower.includes('buy') || qLower.includes('purchase') || qLower.includes('deal') || qLower.includes('negotiate') || qLower.includes('lease')) {
+      aiResponse = `When shopping for the ${vName}, here are some tips based on current market conditions: Check multiple dealerships for competitive quotes, look into manufacturer incentives and loyalty programs, consider timing your purchase around model-year transitions for better deals, and don't overlook certified pre-owned options if available. Use our marketplace to compare local listings and prices.`;
+    } else {
+      aiResponse = `Based on MotorTrend's review and testing of the ${vName}, here's what we can share: This vehicle has been evaluated across performance, efficiency, technology, and value dimensions. Our editorial team has driven and tested it extensively. For the most specific answer to your question, we recommend checking the detailed sections of this article, the MotorTrend Score breakdown, and user reviews from verified owners below.`;
+    }
+
+    // Add the AI answer to the question
+    const aiAnswer = {
+      id: `a-ai-${Date.now()}`,
+      text: aiResponse,
+      author: 'MotorTrend AI',
+      isAI: true,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      upvotes: 0,
+    };
+
+    setQaQuestions(prev =>
+      prev.map(q =>
+        q.id === questionId
+          ? { ...q, answers: [aiAnswer, ...q.answers] }
           : q
       )
     );
@@ -2279,6 +2378,7 @@ export const Article: React.FC = () => {
         onSubmitAnswer={handleSubmitAnswer}
         onUpvoteQuestion={handleUpvoteQuestion}
         onUpvoteAnswer={handleUpvoteAnswer}
+        onAskAI={handleAskAI}
       />
     </div>
   );

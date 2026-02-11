@@ -130,6 +130,40 @@ export const Profile: React.FC<ProfileProps> = ({
     }
   }, [activeTab]);
 
+  // Q&A activity state
+  interface QAActivity {
+    type: 'asked' | 'liked';
+    questionId: string;
+    questionText: string;
+    articleSlug: string;
+    articleTitle: string;
+    date: string;
+  }
+  const [qaActivity, setQaActivity] = useState<QAActivity[]>([]);
+
+  // Load Q&A activity
+  const loadQAActivity = () => {
+    try {
+      const json = localStorage.getItem('userQAActivity');
+      if (json) {
+        setQaActivity(JSON.parse(json));
+      }
+    } catch (e) {
+      console.error('Error loading Q&A activity:', e);
+    }
+  };
+
+  useEffect(() => {
+    loadQAActivity();
+  }, []);
+
+  // Reload Q&A when switching to saved-items tab
+  useEffect(() => {
+    if (activeTab === 'saved-items') {
+      loadQAActivity();
+    }
+  }, [activeTab]);
+
   // Saved listings state
   const [savedListings, setSavedListings] = useState<Array<{ id: string; listing: LocalListing; vehicleName: string; savedAt: string }>>([]);
 
@@ -1040,6 +1074,137 @@ export const Profile: React.FC<ProfileProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Q&A Activity Section */}
+              {qaActivity.length > 0 && (
+                <div className="profile-section profile-section--qa">
+                  <div className="profile-section__content">
+                    <div className="profile-section__header-row">
+                      <h3 className="profile-section__heading">
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Icon name="auto_awesome" size={20} />
+                          My Q&A Activity
+                        </span>
+                      </h3>
+                    </div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {qaActivity.map((activity, index) => (
+                        <div
+                          key={`${activity.questionId}-${activity.type}-${index}`}
+                          onClick={() => navigate(`/articles/${activity.articleSlug}`)}
+                          style={{
+                            display: 'flex',
+                            gap: '16px',
+                            padding: '16px',
+                            backgroundColor: 'var(--color-white, #FFFFFF)',
+                            border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+                            borderRadius: 'var(--border-radius-md, 8px)',
+                            cursor: 'pointer',
+                            transition: 'all 150ms ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--color-neutrals-4, #6E7481)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = 'var(--color-neutrals-6, #E6E8EC)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                        >
+                          {/* Type Icon */}
+                          <div style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '50%',
+                            background: activity.type === 'asked' 
+                              ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' 
+                              : 'var(--color-primary-1, #E90C17)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            color: 'white',
+                          }}>
+                            <Icon name={activity.type === 'asked' ? 'help' : 'thumb_up'} size={18} />
+                          </div>
+
+                          {/* Content */}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              marginBottom: '4px',
+                            }}>
+                              <span style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                padding: '2px 8px',
+                                background: activity.type === 'asked' 
+                                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.15))' 
+                                  : 'rgba(233, 12, 23, 0.08)',
+                                color: activity.type === 'asked' ? '#6366F1' : '#E90C17',
+                                borderRadius: '4px',
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px',
+                              }}>
+                                {activity.type === 'asked' ? 'Asked' : 'Liked'}
+                              </span>
+                              <span style={{
+                                fontSize: '12px',
+                                color: 'var(--color-neutrals-4, #6E7481)',
+                                fontFamily: 'var(--font-body, Geist, sans-serif)',
+                              }}>
+                                {activity.date}
+                              </span>
+                            </div>
+                            <p style={{
+                              fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+                              fontWeight: 600,
+                              fontSize: '15px',
+                              lineHeight: 1.4,
+                              color: 'var(--color-neutrals-1, #141416)',
+                              margin: '0 0 4px 0',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}>
+                              {activity.questionText}
+                            </p>
+                            <p style={{
+                              fontFamily: 'var(--font-body, Geist, sans-serif)',
+                              fontSize: '13px',
+                              color: 'var(--color-neutrals-4, #6E7481)',
+                              margin: 0,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}>
+                              <Icon name="article" size={14} />
+                              {activity.articleTitle}
+                            </p>
+                          </div>
+
+                          {/* Arrow */}
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            color: 'var(--color-neutrals-5, #B1B5C3)',
+                          }}>
+                            <Icon name="chevron_right" size={20} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Cars I Rated or Reviewed Section */}
               {vehiclesIReviewed.length > 0 && (

@@ -1,6 +1,7 @@
 /**
  * Q&A Modal Component
  * Modal for asking questions, viewing answers, and browsing common Q&A on article pages
+ * Includes AI-powered auto-answer feature
  */
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -24,6 +25,7 @@ export interface QAAnswer {
   author: string;
   authorAvatar?: string;
   isEditor?: boolean;
+  isAI?: boolean;
   date: string;
   upvotes: number;
 }
@@ -39,6 +41,7 @@ export interface QAModalProps {
   onSubmitAnswer: (questionId: string, answer: string) => void;
   onUpvoteQuestion: (questionId: string) => void;
   onUpvoteAnswer: (questionId: string, answerId: string) => void;
+  onAskAI?: (questionId: string, questionText: string) => void;
 }
 
 export const QAModal: React.FC<QAModalProps> = ({
@@ -51,6 +54,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   onSubmitAnswer,
   onUpvoteQuestion,
   onUpvoteAnswer,
+  onAskAI,
 }) => {
   const [activeTab, setActiveTab] = useState<'popular' | 'recent' | 'unanswered'>('popular');
   const [newQuestion, setNewQuestion] = useState('');
@@ -60,6 +64,9 @@ export const QAModal: React.FC<QAModalProps> = ({
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
   const [hoveredUpvote, setHoveredUpvote] = useState<string | null>(null);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+  const [aiLoadingQuestionId, setAiLoadingQuestionId] = useState<string | null>(null);
+  const [hoveredAiBtn, setHoveredAiBtn] = useState<string | null>(null);
+  const [askAIWithQuestion, setAskAIWithQuestion] = useState(false);
 
   // Focus input when modal opens
   useEffect(() => {
@@ -76,18 +83,51 @@ export const QAModal: React.FC<QAModalProps> = ({
     return 0;
   });
 
-  const handleSubmitQuestion = () => {
+  const handleSubmitQuestion = (withAI = false) => {
     if (!newQuestion.trim()) return;
     setIsSubmitting(true);
+    setAskAIWithQuestion(withAI);
     onSubmitQuestion(newQuestion.trim());
     setNewQuestion('');
-    setTimeout(() => setIsSubmitting(false), 500);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setAskAIWithQuestion(false);
+    }, 500);
   };
+
+  // Trigger AI for the most recently added question after submission
+  useEffect(() => {
+    if (askAIWithQuestion && !isSubmitting && questions.length > 0) {
+      // Find the most recent user question
+      const userQuestions = questions.filter(q => q.author === 'You');
+      if (userQuestions.length > 0) {
+        const latestQ = userQuestions[0];
+        if (!latestQ.answers.some(a => a.isAI)) {
+          handleAskAI(latestQ.id, latestQ.question);
+        }
+      }
+      setAskAIWithQuestion(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questions, isSubmitting, askAIWithQuestion]);
 
   const handleSubmitAnswer = (questionId: string) => {
     if (!answerText.trim()) return;
     onSubmitAnswer(questionId, answerText.trim());
     setAnswerText('');
+  };
+
+  const handleAskAI = (questionId: string, questionText: string) => {
+    setAiLoadingQuestionId(questionId);
+    setExpandedQuestion(questionId);
+    
+    // Simulate AI thinking delay, then call the parent handler
+    setTimeout(() => {
+      if (onAskAI) {
+        onAskAI(questionId, questionText);
+      }
+      setAiLoadingQuestionId(null);
+    }, 1500);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
@@ -96,6 +136,9 @@ export const QAModal: React.FC<QAModalProps> = ({
       action();
     }
   };
+
+  // Check if a question already has an AI answer
+  const hasAIAnswer = (q: QAItem) => q.answers.some(a => a.isAI);
 
   // Styles
   const headerStyle: React.CSSProperties = {
@@ -165,6 +208,22 @@ export const QAModal: React.FC<QAModalProps> = ({
     gap: '6px',
     padding: '10px 20px',
     background: newQuestion.trim() ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-5, #B1B5C3)',
+    border: 'none',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontWeight: 600,
+    fontSize: '14px',
+    color: 'var(--color-white, #FFFFFF)',
+    cursor: newQuestion.trim() ? 'pointer' : 'not-allowed',
+    transition: 'all 150ms ease',
+  };
+
+  const askAIBtnStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '10px 20px',
+    background: newQuestion.trim() ? 'linear-gradient(135deg, #6366F1, #8B5CF6, #A855F7)' : 'var(--color-neutrals-5, #B1B5C3)',
     border: 'none',
     borderRadius: 'var(--border-radius-md, 8px)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
@@ -267,6 +326,20 @@ export const QAModal: React.FC<QAModalProps> = ({
     letterSpacing: '0.5px',
   };
 
+  const aiBadgeStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '2px 8px',
+    background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+    color: 'white',
+    borderRadius: '4px',
+    fontSize: '10px',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+  };
+
   const editorPickBadgeStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -288,10 +361,26 @@ export const QAModal: React.FC<QAModalProps> = ({
     borderTop: '1px solid var(--color-neutrals-7, #F4F5F6)',
   };
 
-  const answerCardStyle: React.CSSProperties = {
-    padding: '12px 0',
+  const answerCardStyle = (isAI?: boolean): React.CSSProperties => ({
+    padding: '12px',
     display: 'flex',
     gap: '10px',
+    borderRadius: isAI ? 'var(--border-radius-md, 8px)' : undefined,
+    background: isAI ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08))' : undefined,
+    border: isAI ? '1px solid rgba(139, 92, 246, 0.15)' : undefined,
+    marginBottom: isAI ? '8px' : undefined,
+  });
+
+  const aiAvatarStyle: React.CSSProperties = {
+    width: '28px',
+    height: '28px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    color: 'white',
   };
 
   const answerAvatarStyle: React.CSSProperties = {
@@ -391,6 +480,45 @@ export const QAModal: React.FC<QAModalProps> = ({
     color: 'var(--color-neutrals-2, #23262F)',
   };
 
+  const getAskAIQuestionBtnStyle = (qId: string): React.CSSProperties => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '4px 10px',
+    background: hoveredAiBtn === qId ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.15))',
+    color: hoveredAiBtn === qId ? 'white' : '#6366F1',
+    border: '1px solid rgba(139, 92, 246, 0.2)',
+    borderRadius: 'var(--border-radius-sm, 4px)',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '11px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 150ms ease',
+    marginLeft: '8px',
+  });
+
+  const aiLoadingStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '12px',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08))',
+    border: '1px solid rgba(139, 92, 246, 0.15)',
+    marginBottom: '8px',
+  };
+
+  const aiDisclaimerStyle: React.CSSProperties = {
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: '11px',
+    color: 'var(--color-neutrals-4, #6E7481)',
+    marginTop: '6px',
+    fontStyle: 'italic',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  };
+
   return (
     <ModalShell
       isOpen={isOpen}
@@ -407,7 +535,7 @@ export const QAModal: React.FC<QAModalProps> = ({
           </h2>
         </div>
         <p style={subtitleStyle}>
-          Ask questions about <strong>{vehicleName || articleTitle}</strong> and get answers from editors and the community.
+          Ask questions about <strong>{vehicleName || articleTitle}</strong> and get answers from editors, the community, or <span style={{ color: '#6366F1', fontWeight: 600 }}>AI</span>.
         </p>
       </div>
 
@@ -419,7 +547,7 @@ export const QAModal: React.FC<QAModalProps> = ({
           placeholder="Ask a question about this vehicle or article..."
           value={newQuestion}
           onChange={(e) => setNewQuestion(e.target.value)}
-          onKeyDown={(e) => handleKeyDown(e, handleSubmitQuestion)}
+          onKeyDown={(e) => handleKeyDown(e, () => handleSubmitQuestion(false))}
           onFocus={(e) => {
             e.currentTarget.style.borderColor = 'var(--color-neutrals-3, #353945)';
           }}
@@ -429,14 +557,25 @@ export const QAModal: React.FC<QAModalProps> = ({
         />
         <div style={askBtnRowStyle}>
           <span style={hintStyle}>Press {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'} + Enter to submit</span>
-          <button
-            style={askBtnStyle}
-            onClick={handleSubmitQuestion}
-            disabled={!newQuestion.trim() || isSubmitting}
-          >
-            {isSubmitting ? 'Posting...' : 'Ask Question'}
-            <Icon name="send" size={16} />
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              style={askAIBtnStyle}
+              onClick={() => handleSubmitQuestion(true)}
+              disabled={!newQuestion.trim() || isSubmitting}
+              title="Post your question and get an instant AI answer"
+            >
+              <Icon name="auto_awesome" size={16} />
+              {isSubmitting && askAIWithQuestion ? 'Posting...' : 'Ask AI'}
+            </button>
+            <button
+              style={askBtnStyle}
+              onClick={() => handleSubmitQuestion(false)}
+              disabled={!newQuestion.trim() || isSubmitting}
+            >
+              {isSubmitting && !askAIWithQuestion ? 'Posting...' : 'Ask Community'}
+              <Icon name="send" size={16} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -495,6 +634,24 @@ export const QAModal: React.FC<QAModalProps> = ({
                     <span>{q.date}</span>
                     <span>·</span>
                     <span>{q.answers.length} {q.answers.length === 1 ? 'answer' : 'answers'}</span>
+                    {/* Ask AI button inline */}
+                    {onAskAI && !hasAIAnswer(q) && aiLoadingQuestionId !== q.id && (
+                      <button
+                        style={getAskAIQuestionBtnStyle(q.id)}
+                        onClick={() => handleAskAI(q.id, q.question)}
+                        onMouseEnter={() => setHoveredAiBtn(q.id)}
+                        onMouseLeave={() => setHoveredAiBtn(null)}
+                      >
+                        <Icon name="auto_awesome" size={12} />
+                        Get AI Answer
+                      </button>
+                    )}
+                    {hasAIAnswer(q) && (
+                      <span style={{ ...aiBadgeStyle, fontSize: '9px', padding: '1px 6px' }}>
+                        <Icon name="auto_awesome" size={9} />
+                        AI Answered
+                      </span>
+                    )}
                   </div>
 
                   {/* Answers Toggle */}
@@ -511,14 +668,72 @@ export const QAModal: React.FC<QAModalProps> = ({
                   {/* Answers Section */}
                   {(expandedQuestion === q.id || q.answers.length === 0) && (
                     <div style={answersSectionStyle}>
-                      {q.answers.map((answer) => (
-                        <div key={answer.id} style={answerCardStyle}>
-                          <div style={answerAvatarStyle}>
-                            {answer.author.charAt(0).toUpperCase()}
+                      {/* AI Loading State */}
+                      {aiLoadingQuestionId === q.id && (
+                        <div style={aiLoadingStyle}>
+                          <div style={aiAvatarStyle}>
+                            <Icon name="auto_awesome" size={14} />
                           </div>
                           <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                              <span style={{ fontSize: '13px', fontWeight: 600, color: '#6366F1' }}>MotorTrend AI</span>
+                              <span style={aiBadgeStyle}>
+                                <Icon name="auto_awesome" size={10} />
+                                AI
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div style={{
+                                display: 'flex',
+                                gap: '4px',
+                              }}>
+                                {[0, 1, 2].map((i) => (
+                                  <div
+                                    key={i}
+                                    style={{
+                                      width: '6px',
+                                      height: '6px',
+                                      borderRadius: '50%',
+                                      backgroundColor: '#8B5CF6',
+                                      animation: `qaModalPulse 1.2s ease-in-out ${i * 0.2}s infinite`,
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                              <span style={{ fontSize: '13px', color: 'var(--color-neutrals-4, #6E7481)' }}>
+                                Analyzing article and generating answer...
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {q.answers.map((answer) => (
+                        <div key={answer.id} style={answerCardStyle(answer.isAI)}>
+                          {answer.isAI ? (
+                            <div style={aiAvatarStyle}>
+                              <Icon name="auto_awesome" size={14} />
+                            </div>
+                          ) : (
+                            <div style={answerAvatarStyle}>
+                              {answer.author.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-neutrals-1, #141416)' }}>{answer.author}</span>
+                              <span style={{ 
+                                fontSize: '13px', 
+                                fontWeight: 600, 
+                                color: answer.isAI ? '#6366F1' : 'var(--color-neutrals-1, #141416)' 
+                              }}>
+                                {answer.author}
+                              </span>
+                              {answer.isAI && (
+                                <span style={aiBadgeStyle}>
+                                  <Icon name="auto_awesome" size={10} />
+                                  AI
+                                </span>
+                              )}
                               {answer.isEditor && (
                                 <span style={editorBadgeStyle}>
                                   <Icon name="verified" size={10} />
@@ -528,6 +743,12 @@ export const QAModal: React.FC<QAModalProps> = ({
                               <span style={{ fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)' }}>{answer.date}</span>
                             </div>
                             <p style={answerTextStyle}>{answer.text}</p>
+                            {answer.isAI && (
+                              <div style={aiDisclaimerStyle}>
+                                <Icon name="info" size={12} />
+                                AI-generated based on article content. May not be fully accurate.
+                              </div>
+                            )}
                             <button
                               style={{ 
                                 ...upvoteBtnStyle(`answer-${answer.id}`, answer.upvotes),
@@ -535,6 +756,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                                 padding: '4px 8px',
                                 gap: '4px',
                                 minWidth: 'auto',
+                                marginTop: '4px',
                               }}
                               onClick={() => onUpvoteAnswer(q.id, answer.id)}
                               onMouseEnter={() => setHoveredUpvote(`answer-${answer.id}`)}
@@ -573,6 +795,14 @@ export const QAModal: React.FC<QAModalProps> = ({
           ))
         )}
       </div>
+
+      {/* Inline keyframes for AI loading animation */}
+      <style>{`
+        @keyframes qaModalPulse {
+          0%, 100% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+      `}</style>
     </ModalShell>
   );
 };
