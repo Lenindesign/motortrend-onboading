@@ -223,7 +223,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     alignItems: 'center',
     gap: '6px',
     padding: '10px 20px',
-    background: newQuestion.trim() ? 'linear-gradient(135deg, #6366F1, #8B5CF6, #A855F7)' : 'var(--color-neutrals-5, #B1B5C3)',
+    background: newQuestion.trim() ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-5, #B1B5C3)',
     border: 'none',
     borderRadius: 'var(--border-radius-md, 8px)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
@@ -331,7 +331,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     alignItems: 'center',
     gap: '4px',
     padding: '2px 8px',
-    background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+    background: '#33C4FF',
     color: 'white',
     borderRadius: '4px',
     fontSize: '10px',
@@ -346,7 +346,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     gap: '4px',
     padding: '2px 8px',
     background: '#33C4FF',
-    color: 'white',
+    color: 'var(--color-neutrals-1, #141416)',
     borderRadius: '4px',
     fontSize: '10px',
     fontWeight: 600,
@@ -366,8 +366,8 @@ export const QAModal: React.FC<QAModalProps> = ({
     display: 'flex',
     gap: '10px',
     borderRadius: isAI ? 'var(--border-radius-md, 8px)' : undefined,
-    background: isAI ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08))' : undefined,
-    border: isAI ? '1px solid rgba(139, 92, 246, 0.15)' : undefined,
+    background: isAI ? 'rgba(51, 196, 255, 0.06)' : undefined,
+    border: isAI ? '1px solid rgba(51, 196, 255, 0.2)' : undefined,
     marginBottom: isAI ? '8px' : undefined,
   });
 
@@ -375,7 +375,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     width: '28px',
     height: '28px',
     borderRadius: '50%',
-    background: 'linear-gradient(135deg, #6366F1, #8B5CF6)',
+    background: '#33C4FF',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -485,9 +485,9 @@ export const QAModal: React.FC<QAModalProps> = ({
     alignItems: 'center',
     gap: '4px',
     padding: '4px 10px',
-    background: hoveredAiBtn === qId ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' : 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.15))',
-    color: hoveredAiBtn === qId ? 'white' : '#6366F1',
-    border: '1px solid rgba(139, 92, 246, 0.2)',
+    background: hoveredAiBtn === qId ? 'var(--color-neutrals-2, #23262F)' : 'var(--color-neutrals-1, #141416)',
+    color: 'white',
+    border: '1px solid var(--color-neutrals-3, #353945)',
     borderRadius: 'var(--border-radius-sm, 4px)',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '11px',
@@ -503,8 +503,8 @@ export const QAModal: React.FC<QAModalProps> = ({
     gap: '10px',
     padding: '12px',
     borderRadius: 'var(--border-radius-md, 8px)',
-    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.08))',
-    border: '1px solid rgba(139, 92, 246, 0.15)',
+    background: 'rgba(51, 196, 255, 0.06)',
+    border: '1px solid rgba(51, 196, 255, 0.2)',
     marginBottom: '8px',
   };
 
@@ -535,7 +535,7 @@ export const QAModal: React.FC<QAModalProps> = ({
           </h2>
         </div>
         <p style={subtitleStyle}>
-          Ask questions about <strong>{vehicleName || articleTitle}</strong> and get answers from editors, the community, or <span style={{ color: '#6366F1', fontWeight: 600 }}>AI</span>.
+          Ask questions about <strong>{vehicleName || articleTitle}</strong> and get answers from editors, the community, or <span style={{ color: '#33C4FF', fontWeight: 600 }}>AI</span>.
         </p>
       </div>
 
@@ -622,7 +622,6 @@ export const QAModal: React.FC<QAModalProps> = ({
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
                     {q.isEditorPick && (
                       <span style={editorPickBadgeStyle}>
-                        <Icon name="auto_awesome" size={10} />
                         Editor's Pick
                       </span>
                     )}
@@ -676,7 +675,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                           </div>
                           <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                              <span style={{ fontSize: '13px', fontWeight: 600, color: '#6366F1' }}>MotorTrend AI</span>
+                              <span style={{ fontSize: '13px', fontWeight: 600, color: '#33C4FF' }}>MotorTrend AI</span>
                               <span style={aiBadgeStyle}>
                                 <Icon name="auto_awesome" size={10} />
                                 AI
@@ -694,7 +693,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                                       width: '6px',
                                       height: '6px',
                                       borderRadius: '50%',
-                                      backgroundColor: '#8B5CF6',
+                                      backgroundColor: '#33C4FF',
                                       animation: `qaModalPulse 1.2s ease-in-out ${i * 0.2}s infinite`,
                                     }}
                                   />
@@ -724,7 +723,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                               <span style={{ 
                                 fontSize: '13px', 
                                 fontWeight: 600, 
-                                color: answer.isAI ? '#6366F1' : 'var(--color-neutrals-1, #141416)' 
+                                color: answer.isAI ? '#33C4FF' : 'var(--color-neutrals-1, #141416)' 
                               }}>
                                 {answer.author}
                               </span>

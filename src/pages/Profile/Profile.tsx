@@ -1120,7 +1120,7 @@ export const Profile: React.FC<ProfileProps> = ({
                             height: '36px',
                             borderRadius: '50%',
                             background: activity.type === 'asked' 
-                              ? 'linear-gradient(135deg, #6366F1, #8B5CF6)' 
+                              ? '#33C4FF' 
                               : 'var(--color-primary-1, #E90C17)',
                             display: 'flex',
                             alignItems: 'center',
@@ -1145,9 +1145,9 @@ export const Profile: React.FC<ProfileProps> = ({
                                 gap: '4px',
                                 padding: '2px 8px',
                                 background: activity.type === 'asked' 
-                                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.15))' 
+                                  ? 'rgba(51, 196, 255, 0.1)' 
                                   : 'rgba(233, 12, 23, 0.08)',
-                                color: activity.type === 'asked' ? '#6366F1' : '#E90C17',
+                                color: activity.type === 'asked' ? '#33C4FF' : '#E90C17',
                                 borderRadius: '4px',
                                 fontSize: '11px',
                                 fontWeight: 600,
