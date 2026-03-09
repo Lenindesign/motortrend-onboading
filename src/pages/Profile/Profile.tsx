@@ -1116,7 +1116,8 @@ export const Profile: React.FC<ProfileProps> = ({
                             onClick={(e) => e.stopPropagation()}
                             style={{
                               padding: '6px 10px', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '12px',
-                              border: '1px solid var(--color-neutrals-6)', borderRadius: 'var(--border-radius-sm)', background: 'white',
+                              color: 'var(--color-neutrals-1, #141416)', backgroundColor: 'var(--color-white, #FFFFFF)',
+                              border: '1px solid var(--color-neutrals-6)', borderRadius: 'var(--border-radius-sm)',
                             }}
                           >
                             <option value="none">{getReminderLabel('none')}</option>
