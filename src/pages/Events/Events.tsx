@@ -44,16 +44,22 @@ const EventsListing: React.FC = () => {
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    background: 'linear-gradient(135deg, #141416 0%, #23262F 50%, #141416 100%)',
     overflow: 'hidden',
   };
 
-  const heroOverlayPattern: React.CSSProperties = {
+  const heroBgImageStyle: React.CSSProperties = {
     position: 'absolute',
     inset: 0,
-    opacity: 0.04,
-    backgroundImage: 'radial-gradient(circle at 25% 25%, white 1px, transparent 1px), radial-gradient(circle at 75% 75%, white 1px, transparent 1px)',
-    backgroundSize: '48px 48px',
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center',
+  };
+
+  const heroOverlayGradient: React.CSSProperties = {
+    position: 'absolute',
+    inset: 0,
+    background: 'linear-gradient(to bottom, rgba(20,20,22,0.7) 0%, rgba(20,20,22,0.85) 100%)',
   };
 
   const heroContentStyle: React.CSSProperties = {
@@ -134,7 +140,13 @@ const EventsListing: React.FC = () => {
     <div>
       {/* Hero */}
       <div style={heroStyle}>
-        <div style={heroOverlayPattern} />
+        <img
+          src="/images/events-hero-bg.png"
+          alt=""
+          style={heroBgImageStyle}
+          aria-hidden="true"
+        />
+        <div style={heroOverlayGradient} />
         <div style={heroContentStyle}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
             <Icon name="local_activity" size={28} style={{ color: 'var(--color-primary-1, #E90C17)' }} />

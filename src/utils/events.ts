@@ -111,7 +111,7 @@ const eventsData: EventData[] = [
     title: 'HOT ROD Power Tour 2026',
     subtitle: 'The Ultimate Cross-Country Driving Event',
     description: 'Join thousands of hot rod and muscle car enthusiasts for the most iconic cross-country automotive tour in America. Seven days, seven cities, one incredible adventure. Drive your ride across the heartland alongside legends and first-timers alike.',
-    heroImage: 'https://d2kde5ohu8qb21.cloudfront.net/files/hotrod-power-tour-hero.jpg',
+    heroImage: '/images/hrpt-2026-hero.png',
     dates: {
       start: '2026-06-08',
       end: '2026-06-14',
@@ -189,7 +189,7 @@ const eventsData: EventData[] = [
     title: 'Northwest Shift 2026',
     subtitle: 'Oregon + Washington',
     description: 'Join us for the best driving experiences the Pacific Northwest has to offer — on the road, on the track, and even off-road. Get your adrenaline pumping at Portland International Raceway, hone your rally skills at DirtFish Rally School, and cruise stunning mountain roads curated by Road & Track editors.',
-    heroImage: 'https://d2kde5ohu8qb21.cloudfront.net/files/rt-northwest-shift-hero.jpg',
+    heroImage: '/images/rt-northwest-shift-hero.png',
     dates: {
       start: '2026-06-10',
       end: '2026-06-13',
@@ -258,7 +258,7 @@ const eventsData: EventData[] = [
     title: 'MotorTrend Auto Show 2026',
     subtitle: 'The Future of Driving, Today',
     description: 'Experience the most anticipated vehicles of the year up close. Test drive the latest EVs, see concept cars before anyone else, and hear from the engineers and designers shaping the future of mobility.',
-    heroImage: 'https://d2kde5ohu8qb21.cloudfront.net/files/mt-auto-show-hero.jpg',
+    heroImage: '/images/mt-auto-show-hero.png',
     dates: {
       start: '2026-11-14',
       end: '2026-11-22',
