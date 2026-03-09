@@ -36,7 +36,7 @@ import Sitemap from './pages/Sitemap';
 import AtomicDesignAudit from './pages/AtomicDesignAudit';
 import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
 import { JourneyBuilder } from './pages/JourneyBuilder';
-import { Events } from './pages/Events';
+import { Events, EventsCommunity } from './pages/Events';
 import { RatingProvider } from './contexts/RatingContext';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
@@ -111,7 +111,8 @@ function App() {
               <Route path="/rankings-awards" element={<RankingsAndAwards />} />
               
               {/* Events Pages */}
-              <Route path="/events" element={<Events />} />
+              <Route path="/events" element={<EventsCommunity />} />
+              <Route path="/events/browse" element={<Events />} />
               <Route path="/events/:slug" element={<Events />} />
               
               {/* Email Preview Page (for CDP/personalization demo) */}

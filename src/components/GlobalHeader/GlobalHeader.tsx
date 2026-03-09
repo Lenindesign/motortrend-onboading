@@ -2815,24 +2815,24 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     {filteredCars.slice(0, 4).map((car, index) => {
                       const displayedCars = filteredCars.slice(0, 4);
                       return (
-                        <div
-                          key={car}
+                  <div
+                    key={car}
                           style={{
                             ...getSearchDropdownItemStyle(index),
                             borderBottom: index < displayedCars.length - 1 ? '1px solid var(--color-neutrals-3, #353945)' : 'none'
                           }}
-                          onClick={() => handleVehicleSelect(car)}
-                          onMouseEnter={() => {
-                            setHighlightedSearchIndex(index);
-                            setHoveredSearchItem(index);
-                          }}
-                          onMouseLeave={() => setHoveredSearchItem(-1)}
-                        >
+                    onClick={() => handleVehicleSelect(car)}
+                    onMouseEnter={() => {
+                      setHighlightedSearchIndex(index);
+                      setHoveredSearchItem(index);
+                    }}
+                    onMouseLeave={() => setHoveredSearchItem(-1)}
+                  >
                           <div style={vehicleIconStyle}>
                             <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)' }} />
-                          </div>
+                  </div>
                           <span>{car}</span>
-                        </div>
+              </div>
                       );
                     })}
                   </>
