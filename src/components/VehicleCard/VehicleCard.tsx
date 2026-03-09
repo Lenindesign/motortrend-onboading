@@ -21,6 +21,8 @@ export interface VehicleCardProps {
   onViewDetails?: () => void;
   onRate?: () => void;
   userRating?: number;
+  priceAlertOn?: boolean;
+  onPriceAlertClick?: () => void;
 }
 
 export const VehicleCard: React.FC<VehicleCardProps> = ({
@@ -35,7 +37,9 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   onOwnershipChange,
   onViewDetails,
   onRate,
-  userRating
+  userRating,
+  priceAlertOn,
+  onPriceAlertClick,
 }) => {
   const ratings = [];
   if (rating1) ratings.push({ value: typeof rating1 === 'number' ? rating1.toFixed(1) : rating1, color: 'var(--color-rating-motortrend, #FFB74D)' });
@@ -60,6 +64,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       actionText="View Details"
       onRate={onRate}
       userRating={userRating}
+      priceAlertOn={priceAlertOn}
+      onPriceAlertClick={onPriceAlertClick}
     />
   );
 };

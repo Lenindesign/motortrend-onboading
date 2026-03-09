@@ -30,11 +30,12 @@ import { getCurrentJoinDate } from '../../utils/dateUtils';
 import RatingModal from '../../components/RatingModal';
 import WriteReviewModal from '../../components/WriteReviewModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
+import { PriceAlertsModal } from '../../components/PriceAlertsModal';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
 import { getAllSavedLeads, unsaveLead } from '../../utils/savedLeads';
 import { getAllSavedEvents, unsaveEvent, setEventReminder, getReminderLabel, type SavedEventMetadata, type EventReminder } from '../../utils/savedEvents';
-import { getPriceAlertVehicles, removePriceAlert } from '../../utils/priceAlerts';
+import { getPriceAlertVehicles, removePriceAlert, hasPriceAlert } from '../../utils/priceAlerts';
 import type { LocalListing } from '../../components/LocalListingsSidebar/LocalListingsSidebar';
 import './Profile.css';
 
@@ -215,6 +216,8 @@ export const Profile: React.FC<ProfileProps> = ({
   useEffect(() => {
     if (activeTab === 'saved-items') loadPriceAlertVehicles();
   }, [activeTab]);
+
+  const [priceAlertsModalVehicle, setPriceAlertsModalVehicle] = useState<string | null>(null);
 
   // Onboarding data state
   const [localOnboardingData, setLocalOnboardingData] = useState<{
@@ -839,6 +842,10 @@ export const Profile: React.FC<ProfileProps> = ({
                           }}
                           onRate={() => handleRateVehicle(vehicle.name)}
                           userRating={getUserRating(vehicle.name)}
+                          priceAlertOn={hasPriceAlert(vehicle.name)}
+                          onPriceAlertClick={() => {
+                            setPriceAlertsModalVehicle(vehicle.name);
+                          }}
                         />
                       ))}
                       <EmptyVehicleSection 
@@ -895,6 +902,10 @@ export const Profile: React.FC<ProfileProps> = ({
                           }}
                           onRate={() => handleRateVehicle(vehicle.name)}
                           userRating={getUserRating(vehicle.name)}
+                          priceAlertOn={hasPriceAlert(vehicle.name)}
+                          onPriceAlertClick={() => {
+                            setPriceAlertsModalVehicle(vehicle.name);
+                          }}
                         />
                       ))}
                       <EmptyVehicleSection 
@@ -1539,6 +1550,14 @@ export const Profile: React.FC<ProfileProps> = ({
         vehicleName={writeReviewModal.vehicleName}
         vehicleImage={writeReviewModal.vehicleImage}
         onSubmit={handleSubmitReview}
+      />
+
+      {/* Price Alerts Modal (from garage cards) */}
+      <PriceAlertsModal
+        isOpen={priceAlertsModalVehicle !== null}
+        onClose={() => setPriceAlertsModalVehicle(null)}
+        vehicleName={priceAlertsModalVehicle ?? undefined}
+        onSignedUp={() => loadPriceAlertVehicles()}
       />
 
       {/* Review Submitted Modal */}

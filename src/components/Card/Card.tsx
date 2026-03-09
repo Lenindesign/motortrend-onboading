@@ -36,6 +36,10 @@ export interface CardProps {
   // Video-specific props
   showPlayIcon?: boolean;
 
+  // Price alerts (e.g. Profile garage cards)
+  priceAlertOn?: boolean;
+  onPriceAlertClick?: () => void;
+
   // Custom styling
   className?: string;
   variant?: 'default' | 'compact';
@@ -58,6 +62,8 @@ export const Card: React.FC<CardProps> = ({
   ownership,
   onOwnershipChange,
   showPlayIcon = false,
+  priceAlertOn = false,
+  onPriceAlertClick,
   className = '',
   variant = 'default'
 }) => {
@@ -554,6 +560,61 @@ export const Card: React.FC<CardProps> = ({
             )}
           </div>
         </div>
+
+        {/* Price alerts row (Profile garage: Alerts on or Get price alerts) */}
+        {onPriceAlertClick && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: 'var(--spacing-gap-sm, 4px)',
+              marginTop: 'var(--spacing-component-xs, 4px)',
+            }}
+          >
+            {priceAlertOn ? (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontFamily: 'var(--font-body, Geist, sans-serif)',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  color: 'var(--color-neutrals-4, #6E7481)',
+                }}
+              >
+                <Icon name="notifications" variant="filled" size={16} style={{ color: 'var(--color-primary-1, #E90C17)' }} />
+                Alerts on
+              </span>
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPriceAlertClick();
+                }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  fontFamily: 'var(--font-body, Geist, sans-serif)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  color: 'var(--color-primary-1, #E90C17)',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                }}
+              >
+                <Icon name="notifications" variant="outlined" size={16} />
+                Get price alerts
+              </button>
+            )}
+          </div>
+        )}
 
         <div style={bottomRowStyle}>
           {/* Ratings section */}
