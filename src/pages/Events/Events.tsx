@@ -16,6 +16,7 @@ import {
   type EventData,
   type EventBrand,
 } from '../../utils/events';
+import { saveEvent, unsaveEvent, isEventSaved } from '../../utils/savedEvents';
 
 // ─── Listing Page ────────────────────────────────────────────────────────────
 
@@ -204,11 +205,37 @@ const EventDetail: React.FC<{ event: EventData }> = ({ event }) => {
   const [hoveredHighlight, setHoveredHighlight] = useState<number | null>(null);
   const [hoveredPricing, setHoveredPricing] = useState<number | null>(null);
   const [testimonialIdx, setTestimonialIdx] = useState(0);
+  const [isSaved, setIsSaved] = useState(() => isEventSaved(event.id));
   const scheduleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    const sync = () => setIsSaved(isEventSaved(event.id));
+    window.addEventListener('savedEventsUpdated', sync);
+    return () => window.removeEventListener('savedEventsUpdated', sync);
+  }, [event.id]);
+
+  const handleSaveEvent = () => {
+    if (isSaved) {
+      unsaveEvent(event.id);
+      setIsSaved(false);
+    } else {
+      saveEvent({
+        eventId: event.id,
+        slug: event.slug,
+        title: event.title,
+        brand: event.brand,
+        brandName: brand.name,
+        dates: event.dates,
+        locationPrimary: event.location.primary,
+        heroImage: event.heroImage,
+      });
+      setIsSaved(true);
+    }
+  };
 
   // Auto-rotate testimonials
   useEffect(() => {
@@ -326,21 +353,39 @@ const EventDetail: React.FC<{ event: EventData }> = ({ event }) => {
         />
         <div style={heroGradient} />
         <div style={heroContent}>
-          {/* Back nav */}
-          <button
-            onClick={() => navigate('/events')}
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--border-radius-full, 100px)',
-              padding: '8px 16px', color: 'white', fontFamily: 'var(--font-body, Geist, sans-serif)',
-              fontSize: '13px', fontWeight: 500, cursor: 'pointer', marginBottom: '24px',
-              transition: 'background 150ms ease',
-            }}
-          >
-            <Icon name="arrow_back" size={16} />
-            All Events
-          </button>
+          {/* Back nav + Save */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => navigate('/events')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--border-radius-full, 100px)',
+                padding: '8px 16px', color: 'white', fontFamily: 'var(--font-body, Geist, sans-serif)',
+                fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+                transition: 'background 150ms ease',
+              }}
+            >
+              <Icon name="arrow_back" size={16} />
+              All Events
+            </button>
+            <button
+              onClick={handleSaveEvent}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                background: isSaved ? 'rgba(233, 12, 23, 0.9)' : 'rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(8px)',
+                border: isSaved ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                borderRadius: 'var(--border-radius-full, 100px)',
+                padding: '8px 16px', color: 'white', fontFamily: 'var(--font-body, Geist, sans-serif)',
+                fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+                transition: 'background 150ms ease',
+              }}
+            >
+              <Icon name={isSaved ? 'bookmark' : 'bookmark_border'} size={16} />
+              {isSaved ? 'Saved' : 'Save event'}
+            </button>
+          </div>
 
           {/* Brand badge */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>

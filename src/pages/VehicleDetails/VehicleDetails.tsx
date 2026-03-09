@@ -11,6 +11,7 @@ import { AIInsights } from '../../components/AIInsights';
 import WriteReviewModal from '../../components/WriteReviewModal';
 import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import SavedModal from '../../components/SavedModal';
+import { PriceAlertsModal } from '../../components/PriceAlertsModal';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { generateStaffRating, generateCommunityRating } from '../../utils/vehicleRatings';
 import { generateVehicleReview } from '../../utils/vehicleReviews';
@@ -35,6 +36,7 @@ import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
 import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
 import { AuthPromptModal } from '../../components/AuthPromptModal';
+import { hasPriceAlert } from '../../utils/priceAlerts';
 import './VehicleDetails.css';
 
 export const VehicleDetails: React.FC = () => {
@@ -50,6 +52,8 @@ export const VehicleDetails: React.FC = () => {
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
+  const [isPriceAlertsModalOpen, setIsPriceAlertsModalOpen] = useState(false);
+  const [hasPriceAlertForVehicle, setHasPriceAlertForVehicle] = useState(false);
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
   const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
@@ -894,6 +898,16 @@ export const VehicleDetails: React.FC = () => {
     }
   }, [vehicleName]);
 
+  // Sync price alert status from localStorage (and when user signs up in modal)
+  useEffect(() => {
+    setHasPriceAlertForVehicle(hasPriceAlert(vehicleName));
+  }, [vehicleName]);
+  useEffect(() => {
+    const onUpdate = () => setHasPriceAlertForVehicle(hasPriceAlert(vehicleName));
+    window.addEventListener('priceAlertsUpdated', onUpdate);
+    return () => window.removeEventListener('priceAlertsUpdated', onUpdate);
+  }, [vehicleName]);
+
   // Note: Vehicle data is now loaded synchronously via useMemo above
   // This prevents the flash of incorrect rating (e.g., 9.4 -> 8.5)
   // The useEffect has been removed in favor of synchronous loading
@@ -1677,6 +1691,14 @@ export const VehicleDetails: React.FC = () => {
                 <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
                 <span>{isSaved ? 'Saved!' : 'Save'}</span>
               </button>
+              <button
+                className={`vehicle-details__action-btn ${hasPriceAlertForVehicle ? 'saved' : ''}`}
+                onClick={() => setIsPriceAlertsModalOpen(true)}
+                aria-label={hasPriceAlertForVehicle ? 'Manage price alerts' : 'Get price alerts'}
+              >
+                <Icon name="notifications" variant={hasPriceAlertForVehicle ? 'filled' : 'outlined'} size={20} />
+                <span>{hasPriceAlertForVehicle ? 'Price alerts on' : 'Price Alerts'}</span>
+              </button>
               {!isPrimeTemplate && (
                 <button className="vehicle-details__cta-primary">
                   <Icon name="search" size={20} />
@@ -2296,6 +2318,14 @@ export const VehicleDetails: React.FC = () => {
         onClose={() => setIsSavedModalOpen(false)}
         itemTitle={vehicleName}
         itemType="vehicle"
+      />
+
+      {/* Price Alerts Modal */}
+      <PriceAlertsModal
+        isOpen={isPriceAlertsModalOpen}
+        onClose={() => setIsPriceAlertsModalOpen(false)}
+        vehicleName={vehicleName}
+        onSignedUp={() => setHasPriceAlertForVehicle(true)}
       />
 
       {/* Auth Prompt Modal for unauthenticated users */}

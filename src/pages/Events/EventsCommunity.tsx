@@ -4,7 +4,7 @@
  * Mirrors the Community page layout: left sidebar, main feed, right sidebar.
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import {
@@ -14,6 +14,7 @@ import {
   type EventData,
   type EventBrand,
 } from '../../utils/events';
+import { saveEvent, unsaveEvent, getSavedEventIds } from '../../utils/savedEvents';
 import './EventsCommunity.css';
 
 // ─── Event Post Card (feed item) ────────────────────────────────────────────
@@ -22,9 +23,11 @@ interface EventPostCardProps {
   event: EventData;
   onRSVP?: (eventId: string) => void;
   isRSVPd?: boolean;
+  isSaved?: boolean;
+  onSave?: (event: EventData) => void;
 }
 
-const EventPostCard: React.FC<EventPostCardProps> = ({ event, onRSVP, isRSVPd }) => {
+const EventPostCard: React.FC<EventPostCardProps> = ({ event, onRSVP, isRSVPd, isSaved, onSave }) => {
   const navigate = useNavigate();
   const brand = brandConfig[event.brand];
   const [isHovered, setIsHovered] = useState(false);
@@ -141,6 +144,16 @@ const EventPostCard: React.FC<EventPostCardProps> = ({ event, onRSVP, isRSVPd })
 
       {/* Card Actions */}
       <div className="events-feed__card-actions">
+        {onSave && (
+          <button
+            className={`events-feed__action-btn ${isSaved ? 'events-feed__action-btn--active' : ''}`}
+            onClick={(e) => { e.stopPropagation(); onSave(event); }}
+            aria-label={isSaved ? 'Remove from saved events' : 'Save event'}
+          >
+            <Icon name={isSaved ? 'bookmark' : 'bookmark_border'} size={18} />
+            {isSaved ? 'Saved' : 'Save'}
+          </button>
+        )}
         <button
           className={`events-feed__action-btn events-feed__action-btn--rsvp ${isRSVPd ? 'events-feed__action-btn--active' : ''}`}
           onClick={(e) => { e.stopPropagation(); onRSVP?.(event.id); }}
@@ -223,6 +236,33 @@ export const EventsCommunity: React.FC = () => {
   const [activeBrand, setActiveBrand] = useState<'all' | EventBrand>('all');
   const [sortBy, setSortBy] = useState<'upcoming' | 'popular' | 'newest'>('upcoming');
   const [rsvpEvents, setRsvpEvents] = useState<Set<string>>(new Set());
+  const [savedEventIds, setSavedEventIds] = useState<Set<string>>(() => new Set(getSavedEventIds()));
+
+  useEffect(() => {
+    const sync = () => setSavedEventIds(new Set(getSavedEventIds()));
+    window.addEventListener('savedEventsUpdated', sync);
+    return () => window.removeEventListener('savedEventsUpdated', sync);
+  }, []);
+
+  const handleSaveEvent = (event: EventData) => {
+    if (savedEventIds.has(event.id)) {
+      unsaveEvent(event.id);
+      setSavedEventIds(prev => { const n = new Set(prev); n.delete(event.id); return n; });
+    } else {
+      const brand = brandConfig[event.brand];
+      saveEvent({
+        eventId: event.id,
+        slug: event.slug,
+        title: event.title,
+        brand: event.brand,
+        brandName: brand.name,
+        dates: event.dates,
+        locationPrimary: event.location.primary,
+        heroImage: event.heroImage,
+      });
+      setSavedEventIds(prev => new Set(prev).add(event.id));
+    }
+  };
 
   const brandCounts = useMemo(() => {
     const counts: Partial<Record<EventBrand, number>> = {};
@@ -371,6 +411,8 @@ export const EventsCommunity: React.FC = () => {
                 event={event}
                 onRSVP={handleRSVP}
                 isRSVPd={rsvpEvents.has(event.id)}
+                isSaved={savedEventIds.has(event.id)}
+                onSave={handleSaveEvent}
               />
             ))}
             {filteredEvents.length === 0 && (

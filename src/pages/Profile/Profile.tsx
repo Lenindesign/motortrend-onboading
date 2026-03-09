@@ -33,6 +33,8 @@ import ReviewSubmittedToast from '../../components/ReviewSubmittedToast';
 import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
 import { getAllSavedLeads, unsaveLead } from '../../utils/savedLeads';
+import { getAllSavedEvents, unsaveEvent, setEventReminder, getReminderLabel, type SavedEventMetadata, type EventReminder } from '../../utils/savedEvents';
+import { getPriceAlertVehicles, removePriceAlert } from '../../utils/priceAlerts';
 import type { LocalListing } from '../../components/LocalListingsSidebar/LocalListingsSidebar';
 import './Profile.css';
 
@@ -98,6 +100,7 @@ export const Profile: React.FC<ProfileProps> = ({
   const [savedArticlesMetadata, setSavedArticlesMetadata] = useState<Record<string, { title: string; author: string; date: string; imageUrl: string; slug: string }>>({});
   const [savedComparisons, setSavedComparisons] = useState<string[]>(['comparison-1']);
   const [savedVideos, setSavedVideos] = useState<string[]>(['video-1', 'video-2']);
+  const [savedEventsList, setSavedEventsList] = useState<SavedEventMetadata[]>([]);
   
   // Load saved articles from localStorage
   const loadSavedArticles = () => {
@@ -128,6 +131,18 @@ export const Profile: React.FC<ProfileProps> = ({
     if (activeTab === 'saved-items') {
       loadSavedArticles();
     }
+  }, [activeTab]);
+
+  // Load and listen for saved events
+  const loadSavedEvents = () => setSavedEventsList(getAllSavedEvents());
+  useEffect(() => {
+    loadSavedEvents();
+    const handleSavedEventsUpdated = () => loadSavedEvents();
+    window.addEventListener('savedEventsUpdated', handleSavedEventsUpdated);
+    return () => window.removeEventListener('savedEventsUpdated', handleSavedEventsUpdated);
+  }, []);
+  useEffect(() => {
+    if (activeTab === 'saved-items') loadSavedEvents();
   }, [activeTab]);
 
   // Q&A activity state
@@ -187,7 +202,20 @@ export const Profile: React.FC<ProfileProps> = ({
       window.removeEventListener('savedLeadsUpdated', handleStorageChange);
     };
   }, []);
-  
+
+  // Price alerts (saved-items: vehicles user signed up for price alerts)
+  const [priceAlertVehicles, setPriceAlertVehicles] = useState<string[]>([]);
+  const loadPriceAlertVehicles = () => setPriceAlertVehicles(getPriceAlertVehicles());
+  useEffect(() => {
+    loadPriceAlertVehicles();
+    const onUpdate = () => loadPriceAlertVehicles();
+    window.addEventListener('priceAlertsUpdated', onUpdate);
+    return () => window.removeEventListener('priceAlertsUpdated', onUpdate);
+  }, []);
+  useEffect(() => {
+    if (activeTab === 'saved-items') loadPriceAlertVehicles();
+  }, [activeTab]);
+
   // Onboarding data state
   const [localOnboardingData, setLocalOnboardingData] = useState<{
     name?: string;
@@ -978,6 +1006,126 @@ export const Profile: React.FC<ProfileProps> = ({
                       )}
                     </div>
                   </div>
+
+                  <div className="profile-section-divider"></div>
+                  <div className="profile-vehicles-subsection">
+                    <h4 className="profile-subsection__title">Price Alerts</h4>
+                    {priceAlertVehicles.length === 0 ? (
+                      <div className="profile-empty-state">
+                        <Icon name="notifications" size={48} style={{ color: 'var(--color-neutrals-5)' }} />
+                        <p>No price alerts yet</p>
+                        <p className="profile-empty-state__subtitle">On a vehicle page, click Price Alerts to get notified when prices or incentives change.</p>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {priceAlertVehicles.map((name) => (
+                          <div
+                            key={name}
+                            onClick={() => {
+                              const { year, make, model } = parseVehicleName(name);
+                              navigate(`/vehicles/${year}/${make}/${model}`);
+                            }}
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px',
+                              background: 'var(--color-neutrals-8, #FCFCFD)', border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+                              borderRadius: 'var(--border-radius-md, 8px)', cursor: 'pointer', transition: 'all 150ms ease',
+                            }}
+                          >
+                            <div style={{ width: '56px', height: '42px', borderRadius: 'var(--border-radius-sm)', overflow: 'hidden', flexShrink: 0 }}>
+                              <img src={vehicleImageFor(name)} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
+                            <span style={{ flex: 1, fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 600, fontSize: '14px', color: 'var(--color-neutrals-1)' }}>{name}</span>
+                            <span style={{ fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '12px', color: 'var(--color-neutrals-4)' }}>Alerts on</span>
+                            <button
+                              type="button"
+                              onClick={(e) => { e.stopPropagation(); removePriceAlert(name); loadPriceAlertVehicles(); }}
+                              aria-label={`Remove price alert for ${name}`}
+                              style={{ padding: '8px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-neutrals-4)' }}
+                            >
+                              <Icon name="close" size={20} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* My Events Section */}
+              <div className="profile-section profile-section--events">
+                <div className="profile-section__content">
+                  <div className="profile-section__header-row">
+                    <h3 className="profile-section__heading">
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Icon name="event" size={20} />
+                        My Events
+                      </span>
+                    </h3>
+                    <a
+                      href="/events"
+                      onClick={(e) => { e.preventDefault(); navigate('/events'); }}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '4px',
+                        fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '13px', fontWeight: 600,
+                        color: 'var(--color-primary-1, #E90C17)', textDecoration: 'none', cursor: 'pointer',
+                      }}
+                    >
+                      Browse events
+                      <Icon name="arrow_forward" size={14} />
+                    </a>
+                  </div>
+                  {savedEventsList.length === 0 ? (
+                    <p className="profile-section__empty">No saved events. Save events from the <button type="button" onClick={() => navigate('/events')} style={{ background: 'none', border: 'none', color: 'var(--color-primary-1)', fontWeight: 600, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Events</button> page to get reminders.</p>
+                  ) : (
+                    <div className="profile-events-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {savedEventsList.map((ev) => (
+                        <div
+                          key={ev.eventId}
+                          onClick={() => navigate(`/events/${ev.slug}`)}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '16px', padding: '12px',
+                            background: 'var(--color-neutrals-8, #FCFCFD)', border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+                            borderRadius: 'var(--border-radius-md, 8px)', cursor: 'pointer', transition: 'all 150ms ease',
+                          }}
+                        >
+                          <div style={{ width: '80px', height: '56px', borderRadius: 'var(--border-radius-sm, 4px)', overflow: 'hidden', flexShrink: 0 }}>
+                            <img src={ev.heroImage} alt={ev.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: '14px', color: 'var(--color-neutrals-1)', marginBottom: '2px' }}>{ev.title}</div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '12px', color: 'var(--color-neutrals-4)' }}>
+                              <span><Icon name="calendar_today" size={12} /> {ev.dates.displayText}</span>
+                              <span><Icon name="location_on" size={12} /> {ev.locationPrimary}</span>
+                            </div>
+                          </div>
+                          <select
+                            value={ev.reminder}
+                            onChange={(e) => { e.stopPropagation(); setEventReminder(ev.eventId, e.target.value as EventReminder); loadSavedEvents(); }}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                              padding: '6px 10px', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '12px',
+                              border: '1px solid var(--color-neutrals-6)', borderRadius: 'var(--border-radius-sm)', background: 'white',
+                            }}
+                          >
+                            <option value="none">{getReminderLabel('none')}</option>
+                            <option value="1day">{getReminderLabel('1day')}</option>
+                            <option value="1week">{getReminderLabel('1week')}</option>
+                          </select>
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); unsaveEvent(ev.eventId); loadSavedEvents(); }}
+                            aria-label="Remove from saved events"
+                            style={{
+                              padding: '8px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-neutrals-4)',
+                            }}
+                          >
+                            <Icon name="bookmark" size={20} style={{ color: 'var(--color-primary-1)' }} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
