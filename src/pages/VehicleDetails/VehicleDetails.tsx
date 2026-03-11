@@ -2333,6 +2333,8 @@ export const VehicleDetails: React.FC = () => {
         isOpen={isAuthPromptOpen}
         onClose={closeAuthPrompt}
         action={promptAction}
+        vehicleName={promptAction === 'bookmark' ? vehicleName : undefined}
+        vehicleImageUrl={promptAction === 'bookmark' ? (galleryImages?.[0] ?? vehicleData?.image) : undefined}
       />
 
       {/* Photo Gallery */}
