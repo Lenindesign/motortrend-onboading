@@ -67,6 +67,7 @@ export const Article: React.FC = () => {
   });
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [ratingModalVehicleName, setRatingModalVehicleName] = useState('');
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
@@ -102,6 +103,9 @@ export const Article: React.FC = () => {
   
   // Lazy load articles state
   const [articlesToShow, setArticlesToShow] = useState(5);
+
+  // Sticky bar vehicle selector (comparison articles: which vehicle's ratings to show in the bar)
+  const [selectedStickyVehicleIndex, setSelectedStickyVehicleIndex] = useState(0);
 
   // Helper function to render star rating (0-10 scale, displays as 0-5 stars)
   const renderStarRating = (ratingValue: number) => {
@@ -277,6 +281,22 @@ export const Article: React.FC = () => {
     const { year, make, model } = parseVehicleName(targetVehicle);
     return `/vehicles/${year}/${make}/${model}`;
   }, [vehicleName, isComparisonArticle, primaryVehicle]);
+
+  // For comparison articles: which vehicle is selected in the sticky bar (name + path + ratings)
+  const stickyBarVehicleName = isComparisonArticle ? comparisonVehicles[selectedStickyVehicleIndex] : vehicleName;
+  const stickyBarVehiclePath = useMemo(() => {
+    if (!stickyBarVehicleName) return null;
+    const { year, make, model } = parseVehicleName(stickyBarVehicleName);
+    return `/vehicles/${year}/${make}/${model}`;
+  }, [stickyBarVehicleName]);
+  const apiVehicleDataForBar = useMemo(() => getVehicleByName(stickyBarVehicleName), [stickyBarVehicleName]);
+  const staffRatingForBar = useMemo(() => {
+    if (apiVehicleDataForBar?.staffRating != null) return apiVehicleDataForBar.staffRating;
+    if (articleData.motortrendScore?.overallRating != null && stickyBarVehicleName === vehicleName) return articleData.motortrendScore.overallRating;
+    return generateStaffRating(stickyBarVehicleName);
+  }, [apiVehicleDataForBar, articleData.motortrendScore, stickyBarVehicleName, vehicleName]);
+  const communityRatingForBar = useMemo(() => apiVehicleDataForBar?.communityRating ?? generateCommunityRating(stickyBarVehicleName), [apiVehicleDataForBar, stickyBarVehicleName]);
+  const userRatingForBar = getUserRating(stickyBarVehicleName);
   
   const userRating = getUserRating(vehicleName);
 
@@ -761,12 +781,13 @@ export const Article: React.FC = () => {
   }), []);
   
   // Handlers for rating modal
-  const handleOpenRatingModal = () => {
+  const handleOpenRatingModal = (vehicleForModal?: string) => {
     if (!isAuthenticated) {
       setAuthPromptAction('rate');
       setIsAuthPromptOpen(true);
       return;
     }
+    setRatingModalVehicleName(vehicleForModal ?? vehicleName);
     setIsRatingModalOpen(true);
   };
 
@@ -775,17 +796,14 @@ export const Article: React.FC = () => {
   };
 
   const handleSubmitRating = (rating: number) => {
-    setUserRating(vehicleName, rating);
+    setUserRating(ratingModalVehicleName, rating);
     setIsRatingModalOpen(false);
   };
 
   const handleClearRating = () => {
-    // Clear the rating
-    clearRating(vehicleName);
-    
-    // Remove the user's review from localStorage
+    clearRating(ratingModalVehicleName);
     try {
-      const savedReviewsKey = `vehicleReviews_${vehicleName}`;
+      const savedReviewsKey = `vehicleReviews_${ratingModalVehicleName}`;
       const savedReviewsJson = localStorage.getItem(savedReviewsKey);
       if (savedReviewsJson) {
         const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
@@ -801,7 +819,7 @@ export const Article: React.FC = () => {
         }
         
         // Update local state
-        const generatedReviews = generateUserReviews(vehicleName);
+        const generatedReviews = generateUserReviews(ratingModalVehicleName);
         const generatedIds = new Set(generatedReviews.map(r => r.id));
         const uniqueSavedReviews = filteredReviews.filter(r => !generatedIds.has(r.id));
         setReviews([...uniqueSavedReviews, ...generatedReviews]);
@@ -814,8 +832,7 @@ export const Article: React.FC = () => {
   };
 
   const handleRateAndReview = (rating: number) => {
-    // Save the rating first
-    setUserRating(vehicleName, rating);
+    setUserRating(ratingModalVehicleName, rating);
     // Store the rating to pass directly to write review modal
     setReviewModalRating(rating);
     // Close rating modal and open write review modal
@@ -1145,12 +1162,22 @@ export const Article: React.FC = () => {
       {!shouldHideRatingBar && (
         <>
           <StickyRateBar
-            vehicleName={vehicleName}
-            vehiclePath={vehiclePath || undefined}
+            vehicleName={isComparisonArticle ? stickyBarVehicleName : vehicleName}
+            vehiclePath={(isComparisonArticle ? stickyBarVehiclePath : vehiclePath) || undefined}
+            vehicles={isComparisonArticle ? comparisonVehicles.map(name => {
+              try {
+                const { year, make, model } = parseVehicleName(name);
+                return { name, path: `/vehicles/${year}/${make}/${model}` };
+              } catch {
+                return { name };
+              }
+            }) : undefined}
+            selectedVehicleIndex={selectedStickyVehicleIndex}
+            onSelectVehicle={isComparisonArticle ? setSelectedStickyVehicleIndex : undefined}
             ratings={[
               {
                 type: 'motortrend',
-                value: staffRating,
+                value: isComparisonArticle ? staffRatingForBar : staffRating,
                 onClick: handleScrollToStaffRating,
                 iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
                 iconAlt: 'MT',
@@ -1158,7 +1185,7 @@ export const Article: React.FC = () => {
               },
               {
                 type: 'user-reviews',
-                value: communityRating, // 0-10 scale
+                value: isComparisonArticle ? communityRatingForBar : communityRating,
                 onClick: handleScrollToCommunityRatings,
                 label: 'User Reviews',
                 showStars: true,
@@ -1166,8 +1193,8 @@ export const Article: React.FC = () => {
               },
               {
                 type: 'your-rating',
-                value: userRating, // 0-100 scale
-                onClick: handleOpenRatingModal,
+                value: isComparisonArticle ? userRatingForBar : userRating,
+                onClick: isComparisonArticle ? () => handleOpenRatingModal(stickyBarVehicleName) : handleOpenRatingModal,
                 showStars: true,
                 showHalfStars: true
               }
@@ -1176,10 +1203,9 @@ export const Article: React.FC = () => {
             ctaOnClick={() => {
               const listingsSection = document.querySelector('.article__listings');
               if (listingsSection) {
-                const headerOffset = 100; // Account for sticky nav bar height
+                const headerOffset = 100;
                 const elementPosition = listingsSection.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
                 window.scrollTo({
                   top: offsetPosition,
                   behavior: 'smooth'
@@ -1192,7 +1218,7 @@ export const Article: React.FC = () => {
             isVisible={isStickyBarVisible || !isStickyBarSticky}
             isSticky={isStickyBarSticky}
             barRef={stickyRateBarRef as React.RefObject<HTMLDivElement>}
-            staffRatingScores={staffRatingScores}
+            staffRatingScores={(!isComparisonArticle || stickyBarVehicleName === vehicleName) ? staffRatingScores : undefined}
             ratingDistribution={ratingDistribution}
             totalReviews={communityRatingCount}
           />
@@ -2103,7 +2129,7 @@ export const Article: React.FC = () => {
       <RatingModal
         isOpen={isRatingModalOpen}
         onClose={handleCloseRatingModal}
-        vehicleName={vehicleName}
+        vehicleName={ratingModalVehicleName || vehicleName}
         onRate={handleSubmitRating}
         onRateAndReview={handleRateAndReview}
         onClear={handleClearRating}

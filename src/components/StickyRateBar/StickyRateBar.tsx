@@ -12,6 +12,7 @@ import { RatingDistributionTooltip } from '../RatingDistributionTooltip';
 import { Badge } from '../../design-system/components';
 import { ActionBadge } from '../molecules/ActionBadge';
 import { Popover } from '../atoms/Popover';
+import Icon from '../Icon';
 
 export interface RatingItem {
   type: 'motortrend' | 'user-reviews' | 'your-rating';
@@ -30,6 +31,10 @@ export interface RatingItem {
 export interface StickyRateBarProps {
   vehicleName: string;
   vehiclePath?: string;
+  /** When multiple vehicles (e.g. comparison article), show YMM + arrow and dropdown to switch */
+  vehicles?: Array<{ name: string; path?: string }>;
+  selectedVehicleIndex?: number;
+  onSelectVehicle?: (index: number) => void;
   ratings: RatingItem[];
   ctaText?: string;
   ctaOnClick?: () => void;
@@ -46,6 +51,9 @@ export interface StickyRateBarProps {
 const StickyRateBar: React.FC<StickyRateBarProps> = ({
   vehicleName,
   vehiclePath,
+  vehicles,
+  selectedVehicleIndex = 0,
+  onSelectVehicle,
   ratings,
   ctaText,
   ctaOnClick,
@@ -69,7 +77,8 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const [isVehicleNameHovered, setIsVehicleNameHovered] = useState(false);
   const [isBuyersGuideHovered, setIsBuyersGuideHovered] = useState(false);
   const [isLocalListingsHovered, setIsLocalListingsHovered] = useState(false);
-  
+  const [isVehicleDropdownOpen, setIsVehicleDropdownOpen] = useState(false);
+
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const hideDistributionTooltipTimeout = useRef<number | null>(null);
 
@@ -701,7 +710,60 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
             )}
           </div>
           <h1 style={{ margin: 0 }}>
-          {vehiclePath ? (
+          {vehicles && vehicles.length > 1 && onSelectVehicle ? (
+            <Popover
+              trigger="click"
+              placement="bottom"
+              isOpen={isVehicleDropdownOpen}
+              onOpenChange={setIsVehicleDropdownOpen}
+              closeOnOutsideClick={true}
+              variant="dark"
+              showArrow={true}
+              content={
+                <div style={{ padding: '8px 0', minWidth: '220px' }}>
+                  {vehicles.map((v, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => {
+                        onSelectVehicle(i);
+                        setIsVehicleDropdownOpen(false);
+                      }}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        padding: '10px 16px',
+                        textAlign: 'left',
+                        background: selectedVehicleIndex === i ? 'var(--color-neutrals-3)' : 'transparent',
+                        border: 'none',
+                        color: 'var(--color-white)',
+                        fontFamily: 'var(--font-body, Geist, sans-serif)',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {v.name}
+                    </button>
+                  ))}
+                </div>
+              }
+            >
+              <div
+                style={{
+                  ...vehicleNameStyle,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={() => setIsVehicleNameHovered(true)}
+                onMouseLeave={() => setIsVehicleNameHovered(false)}
+              >
+                {vehicles[selectedVehicleIndex]?.name ?? vehicleName}
+                <Icon name="keyboard_arrow_down" size={24} style={{ color: 'var(--color-white)', flexShrink: 0 }} />
+              </div>
+            </Popover>
+          ) : vehiclePath ? (
             <Link 
               to={vehiclePath} 
               style={vehicleNameStyle}
