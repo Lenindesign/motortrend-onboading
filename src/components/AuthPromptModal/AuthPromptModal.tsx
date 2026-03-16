@@ -28,8 +28,8 @@ interface AuthPromptModalProps {
 // Action-specific content (keep our new community copy for save/bookmark/default)
 const actionContent: Record<AuthPromptAction, { title: string; description: string; primaryButtonText?: string }> = {
   save: {
-    title: 'Join the MotorTrend Community — unlock this feature and more!',
-    description: 'Custom personalized experiences\nExclusive newsletters, content, and more',
+    title: 'Join for Free!',
+    description: 'Personalized experience\nCustom user profile page\nExclusive content\nSaved content',
     primaryButtonText: 'Join the Community',
   },
   comment: {
@@ -45,13 +45,13 @@ const actionContent: Record<AuthPromptAction, { title: string; description: stri
     description: "Create an account to rate vehicles and see personalized recommendations. It's free!",
   },
   bookmark: {
-    title: 'Join the MotorTrend Community — unlock this feature and more!',
-    description: 'Custom personalized experiences\nExclusive newsletters, content, and more',
+    title: 'Join for Free!',
+    description: 'Personalized experience\nCustom user profile page\nExclusive content\nSaved content',
     primaryButtonText: 'Join the Community',
   },
   default: {
-    title: 'Join the MotorTrend Community — unlock this feature and more!',
-    description: 'Custom personalized experiences\nExclusive newsletters, content, and more',
+    title: 'Join for Free!',
+    description: 'Personalized experience\nCustom user profile page\nExclusive content\nSaved content',
     primaryButtonText: 'Join the Community',
   },
 };
@@ -161,6 +161,21 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
           {title}
         </h2>
 
+        <p
+          style={{
+            fontFamily: 'var(--font-body, Geist, sans-serif)',
+            fontSize: '16px',
+            fontWeight: 500,
+            color: 'var(--color-neutrals-3, #353945)',
+            margin: '8px 0 0',
+            lineHeight: 1.4,
+            textAlign: 'center',
+            maxWidth: '340px',
+          }}
+        >
+          Save this article to unlock other member benefits!
+        </p>
+
         {/* Optional vehicle name */}
         {vehicleName && (
           <p
@@ -234,34 +249,8 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
           </div>
         )}
 
-        {/* Buttons: Apple, Google, or, Primary, Sign In */}
+        {/* Buttons: Google, Apple, or, Primary, Sign In */}
         <div style={{ width: '100%', maxWidth: '340px', marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button
-            type="button"
-            onClick={handleApple}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              padding: '12px 16px',
-              background: 'var(--color-neutrals-1, #141416)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 'var(--border-radius-md, 8px)',
-              fontFamily: 'var(--font-body, Geist, sans-serif)',
-              fontSize: '15px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 6.98.48 9.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-            </svg>
-            Continue with Apple
-          </button>
-
           <button
             type="button"
             onClick={handleGoogle}
@@ -291,6 +280,32 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
             Continue with Google
           </button>
 
+          <button
+            type="button"
+            onClick={handleApple}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              padding: '12px 16px',
+              background: 'var(--color-neutrals-1, #141416)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 'var(--border-radius-md, 8px)',
+              fontFamily: 'var(--font-body, Geist, sans-serif)',
+              fontSize: '15px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 6.98.48 9.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+            </svg>
+            Continue with Apple
+          </button>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '4px 0' }}>
             <span style={{ flex: 1, height: 1, background: 'var(--color-neutrals-6)' }} />
             <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--color-neutrals-5)' }}>or</span>
@@ -303,7 +318,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
             style={{
               width: '100%',
               padding: '12px 16px',
-              background: PRIMARY,
+              background: 'var(--color-neutrals-1, #141416)',
               color: '#fff',
               border: 'none',
               borderRadius: 'var(--border-radius-md, 8px)',
@@ -323,8 +338,8 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
               width: '100%',
               padding: '12px 16px',
               background: 'transparent',
-              color: PRIMARY,
-              border: `2px solid ${PRIMARY}`,
+              color: 'var(--color-neutrals-1, #141416)',
+              border: '2px solid var(--color-neutrals-1, #141416)',
               borderRadius: 'var(--border-radius-md, 8px)',
               fontFamily: 'var(--font-body, Geist, sans-serif)',
               fontSize: '15px',
@@ -348,9 +363,9 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
           }}
         >
           By continuing, you agree to our{' '}
-          <a href="/terms" style={{ color: PRIMARY, textDecoration: 'underline' }}>Terms</a>
+          <a href="/terms" style={{ color: 'var(--color-neutrals-1, #141416)', textDecoration: 'underline' }}>Terms</a>
           {' '}and{' '}
-          <a href="/privacy" style={{ color: PRIMARY, textDecoration: 'underline' }}>Privacy Policy</a>.
+          <a href="/privacy" style={{ color: 'var(--color-neutrals-1, #141416)', textDecoration: 'underline' }}>Privacy Policy</a>.
         </p>
       </div>
     </ModalShell>
