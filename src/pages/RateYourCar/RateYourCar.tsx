@@ -241,13 +241,13 @@ export const RateYourCar: React.FC = () => {
         <div style={{
           background: 'var(--color-white, #FFFFFF)',
           borderRadius: '16px',
-          overflow: 'hidden',
           boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
           animation: 'rycFadeUp 0.6s ease-out 0.1s both',
+          position: 'relative',
         }}>
           {/* ─── STEP: SELECT ─── */}
           {step === 'select' && (
-            <div style={{ padding: isMobile ? '32px 20px' : '40px 40px 48px' }}>
+            <div style={{ padding: isMobile ? '32px 20px 280px' : '40px 40px 280px' }}>
               <div style={{ textAlign: 'center', marginBottom: '28px' }}>
                 <div style={{
                   width: '64px', height: '64px', borderRadius: '50%', background: PRIMARY,
@@ -284,6 +284,7 @@ export const RateYourCar: React.FC = () => {
                 width: '100%', height: isMobile ? '200px' : '260px',
                 background: 'var(--color-neutrals-7, #F4F5F6)',
                 position: 'relative', overflow: 'hidden',
+                borderRadius: '16px 16px 0 0',
               }}>
                 <img
                   src={vehicleImage}
@@ -404,9 +405,10 @@ export const RateYourCar: React.FC = () => {
 
               {/* Rate another vehicle */}
               <div style={{
-                padding: isMobile ? '24px 20px' : '28px 40px',
+                padding: isMobile ? '24px 20px 280px' : '28px 40px 280px',
                 borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)',
                 background: 'var(--color-white, #FFFFFF)',
+                borderRadius: '0 0 16px 16px',
               }}>
                 <p style={{
                   fontFamily: 'var(--font-heading)', fontWeight: 600,
