@@ -37,6 +37,7 @@ import AtomicDesignAudit from './pages/AtomicDesignAudit';
 import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
 import { JourneyBuilder } from './pages/JourneyBuilder';
 import { Events, EventsCommunity } from './pages/Events';
+import RateYourCar from './pages/RateYourCar';
 import { RatingProvider } from './contexts/RatingContext';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
@@ -166,6 +167,9 @@ function App() {
               
               {/* Page Builder */}
               <Route path="/journey-builder" element={<JourneyBuilder />} />
+              
+              {/* Rate Your Car Landing Page (email campaign) */}
+              <Route path="/rate-your-car" element={<RateYourCar />} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />
