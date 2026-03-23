@@ -212,9 +212,9 @@ export const RateYourCar: React.FC = () => {
         {/* ─── Hero ─── */}
         <div style={{ textAlign: 'center', marginBottom: '48px', animation: 'rycFadeUp 0.5s ease-out' }}>
           <img
-            src="https://www.motortrend.com/uploads/2022/02/MotorTrend-logo-white.png"
+            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png"
             alt="MotorTrend"
-            style={{ height: '28px', marginBottom: '32px', opacity: 0.9 }}
+            style={{ height: '28px', marginBottom: '32px', opacity: 0.9, display: 'block', margin: '0 auto 32px' }}
           />
           <h1 style={{
             fontFamily: 'var(--font-heading, Poppins, sans-serif)',
