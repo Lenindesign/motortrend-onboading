@@ -94,11 +94,6 @@ export const RateYourCar: React.FC = () => {
     setStep('done');
   };
 
-  const handleWriteReview = () => {
-    if (!selectedVehicle) return;
-    if (selectedRating > 0) setUserRating(selectedVehicle, selectedRating);
-    setShowWriteReview(true);
-  };
 
   const handleReviewSubmit = (review: ReviewData) => {
     if (!selectedVehicle) return;
