@@ -293,52 +293,38 @@ export const RateYourCar: React.FC = () => {
           {/* ─── STEP: RATE ─── */}
           {step === 'rate' && selectedVehicle && (
             <div style={{ animation: 'rycFadeUp 0.4s ease-out' }}>
-              {/* Vehicle hero image */}
+              {/* Header with back button and vehicle name */}
               <div style={{
-                width: '100%', height: isMobile ? '200px' : '260px',
-                background: 'var(--color-neutrals-7, #F4F5F6)',
-                position: 'relative', overflow: 'hidden',
+                background: 'var(--color-neutrals-1, #141416)',
                 borderRadius: '16px 16px 0 0',
+                padding: isMobile ? '20px 20px 0' : '24px 40px 0',
+                display: 'flex', alignItems: 'center', gap: '12px',
               }}>
-                <img
-                  src={vehicleImage}
-                  alt={selectedVehicle}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.6) 100%)',
-                }} />
                 <button
                   onClick={handleRateAnother}
                   style={{
-                    position: 'absolute', top: '16px', left: '16px',
-                    background: 'rgba(0,0,0,0.5)', border: 'none', borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%',
                     width: '36px', height: '36px', cursor: 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#fff', backdropFilter: 'blur(8px)',
+                    color: '#fff', flexShrink: 0,
                   }}
                   aria-label="Go back"
                 >
                   <Icon name="arrow_back" size={20} />
                 </button>
-                <div style={{
-                  position: 'absolute', bottom: '20px', left: '24px', right: '24px',
+                <h2 style={{
+                  fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+                  fontSize: isMobile ? '18px' : '22px', fontWeight: 700, color: '#fff',
+                  margin: 0,
                 }}>
-                  <h2 style={{
-                    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-                    fontSize: isMobile ? '22px' : '28px', fontWeight: 700, color: '#fff',
-                    margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.4)',
-                  }}>
-                    {selectedVehicle}
-                  </h2>
-                </div>
+                  {selectedVehicle}
+                </h2>
               </div>
 
               {/* Rating area */}
               <div style={{
                 background: 'var(--color-neutrals-1, #141416)',
-                padding: isMobile ? '32px 20px' : '40px 40px',
+                padding: isMobile ? '28px 20px 32px' : '32px 40px 40px',
                 textAlign: 'center',
               }}>
                 {/* Score display */}
@@ -375,7 +361,6 @@ export const RateYourCar: React.FC = () => {
                 {/* Action buttons */}
                 <div style={{
                   display: 'flex', gap: '12px', marginTop: '32px',
-                  flexDirection: isMobile ? 'column' : 'row',
                   justifyContent: 'center',
                 }}>
                   <button
@@ -390,31 +375,25 @@ export const RateYourCar: React.FC = () => {
                       textTransform: 'uppercase', letterSpacing: '1px',
                       opacity: selectedRating === 0 ? 0.5 : 1,
                       transition: 'all 0.2s',
-                      flex: isMobile ? undefined : 1,
-                      maxWidth: isMobile ? undefined : '200px',
+                      minWidth: '200px',
                     }}
                   >
                     Submit Rating
                   </button>
-                  <button
-                    onClick={handleWriteReview}
-                    disabled={selectedRating === 0}
-                    style={{
-                      padding: '14px 32px', borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.08)',
-                      color: '#fff', border: '1px solid rgba(255,255,255,0.15)',
-                      fontFamily: 'var(--font-heading)', fontWeight: 600,
-                      fontSize: '15px', cursor: selectedRating > 0 ? 'pointer' : 'default',
-                      textTransform: 'uppercase', letterSpacing: '1px',
-                      opacity: selectedRating === 0 ? 0.5 : 1,
-                      transition: 'all 0.2s',
-                      flex: isMobile ? undefined : 1,
-                      maxWidth: isMobile ? undefined : '200px',
-                    }}
-                  >
-                    Write a Review
-                  </button>
                 </div>
+              </div>
+
+              {/* Vehicle image below rating */}
+              <div style={{
+                width: '100%', height: isMobile ? '180px' : '220px',
+                background: 'var(--color-neutrals-7, #F4F5F6)',
+                overflow: 'hidden',
+              }}>
+                <img
+                  src={vehicleImage}
+                  alt={selectedVehicle}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
               </div>
 
               {/* Rate another vehicle */}
@@ -568,7 +547,7 @@ export const RateYourCar: React.FC = () => {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   margin: '0 auto 16px',
                 }}>
-                  <Icon name={b.icon} size={24} style={{ color: PRIMARY }} />
+                  <Icon name={b.icon} size={24} style={{ color: '#fff' }} />
                 </div>
                 <h4 style={{
                   fontFamily: 'var(--font-heading)', fontSize: '16px', fontWeight: 600,
