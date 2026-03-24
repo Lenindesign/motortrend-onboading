@@ -44,6 +44,7 @@ export const RateYourCar: React.FC = () => {
   const [step, setStep] = useState<'select' | 'rate' | 'done'>('select');
   const [showWriteReview, setShowWriteReview] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -247,7 +248,11 @@ export const RateYourCar: React.FC = () => {
         }}>
           {/* ─── STEP: SELECT ─── */}
           {step === 'select' && (
-            <div style={{ padding: isMobile ? '32px 20px 280px' : '40px 40px 280px' }}>
+            <div style={{
+              padding: isMobile ? '32px 20px' : '40px 40px',
+              paddingBottom: searchActive ? '280px' : (isMobile ? '32px' : '48px'),
+              transition: 'padding-bottom 0.25s ease',
+            }}>
               <div style={{ textAlign: 'center', marginBottom: '28px' }}>
                 <div style={{
                   width: '64px', height: '64px', borderRadius: '50%', background: PRIMARY,
@@ -268,11 +273,20 @@ export const RateYourCar: React.FC = () => {
                 </p>
               </div>
 
-              <VehicleSearch
-                onVehicleSelect={(v) => handleVehicleSelect(v.name)}
-                placeholder="Search by year, make, or model..."
-                autoFocus
-              />
+              <div
+                onFocusCapture={() => setSearchActive(true)}
+                onBlurCapture={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                    setSearchActive(false);
+                  }
+                }}
+              >
+                <VehicleSearch
+                  onVehicleSelect={(v) => { setSearchActive(false); handleVehicleSelect(v.name); }}
+                  placeholder="Search by year, make, or model..."
+                  autoFocus
+                />
+              </div>
             </div>
           )}
 
@@ -405,7 +419,9 @@ export const RateYourCar: React.FC = () => {
 
               {/* Rate another vehicle */}
               <div style={{
-                padding: isMobile ? '24px 20px 280px' : '28px 40px 280px',
+                padding: isMobile ? '24px 20px' : '28px 40px',
+                paddingBottom: searchActive ? '280px' : (isMobile ? '24px' : '28px'),
+                transition: 'padding-bottom 0.25s ease',
                 borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)',
                 background: 'var(--color-white, #FFFFFF)',
                 borderRadius: '0 0 16px 16px',
@@ -417,10 +433,19 @@ export const RateYourCar: React.FC = () => {
                 }}>
                   Rate Another Vehicle
                 </p>
-                <VehicleSearch
-                  onVehicleSelect={(v) => handleVehicleSelect(v.name)}
-                  placeholder="Select another Vehicle"
-                />
+                <div
+                  onFocusCapture={() => setSearchActive(true)}
+                  onBlurCapture={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setSearchActive(false);
+                    }
+                  }}
+                >
+                  <VehicleSearch
+                    onVehicleSelect={(v) => { setSearchActive(false); handleVehicleSelect(v.name); }}
+                    placeholder="Select another Vehicle"
+                  />
+                </div>
               </div>
             </div>
           )}
