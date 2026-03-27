@@ -13,13 +13,17 @@ export interface ReviewSubmittedToastProps {
   onClose: () => void;
   onViewReview: () => void;
   vehicleName: string;
+  hideViewReview?: boolean;
+  thankYouNote?: string;
 }
 
 export const ReviewSubmittedToast: React.FC<ReviewSubmittedToastProps> = ({
   isVisible,
   onClose,
   onViewReview,
-  vehicleName
+  vehicleName,
+  hideViewReview = false,
+  thankYouNote,
 }) => {
   const [isPrimaryHovered, setIsPrimaryHovered] = useState(false);
   const [isSecondaryHovered, setIsSecondaryHovered] = useState(false);
@@ -144,21 +148,28 @@ export const ReviewSubmittedToast: React.FC<ReviewSubmittedToastProps> = ({
         <div style={messageStyle}>
           <h2 style={titleStyle}>Review added!</h2>
           <p style={subtitleStyle}>Your review for {vehicleName} has been successfully submitted.</p>
+          {thankYouNote && (
+            <p style={{ ...subtitleStyle, marginTop: '8px', fontSize: '14px', fontStyle: 'italic' }}>
+              {thankYouNote}
+            </p>
+          )}
         </div>
         <div style={actionsStyle}>
+          {!hideViewReview && (
+            <button 
+              style={primaryButtonStyle}
+              onClick={onViewReview}
+              onMouseEnter={() => setIsPrimaryHovered(true)}
+              onMouseLeave={() => setIsPrimaryHovered(false)}
+            >
+              View Review
+            </button>
+          )}
           <button 
-            style={primaryButtonStyle}
-            onClick={onViewReview}
-            onMouseEnter={() => setIsPrimaryHovered(true)}
-            onMouseLeave={() => setIsPrimaryHovered(false)}
-          >
-            View Review
-          </button>
-          <button 
-            style={secondaryButtonStyle}
+            style={hideViewReview ? primaryButtonStyle : secondaryButtonStyle}
             onClick={onClose}
-            onMouseEnter={() => setIsSecondaryHovered(true)}
-            onMouseLeave={() => setIsSecondaryHovered(false)}
+            onMouseEnter={() => hideViewReview ? setIsPrimaryHovered(true) : setIsSecondaryHovered(true)}
+            onMouseLeave={() => hideViewReview ? setIsPrimaryHovered(false) : setIsSecondaryHovered(false)}
           >
             Close
           </button>

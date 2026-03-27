@@ -496,7 +496,7 @@ export const RateYourCar: React.FC = () => {
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
                 <button
-                  onClick={handleViewVehicle}
+                  onClick={() => { setStep('rate'); setShowWriteReview(true); }}
                   style={{
                     padding: '14px 28px', borderRadius: '10px',
                     background: PRIMARY, color: '#fff', border: 'none',
@@ -505,7 +505,7 @@ export const RateYourCar: React.FC = () => {
                     textTransform: 'uppercase', letterSpacing: '1px',
                   }}
                 >
-                  View {selectedVehicle.split(' ').slice(1).join(' ')}
+                  Write a Review
                 </button>
                 <button
                   onClick={handleRateAnother}
@@ -627,6 +627,8 @@ export const RateYourCar: React.FC = () => {
         onClose={() => setToastVisible(false)}
         onViewReview={handleViewVehicle}
         vehicleName={selectedVehicle || ''}
+        hideViewReview
+        thankYouNote="Thank you for your participation! Your feedback helps us enhance the experience for millions of car shoppers."
       />
     </div>
   );
