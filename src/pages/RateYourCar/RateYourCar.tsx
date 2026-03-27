@@ -25,11 +25,6 @@ const BENEFITS = [
   { icon: 'trending_up' as const, title: 'Shape the Market', desc: 'Your ratings directly influence community scores seen by millions.' },
 ];
 
-const STATS = [
-  { value: '2.4M+', label: 'Monthly Shoppers' },
-  { value: '180K+', label: 'Owner Ratings' },
-  { value: '4.8', label: 'Avg. App Rating' },
-];
 
 export const RateYourCar: React.FC = () => {
   const navigate = useNavigate();
@@ -581,32 +576,6 @@ export const RateYourCar: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* ─── Social Proof Stats ─── */}
-        <div style={{
-          marginTop: '48px',
-          display: 'flex',
-          justifyContent: 'center',
-          gap: isMobile ? '24px' : '56px',
-          animation: 'rycFadeUp 0.6s ease-out 0.4s both',
-        }}>
-          {STATS.map((s, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{
-                fontFamily: 'var(--font-heading)', fontSize: isMobile ? '28px' : '36px',
-                fontWeight: 700, color: PRIMARY, lineHeight: 1,
-              }}>
-                {s.value}
-              </div>
-              <div style={{
-                fontSize: '13px', color: 'var(--color-neutrals-5, #B1B5C3)',
-                marginTop: '6px', textTransform: 'uppercase', letterSpacing: '1px',
-              }}>
-                {s.label}
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* ─── Testimonial ─── */}
