@@ -249,12 +249,16 @@ export const RateYourCar: React.FC = () => {
               transition: 'padding-bottom 0.25s ease',
             }}>
               <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-                <div style={{
-                  width: '64px', height: '64px', borderRadius: '50%', background: PRIMARY,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 20px',
-                }}>
-                  <Icon name="directions_car" size={32} style={{ color: '#fff' }} />
+                {/* Placeholder stars as visual cue */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '0 auto 20px' }}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <img
+                      key={i}
+                      src={STAR_EMPTY}
+                      alt=""
+                      style={{ width: '36px', height: '36px', objectFit: 'contain', opacity: 0.5 }}
+                    />
+                  ))}
                 </div>
                 <h2 style={{
                   fontFamily: 'var(--font-heading, Poppins, sans-serif)',
@@ -279,7 +283,7 @@ export const RateYourCar: React.FC = () => {
                 <VehicleSearch
                   onVehicleSelect={(v) => { setSearchActive(false); handleVehicleSelect(v.name); }}
                   placeholder="Search by year, make, or model..."
-                  autoFocus
+                  showPopularOnFocus
                 />
               </div>
             </div>
@@ -435,6 +439,7 @@ export const RateYourCar: React.FC = () => {
                   <VehicleSearch
                     onVehicleSelect={(v) => { setSearchActive(false); handleVehicleSelect(v.name); }}
                     placeholder="Select another Vehicle"
+                    showPopularOnFocus
                   />
                 </div>
               </div>
