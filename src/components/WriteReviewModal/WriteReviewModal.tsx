@@ -21,6 +21,7 @@ interface WriteReviewModalProps {
   existingReview?: ReviewData | null;
   isEditMode?: boolean;
   initialRating?: number;
+  hideCategoryRatings?: boolean;
 }
 
 const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
@@ -31,7 +32,8 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
   onSubmit,
   existingReview = null,
   isEditMode = false,
-  initialRating
+  initialRating,
+  hideCategoryRatings = false,
 }) => {
   const { getUserRating, setUserRating } = useRating();
   const [rating, setRating] = useState(() => {
@@ -1332,6 +1334,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             </div>
 
             {/* Experience Rating Section */}
+            {!hideCategoryRatings && (
             <div style={experienceSectionStyle}>
               <div style={sectionGroupHeaderStyle}>
                 <h3 style={sectionGroupTitleStyle}>
@@ -1348,6 +1351,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
               {renderCategoryCard('manufacturerWarranty', 'Manufacturer Warranty', 'Coverage quality and support experience')}
               {renderCategoryCard('budgetFriendly', 'Budget Friendly', 'Cost of ownership and overall value')}
             </div>
+            )}
 
 {/* HIDDEN: Additional Information Section
             <div style={sectionGroupOptionalStyle}>

@@ -648,6 +648,7 @@ export const RateYourCar: React.FC = () => {
           vehicleImage={vehicleImage}
           onSubmit={handleReviewSubmit}
           initialRating={selectedRating}
+          hideCategoryRatings
         />
       )}
 
