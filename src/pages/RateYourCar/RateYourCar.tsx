@@ -21,7 +21,7 @@ const RATING_LABELS: Record<number, string> = {
 
 const BENEFITS = [
   { icon: 'people' as const, title: 'Help Real Buyers', desc: 'Your honest opinion helps thousands of shoppers make confident decisions.' },
-  { icon: 'star' as const, title: 'Build Your Reputation', desc: 'Earn a verified owner badge and become a trusted voice in the community.' },
+  { icon: 'star' as const, title: 'Guide Our Experts', desc: 'Our editors and writers use owner ratings like yours to craft more accurate, real-world reviews.' },
   { icon: 'trending_up' as const, title: 'Shape the Market', desc: 'Your ratings directly influence community scores seen by millions.' },
 ];
 
@@ -583,34 +583,6 @@ export const RateYourCar: React.FC = () => {
           </div>
         </div>
 
-        {/* ─── Testimonial ─── */}
-        <div style={{
-          marginTop: '48px',
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderRadius: '14px',
-          padding: isMobile ? '28px 24px' : '36px 40px',
-          textAlign: 'center',
-          animation: 'rycFadeUp 0.6s ease-out 0.5s both',
-        }}>
-          <p style={{
-            fontSize: isMobile ? '16px' : '18px',
-            fontStyle: 'italic',
-            color: 'var(--color-neutrals-5, #B1B5C3)',
-            lineHeight: 1.7,
-            margin: '0 0 16px',
-            maxWidth: '540px',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}>
-            "I was on the fence about the Civic vs. Corolla. Reading real owner ratings on MotorTrend made the decision easy. Now I'm paying it forward with my own review."
-          </p>
-          <p style={{
-            fontSize: '14px', fontWeight: 600, color: '#fff', margin: 0,
-          }}>
-            — Sarah M., verified owner
-          </p>
-        </div>
       </div>
 
       {/* ─── Write Review Modal ─── */}
