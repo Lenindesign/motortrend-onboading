@@ -41,13 +41,18 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
 
   const popularCars = useMemo(() => {
     if (!showPopularOnFocus) return [];
-    const popular = [
-      '2026 Toyota Camry', '2026 Honda Civic', '2026 Ford F-150',
-      '2026 Chevrolet Silverado', '2025 Tesla Model 3', '2026 Toyota RAV4',
-      '2026 Honda CR-V', '2025 BMW 3-Series', '2026 Hyundai Tucson',
-      '2026 Mazda CX-5',
+    const popularKeywords = [
+      'Toyota Camry', 'Honda Civic', 'Ford F-150',
+      'Chevrolet Silverado', 'Tesla Model 3', 'Toyota RAV4',
+      'Honda CR-V', 'BMW 3-Series', 'Hyundai Tucson',
+      'Mazda CX-5',
     ];
-    return popular.filter(name => vehicleNames.includes(name));
+    const results: string[] = [];
+    for (const keyword of popularKeywords) {
+      const match = vehicleNames.find(v => v.toLowerCase().includes(keyword.toLowerCase()));
+      if (match && !results.includes(match)) results.push(match);
+    }
+    return results.slice(0, 10);
   }, [showPopularOnFocus, vehicleNames]);
 
   // Filter cars based on search query
@@ -221,7 +226,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
             setIsFocused(true);
             if (searchQuery.length > 0 || showPopularOnFocus) setShowDropdown(true);
           }}
-          onBlur={() => setIsFocused(false)}
+          onBlur={() => setTimeout(() => setIsFocused(false), 150)}
           placeholder={placeholder}
           style={inputStyle}
         />
