@@ -94,6 +94,11 @@ export const RateYourCar: React.FC = () => {
     setStep('done');
   };
 
+  const handleWriteReview = () => {
+    if (!selectedVehicle) return;
+    if (selectedRating > 0) setUserRating(selectedVehicle, selectedRating);
+    setShowWriteReview(true);
+  };
 
   const handleReviewSubmit = (review: ReviewData) => {
     if (!selectedVehicle) return;
@@ -374,6 +379,23 @@ export const RateYourCar: React.FC = () => {
                     }}
                   >
                     Submit Rating
+                  </button>
+                  <button
+                    onClick={handleWriteReview}
+                    disabled={selectedRating === 0}
+                    style={{
+                      padding: '14px 32px', borderRadius: '10px',
+                      background: 'rgba(255,255,255,0.08)',
+                      color: '#fff', border: '1px solid rgba(255,255,255,0.15)',
+                      fontFamily: 'var(--font-heading)', fontWeight: 600,
+                      fontSize: '15px', cursor: selectedRating > 0 ? 'pointer' : 'default',
+                      textTransform: 'uppercase', letterSpacing: '1px',
+                      opacity: selectedRating === 0 ? 0.5 : 1,
+                      transition: 'all 0.2s',
+                      minWidth: '200px',
+                    }}
+                  >
+                    Write a Review
                   </button>
                 </div>
               </div>
