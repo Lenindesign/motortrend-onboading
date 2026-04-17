@@ -39,6 +39,7 @@ export const RateYourCar: React.FC = () => {
   const [step, setStep] = useState<'select' | 'rate' | 'done'>('select');
   const [showWriteReview, setShowWriteReview] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -89,12 +90,6 @@ export const RateYourCar: React.FC = () => {
     setStep('done');
   };
 
-  const handleWriteReview = () => {
-    if (!selectedVehicle) return;
-    if (selectedRating > 0) setUserRating(selectedVehicle, selectedRating);
-    setShowWriteReview(true);
-  };
-
   const handleReviewSubmit = (review: ReviewData) => {
     if (!selectedVehicle) return;
     const key = `vehicleReviews_${selectedVehicle}`;
@@ -102,8 +97,8 @@ export const RateYourCar: React.FC = () => {
     existing.unshift(review);
     localStorage.setItem(key, JSON.stringify(existing));
     setShowWriteReview(false);
-    setStep('done');
     setToastVisible(true);
+    setHasReviewed(true);
   };
 
   const handleViewVehicle = () => {
@@ -117,6 +112,7 @@ export const RateYourCar: React.FC = () => {
     setVehicleImage('');
     setSelectedRating(0);
     setHoveredRating(0);
+    setHasReviewed(false);
     setStep('select');
   };
 
@@ -379,23 +375,6 @@ export const RateYourCar: React.FC = () => {
                   >
                     Submit Rating
                   </button>
-                  <button
-                    onClick={handleWriteReview}
-                    disabled={selectedRating === 0}
-                    style={{
-                      padding: '14px 32px', borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.08)',
-                      color: '#fff', border: '1px solid rgba(255,255,255,0.15)',
-                      fontFamily: 'var(--font-heading)', fontWeight: 600,
-                      fontSize: '15px', cursor: selectedRating > 0 ? 'pointer' : 'default',
-                      textTransform: 'uppercase', letterSpacing: '1px',
-                      opacity: selectedRating === 0 ? 0.5 : 1,
-                      transition: 'all 0.2s',
-                      minWidth: '200px',
-                    }}
-                  >
-                    Write a Review
-                  </button>
                 </div>
               </div>
 
@@ -473,7 +452,7 @@ export const RateYourCar: React.FC = () => {
                 fontSize: '16px', color: 'var(--color-neutrals-4, #6E7481)',
                 margin: '0 0 8px', lineHeight: 1.5,
               }}>
-                You rated the <strong style={{ color: 'var(--color-neutrals-2)' }}>{selectedVehicle}</strong>
+                {hasReviewed ? 'You rated and reviewed the' : 'You rated the'} <strong style={{ color: 'var(--color-neutrals-2)' }}>{selectedVehicle}</strong>
               </p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginBottom: '32px' }}>
                 {Array.from({ length: 5 }, (_, i) => {
@@ -500,18 +479,20 @@ export const RateYourCar: React.FC = () => {
               </div>
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexDirection: isMobile ? 'column' : 'row' }}>
-                <button
-                  onClick={() => { setStep('rate'); setShowWriteReview(true); }}
-                  style={{
-                    padding: '14px 28px', borderRadius: '10px',
-                    background: PRIMARY, color: '#fff', border: 'none',
-                    fontFamily: 'var(--font-heading)', fontWeight: 600,
-                    fontSize: '15px', cursor: 'pointer',
-                    textTransform: 'uppercase', letterSpacing: '1px',
-                  }}
-                >
-                  Write a Review
-                </button>
+                {!hasReviewed && (
+                  <button
+                    onClick={() => setShowWriteReview(true)}
+                    style={{
+                      padding: '14px 28px', borderRadius: '10px',
+                      background: PRIMARY, color: '#fff', border: 'none',
+                      fontFamily: 'var(--font-heading)', fontWeight: 600,
+                      fontSize: '15px', cursor: 'pointer',
+                      textTransform: 'uppercase', letterSpacing: '1px',
+                    }}
+                  >
+                    Write a Review
+                  </button>
+                )}
                 <button
                   onClick={handleRateAnother}
                   style={{
@@ -585,7 +566,6 @@ export const RateYourCar: React.FC = () => {
 
       </div>
 
-      {/* ─── Write Review Modal ─── */}
       {selectedVehicle && (
         <WriteReviewModal
           isOpen={showWriteReview}
@@ -598,11 +578,10 @@ export const RateYourCar: React.FC = () => {
         />
       )}
 
-      {/* ─── Success Toast ─── */}
       <ReviewSubmittedToast
         isVisible={toastVisible}
         onClose={() => setToastVisible(false)}
-        onViewReview={handleViewVehicle}
+        onViewReview={() => setToastVisible(false)}
         vehicleName={selectedVehicle || ''}
         hideViewReview
         thankYouNote="Thank you for your participation! Your feedback helps us enhance the experience for millions of car shoppers."
