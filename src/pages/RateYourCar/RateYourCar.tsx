@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { VehicleSearch } from '../../components/VehicleSearch';
 import WriteReviewModal from '../../components/WriteReviewModal';
 import { ReviewSubmittedToast } from '../../components/ReviewSubmittedToast';
 import Icon from '../../components/Icon';
 import { useRating } from '../../contexts/RatingContext';
-import { vehicleImageFor, parseVehicleName } from '../../utils/vehicleImages';
+import { vehicleImageFor } from '../../utils/vehicleImages';
 import type { ReviewData } from '../../components/UserReviews/UserReviews';
 
 const PRIMARY = 'var(--color-primary-1, #E90C17)';
@@ -27,7 +27,6 @@ const BENEFITS = [
 
 
 export const RateYourCar: React.FC = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { getUserRating, setUserRating } = useRating();
 
@@ -101,11 +100,6 @@ export const RateYourCar: React.FC = () => {
     setHasReviewed(true);
   };
 
-  const handleViewVehicle = () => {
-    if (!selectedVehicle) return;
-    const { year, make, model } = parseVehicleName(selectedVehicle);
-    navigate(`/vehicles/${year}/${make}/${model}`);
-  };
 
   const handleRateAnother = () => {
     setSelectedVehicle(null);
