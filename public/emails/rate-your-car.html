@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="supported-color-schemes" content="dark light" />
+    <title>Rate Your Car — MotorTrend</title>
+
+    <!--[if mso]>
+      <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+    <![endif]-->
+
+    <style>
+      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+      img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; display: block; }
+      body { margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #141416; }
+      a { text-decoration: none; }
+
+      @media screen and (max-width: 620px) {
+        .container { width: 100% !important; }
+        .px { padding-left: 20px !important; padding-right: 20px !important; }
+        .h1 { font-size: 32px !important; line-height: 1.1 !important; }
+        .star { width: 44px !important; height: 44px !important; }
+        .cta { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+      }
+    </style>
+  </head>
+  <body style="margin:0; padding:0; background-color:#141416; font-family:'Geist','Helvetica Neue',Helvetica,Arial,sans-serif;">
+
+    <div style="display:none; overflow:hidden; line-height:1px; opacity:0; max-height:0; max-width:0;">
+      30 seconds. Tap a star for your {{vehicleName}}.
+    </div>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#141416;">
+      <tr>
+        <td align="center" style="padding: 40px 16px;">
+
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="container" style="width:600px; max-width:600px;">
+
+            <tr>
+              <td align="center" style="padding: 0 0 40px;">
+                <a href="https://www.motortrend.com" target="_blank">
+                  <img src="https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png"
+                       width="160" alt="MotorTrend" style="height:28px; width:auto; display:block;" />
+                </a>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="px" style="padding: 0 24px 24px;">
+                <h1 class="h1" style="margin:0; color:#ffffff;
+                       font-family:'Poppins','Geist',Arial,sans-serif;
+                       font-size:44px; font-weight:700; line-height:1.05; letter-spacing:-0.5px;">
+                  How's your<br/>
+                  <span style="color:#E90C17;">{{vehicleName}}</span>,<br/>
+                  {{firstName}}?
+                </h1>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding: 0 0 8px;">
+                <a href="{{ratingUrl}}" target="_blank">
+                  <img src="{{vehicleImageUrl}}" alt="{{vehicleName}}" width="600"
+                       style="width:100%; max-width:600px; height:auto; display:block;" />
+                </a>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" class="px" style="padding: 32px 24px 8px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding:0 4px;"><a href="{{ratingUrl}}&rating=20" target="_blank"><img class="star" src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" width="56" height="56" alt="1" style="width:56px; height:56px; display:block;" /></a></td>
+                    <td style="padding:0 4px;"><a href="{{ratingUrl}}&rating=40" target="_blank"><img class="star" src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" width="56" height="56" alt="2" style="width:56px; height:56px; display:block;" /></a></td>
+                    <td style="padding:0 4px;"><a href="{{ratingUrl}}&rating=60" target="_blank"><img class="star" src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" width="56" height="56" alt="3" style="width:56px; height:56px; display:block;" /></a></td>
+                    <td style="padding:0 4px;"><a href="{{ratingUrl}}&rating=80" target="_blank"><img class="star" src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" width="56" height="56" alt="4" style="width:56px; height:56px; display:block;" /></a></td>
+                    <td style="padding:0 4px;"><a href="{{ratingUrl}}&rating=100" target="_blank"><img class="star" src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" width="56" height="56" alt="5" style="width:56px; height:56px; display:block;" /></a></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" class="px" style="padding: 20px 24px 8px;">
+                <p style="margin:0; color:#F1F2F6; font-size:17px; font-weight:500; line-height:1.5;
+                          font-family:'Geist',Arial,sans-serif;">
+                  Owners know what reviewers miss.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" class="px" style="padding: 24px 24px 48px;">
+                <!--[if mso]>
+                  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                               href="{{ratingUrl}}" style="height:52px;v-text-anchor:middle;width:260px;"
+                               arcsize="20%" stroke="f" fillcolor="#E90C17">
+                    <w:anchorlock/><center style="color:#ffffff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;">RATE THIS CAR</center>
+                  </v:roundrect>
+                <![endif]-->
+                <!--[if !mso]><!-- -->
+                <a href="{{ratingUrl}}" target="_blank" class="cta"
+                   style="background-color:#E90C17; color:#ffffff;
+                          display:inline-block; padding:16px 40px; border-radius:8px;
+                          font-family:'Poppins',Arial,sans-serif; font-size:15px; font-weight:700;
+                          text-transform:uppercase; letter-spacing:1px;">
+                  Rate This Car →
+                </a>
+                <!--<![endif]-->
+              </td>
+            </tr>
+
+            <tr>
+              <td align="center" style="padding: 32px 24px 8px; border-top:1px solid rgba(255,255,255,0.08);">
+                <p style="margin:0; color:#6E7481; font-size:12px; line-height:1.6;
+                          font-family:'Geist',Arial,sans-serif;">
+                  <a href="{{unsubscribeUrl}}" style="color:#B1B5C3; text-decoration:underline;">Unsubscribe</a>
+                  &nbsp;·&nbsp;
+                  <a href="https://www.motortrend.com/preferences" style="color:#B1B5C3; text-decoration:underline;">Email preferences</a>
+                </p>
+                <p style="margin:12px 0 0; color:#4B5060; font-size:11px;
+                          font-family:'Geist',Arial,sans-serif;">
+                  © MotorTrend
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

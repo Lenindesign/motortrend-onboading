@@ -26,7 +26,7 @@ import LatestNews from './pages/LatestNews';
 import Videos from './pages/Videos';
 import Community from './pages/Community';
 import RankingsAndAwards from './pages/RankingsAndAwards';
-import { EmailPreviewPage } from './pages/EmailPreviewPage';
+import { EmailPreviewPage, RateYourCarEmailPreview } from './pages/EmailPreviewPage';
 import Documentation from './pages/Documentation';
 import { BentleyShowcase } from './pages/BentleyShowcase';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
@@ -118,6 +118,7 @@ function App() {
               
               {/* Email Preview Page (for CDP/personalization demo) */}
               <Route path="/email-preview" element={<EmailPreviewPage />} />
+              <Route path="/email-preview/rate-your-car" element={<RateYourCarEmailPreview />} />
               
               {/* Onboarding Steps */}
               <Route path="/onboarding/step1" element={<OnboardingStep1 />} />

@@ -63,19 +63,37 @@ export const RateYourCar: React.FC = () => {
     }
   }, []);
 
-  // Pre-select vehicle from URL params (e.g. ?vehicle=2025+Toyota+Camry)
+  // Pre-select vehicle + rating from URL params (email deep-links).
+  // Examples:
+  //   ?vehicle=2026+Honda+Accord                        → open in rate step
+  //   ?vehicle=2026+Honda+Accord&rating=80              → pre-fill 4 stars, auto-submit
+  //   ?vehicle=2026+Honda+Accord&rating=80&submit=0     → pre-fill only (no auto-submit)
   useEffect(() => {
     const vehicleParam = searchParams.get('vehicle');
-    if (vehicleParam && !selectedVehicle) {
-      handleVehicleSelect(vehicleParam);
+    if (!vehicleParam || selectedVehicle) return;
+
+    const ratingParam = searchParams.get('rating');
+    const parsed = ratingParam ? parseInt(ratingParam, 10) : NaN;
+    const validRating = Number.isFinite(parsed) && parsed >= 10 && parsed <= 100 ? parsed : undefined;
+    const autoSubmit = validRating !== undefined && searchParams.get('submit') !== '0';
+
+    handleVehicleSelect(vehicleParam, validRating);
+
+    // Let users see the stars fill in before we flip to the thank-you state.
+    if (autoSubmit && validRating) {
+      const t = window.setTimeout(() => {
+        setUserRating(vehicleParam, validRating);
+        setStep('done');
+      }, 900);
+      return () => window.clearTimeout(t);
     }
   }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleVehicleSelect = useCallback((name: string) => {
+  const handleVehicleSelect = useCallback((name: string, overrideRating?: number) => {
     setSelectedVehicle(name);
     setVehicleImage(vehicleImageFor(name));
     const existing = getUserRating(name);
-    setSelectedRating(existing);
+    setSelectedRating(overrideRating ?? existing);
     setStep('rate');
   }, [getUserRating]);
 
