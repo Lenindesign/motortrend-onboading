@@ -29,6 +29,18 @@ type Variant = keyof typeof EMAIL_VARIANTS;
 
 const DEFAULT_STARS_GIF = 'https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg';
 
+/** Same hero photo as `RateYourCar` landing page (`pageStyle.backgroundImage`). */
+const DEFAULT_HERO_BACKGROUND_URL =
+  'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg';
+
+/** Truck: red Tacoma motion. Sedan: white Honda Civic sedan (Autoweek). SUV: 2025 Ford Bronco Sport (Hearst). */
+const DEFAULT_GENERIC_TRUCK_IMAGE_URL =
+  'https://d2kde5ohu8qb21.cloudfront.net/files/678a9e907a24a00008619c2e/002-2024-toyota-tacoma-limited-front-three-quarter-motion.jpg';
+const DEFAULT_GENERIC_SEDAN_IMAGE_URL =
+  'https://hips.hearstapps.com/autoweek/assets/s3fs-public/16_Civic_Sedan_160.jpg?resize=980:*';
+const DEFAULT_GENERIC_SUV_IMAGE_URL =
+  'https://hips.hearstapps.com/hmg-prod/images/2025-ford-bronco-sport-111-67f4102268e99.jpg?crop=1xw:1xh;center,top';
+
 type DeviceMode = 'desktop' | 'mobile';
 
 interface MergeTags {
@@ -37,6 +49,11 @@ interface MergeTags {
   vehicleImageUrl: string;
   ratingUrl: string;
   starsGifUrl: string;
+  rateYourCarLogoUrl: string;
+  heroBackgroundUrl: string;
+  genericTruckImageUrl: string;
+  genericSedanImageUrl: string;
+  genericSuvImageUrl: string;
   unsubscribeUrl: string;
 }
 
@@ -47,6 +64,11 @@ const applyMergeTags = (html: string, tags: MergeTags): string =>
     .replaceAll('{{vehicleImageUrl}}', tags.vehicleImageUrl)
     .replaceAll('{{ratingUrl}}', tags.ratingUrl)
     .replaceAll('{{starsGifUrl}}', tags.starsGifUrl)
+    .replaceAll('{{rateYourCarLogoUrl}}', tags.rateYourCarLogoUrl)
+    .replaceAll('{{heroBackgroundUrl}}', tags.heroBackgroundUrl)
+    .replaceAll('{{genericTruckImageUrl}}', tags.genericTruckImageUrl)
+    .replaceAll('{{genericSedanImageUrl}}', tags.genericSedanImageUrl)
+    .replaceAll('{{genericSuvImageUrl}}', tags.genericSuvImageUrl)
     .replaceAll('{{unsubscribeUrl}}', tags.unsubscribeUrl);
 
 const getVehicleName = (v: unknown): string => {
@@ -110,6 +132,11 @@ export const RateYourCarEmailPreview: React.FC = () => {
       vehicleImageUrl: vehicleImageFor(vehicleName) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=600&h=400&fit=crop',
       ratingUrl,
       starsGifUrl,
+      rateYourCarLogoUrl: `${origin}/emails/rate-your-car-logo.svg`,
+      heroBackgroundUrl: DEFAULT_HERO_BACKGROUND_URL,
+      genericTruckImageUrl: DEFAULT_GENERIC_TRUCK_IMAGE_URL,
+      genericSedanImageUrl: DEFAULT_GENERIC_SEDAN_IMAGE_URL,
+      genericSuvImageUrl: DEFAULT_GENERIC_SUV_IMAGE_URL,
       unsubscribeUrl: `${origin}/my-account/subscriptions`,
     };
   }, [variant, firstName, vehicleName, starsGifUrl]);
@@ -163,10 +190,12 @@ export const RateYourCarEmailPreview: React.FC = () => {
             ))}
           </select>
         </div>
-        <div className="email-preview-page__control-group">
-          <label>First name</label>
-          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-        </div>
+        {variant === 'personalized' && (
+          <div className="email-preview-page__control-group">
+            <label>First name</label>
+            <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          </div>
+        )}
         {variant === 'personalized' && (
           <div className="email-preview-page__control-group">
             <label>Vehicle</label>

@@ -156,7 +156,7 @@ export const OnboardingStep3: React.FC<OnboardingStep3Props> = () => {
         {/* Title and Subtitle */}
         <div className="onboarding-card__content">
           <h1 className="onboarding-card__title">Tell Us About Your Ride</h1>
-          <p className="onboarding-card__subtitle">Choose what you drive now and what you’d like next</p>
+          <p className="onboarding-card__subtitle">Search for the vehicles you drive and rate how they stack up</p>
 
           {/* Vehicle Search Section */}
           <div className="vehicle-search-section">

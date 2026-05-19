@@ -28,3 +28,7 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Supabase local secrets (never commit)
+supabase/.env
+supabase/.temp/

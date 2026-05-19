@@ -5,7 +5,10 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Comment } from '../../api/communityApi';
-import { getComments, addComment, addReply, toggleVote } from '../../api/communityApi';
+import { getComments as getCommentsV1, addReply, toggleVote } from '../../api/communityApi';
+import { getComments as getCommentsV2, addComment as addCommentV2 } from '../../api/communityApiV2';
+import type { CommentWithAuthor } from '../../api/communityApiV2';
+import { canUseSupabase } from '../../lib/supabase';
 import { VoteControl } from './VoteControl';
 import Icon from '../Icon';
 
@@ -13,32 +16,77 @@ interface CommentSectionProps {
   postId: string;
 }
 
+const normalizeComment = (comment: CommentWithAuthor, fallbackPostId: string): Comment => ({
+  id: comment.id,
+  postId: comment.postId || comment.post_id || fallbackPostId,
+  author: {
+    id: comment.author.id,
+    name: comment.author.name || comment.author.display_name || 'Guest',
+    avatar: comment.author.avatar || comment.author.avatar_url || undefined,
+  },
+  content: comment.content,
+  createdAt: comment.createdAt || comment.created_at || new Date().toISOString(),
+  upvotes: comment.upvotes,
+  downvotes: comment.downvotes,
+  userVote: comment.userVote || comment.user_vote || null,
+  replies: comment.replies?.map(reply => normalizeComment(reply, fallbackPostId)),
+});
+
 export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [moderationError, setModerationError] = useState<string | null>(null);
   const [isSubmitHovered, setIsSubmitHovered] = useState(false);
   const [hoveredReply, setHoveredReply] = useState<string | null>(null);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [isReplySubmitHovered, setIsReplySubmitHovered] = useState(false);
 
+  const useSupabase = canUseSupabase();
+
   useEffect(() => {
-    setComments(getComments(postId));
-  }, [postId]);
+    if (useSupabase) {
+      getCommentsV2(postId)
+        .then(data => setComments(data.map(comment => normalizeComment(comment, postId))))
+        .catch(() => {});
+    } else {
+      setComments(getCommentsV1(postId));
+    }
+  }, [postId, useSupabase]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || isSubmitting) return;
+    setModerationError(null);
+    setIsSubmitting(true);
 
-    const comment = addComment(postId, newComment);
-    setComments(prev => [comment, ...prev]);
-    setNewComment('');
+    try {
+      if (useSupabase) {
+        const comment = await addCommentV2(postId, newComment);
+        setComments(prev => [normalizeComment(comment, postId), ...prev]);
+      } else {
+        const { addComment: addCommentV1 } = await import('../../api/communityApi');
+        const comment = addCommentV1(postId, newComment);
+        setComments(prev => [comment, ...prev]);
+      }
+      setNewComment('');
+    } catch (err: unknown) {
+      const error = err as Error & { flagged?: boolean; categories?: Record<string, boolean> };
+      if (error.flagged) {
+        setModerationError('Your comment was flagged for inappropriate content. Please revise and try again.');
+      } else {
+        setModerationError(error.message || 'Failed to post comment.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleVote = (id: string, direction: 'up' | 'down') => {
     toggleVote('comment', id, direction);
     // Refresh comments to get updated counts
-    setComments(getComments(postId));
+    setComments(getCommentsV1(postId));
   };
   
   const handleReplyClick = (commentId: string) => {
@@ -55,7 +103,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
     if (!replyText.trim()) return;
     
     addReply(postId, parentCommentId, replyText);
-    setComments(getComments(postId));
+    setComments(getCommentsV1(postId));
     setReplyingTo(null);
     setReplyText('');
   };
@@ -79,7 +127,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
     return `${days}d ago`;
   };
 
-  const isSubmitDisabled = !newComment.trim();
+  const isSubmitDisabled = !newComment.trim() || isSubmitting;
 
   // Styles
   const sectionStyle: React.CSSProperties = {
@@ -283,9 +331,14 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
           style={inputStyle}
           placeholder="What are your thoughts?"
           value={newComment}
-          onChange={e => setNewComment(e.target.value)}
+          onChange={e => { setNewComment(e.target.value); setModerationError(null); }}
           rows={4}
         />
+        {moderationError && (
+          <div style={{ padding: '8px 12px', backgroundColor: '#FEE2E2', color: '#991B1B', fontSize: '13px', borderTop: '1px solid #FECACA' }}>
+            {moderationError}
+          </div>
+        )}
         <div style={actionsStyle}>
           <button 
             type="submit" 
@@ -294,7 +347,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({ postId }) => {
             onMouseEnter={() => setIsSubmitHovered(true)}
             onMouseLeave={() => setIsSubmitHovered(false)}
           >
-            Comment
+            {isSubmitting ? 'Checking...' : 'Comment'}
           </button>
         </div>
       </form>

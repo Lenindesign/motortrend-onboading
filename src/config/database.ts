@@ -13,10 +13,12 @@
  * 
  * 2. SUPABASE MODE - Real backend with authentication
  *    - Create a free project at https://supabase.com
- *    - Run the schema from /supabase/schema.sql in Supabase SQL Editor
+ *    - Run the schema and migrations from /supabase/ (SQL Editor or supabase db push)
  *    - Set environment variables:
  *      VITE_SUPABASE_URL=https://your-project.supabase.co
  *      VITE_SUPABASE_ANON_KEY=your-anon-key-here
+ *    - Comments: deploy Edge Function create-comment and set secret OPENAI_API_KEY
+ *      (see supabase/functions/create-comment). Migration 003 removes direct client INSERT.
  *    - Features: Real-time updates, user auth, persistent data
  */
 

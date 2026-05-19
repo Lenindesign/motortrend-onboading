@@ -30,13 +30,13 @@
 
 @media (max-width: 1279px) {
   .home__container {
-    padding: 0; /* Remove side padding - handled by individual components */
+    padding: 0 var(--spacing-3); /* Side gutters below max-width to prevent edge-hugging */
   }
 }
 
 @media (max-width: 1023px) {
   .home__container {
-    padding: 0; /* Remove side padding - handled by individual components */
+    padding: 0 var(--spacing-3);
     gap: var(--section-gap-sm); /* Tighter spacing on tablet */
   }
 }
@@ -134,7 +134,7 @@
   }
 
   .home__container {
-    padding: 0; /* Remove side padding - handled by individual components */
+    padding: 0 var(--spacing-2);
     gap: var(--section-gap-sm); /* Uniform 24px gap on mobile */
   }
 

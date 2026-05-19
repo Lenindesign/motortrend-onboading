@@ -10,6 +10,7 @@ import { Badge } from '../atoms/Badge/Badge';
 import { useRating } from '../../contexts/RatingContext';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
 import { AuthPromptModal } from '../AuthPromptModal';
+import { moderateText } from '../../api/moderationApi';
 
 export interface ReplyData {
   id: string;
@@ -338,17 +339,36 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     }
   }, [reviews, showEmptyState]);
 
-  const handlePostComment = () => {
-    if (!commentText.trim()) return;
+  const [isPostingComment, setIsPostingComment] = useState(false);
+  const [commentModerationError, setCommentModerationError] = useState<string | null>(null);
+
+  const handlePostComment = async () => {
+    if (!commentText.trim() || isPostingComment) return;
     if (!requireAuth('comment')) return;
+    setCommentModerationError(null);
+    setIsPostingComment(true);
+
     try {
+      const result = await moderateText(commentText.trim());
+
+      if (result.flagged) {
+        setCommentModerationError('Your comment was flagged for inappropriate content. Please revise and try again.');
+        return;
+      }
+
       const onboardingData = localStorage.getItem('onboardingData');
       const userName = onboardingData ? JSON.parse(onboardingData).fullName || 'You' : 'You';
       const newComment: CommentData = { id: `comment_${Date.now()}`, commenterName: userName, content: commentText.trim(), date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }), likes: 0, isLiked: false, replies: [] };
       const updatedComments = [newComment, ...comments];
-      setComments(updatedComments); setCommentText('');
+      setComments(updatedComments);
+      setCommentText('');
       localStorage.setItem(`comments_v2_${vehicleName}`, JSON.stringify(updatedComments));
-    } catch (error) { console.error('Error posting comment:', error); }
+    } catch (error) {
+      console.error('Error posting comment:', error);
+      setCommentModerationError('Something went wrong. Please try again.');
+    } finally {
+      setIsPostingComment(false);
+    }
   };
 
   const handleCommentLike = (commentId: string) => {
@@ -844,8 +864,13 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
               </div>
             </div>
             <div style={commentInputSectionStyle}>
-              <textarea style={commentInputStyle} placeholder="What do you think?" value={commentText} onChange={(e) => setCommentText(e.target.value)} rows={3} />
-              <button style={commentSubmitBtnStyle(!commentText.trim())} onClick={handlePostComment} disabled={!commentText.trim()} onMouseEnter={() => setIsCommentSubmitHovered(true)} onMouseLeave={() => setIsCommentSubmitHovered(false)}>Post Comment</button>
+              <textarea style={commentInputStyle} placeholder="What do you think?" value={commentText} onChange={(e) => { setCommentText(e.target.value); setCommentModerationError(null); }} rows={3} />
+              {commentModerationError && (
+                <div style={{ padding: '8px 12px', backgroundColor: '#FEE2E2', color: '#991B1B', fontSize: '13px', borderRadius: '6px' }}>
+                  {commentModerationError}
+                </div>
+              )}
+              <button style={commentSubmitBtnStyle(!commentText.trim() || isPostingComment)} onClick={handlePostComment} disabled={!commentText.trim() || isPostingComment} onMouseEnter={() => setIsCommentSubmitHovered(true)} onMouseLeave={() => setIsCommentSubmitHovered(false)}>{isPostingComment ? 'Checking...' : 'Post Comment'}</button>
             </div>
             <div style={commentsListStyle}>
               {getSortedComments().length === 0 ? (

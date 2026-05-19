@@ -180,8 +180,8 @@ CREATE POLICY "Authors can delete their posts" ON posts
 CREATE POLICY "Comments are viewable by everyone" ON comments
   FOR SELECT USING (true);
 
-CREATE POLICY "Authenticated users can create comments" ON comments
-  FOR INSERT WITH CHECK (auth.role() = 'authenticated' AND auth.uid() = author_id);
+-- INSERT: use the create-comment Edge Function (OpenAI moderation + service role).
+-- Do not grant direct INSERT to authenticated clients (see migration 003).
 
 CREATE POLICY "Authors can update their comments" ON comments
   FOR UPDATE USING (auth.uid() = author_id);

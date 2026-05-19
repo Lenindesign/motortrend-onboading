@@ -1,0 +1,8 @@
+# https://supabase.com/docs/guides/cli/config
+# Edge Function: verified JWT at the gateway; function also validates session.
+
+[functions.create-comment]
+verify_jwt = true
+
+[functions.moderate-text]
+verify_jwt = false

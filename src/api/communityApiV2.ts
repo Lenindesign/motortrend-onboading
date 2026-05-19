@@ -822,36 +822,54 @@ export async function addComment(
   parentId?: string
 ): Promise<CommentWithAuthor> {
   if (canUseSupabase() && supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Must be logged in to comment');
-    
-    const { data: comment, error } = await (supabase as any)
-      .from('comments')
-      .insert({
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) throw new Error('Must be logged in to comment');
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+    const fnUrl = `${supabaseUrl.replace(/\/$/, '')}/functions/v1/create-comment`;
+
+    const res = await fetch(fnUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session.access_token}`,
+        apikey: anonKey,
+      },
+      body: JSON.stringify({
         post_id: postId,
-        author_id: user.id,
-        parent_id: parentId || null,
         content,
-        upvotes: 0,
-        downvotes: 0,
-      })
-      .select(`
-        *,
-        author:profiles!author_id(id, display_name, avatar_url)
-      `)
-      .single();
-    
-    if (error) throw error;
-    
-    // Increment post comment count
-    await (supabase as any).rpc('increment_comment_count', { post_id: postId });
-    
+        parent_id: parentId ?? null,
+      }),
+    });
+
+    const payload = (await res.json()) as {
+      error?: string;
+      flagged?: boolean;
+      categories?: Record<string, boolean>;
+      comment?: CommentWithAuthor & { author?: { id: string; display_name: string; avatar_url?: string | null } };
+    };
+
+    if (!res.ok) {
+      const msg = payload.error || 'Failed to post comment';
+      const err = new Error(msg) as Error & { status?: number; flagged?: boolean; categories?: Record<string, boolean> };
+      err.status = res.status;
+      if (payload.flagged !== undefined) err.flagged = payload.flagged;
+      if (payload.categories) err.categories = payload.categories;
+      throw err;
+    }
+
+    if (!payload.comment) {
+      throw new Error('Invalid response from comment service');
+    }
+
+    const c = payload.comment;
     return {
-      ...comment,
+      ...c,
       author: {
-        id: comment.author?.id || '',
-        display_name: comment.author?.display_name || 'Unknown',
-        avatar_url: comment.author?.avatar_url,
+        id: c.author?.id || '',
+        display_name: c.author?.display_name || 'Unknown',
+        avatar_url: c.author?.avatar_url,
       },
       user_vote: null,
     } as CommentWithAuthor;
@@ -1006,4 +1024,3 @@ export function subscribeToPostComments(
     supabase?.removeChannel(channel);
   };
 }
-

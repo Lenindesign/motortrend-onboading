@@ -19,6 +19,25 @@ const RATING_LABELS: Record<number, string> = {
   90: 'Excellent', 100: 'Perfect',
 };
 
+/** Same asset as `public/emails/rate-your-car-logo.svg` (used in email templates). */
+const RATE_YOUR_CAR_LOGO = `${import.meta.env.BASE_URL}emails/rate-your-car-logo.svg`;
+
+/** Generic trio — aligned with `RateYourCarEmailPreview` / `rate-your-car-generic.html`. */
+const GENERIC_VEHICLE_TRIO: readonly { src: string; alt: string }[] = [
+  {
+    src: 'https://d2kde5ohu8qb21.cloudfront.net/files/678a9e907a24a00008619c2e/002-2024-toyota-tacoma-limited-front-three-quarter-motion.jpg',
+    alt: 'Pickup truck',
+  },
+  {
+    src: 'https://hips.hearstapps.com/autoweek/assets/s3fs-public/16_Civic_Sedan_160.jpg?resize=980:*',
+    alt: 'Sedan',
+  },
+  {
+    src: 'https://hips.hearstapps.com/hmg-prod/images/2025-ford-bronco-sport-111-67f4102268e99.jpg?crop=1xw:1xh;center,top',
+    alt: 'SUV',
+  },
+];
+
 const BENEFITS = [
   { icon: 'people' as const, title: 'Help Real Buyers', desc: 'Your honest opinion helps thousands of shoppers make confident decisions.' },
   { icon: 'star' as const, title: 'Guide Our Experts', desc: 'Our editors and writers use owner ratings like yours to craft more accurate, real-world reviews.' },
@@ -199,7 +218,17 @@ export const RateYourCar: React.FC = () => {
   // ─── Shared layout styles ───
   const pageStyle: React.CSSProperties = {
     minHeight: '100vh',
-    background: 'linear-gradient(180deg, var(--color-neutrals-1, #141416) 0%, var(--color-neutrals-2, #23262F) 50%, var(--color-neutrals-1, #141416) 100%)',
+    backgroundColor: 'var(--color-neutrals-1, #141416)',
+    backgroundImage: [
+      'radial-gradient(circle at 18% 10%, rgba(233, 12, 23, 0.42) 0%, rgba(233, 12, 23, 0) 28%)',
+      'linear-gradient(110deg, rgba(5, 5, 8, 0.98) 0%, rgba(12, 13, 18, 0.76) 45%, rgba(5, 5, 8, 0.94) 100%)',
+      'linear-gradient(180deg, rgba(5, 5, 8, 0.72) 0%, rgba(5, 5, 8, 0.38) 42%, rgba(5, 5, 8, 0.96) 100%)',
+      "url('https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg')",
+    ].join(', '),
+    backgroundSize: '1200px 760px, cover, cover, cover',
+    backgroundPosition: 'left top, center, center, center 42%',
+    backgroundRepeat: 'no-repeat',
+    backgroundAttachment: isMobile ? 'scroll' : 'fixed',
     color: '#fff',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
   };
@@ -216,20 +245,16 @@ export const RateYourCar: React.FC = () => {
         {/* ─── Hero ─── */}
         <div style={{ textAlign: 'center', marginBottom: '48px', animation: 'rycFadeUp 0.5s ease-out' }}>
           <img
-            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png"
-            alt="MotorTrend"
-            style={{ height: '28px', marginBottom: '32px', opacity: 0.9, display: 'block', margin: '0 auto 32px' }}
+            src={RATE_YOUR_CAR_LOGO}
+            alt="Rate Your Car"
+            style={{
+              width: isMobile ? 'min(100%, 300px)' : '400px',
+              height: 'auto',
+              display: 'block',
+              margin: '0 auto 18px',
+              filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.45))',
+            }}
           />
-          <h1 style={{
-            fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-            fontSize: isMobile ? '32px' : '44px',
-            fontWeight: 700,
-            lineHeight: 1.15,
-            margin: '0 0 16px',
-            letterSpacing: '-0.5px',
-          }}>
-            Rate Your Car!
-          </h1>
           <p style={{
             fontSize: isMobile ? '16px' : '18px',
             color: 'var(--color-neutrals-5, #B1B5C3)',
@@ -237,7 +262,7 @@ export const RateYourCar: React.FC = () => {
             margin: '0 auto',
             lineHeight: 1.6,
           }}>
-            Choose what you drive now and what you'd like next
+            Search for your vehicle and rate how it stacks up
           </p>
         </div>
 
@@ -257,20 +282,47 @@ export const RateYourCar: React.FC = () => {
               transition: 'padding-bottom 0.25s ease',
             }}>
               <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-                {/* Placeholder stars as visual cue */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', margin: '0 auto 20px' }}>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <img
-                      key={i}
-                      src={STAR_EMPTY}
-                      alt=""
-                      style={{ width: '36px', height: '36px', objectFit: 'contain', opacity: 0.5 }}
-                    />
+                {/* Vehicle trio — same imagery as generic email (visual cue before search). */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: isMobile ? '6px' : '8px',
+                    margin: '0 auto 26px',
+                    width: '100%',
+                    maxWidth: '600px',
+                  }}
+                >
+                  {GENERIC_VEHICLE_TRIO.map((item) => (
+                    <div
+                      key={item.src}
+                      style={{
+                        flex: '1 1 0',
+                        minWidth: 0,
+                        height: isMobile ? '96px' : '120px',
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                        backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                      }}
+                    >
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center 52%',
+                          display: 'block',
+                        }}
+                      />
+                    </div>
                   ))}
                 </div>
                 <h2 style={{
                   fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-                  fontSize: '22px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)',
+                  fontSize: '31px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)',
                   margin: '0 0 8px',
                 }}>
                   What do you drive?
@@ -553,11 +605,11 @@ export const RateYourCar: React.FC = () => {
               }}>
                 <div style={{
                   width: '48px', height: '48px', borderRadius: '12px',
-                  background: 'rgba(233, 12, 23, 0.12)',
+                  background: 'rgba(0, 164, 219, 0.16)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   margin: '0 auto 16px',
                 }}>
-                  <Icon name={b.icon} size={24} style={{ color: '#fff' }} />
+                  <Icon name={b.icon} size={24} style={{ color: '#00A4DB' }} />
                 </div>
                 <h4 style={{
                   fontFamily: 'var(--font-heading)', fontSize: '16px', fontWeight: 600,
