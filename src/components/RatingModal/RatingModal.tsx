@@ -58,7 +58,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   const ratingLabels: { [key: number]: string } = {
     10: "Awful – Never again", 20: "Poor – Major regrets", 30: "Below Average – Disappointed",
     40: "Fair – Just okay", 50: "Average – Meets basic needs", 60: "Decent – Would consider again",
-    70: "Good – Happy overall", 80: "Very Good – Impressive value", 90: "Excellent – Love this car", 100: "Perfect – Dream car!"
+    70: "Good – Happy overall", 80: "Very Good – Impressive value", 90: "Great – Love this car", 100: "Excellent – Dream car!"
   };
 
   const handleStarClick = (rating: number) => setSelectedRating(rating);

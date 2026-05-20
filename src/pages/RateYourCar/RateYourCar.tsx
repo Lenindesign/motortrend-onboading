@@ -16,7 +16,7 @@ const STAR_EMPTY = 'https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700
 const RATING_LABELS: Record<number, string> = {
   10: 'Awful', 20: 'Poor', 30: 'Below Average', 40: 'Fair',
   50: 'Average', 60: 'Decent', 70: 'Good', 80: 'Very Good',
-  90: 'Excellent', 100: 'Perfect',
+  90: 'Great', 100: 'Excellent',
 };
 
 /** Same asset as `public/emails/rate-your-car-logo.svg` (used in email templates). */
@@ -151,7 +151,7 @@ export const RateYourCar: React.FC = () => {
 
   // ─── Star renderer ───
   const renderInlineStars = () => (
-    <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '16px', position: 'relative' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? '8px' : '10px', position: 'relative' }}>
       {Array.from({ length: 5 }, (_, i) => {
         const pos = i + 1;
         const oddVal = pos * 20 - 10;
@@ -179,7 +179,7 @@ export const RateYourCar: React.FC = () => {
             )}
             <div
               style={{
-                position: 'relative', width: isMobile ? '48px' : '56px', height: isMobile ? '48px' : '56px',
+                position: 'relative', width: isMobile ? '38px' : '38px', height: isMobile ? '38px' : '38px',
                 transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
                 transform: hoveredStarIdx === pos ? 'scale(1.15)' : 'none',
                 cursor: 'pointer',
@@ -243,7 +243,7 @@ export const RateYourCar: React.FC = () => {
     <div style={pageStyle}>
       <div style={containerStyle}>
         {/* ─── Hero ─── */}
-        <div style={{ textAlign: 'center', marginBottom: '48px', animation: 'rycFadeUp 0.5s ease-out' }}>
+        <div style={{ textAlign: 'center', marginBottom: step === 'rate' ? '24px' : '48px', animation: 'rycFadeUp 0.5s ease-out' }}>
           <img
             src={RATE_YOUR_CAR_LOGO}
             alt="Rate Your Car"
@@ -268,7 +268,7 @@ export const RateYourCar: React.FC = () => {
 
         {/* ─── Main Card ─── */}
         <div style={{
-          background: 'var(--color-neutrals-7, #F4F5F6)',
+          background: step === 'select' ? 'var(--color-neutrals-7, #F4F5F6)' : 'var(--color-white, #FFFFFF)',
           borderRadius: '16px',
           boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
           animation: 'rycFadeUp 0.6s ease-out 0.1s both',
@@ -356,27 +356,33 @@ export const RateYourCar: React.FC = () => {
             <div style={{ animation: 'rycFadeUp 0.4s ease-out' }}>
               {/* Header with back button and vehicle name */}
               <div style={{
-                background: 'var(--color-neutrals-1, #141416)',
+                background: 'var(--color-white, #FFFFFF)',
                 borderRadius: '16px 16px 0 0',
-                padding: isMobile ? '20px 20px 0' : '24px 40px 0',
+                padding: isMobile ? '14px 20px 8px' : '14px 40px 8px',
                 display: 'flex', alignItems: 'center', gap: '12px',
+                borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
               }}>
-                <button
-                  onClick={handleRateAnother}
-                  style={{
-                    background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%',
-                    width: '36px', height: '36px', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#fff', flexShrink: 0,
-                  }}
-                  aria-label="Go back"
-                >
-                  <Icon name="arrow_back" size={20} />
-                </button>
+                {vehicleImage && (
+                  <img
+                    src={vehicleImage}
+                    alt=""
+                    style={{
+                      width: isMobile ? '112px' : '128px',
+                      height: isMobile ? '63px' : '72px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+                      flexShrink: 0,
+                    }}
+                  />
+                )}
                 <h2 style={{
                   fontFamily: 'var(--font-heading, Poppins, sans-serif)',
-                  fontSize: isMobile ? '18px' : '22px', fontWeight: 700, color: '#fff',
+                  fontSize: isMobile ? '18px' : '22px',
+                  fontWeight: 700,
+                  color: 'var(--color-neutrals-1, #141416)',
                   margin: 0,
+                  lineHeight: 1.2,
                 }}>
                   {selectedVehicle}
                 </h2>
@@ -384,83 +390,79 @@ export const RateYourCar: React.FC = () => {
 
               {/* Rating area */}
               <div style={{
-                background: 'var(--color-neutrals-1, #141416)',
-                padding: isMobile ? '28px 20px 32px' : '32px 40px 40px',
+                background: 'var(--color-white, #FFFFFF)',
+                padding: isMobile ? '14px 20px 18px' : '18px 40px 22px',
                 textAlign: 'center',
+                borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
               }}>
-                {/* Score display */}
-                <div style={{ marginBottom: '8px' }}>
-                  <div style={{
-                    position: 'relative', display: 'inline-block',
-                    width: '100px', height: '100px',
-                    animation: displayRating > 0 ? 'rycPulse 0.4s ease-out' : 'none',
-                  }}>
-                    <img src={STAR_FILLED} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }} />
-                    <span style={{
-                      position: 'absolute', top: '58%', left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      fontFamily: 'var(--font-heading)', fontWeight: 700,
-                      fontSize: '36px', color: '#fff',
-                      textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                <div style={{
+                  background: 'var(--color-neutrals-1, #141416)',
+                  borderRadius: isMobile ? '18px' : '22px',
+                  padding: isMobile ? '24px 16px 26px' : '28px 32px 30px',
+                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.04)',
+                }}>
+                  {/* Score display */}
+                  <div style={{ marginBottom: '2px' }}>
+                    <div style={{
+                      position: 'relative', display: 'inline-block',
+                      width: isMobile ? '76px' : '84px', height: isMobile ? '76px' : '84px',
+                      animation: displayRating > 0 ? 'rycPulse 0.4s ease-out' : 'none',
                     }}>
-                      {displayRating > 0 ? (displayRating / 20).toFixed(1) : '—'}
-                    </span>
+                      <img src={STAR_FILLED} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.45))' }} />
+                      <span style={{
+                        position: 'absolute', top: '58%', left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        fontFamily: 'var(--font-heading)', fontWeight: 700,
+                        fontSize: isMobile ? '22px' : '24px', color: '#fff',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                      }}>
+                        {displayRating > 0 ? (displayRating / 20).toFixed(1) : '—'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p style={{
+                    fontFamily: 'var(--font-heading)', fontWeight: 600,
+                    fontSize: '11px', color: 'var(--color-white, #FFFFFF)',
+                    textTransform: 'uppercase', letterSpacing: '2px',
+                    margin: '0 0 10px',
+                  }}>
+                    {displayRating > 0 ? RATING_LABELS[displayRating] || 'Rate This' : 'Rate This'}
+                  </p>
+
+                  {renderInlineStars()}
+
+                  {/* Action buttons */}
+                  <div style={{
+                    display: 'flex', gap: '12px', marginTop: '14px',
+                    justifyContent: 'center',
+                  }}>
+                    <button
+                      onClick={handleSubmitRating}
+                      disabled={selectedRating === 0}
+                      style={{
+                        padding: '10px 24px', borderRadius: '10px',
+                        background: selectedRating > 0 ? PRIMARY : 'rgba(255,255,255,0.12)',
+                        color: selectedRating > 0 ? '#fff' : 'rgba(255,255,255,0.52)',
+                        border: 'none',
+                        fontFamily: 'var(--font-heading)', fontWeight: 600,
+                        fontSize: '15px', cursor: selectedRating > 0 ? 'pointer' : 'default',
+                        textTransform: 'uppercase', letterSpacing: '1px',
+                        opacity: selectedRating === 0 ? 0.85 : 1,
+                        transition: 'all 0.2s',
+                        minWidth: '180px',
+                      }}
+                    >
+                      Submit Rating
+                    </button>
                   </div>
                 </div>
-
-                <p style={{
-                  fontFamily: 'var(--font-heading)', fontWeight: 600,
-                  fontSize: '13px', color: 'var(--color-rating-motortrend, #FFB74D)',
-                  textTransform: 'uppercase', letterSpacing: '2px',
-                  margin: '0 0 24px',
-                }}>
-                  {displayRating > 0 ? RATING_LABELS[displayRating] || 'Rate This' : 'Rate This'}
-                </p>
-
-                {renderInlineStars()}
-
-                {/* Action buttons */}
-                <div style={{
-                  display: 'flex', gap: '12px', marginTop: '32px',
-                  justifyContent: 'center',
-                }}>
-                  <button
-                    onClick={handleSubmitRating}
-                    disabled={selectedRating === 0}
-                    style={{
-                      padding: '14px 32px', borderRadius: '10px',
-                      background: selectedRating > 0 ? PRIMARY : 'rgba(255,255,255,0.1)',
-                      color: '#fff', border: 'none',
-                      fontFamily: 'var(--font-heading)', fontWeight: 600,
-                      fontSize: '15px', cursor: selectedRating > 0 ? 'pointer' : 'default',
-                      textTransform: 'uppercase', letterSpacing: '1px',
-                      opacity: selectedRating === 0 ? 0.5 : 1,
-                      transition: 'all 0.2s',
-                      minWidth: '200px',
-                    }}
-                  >
-                    Submit Rating
-                  </button>
-                </div>
-              </div>
-
-              {/* Vehicle image below rating */}
-              <div style={{
-                width: '100%', height: isMobile ? '180px' : '220px',
-                background: 'var(--color-neutrals-7, #F4F5F6)',
-                overflow: 'hidden',
-              }}>
-                <img
-                  src={vehicleImage}
-                  alt={selectedVehicle}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
               </div>
 
               {/* Rate another vehicle */}
               <div style={{
-                padding: isMobile ? '24px 20px' : '28px 40px',
-                paddingBottom: searchActive ? '280px' : (isMobile ? '24px' : '28px'),
+                padding: isMobile ? '16px 20px' : '16px 40px',
+                paddingBottom: searchActive ? '280px' : (isMobile ? '16px' : '16px'),
                 transition: 'padding-bottom 0.25s ease',
                 borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)',
                 background: 'var(--color-white, #FFFFFF)',
@@ -469,9 +471,9 @@ export const RateYourCar: React.FC = () => {
                 <p style={{
                   fontFamily: 'var(--font-heading)', fontWeight: 600,
                   fontSize: '15px', color: 'var(--color-neutrals-2, #23262F)',
-                  margin: '0 0 12px',
+                  margin: '0 0 8px',
                 }}>
-                  Rate Another Vehicle
+                  Rate a different vehicle
                 </p>
                 <div
                   onFocusCapture={() => setSearchActive(true)}
