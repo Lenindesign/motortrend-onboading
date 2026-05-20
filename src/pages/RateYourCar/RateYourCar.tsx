@@ -248,10 +248,10 @@ export const RateYourCar: React.FC = () => {
             src={RATE_YOUR_CAR_LOGO}
             alt="Rate Your Car"
             style={{
-              width: isMobile ? 'min(100%, 300px)' : '400px',
+              width: isMobile ? 'min(100%, 240px)' : '320px',
               height: 'auto',
               display: 'block',
-              margin: '0 auto 18px',
+              margin: '0 auto 8px',
               filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.45))',
             }}
           />
@@ -268,7 +268,7 @@ export const RateYourCar: React.FC = () => {
 
         {/* ─── Main Card ─── */}
         <div style={{
-          background: 'var(--color-white, #FFFFFF)',
+          background: 'var(--color-neutrals-7, #F4F5F6)',
           borderRadius: '16px',
           boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
           animation: 'rycFadeUp 0.6s ease-out 0.1s both',
@@ -277,7 +277,7 @@ export const RateYourCar: React.FC = () => {
           {/* ─── STEP: SELECT ─── */}
           {step === 'select' && (
             <div style={{
-              padding: isMobile ? '32px 20px' : '40px 40px',
+              padding: isMobile ? '24px 20px 32px' : '28px 40px 40px',
               paddingBottom: searchActive ? '280px' : (isMobile ? '32px' : '48px'),
               transition: 'padding-bottom 0.25s ease',
             }}>
@@ -323,11 +323,12 @@ export const RateYourCar: React.FC = () => {
                 <h2 style={{
                   fontFamily: 'var(--font-heading, Poppins, sans-serif)',
                   fontSize: '31px', fontWeight: 700, color: 'var(--color-neutrals-1, #141416)',
-                  margin: '0 0 8px',
+                  lineHeight: 1.1,
+                  margin: '0 0 3px',
                 }}>
                   What do you drive?
                 </h2>
-                <p style={{ fontSize: '15px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontSize: '15px', color: 'var(--color-neutrals-4, #6E7481)', margin: 0, lineHeight: 1.35 }}>
                   Search for your vehicle to get started
                 </p>
               </div>
@@ -343,6 +344,7 @@ export const RateYourCar: React.FC = () => {
                 <VehicleSearch
                   onVehicleSelect={(v) => { setSearchActive(false); handleVehicleSelect(v.name); }}
                   placeholder="Search by year, make, or model..."
+                  inputSize="large"
                   showPopularOnFocus
                 />
               </div>
@@ -577,7 +579,7 @@ export const RateYourCar: React.FC = () => {
 
         {/* ─── Why Rate Section ─── */}
         <div style={{
-          marginTop: '56px',
+          marginTop: '32px',
           animation: 'rycFadeUp 0.6s ease-out 0.3s both',
         }}>
           <h3 style={{

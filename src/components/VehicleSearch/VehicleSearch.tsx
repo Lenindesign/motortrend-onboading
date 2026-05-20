@@ -14,6 +14,7 @@ export interface VehicleSearchProps {
   defaultOwnership?: 'own' | 'want';
   autoFocus?: boolean;
   style?: React.CSSProperties;
+  inputSize?: 'default' | 'large';
   showPopularOnFocus?: boolean;
 }
 
@@ -24,6 +25,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   defaultOwnership = 'own',
   autoFocus = false,
   style,
+  inputSize = 'default',
   showPopularOnFocus = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -158,18 +160,18 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   // Search icon styles
   const searchIconStyle: React.CSSProperties = {
     position: 'absolute',
-    left: '16px',
-    color: 'var(--color-neutrals-4, #6E7481)',
+    left: inputSize === 'large' ? '20px' : '16px',
+    color: inputSize === 'large' ? '#00A4DB' : 'var(--color-neutrals-4, #6E7481)',
     zIndex: 1,
   };
 
   // Input styles
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '14px 16px 14px 48px',
+    padding: inputSize === 'large' ? '18px 20px 18px 58px' : '14px 16px 14px 48px',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 400,
-    fontSize: '16px',
+    fontSize: inputSize === 'large' ? '20px' : '16px',
     lineHeight: '1.5em',
     color: 'var(--color-neutrals-2, #23262F)',
     backgroundColor: 'var(--color-white, #FFFFFF)',
@@ -215,7 +217,7 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
   return (
     <div className={className} style={containerStyle} ref={searchRef}>
       <div style={inputContainerStyle}>
-        <Icon name="search" size={20} style={searchIconStyle} />
+        <Icon name="search" size={inputSize === 'large' ? 22 : 20} style={searchIconStyle} />
         <input
           ref={inputRef}
           type="text"
@@ -264,4 +266,3 @@ export const VehicleSearch: React.FC<VehicleSearchProps> = ({
 };
 
 export default VehicleSearch;
-
