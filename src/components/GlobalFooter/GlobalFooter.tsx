@@ -65,6 +65,7 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
     { label: 'Top Ten Management', path: '/top-ten-management' },
     { label: 'Journey Builder', path: '/journey-builder' },
     { label: 'Rate Your Car', path: '/rate-your-car' },
+    { label: 'Rate Your Car Email Preview', path: '/email-preview/rate-your-car' },
   ];
 
   const magazineLinks = [
