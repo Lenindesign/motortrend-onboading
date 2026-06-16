@@ -38,6 +38,7 @@ import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
 import { JourneyBuilder } from './pages/JourneyBuilder';
 import { Events, EventsCommunity } from './pages/Events';
 import RateYourCar from './pages/RateYourCar';
+import AutoLoanCalculator from './pages/AutoLoanCalculator';
 import { RatingProvider } from './contexts/RatingContext';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
@@ -171,6 +172,10 @@ function App() {
               
               {/* Rate Your Car Landing Page (email campaign) */}
               <Route path="/rate-your-car" element={<RateYourCar />} />
+
+              {/* Auto Loan Calculator */}
+              <Route path="/auto-loan-calculator" element={<AutoLoanCalculator />} />
+              <Route path="/auto-loan-calculator/:stepSlug" element={<AutoLoanCalculator />} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />
