@@ -18,6 +18,7 @@ import { Home } from './pages/Home';
 import { Article } from './pages/Article';
 import NewCars from './pages/NewCars';
 import UsedCars from './pages/UsedCars';
+import Deals, { BuyingDealsPage, LeaseDealsPage } from './pages/Deals';
 import CarReviews from './pages/CarReviews';
 import CompareVehicles from './pages/CompareVehicles';
 import EVHub from './pages/EVHub';
@@ -84,6 +85,11 @@ function App() {
               
               {/* Used Cars Page */}
               <Route path="/used-cars" element={<UsedCars />} />
+
+              {/* Deals Page */}
+              <Route path="/deals" element={<Deals />} />
+              <Route path="/deals/best-buying-deals" element={<BuyingDealsPage />} />
+              <Route path="/deals/lease" element={<LeaseDealsPage />} />
               
               {/* Car Reviews Page */}
               <Route path="/car-reviews" element={<CarReviews />} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -7,19 +7,15 @@ import {
   Car,
   CarProfile,
   CaretDown,
+  CaretLeft,
+  CaretRight,
   Check,
   CheckCircle,
   CurrencyDollar,
   Info,
-  Lightning,
   MagnifyingGlass,
-  RocketLaunch,
   SkipForward,
-  Sun,
-  Truck,
-  Van,
   WarningCircle,
-  type IconProps as PhosphorIconProps,
 } from '@phosphor-icons/react';
 import { Button, CardShell, Section, TextField } from '../../design-system/components';
 import {
@@ -35,7 +31,6 @@ type VehicleCondition = 'new' | 'used';
 type CalculatorStepSlug = 'loan-terms' | 'vehicle' | 'trade' | 'review';
 type VehiclePathMode = 'known' | 'browsing';
 type SelectedState = 'CA' | 'FL' | 'TX' | 'NY' | 'IL';
-type CalculatorIcon = React.ComponentType<PhosphorIconProps>;
 type BrowsableBodyStyle = 'SUV' | 'Sedan' | 'Truck' | 'Coupe' | 'Hatchback' | 'Wagon' | 'Convertible';
 type EstimateAccordionKey = 'totalInterest' | 'netTrade' | 'taxesFees';
 
@@ -112,14 +107,42 @@ const feeGuidanceCopy: Record<SelectedState, string> = {
   IL: 'This is a good planning placeholder for registration and dealer charges before you have a written quote.',
 };
 
-const bodyStyleMap: Record<BrowsableBodyStyle, { label: string; icon: CalculatorIcon; description: string }> = {
-  SUV: { label: 'SUV', icon: CarProfile, description: 'Family haulers, adventure rigs, and compact crossovers.' },
-  Sedan: { label: 'Sedan', icon: Car, description: 'Efficient commuters and sharper sport sedans.' },
-  Truck: { label: 'Truck', icon: Truck, description: 'Pickups, tow rigs, and work-ready options.' },
-  Coupe: { label: 'Coupe', icon: RocketLaunch, description: 'Two-door performance, style, and halo cars.' },
-  Hatchback: { label: 'Hatchback', icon: Lightning, description: 'Compact, practical, and often electrified picks.' },
-  Wagon: { label: 'Wagon', icon: Van, description: 'Long-roof utility with a lower stance.' },
-  Convertible: { label: 'Convertible', icon: Sun, description: 'Top-down weekend and premium cruising options.' },
+const bodyStyleMap: Record<BrowsableBodyStyle, { label: string; iconSrc: string; description: string }> = {
+  SUV: {
+    label: 'SUV',
+    iconSrc: '/images/body-style-icons/suv.svg',
+    description: 'Family haulers, adventure rigs, and compact crossovers.',
+  },
+  Sedan: {
+    label: 'Sedan',
+    iconSrc: '/images/body-style-icons/sedan.svg',
+    description: 'Efficient commuters and sharper sport sedans.',
+  },
+  Truck: {
+    label: 'Truck',
+    iconSrc: '/images/body-style-icons/truck.svg',
+    description: 'Pickups, tow rigs, and work-ready options.',
+  },
+  Coupe: {
+    label: 'Coupe',
+    iconSrc: '/images/body-style-icons/coupe.svg',
+    description: 'Two-door performance, style, and halo cars.',
+  },
+  Hatchback: {
+    label: 'Hatchback',
+    iconSrc: '/images/body-style-icons/hatchback.svg',
+    description: 'Compact, practical, and often electrified picks.',
+  },
+  Wagon: {
+    label: 'Wagon',
+    iconSrc: '/images/body-style-icons/van.svg',
+    description: 'Long-roof utility with a lower stance.',
+  },
+  Convertible: {
+    label: 'Convertible',
+    iconSrc: '/images/body-style-icons/convertible.svg',
+    description: 'Top-down weekend and premium cruising options.',
+  },
 };
 
 const browsableBodyStyles = Object.keys(bodyStyleMap) as BrowsableBodyStyle[];
@@ -240,6 +263,7 @@ export const AutoLoanCalculator: React.FC = () => {
     taxesFees: false,
   });
   const searchMenuRef = useRef<HTMLDivElement | null>(null);
+  const bodyStyleCarouselRef = useRef<HTMLDivElement | null>(null);
   const shellTopRef = useRef<HTMLDivElement | null>(null);
 
   const stepIndex = getStepIndex(stepSlug);
@@ -453,6 +477,18 @@ export const AutoLoanCalculator: React.FC = () => {
   const selectedVehicleLabel = selectedVehicle
     ? `${selectedVehicle.year} ${selectedVehicle.make} ${selectedVehicle.model}`
     : 'No vehicle selected';
+  const selectedVehiclePath = selectedVehicle
+    ? `/vehicles/${encodeURIComponent(selectedVehicle.year)}/${encodeURIComponent(selectedVehicle.make)}/${encodeURIComponent(selectedVehicle.model)}`
+    : '/vehicles';
+
+  const handleSelectedVehicleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate(selectedVehiclePath);
+  };
 
   const goToStep = (nextIndex: number) => {
     navigate(getStepPath(nextIndex));
@@ -484,6 +520,15 @@ export const AutoLoanCalculator: React.FC = () => {
     setSelectedVehicleSlug(vehicle.slug);
     setVehicleSearch(`${vehicle.year} ${vehicle.make} ${vehicle.model}`);
     setShowSearchResults(false);
+  };
+
+  const scrollBodyStyleCarousel = (direction: -1 | 1) => {
+    const carousel = bodyStyleCarouselRef.current;
+    if (!carousel) return;
+
+    const firstTile = carousel.querySelector<HTMLElement>('.mt-loan-calc__body-style-tile');
+    const scrollAmount = firstTile ? firstTile.offsetWidth + 14 : 240;
+    carousel.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
   };
 
   const toggleEstimateAccordion = (section: EstimateAccordionKey) => {
@@ -769,36 +814,82 @@ export const AutoLoanCalculator: React.FC = () => {
             )}
           </div>
 
-          <div className="mt-loan-calc__selected-vehicle mt-loan-calc__selected-vehicle--compact">
+          <Link
+            className="mt-loan-calc__selected-vehicle mt-loan-calc__selected-vehicle--compact"
+            to={selectedVehiclePath}
+            aria-label={selectedVehicle ? `View ${selectedVehicleLabel}` : 'View vehicles'}
+            onClick={handleSelectedVehicleLinkClick}
+          >
+            {selectedVehicle?.image ? (
+              <div className="mt-loan-calc__selected-vehicle-media" aria-hidden="true">
+                <img
+                  className="mt-loan-calc__selected-vehicle-image"
+                  src={selectedVehicle.image}
+                  alt=""
+                />
+              </div>
+            ) : (
+              <span className="mt-loan-calc__selected-vehicle-fallback" aria-hidden="true">
+                Image unavailable
+              </span>
+            )}
             <div className="mt-loan-calc__selected-vehicle-copy">
               <span className="mt-loan-calc__review-label">
                 {condition === 'new' ? 'Selected vehicle' : 'Used-vehicle context'}
               </span>
               <h2>{selectedVehicle ? selectedVehicleLabel : 'Choose a vehicle'}</h2>
             </div>
-            <strong className="mt-loan-calc__selected-vehicle-status">
-              {selectedVehicle ? `Starting at ${formatCurrency(selectedVehicle.priceMin)}` : 'Not selected'}
-            </strong>
-          </div>
+            <div className="mt-loan-calc__selected-vehicle-status">
+              {selectedVehicle ? (
+                <>
+                  <span>Starting at</span>
+                  <strong>{formatCurrency(selectedVehicle.priceMin)}</strong>
+                </>
+              ) : (
+                <strong>Not selected</strong>
+              )}
+            </div>
+          </Link>
         </div>
       ) : (
         <div className="mt-loan-calc__browse-layout">
-          <div className="mt-loan-calc__body-style-grid">
-            {browsableBodyStyles.map((style) => {
-              const BodyStyleIcon = bodyStyleMap[style].icon;
-              return (
+          <div className="mt-loan-calc__body-style-carousel">
+            <button
+              type="button"
+              className="mt-loan-calc__body-style-nav mt-loan-calc__body-style-nav--previous"
+              aria-label="Previous body styles"
+              onClick={() => scrollBodyStyleCarousel(-1)}
+            >
+              <CaretLeft size={18} weight="bold" aria-hidden />
+            </button>
+            <div className="mt-loan-calc__body-style-grid" ref={bodyStyleCarouselRef} role="list" aria-label="Vehicle body styles">
+              {browsableBodyStyles.map((style) => (
                 <button
                   key={style}
                   type="button"
                   className={`mt-loan-calc__body-style-tile${browsedBodyStyle === style ? ' is-active' : ''}`}
+                  aria-pressed={browsedBodyStyle === style}
                   onClick={() => setBrowsedBodyStyle(style)}
                 >
-                  <BodyStyleIcon size={20} weight="regular" aria-hidden />
+                  <img
+                    className="mt-loan-calc__body-style-icon"
+                    src={bodyStyleMap[style].iconSrc}
+                    alt=""
+                    aria-hidden="true"
+                  />
                   <strong>{bodyStyleMap[style].label}</strong>
                   <span>{bodyStyleMap[style].description}</span>
                 </button>
-              );
-            })}
+              ))}
+            </div>
+            <button
+              type="button"
+              className="mt-loan-calc__body-style-nav mt-loan-calc__body-style-nav--next"
+              aria-label="Next body styles"
+              onClick={() => scrollBodyStyleCarousel(1)}
+            >
+              <CaretRight size={18} weight="bold" aria-hidden />
+            </button>
           </div>
 
           <div className="mt-loan-calc__browse-results">

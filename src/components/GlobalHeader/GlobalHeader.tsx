@@ -176,6 +176,7 @@ const navigationItems = [
           {
             title: 'Shop for Cars',
             links: [
+              { label: 'Car Deals', href: '/deals' },
               { label: 'Cars For Sale', href: '/cars-for-sale' },
               { label: 'MotorTrend Certified', href: '/certified' },
             ]
@@ -201,6 +202,7 @@ const navigationItems = [
     subItems: [
       { label: 'New Cars', href: '/new-cars' },
       { label: 'Used Cars', href: '/used-cars' },
+      { label: 'Deals', href: '/deals' },
       { label: 'Sell Your Car', href: '/sell' }
     ]
   }
@@ -296,6 +298,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       if (!excludedPaths.some(excluded => pathname.startsWith(excluded))) {
         return true;
       }
+    }
+
+    if (item.label === 'Buy + Sell' && pathname.startsWith('/deals')) {
+      return true;
     }
     
     // Check if current path matches any subItem href
@@ -1115,6 +1121,23 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     setSearchQuery(value);
   };
 
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleChatbotSelect();
+  };
+
+  const handleSearchBoxMouseDown = (e: React.MouseEvent<HTMLFormElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const isSubmitZone = isMobile
+      ? e.clientX <= rect.left + 48
+      : e.clientX >= rect.right - 48;
+
+    if (!isSubmitZone) return;
+
+    e.preventDefault();
+    handleChatbotSelect();
+  };
+
   const handleVehicleSelect = (vehicleName: string) => {
     const { year, make, model } = parseVehicleName(vehicleName);
     // Track searched vehicle for personalization
@@ -1125,12 +1148,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   };
 
   const handleChatbotSelect = (customQuery?: string) => {
-    // Navigate to chatbot with the current query or a custom query
     const query = customQuery || searchQuery.trim();
+    if (!query) return;
+
     setSearchQuery('');
     setShowSearchDropdown(false);
-    // Navigate to a chatbot page with the query as a parameter
-    navigate(`/assistant?q=${encodeURIComponent(query)}`);
+    navigate(`/vehicles?search=${encodeURIComponent(query)}`);
   };
 
   const handleAutocompleteSelect = (suggestion: string) => {
@@ -1190,9 +1213,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
   const topRowStyle: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: 'auto 1fr auto',
+    gridTemplateColumns: isMobile ? 'auto minmax(0, 1fr) auto' : 'auto 1fr auto',
     alignItems: 'center',
-    gap: 'var(--spacing-3, 24px) 0',
+    columnGap: isMobile ? '8px' : '0',
+    rowGap: 'var(--spacing-3, 24px)',
     paddingTop: isMobile ? '8px' : '16px',
     paddingBottom: isMobile ? '8px' : '16px',
     paddingLeft: 0,
@@ -1229,11 +1253,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
   const searchContainerStyle: React.CSSProperties = {
     position: 'relative',
-    width: isMobile ? '200px' : '600px',
-    maxWidth: '600px',
+    width: isMobile ? '100%' : '600px',
+    maxWidth: isMobile ? '100%' : '600px',
     margin: '0 auto',
-    flexShrink: 0,
-    minWidth: isMobile ? '150px' : '600px'
+    flexShrink: isMobile ? 1 : 0,
+    minWidth: isMobile ? 0 : '600px'
   };
 
   const searchBoxStyle: React.CSSProperties = {
@@ -1253,13 +1277,26 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   };
 
   const searchIconStyle: React.CSSProperties = {
+    color: 'var(--color-neutrals-4, #6E7481)',
+    opacity: 0.4
+  };
+
+  const searchIconButtonStyle: React.CSSProperties = {
     position: 'absolute',
     right: isMobile ? '10px' : '16px',
     left: isMobile ? '10px' : undefined,
-    color: 'var(--color-neutrals-4, #6E7481)',
-    zIndex: 1,
-    pointerEvents: 'none',
-    opacity: 0.4
+    top: '50%',
+    zIndex: 2,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '32px',
+    height: '32px',
+    padding: 0,
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    transform: 'translateY(-50%)'
   };
 
   const searchInputStyle: React.CSSProperties = {
@@ -1349,9 +1386,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     color: isSignInHovered ? 'var(--color-neutrals-8, #FCFCFD)' : 'var(--color-neutrals-5, #B1B5C3)',
     background: 'none',
     border: 'none',
-    padding: '8px 12px',
+    padding: isMobile ? '8px 0' : '8px 12px',
     cursor: 'pointer',
-    transition: 'color var(--transition-fast, 150ms ease-in-out)'
+    transition: 'color var(--transition-fast, 150ms ease-in-out)',
+    whiteSpace: 'nowrap'
   };
 
   const userMenuStyle: React.CSSProperties = {
@@ -1492,7 +1530,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           {/* Search and Sign In */}
           <div style={rightSectionStyle}>
           <div style={searchContainerStyle} ref={searchRef}>
-            <div style={searchBoxStyle}>
+            <form style={searchBoxStyle} onSubmit={handleSearchSubmit} onMouseDown={handleSearchBoxMouseDown}>
               <Icon name="auto_awesome" size={16} style={searchSparkleStyle} />
               <input
                 ref={searchInputRef}
@@ -1508,8 +1546,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 placeholder="Search or ask a question…"
                 style={searchInputStyle}
               />
-              <Icon name="search" size={20} style={searchIconStyle} />
-            </div>
+              <button
+                type="submit"
+                aria-label="Search"
+                style={searchIconButtonStyle}
+              >
+                <Icon name="search" size={20} style={searchIconStyle} />
+              </button>
+            </form>
             {/* Search Dropdown */}
             {showSearchDropdown && searchQuery.length > 0 && (
               <div style={searchDropdownStyle}>
@@ -4090,4 +4134,3 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 };
 
 export default GlobalHeader;
-

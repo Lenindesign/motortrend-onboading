@@ -8,6 +8,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ModalShell } from '../atoms/ModalShell/ModalShell';
 import Icon from '../Icon';
+import type { IconVariant } from '../Icon';
 
 export type AuthPromptAction = 'save' | 'comment' | 'review' | 'rate' | 'bookmark' | 'default';
 
@@ -26,37 +27,52 @@ interface AuthPromptModalProps {
 }
 
 // Action-specific content (keep our new community copy for save/bookmark/default)
-const actionContent: Record<AuthPromptAction, { title: string; description: string; primaryButtonText?: string }> = {
+const actionContent: Record<AuthPromptAction, { title: string; supportingCopy: string; description: string; primaryButtonText?: string }> = {
   save: {
     title: 'Join for Free!',
+    supportingCopy: 'Save this article to revisit it later and keep your MotorTrend research in one place.',
     description: 'Personalized experience\nCustom user profile page\nExclusive content\nSaved content',
     primaryButtonText: 'Join the Community',
   },
   comment: {
     title: 'Want to join the conversation?',
+    supportingCopy: 'Sign in to add your perspective and help keep the discussion useful for other readers.',
     description: "Create an account to comment and engage with the community. It's free!",
   },
   review: {
     title: 'Want to share your review?',
+    supportingCopy: 'Share your ownership experience to help other shoppers understand what this vehicle is like in real life.',
     description: "Create an account to write reviews and help other car enthusiasts. It's free!",
   },
   rate: {
     title: 'Want to rate this vehicle?',
+    supportingCopy: 'Rate this vehicle to help other shoppers compare real community feedback while they research their next car.',
     description: "Create an account to rate vehicles and see personalized recommendations. It's free!",
   },
   bookmark: {
     title: 'Join for Free!',
+    supportingCopy: 'Save this vehicle to track your research, compare options, and come back from any device.',
     description: 'Personalized experience\nCustom user profile page\nExclusive content\nSaved content',
     primaryButtonText: 'Join the Community',
   },
   default: {
     title: 'Join for Free!',
+    supportingCopy: 'Create a free account to save your MotorTrend research and pick up where you left off.',
     description: 'Personalized experience\nCustom user profile page\nExclusive content\nSaved content',
     primaryButtonText: 'Join the Community',
   },
 };
 
 const PRIMARY = 'var(--color-primary-1, #E90C17)';
+
+const actionIcon: Record<AuthPromptAction, { name: string; variant: IconVariant }> = {
+  save: { name: 'bookmark', variant: 'outlined' },
+  comment: { name: 'forum', variant: 'outlined' },
+  review: { name: 'rate_review', variant: 'outlined' },
+  rate: { name: 'star', variant: 'filled' },
+  bookmark: { name: 'bookmark', variant: 'outlined' },
+  default: { name: 'bookmark', variant: 'outlined' },
+};
 
 export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   isOpen,
@@ -70,9 +86,11 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   const navigate = useNavigate();
   const content = actionContent[action];
   const title = customTitle || content.title;
+  const supportingCopy = content.supportingCopy;
   const description = customDescription ?? content.description;
   const primaryButtonText = content.primaryButtonText ?? 'Sign Up';
   const descriptionLines = description.split('\n').filter(Boolean);
+  const icon = actionIcon[action];
 
   const handleSignUp = () => {
     onClose();
@@ -129,7 +147,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
           <Icon name="close" size={18} />
         </button>
 
-        {/* Circular icon with bookmark */}
+        {/* Circular action icon */}
         <div
           style={{
             width: '56px',
@@ -142,7 +160,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
             marginBottom: '16px',
           }}
         >
-          <Icon name="bookmark" variant="outlined" size={28} style={{ color: '#fff' }} />
+          <Icon name={icon.name} variant={icon.variant} size={28} style={{ color: '#fff' }} />
         </div>
 
         {/* Title */}
@@ -173,7 +191,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
             maxWidth: '340px',
           }}
         >
-          Save this article to unlock other member benefits!
+          {supportingCopy}
         </p>
 
         {/* Optional vehicle name */}

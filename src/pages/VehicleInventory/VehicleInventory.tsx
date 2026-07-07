@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { VehicleCard } from '../../components/VehicleCard';
 import { TopTenCarouselLeads } from '../../components/TopTenCarouselLeads';
 import { parseVehicleName } from '../../utils/vehicleImages';
@@ -35,9 +35,18 @@ interface Vehicle {
   priceMax?: number;
 }
 
+function normalizeVehicleSearch(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
 
 export const VehicleInventory: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSearchQuery = searchParams.get('search')?.trim() ?? '';
+  const urlMake = searchParams.get('make')?.trim() ?? '';
+  const urlModel = searchParams.get('model')?.trim() ?? '';
+  const urlYear = searchParams.get('year')?.trim() ?? '';
+  const urlBodyStyle = searchParams.get('bodyStyle')?.trim() ?? '';
   // Always default to 'latest' with 'desc' order (newest first)
   const [sortBy, setSortBy] = useState<'latest' | 'year' | 'make' | 'model' | 'rating'>('latest');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -256,6 +265,41 @@ export const VehicleInventory: React.FC = () => {
     const currentYear = new Date().getFullYear();
     return Array.from({ length: 10 }, (_, i) => String(currentYear - i));
   }, []);
+
+  useEffect(() => {
+    if (!activeSearchQuery && !urlMake && !urlModel && !urlYear && !urlBodyStyle) return;
+
+    setSelectedLifestyle(null);
+    setSelectedPriceRange(null);
+
+    if (urlBodyStyle) {
+      const matchedBodyStyle = BODY_STYLE_CATEGORIES.find(
+        (bodyStyle) => bodyStyle.toLowerCase() === urlBodyStyle.toLowerCase(),
+      );
+      setSelectedBodyStyle(matchedBodyStyle ?? null);
+    } else {
+      setSelectedBodyStyle(null);
+    }
+
+    if (urlMake) {
+      const matchedMake = uniqueMakes.find((make) => make.toLowerCase() === urlMake.toLowerCase());
+      setSelectedMake(matchedMake ?? urlMake);
+    } else {
+      setSelectedMake(null);
+    }
+
+    if (urlYear) {
+      setSelectedYear(urlYear);
+    } else {
+      setSelectedYear(null);
+    }
+
+    if (urlModel) {
+      setSelectedModel(urlModel);
+    } else {
+      setSelectedModel(null);
+    }
+  }, [activeSearchQuery, uniqueMakes, urlBodyStyle, urlMake, urlModel, urlYear]);
   
   // Get unique models for selected make
   const availableModels = useMemo(() => {
@@ -357,6 +401,14 @@ export const VehicleInventory: React.FC = () => {
     filtered = selectedModel
       ? filtered.filter(vehicle => vehicle.model === selectedModel)
       : filtered;
+
+    if (activeSearchQuery) {
+      const searchTokens = normalizeVehicleSearch(activeSearchQuery).split(' ').filter(Boolean);
+      filtered = filtered.filter((vehicle) => {
+        const searchableVehicle = normalizeVehicleSearch(`${vehicle.name} ${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+        return searchTokens.every((token) => searchableVehicle.includes(token));
+      });
+    }
     
     const sorted = [...filtered];
 
@@ -443,7 +495,7 @@ export const VehicleInventory: React.FC = () => {
     }
 
     return sorted;
-  }, [vehicles, sortBy, sortOrder, selectedLifestyle, selectedPriceRange, selectedBodyStyle, selectedMake, selectedYear, selectedModel]);
+  }, [vehicles, sortBy, sortOrder, selectedLifestyle, selectedPriceRange, selectedBodyStyle, selectedMake, selectedYear, selectedModel, activeSearchQuery]);
 
   const handleSortChange = (newSortBy: 'latest' | 'year' | 'make' | 'model' | 'rating') => {
     if (sortBy === newSortBy) {
@@ -470,10 +522,11 @@ export const VehicleInventory: React.FC = () => {
     setIsMakeDropdownOpen(false);
     setIsYearDropdownOpen(false);
     setIsModelDropdownOpen(false);
+    setSearchParams({});
   };
 
   // Check if any filters are active
-  const hasActiveFilters = selectedLifestyle || selectedPriceRange || selectedBodyStyle || selectedMake || selectedYear || selectedModel;
+  const hasActiveFilters = selectedLifestyle || selectedPriceRange || selectedBodyStyle || selectedMake || selectedYear || selectedModel || activeSearchQuery;
 
   const handleVehicleClick = (vehicle: Vehicle) => {
     const { year, make, model } = parseVehicleName(vehicle.name);
@@ -679,7 +732,9 @@ export const VehicleInventory: React.FC = () => {
         />
 
         <div className="vehicle-inventory__header">
-          <h1 className="vehicle-inventory__title">Vehicle Inventory</h1>
+          <h1 className="vehicle-inventory__title">
+            {activeSearchQuery ? `Search results for "${activeSearchQuery}"` : 'Vehicle Inventory'}
+          </h1>
           <p className="vehicle-inventory__subtitle">
             Browse our collection of {sortedVehicles.length} makes and models
             {(selectedLifestyle || selectedPriceRange || selectedBodyStyle || selectedMake || selectedYear || selectedModel) && (
@@ -1044,4 +1099,3 @@ export const VehicleInventory: React.FC = () => {
 };
 
 export default VehicleInventory;
-

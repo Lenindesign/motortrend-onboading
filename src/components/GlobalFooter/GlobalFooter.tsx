@@ -273,7 +273,7 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
         <div style={bottomStyle}>
           <div style={bottomLeftStyle}>
             <p style={smallTextStyle}>
-              © 2025 MotorTrend | MOTOR TREND GROUP, LLC. ALL RIGHTS RESERVED.
+              © 2026 MotorTrend | MOTOR TREND GROUP, LLC. ALL RIGHTS RESERVED.
             </p>
             <p style={smallTextStyle}>
               {magazineLinks.map((link, index) => (

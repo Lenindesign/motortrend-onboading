@@ -3,8 +3,8 @@
  * Based on Figma Community design system
  */
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button, TextField } from '../../design-system/components';
 import { useAuth } from '../../contexts/AuthContext';
 import './SignIn.css';
@@ -24,16 +24,32 @@ export interface SignInProps {
 
 export const SignIn: React.FC<SignInProps> = () => {
   const navigate = useNavigate();
-  const { signIn, setDemoUser } = useAuth();
+  const location = useLocation();
+  const { signIn, setDemoUser, isAuthenticated, isLoading } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = new URLSearchParams(location.search);
+  const returnToParam = searchParams.get('returnTo');
+  const safeReturnTo = returnToParam?.startsWith('/') && !returnToParam.startsWith('//')
+    ? returnToParam
+    : '/';
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
+      setDemoUser('MotorTrend Demo User');
+    }
+
+    navigate(safeReturnTo, { replace: true });
+  }, [isAuthenticated, isLoading, navigate, safeReturnTo, setDemoUser]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signIn(email, password);
-      navigate('/');
+      navigate(safeReturnTo);
     } catch (err) {
       console.error('Sign in failed:', err);
     }
@@ -47,7 +63,7 @@ export const SignIn: React.FC<SignInProps> = () => {
     setDemoUser(userName);
     // Navigate to onboarding step 1 to start the onboarding experience
     // User already has an account, but we want them to go through onboarding
-    navigate('/onboarding/step1');
+    navigate(returnToParam ? safeReturnTo : '/onboarding/step1');
   };
 
   return (
@@ -158,4 +174,3 @@ export const SignIn: React.FC<SignInProps> = () => {
 };
 
 export default SignIn;
-

@@ -4,7 +4,7 @@
  * Extended for Journey Builder functionality
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type User } from '@supabase/supabase-js';
 import type { Database } from '../types/database';
 
 // Environment variables for Supabase connection
@@ -29,6 +29,17 @@ export const supabase = isSupabaseConfigured
       },
     })
   : null;
+
+type ProfileInsertClient = {
+  from: (table: 'profiles') => {
+    insert: (values: {
+      id: string;
+      display_name: string;
+      email: string;
+      created_at: string;
+    }) => Promise<unknown>;
+  };
+};
 
 /**
  * Helper to check if we can use Supabase
@@ -67,7 +78,7 @@ export async function signUp(email: string, password: string, displayName: strin
   
   // Create user profile in database
   if (data.user) {
-    await (supabase as any).from('profiles').insert({
+    await (supabase as unknown as ProfileInsertClient).from('profiles').insert({
       id: data.user.id,
       display_name: displayName,
       email: email,
@@ -106,13 +117,16 @@ export async function signOut() {
 /**
  * Sign in with OAuth provider
  */
-export async function signInWithProvider(provider: 'google' | 'github' | 'facebook') {
+export async function signInWithProvider(
+  provider: 'google' | 'github' | 'facebook' | 'apple',
+  redirectTo = `${window.location.origin}/community`
+) {
   if (!supabase) throw new Error('Supabase not configured');
   
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${window.location.origin}/community`,
+      redirectTo,
     },
   });
   
@@ -123,7 +137,7 @@ export async function signInWithProvider(provider: 'google' | 'github' | 'facebo
 /**
  * Subscribe to auth state changes
  */
-export function onAuthStateChange(callback: (user: any) => void) {
+export function onAuthStateChange(callback: (user: User | null) => void) {
   if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } };
   
   return supabase.auth.onAuthStateChange((_event, session) => {

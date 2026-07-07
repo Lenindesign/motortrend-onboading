@@ -11,7 +11,7 @@
 }
 
 .mt-loan-calc__hero-inner {
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto;
   padding-top: var(--spacing-4);
 }
@@ -32,7 +32,7 @@
   width: 100%;
   max-width: none;
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   font-size: 56px;
   line-height: 0.96;
   letter-spacing: -0.03em;
@@ -49,7 +49,7 @@
 }
 
 .mt-loan-calc__shell {
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto 72px;
   background: var(--color-neutrals-8);
   color: var(--color-neutrals-1);
@@ -284,6 +284,7 @@
 }
 
 .mt-loan-calc__shell-wrap {
+  --max-width-container: 1080px;
   padding: 0 24px 24px;
 }
 
@@ -338,6 +339,7 @@
 }
 
 .mt-loan-calc__choice-card.is-active {
+  border-width: 3px;
   border-color: var(--color-primary-1);
   background: linear-gradient(180deg, rgba(233, 12, 23, 0.06), rgba(233, 12, 23, 0.02));
 }
@@ -681,19 +683,53 @@
 }
 
 .mt-loan-calc__selected-vehicle--compact {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 128px minmax(0, 1fr) auto;
   align-items: center;
+  gap: 24px;
   margin-top: 0;
-  padding: 20px 22px;
+  padding: 18px 24px 18px 18px;
+  min-height: 122px;
   background: var(--color-white);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.mt-loan-calc__selected-vehicle--compact:hover {
+  border-color: rgba(233, 12, 23, 0.28);
+  box-shadow: 0 12px 28px rgba(20, 20, 22, 0.08);
+}
+
+.mt-loan-calc__selected-vehicle--compact:focus-visible {
+  outline: 3px solid rgba(0, 128, 255, 0.35);
+  outline-offset: 3px;
 }
 
 .mt-loan-calc__selected-vehicle-status {
+  display: grid;
+  gap: 4px;
   justify-self: end;
   font-family: var(--font-heading);
-  font-size: 24px;
   line-height: 1;
   text-align: right;
+  color: var(--color-primary-1);
+}
+
+.mt-loan-calc__selected-vehicle-status span {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutrals-4);
+}
+
+.mt-loan-calc__selected-vehicle-status strong {
+  font-family: var(--font-heading);
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.02em;
   color: var(--color-primary-1);
 }
 
@@ -702,6 +738,14 @@
   border-radius: 14px;
   overflow: hidden;
   background: linear-gradient(180deg, #edf1f6 0%, #e2e7ee 100%);
+}
+
+.mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-media,
+.mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-fallback {
+  width: 128px;
+  height: 82px;
+  min-height: 0;
+  border-radius: 10px;
 }
 
 .mt-loan-calc__selected-vehicle-image {
@@ -728,6 +772,13 @@
   gap: 12px;
 }
 
+.mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-copy {
+  justify-self: start;
+  justify-items: start;
+  width: 100%;
+  text-align: left;
+}
+
 .mt-loan-calc__selected-vehicle-copy h2 {
   margin: 0;
   font-family: var(--font-heading);
@@ -735,6 +786,11 @@
   font-size: 30px;
   line-height: 1.02;
   letter-spacing: -0.03em;
+}
+
+.mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-copy h2,
+.mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-status strong {
+  font-size: 24px;
 }
 
 .mt-loan-calc__selected-vehicle-copy p {
@@ -759,23 +815,73 @@
   color: var(--color-neutrals-3);
 }
 
-.mt-loan-calc__body-style-grid {
+.mt-loan-calc__body-style-carousel {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  gap: 10px;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.mt-loan-calc__body-style-grid {
+  display: flex;
   gap: 14px;
+  min-width: 0;
+  margin: -2px 0 -6px;
+  padding: 2px 0 6px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding: 2px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.mt-loan-calc__body-style-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.mt-loan-calc__body-style-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 190px;
+  padding: 0;
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: 12px;
+  background: var(--color-white);
+  color: var(--color-neutrals-2);
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(20, 20, 22, 0.06);
+}
+
+.mt-loan-calc__body-style-nav:hover {
+  border-color: var(--color-primary-1);
+  color: var(--color-primary-1);
 }
 
 .mt-loan-calc__body-style-tile {
   display: grid;
+  flex: 0 0 220px;
   gap: 10px;
   align-content: start;
-  min-height: 148px;
+  min-height: 190px;
   padding: 18px;
   border: 1px solid var(--color-neutrals-6);
   border-radius: 16px;
   background: var(--color-white);
   text-align: left;
   cursor: pointer;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+.mt-loan-calc__body-style-icon {
+  display: block;
+  justify-self: center;
+  width: min(140px, 100%);
+  height: 62px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .mt-loan-calc__body-style-tile strong {
@@ -791,6 +897,7 @@
 }
 
 .mt-loan-calc__body-style-tile.is-active {
+  border-width: 3px;
   border-color: var(--color-primary-1);
   background: linear-gradient(180deg, rgba(233, 12, 23, 0.06), rgba(233, 12, 23, 0.015));
 }
@@ -1715,9 +1822,25 @@
     grid-column: span 1;
   }
 
+  .mt-loan-calc__selected-vehicle--compact {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-media,
+  .mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-fallback {
+    width: 96px;
+    height: 64px;
+  }
+
   .mt-loan-calc__selected-vehicle-status {
     justify-self: start;
     text-align: left;
+  }
+
+  .mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-status {
+    grid-column: 2;
   }
 
   .mt-loan-calc__breakdown-head,
@@ -1776,6 +1899,24 @@
   .mt-loan-calc__selected-vehicle-copy h2,
   .mt-loan-calc__breakdown-title {
     font-size: 24px;
+  }
+
+  .mt-loan-calc__selected-vehicle--compact {
+    grid-template-columns: 84px minmax(0, 1fr);
+  }
+
+  .mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-media,
+  .mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-fallback {
+    width: 84px;
+    height: 56px;
+  }
+
+  .mt-loan-calc__selected-vehicle--compact .mt-loan-calc__selected-vehicle-status {
+    grid-column: 1 / -1;
+  }
+
+  .mt-loan-calc__selected-vehicle-status strong {
+    font-size: 30px;
   }
 
   .mt-loan-calc__summary-amount {
