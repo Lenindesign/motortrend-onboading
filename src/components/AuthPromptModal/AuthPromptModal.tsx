@@ -5,10 +5,12 @@
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { canUseSupabase, signInWithProvider } from '../../lib/supabase';
 import { ModalShell } from '../atoms/ModalShell/ModalShell';
 import Icon from '../Icon';
 import type { IconVariant } from '../Icon';
+import { saveAuthPromptIntent } from './authPromptIntent';
 
 export type AuthPromptAction = 'save' | 'comment' | 'review' | 'rate' | 'bookmark' | 'default';
 
@@ -24,6 +26,8 @@ interface AuthPromptModalProps {
   vehicleName?: string;
   /** Optional vehicle image URL (shown when provided) */
   vehicleImageUrl?: string;
+  /** Stable page/action context used to resume the gated action after auth */
+  contextId?: string;
 }
 
 // Action-specific content (keep our new community copy for save/bookmark/default)
@@ -82,8 +86,10 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   description: customDescription,
   vehicleName,
   vehicleImageUrl,
+  contextId,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const content = actionContent[action];
   const title = customTitle || content.title;
   const supportingCopy = content.supportingCopy;
@@ -91,25 +97,59 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   const primaryButtonText = content.primaryButtonText ?? 'Sign Up';
   const descriptionLines = description.split('\n').filter(Boolean);
   const icon = actionIcon[action];
+  const currentPath = `${location.pathname}${location.search}${location.hash}`;
+
+  const persistIntent = () => {
+    saveAuthPromptIntent({
+      action,
+      returnTo: currentPath,
+      contextId,
+      createdAt: Date.now(),
+    });
+  };
+
+  const routeToAuth = (mode: 'signin' | 'signup', provider?: 'google' | 'apple') => {
+    persistIntent();
+
+    const params = new URLSearchParams();
+    if (mode === 'signup') params.set('mode', 'signup');
+    if (provider) params.set('provider', provider);
+    params.set('returnTo', currentPath);
+
+    onClose();
+    navigate(`/signin?${params.toString()}`);
+  };
+
+  const handleSocialAuth = async (provider: 'google' | 'apple') => {
+    persistIntent();
+
+    if (canUseSupabase()) {
+      try {
+        onClose();
+        await signInWithProvider(provider, `${window.location.origin}${currentPath}`);
+        return;
+      } catch (error) {
+        console.error(`Failed to start ${provider} sign in:`, error);
+      }
+    }
+
+    routeToAuth('signin', provider);
+  };
 
   const handleSignUp = () => {
-    onClose();
-    navigate('/signin?mode=signup');
+    routeToAuth('signup');
   };
 
   const handleSignIn = () => {
-    onClose();
-    navigate('/signin');
+    routeToAuth('signin');
   };
 
   const handleApple = () => {
-    onClose();
-    navigate('/signin?mode=signup');
+    void handleSocialAuth('apple');
   };
 
   const handleGoogle = () => {
-    onClose();
-    navigate('/signin');
+    void handleSocialAuth('google');
   };
 
   return (

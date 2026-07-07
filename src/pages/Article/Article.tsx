@@ -74,10 +74,6 @@ export const Article: React.FC = () => {
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [isVehicleAccordionOpen] = useState(false);
   const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
-  const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
-  const [isStickyBarSticky, setIsStickyBarSticky] = useState(false);
-  const [stickyBarHeight, setStickyBarHeight] = useState(0);
-  const stickyRateBarRef = useRef<HTMLDivElement>(null);
   const [isCommentTooltipVisible, setIsCommentTooltipVisible] = useState(false);
   const [commentTooltipPosition, setCommentTooltipPosition] = useState({ top: 0, left: 0 });
   const [listings, setListings] = useState<VehicleListing[]>([]);
@@ -1063,69 +1059,6 @@ export const Article: React.FC = () => {
   // Car of the Year article should show rating bar even though it's premium
   const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || (isPremiumArticle && slug !== '2026-motortrend-car-of-the-year');
 
-  // Measure sticky bar height on mount and when it changes
-  useEffect(() => {
-    if (shouldHideRatingBar || !stickyRateBarRef.current) return;
-
-    const measureBarHeight = () => {
-      if (stickyRateBarRef.current) {
-        // Get the computed height including margins
-        const rect = stickyRateBarRef.current.getBoundingClientRect();
-        const computedStyle = window.getComputedStyle(stickyRateBarRef.current);
-        const marginBottom = parseFloat(computedStyle.marginBottom) || 0;
-        const totalHeight = rect.height + marginBottom;
-        
-        if (totalHeight > 0) {
-          setStickyBarHeight(totalHeight);
-        }
-      }
-    };
-
-    // Measure on mount with a small delay to ensure DOM is ready
-    const timeoutId = setTimeout(measureBarHeight, 0);
-
-    // Also measure on resize
-    window.addEventListener('resize', measureBarHeight);
-    
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', measureBarHeight);
-    };
-  }, [shouldHideRatingBar]);
-
-  // Scroll detection for sticky rate bar
-  useEffect(() => {
-    // Don't set up scroll detection if rating bar is hidden
-    if (shouldHideRatingBar) return;
-
-    const handleScroll = () => {
-      if (!stickyRateBarRef.current) return;
-
-      const scrollY = window.scrollY || window.pageYOffset;
-      
-      // Get header element to calculate its actual height
-      const header = document.querySelector('.global-header');
-      const headerHeight = header ? header.getBoundingClientRect().height : 56;
-      
-      // When user scrolls past where the static bar would be (header height), switch to sticky mode
-      if (scrollY >= headerHeight) {
-        setIsStickyBarSticky(true);
-        setIsStickyBarVisible(true);
-      } else {
-        // When scrolled back to top, switch back to static mode
-        setIsStickyBarSticky(false);
-        setIsStickyBarVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check initial state
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [shouldHideRatingBar]);
-
   // Fetch local listings when vehicle changes
   useEffect(() => {
     const loadListings = async () => {
@@ -1158,79 +1091,68 @@ export const Article: React.FC = () => {
 
   return (
     <div className="article">
-      {/* Sticky Rate Bar - appears below header on load, becomes sticky when scrolling */}
+      {/* Rating bar scrolls with content; global navigation owns sticky behavior. */}
       {!shouldHideRatingBar && (
-        <>
-          <StickyRateBar
-            vehicleName={isComparisonArticle ? stickyBarVehicleName : vehicleName}
-            vehiclePath={(isComparisonArticle ? stickyBarVehiclePath : vehiclePath) || undefined}
-            vehicles={isComparisonArticle ? comparisonVehicles.map(name => {
-              try {
-                const { year, make, model } = parseVehicleName(name);
-                return { name, path: `/vehicles/${year}/${make}/${model}` };
-              } catch {
-                return { name };
-              }
-            }) : undefined}
-            selectedVehicleIndex={selectedStickyVehicleIndex}
-            onSelectVehicle={isComparisonArticle ? setSelectedStickyVehicleIndex : undefined}
-            ratings={[
-              {
-                type: 'motortrend',
-                value: isComparisonArticle ? staffRatingForBar : staffRating,
-                onClick: handleScrollToStaffRating,
-                iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
-                iconAlt: 'MT',
-                format: 'vehicle-details'
-              },
-              {
-                type: 'user-reviews',
-                value: isComparisonArticle ? communityRatingForBar : communityRating,
-                onClick: handleScrollToCommunityRatings,
-                label: 'User Reviews',
-                showStars: true,
-                showHalfStars: true
-              },
-              {
-                type: 'your-rating',
-                value: isComparisonArticle ? userRatingForBar : userRating,
-                onClick: isComparisonArticle ? () => handleOpenRatingModal(stickyBarVehicleName) : handleOpenRatingModal,
-                showStars: true,
-                showHalfStars: true
-              }
-            ]}
-            ctaText="See Local Listings"
-            ctaOnClick={() => {
-              const listingsSection = document.querySelector('.article__listings');
-              if (listingsSection) {
-                const headerOffset = 100;
-                const elementPosition = listingsSection.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: 'smooth'
-                });
-              } else {
-                console.log('Navigate to local listings');
-              }
-            }}
-            hideCtaButton={true}
-            isVisible={isStickyBarVisible || !isStickyBarSticky}
-            isSticky={isStickyBarSticky}
-            barRef={stickyRateBarRef as React.RefObject<HTMLDivElement>}
-            staffRatingScores={(!isComparisonArticle || stickyBarVehicleName === vehicleName) ? staffRatingScores : undefined}
-            ratingDistribution={ratingDistribution}
-            totalReviews={communityRatingCount}
-          />
-          {/* Spacer to prevent content jump when bar becomes sticky */}
-          <div 
-            style={{ 
-              height: isStickyBarSticky && stickyBarHeight > 0 ? `${stickyBarHeight}px` : '0px',
-              transition: 'height 0s'
-            }} 
-            aria-hidden="true" 
-          />
-        </>
+        <StickyRateBar
+          vehicleName={isComparisonArticle ? stickyBarVehicleName : vehicleName}
+          vehiclePath={(isComparisonArticle ? stickyBarVehiclePath : vehiclePath) || undefined}
+          vehicles={isComparisonArticle ? comparisonVehicles.map(name => {
+            try {
+              const { year, make, model } = parseVehicleName(name);
+              return { name, path: `/vehicles/${year}/${make}/${model}` };
+            } catch {
+              return { name };
+            }
+          }) : undefined}
+          selectedVehicleIndex={selectedStickyVehicleIndex}
+          onSelectVehicle={isComparisonArticle ? setSelectedStickyVehicleIndex : undefined}
+          ratings={[
+            {
+              type: 'motortrend',
+              value: isComparisonArticle ? staffRatingForBar : staffRating,
+              onClick: handleScrollToStaffRating,
+              iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
+              iconAlt: 'MT',
+              format: 'vehicle-details'
+            },
+            {
+              type: 'user-reviews',
+              value: isComparisonArticle ? communityRatingForBar : communityRating,
+              onClick: handleScrollToCommunityRatings,
+              label: 'User Reviews',
+              showStars: true,
+              showHalfStars: true
+            },
+            {
+              type: 'your-rating',
+              value: isComparisonArticle ? userRatingForBar : userRating,
+              onClick: isComparisonArticle ? () => handleOpenRatingModal(stickyBarVehicleName) : handleOpenRatingModal,
+              showStars: true,
+              showHalfStars: true
+            }
+          ]}
+          ctaText="See Local Listings"
+          ctaOnClick={() => {
+            const listingsSection = document.querySelector('.article__listings');
+            if (listingsSection) {
+              const headerOffset = 100;
+              const elementPosition = listingsSection.getBoundingClientRect().top;
+              const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+              });
+            } else {
+              console.log('Navigate to local listings');
+            }
+          }}
+          hideCtaButton={true}
+          isVisible={true}
+          isSticky={false}
+          staffRatingScores={(!isComparisonArticle || stickyBarVehicleName === vehicleName) ? staffRatingScores : undefined}
+          ratingDistribution={ratingDistribution}
+          totalReviews={communityRatingCount}
+        />
       )}
       <div className="article__container">
         {/* Vehicle Accordion - Additional Vehicles */}
@@ -2411,5 +2333,4 @@ export const Article: React.FC = () => {
 };
 
 export default Article;
-
 

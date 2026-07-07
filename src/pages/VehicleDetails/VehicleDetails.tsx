@@ -35,7 +35,8 @@ import { GoogleOneTap } from '../../components/GoogleOneTap';
 import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
 import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
-import { AuthPromptModal } from '../../components/AuthPromptModal';
+import { AuthPromptModal, clearAuthPromptIntent, getAuthPromptIntent } from '../../components/AuthPromptModal';
+import { useAuth } from '../../contexts/AuthContext';
 import { hasPriceAlert } from '../../utils/priceAlerts';
 import './VehicleDetails.css';
 
@@ -62,10 +63,6 @@ export const VehicleDetails: React.FC = () => {
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
   const primeHeroRef = useRef<HTMLDivElement>(null);
-  const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
-  const [isStickyBarSticky, setIsStickyBarSticky] = useState(false);
-  const [stickyBarHeight, setStickyBarHeight] = useState(0);
-  const stickyRateBarRef = useRef<HTMLDivElement>(null);
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
@@ -89,6 +86,7 @@ export const VehicleDetails: React.FC = () => {
 
   // Auth prompt for unauthenticated user actions
   const { isAuthPromptOpen, promptAction, closeAuthPrompt, requireAuth } = useAuthPrompt();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
@@ -151,6 +149,10 @@ export const VehicleDetails: React.FC = () => {
   // Normalize: replace dashes with spaces in model to ensure consistent format
   // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
+  const authPromptContextId = useMemo(
+    () => `vehicle:${decodedYear}:${decodedMake}:${decodedModel}`,
+    [decodedYear, decodedMake, decodedModel]
+  );
 
   // Track viewed vehicle for personalization
   useEffect(() => {
@@ -158,6 +160,23 @@ export const VehicleDetails: React.FC = () => {
       addViewedVehicle(vehicleName);
     }
   }, [vehicleName]);
+
+  useEffect(() => {
+    if (isAuthLoading || !isAuthenticated) return;
+
+    const pendingIntent = getAuthPromptIntent();
+    if (!pendingIntent || pendingIntent.contextId !== authPromptContextId) return;
+
+    clearAuthPromptIntent();
+
+    if (pendingIntent.action === 'rate') {
+      setIsRatingModalOpen(true);
+    }
+
+    if (pendingIntent.action === 'review') {
+      setIsWriteReviewModalOpen(true);
+    }
+  }, [authPromptContextId, isAuthLoading, isAuthenticated]);
 
   // Generate local listings
   const [localListings, setLocalListings] = useState<any[]>([]);
@@ -1136,66 +1155,6 @@ export const VehicleDetails: React.FC = () => {
     };
   }, []);
 
-  // Measure sticky bar height on mount and when it changes
-  useEffect(() => {
-    if (!stickyRateBarRef.current) return;
-
-    const measureBarHeight = () => {
-      if (stickyRateBarRef.current) {
-        // Get the computed height including margins
-        const rect = stickyRateBarRef.current.getBoundingClientRect();
-        const computedStyle = window.getComputedStyle(stickyRateBarRef.current);
-        const marginBottom = parseFloat(computedStyle.marginBottom) || 0;
-        const totalHeight = rect.height + marginBottom;
-
-        if (totalHeight > 0) {
-          setStickyBarHeight(totalHeight);
-        }
-      }
-    };
-
-    // Measure on mount with a small delay to ensure DOM is ready
-    const timeoutId = setTimeout(measureBarHeight, 0);
-
-    // Also measure on resize
-    window.addEventListener('resize', measureBarHeight);
-
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', measureBarHeight);
-    };
-  }, []);
-
-  // Scroll detection for sticky rate bar
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!stickyRateBarRef.current) return;
-
-      const scrollY = window.scrollY || window.pageYOffset;
-
-      // Get header element to calculate its actual height
-      const header = document.querySelector('.global-header');
-      const headerHeight = header ? header.getBoundingClientRect().height : 56;
-
-      // When user scrolls past where the static bar would be (header height), switch to sticky mode
-      if (scrollY >= headerHeight) {
-        setIsStickyBarSticky(true);
-        setIsStickyBarVisible(true);
-      } else {
-        // When scrolled back to top, switch back to static mode
-        setIsStickyBarSticky(false);
-        setIsStickyBarVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Check initial state
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
   // Both tooltips now follow their elements on scroll (no hide on scroll)
 
   const availableYears = ['2025', '2024', '2023', '2022', '2021'];
@@ -1245,25 +1204,16 @@ export const VehicleDetails: React.FC = () => {
         />
       )}
 
-      {/* Sticky Rate Bar - appears below header on load, becomes sticky when scrolling */}
+      {/* Rating bar scrolls with content; global navigation owns sticky behavior. */}
       <StickyRateBar
         vehicleName={displayName}
         vehiclePath={`/vehicles/${decodedYear}/${decodedMake}/${decodedModel}`}
         ratings={stickyRatings}
-        isVisible={isStickyBarVisible || !isStickyBarSticky}
-        isSticky={isStickyBarSticky}
-        barRef={stickyRateBarRef}
+        isVisible={true}
+        isSticky={false}
         staffRatingScores={vehicleData.scores}
         ratingDistribution={vehicleData.ratingDistribution}
         totalReviews={vehicleData.communityRatingCount}
-      />
-      {/* Spacer to prevent content jump when bar becomes sticky */}
-      <div
-        style={{
-          height: isStickyBarSticky && stickyBarHeight > 0 ? `${stickyBarHeight}px` : '0px',
-          transition: 'height 0s'
-        }}
-        aria-hidden="true"
       />
 
       {/* Prime Template: Full-width hero with score overlay */}
@@ -2333,6 +2283,7 @@ export const VehicleDetails: React.FC = () => {
         isOpen={isAuthPromptOpen}
         onClose={closeAuthPrompt}
         action={promptAction}
+        contextId={authPromptContextId}
         vehicleName={promptAction === 'bookmark' ? vehicleName : undefined}
         vehicleImageUrl={promptAction === 'bookmark' ? (galleryImages?.[0] ?? vehicleData?.image) : undefined}
       />
@@ -2368,4 +2319,3 @@ export const VehicleDetails: React.FC = () => {
 };
 
 export default VehicleDetails;
-

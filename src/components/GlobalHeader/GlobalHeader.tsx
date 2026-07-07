@@ -1197,7 +1197,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     backgroundColor: 'var(--color-neutrals-1, #141416)',
     padding: 0,
     width: '100%',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.06)'
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.06)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000
   };
 
   const contentStyle: React.CSSProperties = {
@@ -1513,7 +1516,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   });
 
   return (
-    <header style={headerStyle}>
+    <header className="global-header" style={headerStyle}>
       <div style={contentStyle}>
         {/* Top Row: Logo, Search, Actions */}
         <div style={topRowStyle}>
