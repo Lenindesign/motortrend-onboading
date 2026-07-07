@@ -6,7 +6,6 @@
 
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { canUseSupabase, signInWithProvider } from '../../lib/supabase';
 import { ModalShell } from '../atoms/ModalShell/ModalShell';
 import Icon from '../Icon';
 import type { IconVariant } from '../Icon';
@@ -120,19 +119,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
     navigate(`/signin?${params.toString()}`);
   };
 
-  const handleSocialAuth = async (provider: 'google' | 'apple') => {
-    persistIntent();
-
-    if (canUseSupabase()) {
-      try {
-        onClose();
-        await signInWithProvider(provider, `${window.location.origin}${currentPath}`);
-        return;
-      } catch (error) {
-        console.error(`Failed to start ${provider} sign in:`, error);
-      }
-    }
-
+  const handleSocialAuth = (provider: 'google' | 'apple') => {
     routeToAuth('signin', provider);
   };
 
@@ -145,11 +132,11 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   };
 
   const handleApple = () => {
-    void handleSocialAuth('apple');
+    handleSocialAuth('apple');
   };
 
   const handleGoogle = () => {
-    void handleSocialAuth('google');
+    handleSocialAuth('google');
   };
 
   return (

@@ -4,7 +4,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import appleIcon from '../../assets/icons/apple-icon.svg';
 import facebookIcon from '../../assets/icons/facebook-icon.svg';
 import googleLogo from '../../assets/images/google-logo.svg';
-import { canUseSupabase, signInWithProvider } from '../../lib/supabase';
 import Icon from '../Icon';
 import './SignInToSaveModal.css';
 import { saveSignInToSaveIntent } from './signInToSaveIntent';
@@ -57,7 +56,6 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const [showImage, setShowImage] = useState(Boolean(itemImage));
-  const [authError, setAuthError] = useState<string | null>(null);
   const config = itemConfig[itemType];
   const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
@@ -155,20 +153,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
     navigate(`/signin?${params.toString()}`);
   };
 
-  const handleSocialAuth = async (provider: 'google' | 'facebook' | 'apple') => {
-    persistIntent();
-    setAuthError(null);
-
-    if (canUseSupabase()) {
-      try {
-        await signInWithProvider(provider, `${window.location.origin}${currentPath}`);
-        return;
-      } catch {
-        setAuthError('We could not start that sign-in option. Try another method or continue with email.');
-        return;
-      }
-    }
-
+  const handleSocialAuth = (provider: 'google' | 'facebook' | 'apple') => {
     routeToAuth('signin', provider);
   };
 
@@ -268,12 +253,6 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
               Sign In
             </button>
           </div>
-
-          {authError && (
-            <p className="sign-in-save-modal__error" role="alert">
-              {authError}
-            </p>
-          )}
 
           <p className="sign-in-save-modal__legal">
             By continuing, you agree to our <a href="/terms">Terms</a> and{' '}
