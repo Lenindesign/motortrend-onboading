@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
-import appleIcon from '../../assets/icons/apple-icon.svg';
-import facebookIcon from '../../assets/icons/facebook-icon.svg';
 import googleLogo from '../../assets/images/google-logo.svg';
 import Icon from '../Icon';
 import './SignInToSaveModal.css';
@@ -141,7 +139,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
     });
   };
 
-  const routeToAuth = (mode: 'signin' | 'signup', provider?: 'google' | 'facebook' | 'apple') => {
+  const routeToAuth = (mode: 'signin' | 'signup', provider?: 'google') => {
     persistIntent();
 
     const params = new URLSearchParams();
@@ -153,7 +151,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
     navigate(`/signin?${params.toString()}`);
   };
 
-  const handleSocialAuth = (provider: 'google' | 'facebook' | 'apple') => {
+  const handleSocialAuth = (provider: 'google') => {
     routeToAuth('signin', provider);
   };
 
@@ -218,22 +216,6 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
             >
               <img src={googleLogo} alt="" />
               <span>Continue with Google</span>
-            </button>
-            <button
-              type="button"
-              className="sign-in-save-modal__social"
-              onClick={() => handleSocialAuth('facebook')}
-            >
-              <img src={facebookIcon} alt="" />
-              <span>Continue with Facebook</span>
-            </button>
-            <button
-              type="button"
-              className="sign-in-save-modal__social"
-              onClick={() => handleSocialAuth('apple')}
-            >
-              <img src={appleIcon} alt="" />
-              <span>Continue with Apple</span>
             </button>
 
             <div className="sign-in-save-modal__divider">or</div>

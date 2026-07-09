@@ -107,7 +107,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
     });
   };
 
-  const routeToAuth = (mode: 'signin' | 'signup', provider?: 'google' | 'apple') => {
+  const routeToAuth = (mode: 'signin' | 'signup', provider?: 'google') => {
     persistIntent();
 
     const params = new URLSearchParams();
@@ -119,7 +119,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
     navigate(`/signin?${params.toString()}`);
   };
 
-  const handleSocialAuth = (provider: 'google' | 'apple') => {
+  const handleSocialAuth = (provider: 'google') => {
     routeToAuth('signin', provider);
   };
 
@@ -129,10 +129,6 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
 
   const handleSignIn = () => {
     routeToAuth('signin');
-  };
-
-  const handleApple = () => {
-    handleSocialAuth('apple');
   };
 
   const handleGoogle = () => {
@@ -294,7 +290,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
           </div>
         )}
 
-        {/* Buttons: Google, Apple, or, Primary, Sign In */}
+        {/* Buttons: Google, or, Primary, Sign In */}
         <div style={{ width: '100%', maxWidth: '340px', marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <button
             type="button"
@@ -323,32 +319,6 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
               <path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z" />
             </svg>
             Continue with Google
-          </button>
-
-          <button
-            type="button"
-            onClick={handleApple}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              padding: '12px 16px',
-              background: 'var(--color-neutrals-1, #141416)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 'var(--border-radius-md, 8px)',
-              fontFamily: 'var(--font-body, Geist, sans-serif)',
-              fontSize: '15px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 6.98.48 9.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-            </svg>
-            Continue with Apple
           </button>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '4px 0' }}>
