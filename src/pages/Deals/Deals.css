@@ -295,13 +295,13 @@
   display: grid;
   gap: var(--spacing-1, 8px);
   padding: var(--spacing-2, 16px);
-  border: 1px solid rgba(233, 12, 23, 0.18);
+  border: 1px solid var(--color-semantic-success-light, #E8F5E9);
   border-radius: var(--border-radius-md, 8px);
-  background: rgba(233, 12, 23, 0.07);
+  background: var(--color-semantic-success-light, #E8F5E9);
 }
 
 .deal-card__metric strong {
-  color: var(--color-primary-1, #E90C17);
+  color: var(--color-semantic-success-dark, #2E7D32);
   font-family: var(--font-heading, Poppins, sans-serif);
   font-size: var(--font-size-xl, 32px);
   font-weight: var(--font-weight-bold, 700);
@@ -373,13 +373,15 @@
 }
 
 .deal-card__actions a {
-  border: 1px solid var(--color-neutrals-6, #E6E8EC);
+  border: 1px solid var(--color-primary-1, #E90C17);
   background: var(--color-white, #FFFFFF);
-  color: var(--color-neutrals-1, #141416);
+  color: var(--color-primary-1, #E90C17);
 }
 
 .deal-card__actions a:hover {
-  border-color: var(--color-neutrals-1, #141416);
+  border-color: var(--color-primary-1, #E90C17);
+  background: var(--color-primary-1, #E90C17);
+  color: var(--color-white, #FFFFFF);
 }
 
 .deals-resources {

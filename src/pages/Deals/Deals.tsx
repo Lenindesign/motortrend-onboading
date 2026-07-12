@@ -601,15 +601,6 @@ export const BuyingDealsPage: React.FC = () => {
       )}
 
       <div className="buying-deals-content">
-        <aside className="buying-deals-ad" aria-label="Advertisement">
-          <span>Advertisement</span>
-          <strong>Find your next new car on MotorTrend</strong>
-          <Link to="/vehicles">
-            Browse listings
-            <Icon name="arrow_forward" size={17} />
-          </Link>
-        </aside>
-
         <div className="buying-deals-results" aria-live="polite">
           <div className="buying-deals-results__head">
             <p>{resultSummary}</p>
