@@ -294,10 +294,12 @@
 .deal-card__metric {
   display: grid;
   gap: var(--spacing-1, 8px);
+  justify-items: center;
   padding: var(--spacing-2, 16px);
   border: 1px solid var(--color-semantic-success-light, #E8F5E9);
   border-radius: var(--border-radius-md, 8px);
   background: var(--color-semantic-success-light, #E8F5E9);
+  text-align: center;
 }
 
 .deal-card__metric strong {
@@ -361,27 +363,27 @@
 }
 
 .deal-card__actions button {
-  border: 1px solid var(--color-primary-1, #E90C17);
-  background: var(--color-primary-1, #E90C17);
+  border: 1px solid var(--color-semantic-success-dark, #2E7D32);
+  background: var(--color-semantic-success-dark, #2E7D32);
   color: var(--color-white, #FFFFFF);
   cursor: pointer;
 }
 
 .deal-card__actions button:hover {
-  border-color: var(--color-neutrals-1, #141416);
-  background: var(--color-neutrals-1, #141416);
+  border-color: var(--color-semantic-success-dark, #2E7D32);
+  background: var(--color-semantic-success-light, #E8F5E9);
+  color: var(--color-semantic-success-dark, #2E7D32);
 }
 
 .deal-card__actions a {
-  border: 1px solid var(--color-primary-1, #E90C17);
+  border: 1px solid var(--color-semantic-success-dark, #2E7D32);
   background: var(--color-white, #FFFFFF);
-  color: var(--color-primary-1, #E90C17);
+  color: var(--color-semantic-success-dark, #2E7D32);
 }
 
 .deal-card__actions a:hover {
-  border-color: var(--color-primary-1, #E90C17);
-  background: var(--color-primary-1, #E90C17);
-  color: var(--color-white, #FFFFFF);
+  border-color: var(--color-semantic-success-dark, #2E7D32);
+  background: var(--color-semantic-success-light, #E8F5E9);
 }
 
 .deals-resources {
