@@ -28,10 +28,19 @@ interface DealSection {
 }
 
 const allVehicles = getVehicles({ sortBy: 'rating', sortOrder: 'desc' });
+const DEALS_PER_RAIL_SEGMENT = 12;
 
 const formatMoney = (amount: number) => `$${amount.toLocaleString()}`;
 
 const vehiclePath = (vehicle: Vehicle) => `/vehicles/${vehicle.slug}`;
+
+const chunkDeals = <T,>(items: T[], size: number): T[][] => {
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+};
 
 const findVehicle = (make: string, model: string, fallback: Vehicle): Vehicle => {
   const normalizedMake = make.toLowerCase();
@@ -520,6 +529,10 @@ export const BuyingDealsPage: React.FC = () => {
     () => filterAndSortBuyingDeals(buyingDeals, appliedFilters, sortBy),
     [appliedFilters, buyingDeals, sortBy],
   );
+  const dealSegments = useMemo(
+    () => chunkDeals(filteredDeals, DEALS_PER_RAIL_SEGMENT),
+    [filteredDeals],
+  );
   const makeOptions = useMemo(
     () => [...new Set(buyingDeals.map((deal) => deal.vehicle.make))].sort(),
     [buyingDeals],
@@ -600,21 +613,41 @@ export const BuyingDealsPage: React.FC = () => {
         />
       )}
 
-      <div className="buying-deals-content">
+      <div className="buying-deals-content buying-deals-content--with-rail">
         <div className="buying-deals-results" aria-live="polite">
-          <div className="buying-deals-results__head">
-            <p>{resultSummary}</p>
-          </div>
-
-          <div className="buying-deals-grid">
-            {filteredDeals.map((deal) => (
-              <DealCard
-                deal={deal}
-                key={deal.id}
-                onRequest={() => setRequestedDeal(deal)}
+          {dealSegments.map((segmentDeals, segmentIndex) => (
+            <React.Fragment key={`buying-deals-segment-${segmentIndex}`}>
+              <DealsBreakerAd
+                deal={segmentDeals[0]}
+                label={segmentIndex === 0 ? 'MotorTrend marketplace' : 'More buying offers'}
               />
-            ))}
-          </div>
+              {segmentIndex === 0 && (
+                <div className="buying-deals-results__head">
+                  <p>{resultSummary}</p>
+                </div>
+              )}
+              <section
+                className="buying-deals-segment"
+                aria-label={`Buying deals ${segmentIndex + 1}`}
+              >
+                <div className="buying-deals-segment__main">
+                  <div className="buying-deals-grid">
+                    {segmentDeals.map((deal) => (
+                      <DealCard
+                        deal={deal}
+                        key={deal.id}
+                        onRequest={() => setRequestedDeal(deal)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <DealsAdRail
+                  imageAlt={`${segmentDeals[0]?.vehicle.year ?? ''} ${segmentDeals[0]?.vehicle.make ?? ''} ${segmentDeals[0]?.vehicle.model ?? ''}`.trim()}
+                  imageUrl={segmentDeals[0]?.vehicle.image}
+                />
+              </section>
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
@@ -639,6 +672,10 @@ export const LeaseDealsPage: React.FC = () => {
   const filteredDeals = useMemo(
     () => filterAndSortBuyingDeals(leaseDeals, appliedFilters, sortBy),
     [appliedFilters, leaseDeals, sortBy],
+  );
+  const dealSegments = useMemo(
+    () => chunkDeals(filteredDeals, DEALS_PER_RAIL_SEGMENT),
+    [filteredDeals],
   );
   const makeOptions = useMemo(
     () => [...new Set(leaseDeals.map((deal) => deal.vehicle.make))].sort(),
@@ -720,30 +757,43 @@ export const LeaseDealsPage: React.FC = () => {
         />
       )}
 
-      <div className="buying-deals-content">
-        <aside className="buying-deals-ad" aria-label="Advertisement">
-          <span>Advertisement</span>
-          <strong>Find your next leased car on MotorTrend</strong>
-          <Link to="/vehicles">
-            Browse listings
-            <Icon name="arrow_forward" size={17} />
-          </Link>
-        </aside>
-
+      <div className="buying-deals-content buying-deals-content--with-rail">
         <div className="buying-deals-results" aria-live="polite">
-          <div className="buying-deals-results__head">
-            <p>{resultSummary}</p>
-          </div>
-
-          <div className="buying-deals-grid">
-            {filteredDeals.map((deal) => (
-              <DealCard
-                deal={deal}
-                key={deal.id}
-                onRequest={() => setRequestedDeal(deal)}
+          {dealSegments.map((segmentDeals, segmentIndex) => (
+            <React.Fragment key={`lease-deals-segment-${segmentIndex}`}>
+              <DealsBreakerAd
+                deal={segmentDeals[0]}
+                label={segmentIndex === 0 ? 'MotorTrend lease marketplace' : 'More lease offers'}
+                variant="lease"
               />
-            ))}
-          </div>
+              {segmentIndex === 0 && (
+                <div className="buying-deals-results__head">
+                  <p>{resultSummary}</p>
+                </div>
+              )}
+              <section
+                className="buying-deals-segment"
+                aria-label={`Lease deals ${segmentIndex + 1}`}
+              >
+                <div className="buying-deals-segment__main">
+                  <div className="buying-deals-grid">
+                    {segmentDeals.map((deal) => (
+                      <DealCard
+                        deal={deal}
+                        key={deal.id}
+                        onRequest={() => setRequestedDeal(deal)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <DealsAdRail
+                  imageAlt={`${segmentDeals[0]?.vehicle.year ?? ''} ${segmentDeals[0]?.vehicle.make ?? ''} ${segmentDeals[0]?.vehicle.model ?? ''}`.trim()}
+                  imageUrl={segmentDeals[0]?.vehicle.image}
+                  variant="lease"
+                />
+              </section>
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
@@ -923,6 +973,94 @@ interface DealRequestToastProps {
   deal: Deal;
   onDismiss: () => void;
 }
+
+type DealsAdVariant = 'buying' | 'lease';
+
+interface DealsAdRailProps {
+  imageAlt?: string;
+  imageUrl?: string;
+  variant?: DealsAdVariant;
+}
+
+interface DealsBreakerAdProps {
+  deal?: Deal;
+  label: string;
+  variant?: DealsAdVariant;
+}
+
+const DealsBreakerAd: React.FC<DealsBreakerAdProps> = ({ deal, label, variant = 'buying' }) => {
+  const vehicle = deal?.vehicle;
+  const vehicleLabel = vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : 'new cars';
+  const isLease = variant === 'lease';
+  const featuredValue = isLease ? deal?.headline : vehicle ? formatMoney(vehicle.priceMin) : null;
+  const valueLabel = isLease ? 'Lease from' : 'Starting at';
+  const detailCopy = isLease ? 'Current lease special near you' : 'MSRP* with current buying incentives';
+  const secondaryAction = isLease ? 'Compare leases' : 'Compare deals';
+
+  return (
+    <aside className="deals-breaker-ad" aria-label="Advertisement">
+      <Link to="/vehicles" className="deals-breaker-ad__creative">
+        <span className="deals-breaker-ad__media">
+          {vehicle?.image && (
+            <img
+              className="deals-breaker-ad__image"
+              src={vehicle.image}
+              alt={vehicleLabel}
+              loading="lazy"
+            />
+          )}
+          <span>
+            <strong>MotorTrend</strong>
+            <em>{label}</em>
+          </span>
+        </span>
+        <span className="deals-breaker-ad__offer">
+          <span>{vehicleLabel}</span>
+          {featuredValue && (
+            <strong>
+              <span>{valueLabel}</span>
+              <em>{featuredValue}</em>
+            </strong>
+          )}
+          <small>{detailCopy}</small>
+        </span>
+        <span className="deals-breaker-ad__actions">
+          <em>Find yours</em>
+          <em>{secondaryAction}</em>
+        </span>
+      </Link>
+    </aside>
+  );
+};
+
+const DealsAdRail: React.FC<DealsAdRailProps> = ({ imageAlt = '', imageUrl, variant = 'buying' }) => {
+  const isLease = variant === 'lease';
+  const headline = isLease ? 'Find your next leased car' : 'Find your next new car';
+  const body = isLease ? 'Compare local lease listings and current specials.' : 'Compare local listings and current incentives.';
+  const action = isLease ? 'Browse leases' : 'Browse listings';
+
+  return (
+    <aside className="deals-ad-rail" aria-label="Advertisement">
+      <div className="deals-ad-rail__sticky">
+        <span className="deals-ad-rail__label">Advertisement</span>
+        <Link to="/vehicles" className="deals-ad-rail__creative deals-ad-rail__creative--skyscraper">
+          {imageUrl && (
+            <img
+              className="deals-ad-rail__image"
+              src={imageUrl}
+              alt={imageAlt}
+              loading="lazy"
+            />
+          )}
+          <span className="deals-ad-rail__eyebrow">MotorTrend Marketplace</span>
+          <strong>{headline}</strong>
+          <span>{body}</span>
+          <em>{action}</em>
+        </Link>
+      </div>
+    </aside>
+  );
+};
 
 const DealRequestToast: React.FC<DealRequestToastProps> = ({ deal, onDismiss }) => (
   <div className="deals-toast" role="status" aria-live="polite">
