@@ -934,10 +934,11 @@
 
 .deals-breaker-ad__actions em {
   display: inline-flex;
-  min-height: 52px;
+  min-height: 40px;
   align-items: center;
   justify-content: center;
-  padding: 0 var(--spacing-2, 16px);
+  padding: 0 var(--spacing-1, 8px);
+  border-radius: var(--border-radius-sm, 4px);
   background: var(--color-primary-1, #E90C17);
   color: var(--color-white, #FFFFFF);
   font-size: var(--font-size-xs, 12px);
@@ -1297,7 +1298,7 @@
   }
 
   .deals-breaker-ad__actions em {
-    min-height: 42px;
+    min-height: 36px;
     font-size: var(--font-size-xs, 12px);
   }
 }
