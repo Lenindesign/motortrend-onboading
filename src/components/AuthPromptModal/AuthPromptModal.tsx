@@ -93,7 +93,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   const title = customTitle || content.title;
   const supportingCopy = content.supportingCopy;
   const description = customDescription ?? content.description;
-  const primaryButtonText = content.primaryButtonText ?? 'Sign Up';
+  const primaryButtonText = content.primaryButtonText ?? 'Sign In / Sign Up';
   const descriptionLines = description.split('\n').filter(Boolean);
   const icon = actionIcon[action];
   const currentPath = `${location.pathname}${location.search}${location.hash}`;
@@ -125,10 +125,6 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
 
   const handleSignUp = () => {
     routeToAuth('signup');
-  };
-
-  const handleSignIn = () => {
-    routeToAuth('signin');
   };
 
   const handleGoogle = () => {
@@ -290,7 +286,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
           </div>
         )}
 
-        {/* Buttons: Google, or, Primary, Sign In */}
+        {/* Buttons: Google, or, Primary */}
         <div style={{ width: '100%', maxWidth: '340px', marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <button
             type="button"
@@ -346,24 +342,6 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
             {primaryButtonText}
           </button>
 
-          <button
-            type="button"
-            onClick={handleSignIn}
-            style={{
-              width: '100%',
-              padding: '12px 16px',
-              background: 'transparent',
-              color: 'var(--color-neutrals-1, #141416)',
-              border: '2px solid var(--color-neutrals-1, #141416)',
-              borderRadius: 'var(--border-radius-md, 8px)',
-              fontFamily: 'var(--font-body, Geist, sans-serif)',
-              fontSize: '15px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            Sign In
-          </button>
         </div>
 
         {/* Footer */}
