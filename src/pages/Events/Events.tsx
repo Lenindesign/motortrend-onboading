@@ -313,6 +313,9 @@ const EventDetail: React.FC<{ event: EventData }> = ({ event }) => {
     gap: '6px',
   };
 
+  const lightningLapTicketWidgetUrl = 'https://s3-us-west-2.amazonaws.com/assets.webconnex.com/widgets/tickets/widget.html?source=https://api.webconnex.com/v1/widgets/7ea0ad81dead447845d7905abbdb101d';
+  const shouldShowLightningLapTickets = event.slug === 'lightning-lap-2026';
+
   // ── Highlight card ──
   const getHighlightStyle = (idx: number): React.CSSProperties => ({
     padding: '28px 24px',
@@ -590,61 +593,88 @@ const EventDetail: React.FC<{ event: EventData }> = ({ event }) => {
             </span>
             <h2 style={sectionHeadingStyle}>Pricing & Tickets</h2>
             <p style={{ fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '15px', color: 'var(--color-neutrals-4, #6E7481)', margin: '0 0 32px', maxWidth: '600px' }}>
-              Choose the option that's right for you.
+              {shouldShowLightningLapTickets ? 'Select tickets through the secure registration module.' : "Choose the option that's right for you."}
             </p>
-            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-              {event.pricing.map((tier, i) => (
-                <div
-                  key={i}
-                  style={getPricingCardStyle(i)}
-                  onMouseEnter={() => setHoveredPricing(i)}
-                  onMouseLeave={() => setHoveredPricing(null)}
-                  onClick={() => navigate(tier.ctaUrl)}
-                >
-                  <h3 style={{
-                    fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600,
-                    fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px',
-                    margin: '0 0 16px', opacity: 0.7,
-                  }}>
-                    {tier.label}
-                  </h3>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
-                    {tier.originalPrice && (
-                      <span style={{
-                        fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontSize: '20px',
-                        fontWeight: 500, textDecoration: 'line-through', opacity: 0.4,
-                      }}>
-                        {formatEventPrice(tier.originalPrice)}
-                      </span>
-                    )}
-                    <span style={{
-                      fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 800,
-                      fontSize: '40px', lineHeight: 1,
+            {shouldShowLightningLapTickets ? (
+              <div style={{
+                padding: '16px',
+                border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+                borderRadius: 'var(--border-radius-lg, 16px)',
+                background: 'var(--color-white, #FFFFFF)',
+                boxShadow: 'var(--shadow-card, 0 4px 8px rgba(20, 20, 22, 0.06))',
+                overflow: 'auto',
+              }}>
+                <iframe
+                  title="Lightning Lap tickets"
+                  src={lightningLapTicketWidgetUrl}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '760px',
+                    minHeight: '760px',
+                    border: 0,
+                    borderRadius: 'var(--border-radius-md, 8px)',
+                    background: 'var(--color-white, #FFFFFF)',
+                  }}
+                  loading="lazy"
+                  scrolling="yes"
+                />
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                {event.pricing.map((tier, i) => (
+                  <div
+                    key={i}
+                    style={getPricingCardStyle(i)}
+                    onMouseEnter={() => setHoveredPricing(i)}
+                    onMouseLeave={() => setHoveredPricing(null)}
+                    onClick={() => navigate(tier.ctaUrl)}
+                  >
+                    <h3 style={{
+                      fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600,
+                      fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px',
+                      margin: '0 0 16px', opacity: 0.7,
                     }}>
-                      {formatEventPrice(tier.price)}
-                    </span>
+                      {tier.label}
+                    </h3>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '8px' }}>
+                      {tier.originalPrice && (
+                        <span style={{
+                          fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontSize: '20px',
+                          fontWeight: 500, textDecoration: 'line-through', opacity: 0.4,
+                        }}>
+                          {formatEventPrice(tier.originalPrice)}
+                        </span>
+                      )}
+                      <span style={{
+                        fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 800,
+                        fontSize: '40px', lineHeight: 1,
+                      }}>
+                        {formatEventPrice(tier.price)}
+                      </span>
+                    </div>
+                    <p style={{
+                      fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '13px',
+                      opacity: 0.6, margin: '0 0 24px',
+                    }}>
+                      {tier.unit}
+                    </p>
+                    <button style={{
+                      width: '100%', padding: '14px',
+                      background: hoveredPricing === i ? 'white' : 'var(--color-neutrals-1, #141416)',
+                      color: hoveredPricing === i ? 'var(--color-neutrals-1, #141416)' : 'white',
+                      border: 'none', borderRadius: 'var(--border-radius-md, 8px)',
+                      fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 700,
+                      fontSize: '14px', cursor: 'pointer', transition: 'all 150ms ease',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                    }}>
+                      {tier.ctaText}
+                      <Icon name="arrow_forward" size={16} />
+                    </button>
                   </div>
-                  <p style={{
-                    fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '13px',
-                    opacity: 0.6, margin: '0 0 24px',
-                  }}>
-                    {tier.unit}
-                  </p>
-                  <button style={{
-                    width: '100%', padding: '14px',
-                    background: hoveredPricing === i ? 'white' : 'var(--color-neutrals-1, #141416)',
-                    color: hoveredPricing === i ? 'var(--color-neutrals-1, #141416)' : 'white',
-                    border: 'none', borderRadius: 'var(--border-radius-md, 8px)',
-                    fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 700,
-                    fontSize: '14px', cursor: 'pointer', transition: 'all 150ms ease',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                  }}>
-                    {tier.ctaText}
-                    <Icon name="arrow_forward" size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
