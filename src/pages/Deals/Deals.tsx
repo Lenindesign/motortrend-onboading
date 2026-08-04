@@ -480,26 +480,6 @@ const Deals: React.FC = () => {
           </section>
         ))}
 
-        <section className="deals-resources" aria-labelledby="resources-title">
-          <div>
-            <h2 id="resources-title">More Resources</h2>
-            <p>Keep researching with MotorTrend shopping tools, rankings, and ownership guides.</p>
-          </div>
-          <div className="deals-resources__grid">
-            <Link to="/rankings-awards">
-              <Icon name="workspace_premium" size={24} />
-              <span>Expert Rankings</span>
-            </Link>
-            <Link to="/auto-loan-calculator">
-              <Icon name="calculate" size={24} />
-              <span>Auto Loan Calculator</span>
-            </Link>
-            <Link to="/vehicles">
-              <Icon name="directions_car" size={24} />
-              <span>Browse All Vehicles</span>
-            </Link>
-          </div>
-        </section>
       </div>
 
       {requestedDeal && (
