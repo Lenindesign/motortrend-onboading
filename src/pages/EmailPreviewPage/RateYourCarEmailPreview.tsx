@@ -23,6 +23,11 @@ const EMAIL_VARIANTS = {
     label: 'Generic (vehicle unknown)',
     description: 'Sent when we have no vehicle data — copy drives them to the search step.',
   },
+  reviewRequest: {
+    path: '/emails/rate-your-car-review-request.html',
+    label: 'Review request (already rated)',
+    description: 'Sent after a user has rated a known vehicle — copy asks for the story behind the rating.',
+  },
 } as const;
 
 type Variant = keyof typeof EMAIL_VARIANTS;
@@ -120,10 +125,10 @@ export const RateYourCarEmailPreview: React.FC = () => {
   const tags: MergeTags = useMemo(() => {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const encodedVehicle = encodeURIComponent(vehicleName).replace(/%20/g, '+');
-    // Personalized variant deep-links to the pre-selected vehicle; generic
-    // variant lands on the "What do you drive?" search step.
+    // Vehicle-specific variants deep-link to the pre-selected vehicle; generic
+    // lands on the "What do you drive?" search step.
     const ratingUrl =
-      variant === 'personalized'
+      variant !== 'generic'
         ? `${origin}/rate-your-car?vehicle=${encodedVehicle}`
         : `${origin}/rate-your-car`;
     return {
@@ -190,13 +195,13 @@ export const RateYourCarEmailPreview: React.FC = () => {
             ))}
           </select>
         </div>
-        {variant === 'personalized' && (
+        {variant !== 'generic' && (
           <div className="email-preview-page__control-group">
             <label>First name</label>
             <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
           </div>
         )}
-        {variant === 'personalized' && (
+        {variant !== 'generic' && (
           <div className="email-preview-page__control-group">
             <label>Vehicle</label>
             <input type="text" value={vehicleName} onChange={(e) => setVehicleName(e.target.value)} />
