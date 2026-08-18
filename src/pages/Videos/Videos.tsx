@@ -131,7 +131,7 @@ const Videos: React.FC = () => {
       };
     }
     return {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
       title: 'Videos: Watch the Latest Automotive Content',
       onClick: () => navigate('/videos'),
     };
@@ -187,7 +187,7 @@ const Videos: React.FC = () => {
               height={250}
               label="300 x 250"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
             />
           </div>
         </div>
@@ -211,7 +211,7 @@ const Videos: React.FC = () => {
                 height={600}
                 label="SVOD 200 x 420"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+                imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
               />
             </div>
           </div>
@@ -232,7 +232,7 @@ const Videos: React.FC = () => {
                 height={600}
                 label="SVOD 200 x 420"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+                imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
               />
             </div>
           </div>

@@ -109,7 +109,7 @@ const UsedCars: React.FC = () => {
       };
     }
     return {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
       title: 'Used Cars: Find Your Perfect Pre-Owned Vehicle',
       onClick: () => navigate('/vehicles'),
     };
@@ -140,7 +140,7 @@ const UsedCars: React.FC = () => {
   // News items - articles about used vehicles
   const newsItems = useMemo(() => [
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
       title: 'Best Used Cars Under $30,000: Our Top Picks for 2025',
       author: 'MotorTrend Editorial',
       date: 'Jan 15, 2025',
@@ -151,7 +151,7 @@ const UsedCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
       title: 'Used EV Buying Guide: What to Look For in a Pre-Owned Electric Car',
       author: 'Alex Leanse',
       date: 'Jan 10, 2025',
@@ -162,7 +162,7 @@ const UsedCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
       title: 'Certified Pre-Owned vs. Regular Used: Which Is Right for You?',
       author: 'Eric Tingwall',
       date: 'Jan 08, 2025',
@@ -173,7 +173,7 @@ const UsedCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
       title: 'Best Used Performance Cars Under $40,000',
       author: 'Frank Markus',
       date: 'Jan 05, 2025',
@@ -184,7 +184,7 @@ const UsedCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
+      imageUrl: 'https://www.motortrend.com/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
       title: 'What to Check When Buying a Used Car: Inspection Checklist',
       author: 'MotorTrend Editorial',
       date: 'Jan 03, 2025',
@@ -195,7 +195,7 @@ const UsedCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+      imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
       title: 'Used Car Depreciation: How Much Value Do Cars Lose Over Time?',
       author: 'Alisa Priddle',
       date: 'Jan 01, 2025',
@@ -224,7 +224,7 @@ const UsedCars: React.FC = () => {
               height={250}
               label="300 x 250"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
             />
           </div>
         </div>
@@ -248,7 +248,7 @@ const UsedCars: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>
@@ -267,7 +267,7 @@ const UsedCars: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>

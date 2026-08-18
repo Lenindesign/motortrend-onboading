@@ -18,21 +18,21 @@ export interface AvatarBannerModalProps {
 
 const avatarOptions = [
   { id: 'motortrend-logo', name: 'MotorTrend', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg', type: 'logo' },
-  { id: 'avatar-1', name: 'Classic Car', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e98afbb8d0002a273ac/classic.png', type: 'photo' },
-  { id: 'avatar-2', name: 'Supercar', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e979a927f00029054d1/supercar.png', type: 'photo' },
-  { id: 'avatar-3', name: 'Off-Road', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e964fba630002fdc12d/offroad.png', type: 'photo' },
-  { id: 'avatar-4', name: 'Electric', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e954fba630002fdc12b/electric.png', type: 'photo' },
-  { id: 'avatar-5', name: 'Utility Vehicle', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e941191030002a3d54c/utility.png', type: 'photo' },
-  { id: 'avatar-6', name: 'Compact Car', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78e924fba630002fdc129/compact.png', type: 'photo' }
+  { id: 'avatar-1', name: 'Classic Car', url: 'https://www.motortrend.com/files/68f78e98afbb8d0002a273ac/classic.png', type: 'photo' },
+  { id: 'avatar-2', name: 'Supercar', url: 'https://www.motortrend.com/files/68f78e979a927f00029054d1/supercar.png', type: 'photo' },
+  { id: 'avatar-3', name: 'Off-Road', url: 'https://www.motortrend.com/files/68f78e964fba630002fdc12d/offroad.png', type: 'photo' },
+  { id: 'avatar-4', name: 'Electric', url: 'https://www.motortrend.com/files/68f78e954fba630002fdc12b/electric.png', type: 'photo' },
+  { id: 'avatar-5', name: 'Utility Vehicle', url: 'https://www.motortrend.com/files/68f78e941191030002a3d54c/utility.png', type: 'photo' },
+  { id: 'avatar-6', name: 'Compact Car', url: 'https://www.motortrend.com/files/68f78e924fba630002fdc129/compact.png', type: 'photo' }
 ];
 
 const bannerOptions = [
-  { id: 'banner-1', name: 'Supercar', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg', type: 'group' },
-  { id: 'banner-2', name: 'Retro Muscle Car', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f8f5df37e1e80002de1a02/muscle2.jpg', type: 'retro' },
-  { id: 'banner-3', name: 'Modern Electric', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f782781191030002a3d549/modern-electric.jpg', type: 'electric' },
-  { id: 'banner-4', name: 'Off-Road Adventure', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f784b61191030002a3d54b/off-road.jpg', type: 'offroad' },
-  { id: 'banner-5', name: 'Ford Bronco', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f78656afbb8d0002a273ab/bronco.jpg', type: 'bronco' },
-  { id: 'banner-6', name: 'Compact Fun Car', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f787e24fba630002fdc127/golf.jpg', type: 'golf' }
+  { id: 'banner-1', name: 'Supercar', url: 'https://www.motortrend.com/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg', type: 'group' },
+  { id: 'banner-2', name: 'Retro Muscle Car', url: 'https://www.motortrend.com/files/68f8f5df37e1e80002de1a02/muscle2.jpg', type: 'retro' },
+  { id: 'banner-3', name: 'Modern Electric', url: 'https://www.motortrend.com/files/68f782781191030002a3d549/modern-electric.jpg', type: 'electric' },
+  { id: 'banner-4', name: 'Off-Road Adventure', url: 'https://www.motortrend.com/files/68f784b61191030002a3d54b/off-road.jpg', type: 'offroad' },
+  { id: 'banner-5', name: 'Ford Bronco', url: 'https://www.motortrend.com/files/68f78656afbb8d0002a273ab/bronco.jpg', type: 'bronco' },
+  { id: 'banner-6', name: 'Compact Fun Car', url: 'https://www.motortrend.com/files/68f787e24fba630002fdc127/golf.jpg', type: 'golf' }
 ];
 
 export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({

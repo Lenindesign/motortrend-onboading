@@ -254,7 +254,7 @@ export const Home: React.FC = () => {
   const { heroData, verticalCards } = useMemo(() => {
     // Default hero (when no persona)
     const defaultHero = {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
       title: '2026 Hyundai Ioniq 6 N First Drive: Watch Out, BMW M3, C63 AMG!',
       categories: ['Performance & Enthusiast'] as ContentCategory[],
       onClick: () => {
@@ -264,7 +264,7 @@ export const Home: React.FC = () => {
 
     const defaultCards = [
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
+        imageUrl: 'https://www.motortrend.com/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
         title: "I Lived with a Kia EV9 for a Year. There's Only One Thing I Would Change.",
         type: 'Article' as const,
         categories: ['Family & Practical'] as ContentCategory[],
@@ -273,7 +273,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
+        imageUrl: 'https://www.motortrend.com/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
         title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
         type: 'Article' as const,
         categories: ['Family & Practical'] as ContentCategory[],
@@ -282,7 +282,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
         title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
         type: 'Article' as const,
         categories: ['Performance & Enthusiast'] as ContentCategory[],
@@ -301,7 +301,7 @@ export const Home: React.FC = () => {
     const allContent = [
       // Performance & Enthusiast content (for Greg, Carl)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/6892b5a90c3c77000200a0ac/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-3.jpg',
+        imageUrl: 'https://www.motortrend.com/files/6892b5a90c3c77000200a0ac/2026chevroletcorvettezr1xquailsilverlimitededitionsportscarsupercarvetteconvertible-3.jpg',
         title: 'Driven! The 1,064-HP Chevrolet Corvette ZR1 Is Patently Absurd',
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -310,7 +310,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg',
+        imageUrl: 'https://www.motortrend.com/files/69137fab92a5a10002ee9e5e/20-2027bentleycontinentalgtsupersports.jpg',
         title: 'Bentley\'s 2026 Supersports Is Lighter, Louder, and Built for Drivers',
         categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -319,7 +319,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/691682812f033b000278eee8/012-2026-dodge-charger-scat-pack-sixpack-burnout.jpg',
+        imageUrl: 'https://www.motortrend.com/files/691682812f033b000278eee8/012-2026-dodge-charger-scat-pack-sixpack-burnout.jpg',
         title: 'First Drive: The New Dodge Charger Has Been Fixed! Mostly!',
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -328,7 +328,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+        imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
         title: '2026 Hyundai Ioniq 6 N First Drive: Watch Out, BMW M3, C63 AMG!',
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -337,7 +337,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
         title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Awards',
@@ -346,7 +346,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+        imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
         title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -355,7 +355,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
         title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
         categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -364,7 +364,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
         title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Awards',
@@ -373,7 +373,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
+        imageUrl: 'https://www.motortrend.com/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
         title: 'This 1,973-Pound Electric Sports Car Nails What Tesla Still Can\'t',
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | First-Look',
@@ -383,7 +383,7 @@ export const Home: React.FC = () => {
       },
       // Family & Practical content (for Paula, Dan)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
+        imageUrl: 'https://www.motortrend.com/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
         title: '2026 Honda CR-V TrailSport First Drive: Dirty Deeds Done Dirt Chic',
         categories: ['Family & Practical', 'Adventure & Off-Road', 'Daily Commute'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -392,7 +392,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
+        imageUrl: 'https://www.motortrend.com/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
         title: 'The Refreshed Kia Sportage Is Built for Buyers but Not the Podium',
         categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -401,7 +401,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
         title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
         categories: ['Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -410,7 +410,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+        imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
         title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
         categories: ['Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -419,7 +419,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
+        imageUrl: 'https://www.motortrend.com/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
         title: "I Lived with a Kia EV9 for a Year. There's Only One Thing I Would Change.",
         categories: ['Family & Practical'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -428,7 +428,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+        imageUrl: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
         title: 'The Honda Passport RTL Is the One You Need, Not the One You Want',
         categories: ['Family & Practical'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -437,7 +437,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+        imageUrl: 'https://www.motortrend.com/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
         title: 'The Tesla Model Y Premium RWD Is a Better Computer Than It Is a Car',
         categories: ['Family & Practical', 'Eco & Future-Ready'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -447,7 +447,7 @@ export const Home: React.FC = () => {
       },
       // Eco & Future-Ready content (for Theo, Casey)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
+        imageUrl: 'https://www.motortrend.com/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
         title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
         categories: ['Eco & Future-Ready', 'Family & Practical'] as ContentCategory[],
         category: 'MotorTrend | News',
@@ -456,7 +456,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
+        imageUrl: 'https://www.motortrend.com/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
         title: 'We Drove the New 519-HP Cadillac Optiq-V to See If It\'s a *Real* V',
         categories: ['Performance & Enthusiast', 'Eco & Future-Ready'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -466,7 +466,7 @@ export const Home: React.FC = () => {
       },
       // Adventure & Off-Road content (for Jayden)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebd54273cc000294e6cb/2026fordf-150lightningstxevelectricvehiclepickuptruck-11.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68b9ebd54273cc000294e6cb/2026fordf-150lightningstxevelectricvehiclepickuptruck-11.jpg',
         title: 'Report: Ford Might Kill the F-150 Lightning Electric Pickup Truck',
         categories: ['Utility & Work', 'Eco & Future-Ready'] as ContentCategory[],
         category: 'MotorTrend | News',
@@ -475,7 +475,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg',
+        imageUrl: 'https://www.motortrend.com/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg',
         title: '2024 Toyota Tacoma TRD Pro First Test: The Off-Road King Returns',
         categories: ['Adventure & Off-Road', 'Utility & Work'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -484,7 +484,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67f436b507a3b9000861848d/2-2025-ford-bronco-raptor-side-view.jpg',
+        imageUrl: 'https://www.motortrend.com/files/67f436b507a3b9000861848d/2-2025-ford-bronco-raptor-side-view.jpg',
         title: '2025 Ford Bronco Raptor Review: Desert Runner Meets Daily Driver',
         categories: ['Adventure & Off-Road', 'Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -494,7 +494,7 @@ export const Home: React.FC = () => {
       },
       // Technology & EV content (for Theo, Casey)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg',
+        imageUrl: 'https://www.motortrend.com/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg',
         title: '2025 BMW iX Review: Luxury Meets Cutting-Edge Tech',
         categories: ['Eco & Future-Ready', 'Luxury & Comfort'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -503,7 +503,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg',
+        imageUrl: 'https://www.motortrend.com/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg',
         title: '2025 Lucid Air Review: The Fastest Production EV Gets Even Faster',
         categories: ['Eco & Future-Ready', 'Performance & Enthusiast', 'Luxury & Comfort'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -513,7 +513,7 @@ export const Home: React.FC = () => {
       },
       // Luxury content (for Leo, Carl)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg',
+        imageUrl: 'https://www.motortrend.com/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg',
         title: '2024 Genesis G70 Review: Korean Luxury Challenges German Royalty',
         categories: ['Luxury & Comfort', 'Performance & Enthusiast'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -522,7 +522,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg',
+        imageUrl: 'https://www.motortrend.com/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg',
         title: '2024 Lexus RX Review: Hybrid Luxury Done Right',
         categories: ['Luxury & Comfort', 'Eco & Future-Ready', 'Family & Practical'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -532,7 +532,7 @@ export const Home: React.FC = () => {
       },
       // Value content (for Dan, Paula)
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
+        imageUrl: 'https://www.motortrend.com/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
         title: '2025 Honda Civic vs. Toyota Corolla: Which Compact Sedan Offers More?',
         categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -541,7 +541,7 @@ export const Home: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg',
+        imageUrl: 'https://www.motortrend.com/files/68fa96ccbc61bd000284caff/1-2026-mazda-cx-50-awd-front-view.jpg',
         title: '2026 Mazda CX-5 Review: Premium Feel Without the Premium Price',
         categories: ['Family & Practical', 'Daily Commute'] as ContentCategory[],
         category: 'MotorTrend | Reviews',
@@ -572,7 +572,7 @@ export const Home: React.FC = () => {
         
         // Add Honda Electric Sports Car story for Greg
         filtered.push({
-          imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+          imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
           title: 'Yes! Honda\'s Electric Sports Car Is Real, but Timing Remains Uncertain',
           categories: ['Performance & Enthusiast', 'Eco & Future-Ready'] as ContentCategory[],
           category: 'MotorTrend | News',
@@ -624,7 +624,7 @@ export const Home: React.FC = () => {
   // News items with navigation
   const newsItems = useMemo(() => [
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f94cee0c4a17000281845d/14-2026-ferrari-296-speciale-first-drive.jpg',
+      imageUrl: 'https://www.motortrend.com/files/68f94cee0c4a17000281845d/14-2026-ferrari-296-speciale-first-drive.jpg',
       title: 'Driven! The 2026 Ferrari 296 Speciale Is Molto Intensa',
       author: 'Angus MacKenzie',
       date: 'Nov 15, 2025',
@@ -635,7 +635,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg',
+      imageUrl: 'https://www.motortrend.com/files/69124d99efef440002fc4a65/001-2026cadillacescaladeiq-2026-suvoty.jpg',
       title: 'The Cadillac Escalade IQ Is the 2026 MotorTrend SUV of the Year',
       author: 'Christian Seabaugh',
       date: 'Nov 18, 2025',
@@ -646,7 +646,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg',
+      imageUrl: 'https://www.motortrend.com/files/68dd5d42477f080002fdb61a/003-2025-audi-s3.jpg',
       title: 'Audi S3 vs. RS3: One Is Shockingly Quick, the Other Might Be the Better Deal',
       author: 'Alisa Priddle',
       date: 'Oct 08, 2025',
@@ -657,7 +657,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
+      imageUrl: 'https://www.motortrend.com/files/685edb52f9d75b00021b1e55/07-2026-honda-cr-v-trailsport.jpg',
       title: '2026 Honda CR-V TrailSport First Drive: Dirty Deeds Done Dirt Chic',
       author: 'Bob Hernandez',
       date: 'Jun 30, 2025',
@@ -668,7 +668,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690cf1b44df09200022170fe/023-2026-kia-sportage-hybrid.jpg',
       title: 'The Refreshed Kia Sportage Is Built for Buyers but Not the Podium',
       author: 'Alex Leanse',
       date: 'Nov 14, 2025',
@@ -679,7 +679,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+      imageUrl: 'https://www.motortrend.com/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
       title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
       author: 'Frank Markus',
       date: 'Nov 22, 2025',
@@ -690,7 +690,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
       title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
       author: 'Alexander Stoklosa',
       date: 'Jan 21, 2025',
@@ -701,7 +701,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
+      imageUrl: 'https://www.motortrend.com/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
       title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
       author: 'Justin Banner',
       date: 'Nov 06, 2025',
@@ -712,7 +712,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690cf4b165553e00029f4802/024-2025-mini-countryman-se-all4-ev.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690cf4b165553e00029f4802/024-2025-mini-countryman-se-all4-ev.jpg',
       title: 'It\'s Time for the Mini Countryman EV to Get Serious',
       author: 'Billy Rehbock',
       date: 'Nov 10, 2025',
@@ -723,7 +723,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
       title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
       author: 'Alexander Stoklosa',
       date: 'Jan 21, 2025',
@@ -734,7 +734,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebd54273cc000294e6cb/2026fordf-150lightningstxevelectricvehiclepickuptruck-11.jpg',
+      imageUrl: 'https://www.motortrend.com/files/68b9ebd54273cc000294e6cb/2026fordf-150lightningstxevelectricvehiclepickuptruck-11.jpg',
       title: 'Report: Ford Might Kill the F-150 Lightning Electric Pickup Truck',
       author: 'Justin Banner',
       date: 'Nov 06, 2025',
@@ -745,7 +745,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
       title: 'This 1,973-Pound Electric Sports Car Nails What Tesla Still Can\'t',
       author: 'Angus MacKenzie',
       date: 'Nov 06, 2025',
@@ -756,7 +756,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
+      imageUrl: 'https://www.motortrend.com/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
       title: 'We Drove the New 519-HP Cadillac Optiq-V to See If It\'s a *Real* V',
       author: 'Eric Tingwall',
       date: 'Nov 06, 2025',
@@ -768,7 +768,7 @@ export const Home: React.FC = () => {
     },
     // Adventure & Off-Road content (for Jayden)
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/674775b8d6db2800084b1121/005-2024-toyota-tacoma-trd-sport-front-three-quarter-motion.jpg',
       title: '2024 Toyota Tacoma TRD Pro First Test: The Off-Road King Returns',
       author: 'Alexander Stoklosa',
       date: 'Nov 12, 2025',
@@ -779,7 +779,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67f436b279a6060008bc3b95/1-2025-ford-bronco-raptor-front-view.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67f436b279a6060008bc3b95/1-2025-ford-bronco-raptor-front-view.jpg',
       title: '2025 Ford Bronco Raptor Review: Desert Runner Meets Daily Driver',
       author: 'Eric Tingwall',
       date: 'Oct 15, 2025',
@@ -791,7 +791,7 @@ export const Home: React.FC = () => {
     },
     // Technology & EV content (for Theo, Casey)
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67aa9aa3f8731e000842e100/2025-bmw-ix.jpg',
       title: '2025 BMW iX Review: Luxury Meets Cutting-Edge Tech',
       author: 'Alex Leanse',
       date: 'Nov 08, 2025',
@@ -802,7 +802,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67eebefe5107540008d18c50/020-2025-lucid-air-pure.jpg',
       title: '2025 Lucid Air Review: The Fastest Production EV Gets Even Faster',
       author: 'Angus MacKenzie',
       date: 'Oct 20, 2025',
@@ -814,7 +814,7 @@ export const Home: React.FC = () => {
     },
     // Luxury content (for Leo, Carl)
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg',
+      imageUrl: 'https://www.motortrend.com/files/6737b61a6511850008886d2d/004-2024-genesis-g70-2-5t-awd-front-three-quarter-action.jpg',
       title: '2024 Genesis G70 Review: Korean Luxury Challenges German Royalty',
       author: 'Alisa Priddle',
       date: 'Nov 05, 2025',
@@ -825,7 +825,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/66e47d24e820cb000892fdc0/002-2024-lexus-rx-450-front-quarter-motion.jpg',
       title: '2024 Lexus RX Review: Hybrid Luxury Done Right',
       author: 'Bob Hernandez',
       date: 'Oct 28, 2025',
@@ -837,7 +837,7 @@ export const Home: React.FC = () => {
     },
     // Value content (for Dan, Paula)
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
+      imageUrl: 'https://www.motortrend.com/files/65dcf5210e091c0008b94fd0/2020-honda-civic-si-coupe-front-three-quarter.jpg',
       title: '2025 Honda Civic vs. Toyota Corolla: Which Compact Sedan Offers More?',
       author: 'Billy Rehbock',
       date: 'Nov 10, 2025',
@@ -848,7 +848,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686c4f52a5f0070002f31f87/2026mazdacx-517.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686c4f52a5f0070002f31f87/2026mazdacx-517.jpg',
       title: '2026 Mazda CX-5 Review: Premium Feel Without the Premium Price',
       author: 'Alex Leanse',
       date: 'Nov 14, 2025',
@@ -859,7 +859,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+      imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
       title: 'Yes! Honda\'s Electric Sports Car Is Real, but Timing Remains Uncertain',
       author: 'Alisa Priddle',
       date: 'Nov 06, 2025',
@@ -870,7 +870,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
+      imageUrl: 'https://www.motortrend.com/files/68ffacb2156e890002f8842a/23-2026-911-porsche-turbo-s-coupe.jpg',
       title: 'We Drove the 2026 Porsche 911 Turbo S, and It\'s Electrified, Unhinged, and Brilliant',
       author: 'Mac Morrison',
       date: 'Oct 27, 2025',
@@ -881,7 +881,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+      imageUrl: 'https://www.motortrend.com/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
       title: "2026 MotorTrend Car of the Year: The Volkswagen Golf GTI / R Wins the Golden Calipers",
       author: 'MotorTrend Staff',
       date: 'Oct 15, 2025',
@@ -892,7 +892,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
       title: 'The Tesla Model Y Premium RWD Is a Better Computer Than It Is a Car',
       author: 'Billy Rehbock',
       date: 'Nov 05, 2025',
@@ -903,7 +903,7 @@ export const Home: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
       title: 'The Honda Passport RTL Is the One You Need, Not the One You Want',
       author: 'Alex Leanse',
       date: 'Nov 04, 2025',
@@ -1986,7 +1986,7 @@ export const Home: React.FC = () => {
                 height={250}
                 label="300 x 250"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+                imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
               />
             </div>
           </div>
@@ -2028,7 +2028,7 @@ export const Home: React.FC = () => {
                 height={600}
                 label="SVOD 200 x 420"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+                imageUrl="https://www.motortrend.com/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
               />
             </div>
           </div>
@@ -2071,7 +2071,7 @@ export const Home: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116444ba9124000252c544/8119904599187119191.png"
+              imageUrl="https://www.motortrend.com/files/69116444ba9124000252c544/8119904599187119191.png"
             />
           </div>
         </div>
@@ -2098,7 +2098,7 @@ export const Home: React.FC = () => {
                 height={600}
                 label="SVOD 200 x 420"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
+                imageUrl="https://www.motortrend.com/files/6911649d074b1800020014b0/5094655339108271500.jpeg"
               />
             </div>
           </div>
@@ -2125,7 +2125,7 @@ export const Home: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>
@@ -2152,7 +2152,7 @@ export const Home: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>

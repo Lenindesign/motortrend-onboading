@@ -99,7 +99,7 @@ const NewCars: React.FC = () => {
       };
     }
     return {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
       title: '2025 New Car Models: Everything You Need to Know',
       onClick: () => navigate('/articles/2025-new-car-models'),
     };
@@ -128,7 +128,7 @@ const NewCars: React.FC = () => {
   // News items - articles about 2025 vehicles
   const newsItems = useMemo(() => [
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
       title: '2025 Subaru WRX tS First Test: Points for STI-le, But…',
       author: 'Alexander Stoklosa',
       date: 'Jan 21, 2025',
@@ -139,7 +139,7 @@ const NewCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
       title: 'The Tesla Model Y Premium RWD Is a Better Computer Than It Is a Car',
       author: 'Billy Rehbock',
       date: 'Nov 05, 2025',
@@ -150,7 +150,7 @@ const NewCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
       title: 'The Honda Passport RTL Is the One You Need, Not the One You Want',
       author: 'Alex Leanse',
       date: 'Nov 04, 2025',
@@ -161,7 +161,7 @@ const NewCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
       title: '2026 BMW M2 CS Track Drive: The Ultimate M2 Gets Even Better',
       author: 'Frank Markus',
       date: 'Nov 05, 2025',
@@ -172,7 +172,7 @@ const NewCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
+      imageUrl: 'https://www.motortrend.com/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
       title: 'We Drove the New 519-HP Cadillac Optiq-V to See If It\'s a *Real* V',
       author: 'Eric Tingwall',
       date: 'Nov 06, 2025',
@@ -183,7 +183,7 @@ const NewCars: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+      imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
       title: 'Yes! Honda\'s Electric Sports Car Is Real, but Timing Remains Uncertain',
       author: 'Alisa Priddle',
       date: 'Nov 06, 2025',
@@ -212,7 +212,7 @@ const NewCars: React.FC = () => {
               height={250}
               label="300 x 250"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
             />
           </div>
         </div>
@@ -236,7 +236,7 @@ const NewCars: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>
@@ -255,7 +255,7 @@ const NewCars: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>

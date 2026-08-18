@@ -82,7 +82,7 @@ const EVHub: React.FC = () => {
       };
     }
     return {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
       title: 'EV Hub: Your Guide to Electric Vehicles',
       onClick: () => navigate('/ev-hub'),
     };
@@ -151,7 +151,7 @@ const EVHub: React.FC = () => {
     // Fallback news items if no EV articles found
     return [
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+        imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
         title: '2026 Hyundai Ioniq 6 N First Drive: Watch Out, BMW M3, C63 AMG!',
         author: 'Alex Leanse',
         date: 'Nov 07, 2025',
@@ -161,7 +161,7 @@ const EVHub: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+        imageUrl: 'https://www.motortrend.com/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
         title: 'The Tesla Model Y Premium RWD Is a Better Computer Than It Is a Car',
         author: 'Billy Rehbock',
         date: 'Nov 05, 2025',
@@ -171,7 +171,7 @@ const EVHub: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
+        imageUrl: 'https://www.motortrend.com/files/65f806260315ac000873e1d6/2026-rivian-r2-ev-suv-13.jpg',
         title: 'Rivian Reveals New Details on the 2026 R2 Midsize SUV Ahead of Production',
         author: 'Justin Banner',
         date: 'Nov 06, 2025',
@@ -181,7 +181,7 @@ const EVHub: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+        imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
         title: 'Yes! Honda\'s Electric Sports Car Is Real, but Timing Remains Uncertain',
         author: 'Alisa Priddle',
         date: 'Nov 06, 2025',
@@ -191,7 +191,7 @@ const EVHub: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
+        imageUrl: 'https://www.motortrend.com/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg',
         title: 'I Lived with a Kia EV9 for a Year. There\'s Only One Thing I Would Change.',
         author: 'Eric Tingwall',
         date: 'Nov 07, 2025',
@@ -201,7 +201,7 @@ const EVHub: React.FC = () => {
         },
       },
       {
-        imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
+        imageUrl: 'https://www.motortrend.com/files/690ba4a7cfe755000270cb92/5-longbow-speedster-electric-sports-car.jpg',
         title: 'This 1,973-Pound Electric Sports Car Nails What Tesla Still Can\'t',
         author: 'Angus MacKenzie',
         date: 'Nov 06, 2025',
@@ -230,7 +230,7 @@ const EVHub: React.FC = () => {
               height={250}
               label="300 x 250"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
             />
           </div>
         </div>
@@ -255,7 +255,7 @@ const EVHub: React.FC = () => {
                 height={600}
                 label="SVOD 200 x 420"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+                imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
               />
             </div>
           </div>
@@ -276,7 +276,7 @@ const EVHub: React.FC = () => {
                 height={600}
                 label="SVOD 200 x 420"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+                imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
               />
             </div>
           </div>

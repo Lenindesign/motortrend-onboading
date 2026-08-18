@@ -171,10 +171,10 @@ const eventsData: EventData[] = [
       { date: 'June 14', title: 'Day 7: Finish in Tampa', location: 'Tampa, FL', description: 'The grand finale with the closing ceremony, final car show, and Long Hauler awards.', highlights: ['Closing ceremony', 'Long Hauler awards', 'Final car show & celebration'] },
     ],
     gallery: [
-      'https://d2kde5ohu8qb21.cloudfront.net/files/hrpt-gallery-1.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/hrpt-gallery-2.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/hrpt-gallery-3.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/hrpt-gallery-4.jpg',
+      'https://www.motortrend.com/files/hrpt-gallery-1.jpg',
+      'https://www.motortrend.com/files/hrpt-gallery-2.jpg',
+      'https://www.motortrend.com/files/hrpt-gallery-3.jpg',
+      'https://www.motortrend.com/files/hrpt-gallery-4.jpg',
     ],
     testimonials: [
       { quote: 'Power Tour is the best week of my year. Nothing beats 1,500 miles with your best friends and 5,000 hot rods.', author: 'Mike G., Long Hauler since 2012' },
@@ -191,9 +191,9 @@ const eventsData: EventData[] = [
     registrationUrl: '/events/hot-rod-power-tour-2026/register',
     tags: ['hot-rod', 'power-tour', 'cross-country', 'car-show', 'drag-racing'],
     featuredArticles: [
-      { title: 'HOT ROD Power Tour 2025: Epic Gallery of Long Haulers', slug: 'hrpt-2025-gallery', image: 'https://d2kde5ohu8qb21.cloudfront.net/files/hrpt-2025-long-haulers.jpg' },
-      { title: 'Touring the United States One Power Tour at a Time', slug: 'touring-us-power-tour', image: 'https://d2kde5ohu8qb21.cloudfront.net/files/hrpt-touring-us.jpg' },
-      { title: 'Pro Street Alley: The Cars That Stole the Show', slug: 'pro-street-alley-2025', image: 'https://d2kde5ohu8qb21.cloudfront.net/files/pro-street-alley.jpg' },
+      { title: 'HOT ROD Power Tour 2025: Epic Gallery of Long Haulers', slug: 'hrpt-2025-gallery', image: 'https://www.motortrend.com/files/hrpt-2025-long-haulers.jpg' },
+      { title: 'Touring the United States One Power Tour at a Time', slug: 'touring-us-power-tour', image: 'https://www.motortrend.com/files/hrpt-touring-us.jpg' },
+      { title: 'Pro Street Alley: The Cars That Stole the Show', slug: 'pro-street-alley-2025', image: 'https://www.motortrend.com/files/pro-street-alley.jpg' },
     ],
   },
   {
@@ -240,10 +240,10 @@ const eventsData: EventData[] = [
       { date: 'June 13', title: 'Day 4: DirtFish & Farewell', location: 'DirtFish Rally School, WA', description: 'Rally school in the morning, awards lunch at Willows Lodge, and farewell.', highlights: ['DirtFish Rally School', 'Awards ceremony', 'Farewell lunch'] },
     ],
     gallery: [
-      'https://d2kde5ohu8qb21.cloudfront.net/files/rt-nws-gallery-1.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/rt-nws-gallery-2.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/rt-nws-gallery-3.jpg',
-      'https://d2kde5ohu8qb21.cloudfront.net/files/rt-nws-gallery-4.jpg',
+      'https://www.motortrend.com/files/rt-nws-gallery-1.jpg',
+      'https://www.motortrend.com/files/rt-nws-gallery-2.jpg',
+      'https://www.motortrend.com/files/rt-nws-gallery-3.jpg',
+      'https://www.motortrend.com/files/rt-nws-gallery-4.jpg',
     ],
     testimonials: [
       { quote: 'An extraordinary four days of incredible roads, world-class tracks, and genuine camaraderie with fellow enthusiasts.', author: 'James K.' },
@@ -256,13 +256,13 @@ const eventsData: EventData[] = [
       { question: 'What meals are included?', answer: 'All breakfasts, lunches, the welcome dinner, wine country dinner, and farewell awards lunch are included.' },
     ],
     sponsors: [
-      { name: 'Corient', logo: 'https://d2kde5ohu8qb21.cloudfront.net/files/corient-logo.png', tier: 'presenting' },
+      { name: 'Corient', logo: 'https://www.motortrend.com/files/corient-logo.png', tier: 'presenting' },
     ],
     registrationUrl: '/events/northwest-shift-2026/register',
     tags: ['road-and-track', 'experience', 'track-day', 'rally', 'pacific-northwest'],
     featuredArticles: [
-      { title: 'What to Expect at a Road & Track Experience', slug: 'rt-experience-guide', image: 'https://d2kde5ohu8qb21.cloudfront.net/files/rt-experience-guide.jpg' },
-      { title: 'The Best Driving Roads in the Pacific Northwest', slug: 'best-roads-pnw', image: 'https://d2kde5ohu8qb21.cloudfront.net/files/best-roads-pnw.jpg' },
+      { title: 'What to Expect at a Road & Track Experience', slug: 'rt-experience-guide', image: 'https://www.motortrend.com/files/rt-experience-guide.jpg' },
+      { title: 'The Best Driving Roads in the Pacific Northwest', slug: 'best-roads-pnw', image: 'https://www.motortrend.com/files/best-roads-pnw.jpg' },
     ],
   },
   {

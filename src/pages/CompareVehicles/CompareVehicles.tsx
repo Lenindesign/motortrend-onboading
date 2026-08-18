@@ -97,7 +97,7 @@ const CompareVehicles: React.FC = () => {
       };
     }
     return {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg',
       title: 'Compare Vehicles: Side-by-Side Vehicle Comparisons',
       onClick: () => navigate('/compare-vehicles'),
     };
@@ -116,7 +116,7 @@ const CompareVehicles: React.FC = () => {
   // News items - comparison articles
   const newsItems = useMemo(() => [
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
+      imageUrl: 'https://www.motortrend.com/files/67524b260884870008fa1a2e/1-2025-subaru-wrx-ts-front-view.jpg',
       title: '2025 Ford Bronco vs 2025 Jeep Wrangler: Off-Road Showdown',
       author: 'MotorTrend Editorial',
       date: 'Jan 20, 2025',
@@ -126,7 +126,7 @@ const CompareVehicles: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690bfd60f33e300002f8eeeb/024-2025-tesla-model-y-awd.jpg',
       title: '2025 Tesla Model 3 vs 2025 BMW 3 Series: Electric vs Gas',
       author: 'Alex Leanse',
       date: 'Jan 18, 2025',
@@ -136,7 +136,7 @@ const CompareVehicles: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
       title: '2025 Honda Civic vs 2025 Toyota Corolla: Compact Car Battle',
       author: 'Eric Tingwall',
       date: 'Jan 15, 2025',
@@ -146,7 +146,7 @@ const CompareVehicles: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
+      imageUrl: 'https://www.motortrend.com/files/690b0330f4ad5b00020ded90/2026-bmw-m2-cs-side-motion.jpg',
       title: '2025 Ford Mustang vs 2025 Chevrolet Camaro: Muscle Car Rivalry',
       author: 'Frank Markus',
       date: 'Jan 12, 2025',
@@ -156,7 +156,7 @@ const CompareVehicles: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
+      imageUrl: 'https://www.motortrend.com/files/684317270ba4360008f118a0/2026cadillacoptiq-v9.jpg',
       title: '2025 Audi A4 vs 2025 Mercedes C-Class: Luxury Sedan Face-Off',
       author: 'MotorTrend Editorial',
       date: 'Jan 10, 2025',
@@ -166,7 +166,7 @@ const CompareVehicles: React.FC = () => {
       },
     },
     {
-      imageUrl: 'https://d2kde5ohu8qb21.cloudfront.net/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
+      imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
       title: '2025 Ford F-150 vs 2025 Chevrolet Silverado: Pickup Truck Comparison',
       author: 'Alisa Priddle',
       date: 'Jan 08, 2025',
@@ -194,7 +194,7 @@ const CompareVehicles: React.FC = () => {
               height={250}
               label="300 x 250"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+              imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
             />
           </div>
         </div>
@@ -233,7 +233,7 @@ const CompareVehicles: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>
@@ -252,7 +252,7 @@ const CompareVehicles: React.FC = () => {
               height={600}
               label="SVOD 200 x 420"
               position="right-column"
-              imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/691163e3e8557700022eb5d9/4347518532106070908.png"
+              imageUrl="https://www.motortrend.com/files/691163e3e8557700022eb5d9/4347518532106070908.png"
             />
           </div>
         </div>

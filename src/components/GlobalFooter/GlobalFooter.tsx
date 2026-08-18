@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../../design-system/components';
 
 // Using MotorTrend main logo from URL
-const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
+const motorTrendLogo = 'https://www.motortrend.com/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 
 export interface GlobalFooterProps {
   onNewsletterClick?: () => void;

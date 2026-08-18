@@ -36,11 +36,11 @@ const DEFAULT_STARS_GIF = 'https://d2kde5ohu8qb21.cloudfront.net/files/691bde547
 
 /** Same hero photo as `RateYourCar` landing page (`pageStyle.backgroundImage`). */
 const DEFAULT_HERO_BACKGROUND_URL =
-  'https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg';
+  'https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg';
 
 /** Truck: red Tacoma motion. Sedan: white Honda Civic sedan (Autoweek). SUV: 2025 Ford Bronco Sport (Hearst). */
 const DEFAULT_GENERIC_TRUCK_IMAGE_URL =
-  'https://d2kde5ohu8qb21.cloudfront.net/files/678a9e907a24a00008619c2e/002-2024-toyota-tacoma-limited-front-three-quarter-motion.jpg';
+  'https://www.motortrend.com/files/678a9e907a24a00008619c2e/002-2024-toyota-tacoma-limited-front-three-quarter-motion.jpg';
 const DEFAULT_GENERIC_SEDAN_IMAGE_URL =
   'https://hips.hearstapps.com/autoweek/assets/s3fs-public/16_Civic_Sedan_160.jpg?resize=980:*';
 const DEFAULT_GENERIC_SUV_IMAGE_URL =

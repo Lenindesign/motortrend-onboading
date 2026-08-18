@@ -253,7 +253,7 @@ export const KnowYourBudget: React.FC<KnowYourBudgetProps> = ({ className }) => 
               <p style={descStyle}>Calculate your budget and instantly see vehicles that fit your financial comfort zone.</p>
             </div>
             <div style={imageContainerStyle}>
-              <img src="https://d2kde5ohu8qb21.cloudfront.net/files/693066aff847fd000218dd58/b958fa8b27417e4cfd952751e837d410.png" alt="Car" style={imageStyle} />
+              <img src="https://www.motortrend.com/files/693066aff847fd000218dd58/b958fa8b27417e4cfd952751e837d410.png" alt="Car" style={imageStyle} />
             </div>
           </div>
 

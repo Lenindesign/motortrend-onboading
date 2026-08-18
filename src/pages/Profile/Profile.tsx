@@ -1424,7 +1424,7 @@ export const Profile: React.FC<ProfileProps> = ({
                     />
                     <SubscriptionItem
                       name="Events"
-                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/69040ce5e09a72000286cf1d/event.png"
+                      logo="https://www.motortrend.com/files/69040ce5e09a72000286cf1d/event.png"
                       isActive={newsletterSubscriptions['Events']}
                       onToggleSubscription={handleNewsletterToggle}
                     />
@@ -1448,7 +1448,7 @@ export const Profile: React.FC<ProfileProps> = ({
                   <div className="profile-subscriptions-grid">
                     <SubscriptionItem
                       name="MotorTrend"
-                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64d7a3a12db0002cab19f/mtmag.png"
+                      logo="https://www.motortrend.com/files/68f64d7a3a12db0002cab19f/mtmag.png"
                       isActive={magazineSubscriptions['MotorTrend']}
                       onToggleSubscription={handleMagazineToggle}
                       href="https://secure.motortrend.com/"
@@ -1456,7 +1456,7 @@ export const Profile: React.FC<ProfileProps> = ({
                     {/* Car and Driver magazine hidden */}
                     {/* <SubscriptionItem
                       name="Car and Driver"
-                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64d793a12db0002cab19d/caranddrivermagazine.png"
+                      logo="https://www.motortrend.com/files/68f64d793a12db0002cab19d/caranddrivermagazine.png"
                       isActive={magazineSubscriptions['Car and Driver']}
                       onToggleSubscription={handleMagazineToggle}
                     /> */}

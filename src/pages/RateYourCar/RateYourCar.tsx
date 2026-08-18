@@ -25,7 +25,7 @@ const RATE_YOUR_CAR_LOGO = `${import.meta.env.BASE_URL}emails/rate-your-car-logo
 /** Generic trio — aligned with `RateYourCarEmailPreview` / `rate-your-car-generic.html`. */
 const GENERIC_VEHICLE_TRIO: readonly { src: string; alt: string }[] = [
   {
-    src: 'https://d2kde5ohu8qb21.cloudfront.net/files/678a9e907a24a00008619c2e/002-2024-toyota-tacoma-limited-front-three-quarter-motion.jpg',
+    src: 'https://www.motortrend.com/files/678a9e907a24a00008619c2e/002-2024-toyota-tacoma-limited-front-three-quarter-motion.jpg',
     alt: 'Pickup truck',
   },
   {
@@ -223,7 +223,7 @@ export const RateYourCar: React.FC = () => {
       'radial-gradient(circle at 18% 10%, rgba(233, 12, 23, 0.42) 0%, rgba(233, 12, 23, 0) 28%)',
       'linear-gradient(110deg, rgba(5, 5, 8, 0.98) 0%, rgba(12, 13, 18, 0.76) 45%, rgba(5, 5, 8, 0.94) 100%)',
       'linear-gradient(180deg, rgba(5, 5, 8, 0.72) 0%, rgba(5, 5, 8, 0.38) 42%, rgba(5, 5, 8, 0.96) 100%)',
-      "url('https://d2kde5ohu8qb21.cloudfront.net/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg')",
+      "url('https://www.motortrend.com/files/686ecc3b8b30d500028d902a/2026-hyundai-ioniq-6-n-side-motion.jpg')",
     ].join(', '),
     backgroundSize: '1200px 760px, cover, cover, cover',
     backgroundPosition: 'left top, center, center, center 42%',

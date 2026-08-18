@@ -17,12 +17,12 @@ export interface ProfileBannerProps {
 }
 
 const bannerImages = [
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f8f5df37e1e80002de1a02/muscle2.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f782781191030002a3d549/modern-electric.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f784b61191030002a3d54b/off-road.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f78656afbb8d0002a273ab/bronco.jpg',
-  'https://d2kde5ohu8qb21.cloudfront.net/files/68f787e24fba630002fdc127/golf.jpg'
+  'https://www.motortrend.com/files/68f77be24615b80002358c70/bg-image-mclaren1.jpg',
+  'https://www.motortrend.com/files/68f8f5df37e1e80002de1a02/muscle2.jpg',
+  'https://www.motortrend.com/files/68f782781191030002a3d549/modern-electric.jpg',
+  'https://www.motortrend.com/files/68f784b61191030002a3d54b/off-road.jpg',
+  'https://www.motortrend.com/files/68f78656afbb8d0002a273ab/bronco.jpg',
+  'https://www.motortrend.com/files/68f787e24fba630002fdc127/golf.jpg'
 ];
 
 export const ProfileBanner: React.FC<ProfileBannerProps> = ({

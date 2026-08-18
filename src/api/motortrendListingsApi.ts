@@ -162,7 +162,7 @@ export async function fetchMotortrendListings(
           : (listing.vehicle?.featuredImageUrl ||
              listing.vehicle?.thumbnailUrl ||
              listing.vehicle?.marketingImageUrl ||
-             'https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg');
+             'https://www.motortrend.com/files/placeholder-vehicle.jpg');
 
         // Parse price and mileage
         const price = parseInt(listing.sellingPrice) || 0;

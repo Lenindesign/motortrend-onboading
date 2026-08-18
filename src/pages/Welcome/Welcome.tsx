@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 // Using MotorTrend main logo from URL
-const motortrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f3fc9ccfecd100026f4650/mtlogo.png';
+const motortrendLogo = 'https://www.motortrend.com/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import { MembershipCard } from '../../components/MembershipCard';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
 // parseVehicleName was previously used for vehicle image lookups

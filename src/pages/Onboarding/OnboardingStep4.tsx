@@ -142,7 +142,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                     />
                   ) : (
                     <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/69040ce5e09a72000286cf1d/event.png" 
+                      src="https://www.motortrend.com/files/69040ce5e09a72000286cf1d/event.png"
                       alt="Our Events Newsletter" 
                       width="72" 
                       height="72"
@@ -217,4 +217,3 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
 };
 
 export default OnboardingStep4;
-

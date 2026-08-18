@@ -51,7 +51,7 @@ const navigationItems = [
       ],
       featuredContent: {
         title: 'The Mazda CX-5 is geared for whatever you dream up',
-        image: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+        image: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
         badge: 'Sponsored Content',
         href: '/articles/mazda-cx-5'
       }
@@ -195,7 +195,7 @@ const navigationItems = [
         description: 'Find your new ride on MotorTrend\'s Collection of New and Used Cars.',
       },
       rightColumn: {
-        adImage: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b808d7da000211b79f/ad.png',
+        adImage: 'https://www.motortrend.com/files/692ca3b808d7da000211b79f/ad.png',
         href: '/cars-for-sale' 
       }
     },

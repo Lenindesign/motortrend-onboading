@@ -692,7 +692,7 @@ export const Article: React.FC = () => {
       vehicleName: vehicleName,
       reviewer: {
         name: article.author,
-        avatar: "https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png",
+        avatar: "https://www.motortrend.com/files/690637eaf09ade000224c6b1/group1318348122.png",
         date: article.date,
         title: article.title,
         excerpt: article.excerpt,
@@ -2013,7 +2013,7 @@ export const Article: React.FC = () => {
                 height={600}
                 label="300 x 600"
                 position="right-column"
-                imageUrl="https://d2kde5ohu8qb21.cloudfront.net/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
+                imageUrl="https://www.motortrend.com/files/69116380f5e41e00020d3432/822789964589118228.jpeg"
               />
 
               {/* Related Articles */}

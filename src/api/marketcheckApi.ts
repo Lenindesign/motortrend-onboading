@@ -177,7 +177,7 @@ export async function fetchMarketcheckListings(
         firstPhoto: photoUrls[0] || 'none'
       });
       
-      const imageUrl = photoUrls[0] || 'https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg';
+      const imageUrl = photoUrls[0] || 'https://www.motortrend.com/files/placeholder-vehicle.jpg';
 
       // Extract dealer name from dealer object, source, or heading
       let dealerName = 'Local Dealer';

@@ -171,7 +171,7 @@ const SEED_COMMUNITIES: Community[] = [
     slug: 'delish',
     name: 'Delish',
     description: 'Join the Delish community for recipes, cooking tips, and food discussions.',
-    icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/6935f474d77d790002cc52b0/581865325-1223988786259059-7001347943341286496-n.jpg',
+    icon: 'https://www.motortrend.com/files/6935f474d77d790002cc52b0/581865325-1223988786259059-7001347943341286496-n.jpg',
     memberCount: 16000,
     createdAt: new Date().toISOString(),
     publisher: 'Hearst',
@@ -248,7 +248,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_2', name: 'AutoNewsBot' },
     title: '2025 Toyota Camry Hybrid Review',
     content: 'The new Camry Hybrid offers impressive fuel economy and a surprisingly sporty drive.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/65a4ee3d49161300084044e1/2025-toyota-camry-hybrid-xse-2.jpg',
+    image: 'https://www.motortrend.com/files/65a4ee3d49161300084044e1/2025-toyota-camry-hybrid-xse-2.jpg',
     createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
     upvotes: 120,
     downvotes: 5,
@@ -272,7 +272,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_geico', name: 'GEICO' },
     title: 'Save Money on Car Insurance - Get a Quote Today',
     content: 'Protect your vehicle with GEICO. Get a free quote and see how much you could save. 24/7 customer service and competitive rates.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6930ba485b2bea0002f46bea/geico2.jpg',
+    image: 'https://www.motortrend.com/files/6930ba485b2bea0002f46bea/geico2.jpg',
     createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago (recent to help with sorting)
     upvotes: 210,
     downvotes: 5,
@@ -408,7 +408,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_18', name: 'BudgetBuyer' },
     title: 'Used vs new: What\'s the better value?',
     content: 'Trying to decide between a 2-year-old certified pre-owned or a brand new model. What would you do?',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
+    image: 'https://www.motortrend.com/files/690a603369a9550002fb94bc/021-2026-honda-passport-rtl.jpg',
     createdAt: new Date(Date.now() - 28800000).toISOString(), // 8 hours ago
     upvotes: 41,
     downvotes: 5,
@@ -531,7 +531,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_geico', name: 'GEICO' },
     title: 'Protect Your Ride on Power Tour 2025',
     content: 'Get the coverage you need for your Power Tour adventure. GEICO offers competitive rates and 24/7 customer service to keep you protected on the road.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6930b7bd3cb4320002bdd0a6/geico.png',
+    image: 'https://www.motortrend.com/files/6930b7bd3cb4320002bdd0a6/geico.png',
     createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
     upvotes: 45,
     downvotes: 0,
@@ -545,7 +545,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_mt_1', name: 'MotorTrend Editorial' },
     title: '2026 MotorTrend Car of the Year: The Winners and Finalists',
     content: 'We\'ve tested hundreds of vehicles this year, and after rigorous evaluation, we\'re excited to announce our Car of the Year finalists. From electric vehicles to performance machines, this year\'s competition was fierce.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
+    image: 'https://www.motortrend.com/files/68ed9028b76c7c0002cf2104/003-2026volkswagen-golf-gti-r-coty.jpg',
     createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
     upvotes: 245,
     downvotes: 3,
@@ -557,7 +557,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_mt_2', name: 'MotorTrend Reviews' },
     title: 'First Drive: 2026 Chevrolet Corvette ZR1 - The Ultimate American Supercar',
     content: 'We just got behind the wheel of the new ZR1, and it\'s everything we hoped for. With 1,064 horsepower and track-tested performance, this is the most powerful Corvette ever built. Full review coming soon!',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',
+    image: 'https://www.motortrend.com/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',
     createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
     upvotes: 189,
     downvotes: 2,
@@ -569,7 +569,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_mt_3', name: 'MotorTrend Tech' },
     title: 'Electric Vehicle Range Test: Which EVs Actually Meet Their EPA Estimates?',
     content: 'We put 12 popular electric vehicles through our real-world range test. Some exceeded expectations, while others fell short. Here\'s what we found and which EVs you can trust for long road trips.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/691636a53f45e800024bf486/001-2025-cadillac-vistiq-vs-lucid-gravity-vs-volvo-ex90.jpg',
+    image: 'https://www.motortrend.com/files/691636a53f45e800024bf486/001-2025-cadillac-vistiq-vs-lucid-gravity-vs-volvo-ex90.jpg',
     createdAt: new Date(Date.now() - 10800000).toISOString(), // 3 hours ago
     upvotes: 312,
     downvotes: 5,
@@ -583,7 +583,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_esquire_1', name: 'Esquire Editorial' },
     title: 'The Jonas Brothers: Two Decades In, A Legacy Act With Hits to Prove It',
     content: 'The #JonasBrothers are musical veterans. Never mind the fact that they\'re only in their mid-30s. Two decades into their careers, they\'re officially a legacy act—with the hits to prove it.\n\nSince coming apart and exploring life on their own, the JoBros have become a stronger unit. And their next twenty years have only just begun.\n\nStory by Dave Holmes\n\nPhotographed by Billy Kidd\n\nStyled by Mark Holmes\n\nGrooming by Marissa Machado\n\nTailoring by Suzy Yun\n\nEsquire Design Director Martin Hoops\n\nEsquire Visual Director James Morris\n\nEsquire Entertainment Director Andrea Cuttler\n\nEsquire Editor-in-Chief Michael Sebastian',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a446df56f80002017a16/568262900-1180744377245152-1900907009731257623-n.jpg',
+    image: 'https://www.motortrend.com/files/6931a446df56f80002017a16/568262900-1180744377245152-1900907009731257623-n.jpg',
     createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
     upvotes: 128,
     downvotes: 1,
@@ -595,7 +595,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_esquire_2', name: 'Esquire Style' },
     title: 'The Coolest Things for the Coolest People You Know',
     content: 'From luxurious leathers to snacks and scents, these are the coolest things for the coolest people you know.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a4ecf522b300025a1434/16219943632514205774.jpeg',
+    image: 'https://www.motortrend.com/files/6931a4ecf522b300025a1434/16219943632514205774.jpeg',
     createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
     upvotes: 95,
     downvotes: 0,
@@ -607,7 +607,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_esquire_3', name: 'Esquire Music' },
     title: 'Florence Welch, Lily Allen, and Brandi Carlile: Confronting Struggles Through Music',
     content: 'In different ways and with very different sounds, Florence Welch, Lily Allen, and Brandi Carlile all confronted their own struggles and managed to be both cathartic and creatively thrilling.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a5ac01f9740002776546/593449860-1215967070389549-2765656914296172558-n.jpg',
+    image: 'https://www.motortrend.com/files/6931a5ac01f9740002776546/593449860-1215967070389549-2765656914296172558-n.jpg',
     createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
     upvotes: 112,
     downvotes: 2,
@@ -619,7 +619,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_esquire_4', name: 'Esquire Entertainment' },
     title: 'Billy Bob Thornton leads Taylor Sheridan\'s drama to another hopeful start—even if the plot occasionally stretches itself too thin.',
     content: 'Billy Bob Thornton leads Taylor Sheridan\'s drama to another hopeful start—even if the plot occasionally stretches itself too thin. The series continues to showcase Sheridan\'s signature storytelling style, with Thornton delivering a compelling performance that anchors the narrative.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bda7caedbc000274bc73/593515026-1214644467188476-7489586715543291596-n.jpg',
+    image: 'https://www.motortrend.com/files/6931bda7caedbc000274bc73/593515026-1214644467188476-7489586715543291596-n.jpg',
     createdAt: new Date(Date.now() - 9000000).toISOString(), // 2.5 hours ago
     upvotes: 134,
     downvotes: 3,
@@ -633,7 +633,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_menshealth_1', name: 'Men\'s Health Fitness' },
     title: '9 Reasons You Need Strength Training in Your Life',
     content: 'Strength training isn\'t just about building muscle—it\'s about transforming your life. From boosting metabolism to improving mental health, here are nine compelling reasons why strength training should be a non-negotiable part of your fitness routine.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a66401f9740002776547/594468833-1415948256556630-6332666672800229607-n.jpg',
+    image: 'https://www.motortrend.com/files/6931a66401f9740002776547/594468833-1415948256556630-6332666672800229607-n.jpg',
     createdAt: new Date(Date.now() - 2400000).toISOString(), // 40 minutes ago
     upvotes: 156,
     downvotes: 1,
@@ -645,7 +645,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_menshealth_2', name: 'Men\'s Health Nutrition' },
     title: 'Tired of Powders and Bars? Use These Creative Ways to Hit Your Protein Needs When You Travel.',
     content: 'Traveling doesn\'t mean you have to sacrifice your protein goals. Skip the powders and bars and discover these creative, delicious ways to meet your protein needs while on the road. From airport-friendly options to hotel room hacks, we\'ve got you covered.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931a74cf522b300025a1436/593451365-1415739333244189-6264539126554493333-n.jpg',
+    image: 'https://www.motortrend.com/files/6931a74cf522b300025a1436/593451365-1415739333244189-6264539126554493333-n.jpg',
     createdAt: new Date(Date.now() - 4800000).toISOString(), // 1.3 hours ago
     upvotes: 134,
     downvotes: 0,
@@ -659,7 +659,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_popularmechanics_1', name: 'Popular Mechanics Science' },
     title: 'Archaeologists Found 6,000-Year-Old Artifacts Under One of England\'s Most Hallowed Buildings',
     content: 'In a remarkable archaeological discovery, researchers have uncovered 6,000-year-old artifacts beneath one of England\'s most revered historical structures. The findings shed new light on the ancient history of the site and reveal fascinating insights into early human civilization.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931b97caf193f0002077421/11905983392533026799.jpeg',
+    image: 'https://www.motortrend.com/files/6931b97caf193f0002077421/11905983392533026799.jpeg',
     createdAt: new Date(Date.now() - 3000000).toISOString(), // 50 minutes ago
     upvotes: 178,
     downvotes: 2,
@@ -671,7 +671,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_popularmechanics_2', name: 'Popular Mechanics Space' },
     title: 'To Escape Extinction, We Need to Achieve Warp Speed. New Scientific Breakthroughs Suggest It\'s Possible.',
     content: 'The race to achieve faster-than-light travel has taken a dramatic turn with recent scientific breakthroughs. As humanity faces existential threats, warp speed technology may be our ticket to survival. New research suggests that what was once science fiction could become reality sooner than we think.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931b9e6e38ed80002bfcc40/591188542-1225311566122744-8037494552216590848-n.jpg',
+    image: 'https://www.motortrend.com/files/6931b9e6e38ed80002bfcc40/591188542-1225311566122744-8037494552216590848-n.jpg',
     createdAt: new Date(Date.now() - 6000000).toISOString(), // 1.7 hours ago
     upvotes: 203,
     downvotes: 3,
@@ -685,7 +685,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_roadandtrack_1', name: 'Road & Track News' },
     title: 'Porsche exec on Ioniq 5 N-style simulated shifts for EV sports cars: \'This is the way\'',
     content: 'Porsche executives are embracing the future of electric sports cars, endorsing simulated gear shifts similar to Hyundai\'s Ioniq 5 N. The technology adds an engaging driving experience to EVs, bridging the gap between traditional manual transmissions and electric powertrains.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931ba1d0781fc0002ce26c1/594489489-1218087390180457-7463885223071952471-n.jpg',
+    image: 'https://www.motortrend.com/files/6931ba1d0781fc0002ce26c1/594489489-1218087390180457-7463885223071952471-n.jpg',
     createdAt: new Date(Date.now() - 4200000).toISOString(), // 1.2 hours ago
     upvotes: 167,
     downvotes: 1,
@@ -697,7 +697,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_roadandtrack_2', name: 'Road & Track Industry' },
     title: 'President Donald Trump has apparently given Kei cars the green light for the U.S.A.',
     content: 'In a significant development for automotive enthusiasts, President Donald Trump has apparently given Kei cars the green light for the U.S.A. This could open the door for these compact Japanese vehicles to enter the American market, bringing a new category of efficient and affordable transportation options.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931ba540781fc0002ce26c2/594544055-1217981220191074-2482676462710758147-n.jpg',
+    image: 'https://www.motortrend.com/files/6931ba540781fc0002ce26c2/594544055-1217981220191074-2482676462710758147-n.jpg',
     createdAt: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
     upvotes: 189,
     downvotes: 4,
@@ -711,7 +711,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_bicycling_1', name: 'Bicycling Gear' },
     title: 'The Best Thing to Happen to Gravel Bikes? This Unexpected Tire Trend.',
     content: 'Gravel biking is experiencing a revolution, and it\'s all about the tires. An unexpected tire trend is transforming how riders approach off-road adventures, offering better performance, durability, and versatility than ever before. Discover what\'s changing the game for gravel bike enthusiasts.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931baba5abce4000277ff07/592936961-1233296655330378-4098180843638564870-n.jpg',
+    image: 'https://www.motortrend.com/files/6931baba5abce4000277ff07/592936961-1233296655330378-4098180843638564870-n.jpg',
     createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
     upvotes: 142,
     downvotes: 1,
@@ -725,7 +725,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_delish_1', name: 'Delish Recipes' },
     title: 'My High-Protein Shrimp Bowls Are Ready In Under 30 Minutes',
     content: 'Looking for a quick, healthy, and delicious meal? These high-protein shrimp bowls come together in under 30 minutes, making them perfect for busy weeknights. Packed with flavor and nutrients, this recipe is sure to become a family favorite.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bb1aff63ff0002cb9b32/592677151-1240970344560903-3347500235960729446-n.jpg',
+    image: 'https://www.motortrend.com/files/6931bb1aff63ff0002cb9b32/592677151-1240970344560903-3347500235960729446-n.jpg',
     createdAt: new Date(Date.now() - 2700000).toISOString(), // 45 minutes ago
     upvotes: 198,
     downvotes: 2,
@@ -737,7 +737,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_delish_2', name: 'Delish Cooking' },
     title: 'Tender Oven-Baked Pork Chops Will Be Your New Favorite Weeknight Dinner',
     content: 'Say goodbye to dry, tough pork chops. This oven-baked method delivers perfectly tender, juicy pork chops every time. With minimal prep and maximum flavor, this recipe is about to become your go-to weeknight dinner solution.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bc78d03c7f0002a5c2d9/592948208-1240957114562226-1351952327316964510-n.jpg',
+    image: 'https://www.motortrend.com/files/6931bc78d03c7f0002a5c2d9/592948208-1240957114562226-1351952327316964510-n.jpg',
     createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
     upvotes: 175,
     downvotes: 1,
@@ -749,7 +749,7 @@ const SEED_POSTS: Post[] = [
     author: { id: 'user_delish_3', name: 'Delish Drinks' },
     title: 'This vintage cocktail belongs at your next party.',
     content: 'This vintage cocktail belongs at your next party.\n\nChampagne Punch\n\nThere isn\'t a gathering too dour that can\'t be put right with a champagne punch bowl. Bright with fresh fruit slices and muddled strawberries, bubbly from champagne and soda, and with a little oomph from some stronger spirits, it is as festive as a twinkling string of multicolored lights and as classic as a Charles Dickens novel. Even when you\'re stressed from the holiday whirlwind, burnt out from the news, and not much in the mood for celebrating, it\'s nearly impossible to frown with a cup of champagne punch.\n\nThe champagne punch bowl is a truly vintage cocktail. Imagine men in top hats and women in corsets sipping it slowly and stately, discussing matters like railroad expansion. Drinks historian David Wondrich recounted the story of a champagne punch mixed up in Savannah, Georgia, in the 1850s for the men stationed at the Chatham Artillery by a bartender named A.H. Luce. He filled a horse bucket with champagne, rum, brandy, whiskey, sugar, lemon, and ice. Everyone got sloshed. The Chatham Artillery Punch became infamous, knocking many more men flat in the years that followed. But champagne punch dates even further back, including a mention of "a great bowl of strong punch, made of arrack and champagne punch" in Germany in the 1700s.\n\nCelebrations have always been made better by the champagne punch bowl. "There was a time when you couldn\'t graduate from State, kiss a bride, make a first million, or snip off a foreskin without toasting the milestone with champagne punch," Wondrich once wrote for Esquire. What a time! That time passed, and the cocktail fell out of favor, but in 2010, NPR declared, "Punch bowls are back." But no matter how in or out of vogue they might be, they\'re a surefire way to get a lot of people tipsily happy.\n\nIngredients\n\n1 bottle Brut champagne\n\n1 1/2 oz. brandy\n\n1 1/2 oz. Cointreau\n\n1 L club soda\n\n8 strawberries\n\n1 orange rind\n\n1 orange, sliced with rind\n\n1 pineapple, sliced\n\nfresh mint\n\nDirections\n\nStep 1\n\nPut strawberries into a large punch bowl and crush into small pieces.\n\nStep 2\n\nAdd ice to punch bowl and pour in champagne, brandy, Cointreau, and club soda. Stir.\n\nStep 3\n\nGarnish with orange rinds, sliced orange, sliced pineapple, and plenty of fresh mint.',
-    image: 'https://d2kde5ohu8qb21.cloudfront.net/files/6931bcc020002400028f713c/592923230-1240883204569617-5351794831195745600-n.jpg',
+    image: 'https://www.motortrend.com/files/6931bcc020002400028f713c/592923230-1240883204569617-5351794831195745600-n.jpg',
     createdAt: new Date(Date.now() - 8100000).toISOString(), // 2.25 hours ago
     upvotes: 156,
     downvotes: 0,

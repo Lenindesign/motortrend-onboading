@@ -234,7 +234,7 @@ export const WhatIsMyCarWorth: React.FC<WhatIsMyCarWorthProps> = ({ className })
   }, [selectedVehicle]);
 
   // Placeholder car image for empty state
-  const placeholderCarImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/693b872bcd9da90002c570aa/honda-civic-eg-hatch-png-1.png';
+  const placeholderCarImage = 'https://www.motortrend.com/files/693b872bcd9da90002c570aa/honda-civic-eg-hatch-png-1.png';
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('en-US', { 

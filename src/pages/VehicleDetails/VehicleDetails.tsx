@@ -864,7 +864,7 @@ export const VehicleDetails: React.FC = () => {
         decodedModel.toLowerCase() === 'ev9-land';
 
       if (isKiaEV9) {
-        return 'https://d2kde5ohu8qb21.cloudfront.net/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg';
+        return 'https://www.motortrend.com/files/677ef7efb1d4b8000850e710/010-2024-kia-ev9-land.jpg';
       }
 
       // PRIORITY 3: Use specific image for 2025 Ford F-150 Lightning
@@ -876,7 +876,7 @@ export const VehicleDetails: React.FC = () => {
         normalizedVehicleName.includes('ford f-150 lightning');
 
       if (isF150Lightning && decodedYear === '2025') {
-        return 'https://d2kde5ohu8qb21.cloudfront.net/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg';
+        return 'https://www.motortrend.com/files/68b9ebde156e4300022c4b79/2026fordf-150lightningstxevelectricvehiclepickuptruck-16.jpg';
       }
 
       // PRIORITY 4: Fallback to vehicleImageFor
@@ -1734,7 +1734,7 @@ export const VehicleDetails: React.FC = () => {
                 <div className="vehicle-details__reviewer-section">
                   <div className="vehicle-details__reviewer-avatar-group">
                     <img
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690637eaf09ade000224c6b1/group1318348122.png"
+                      src="https://www.motortrend.com/files/690637eaf09ade000224c6b1/group1318348122.png"
                       alt="Reviewer avatar"
                       className="vehicle-details__reviewer-avatar"
                       width={43}
@@ -2064,7 +2064,7 @@ export const VehicleDetails: React.FC = () => {
           {/* Ad Space 1 */}
           <div className="vehicle-details__ad">
             <img
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+              src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
               alt="Advertisement"
               className="vehicle-details__ad-image"
             />
@@ -2200,7 +2200,7 @@ export const VehicleDetails: React.FC = () => {
           {/* Ad Space 2 */}
           <div className="vehicle-details__ad">
             <img
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+              src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
               alt="Advertisement"
               className="vehicle-details__ad-image"
             />
@@ -2221,7 +2221,7 @@ export const VehicleDetails: React.FC = () => {
           {/* Ad Space 3 */}
           <div className="vehicle-details__ad">
             <img
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+              src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
               alt="Advertisement"
               className="vehicle-details__ad-image"
             />

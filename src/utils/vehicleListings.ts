@@ -141,10 +141,10 @@ const vehicleListingImages: Record<string, string[]> = {
     'https://d2kde5ohu8qb21.cloudfront.net/files/691afd0a7be8e500020c5074/1b215920f0bed0292fa2a366f6b7c86bx.avif',
   ],
   '2025-chevrolet-corvette-zr1': [
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691b05142301ef0002f28cba/37180202a3bfcd82497cb69f5964317c.jpg',
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691b050a0ff7fc0002b26229/0a6cc2c939b1e4c8bdb5c3d623836425x.jpg',
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691b050c0ff7fc0002b2622b/32f5340298ccc772c9b2bee261b0c352x.jpg',
+    'https://www.motortrend.com/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',
+    'https://www.motortrend.com/files/691b05142301ef0002f28cba/37180202a3bfcd82497cb69f5964317c.jpg',
+    'https://www.motortrend.com/files/691b050a0ff7fc0002b26229/0a6cc2c939b1e4c8bdb5c3d623836425x.jpg',
+    'https://www.motortrend.com/files/691b050c0ff7fc0002b2622b/32f5340298ccc772c9b2bee261b0c352x.jpg',
   ],
 };
 

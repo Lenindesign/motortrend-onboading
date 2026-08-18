@@ -303,7 +303,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
           style={imageStyle}
           loading="lazy"
           onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://d2kde5ohu8qb21.cloudfront.net/files/placeholder-vehicle.jpg';
+            (e.target as HTMLImageElement).src = 'https://www.motortrend.com/files/placeholder-vehicle.jpg';
           }}
         />
 
