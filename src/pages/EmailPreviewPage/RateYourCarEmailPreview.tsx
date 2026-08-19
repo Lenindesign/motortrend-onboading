@@ -32,7 +32,7 @@ const EMAIL_VARIANTS = {
 
 type Variant = keyof typeof EMAIL_VARIANTS;
 
-const DEFAULT_STARS_GIF = 'https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg';
+const DEFAULT_STARS_GIF = 'https://www.motortrend.com/files/691bde547554840002bab60c/star.svg';
 
 /** Same hero photo as `RateYourCar` landing page (`pageStyle.backgroundImage`). */
 const DEFAULT_HERO_BACKGROUND_URL =

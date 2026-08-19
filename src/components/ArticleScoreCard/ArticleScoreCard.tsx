@@ -80,7 +80,7 @@ export const ArticleScoreCard: React.FC<ArticleScoreCardProps> = ({ score, vehic
         <div style={circleStyle}>
           <span style={numberStyle}>{score.overallRating?.toFixed(1)}</span>
           <div style={labelRowStyle}>
-            <img src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={mtBadgeStyle} />
+            <img src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={mtBadgeStyle} />
             <span style={labelStyle}>MotorTrend Rating</span>
           </div>
         </div>
@@ -102,7 +102,7 @@ export const ArticleScoreCard: React.FC<ArticleScoreCardProps> = ({ score, vehic
         <div style={reviewerInfoStyle}>
           <div style={reviewerNameStyle}>
             {score.reviewer.name}
-            <img src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={reviewerBadgeStyle} />
+            <img src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={reviewerBadgeStyle} />
           </div>
           <div style={reviewerMetaStyle}>Driven, tested | {score.reviewer.date}</div>
         </div>

@@ -6,8 +6,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-// Using MotorTrend main logo from URL
-const motorTrendLogo = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg';
+import motorTrendLogo from '../../assets/images/motortrend-logo.svg';
 import Icon from '../Icon';
 import { Badge } from '../../design-system/components';
 import { parseVehicleName } from '../../utils/vehicleImages';
@@ -24,8 +23,8 @@ export interface GlobalHeaderProps {
 }
 
 const navigationItems = [
-  { 
-    label: 'News + Stories', 
+  {
+    label: 'News + Stories',
     href: '/news',
     hasMegaDropdown: true,
     megaDropdown: {
@@ -63,8 +62,8 @@ const navigationItems = [
       { label: 'Long-Term Tests', href: '#' }
     ]
   },
-  { 
-    label: 'Research Vehicles', 
+  {
+    label: 'Research Vehicles',
     href: '/vehicles',
     hasMegaDropdown: true,
     megaDropdown: {
@@ -125,8 +124,8 @@ const navigationItems = [
       { label: 'EV Hub', href: '/ev-hub' }
     ]
   },
-  { 
-    label: 'Rankings + Awards', 
+  {
+    label: 'Rankings + Awards',
     href: '/rankings-awards',
     hasMegaDropdown: true,
     megaDropdown: {
@@ -134,28 +133,28 @@ const navigationItems = [
       leftColumn: {
         title: 'MotorTrend Ultimate Car Rankings™',
         items: [
-          { label: 'SUVs', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1db4fe990000234d324/nissanrogue1.svg', href: '/rankings/suv' },
-          { label: 'Sedans', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1dde758ec00025fed17/sedans.svg', href: '/rankings/sedan' },
-          { label: 'Trucks', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1df98f9de0002b0c1c1/pickups.svg', href: '/rankings/truck' },
-          { label: 'Coupes', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e098f9de0002b0c1c3/coupes.svg', href: '/rankings/coupe' },
-          { label: 'Vans', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e1e758ec00025fed1a/vans.svg', href: '/rankings/van' },
-          { label: 'Hybrids', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e2e758ec00025fed1c/hybrids.svg', href: '/rankings/hybrid' },
-          { label: 'Electrics', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e3e758ec00025fed1e/electrics.svg', href: '/rankings/electric' },
-          { label: 'Hatchbacks', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e44fe990000234d326/hatchbacks.svg', href: '/rankings/hatchback' },
-          { label: 'Luxury SUVs', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e57e044b0002dc4af2/luxurysuv.svg', href: '/rankings/luxury-suv' },
-          { label: 'Luxury Cars', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e6e758ec00025fed20/luxurycars.svg', href: '/rankings/luxury-car' },
-          { label: 'Sports Cars', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e77e044b0002dc4af3/sportscars.svg', href: '/rankings/sports-car' },
-          { label: 'Convertibles', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca1e83cdca50002cec96d/convertibles.svg', href: '/rankings/convertible' },
+          { label: 'SUVs', icon: '/images/body-style-icons/suv.svg', href: '/rankings/suv' },
+          { label: 'Sedans', icon: '/images/body-style-icons/sedan.svg', href: '/rankings/sedan' },
+          { label: 'Trucks', icon: '/images/body-style-icons/truck.svg', href: '/rankings/truck' },
+          { label: 'Coupes', icon: '/images/body-style-icons/coupe.svg', href: '/rankings/coupe' },
+          { label: 'Vans', icon: '/images/body-style-icons/van.svg', href: '/rankings/van' },
+          { label: 'Hybrids', iconName: 'electric_car', href: '/rankings/hybrid' },
+          { label: 'Electrics', iconName: 'electric_bolt', href: '/rankings/electric' },
+          { label: 'Hatchbacks', icon: '/images/body-style-icons/hatchback.svg', href: '/rankings/hatchback' },
+          { label: 'Luxury SUVs', icon: '/images/body-style-icons/suv.svg', href: '/rankings/luxury-suv' },
+          { label: 'Luxury Cars', icon: '/images/body-style-icons/sedan.svg', href: '/rankings/luxury-car' },
+          { label: 'Sports Cars', icon: '/images/body-style-icons/coupe.svg', href: '/rankings/sports-car' },
+          { label: 'Convertibles', icon: '/images/body-style-icons/convertible.svg', href: '/rankings/convertible' },
         ]
       },
       rightColumn: {
         title: 'Awards',
         subtitle: 'IntelliChoice Awards',
         items: [
-          { title: 'PERFORMANCE VEHICLE OF THE YEAR', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692caf463107440002a217ff/motortrendperformanceoftheyear.svg', href: '/awards/performance-vehicle-of-the-year' },
-          { title: 'CAR OF THE YEAR', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692caf453107440002a217fd/motortrendcaroftheyear.svg', href: '/vehicles/2026/Volkswagen/Golf-GTI-R' },
-          { title: 'TRUCK OF THE YEAR', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692caf443107440002a217fb/motortrendtruckoftheyear.svg', href: '/awards/truck-of-the-year' },
-          { title: 'SUV OF THE YEAR', icon: 'https://d2kde5ohu8qb21.cloudfront.net/files/692caf433107440002a217f9/motortrendsuvoftheyear.svg', href: '/awards/suv-of-the-year' },
+          { title: 'PERFORMANCE VEHICLE OF THE YEAR', iconName: 'emoji_events', href: '/awards/performance-vehicle-of-the-year' },
+          { title: 'CAR OF THE YEAR', iconName: 'emoji_events', href: '/vehicles/2026/Volkswagen/Golf-GTI-R' },
+          { title: 'TRUCK OF THE YEAR', iconName: 'emoji_events', href: '/awards/truck-of-the-year' },
+          { title: 'SUV OF THE YEAR', iconName: 'emoji_events', href: '/awards/suv-of-the-year' },
         ]
       }
     },
@@ -165,8 +164,8 @@ const navigationItems = [
       { label: 'Comparisons', href: '/compare-vehicles' }
     ]
   },
-  { 
-    label: 'Buy + Sell', 
+  {
+    label: 'Buy + Sell',
     href: '/buy-sell',
     hasMegaDropdown: true,
     megaDropdown: {
@@ -191,12 +190,12 @@ const navigationItems = [
         ]
       },
       middleColumn: {
-        logo: 'https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg',
+        logo: 'https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg',
         description: 'Find your new ride on MotorTrend\'s Collection of New and Used Cars.',
       },
       rightColumn: {
         adImage: 'https://www.motortrend.com/files/692ca3b808d7da000211b79f/ad.png',
-        href: '/cars-for-sale' 
+        href: '/cars-for-sale'
       }
     },
     subItems: [
@@ -213,11 +212,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const location = useLocation();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  
+
   // Responsive state
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1280);
-  
+
   // Hover states
   const [hoveredNavItem, setHoveredNavItem] = useState<string | null>(null);
   const [hoveredDropdownItem, setHoveredDropdownItem] = useState<string | null>(null);
@@ -232,7 +231,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const [hoveredAwardItem, setHoveredAwardItem] = useState<string | null>(null);
   const [_isSearchFocused, setIsSearchFocused] = useState(false);
   const [isSubmitHovered, setIsSubmitHovered] = useState(false);
-  
+
   // Responsive handler
   useEffect(() => {
     const handleResize = () => {
@@ -242,7 +241,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   // Inject keyframes for animations and carousel styles
   useEffect(() => {
     const styleId = 'global-header-styles';
@@ -285,12 +284,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   // Check if a section is active based on current pathname
   const isSectionActive = (item: typeof navigationItems[0]): boolean => {
     const pathname = location.pathname;
-    
+
     // Check if current path matches the section's main href
     if (item.href !== '#' && pathname === item.href) {
       return true;
     }
-    
+
     // For "Buy / Research Cars" section, also check vehicle detail pages
     if (item.href === '/vehicles' && pathname.startsWith('/vehicles/')) {
       // Exclude paths that belong to other sections
@@ -303,7 +302,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     if (item.label === 'Buy + Sell' && pathname.startsWith('/deals')) {
       return true;
     }
-    
+
     // Check if current path matches any subItem href
     if (item.subItems) {
       return item.subItems.some(subItem => {
@@ -313,7 +312,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         return false;
       });
     }
-    
+
     return false;
   };
 
@@ -321,10 +320,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const isSubItemActive = (subItemHref: string): boolean => {
     const pathname = location.pathname;
     if (subItemHref === '#') return false;
-    
+
     // Exact match
     if (pathname === subItemHref) return true;
-    
+
     // For vehicle details pages (/vehicles/:year/:make/:model), check if subItem is /vehicles
     if (subItemHref === '/vehicles' && pathname.startsWith('/vehicles/')) {
       // Only match if it's a vehicle detail page (has 3 path segments after /vehicles/)
@@ -333,7 +332,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         return true;
       }
     }
-    
+
     return false;
   };
   const [userData, setUserData] = useState<{
@@ -346,7 +345,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const researchVehiclesNavRef = useRef<HTMLDivElement>(null);
   const rankingsAwardsNavRef = useRef<HTMLDivElement>(null);
   const buySellNavRef = useRef<HTMLDivElement>(null);
-  
+
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCars, setFilteredCars] = useState<string[]>([]);
@@ -370,7 +369,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  
+
   // Our Brands dropdown state
   const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
   const brandsRef = useRef<HTMLDivElement>(null);
@@ -381,7 +380,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const [contentLeft, setContentLeft] = useState<number | null>(null);
   // State to control the CSS transition class for the mega dropdown
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  
+
   // Research Vehicles Form State
   const [researchMake, setResearchMake] = useState('');
   const [researchModel, setResearchModel] = useState('');
@@ -477,7 +476,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         // User is authenticated if they have onboarding data (completed sign in)
         const authenticated = !!onboardingData;
         setIsAuthenticated(authenticated);
-        
+
         // Only load user data if authenticated
         if (authenticated && onboardingData) {
           const data = JSON.parse(onboardingData);
@@ -525,7 +524,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     const checkNotification = () => {
       const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
       const notificationSeen = localStorage.getItem('profileNotificationSeen') === 'true';
-      
+
       // Calculate notification count (profile completion + new features)
       let count = 0;
       if (onboardingComplete && !notificationSeen) {
@@ -583,10 +582,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         console.error('Error updating user data:', e);
       }
     };
-    
+
     // Listen for custom events
     window.addEventListener('onboardingDataUpdated', handleUpdate);
-    
+
     // Also listen for storage events (when localStorage changes in other tabs)
     window.addEventListener('storage', (e) => {
       if (e.key === 'onboardingData' && e.newValue) {
@@ -609,7 +608,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
     // Also check for updates when the window regains focus
     window.addEventListener('focus', handleUpdate);
-    
+
     // Also add a periodic check to ensure data stays in sync
     const intervalId = setInterval(() => {
       try {
@@ -644,7 +643,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const generateAutocompleteSuggestions = (query: string): string[] => {
     const suggestions: string[] = [];
     const queryLower = query.toLowerCase().trim();
-    
+
     // Handle "best" keyword - show suggestions when user types "best" or "best "
     if (queryLower === 'best' || (queryLower.startsWith('best ') && queryLower.length <= 6)) {
       const bodyStyles = ['SUV', 'Truck', 'Sedan', 'Coupe', 'Electric'];
@@ -653,59 +652,59 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       });
       return suggestions;
     }
-    
+
     // Handle partial compare queries (e.g., "civic vs", "f-150 vs ")
     // When user types "X vs" without a second vehicle, suggest comparisons
     const partialVsMatch = queryLower.match(/^(.+?)\s+(?:vs\.?|versus|v\.?s\.?)\s*$/i);
     if (partialVsMatch) {
       const vehicle1Query = partialVsMatch[1].trim();
       const vehicle1Results = searchVehicles(vehicle1Query, 1);
-      
+
       if (vehicle1Results.length > 0) {
         const vehicle1 = vehicle1Results[0];
         const vehicle1Name = `${vehicle1.year} ${vehicle1.make} ${vehicle1.model}`;
-        
+
         // Get similar vehicles to suggest comparisons
         const similarVehicles = getSimilarVehicles(vehicle1.id, 3);
-        
+
         similarVehicles.forEach(similarVehicle => {
           const similarName = `${similarVehicle.year} ${similarVehicle.make} ${similarVehicle.model}`;
           suggestions.push(`Compare ${vehicle1Name} vs ${similarName}`);
         });
-        
+
         return suggestions;
       }
     }
-    
+
     // Try to detect vehicle name (e.g., "f-150", "camry", "accord", "2025 f-150")
     // Search for vehicles that match the query
     const matchingVehicles = searchVehicles(query, 5);
-    
+
     if (matchingVehicles.length > 0) {
       const vehicle = matchingVehicles[0];
       const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-      
+
       // Check if query looks like a vehicle name (contains model name or make)
       // Normalize both query and vehicle names for better matching
       const queryNormalized = queryLower.replace(/[-\s]/g, '');
       const vehicleModelNormalized = vehicle.model.toLowerCase().replace(/[-\s]/g, '');
       const vehicleMakeNormalized = vehicle.make.toLowerCase().replace(/[-\s]/g, '');
       const queryWords = queryLower.split(/[\s-]+/).filter(w => w.length > 1);
-      
-      const isVehicleQuery = 
+
+      const isVehicleQuery =
         queryNormalized.includes(vehicleModelNormalized) ||
         queryNormalized.includes(vehicleMakeNormalized) ||
-        queryWords.some(word => 
-          vehicleModelNormalized.includes(word) || 
+        queryWords.some(word =>
+          vehicleModelNormalized.includes(word) ||
           vehicleMakeNormalized.includes(word) ||
           word.includes(vehicleModelNormalized) ||
           word.includes(vehicleMakeNormalized)
         );
-      
+
       // If query matches a vehicle and is not just "best", show comparison suggestion
       if (isVehicleQuery && !queryLower.startsWith('best')) {
         const similarVehicles = getSimilarVehicles(vehicle.id, 1);
-        
+
         if (similarVehicles.length > 0) {
           const similarVehicle = similarVehicles[0];
           const similarVehicleName = `${similarVehicle.year} ${similarVehicle.make} ${similarVehicle.model}`;
@@ -713,7 +712,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         }
       }
     }
-    
+
     return suggestions;
   };
 
@@ -722,34 +721,34 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     if (searchQuery.length > 0) {
       const results = searchVehicles(searchQuery, 10); // Reduced to 10 to make room for chatbot
       const vehicleNames = results.map(v => `${v.year} ${v.make} ${v.model}`);
-      
+
       setFilteredCars(vehicleNames);
       setFilteredVehicles(results); // Store full vehicle objects for carousel
-      
+
       // Generate autocomplete suggestions
       const autocomplete = generateAutocompleteSuggestions(searchQuery);
       setAutocompleteSuggestions(autocomplete);
-      
+
       // Detect if query is a generic make
       const queryLower = searchQuery.toLowerCase().trim();
-      
+
       // Detect compare queries (e.g., "f-150 vs ram", "camry versus accord", "mustang vs camaro")
       // Also handles partial queries like "civic vs" or "civic vs "
       const vsMatch = queryLower.match(/^(.+?)\s+(?:vs\.?|versus|v\.?s\.?)\s*(.*)$/i);
       if (vsMatch) {
         const [, vehicle1Query, vehicle2Query] = vsMatch;
-        
+
         // Search for both vehicles (vehicle2Query may be empty for partial queries)
         const vehicle1Results = searchVehicles(vehicle1Query.trim(), 1);
         const vehicle2Results = vehicle2Query.trim() ? searchVehicles(vehicle2Query.trim(), 1) : [];
-        
+
         const vehicle1 = vehicle1Results.length > 0 ? vehicle1Results[0] : null;
         const vehicle2 = vehicle2Results.length > 0 ? vehicle2Results[0] : null;
-        
+
         if (vehicle1 || vehicle2) {
           setIsCompareQuery(true);
           setCompareVehicles({ vehicle1, vehicle2 });
-          
+
           // Search for comparison articles
           const comparisonSearchTerms = [
             vehicle1Query.trim(),
@@ -757,7 +756,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             'comparison',
             'compare'
           ];
-          
+
           // Try to find comparison articles
           let comparisonArticles: Array<{ article: Article; slug: string }> = [];
           for (const term of comparisonSearchTerms) {
@@ -766,7 +765,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               const slug = Object.keys(articlesData).find(key => articlesData[key] === article) || '';
               return { article, slug };
             }).filter(item => item.slug);
-            
+
             // Add unique articles
             for (const articleItem of articlesWithSlugs) {
               if (!comparisonArticles.some(a => a.slug === articleItem.slug)) {
@@ -776,7 +775,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             if (comparisonArticles.length >= 3) break;
           }
           setCompareArticles(comparisonArticles.slice(0, 3));
-          
+
           // Clear other query states since this is a compare query
           setDetectedMake(null);
           setMakeModels([]);
@@ -791,13 +790,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           return; // Exit early for compare queries
         }
       }
-      
+
       // Not a compare query, reset compare state
       setIsCompareQuery(false);
       setCompareVehicles({ vehicle1: null, vehicle2: null });
       setCompareArticles([]);
       const matchedMake = allMakes.find(make => make.toLowerCase() === queryLower);
-      
+
       if (matchedMake) {
         // User is researching a generic make
         setDetectedMake(matchedMake);
@@ -809,7 +808,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       } else {
         setDetectedMake(null);
         setMakeModels([]);
-        
+
         // Detect if query is a vehicle category
         // Note: bodyStyle values in data are: SUV, Truck, Coupe, Hatchback, Sedan
         // For EV, we filter by fuelType instead
@@ -830,9 +829,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           'hatchback': { bodyStyle: 'Hatchback', displayName: 'Hatchback', landingPage: '/hatchback' },
           'hatchbacks': { bodyStyle: 'Hatchback', displayName: 'Hatchback', landingPage: '/hatchback' },
         };
-        
+
         const matchedCategory = categoryMappings[queryLower];
-        
+
         if (matchedCategory) {
           setDetectedCategory(JSON.stringify(matchedCategory));
           // Get top vehicles in this category - use bodyStyle or fuelType
@@ -850,16 +849,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           setCategoryVehicles([]);
         }
       }
-      
+
       // Detect "best" queries (e.g., "best", "best suvs", "best sedans")
       const isBest = queryLower === 'best' || queryLower.startsWith('best ');
       setIsBestQuery(isBest);
-      
+
       if (isBest) {
         // Extract the category from "best suvs", "best trucks", etc.
         const categoryPart = queryLower.replace('best', '').trim();
         const searchTerm = categoryPart || 'best';
-        
+
         // Search for relevant articles
         const articles = searchArticles(searchTerm, 5);
         const articlesWithSlugs = articles.map(article => {
@@ -867,7 +866,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           return { article, slug };
         }).filter(item => item.slug);
         setResearchArticles(articlesWithSlugs);
-        
+
         // Determine body style from the query
         const categoryMappingsForBest: Record<string, string> = {
           'suv': 'SUV', 'suvs': 'SUV',
@@ -877,10 +876,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           'hatchback': 'Hatchback', 'hatchbacks': 'Hatchback',
           'ev': 'Electric', 'evs': 'Electric', 'electric': 'Electric',
         };
-        
+
         const detectedBodyStyle = categoryMappingsForBest[categoryPart] || null;
         setBestQueryCategory(detectedBodyStyle);
-        
+
         // Get top vehicles for this category (or general top vehicles if no category)
         let topVehicles: Vehicle[];
         if (detectedBodyStyle) {
@@ -900,7 +899,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         setBestQueryCategory(null);
         setBestVehicles([]);
       }
-      
+
       setShowSearchDropdown(true);
     } else {
       setFilteredCars([]);
@@ -926,9 +925,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   // Calculate indicator position when mega dropdown is active or when route matches
   useEffect(() => {
     // 1. First priority: Active Dropdown
-    let targetRef = activeDropdown === 'News + Stories' ? newsStoriesNavRef : 
-                     activeDropdown === 'Research Vehicles' ? researchVehiclesNavRef : 
-                     activeDropdown === 'Rankings + Awards' ? rankingsAwardsNavRef : 
+    let targetRef = activeDropdown === 'News + Stories' ? newsStoriesNavRef :
+                     activeDropdown === 'Research Vehicles' ? researchVehiclesNavRef :
+                     activeDropdown === 'Rankings + Awards' ? rankingsAwardsNavRef :
                      activeDropdown === 'Buy + Sell' ? buySellNavRef : null;
 
     // 2. Second priority: Active Route (only if no dropdown is open)
@@ -947,12 +946,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         if (targetRef?.current && navMenuRef.current) {
           const navRect = navMenuRef.current.getBoundingClientRect();
           const navItemRect = targetRef.current.getBoundingClientRect();
-          
+
           // Position indicator relative to the nav menu container
           // This allows us to place it directly in the nav menu and persist it
           setIndicatorLeft(navItemRect.left - navRect.left);
           setIndicatorWidth(navItemRect.width);
-          
+
           // Only calculate content left if we have an active dropdown to show
           if (activeDropdown) {
             // Calculate content left position to align with nav item
@@ -962,7 +961,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             const containerLeft = Math.max(0, (viewportWidth - maxWidth) / 2);
             // Calculate how far the nav item is from the left edge of the centered container
             let contentReferenceRect = navItemRect;
-            
+
             // If Research Vehicles is active, align content with News + Stories
             if (activeDropdown === 'Research Vehicles' && newsStoriesNavRef.current) {
               contentReferenceRect = newsStoriesNavRef.current.getBoundingClientRect();
@@ -983,11 +982,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
       // Calculate position immediately, before rendering
       updateIndicatorPosition();
-      
+
       // Also update on resize/scroll
       window.addEventListener('resize', updateIndicatorPosition);
       window.addEventListener('scroll', updateIndicatorPosition);
-      
+
       return () => {
         window.removeEventListener('resize', updateIndicatorPosition);
         window.removeEventListener('scroll', updateIndicatorPosition);
@@ -1009,13 +1008,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       // Only close if clicking outside both elements
       const isOutsideNav = navMenuRef.current && !navMenuRef.current.contains(event.target as Node);
       const isOutsideMegaDropdown = megaDropdownRef.current && !megaDropdownRef.current.contains(event.target as Node);
-      
+
       // Check specific nav items
       const isOutsideNewsNav = !newsStoriesNavRef.current || !newsStoriesNavRef.current.contains(event.target as Node);
       const isOutsideResearchNav = !researchVehiclesNavRef.current || !researchVehiclesNavRef.current.contains(event.target as Node);
       const isOutsideRankingsNav = !rankingsAwardsNavRef.current || !rankingsAwardsNavRef.current.contains(event.target as Node);
       const isOutsideBuySellNav = !buySellNavRef.current || !buySellNavRef.current.contains(event.target as Node);
-      
+
       // Only close if clicking outside all relevant elements
       if (isOutsideNav && isOutsideMegaDropdown && isOutsideNewsNav && isOutsideResearchNav && isOutsideRankingsNav && isOutsideBuySellNav) {
         closeDropdown();
@@ -1041,11 +1040,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     setShowUserDropdown(!showUserDropdown);
   };
 
+  const isMotorTrendAvatar = (avatar?: string) => {
+    if (!avatar) return true;
+    return /mt-brand-icon|mt40|mtavatar|motortrend/i.test(avatar);
+  };
+
   const handleNavHover = (label: string) => {
     // Calculate position synchronously before showing dropdown to prevent jump
-    const targetRef = label === 'News + Stories' ? newsStoriesNavRef : 
-                     label === 'Research Vehicles' ? researchVehiclesNavRef : 
-                     label === 'Rankings + Awards' ? rankingsAwardsNavRef : 
+    const targetRef = label === 'News + Stories' ? newsStoriesNavRef :
+                     label === 'Research Vehicles' ? researchVehiclesNavRef :
+                     label === 'Rankings + Awards' ? rankingsAwardsNavRef :
                      label === 'Buy + Sell' ? buySellNavRef : null;
 
     if (targetRef?.current && navMenuRef.current) {
@@ -1053,7 +1057,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       const navItemRect = targetRef.current.getBoundingClientRect();
       const indicatorPos = navItemRect.left - navRect.left;
       const indicatorW = navItemRect.width;
-      
+
       const maxWidth = 1280;
       const viewportWidth = window.innerWidth;
       const containerLeft = Math.max(0, (viewportWidth - maxWidth) / 2);
@@ -1069,18 +1073,18 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
       const navItemLeftRelativeToContainer = contentReferenceRect.left - containerLeft;
       const contentPos = Math.max(0, navItemLeftRelativeToContainer);
-      
+
       // Set positions first, then show dropdown in next frame to ensure positions are applied
       setIndicatorLeft(indicatorPos);
       setIndicatorWidth(indicatorW);
       setContentLeft(contentPos);
-      
+
       // Ensure dropdown starts invisible state
       setIsDropdownVisible(false);
-      
+
       // Mount the dropdown
       setActiveDropdown(label);
-      
+
       // Trigger animation after mount
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
@@ -1168,7 +1172,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setHighlightedSearchIndex(prev => 
+        setHighlightedSearchIndex(prev =>
           prev < filteredCars.length - 1 ? prev + 1 : prev
         );
         break;
@@ -1430,6 +1434,26 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     transform: 'translateZ(0)'
   };
 
+  const mtAvatarStyle: React.CSSProperties = {
+    width: isMobile ? '28px' : '32px',
+    height: isMobile ? '28px' : '32px',
+    borderRadius: '50%',
+    backgroundColor: 'var(--color-primary-1, #E90C17)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    flexShrink: 0,
+  };
+
+  const mtAvatarImgStyle: React.CSSProperties = {
+    width: isMobile ? '18px' : '20px',
+    height: 'auto',
+    objectFit: 'contain',
+    filter: 'brightness(0) invert(1)',
+    transform: 'translateZ(0)',
+  };
+
   const notificationBadgeStyle: React.CSSProperties = {
     position: 'absolute',
     top: isMobile ? '-4px' : '-6px',
@@ -1522,9 +1546,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         <div style={topRowStyle}>
           <div style={leftSectionStyle}>
             <Link to="/" style={logoLinkStyle}>
-              <img 
-                src={motorTrendLogo} 
-                alt="MotorTrend" 
+              <img
+                src={motorTrendLogo}
+                alt="MotorTrend"
                 style={logoStyle}
               />
             </Link>
@@ -1579,7 +1603,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     AI ASSISTANT
                   </span>
                 </div>
-                
+
                 {/* AI Chatbot Suggestion - Always First */}
                 <div
                   style={{
@@ -1640,7 +1664,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   </span>
                   <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
                 </div>
-                
+
                 {/* Autocomplete Suggestions - Show up to 3 suggestions after AI Assistant */}
                 {autocompleteSuggestions.length > 0 && !isBestQuery && (
                   <>
@@ -1693,11 +1717,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 {detectedMake && makeModels.length > 0 && (
                   <>
                     {/* News + Stories Section (Primary) */}
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      padding: '12px 16px 8px 16px',
+                      fontSize: '11px',
+                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       fontWeight: 600,
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -1770,13 +1794,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         </div>
                       );
                     })}
-                    
+
                     {/* Shop Section (Secondary) - Carousel with top vehicles */}
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      padding: '12px 16px 8px 16px',
+                      fontSize: '11px',
+                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       fontWeight: 600,
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -1787,9 +1811,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     }}>
                       <span>BUY + SELL</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span 
-                          style={{ 
-                            cursor: 'pointer', 
+                        <span
+                          style={{
+                            cursor: 'pointer',
                             color: 'var(--color-primary-1, #E90C17)',
                             fontSize: '11px',
                             fontWeight: 500
@@ -1802,15 +1826,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         >
                           View All →
                         </span>
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
-                          alt="MotorTrend Marketplace" 
+                        <img
+                          src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                          alt="MotorTrend Marketplace"
                           style={{ height: '16px', width: 'auto' }}
                         />
                       </div>
                     </div>
                     {/* Buy + Sell Carousel with leads-style cards for the make */}
-                    <div 
+                    <div
                       className="search-carousel"
                       style={{
                         display: 'flex',
@@ -1895,7 +1919,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 <span>View Listings</span>
                               </div>
                             </div>
-                            
+
                             {/* Content */}
                             <div style={{
                               padding: '12px',
@@ -1912,7 +1936,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               }}>
                                 {makeName} {modelName}
                               </div>
-                              
+
                               {/* Shop CTA */}
                               <div style={{
                                 fontSize: '12px',
@@ -1933,18 +1957,18 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     </div>
                   </>
                 )}
-                
+
                 {/* Category-Specific Layout - Show when user searches for a category (SUV, sedan, EV, etc.) */}
                 {detectedCategory && categoryVehicles.length > 0 && (() => {
                   const categoryData = JSON.parse(detectedCategory) as { bodyStyle?: string; fuelType?: string; displayName: string; landingPage: string };
                   return (
                     <>
                       {/* Vehicles Section (Primary) */}
-                      <div style={{ 
-                        padding: '12px 16px 8px 16px', 
-                        fontSize: '11px', 
-                        color: 'var(--color-neutrals-5, #B1B5C3)', 
-                        textTransform: 'uppercase', 
+                      <div style={{
+                        padding: '12px 16px 8px 16px',
+                        fontSize: '11px',
+                        color: 'var(--color-neutrals-5, #B1B5C3)',
+                        textTransform: 'uppercase',
                         letterSpacing: '0.5px',
                         fontWeight: 600,
                         borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2017,13 +2041,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           </div>
                         );
                       })}
-                      
+
                       {/* Editorial Section (Secondary) */}
-                      <div style={{ 
-                        padding: '12px 16px 8px 16px', 
-                        fontSize: '11px', 
-                        color: 'var(--color-neutrals-5, #B1B5C3)', 
-                        textTransform: 'uppercase', 
+                      <div style={{
+                        padding: '12px 16px 8px 16px',
+                        fontSize: '11px',
+                        color: 'var(--color-neutrals-5, #B1B5C3)',
+                        textTransform: 'uppercase',
                         letterSpacing: '0.5px',
                         fontWeight: 600,
                         borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2063,13 +2087,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         <span style={{ flex: 1 }}>{categoryData.displayName} News & Reviews</span>
                         <Icon name="arrow_forward" size={18} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
                       </div>
-                      
+
                       {/* Shop Section - Carousel with top vehicles in category */}
-                      <div style={{ 
-                        padding: '12px 16px 8px 16px', 
-                        fontSize: '11px', 
-                        color: 'var(--color-neutrals-5, #B1B5C3)', 
-                        textTransform: 'uppercase', 
+                      <div style={{
+                        padding: '12px 16px 8px 16px',
+                        fontSize: '11px',
+                        color: 'var(--color-neutrals-5, #B1B5C3)',
+                        textTransform: 'uppercase',
                         letterSpacing: '0.5px',
                         fontWeight: 600,
                         borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2080,15 +2104,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       }}>
                         <span>BUY + SELL</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span 
-                            style={{ 
-                              cursor: 'pointer', 
+                          <span
+                            style={{
+                              cursor: 'pointer',
                               color: 'var(--color-primary-1, #E90C17)',
                               fontSize: '11px',
                               fontWeight: 500
                             }}
                             onClick={() => {
-                              const filterParam = categoryData.bodyStyle 
+                              const filterParam = categoryData.bodyStyle
                                 ? `bodyStyle=${categoryData.bodyStyle.toLowerCase()}`
                                 : `fuelType=${categoryData.fuelType?.toLowerCase() || 'electric'}`;
                               navigate(`/cars-for-sale?${filterParam}`);
@@ -2098,15 +2122,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           >
                             View All →
                           </span>
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
-                            alt="MotorTrend Marketplace" 
+                          <img
+                            src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                            alt="MotorTrend Marketplace"
                             style={{ height: '16px', width: 'auto' }}
                           />
                         </div>
                       </div>
                       {/* Buy + Sell Carousel with leads-style cards in category */}
-                      <div 
+                      <div
                         className="search-carousel"
                         style={{
                           display: 'flex',
@@ -2191,7 +2215,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                   <span>View Listings</span>
                                 </div>
                               </div>
-                              
+
                               {/* Content */}
                               <div style={{
                                 padding: '12px',
@@ -2208,7 +2232,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 }}>
                                   {makeName} {modelName}
                                 </div>
-                                
+
                                 {/* Shop CTA */}
                                 <div style={{
                                   fontSize: '12px',
@@ -2230,16 +2254,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     </>
                   );
                 })()}
-                
+
                 {/* Compare Query Layout - Side-by-side comparison for "f-150 vs ram", "camry versus accord" */}
                 {isCompareQuery && (compareVehicles.vehicle1 || compareVehicles.vehicle2) && (
                   <>
                     {/* Vehicles Section - Direct links to each model page */}
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      padding: '12px 16px 8px 16px',
+                      fontSize: '11px',
+                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       fontWeight: 600,
                       borderBottom: '1px solid var(--color-neutrals-3, #353945)'
@@ -2277,8 +2301,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
                           <span style={{ flex: 1 }}>{vehicleName}</span>
                           {vehicle.staffRating && (
-                            <span style={{ 
-                              fontSize: '12px', 
+                            <span style={{
+                              fontSize: '12px',
                               color: '#33CCFF',
                               fontWeight: 600
                             }}>
@@ -2288,15 +2312,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         </div>
                       );
                     })}
-                    
+
                     {/* Editorial Section (Secondary) - Comparison articles if they exist */}
                     {compareArticles.length > 0 && (
                       <>
-                        <div style={{ 
-                          padding: '12px 16px 8px 16px', 
-                          fontSize: '11px', 
-                          color: 'var(--color-neutrals-5, #B1B5C3)', 
-                          textTransform: 'uppercase', 
+                        <div style={{
+                          padding: '12px 16px 8px 16px',
+                          fontSize: '11px',
+                          color: 'var(--color-neutrals-5, #B1B5C3)',
+                          textTransform: 'uppercase',
                           letterSpacing: '0.5px',
                           fontWeight: 600,
                           borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2351,13 +2375,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         ))}
                       </>
                     )}
-                    
+
                     {/* Shop Section - Show both vehicles for shopping */}
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      padding: '12px 16px 8px 16px',
+                      fontSize: '11px',
+                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       fontWeight: 600,
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2368,9 +2392,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     }}>
                       <span>BUY + SELL</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span 
-                          style={{ 
-                            cursor: 'pointer', 
+                        <span
+                          style={{
+                            cursor: 'pointer',
                             color: 'var(--color-primary-1, #E90C17)',
                             fontSize: '11px',
                             fontWeight: 500
@@ -2383,14 +2407,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         >
                           View All →
                         </span>
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
-                          alt="MotorTrend Marketplace" 
+                        <img
+                          src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                          alt="MotorTrend Marketplace"
                           style={{ height: '16px', width: 'auto' }}
                         />
                       </div>
                     </div>
-                    <div 
+                    <div
                       className="search-carousel"
                       style={{
                         display: 'flex',
@@ -2437,14 +2461,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               e.currentTarget.style.boxShadow = 'none';
                             }}
                           >
-                            <div style={{ 
-                              height: '100px', 
+                            <div style={{
+                              height: '100px',
                               overflow: 'hidden',
                               backgroundColor: '#F4F5F6',
                               position: 'relative'
                             }}>
-                              <img 
-                                src={vehicle.image} 
+                              <img
+                                src={vehicle.image}
                                 alt={`${makeName} ${modelName}`}
                                 style={{
                                   width: '100%',
@@ -2471,7 +2495,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 <span>View Listings</span>
                               </div>
                             </div>
-                            <div style={{ 
+                            <div style={{
                               padding: '12px',
                               backgroundColor: 'var(--color-white, #FFFFFF)'
                             }}>
@@ -2486,7 +2510,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               }}>
                                 {makeName} {modelName}
                               </div>
-                              
+
                               {/* Shop CTA */}
                               <div style={{
                                 fontSize: '12px',
@@ -2505,19 +2529,19 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         );
                       })}
                     </div>
-                    
+
                   </>
                 )}
-                
+
                 {/* Best Query Layout - Editorial-led discovery for "best suvs", "best sedans", etc. */}
                 {isBestQuery && (
                   <>
                     {/* Editorial Section (Primary) - Best-of or ranking articles */}
-                    <div style={{ 
-                      padding: '12px 16px 8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      padding: '12px 16px 8px 16px',
+                      fontSize: '11px',
+                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       fontWeight: 600,
                       borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2619,15 +2643,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         ))}
                       </>
                     )}
-                    
+
                     {/* Vehicles Section (Secondary) - Top 3-4 vehicles from ranking */}
                     {bestVehicles.length > 0 && (
                       <>
-                        <div style={{ 
-                          padding: '12px 16px 8px 16px', 
-                          fontSize: '11px', 
-                          color: 'var(--color-neutrals-5, #B1B5C3)', 
-                          textTransform: 'uppercase', 
+                        <div style={{
+                          padding: '12px 16px 8px 16px',
+                          fontSize: '11px',
+                          color: 'var(--color-neutrals-5, #B1B5C3)',
+                          textTransform: 'uppercase',
                           letterSpacing: '0.5px',
                           fontWeight: 600,
                           borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2665,8 +2689,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               <Icon name="directions_car" size={16} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', flexShrink: 0 }} />
                               <span style={{ flex: 1 }}>{vehicleName}</span>
                               {vehicle.staffRating && (
-                                <span style={{ 
-                                  fontSize: '12px', 
+                                <span style={{
+                                  fontSize: '12px',
                                   color: '#33CCFF',
                                   fontWeight: 600
                                 }}>
@@ -2678,15 +2702,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         })}
                       </>
                     )}
-                    
+
                     {/* Shop Section - Carousel with best vehicles */}
                     {bestVehicles.length > 0 && (
                       <>
-                        <div style={{ 
-                          padding: '12px 16px 8px 16px', 
-                          fontSize: '11px', 
-                          color: 'var(--color-neutrals-5, #B1B5C3)', 
-                          textTransform: 'uppercase', 
+                        <div style={{
+                          padding: '12px 16px 8px 16px',
+                          fontSize: '11px',
+                          color: 'var(--color-neutrals-5, #B1B5C3)',
+                          textTransform: 'uppercase',
                           letterSpacing: '0.5px',
                           fontWeight: 600,
                           borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2697,15 +2721,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         }}>
                           <span>BUY + SELL</span>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span 
-                              style={{ 
-                                cursor: 'pointer', 
+                            <span
+                              style={{
+                                cursor: 'pointer',
                                 color: 'var(--color-primary-1, #E90C17)',
                                 fontSize: '11px',
                                 fontWeight: 500
                               }}
                               onClick={() => {
-                                const shopPath = bestQueryCategory 
+                                const shopPath = bestQueryCategory
                                   ? `/cars-for-sale?bodyStyle=${bestQueryCategory.toLowerCase()}`
                                   : '/cars-for-sale';
                                 navigate(shopPath);
@@ -2715,14 +2739,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                             >
                               View All →
                             </span>
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg" 
-                              alt="MotorTrend Marketplace" 
+                            <img
+                              src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                              alt="MotorTrend Marketplace"
                               style={{ height: '16px', width: 'auto' }}
                             />
                           </div>
                         </div>
-                        <div 
+                        <div
                           className="search-carousel"
                           style={{
                             display: 'flex',
@@ -2806,7 +2830,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     <span>View Listings</span>
                                   </div>
                                 </div>
-                                <div style={{ 
+                                <div style={{
                                   padding: '12px',
                                   backgroundColor: 'var(--color-white, #FFFFFF)'
                                 }}>
@@ -2821,7 +2845,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                   }}>
                                     {makeName} {modelName}
                                   </div>
-                                  
+
                                   {/* Shop CTA */}
                                   <div style={{
                                     fontSize: '12px',
@@ -2844,15 +2868,15 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     )}
                   </>
                 )}
-                
+
                 {/* Vehicle Results - Hide when make, category, or best query is detected */}
                 {!detectedMake && !detectedCategory && !isBestQuery && filteredCars.length > 0 && (
                   <>
-                    <div style={{ 
-                      padding: '8px 16px', 
-                      fontSize: '11px', 
-                      color: 'var(--color-neutrals-5, #B1B5C3)', 
-                      textTransform: 'uppercase', 
+                    <div style={{
+                      padding: '8px 16px',
+                      fontSize: '11px',
+                      color: 'var(--color-neutrals-5, #B1B5C3)',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.5px',
                       fontWeight: 600,
                       borderBottom: '1px solid var(--color-neutrals-3, #353945)'
@@ -2884,7 +2908,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     })}
                   </>
                 )}
-                
+
                 {/* Carousel Section - Hide when make, category, or best query is detected */}
                 {!detectedMake && !detectedCategory && !isBestQuery && filteredVehicles.length > 0 && (() => {
                   // Determine if vehicles are 2+ years old
@@ -2892,14 +2916,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   const oldestVehicleYear = Math.min(...filteredVehicles.map(v => parseInt(v.year) || currentYear));
                   const isUsed = currentYear - oldestVehicleYear >= 2;
                   const shopLabel = isUsed ? 'SHOP USED' : 'SHOP NEW';
-                  
+
                   return (
                     <>
-                      <div style={{ 
-                        padding: '12px 16px 8px 16px', 
-                        fontSize: '11px', 
-                        color: 'var(--color-neutrals-5, #B1B5C3)', 
-                        textTransform: 'uppercase', 
+                      <div style={{
+                        padding: '12px 16px 8px 16px',
+                        fontSize: '11px',
+                        color: 'var(--color-neutrals-5, #B1B5C3)',
+                        textTransform: 'uppercase',
                         letterSpacing: '0.5px',
                         fontWeight: 600,
                         borderTop: '1px solid var(--color-neutrals-3, #353945)',
@@ -2907,7 +2931,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       }}>
                         {shopLabel}
                       </div>
-                    <div 
+                    <div
                       ref={carouselRef}
                       className="search-carousel"
                       style={{
@@ -2970,7 +2994,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 }}
                               />
                             </div>
-                            
+
                             {/* Content */}
                             <div style={{
                               padding: '10px'
@@ -2991,7 +3015,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                   <span style={{ fontWeight: 600, color: 'var(--color-white, #FFFFFF)' }}>{rating}/10</span>
                                 </div>
                               )}
-                              
+
                               {/* Make and Model */}
                               <div style={{
                                 fontSize: '14px',
@@ -3003,7 +3027,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               }}>
                                 {vehicleName}
                               </div>
-                              
+
                               {/* Price Range */}
                               <div style={{
                                 fontSize: '12px',
@@ -3021,14 +3045,14 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     </>
                   );
                 })()}
-                
+
               </div>
             )}
           </div>
-          
+
           {/* Subscribe Button - Only show if user is not authenticated */}
           {!isAuthenticated && (
-            <button 
+            <button
               style={newsletterBtnStyle}
               onMouseEnter={() => setIsNewsletterHovered(true)}
               onMouseLeave={() => setIsNewsletterHovered(false)}
@@ -3040,10 +3064,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               Subscribe
             </button>
           )}
-          
+
           {isAuthenticated ? (
             <div style={userMenuStyle} ref={userMenuRef}>
-              <button 
+              <button
                 style={userBtnStyle}
                 onClick={handleUserMenuClick}
                 onMouseEnter={() => setIsUserBtnHovered(true)}
@@ -3051,19 +3075,21 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 aria-label="User menu"
               >
                 <div style={avatarWrapperStyle}>
-                  {userData?.avatar ? (
-                    <img 
-                      key={userData.avatar}
-                      src={userData.avatar} 
-                      alt={userData.name || 'User'} 
+                  {!isMotorTrendAvatar(userData?.avatar) ? (
+                    <img
+                      key={userData!.avatar}
+                      src={userData!.avatar}
+                      alt={userData?.name || 'User'}
                       style={avatarImgStyle}
                     />
                   ) : (
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
-                      alt="MotorTrend" 
-                      style={avatarImgStyle}
-                    />
+                    <span style={mtAvatarStyle} aria-label="MotorTrend">
+                      <img
+                        src="/images/mt-brand-icon.svg"
+                        alt=""
+                        style={mtAvatarImgStyle}
+                      />
+                    </span>
                   )}
                   {notificationCount > 0 && (
                     <div style={notificationBadgeStyle}>
@@ -3074,24 +3100,26 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   )}
                 </div>
               </button>
-              
+
               {showUserDropdown && (
                 <div style={userDropdownStyle}>
                   <div style={userInfoStyle}>
                     <div style={{ flexShrink: 0, borderRadius: 0, overflow: 'visible', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none' }}>
-                      {userData?.avatar ? (
-                        <img 
-                          key={userData.avatar}
-                          src={userData.avatar} 
-                          alt={userData.name || 'User'} 
+                      {!isMotorTrendAvatar(userData?.avatar) ? (
+                        <img
+                          key={userData!.avatar}
+                          src={userData!.avatar}
+                          alt={userData?.name || 'User'}
                           style={avatarImgStyle}
                         />
                       ) : (
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
-                          alt="MotorTrend" 
-                          style={avatarImgStyle}
-                        />
+                        <span style={mtAvatarStyle} aria-label="MotorTrend">
+                          <img
+                            src="/images/mt-brand-icon.svg"
+                            alt=""
+                            style={mtAvatarImgStyle}
+                          />
+                        </span>
                       )}
                     </div>
                     <div style={userDetailsStyle}>
@@ -3100,7 +3128,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     </div>
                   </div>
                   <div style={dropdownDividerStyle}></div>
-                  <button 
+                  <button
                     style={getDropdownItemStyle('profile')}
                     onMouseEnter={() => setHoveredUserDropdownItem('profile')}
                     onMouseLeave={() => setHoveredUserDropdownItem(null)}
@@ -3112,7 +3140,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     <Icon name="account_circle" size={16} style={{ color: hoveredUserDropdownItem === 'profile' ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-4, #6E7481)', flexShrink: 0, transition: 'color var(--transition-fast, 150ms ease-in-out)' }} />
                     Profile
                   </button>
-                  <button 
+                  <button
                     style={getDropdownItemStyle('saved')}
                     onMouseEnter={() => setHoveredUserDropdownItem('saved')}
                     onMouseLeave={() => setHoveredUserDropdownItem(null)}
@@ -3124,7 +3152,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     <Icon name="bookmark_border" size={16} style={{ color: hoveredUserDropdownItem === 'saved' ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-4, #6E7481)', flexShrink: 0, transition: 'color var(--transition-fast, 150ms ease-in-out)' }} />
                     Saved
                   </button>
-                  <button 
+                  <button
                     style={getDropdownItemStyle('subscriptions')}
                     onMouseEnter={() => setHoveredUserDropdownItem('subscriptions')}
                     onMouseLeave={() => setHoveredUserDropdownItem(null)}
@@ -3137,7 +3165,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     Subscriptions
                   </button>
                   <div style={dropdownDividerStyle}></div>
-                  <button 
+                  <button
                     style={getDropdownItemStyle('signout', true)}
                     onMouseEnter={() => setHoveredUserDropdownItem('signout')}
                     onMouseLeave={() => setHoveredUserDropdownItem(null)}
@@ -3150,7 +3178,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               )}
             </div>
           ) : (
-            <button 
+            <button
               style={signInBtnStyle}
               onMouseEnter={() => setIsSignInHovered(true)}
               onMouseLeave={() => setIsSignInHovered(false)}
@@ -3177,12 +3205,12 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           {navigationItems.map((item) => {
             const isActive = isSectionActive(item);
             const isHovered = hoveredNavItem === item.label || activeDropdown === item.label;
-            
+
             const navItemStyle: React.CSSProperties = {
               position: 'relative',
               flexShrink: 0
             };
-            
+
             const navLinkStyle: React.CSSProperties = {
               display: 'flex',
               alignItems: 'center',
@@ -3199,7 +3227,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               transition: 'all var(--transition-fast, 150ms ease-in-out)',
               backgroundColor: 'transparent'
             };
-            
+
             const navDropdownStyle: React.CSSProperties = {
               position: 'absolute',
               top: 'calc(100% + 4px)',
@@ -3216,13 +3244,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               overflow: 'hidden',
               animation: 'slideDown 0.2s ease-out'
             };
-            
+
             return (
-              <div 
-                key={item.label} 
-                ref={item.label === 'News + Stories' ? newsStoriesNavRef : 
-                     item.label === 'Research Vehicles' ? researchVehiclesNavRef : 
-                     item.label === 'Rankings + Awards' ? rankingsAwardsNavRef : 
+              <div
+                key={item.label}
+                ref={item.label === 'News + Stories' ? newsStoriesNavRef :
+                     item.label === 'Research Vehicles' ? researchVehiclesNavRef :
+                     item.label === 'Rankings + Awards' ? rankingsAwardsNavRef :
                      item.label === 'Buy + Sell' ? buySellNavRef : null}
                 style={navItemStyle}
                 onMouseEnter={() => {
@@ -3234,8 +3262,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   handleNavLeave();
                 }}
               >
-                <a 
-                  href={item.href} 
+                <a
+                  href={item.href}
                   style={navLinkStyle}
                 >
                   {item.label}
@@ -3260,11 +3288,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         borderBottom: '1px solid var(--color-neutrals-3, #353945)',
                         backgroundColor: isSubActive || hoveredDropdownItem === subItem.label ? 'var(--color-neutrals-3, #353945)' : 'transparent'
                       };
-                      
+
                       return subItem.href === '#' ? (
-                        <a 
+                        <a
                           key={subItem.label}
-                          href={subItem.href} 
+                          href={subItem.href}
                           style={subItemStyle}
                           onMouseEnter={() => setHoveredDropdownItem(subItem.label)}
                           onMouseLeave={() => setHoveredDropdownItem(null)}
@@ -3272,9 +3300,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           {subItem.label}
                         </a>
                       ) : (
-                        <Link 
+                        <Link
                           key={subItem.label}
-                          to={subItem.href} 
+                          to={subItem.href}
                           style={subItemStyle}
                           onMouseEnter={() => setHoveredDropdownItem(subItem.label)}
                           onMouseLeave={() => setHoveredDropdownItem(null)}
@@ -3289,19 +3317,19 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               </div>
             );
           })}
-          
+
           {/* Mega Dropdown - Rendered outside nav items for proper positioning */}
           {navigationItems.map((item, index) => {
             if (activeDropdown === item.label && (item as any).hasMegaDropdown && (item as any).megaDropdown) {
               const isVisible = indicatorLeft !== null && contentLeft !== null && isDropdownVisible;
-              
+
               const megaDropdownStyle: React.CSSProperties = {
                 position: 'absolute',
                 top: 'calc(100% - 2px)',
                 left: '50%',
                 transformOrigin: 'top center',
-                transform: isVisible 
-                  ? 'translateX(-50%) translateY(0) scaleY(1)' 
+                transform: isVisible
+                  ? 'translateX(-50%) translateY(0) scaleY(1)'
                   : 'translateX(-50%) translateY(-10px) scaleY(0.95)',
                 width: '100vw',
                 backgroundColor: 'var(--color-neutrals-1, #141416)',
@@ -3315,7 +3343,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 transition: 'opacity 0.2s ease-out, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.2s',
                 paddingTop: '2px'
               };
-              
+
               const megaDropdownContentStyle: React.CSSProperties = {
                 maxWidth: '1280px',
                 margin: '0 auto',
@@ -3327,10 +3355,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 gap: 0,
                 position: 'relative'
               };
-              
+
               return (
-                <div 
-                  key={`mega-${item.label}`} 
+                <div
+                  key={`mega-${item.label}`}
                   ref={megaDropdownRef}
                   style={megaDropdownStyle}
                   data-nav-index={index}
@@ -3347,13 +3375,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         const dropdownRect = megaDropdownRef.current.getBoundingClientRect();
                         const mouseX = (e.nativeEvent as MouseEvent).clientX;
                         const mouseY = (e.nativeEvent as MouseEvent).clientY;
-                        const isOverDropdown = mouseX >= dropdownRect.left && mouseX <= dropdownRect.right && 
+                        const isOverDropdown = mouseX >= dropdownRect.left && mouseX <= dropdownRect.right &&
                                                mouseY >= dropdownRect.top && mouseY <= dropdownRect.bottom;
                         if (!isOverDropdown) {
                           let isOverNav = false;
                           if (newsStoriesNavRef.current) {
                             const navRect = newsStoriesNavRef.current.getBoundingClientRect();
-                            isOverNav = mouseX >= navRect.left && mouseX <= navRect.right && 
+                            isOverNav = mouseX >= navRect.left && mouseX <= navRect.right &&
                                        mouseY >= navRect.top && mouseY <= navRect.bottom;
                           }
                           if (!isOverNav) {
@@ -3635,7 +3663,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--color-neutrals-2, #23262F)', padding: '16px', borderRadius: 'var(--border-radius-md, 8px)' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                   <label style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)' }}>Make</label>
-                                  <select 
+                                  <select
                                     style={{
                                       backgroundColor: 'var(--color-neutrals-1, #141416)',
                                       border: '1px solid var(--color-neutrals-3, #353945)',
@@ -3663,7 +3691,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                   <label style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)' }}>Model</label>
-                                  <select 
+                                  <select
                                     style={{
                                       backgroundColor: 'var(--color-neutrals-1, #141416)',
                                       border: '1px solid var(--color-neutrals-3, #353945)',
@@ -3693,7 +3721,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                   <label style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontSize: '12px', color: 'var(--color-neutrals-4, #6E7481)' }}>Year</label>
-                                  <select 
+                                  <select
                                     style={{
                                       backgroundColor: 'var(--color-neutrals-1, #141416)',
                                       border: '1px solid var(--color-neutrals-3, #353945)',
@@ -3721,7 +3749,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     ))}
                                   </select>
                                 </div>
-                                <button 
+                                <button
                                   style={{
                                     backgroundColor: (!researchYear || !researchMake || !researchModel) ? 'var(--color-neutrals-4, #6E7481)' : (isSubmitHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)'),
                                     color: 'var(--color-white, #FFFFFF)',
@@ -3795,7 +3823,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     onClick={() => setActiveDropdown(null)}
                                   >
                                     <div style={{ width: '48px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                      <img src={ranking.icon} alt={ranking.label} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                      {ranking.iconName ? (
+                                        <Icon name={ranking.iconName} size={32} style={{ color: 'var(--color-neutrals-8, #FCFCFD)' }} />
+                                      ) : (
+                                        <img src={ranking.icon} alt={ranking.label} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                      )}
                                     </div>
                                     <div style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontWeight: 500, fontSize: '14px', color: 'var(--color-white, #FFFFFF)', textAlign: 'center' }}>
                                       {ranking.label}
@@ -3856,8 +3888,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     onMouseLeave={() => setHoveredAwardItem(null)}
                                     onClick={() => setActiveDropdown(null)}
                                   >
-                                    <div style={{ width: '100%', height: '100%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                      <img src={award.icon} alt={award.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                    <div style={{ width: '100%', height: '100%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                                      <Icon name={award.iconName || 'emoji_events'} size={24} style={{ color: 'var(--color-primary-1, #E90C17)', flexShrink: 0 }} />
+                                      <span style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontWeight: 600, fontSize: '15px', lineHeight: '22px', color: 'var(--color-white, #FFFFFF)' }}>
+                                        {award.title}
+                                      </span>
                                     </div>
                                   </Link>
                                 ))}
@@ -3921,9 +3956,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               boxSizing: 'border-box'
                             }}>
                               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                <img 
-                                  src={(item as any).megaDropdown.middleColumn.logo} 
-                                  alt="MotorTrend Marketplace" 
+                                <img
+                                  src={(item as any).megaDropdown.middleColumn.logo}
+                                  alt="MotorTrend Marketplace"
                                   style={{ height: '24px', width: 'auto' }}
                                 />
                               </div>
@@ -3934,7 +3969,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                 <div style={{ display: 'flex', gap: '16px', marginBottom: 0 }}>
                                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
                                     <label style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontSize: '12px', lineHeight: '14px', color: 'var(--color-neutrals-6, #E6E8EC)' }}>Make</label>
-                                    <select 
+                                    <select
                                       style={{
                                         width: '100%',
                                         height: '40px',
@@ -3965,7 +4000,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                   </div>
                                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
                                     <label style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontSize: '12px', lineHeight: '14px', color: 'var(--color-neutrals-6, #E6E8EC)' }}>Model</label>
-                                    <select 
+                                    <select
                                       style={{
                                         width: '100%',
                                         height: '40px',
@@ -4021,7 +4056,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                     />
                                   </div>
                                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1, justifyContent: 'flex-end' }}>
-                                    <button 
+                                    <button
                                       style={{
                                         backgroundColor: isSubmitHovered ? 'var(--color-primary-2, #c70a15)' : 'var(--color-primary-1, #E90C17)',
                                         color: 'var(--color-white, #FFFFFF)',
@@ -4060,9 +4095,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               style={{ display: 'block', width: '300px', height: '250px', borderRadius: 0, overflow: 'hidden' }}
                               onClick={() => setActiveDropdown(null)}
                             >
-                              <img 
-                                src={(item as any).megaDropdown.rightColumn.adImage} 
-                                alt="Advertisement" 
+                              <img
+                                src={(item as any).megaDropdown.rightColumn.adImage}
+                                alt="Advertisement"
                                 style={{ width: '300px', height: '250px', display: 'block', objectFit: 'contain' }}
                               />
                             </Link>
@@ -4075,10 +4110,10 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             }
             return null;
           })}
-          
+
           {/* Our Brands Dropdown */}
           <div style={{ position: 'relative', marginLeft: 'auto', display: isMobile ? 'none' : 'block' }} ref={brandsRef}>
-            <select 
+            <select
               style={{
                 fontFamily: "'Geist', var(--font-body, sans-serif)",
                 fontWeight: 400,
@@ -4116,8 +4151,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           </div>
 
           {/* Global Active/Hover Indicator */}
-          <div 
-            style={{ 
+          <div
+            style={{
               position: 'absolute',
               bottom: 0,
               height: '3px',

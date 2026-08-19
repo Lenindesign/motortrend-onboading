@@ -2516,6 +2516,7 @@
   margin-top: var(--section-spacing-vertical);
   margin-bottom: var(--section-spacing-vertical);
   width: 100%;
+  scroll-margin-top: 110px;
 }
 
 /* Sidebar */
@@ -3394,36 +3395,6 @@
   .article__gallery-image-wrapper {
     padding: var(--spacing-3);
   }
-}
-
-/* Comment Tooltip */
-.article__comment-tooltip {
-  background-color: var(--color-neutrals-1);
-  color: var(--color-white);
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: var(--font-weight-semibold);
-  line-height: 1.4;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  animation: tooltipFadeIn 0.15s ease forwards;
-}
-
-/* Arrow pointing down */
-.article__comment-tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid var(--color-neutrals-1);
 }
 
 @keyframes tooltipFadeIn {

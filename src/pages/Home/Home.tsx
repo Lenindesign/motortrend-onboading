@@ -1,7 +1,7 @@
 /**
  * Home Page Component
  * MotorTrend home page based on Figma design
- * 
+ *
  * This page supports two rendering modes:
  * 1. Dynamic Mode (Journey Builder): Controlled by layouts from Supabase/localStorage
  *    - Enable with URL param: ?useDynamicLayout=true
@@ -55,7 +55,7 @@ apiVehicles.forEach(v => {
 const carDatabase = apiVehicles.map(v => `${v.year} ${v.make} ${v.model}`);
 
 // Convert API vehicles to VehicleItem format with images - NO HARDCODED DATA
-const allVehicleItems: VehicleItem[] = carDatabase.map(name => ({ 
+const allVehicleItems: VehicleItem[] = carDatabase.map(name => ({
   name,
   image: vehicleImageMap.get(name) // Include API image
 }));
@@ -77,7 +77,7 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { getUserRating } = useRating();
   const [searchParams] = useSearchParams();
-  
+
   // Dynamic layout is now enabled by default (Journey Builder integration)
   // Can be disabled via URL param: ?useDynamicLayout=false
   // Or localStorage: dynamicLayoutEnabled=false
@@ -86,7 +86,7 @@ export const Home: React.FC = () => {
     const urlParam = searchParams.get('useDynamicLayout');
     if (urlParam === 'true') return true;
     if (urlParam === 'false') return false;
-    
+
     // Check localStorage setting - default to true (enabled)
     try {
       const storedValue = localStorage.getItem('dynamicLayoutEnabled');
@@ -96,7 +96,7 @@ export const Home: React.FC = () => {
       return true; // Default to enabled
     }
   }, [searchParams]);
-  
+
   // Initialize preferred body style from localStorage synchronously
   const getInitialBodyStyle = (): 'SUV' | 'Sedan' | 'Truck' | 'Coupe' => {
     try {
@@ -121,62 +121,62 @@ export const Home: React.FC = () => {
     }
     return 'SUV';
   };
-  
+
   // Get user type from onboarding data - make it reactive
   const [userType, setUserType] = useState<string | null>(null);
   // Preferred body style based on vehicles user wants to buy
   const [preferredBodyStyle, setPreferredBodyStyle] = useState<'SUV' | 'Sedan' | 'Truck' | 'Coupe'>(getInitialBodyStyle);
-  
+
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderHovered, setIsSliderHovered] = useState(false);
   const slideIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  
+
   // Sedan carousel state
   const [currentSlideSedan, setCurrentSlideSedan] = useState(0);
   const [isSliderHoveredSedan, setIsSliderHoveredSedan] = useState(false);
   const slideIntervalRefSedan = useRef<ReturnType<typeof setInterval> | null>(null);
-  
+
   // Truck carousel state
   const [currentSlideTruck, setCurrentSlideTruck] = useState(0);
   const [isSliderHoveredTruck, setIsSliderHoveredTruck] = useState(false);
   const slideIntervalRefTruck = useRef<ReturnType<typeof setInterval> | null>(null);
-  
+
   // Fullscreen state
   const [fullscreenVehicle, setFullscreenVehicle] = useState<Vehicle | null>(null);
   const [fullscreenCarouselType, setFullscreenCarouselType] = useState<'suv' | 'sedan' | 'truck' | null>(null);
   const [fullscreenIndex, setFullscreenIndex] = useState(0);
-  
+
   // Top Ten carousel filter state
   type VehicleType = 'SUV' | 'Sedan' | 'Truck' | 'Coupe';
   type Subcategory = 'All' | 'Subcompact' | 'Compact' | 'Midsize' | 'Full-Size' | 'Luxury' | 'Performance' | 'Electric' | 'Heavy-Duty';
-  
+
   const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>('SUV');
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>('All');
 
   // Track viewed vehicles count for conditional PersonalizedVehicles placement
   const [viewedVehiclesCount, setViewedVehiclesCount] = useState(() => getViewedVehicles().length);
-  
+
   // Update viewed vehicles count when it changes
   useEffect(() => {
     const updateCount = () => {
       const count = getViewedVehicles().length;
       setViewedVehiclesCount(count);
     };
-    
+
     // Sync count immediately on mount (in case localStorage wasn't ready during initial render)
     updateCount();
-    
+
     // Listen for viewed vehicles updates
     window.addEventListener('viewedVehiclesUpdated', updateCount);
     window.addEventListener('storage', updateCount);
-    
+
     return () => {
       window.removeEventListener('viewedVehiclesUpdated', updateCount);
       window.removeEventListener('storage', updateCount);
     };
   }, []);
-  
+
   // Show PersonalizedVehicles at top when user has 4+ viewed vehicles
   const showPersonalizedAtTop = viewedVehiclesCount >= 4;
 
@@ -203,7 +203,7 @@ export const Home: React.FC = () => {
           const parsed = JSON.parse(onboardingData);
           const type = parsed.userType || null;
           setUserType(type);
-          
+
           // Determine preferred body style from vehicles user wants to buy
           const vehicles = parsed.vehicles || [];
           const wantVehicles = vehicles.filter((v: { ownership: string }) => v.ownership === 'want');
@@ -233,7 +233,7 @@ export const Home: React.FC = () => {
 
     // Listen for storage changes (in case onboarding completes in another tab)
     window.addEventListener('storage', readUserType);
-    
+
     // Also listen for custom event if onboarding data is updated in same tab
     const handleOnboardingUpdate = () => {
       readUserType();
@@ -554,7 +554,7 @@ export const Home: React.FC = () => {
     // Filter out stories based on persona
     const filteredContent = (() => {
       if (persona?.name === 'Practical Paula') {
-        return allContent.filter(item => 
+        return allContent.filter(item =>
           !(item.title.includes('Bentley') && item.title.includes('Supersports')) &&
           !item.title.includes('Subaru WRX tS') &&
           !(item.title.includes('Dodge Charger') && item.title.includes('Has Been Fixed')) &&
@@ -563,13 +563,13 @@ export const Home: React.FC = () => {
         );
       }
       if (persona?.name === 'Gearhead Greg') {
-        const filtered = allContent.filter(item => 
+        const filtered = allContent.filter(item =>
           !(item.title.includes('Honda CR-V TrailSport') || item.title.includes('CR-V TrailSport')) &&
           !(item.title.includes('Kia Sportage') && item.title.includes('Built for Buyers')) &&
           !(item.title.includes('Cadillac Optiq-V') || item.title.includes('Optiq-V')) &&
           !(item.title.includes('Ford Bronco Raptor') && item.title.includes('Desert Runner Meets Daily Driver'))
         );
-        
+
         // Add Honda Electric Sports Car story for Greg
         filtered.push({
           imageUrl: 'https://www.motortrend.com/files/65bbec15236e4600085bb3e8/2019-acura-nsx-07.jpg',
@@ -580,7 +580,7 @@ export const Home: React.FC = () => {
             navigate('/article/honda-electric-sports-car-timing-uncertain');
           },
         });
-        
+
         return filtered;
       }
       return allContent;
@@ -588,24 +588,24 @@ export const Home: React.FC = () => {
 
     // Sort all content by persona preferences
     let sortedContent = sortContentForPersonalization(filteredContent, userType);
-    
+
     // For Greg, prioritize Bentley Supersports story in hero position
     if (persona?.name === 'Gearhead Greg') {
-      const bentleyArticle = sortedContent.find(item => 
+      const bentleyArticle = sortedContent.find(item =>
         item.title.includes('Bentley') && item.title.includes('Supersports')
       );
       if (bentleyArticle) {
         // Remove Bentley from current position and place it first
-        sortedContent = sortedContent.filter(item => 
+        sortedContent = sortedContent.filter(item =>
           !(item.title.includes('Bentley') && item.title.includes('Supersports'))
         );
         sortedContent.unshift(bentleyArticle);
       }
     }
-    
+
     // Select hero (first item)
     const selectedHero = sortedContent[0] || defaultHero;
-    
+
     // Filter out hero from cards (compare by title to avoid duplicates)
     const cardsWithoutHero = sortedContent
       .filter(item => item.title !== selectedHero.title)
@@ -922,7 +922,7 @@ export const Home: React.FC = () => {
     // Filter out stories based on persona
     const filteredNewsItems = (() => {
       if (persona?.name === 'Practical Paula') {
-        return newsItems.filter(item => 
+        return newsItems.filter(item =>
           !(item.title.includes('Bentley') && item.title.includes('Supersports')) &&
           !item.title.includes('Subaru WRX tS') &&
           !(item.title.includes('Dodge Charger') && item.title.includes('Has Been Fixed')) &&
@@ -932,7 +932,7 @@ export const Home: React.FC = () => {
         );
       }
       if (persona?.name === 'Gearhead Greg') {
-        return newsItems.filter(item => 
+        return newsItems.filter(item =>
           !(item.title.includes('Honda CR-V TrailSport') || item.title.includes('CR-V TrailSport')) &&
           !(item.title.includes('Kia Sportage') && item.title.includes('Built for Buyers')) &&
           !(item.title.includes('Cadillac Optiq-V') || item.title.includes('Optiq-V'))
@@ -940,25 +940,25 @@ export const Home: React.FC = () => {
       }
       return newsItems;
     })();
-    
+
     // Filter out stories that appear in hero or vertical cards to avoid duplicates
     const heroAndCardsTitles = new Set([
       heroData.title,
       ...verticalCards.map(card => card.title)
     ]);
-    
-    const withoutHeroAndCards = filteredNewsItems.filter(item => 
+
+    const withoutHeroAndCards = filteredNewsItems.filter(item =>
       !heroAndCardsTitles.has(item.title)
     );
-    
+
     // For Gearhead Greg, prioritize Ferrari 296 Speciale as the first story
     let finalSortedItems;
     if (persona?.name === 'Gearhead Greg') {
-      const ferrariStory = withoutHeroAndCards.find(item => 
+      const ferrariStory = withoutHeroAndCards.find(item =>
         item.title.includes('Ferrari 296 Speciale')
       );
       if (ferrariStory) {
-        const otherStories = withoutHeroAndCards.filter(item => 
+        const otherStories = withoutHeroAndCards.filter(item =>
           !item.title.includes('Ferrari 296 Speciale')
         );
         finalSortedItems = [ferrariStory, ...otherStories];
@@ -968,13 +968,13 @@ export const Home: React.FC = () => {
     } else {
       finalSortedItems = sortContentForPersonalization(withoutHeroAndCards, userType);
     }
-    
+
     // Place Escalade IQ article in second position (index 1) of the first river
-    const escaladeIndex = finalSortedItems.findIndex(item => 
-      item.title.includes('Cadillac Escalade IQ') || 
+    const escaladeIndex = finalSortedItems.findIndex(item =>
+      item.title.includes('Cadillac Escalade IQ') ||
       item.title.includes('2026 MotorTrend SUV of the Year')
     );
-    
+
     if (escaladeIndex !== -1 && escaladeIndex !== 1) {
       const escaladeArticle = finalSortedItems[escaladeIndex];
       // Remove from current position
@@ -982,7 +982,7 @@ export const Home: React.FC = () => {
       // Insert at position 1 (second position of river)
       finalSortedItems.splice(1, 0, escaladeArticle);
     }
-    
+
     return finalSortedItems;
   }, [userType, newsItems, persona, heroData, verticalCards]);
 
@@ -991,7 +991,7 @@ export const Home: React.FC = () => {
     const desiredCount = 10;
     const preferredStart = 12;
     const availableAfterPreferred = sortedNewsItems.length - preferredStart;
-    
+
     if (availableAfterPreferred >= desiredCount) {
       // Enough items after index 12, use the preferred slice
       return sortedNewsItems.slice(preferredStart, preferredStart + desiredCount);
@@ -1022,7 +1022,7 @@ export const Home: React.FC = () => {
       .map(slug => {
         const article = getArticleBySlug(slug);
         if (!article) return null;
-        
+
         return {
           imageUrl: article.heroImage,
           title: article.title,
@@ -1045,7 +1045,7 @@ export const Home: React.FC = () => {
         } as RiverItem & { categories?: ContentCategory[] };
       })
       .filter((item): item is RiverItem & { categories?: ContentCategory[] } => item !== null);
-    
+
     // Sort by persona preferences if user is signed in
     return sortContentForPersonalization(articles, userType);
   }, [navigate, userType]);
@@ -1058,12 +1058,12 @@ export const Home: React.FC = () => {
     // Helper function to score vehicles by persona match
     const scoreVehicleForPersona = (vehicle: VehicleItem): number => {
       if (!persona) return 0;
-      
+
       const vehicleLifestyles = getVehicleLifestyles(vehicle.name);
-      const matchingCategories = persona.priorityCategories.filter(cat => 
+      const matchingCategories = persona.priorityCategories.filter(cat =>
         vehicleLifestyles.includes(cat as LifestyleCategory)
       );
-      
+
       // Score based on how many persona categories match
       return matchingCategories.length / persona.priorityCategories.length;
     };
@@ -1079,13 +1079,13 @@ export const Home: React.FC = () => {
     } else {
       // Use persona categories if available, otherwise use userType categories
       let filterCategories: LifestyleCategory[] = [];
-      
+
       if (persona) {
         // Map persona priority categories to lifestyle categories
         filterCategories = persona.priorityCategories as LifestyleCategory[];
       } else {
         // Fall back to userType-based categories
-        filterCategories = userType === 'buyer' 
+        filterCategories = userType === 'buyer'
           ? ['Family & Practical', 'Daily Commute', 'Utility & Work', 'Adventure & Off-Road']
           : userType === 'enthusiast'
           ? ['Performance & Enthusiast', 'Adventure & Off-Road']
@@ -1113,13 +1113,13 @@ export const Home: React.FC = () => {
           if (persona) {
             const scoreA = scoreVehicleForPersona(a);
             const scoreB = scoreVehicleForPersona(b);
-            
+
             // Higher scores come first
             if (Math.abs(scoreA - scoreB) > 0.01) {
               return scoreB - scoreA;
             }
           }
-          
+
           // Then sort by year (latest first)
           const yearA = parseInt(a.name.match(/\d{4}/)?.[0] || '0');
           const yearB = parseInt(b.name.match(/\d{4}/)?.[0] || '0');
@@ -1162,91 +1162,91 @@ export const Home: React.FC = () => {
   // Helper function to determine vehicle subcategory
   const getVehicleSubcategory = (vehicleName: string, type: VehicleType): Subcategory => {
     const name = vehicleName.toLowerCase();
-    
+
     // Check for electric vehicles first (applies to all types)
     const electricKeywords = ['electric', 'ev', 'e-tron', 'taycan', 'model 3', 'model s', 'model x', 'model y', 'i4', 'i8', 'eq', 'ioniq', 'leaf', 'bolt', 'id.4', 'mach-e', 'lightning', 'rivian', 'lucid', 'polestar', 'ariya', 'bz4x'];
     if (electricKeywords.some(keyword => name.includes(keyword))) return 'Electric';
-    
+
     if (type === 'SUV') {
       // Subcompact SUVs (smallest)
       const subcompactModels = ['hr-v', 'venue', 'trailblazer', 'ecosport', 'kicks', 'soul', 'encore', 'trax', 'seltos', 'kona', 'crosstrek'];
       if (subcompactModels.some(model => name.includes(model))) return 'Subcompact';
-      
+
       // Full-size SUVs (largest)
       const fullsizeModels = ['expedition', 'tahoe', 'suburban', 'yukon', 'armada', 'sequoia', 'navigator', 'escalade', 'qx80', 'gls', 'gx', 'lx', 'land cruiser', 'wagoneer', 'grand wagoneer', 'qx56'];
       if (fullsizeModels.some(model => name.includes(model))) return 'Full-Size';
-      
+
       // Midsize SUVs
       const midsizeModels = ['pilot', 'highlander', 'explorer', 'grand cherokee', 'pathfinder', 'cx-9', 'palisade', 'telluride', 'atlas', 'ascent', 'traverse', 'enclave', 'durango', 'q7', 'x5', 'gle', 'rx', 'mdx', 'passport', 'murano', 'edge', 'blazer', 'santa fe', 'sorento'];
       if (midsizeModels.some(model => name.includes(model))) return 'Midsize';
-      
+
       // Default to Compact for everything else (CR-V, RAV4, Rogue, Tucson, Sportage, CX-5, Forester, Outback, etc.)
       return 'Compact';
     }
-    
+
     if (type === 'Sedan') {
       // Luxury Sedans
       const luxuryModels = ['s-class', 'a8', 'ls', '7 series', 'panamera', 'flying spur', 'continental', 'ghost', 'phantom', 'a7', 'cls', 'e-class', 'gs', 'es', 'q70', 'genesis g90'];
       if (luxuryModels.some(model => name.includes(model))) return 'Luxury';
-      
+
       // Performance Sedans
       const performanceModels = ['m3', 'm5', 'amg', 'rs3', 'rs4', 'rs5', 'rs6', 'rs7', 'sti', 'wrx', 'type r', 'gt', 's3', 's4', 's5', 's6', 's7', 's8', 'giulia', 'stinger'];
       if (performanceModels.some(model => name.includes(model))) return 'Performance';
-      
+
       // Full-size Sedans
       const fullsizeModels = ['charger', 'avalon', 'impala', '300', 'taurus', 'maxima', 'azera', 'k900'];
       if (fullsizeModels.some(model => name.includes(model))) return 'Full-Size';
-      
+
       // Compact Sedans
       const compactModels = ['civic', 'corolla', 'sentra', 'elantra', 'forte', 'impreza', 'mazda3', 'jetta', 'golf'];
       if (compactModels.some(model => name.includes(model))) return 'Compact';
-      
+
       // Default to Midsize (Accord, Camry, Altima, Sonata, Optima, Malibu, Fusion, Passat, Legacy, etc.)
       return 'Midsize';
     }
-    
+
     if (type === 'Truck') {
       // Heavy-Duty Trucks
       const heavyDutyModels = ['2500', '3500', 'f-250', 'f-350', 'f-450', 'silverado 2500', 'silverado 3500', 'sierra 2500', 'sierra 3500', 'ram 2500', 'ram 3500', 'titan xd'];
       if (heavyDutyModels.some(model => name.includes(model))) return 'Heavy-Duty';
-      
+
       // Midsize Trucks (Ranger, Colorado, Tacoma, Frontier, Gladiator, Canyon, Ridgeline)
       const midsizeModels = ['ranger', 'colorado', 'tacoma', 'frontier', 'gladiator', 'canyon', 'ridgeline'];
       if (midsizeModels.some(model => name.includes(model))) return 'Midsize';
-      
+
       // Compact Trucks (smaller trucks if any)
       const compactModels = ['maverick', 'santa cruz'];
       if (compactModels.some(model => name.includes(model))) return 'Compact';
-      
+
       // Default to Full-Size (F-150, Silverado 1500, Sierra 1500, Ram 1500, Tundra, Titan, etc.)
       return 'Full-Size';
     }
-    
+
     if (type === 'Coupe') {
       // Luxury Coupes
       const luxuryModels = ['s-class', 'a7', 'a8', 'cls', '8 series', 'lc', 'rc', 'continental'];
       if (luxuryModels.some(model => name.includes(model))) return 'Luxury';
-      
+
       // Performance Coupes
       const performanceModels = ['m2', 'm4', 'm8', 'amg', 'rs5', 'rs7', 'gt', 'corvette', 'camaro', 'challenger', 'mustang', 'supra', 'z', '370z', '400z', 'gt-r', 'nsx', 'r8'];
       if (performanceModels.some(model => name.includes(model))) return 'Performance';
-      
+
       return 'Luxury';
     }
-    
+
     if (type === 'Wagon') {
       // Luxury Wagons
       const luxuryModels = ['e-class', 'a6', 'a4', 'v60', 'v90', '5 series', 'panamera'];
       if (luxuryModels.some(model => name.includes(model))) return 'Luxury';
-      
+
       // Compact Wagons
       const compactModels = ['golf', 'impreza', 'corolla'];
       if (compactModels.some(model => name.includes(model))) return 'Compact';
-      
+
       // Default to Midsize
       return 'Midsize';
     }
-    
+
     return 'All';
   };
 
@@ -1262,7 +1262,7 @@ export const Home: React.FC = () => {
       const bodyStyles = getVehicleBodyStyle(vehicle.name);
       return bodyStyles.includes(selectedVehicleType);
     });
-    
+
     // Filter by subcategory if not 'All'
     if (selectedSubcategory !== 'All') {
       filteredVehicles = filteredVehicles.filter(vehicle => {
@@ -1276,7 +1276,7 @@ export const Home: React.FC = () => {
       const year = decodeURIComponent(parsed.year);
       const make = decodeURIComponent(parsed.make);
       const model = decodeURIComponent(parsed.model);
-      
+
       const currentYear = new Date().getFullYear();
       const vehicleYear = parseInt(year) || currentYear;
       const makeModelHash = (make + model).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -1286,13 +1286,13 @@ export const Home: React.FC = () => {
       const hour = (makeModelHash % 24);
       const minute = (makeModelHash % 60);
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
-      
+
       // Use API ratings as primary source (single source of truth)
       // Only fallback to generated ratings if API data is missing
       const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
       const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const combinedRating = (staffRating + communityRating) / 2;
-      
+
       return {
         id: `vehicle-${index}`,
         name: vehicleItem.name,
@@ -1357,7 +1357,7 @@ export const Home: React.FC = () => {
       const year = decodeURIComponent(parsed.year);
       const make = decodeURIComponent(parsed.make);
       const model = decodeURIComponent(parsed.model);
-      
+
       const currentYear = new Date().getFullYear();
       const vehicleYear = parseInt(year) || currentYear;
       const makeModelHash = (make + model).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -1367,13 +1367,13 @@ export const Home: React.FC = () => {
       const hour = (makeModelHash % 24);
       const minute = (makeModelHash % 60);
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
-      
+
       // Use API ratings as primary source (single source of truth)
       // Only fallback to generated ratings if API data is missing
       const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
       const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const combinedRating = (staffRating + communityRating) / 2;
-      
+
       return {
         id: `vehicle-${index}`,
         name: vehicleItem.name,
@@ -1427,12 +1427,12 @@ export const Home: React.FC = () => {
   // Auto-advance carousel with subcategory switching
   useEffect(() => {
     if (carouselVehicles.length <= 1) return;
-    
+
     if (!isSliderHovered) {
       slideIntervalRef.current = setInterval(() => {
         setCurrentSlide((prev) => {
           const nextSlide = prev + 1;
-          
+
           // If we've reached the end of the current subcategory, switch to next subcategory
           if (nextSlide >= carouselVehicles.length) {
             const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -1441,7 +1441,7 @@ export const Home: React.FC = () => {
             setSelectedSubcategory(subcategories[nextIndex]);
             return 0; // Start from first slide of new subcategory
           }
-          
+
           return nextSlide;
         });
       }, 5000);
@@ -1450,7 +1450,7 @@ export const Home: React.FC = () => {
         clearInterval(slideIntervalRef.current);
       }
     }
-    
+
     return () => {
       if (slideIntervalRef.current) {
         clearInterval(slideIntervalRef.current);
@@ -1483,7 +1483,7 @@ export const Home: React.FC = () => {
         e.preventDefault();
         setCurrentSlide((prev) => {
           const nextSlide = prev + 1;
-          
+
           // If we've reached the end, switch to next subcategory
           if (nextSlide >= carouselVehicles.length) {
             const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -1492,7 +1492,7 @@ export const Home: React.FC = () => {
             setSelectedSubcategory(subcategories[nextIndex]);
             return 0; // Start from first slide of new subcategory
           }
-          
+
           return nextSlide;
         });
       }
@@ -1516,7 +1516,7 @@ export const Home: React.FC = () => {
       const year = decodeURIComponent(parsed.year);
       const make = decodeURIComponent(parsed.make);
       const model = decodeURIComponent(parsed.model);
-      
+
       const currentYear = new Date().getFullYear();
       const vehicleYear = parseInt(year) || currentYear;
       const makeModelHash = (make + model).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -1526,13 +1526,13 @@ export const Home: React.FC = () => {
       const hour = (makeModelHash % 24);
       const minute = (makeModelHash % 60);
       const createdDate = new Date(publicationYear, month - 1, day, hour, minute);
-      
+
       // Use API ratings as primary source (single source of truth)
       // Only fallback to generated ratings if API data is missing
       const staffRating = vehicleItem.staffRating ?? generateStaffRating(vehicleItem.name);
       const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const combinedRating = (staffRating + communityRating) / 2;
-      
+
       return {
         id: `vehicle-${index}`,
         name: vehicleItem.name,
@@ -1586,7 +1586,7 @@ export const Home: React.FC = () => {
   // Auto-advance sedan carousel
   useEffect(() => {
     if (sedanCarouselVehicles.length <= 1) return;
-    
+
     if (!isSliderHoveredSedan) {
       slideIntervalRefSedan.current = setInterval(() => {
         setCurrentSlideSedan((prev) => (prev + 1) % sedanCarouselVehicles.length);
@@ -1596,7 +1596,7 @@ export const Home: React.FC = () => {
         clearInterval(slideIntervalRefSedan.current);
       }
     }
-    
+
     return () => {
       if (slideIntervalRefSedan.current) {
         clearInterval(slideIntervalRefSedan.current);
@@ -1629,7 +1629,7 @@ export const Home: React.FC = () => {
         e.preventDefault();
         setCurrentSlideSedan((prev) => {
           const nextSlide = prev + 1;
-          
+
           // If we've reached the end, switch to next subcategory
           if (nextSlide >= sedanCarouselVehicles.length) {
             const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -1638,7 +1638,7 @@ export const Home: React.FC = () => {
             setSelectedSubcategory(subcategories[nextIndex]);
             return 0;
           }
-          
+
           return nextSlide;
         });
       }
@@ -1651,7 +1651,7 @@ export const Home: React.FC = () => {
   // Auto-advance truck carousel
   useEffect(() => {
     if (truckCarouselVehicles.length <= 1) return;
-    
+
     if (!isSliderHoveredTruck) {
       slideIntervalRefTruck.current = setInterval(() => {
         setCurrentSlideTruck((prev) => (prev + 1) % truckCarouselVehicles.length);
@@ -1661,7 +1661,7 @@ export const Home: React.FC = () => {
         clearInterval(slideIntervalRefTruck.current);
       }
     }
-    
+
     return () => {
       if (slideIntervalRefTruck.current) {
         clearInterval(slideIntervalRefTruck.current);
@@ -1694,7 +1694,7 @@ export const Home: React.FC = () => {
         e.preventDefault();
         setCurrentSlideTruck((prev) => {
           const nextSlide = prev + 1;
-          
+
           // If we've reached the end, switch to next subcategory
           if (nextSlide >= truckCarouselVehicles.length) {
             const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -1703,7 +1703,7 @@ export const Home: React.FC = () => {
             setSelectedSubcategory(subcategories[nextIndex]);
             return 0;
           }
-          
+
           return nextSlide;
         });
       }
@@ -1720,10 +1720,10 @@ export const Home: React.FC = () => {
 
   const handleExpandClick = (e: React.MouseEvent, vehicle: Vehicle, carouselType: 'suv' | 'sedan' | 'truck') => {
     e.stopPropagation();
-    
+
     // Find the index of the vehicle in the appropriate carousel
     let index = 0;
-    
+
     if (carouselType === 'suv') {
       index = carouselVehicles.findIndex(v => v.id === vehicle.id);
     } else if (carouselType === 'sedan') {
@@ -1731,13 +1731,13 @@ export const Home: React.FC = () => {
     } else if (carouselType === 'truck') {
       index = truckCarouselVehicles.findIndex(v => v.id === vehicle.id);
     }
-    
+
     setFullscreenVehicle(vehicle);
     setFullscreenCarouselType(carouselType);
     setFullscreenIndex(index >= 0 ? index : 0);
     document.body.style.overflow = 'hidden';
   };
-  
+
   // Get current carousel vehicles list
   const getFullscreenVehicleList = (): Vehicle[] => {
     if (fullscreenCarouselType === 'suv') return carouselVehicles;
@@ -1745,12 +1745,12 @@ export const Home: React.FC = () => {
     if (fullscreenCarouselType === 'truck') return truckCarouselVehicles;
     return [];
   };
-  
+
   // Navigate to next vehicle in fullscreen
   const handleFullscreenNext = () => {
     const vehicleList = getFullscreenVehicleList();
     if (vehicleList.length === 0) return;
-    
+
     // If we've reached the end of the current category, switch to next subcategory
     if (fullscreenIndex >= vehicleList.length - 1) {
       const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -1761,17 +1761,17 @@ export const Home: React.FC = () => {
       // Vehicle will be updated when carouselVehicles updates
       return;
     }
-    
+
     const nextIndex = fullscreenIndex + 1;
     setFullscreenIndex(nextIndex);
     setFullscreenVehicle(vehicleList[nextIndex]);
   };
-  
+
   // Navigate to previous vehicle in fullscreen
   const handleFullscreenPrev = () => {
     const vehicleList = getFullscreenVehicleList();
     if (vehicleList.length === 0) return;
-    
+
     // If we're at the first vehicle, switch to previous subcategory
     if (fullscreenIndex === 0) {
       const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -1782,12 +1782,12 @@ export const Home: React.FC = () => {
       // Vehicle will be updated when carouselVehicles updates
       return;
     }
-    
+
     const prevIndex = fullscreenIndex - 1;
     setFullscreenIndex(prevIndex);
     setFullscreenVehicle(vehicleList[prevIndex]);
   };
-  
+
   // Navigate to specific vehicle in fullscreen
   const handleFullscreenGoTo = (index: number) => {
     const vehicleList = getFullscreenVehicleList();
@@ -1799,7 +1799,7 @@ export const Home: React.FC = () => {
   // Switch to different carousel type in fullscreen
   const handleSwitchToCarousel = (carouselType: 'suv' | 'sedan' | 'truck') => {
     let vehicleList: Vehicle[] = [];
-    
+
     if (carouselType === 'suv') {
       vehicleList = carouselVehicles;
     } else if (carouselType === 'sedan') {
@@ -1807,7 +1807,7 @@ export const Home: React.FC = () => {
     } else if (carouselType === 'truck') {
       vehicleList = truckCarouselVehicles;
     }
-    
+
     if (vehicleList.length > 0) {
       setFullscreenCarouselType(carouselType);
       setFullscreenIndex(0);
@@ -1825,7 +1825,7 @@ export const Home: React.FC = () => {
   // Update fullscreen vehicle when subcategory changes
   useEffect(() => {
     if (!fullscreenVehicle || !fullscreenCarouselType) return;
-    
+
     const vehicleList = getFullscreenVehicleList();
     if (vehicleList.length > 0 && fullscreenIndex < vehicleList.length) {
       setFullscreenVehicle(vehicleList[fullscreenIndex]);
@@ -1860,13 +1860,13 @@ export const Home: React.FC = () => {
   const renderStarRating = (ratingValue: number) => {
     // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
     const normalizedRating = ratingValue / 2;
-    
+
     return (
       <div className="home__carousel-rating-stars">
         {[1, 2, 3, 4, 5].map((star) => {
           const isFilled = star < Math.ceil(normalizedRating);
           const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
-          
+
           return (
             <div key={star} className={`home__carousel-star-wrapper ${isHalf ? 'home__carousel-star-wrapper--half' : ''}`}>
               {/* Outline star */}
@@ -1918,11 +1918,11 @@ export const Home: React.FC = () => {
     }
     return false;
   }, []);
-  
+
   // Check if user is a shopper (buyer or both) OR hasn't completed onboarding
   // Show Top Ten Carousel with Leads for shoppers and new/anonymous users
   const isShopper = userType === 'buyer' || userType === 'both' || userType === null;
-  
+
   // Note: isEnthusiastOnly can be used for future experience differentiation
   // const isEnthusiastOnly = userType === 'enthusiast';
 
@@ -2114,7 +2114,7 @@ export const Home: React.FC = () => {
         {/* Community Posts Promo Section */}
         <div className="home__section">
           <div className="home__left-column">
-            <CommunityPostsPromo 
+            <CommunityPostsPromo
               title="Trending in Community"
               maxPosts={6}
             />
@@ -2132,7 +2132,7 @@ export const Home: React.FC = () => {
 
         {/* Top Ten Sedans Carousel - Above Rankings & Awards */}
         <div className="home__section home__section--full-width">
-          <TopTenCarousel 
+          <TopTenCarousel
             initialVehicleType="Sedan"
             initialSubcategory="All"
           />
@@ -2160,7 +2160,7 @@ export const Home: React.FC = () => {
         {/* Vehicle Carousel Section - Full width - Top Ten SUVs (Hidden for Car Buyers) */}
         {false && !isCarBuyers && carouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
-            <div 
+            <div
               className="home__carousel"
               onMouseEnter={() => setIsSliderHovered(true)}
               onMouseLeave={() => setIsSliderHovered(false)}
@@ -2169,7 +2169,7 @@ export const Home: React.FC = () => {
                 <div className="home__carousel-badges-container">
                   {/* Vehicle Type Dropdown */}
                   <div className="home__carousel-category-badge">
-                    <select 
+                    <select
                       className="home__carousel-category-dropdown"
                       value={selectedVehicleType}
                       onChange={(e) => {
@@ -2188,7 +2188,7 @@ export const Home: React.FC = () => {
 
                   {/* Subcategory Dropdown */}
                   <div className="home__carousel-category-badge home__carousel-subcategory-badge">
-                    <select 
+                    <select
                       className="home__carousel-category-dropdown"
                       value={selectedSubcategory}
                       onChange={(e) => {
@@ -2206,20 +2206,20 @@ export const Home: React.FC = () => {
                     <Icon name="keyboard_arrow_down" size={20} className="home__carousel-category-arrow" />
                   </div>
                 </div>
-                
-                <div 
+
+                <div
                   className="home__carousel-track"
                   style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                 >
                   {carouselVehicles.map((vehicle) => (
-                    <div 
-                      key={vehicle.id} 
+                    <div
+                      key={vehicle.id}
                       className="home__carousel-slide"
                       onClick={() => handleVehicleClick(vehicle)}
                     >
                       <div className="home__carousel-image">
                         <img src={vehicle.image} alt={vehicle.name} />
-                        
+
                         {/* Expand Button */}
                         <button
                           className="home__carousel-expand-btn"
@@ -2228,7 +2228,7 @@ export const Home: React.FC = () => {
                         >
                           <Icon name="open_in_full" size={24} />
                         </button>
-                        
+
                         {/* Vehicle Name and Ratings Box */}
                         <div className="home__carousel-info-box">
                           <h2 className="home__carousel-name">#{vehicle.rank} {vehicle.name}</h2>
@@ -2239,10 +2239,10 @@ export const Home: React.FC = () => {
                                 <span className="home__carousel-rating-score-max">/10</span>
                               </div>
                               <div className="home__carousel-rating-label-row">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                  alt="MotorTrend" 
-                                  className="home__carousel-rating-mt-badge" 
+                                <img
+                                  src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                                  alt="MotorTrend"
+                                  className="home__carousel-rating-mt-badge"
                                   loading="eager"
                                   onError={(e) => {
                                     console.error('Failed to load MT rating icon:', e);
@@ -2264,10 +2264,10 @@ export const Home: React.FC = () => {
                                   <span className="home__carousel-rating-label-bottom">Rating</span>
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
-                                  <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                                    alt="Your Rating Star" 
-                                    className="home__carousel-rating-icon add-rate" 
+                                  <img
+                                    src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
+                                    alt="Your Rating Star"
+                                    className="home__carousel-rating-icon add-rate"
                                     loading="eager"
                                     onError={(e) => {
                                       console.error('Failed to load star icon:', e);
@@ -2280,7 +2280,7 @@ export const Home: React.FC = () => {
                               </div>
                             )}
                           </div>
-                          <button 
+                          <button
                             className="home__carousel-listing-btn cta cta--primary cta--default"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -2294,7 +2294,7 @@ export const Home: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Slider Navigation */}
                 {carouselVehicles.length > 1 && (
                   <>
@@ -2322,7 +2322,7 @@ export const Home: React.FC = () => {
                       onClick={() => {
                         setCurrentSlide((prev) => {
                           const nextSlide = prev + 1;
-                          
+
                           // If we've reached the end, switch to next subcategory
                           if (nextSlide >= carouselVehicles.length) {
                             const subcategories = getSubcategoriesForType(selectedVehicleType);
@@ -2331,7 +2331,7 @@ export const Home: React.FC = () => {
                             setSelectedSubcategory(subcategories[nextIndex]);
                             return 0; // Start from first slide of new subcategory
                           }
-                          
+
                           return nextSlide;
                         });
                       }}
@@ -2339,7 +2339,7 @@ export const Home: React.FC = () => {
                     >
                       <Icon name="chevron_right" size={24} />
                     </button>
-                    
+
                     {/* Slider Dots */}
                     <div className="home__carousel-dots">
                       {carouselVehicles.map((_, index) => (
@@ -2360,29 +2360,29 @@ export const Home: React.FC = () => {
         {/* Sedan Carousel Section - Full width */}
         {false && sedanCarouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
-            <div 
+            <div
               className="home__carousel"
               onMouseEnter={() => setIsSliderHoveredSedan(true)}
               onMouseLeave={() => setIsSliderHoveredSedan(false)}
             >
-                <div 
+                <div
                   className="home__carousel-track"
                   style={{ transform: `translateX(-${currentSlideSedan * 100}%)` }}
                 >
                   {sedanCarouselVehicles.map((vehicle) => (
-                    <div 
-                      key={vehicle.id} 
+                    <div
+                      key={vehicle.id}
                       className="home__carousel-slide"
                       onClick={() => handleVehicleClick(vehicle)}
                     >
                       <div className="home__carousel-image">
                         <img src={vehicle.image} alt={vehicle.name} />
-                        
+
                         {/* Top Ten Sedans Badge with Rank */}
                         <div className="home__carousel-category-badge">
                           <span className="home__carousel-category-text">TOP TEN SEDANS / #{vehicle.rank}</span>
                         </div>
-                        
+
                         {/* Expand Button */}
                         <button
                           className="home__carousel-expand-btn"
@@ -2391,7 +2391,7 @@ export const Home: React.FC = () => {
                         >
                           <Icon name="open_in_full" size={24} />
                         </button>
-                        
+
                         {/* Vehicle Name and Ratings Box */}
                         <div className="home__carousel-info-box">
                           <h2 className="home__carousel-name">#{vehicle.rank} {vehicle.name}</h2>
@@ -2402,10 +2402,10 @@ export const Home: React.FC = () => {
                                 <span className="home__carousel-rating-score-max">/10</span>
                               </div>
                               <div className="home__carousel-rating-label-row">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                  alt="MotorTrend" 
-                                  className="home__carousel-rating-mt-badge" 
+                                <img
+                                  src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                                  alt="MotorTrend"
+                                  className="home__carousel-rating-mt-badge"
                                   loading="eager"
                                   onError={(e) => {
                                     console.error('Failed to load MT rating icon:', e);
@@ -2427,10 +2427,10 @@ export const Home: React.FC = () => {
                                   <span className="home__carousel-rating-label-bottom">Rating</span>
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
-                                  <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                                    alt="Your Rating Star" 
-                                    className="home__carousel-rating-icon add-rate" 
+                                  <img
+                                    src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
+                                    alt="Your Rating Star"
+                                    className="home__carousel-rating-icon add-rate"
                                     loading="eager"
                                     onError={(e) => {
                                       console.error('Failed to load star icon:', e);
@@ -2443,7 +2443,7 @@ export const Home: React.FC = () => {
                               </div>
                             )}
                           </div>
-                          <button 
+                          <button
                             className="home__carousel-listing-btn cta cta--primary cta--default"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -2457,7 +2457,7 @@ export const Home: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Slider Navigation */}
                 {sedanCarouselVehicles.length > 1 && (
                   <>
@@ -2475,7 +2475,7 @@ export const Home: React.FC = () => {
                     >
                       <Icon name="chevron_right" size={24} />
                     </button>
-                    
+
                     {/* Slider Dots */}
                     <div className="home__carousel-dots">
                       {sedanCarouselVehicles.map((_, index) => (
@@ -2496,29 +2496,29 @@ export const Home: React.FC = () => {
         {/* Truck Carousel Section - Full width */}
         {false && truckCarouselVehicles.length > 0 && (
           <div className="home__section home__section--full-width">
-            <div 
+            <div
               className="home__carousel"
               onMouseEnter={() => setIsSliderHoveredTruck(true)}
               onMouseLeave={() => setIsSliderHoveredTruck(false)}
             >
-                <div 
+                <div
                   className="home__carousel-track"
                   style={{ transform: `translateX(-${currentSlideTruck * 100}%)` }}
                 >
                   {truckCarouselVehicles.map((vehicle) => (
-                    <div 
-                      key={vehicle.id} 
+                    <div
+                      key={vehicle.id}
                       className="home__carousel-slide"
                       onClick={() => handleVehicleClick(vehicle)}
                     >
                       <div className="home__carousel-image">
                         <img src={vehicle.image} alt={vehicle.name} />
-                        
+
                         {/* Top Ten Pick Up Trucks Badge with Rank */}
                         <div className="home__carousel-category-badge">
                           <span className="home__carousel-category-text">TOP TEN PICK UP TRUCKS / #{vehicle.rank}</span>
                         </div>
-                        
+
                         {/* Expand Button */}
                         <button
                           className="home__carousel-expand-btn"
@@ -2527,7 +2527,7 @@ export const Home: React.FC = () => {
                         >
                           <Icon name="open_in_full" size={24} />
                         </button>
-                        
+
                         {/* Vehicle Name and Ratings Box */}
                         <div className="home__carousel-info-box">
                           <h2 className="home__carousel-name">#{vehicle.rank} {vehicle.name}</h2>
@@ -2538,10 +2538,10 @@ export const Home: React.FC = () => {
                                 <span className="home__carousel-rating-score-max">/10</span>
                               </div>
                               <div className="home__carousel-rating-label-row">
-                                <img 
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                  alt="MotorTrend" 
-                                  className="home__carousel-rating-mt-badge" 
+                                <img
+                                  src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                                  alt="MotorTrend"
+                                  className="home__carousel-rating-mt-badge"
                                   loading="eager"
                                   onError={(e) => {
                                     console.error('Failed to load MT rating icon:', e);
@@ -2563,10 +2563,10 @@ export const Home: React.FC = () => {
                                   <span className="home__carousel-rating-label-bottom">Rating</span>
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
-                                  <img 
-                                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                                    alt="Your Rating Star" 
-                                    className="home__carousel-rating-icon add-rate" 
+                                  <img
+                                    src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
+                                    alt="Your Rating Star"
+                                    className="home__carousel-rating-icon add-rate"
                                     loading="eager"
                                     onError={(e) => {
                                       console.error('Failed to load star icon:', e);
@@ -2579,7 +2579,7 @@ export const Home: React.FC = () => {
                               </div>
                             )}
                           </div>
-                          <button 
+                          <button
                             className="home__carousel-listing-btn cta cta--primary cta--default"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -2593,7 +2593,7 @@ export const Home: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 {/* Slider Navigation */}
                 {truckCarouselVehicles.length > 1 && (
                   <>
@@ -2611,7 +2611,7 @@ export const Home: React.FC = () => {
                     >
                       <Icon name="chevron_right" size={24} />
                     </button>
-                    
+
                     {/* Slider Dots */}
                     <div className="home__carousel-dots">
                       {truckCarouselVehicles.map((_, index) => (
@@ -2633,7 +2633,7 @@ export const Home: React.FC = () => {
         {fullscreenVehicle && (() => {
           const fullscreenVehicleList = getFullscreenVehicleList();
           const hasMultipleVehicles = fullscreenVehicleList.length > 1;
-          
+
           return (
             <div className="home__fullscreen-modal" onClick={handleCollapseClick}>
               <div className="home__fullscreen-content" onClick={(e) => e.stopPropagation()}>
@@ -2726,13 +2726,13 @@ export const Home: React.FC = () => {
 
                 {/* Fullscreen Image */}
                 <div className="home__fullscreen-image-wrapper">
-                  <img 
-                    src={fullscreenVehicle.image} 
+                  <img
+                    src={fullscreenVehicle.image}
                     alt={fullscreenVehicle.name}
                     className="home__fullscreen-image"
                   />
                 </div>
-                
+
                 {/* Slider Dots */}
                 {hasMultipleVehicles && (
                   <div className="home__fullscreen-dots">
@@ -2754,7 +2754,7 @@ export const Home: React.FC = () => {
               {/* Sidebar with Specs */}
               <div className="home__fullscreen-sidebar">
                 <h2 className="home__fullscreen-vehicle-name">
-                  <a 
+                  <a
                     href={`/vehicles/${parseVehicleName(fullscreenVehicle.name).year}/${parseVehicleName(fullscreenVehicle.name).make}/${parseVehicleName(fullscreenVehicle.name).model}`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -2765,7 +2765,7 @@ export const Home: React.FC = () => {
                     #{fullscreenVehicle.rank} {fullscreenVehicle.name}
                   </a>
                 </h2>
-                
+
                 {/* Ratings */}
                 <div className="home__fullscreen-ratings">
                   <div className="home__fullscreen-rating-item">
@@ -2787,10 +2787,10 @@ export const Home: React.FC = () => {
                       </span>
                     </div>
                     <div className="home__fullscreen-rating-value-wrapper">
-                      <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                        alt="Community Rating Star" 
-                        className="home__fullscreen-rating-icon community" 
+                      <img
+                        src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
+                        alt="Community Rating Star"
+                        className="home__fullscreen-rating-icon community"
                       />
                       <span className="home__fullscreen-rating-value">
                         {(fullscreenVehicle.communityRating / 2) % 1 === 0 ? fullscreenVehicle.communityRating / 2 : (fullscreenVehicle.communityRating / 2).toFixed(1)}
@@ -2804,10 +2804,10 @@ export const Home: React.FC = () => {
                         <span className="home__fullscreen-rating-label-bottom">Rating</span>
                       </div>
                       <div className="home__fullscreen-rating-value-wrapper">
-                        <img 
-                          src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg" 
-                          alt="Your Rating Star" 
-                          className="home__fullscreen-rating-icon add-rate" 
+                        <img
+                          src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
+                          alt="Your Rating Star"
+                          className="home__fullscreen-rating-icon add-rate"
                         />
                         <span className="home__fullscreen-rating-value">
                           {getUserRating(fullscreenVehicle.name)}
@@ -2818,7 +2818,7 @@ export const Home: React.FC = () => {
                 </div>
 
                 {/* See Local Listings Button */}
-                <button 
+                <button
                   className="home__fullscreen-listing-btn cta cta--primary cta--default"
                   onClick={(e) => {
                     e.stopPropagation();

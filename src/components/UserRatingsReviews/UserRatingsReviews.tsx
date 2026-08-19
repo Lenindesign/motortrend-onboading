@@ -540,10 +540,10 @@ export const UserRatingsReviews: React.FC<UserRatingsReviewsProps> = ({ classNam
               key={star}
               src={
                 isFilled
-                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                  ? "https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
                   : isHalf
-                  ? "https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
-                  : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                  ? "https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg"
+                  : "https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
               }
               alt={`Star ${star}`}
               style={starStyle}

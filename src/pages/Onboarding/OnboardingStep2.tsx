@@ -6,11 +6,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Using new graphics for user types
-const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/69101763c398630002aedb21/buyer.svg';
-const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017650e4b090002079ec0/enthusiast.svg';
-const bothImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017670e4b090002079ec2/both.svg';
+const buyerImage = 'https://www.motortrend.com/files/69101763c398630002aedb21/buyer.svg';
+const enthusiastImage = 'https://www.motortrend.com/files/691017650e4b090002079ec0/enthusiast.svg';
+const bothImage = 'https://www.motortrend.com/files/691017670e4b090002079ec2/both.svg';
 // Step illustration for progress
-const step2Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56010a481f700027e1855/group1318348098.svg';
+const step2Illustration = 'https://www.motortrend.com/files/68f56010a481f700027e1855/group1318348098.svg';
 import './OnboardingStep2.css';
 import Icon from '../../components/Icon';
 

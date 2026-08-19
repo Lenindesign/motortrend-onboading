@@ -111,7 +111,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           <div style={titleSectionStyle}>
             <div style={mainRatingStyle}>
               <div style={scoreStarStyle}>
-                <img src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" alt="Rating star" style={scoreStarIconStyle} />
+                <img src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg" alt="Rating star" style={scoreStarIconStyle} />
                 <span style={ratingNumberStyle}>{hoveredRating > 0 ? hoveredRating / 20 : (selectedRating > 0 ? selectedRating / 20 : '0')}</span>
               </div>
             </div>
@@ -146,7 +146,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
                   {showTooltipEven && <div style={tooltipStyle}>{ratingLabels[evenRating]}</div>}
                   <div style={getStarWrapperStyle(starPosition)} onMouseEnter={() => setHoveredStarWrapper(starPosition)} onMouseLeave={() => setHoveredStarWrapper(null)}>
                     <div style={starVisualStyle}>
-                      <img src={showHalfStar ? "https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg" : showFullStar ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"} alt="Star" style={starIconStyle} />
+                      <img src={showHalfStar ? "https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg" : showFullStar ? "https://www.motortrend.com/files/691bde547554840002bab60c/star.svg" : "https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"} alt="Star" style={starIconStyle} />
                     </div>
                     <button style={starClickStyle(true)} onClick={() => handleStarClick(oddRating)} onMouseEnter={() => handleStarHover(oddRating)} onMouseLeave={handleStarLeave} aria-label={`Rate ${oddRating}`} />
                     <button style={starClickStyle(false)} onClick={() => handleStarClick(evenRating)} onMouseEnter={() => handleStarHover(evenRating)} onMouseLeave={handleStarLeave} aria-label={`Rate ${evenRating}`} />

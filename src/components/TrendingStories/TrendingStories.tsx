@@ -65,7 +65,7 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
     if (customStories) return customStories.slice(0, maxStories);
 
     const vehicles = getVehicles();
-    
+
     // Get latest/newest vehicles and generate trending stories
     const sortedVehicles = [...vehicles]
       .filter(v => parseInt(v.year, 10) >= 2024) // Focus on newer vehicles
@@ -89,7 +89,7 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
       const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
       const staffRating = generateStaffRating(vehicleName);
       const imageUrl = vehicle.image || vehicleImageFor(vehicleName);
-      
+
       // Assign trending status based on position (only up or down)
       const trending: 'up' | 'down' = index <= 5 ? 'up' : 'down';
 
@@ -219,10 +219,10 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
       width: isActive ? '24px' : '8px',
       height: '8px',
       borderRadius: isActive ? '4px' : '50%',
-      backgroundColor: isActive 
-        ? 'var(--color-primary-1, #E90C17)' 
-        : isHovered 
-          ? 'var(--color-neutrals-4, #6E7481)' 
+      backgroundColor: isActive
+        ? 'var(--color-primary-1, #E90C17)'
+        : isHovered
+          ? 'var(--color-neutrals-4, #6E7481)'
           : 'var(--color-neutrals-5, #B1B5C3)',
       border: 'none',
       cursor: 'pointer',
@@ -378,7 +378,7 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
   if (trendingStories.length === 0) return null;
 
   return (
-    <div 
+    <div
       style={stripeStyle}
       onMouseEnter={() => setIsContainerHovered(true)}
       onMouseLeave={() => setIsContainerHovered(false)}
@@ -406,7 +406,7 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
       </div>
 
       {/* Carousel */}
-      <div 
+      <div
         style={carouselContainerStyle}
         ref={carouselRef}
         onTouchStart={onTouchStart}
@@ -434,9 +434,9 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
                 {/* Trending Icon */}
                 {story.trending && (
                   <div style={getTrendingIconStyle(story.trending)}>
-                    <Icon 
-                      name={story.trending === 'up' ? 'trending_up' : 'trending_down'} 
-                      size={14} 
+                    <Icon
+                      name={story.trending === 'up' ? 'trending_up' : 'trending_down'}
+                      size={14}
                     />
                   </div>
                 )}
@@ -447,12 +447,12 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
                 <p style={cardSubtitleStyle}>{story.subtitle}</p>
                 {story.staffRating && (
                   <div style={ratingStyle}>
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                      alt="MotorTrend" 
+                    <img
+                      src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                      alt="MotorTrend"
                       style={{ width: '14px', height: '14px' }}
                     />
-                    <span style={{ 
+                    <span style={{
                       fontFamily: 'var(--font-heading, Poppins, sans-serif)',
                       fontWeight: 600,
                       fontSize: '13px',
@@ -460,7 +460,7 @@ export const TrendingStories: React.FC<TrendingStoriesProps> = ({
                     }}>
                       {story.staffRating.toFixed(1)}
                     </span>
-                    <span style={{ 
+                    <span style={{
                       fontSize: '12px',
                       color: 'var(--color-neutrals-5, #B1B5C3)',
                     }}>

@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Using SVG illustration from URL
-const step4Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f5600ea481f700027e1851/group1318348096.svg';
+const step4Illustration = 'https://www.motortrend.com/files/68f5600ea481f700027e1851/group1318348096.svg';
 import './OnboardingStep4.css';
 import Icon from '../../components/Icon';
 
@@ -90,13 +90,13 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
         <div className="onboarding-card__header">
           {/* Progress Illustration */}
           <div className="onboarding-card__illustration">
-            <img 
-              src={step4Illustration} 
-              alt="Step 4 illustration" 
+            <img
+              src={step4Illustration}
+              alt="Step 4 illustration"
               className="step-illustration-image"
             />
           </div>
-          
+
           <div className="onboarding-card__step">STEP 4/4</div>
         </div>
 
@@ -125,26 +125,26 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                 {/* Logo */}
                 <div className="newsletter-card__logo">
                   {newsletter.logo === 'motortrend' ? (
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64a2ae852a20002f9bc03/mt-nl.svg" 
-                      alt="MotorTrend Newsletter" 
-                      width="72" 
+                    <img
+                      src="https://www.motortrend.com/files/68f64a2ae852a20002f9bc03/mt-nl.svg"
+                      alt="MotorTrend Newsletter"
+                      width="72"
                       height="72"
                       style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
                     />
                   ) : newsletter.logo === 'hotrod' ? (
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64aa7e852a20002f9bc04/hr-nl.svg" 
-                      alt="HOT ROD Newsletter" 
-                      width="72" 
+                    <img
+                      src="https://www.motortrend.com/files/68f64aa7e852a20002f9bc04/hr-nl.svg"
+                      alt="HOT ROD Newsletter"
+                      width="72"
                       height="72"
                       style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
                     />
                   ) : (
-                    <img 
+                    <img
                       src="https://www.motortrend.com/files/69040ce5e09a72000286cf1d/event.png"
-                      alt="Our Events Newsletter" 
-                      width="72" 
+                      alt="Our Events Newsletter"
+                      width="72"
                       height="72"
                       style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
                     />

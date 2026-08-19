@@ -460,7 +460,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const categoryScoreStyle: React.CSSProperties = { fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: isMobile ? '14px' : 'var(--font-size-base, 16px)', lineHeight: '1.375em', color: 'var(--color-neutrals-1, #141416)', minWidth: isMobile ? '28px' : '24px', textAlign: 'right', flexShrink: 0 };
   const reviewActionsStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: isMobile ? 'var(--spacing-component-md, 12px)' : 'var(--spacing-2, 16px)', marginBottom: 0, paddingTop: 'var(--spacing-component-md, 12px)', borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)', flexWrap: isMobile ? 'wrap' : 'nowrap' };
   const getActionBtnStyle = (btnId: string, isActive: boolean = false, isEdit: boolean = false): React.CSSProperties => ({ display: 'flex', alignItems: 'center', gap: '6px', background: isActive ? 'var(--color-primary-50, #FFF0F0)' : (hoveredActionBtn === btnId ? 'var(--color-neutrals-7, #F4F5F6)' : 'none'), border: 'none', padding: isMobile ? '6px 10px' : 'var(--spacing-1, 8px) var(--spacing-component-md, 12px)', borderRadius: 'var(--border-radius-md, 8px)', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: isMobile ? '13px' : 'var(--font-size-sm, 14px)', fontWeight: 500, color: isActive ? 'var(--color-primary-500, #E90C17)' : (isEdit ? 'var(--color-primary-500, #E90C17)' : (hoveredActionBtn === btnId ? 'var(--color-neutrals-2, #23262F)' : 'var(--color-neutrals-3, #353945)')), cursor: 'pointer', transition: 'all var(--transition-fast, 150ms ease-in-out)', textDecoration: 'none' });
-  const thumbsUpIconStyle = (isActive: boolean): React.CSSProperties => ({ width: '24px', height: '24px', flexShrink: 0, objectFit: 'contain', transition: 'filter var(--transition-fast, 150ms ease-in-out)', filter: isActive ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(90%) contrast(86%)' });
+  const thumbsUpIconStyle = (isActive: boolean): React.CSSProperties => ({ color: isActive ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)', flexShrink: 0, transition: 'color var(--transition-fast, 150ms ease-in-out)' });
   const replyInterfaceStyle: React.CSSProperties = { marginTop: isMobile ? '12px' : 'var(--spacing-2, 16px)', padding: isMobile ? 'var(--spacing-component-md, 12px)' : 'var(--spacing-2, 16px)', backgroundColor: 'var(--color-neutrals-8, #FCFCFD)', borderRadius: 'var(--border-radius-md, 8px)', border: '1px solid var(--color-neutrals-6, #E6E8EC)' };
   const replyInputContainerStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 'var(--spacing-component-md, 12px)' };
   const replyInputStyle: React.CSSProperties = { width: '100%', padding: 'var(--spacing-component-md, 12px) var(--spacing-2, 16px)', backgroundColor: 'var(--color-white, #FFFFFF)', border: '1px solid var(--color-neutrals-5, #B1B5C3)', borderRadius: 'var(--border-radius-md, 8px)', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: isMobile ? '13px' : 'var(--font-size-sm, 14px)', lineHeight: '1.5em', color: 'var(--color-neutrals-2, #23262F)', resize: 'vertical', minHeight: isMobile ? '70px' : '80px', outline: 'none', transition: 'border-color var(--transition-fast, 150ms ease-in-out)' };
@@ -556,7 +556,52 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const commentContentStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: 'var(--font-size-sm, 14px)', lineHeight: '1.5em', color: 'var(--color-neutrals-2, #23262F)', whiteSpace: 'pre-wrap' };
   const commentActionsStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 'var(--spacing-2, 16px)' };
   const commentActionBtnStyle = (isActive: boolean = false): React.CSSProperties => ({ display: 'flex', alignItems: 'center', gap: '6px', padding: 'var(--spacing-gap-xs, 4px) var(--spacing-component-md, 12px)', background: 'none', border: 'none', fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: 'var(--font-size-sm, 14px)', color: isActive ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-3, #353945)', cursor: 'pointer', transition: 'all var(--transition-fast, 150ms ease-in-out)' });
-  const commentLikeIconStyle = (isActive: boolean): React.CSSProperties => ({ width: '16px', height: '16px', filter: isActive ? 'brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)' : 'brightness(0) saturate(100%) invert(60%) sepia(0%) saturate(0%) hue-rotate(93deg) brightness(90%) contrast(86%)' });
+  const commentLikeIconStyle = (isActive: boolean): React.CSSProperties => ({ color: isActive ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)', transition: 'color var(--transition-fast, 150ms ease-in-out)' });
+
+  const renderStarIcon = (
+    key: React.Key,
+    state: 'filled' | 'half' | 'empty',
+    style: React.CSSProperties,
+    ariaLabel = 'Rating star'
+  ) => {
+    const clipId = `user-review-star-${String(key).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+    const fillColor = 'var(--color-rating-community, #33C4FF)';
+
+    return (
+      <svg
+        key={key}
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label={ariaLabel}
+        style={style}
+      >
+        {state === 'half' && (
+          <defs>
+            <clipPath id={clipId}>
+              <rect x="0" y="0" width="12" height="24" />
+            </clipPath>
+          </defs>
+        )}
+        <path
+          d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+          fill={state === 'filled' ? fillColor : 'none'}
+          stroke={fillColor}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        {state === 'half' && (
+          <path
+            d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+            fill={fillColor}
+            clipPath={`url(#${clipId})`}
+          />
+        )}
+      </svg>
+    );
+  };
 
   const renderMedia = (review: ReviewData) => {
     if (!review.mediaPreviews || review.mediaPreviews.length === 0) return null;
@@ -600,8 +645,11 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                   const starPosition = index + 1;
                   const isFilled = starPosition <= Math.floor(normalizedRating);
                   const isHalf = starPosition === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
-                  return (
-                    <img key={starPosition} src={isFilled ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" : isHalf ? "https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg" : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"} alt={`Star ${starPosition}`} style={categoryStarStyle} />
+                  return renderStarIcon(
+                    `${category.key}-${starPosition}`,
+                    isFilled ? 'filled' : isHalf ? 'half' : 'empty',
+                    categoryStarStyle,
+                    `${category.label} star ${starPosition}`
                   );
                 })}
               </div>
@@ -655,7 +703,12 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                         const ratingValue = communityRating / 2;
                         const isFilled = star <= Math.floor(ratingValue);
                         const isHalf = star === Math.ceil(ratingValue) && ratingValue % 1 !== 0;
-                        return <img key={star} src={isFilled ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" : isHalf ? "https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg" : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"} alt={`Star ${star}`} style={starIconStyle} />;
+                        return renderStarIcon(
+                          `community-${star}`,
+                          isFilled ? 'filled' : isHalf ? 'half' : 'empty',
+                          starIconStyle,
+                          `Community rating star ${star}`
+                        );
                       })}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--spacing-gap-xs, 4px)' }}>
@@ -666,7 +719,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                     </div>
                   </div>
                   <button style={addRateStyle} onClick={handleOpenRatingModal} onMouseEnter={() => setIsAddRateHovered(true)} onMouseLeave={() => setIsAddRateHovered(false)}>
-                    <img src={userRating > 0 ? "https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" : "https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"} alt="Add Rating" style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                    {renderStarIcon('add-rating', userRating > 0 ? 'filled' : 'empty', { width: '20px', height: '20px', flexShrink: 0 }, 'Add rating')}
                     {userRating > 0 ? `Your Rating: ${(userRating / 20) % 1 === 0 ? userRating / 20 : (userRating / 20).toFixed(1)}` : 'Add Your Rating'}
                   </button>
                 </div>
@@ -676,7 +729,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                 <div style={distributionChartStyle}>
                   {ratingDistribution.slice(0, 5).map((count, index) => (
                     <div key={index} style={distributionBarStyle} onMouseEnter={(e) => handleBarMouseEnter(index, e)} onMouseLeave={handleBarMouseLeave}>
-                      <img src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" alt="Star" style={barStarStyle} />
+                      {renderStarIcon(`distribution-${index + 1}`, 'filled', barStarStyle, `Distribution star ${index + 1}`)}
                       <div style={barFillStyle((count / maxRatingCount) * 100)} />
                       <span style={barLabelStyle}>{index + 1}</span>
                       {hoveredBarIndex === index && tooltipPosition && <div style={barTooltipStyle(tooltipPosition)}>{calculatePercentage(count)}%</div>}
@@ -748,14 +801,14 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                           <div style={reviewerNameGroupStyle}>
                             <span style={reviewerNameStyle}>{review.reviewerName}</span>
                             {/* HIDDEN: Verification badges
-                            {review.verificationLevel === 'owner' && <Badge variant="neutral" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Owner</Badge>}
-                            {review.verificationLevel === 'verified' && <Badge variant="verified" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Verified Owner</Badge>}
-                            {review.verificationLevel === 'verified_documents' && <Badge variant="success" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53142d6f10002aac71b/garage-check.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Verified Owner — Documents Verified</Badge>}
+                            {review.verificationLevel === 'owner' && <Badge variant="neutral" size="sm" icon={<img src="https://www.motortrend.com/files/6906c53042d6f10002aac71a/garage.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Owner</Badge>}
+                            {review.verificationLevel === 'verified' && <Badge variant="verified" size="sm" icon={<img src="https://www.motortrend.com/files/6906c53142d6f10002aac71b/garage-check.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Verified Owner</Badge>}
+                            {review.verificationLevel === 'verified_documents' && <Badge variant="success" size="sm" icon={<img src="https://www.motortrend.com/files/6906c53142d6f10002aac71b/garage-check.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Verified Owner — Documents Verified</Badge>}
                             */}
                           </div>
                           <div style={reviewRatingRowStyle}>
                             <div style={reviewRatingGroupStyle}>
-                              <img src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" alt="Rating" style={reviewStarStyle} />
+                              {renderStarIcon(`review-${review.id}`, 'filled', reviewStarStyle, 'Review rating')}
                               <span style={reviewRatingStyle}>{(review.rating / 20) % 1 === 0 ? review.rating / 20 : (review.rating / 20).toFixed(1)}</span>
                             </div>
                           </div>
@@ -768,7 +821,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
 {/* HIDDEN: Vehicle relationship and duration badges
                           {(review.vehicleRelationship || review.experienceDuration) && (
                             <span style={reviewerExperienceStyle}>
-                              {review.vehicleRelationship === 'own' && <Badge variant="neutral" size="sm" icon={<img src="https://d2kde5ohu8qb21.cloudfront.net/files/6906c53042d6f10002aac71a/garage.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Current Owner</Badge>}
+                              {review.vehicleRelationship === 'own' && <Badge variant="neutral" size="sm" icon={<img src="https://www.motortrend.com/files/6906c53042d6f10002aac71a/garage.svg" alt="" style={{ width: '12px', height: '12px' }} />}>Current Owner</Badge>}
                               {review.vehicleRelationship === 'previously_owned' && <Badge variant="neutral" size="sm">Previous Owner</Badge>}
                               {review.vehicleRelationship === 'leased' && <Badge variant="neutral" size="sm">Leased</Badge>}
                               {review.vehicleRelationship === 'rented' && <Badge variant="neutral" size="sm">Rented</Badge>}
@@ -789,7 +842,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       {review.reviewerName === 'You' && onUpdateReview && <button style={getActionBtnStyle(`edit-${review.id}`, false, true)} onClick={() => handleEditReview(review)} onMouseEnter={() => setHoveredActionBtn(`edit-${review.id}`)} onMouseLeave={() => setHoveredActionBtn(null)}>Edit</button>}
                       <button style={getActionBtnStyle(`reply-${review.id}`, replyingToReview === review.id)} onClick={() => handleReply(review.id)} onMouseEnter={() => setHoveredActionBtn(`reply-${review.id}`)} onMouseLeave={() => setHoveredActionBtn(null)}>Reply</button>
                       <button style={getActionBtnStyle(`thumbs-${review.id}`, thumbsUpStates[review.id])} onClick={() => handleThumbsUp(review.id)} onMouseEnter={() => setHoveredActionBtn(`thumbs-${review.id}`)} onMouseLeave={() => setHoveredActionBtn(null)}>
-                        <img src="https://d2kde5ohu8qb21.cloudfront.net/files/69024b627e39a30002ddc45d/thumbsup.svg" alt="Thumbs up" style={thumbsUpIconStyle(thumbsUpStates[review.id])} />
+                        <Icon name="thumb_up" size={24} style={thumbsUpIconStyle(thumbsUpStates[review.id])} />
                         {(review.thumbsUpCount || 0) + (thumbsUpStates[review.id] ? 1 : 0)}
                       </button>
                     </div>
@@ -901,7 +954,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                     </div>
                     <div style={commentActionsStyle}>
                       <button style={commentActionBtnStyle(commentLikes[comment.id])} onClick={() => handleCommentLike(comment.id)}>
-                        <img src="https://d2kde5ohu8qb21.cloudfront.net/files/69024b627e39a30002ddc45d/thumbsup.svg" alt="Like" style={commentLikeIconStyle(commentLikes[comment.id])} />
+                        <Icon name="thumb_up" size={16} style={commentLikeIconStyle(commentLikes[comment.id])} />
                         {comment.likes || 0}
                       </button>
                       <button style={commentActionBtnStyle()}>Reply</button>

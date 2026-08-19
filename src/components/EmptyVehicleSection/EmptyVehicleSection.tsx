@@ -72,7 +72,7 @@ export const EmptyVehicleSection: React.FC<EmptyVehicleSectionProps> = ({
     >
       <div style={iconContainerStyle}>
         <img 
-          src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64af5e852a20002f9bc06/more.svg"
+          src="https://www.motortrend.com/files/68f64af5e852a20002f9bc06/more.svg"
           alt="Add vehicle"
           style={iconImgStyle}
         />

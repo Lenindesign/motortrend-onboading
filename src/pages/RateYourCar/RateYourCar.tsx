@@ -9,9 +9,9 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import type { ReviewData } from '../../components/UserReviews/UserReviews';
 
 const PRIMARY = 'var(--color-primary-1, #E90C17)';
-const STAR_FILLED = 'https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg';
-const STAR_HALF = 'https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg';
-const STAR_EMPTY = 'https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg';
+const STAR_FILLED = 'https://www.motortrend.com/files/691bde547554840002bab60c/star.svg';
+const STAR_HALF = 'https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg';
+const STAR_EMPTY = 'https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg';
 
 const RATING_LABELS: Record<number, string> = {
   10: 'Awful', 20: 'Poor', 30: 'Below Average', 40: 'Fair',

@@ -438,6 +438,15 @@
   border: none;
 }
 
+.vehicle-details__prime-rating-icon--mt {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+}
+
 /* MT logo smaller than blue stars in prime template */
 .vehicle-details__prime-rating-icon[src*="group1318348068"] {
   width: 24px;
@@ -552,33 +561,52 @@
   color: var(--color-neutrals-2);
 }
 
-/* Social Share */
+/* Comments Jump Link */
 .vehicle-details__social-share {
   display: flex;
   gap: var(--spacing-2);
 }
 
-.vehicle-details__social-btn {
-  background: none;
-  border: none;
+.vehicle-details__comments-link {
+  background: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-sm);
+  color: var(--color-neutrals-2);
   cursor: pointer;
-  padding: 0;
-  display: flex;
+  padding: 6px 10px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: opacity var(--transition-fast);
-  width: 30px;
-  height: 30px;
+  gap: 6px;
+  min-height: 30px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
 }
 
-.vehicle-details__social-btn:hover {
-  opacity: 0.7;
+.vehicle-details__comments-link:hover {
+  background: var(--color-neutrals-7);
+  border-color: var(--color-neutrals-5);
 }
 
-.vehicle-details__social-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.vehicle-details__comments-link:focus-visible {
+  outline: 2px solid var(--color-primary-1);
+  outline-offset: 2px;
+}
+
+.vehicle-details__comments-count {
+  color: var(--color-neutrals-3);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.vehicle-details__community-ratings-anchor {
+  scroll-margin-top: 110px;
 }
 
 /* Title Section */
@@ -1401,7 +1429,15 @@
 .vehicle-details__cons-icon {
   width: 24px;
   height: 24px;
-  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.vehicle-details__pros-icon {
+  color: var(--color-primary-1);
+}
+
+.vehicle-details__cons-icon {
+  color: var(--color-neutrals-3);
 }
 
 .vehicle-details__pros-header h3,

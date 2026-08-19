@@ -14,6 +14,7 @@ export interface ProfileBannerProps {
   joinDate: string;
   location?: string;
   onEditProfile?: () => void;
+  onEditLocation?: () => void;
 }
 
 const bannerImages = [
@@ -32,6 +33,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   joinDate,
   location,
   onEditProfile,
+  onEditLocation,
 }) => {
   const bannerRef = useRef<HTMLDivElement>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -189,6 +191,15 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
     gap: '4px',
   };
 
+  const editableMetaItemStyle: React.CSSProperties = {
+    ...metaItemStyle,
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    color: 'inherit',
+    cursor: 'pointer',
+  };
+
   const iconStyle: React.CSSProperties = {
     width: '22px',
     height: '22px',
@@ -251,7 +262,7 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
             <img src={userAvatar} alt={userName} style={avatarImgStyle} />
           ) : (
             <div style={avatarLogoStyle}>
-              <img src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg" alt="MotorTrend" style={logoImgStyle} />
+              <img src="/images/mt-brand-icon.svg" alt="MotorTrend" style={logoImgStyle} />
             </div>
           )}
         </div>
@@ -266,10 +277,16 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
             {location && (
               <>
                 <span style={separatorStyle}>•</span>
-                <div style={metaItemStyle}>
+                <button
+                  type="button"
+                  style={editableMetaItemStyle}
+                  onClick={onEditLocation || onEditProfile}
+                  aria-label="Edit profile location"
+                  title="Edit profile location"
+                >
                   <Icon name="location_on" size={16} style={iconStyle} />
                   <span style={metaTextStyle}>{location}</span>
-                </div>
+                </button>
               </>
             )}
           </div>

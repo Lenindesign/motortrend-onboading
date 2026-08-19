@@ -369,6 +369,7 @@ export const Profile: React.FC<ProfileProps> = ({
   
   // Avatar/Banner Modal state
   const [showAvatarBannerModal, setShowAvatarBannerModal] = useState(false);
+  const [autoFocusProfileLocation, setAutoFocusProfileLocation] = useState(false);
   const [userAvatar, setUserAvatar] = useState(userData?.avatar);
   const [userBanner, setUserBanner] = useState<string | undefined>(undefined);
   
@@ -607,10 +608,16 @@ export const Profile: React.FC<ProfileProps> = ({
 
   // Avatar/Banner Modal handlers
   const handleEditProfile = () => {
+    setAutoFocusProfileLocation(false);
     setShowAvatarBannerModal(true);
   };
 
-  const handleSaveAvatarBanner = (avatarUrl: string, bannerUrl: string) => {
+  const handleEditLocation = () => {
+    setAutoFocusProfileLocation(true);
+    setShowAvatarBannerModal(true);
+  };
+
+  const handleSaveAvatarBanner = (avatarUrl: string, bannerUrl: string, location: string) => {
     setUserAvatar(avatarUrl);
     setUserBanner(bannerUrl);
     setShowAvatarBannerModal(false);
@@ -619,7 +626,7 @@ export const Profile: React.FC<ProfileProps> = ({
     try {
       const existing = localStorage.getItem('onboardingData');
       const parsed = existing ? JSON.parse(existing) : {};
-      const updated = { ...parsed, avatar: avatarUrl, banner: bannerUrl };
+      const updated = { ...parsed, avatar: avatarUrl, banner: bannerUrl, location };
       localStorage.setItem('onboardingData', JSON.stringify(updated));
       setLocalOnboardingData(updated);
       // Broadcast change so GlobalHeader can refresh avatar without reload
@@ -727,6 +734,7 @@ export const Profile: React.FC<ProfileProps> = ({
         joinDate={localOnboardingData.joinDate || userData?.joinDate || '1/14/2024'}
         location={localOnboardingData.location || userData?.location || 'Location not specified'}
         onEditProfile={handleEditProfile}
+        onEditLocation={handleEditLocation}
       />
 
       <div className="profile-content">
@@ -1412,13 +1420,13 @@ export const Profile: React.FC<ProfileProps> = ({
                   <div className="profile-subscriptions-grid">
                     <SubscriptionItem
                       name="MotorTrend"
-                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64a2ae852a20002f9bc03/mt-nl.svg"
+                      logo="https://www.motortrend.com/files/68f64a2ae852a20002f9bc03/mt-nl.svg"
                       isActive={newsletterSubscriptions['MotorTrend']}
                       onToggleSubscription={handleNewsletterToggle}
                     />
                     <SubscriptionItem
                       name="HOT ROD"
-                      logo="https://d2kde5ohu8qb21.cloudfront.net/files/68f64aa7e852a20002f9bc04/hr-nl.svg"
+                      logo="https://www.motortrend.com/files/68f64aa7e852a20002f9bc04/hr-nl.svg"
                       isActive={newsletterSubscriptions['HOT ROD']}
                       onToggleSubscription={handleNewsletterToggle}
                     />
@@ -1527,10 +1535,15 @@ export const Profile: React.FC<ProfileProps> = ({
       {/* Avatar Banner Modal */}
       <AvatarBannerModal
         isVisible={showAvatarBannerModal}
-        onClose={() => setShowAvatarBannerModal(false)}
+        onClose={() => {
+          setShowAvatarBannerModal(false);
+          setAutoFocusProfileLocation(false);
+        }}
         onSave={handleSaveAvatarBanner}
         currentAvatar={userAvatar}
         currentBanner={userBanner}
+        currentLocation={localOnboardingData.location || userData?.location || ''}
+        autoFocusLocation={autoFocusProfileLocation}
       />
 
       {/* Rating Modal */}
@@ -1583,4 +1596,3 @@ export const Profile: React.FC<ProfileProps> = ({
 };
 
 export default Profile;
-

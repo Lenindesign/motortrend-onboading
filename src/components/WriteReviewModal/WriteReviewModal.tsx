@@ -1089,19 +1089,19 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
           <div style={visualSize}>
             {showHalfStar ? (
               <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/691c8ba6a619270002cb5797/half-star.svg"
+                src="https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg"
                 alt={`${oddRating} star rating`}
                 style={iconSize}
               />
             ) : showFullStar ? (
               <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
                 alt={`${evenRating} star rating`}
                 style={iconSize}
               />
             ) : (
               <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
                 alt="Empty star"
                 style={iconSize}
               />
@@ -1206,7 +1206,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   onMouseLeave={() => setIsInfoIconHovered(false)}
                 >
                   <img 
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6918b2a80074bb0002840bac/demography.svg"
+                    src="https://www.motortrend.com/files/6918b2a80074bb0002840bac/demography.svg"
                     alt="Community Guidelines"
                     style={infoIconStyle}
                     onError={(e) => {

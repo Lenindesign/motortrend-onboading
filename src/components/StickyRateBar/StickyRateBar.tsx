@@ -46,6 +46,12 @@ export interface StickyRateBarProps {
   ratingDistribution?: { [key: number]: number };
   totalReviews?: number;
   hideCtaButton?: boolean;
+  commentsLink?: {
+    href: string;
+    label: string;
+    count?: number;
+    ariaLabel?: string;
+  };
 }
 
 const StickyRateBar: React.FC<StickyRateBarProps> = ({
@@ -64,7 +70,8 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   staffRatingScores,
   ratingDistribution,
   totalReviews,
-  hideCtaButton
+  hideCtaButton,
+  commentsLink
 }) => {
   const navigate = useNavigate();
   const { getUserRating } = useRating();
@@ -77,6 +84,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const [isVehicleNameHovered, setIsVehicleNameHovered] = useState(false);
   const [isBuyersGuideHovered, setIsBuyersGuideHovered] = useState(false);
   const [isLocalListingsHovered, setIsLocalListingsHovered] = useState(false);
+  const [isCommentsHovered, setIsCommentsHovered] = useState(false);
   const [isVehicleDropdownOpen, setIsVehicleDropdownOpen] = useState(false);
 
   const hideStaffTooltipTimeout = useRef<number | null>(null);
@@ -210,6 +218,40 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     flexShrink: 0,
     justifyContent: 'flex-end',
     flexWrap: 'nowrap',
+  };
+
+  const commentsLinkStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    minHeight: '32px',
+    padding: '6px 10px',
+    borderRadius: 'var(--border-radius-md, 8px)',
+    backgroundColor: isCommentsHovered ? 'rgba(255, 255, 255, 0.16)' : 'rgba(255, 255, 255, 0.1)',
+    color: 'var(--color-neutrals-8, #FCFCFD)',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
+    fontSize: isMobile ? '12px' : '13px',
+    fontWeight: 600,
+    lineHeight: 1,
+    textDecoration: 'none',
+    whiteSpace: 'nowrap',
+    transition: 'background-color var(--transition-fast, 150ms ease-in-out), opacity var(--transition-fast, 150ms ease-in-out)',
+    opacity: isCommentsHovered ? 0.9 : 1,
+  };
+
+  const commentsCountStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '18px',
+    height: '18px',
+    padding: '0 5px',
+    borderRadius: '999px',
+    backgroundColor: 'var(--color-primary-1, #E90C17)',
+    color: 'var(--color-white, #FFFFFF)',
+    fontSize: '11px',
+    fontWeight: 700,
+    lineHeight: 1,
   };
 
   const separatorStyle: React.CSSProperties = {
@@ -698,6 +740,21 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
               }}
               />
             </div>
+            {commentsLink && (
+              <a
+                href={commentsLink.href}
+                style={commentsLinkStyle}
+                aria-label={commentsLink.ariaLabel || commentsLink.label}
+                onMouseEnter={() => setIsCommentsHovered(true)}
+                onMouseLeave={() => setIsCommentsHovered(false)}
+              >
+                <Icon name="forum" size={isMobile ? 16 : 18} style={{ color: 'currentColor', flexShrink: 0 }} />
+                <span>{commentsLink.label}</span>
+                {typeof commentsLink.count === 'number' && (
+                  <span style={commentsCountStyle}>{commentsLink.count}</span>
+                )}
+              </a>
+            )}
             {ctaText && isMobile && !hideCtaButton && (
               <ActionBadge
                 onClick={(e) => {

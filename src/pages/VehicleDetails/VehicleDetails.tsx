@@ -37,8 +37,9 @@ import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
 import { AuthPromptModal, clearAuthPromptIntent, getAuthPromptIntent } from '../../components/AuthPromptModal';
 import { useAuth } from '../../contexts/AuthContext';
-import { hasPriceAlert } from '../../utils/priceAlerts';
 import './VehicleDetails.css';
+
+const MT_BRAND_ICON = '/images/mt-brand-icon.svg';
 
 export const VehicleDetails: React.FC = () => {
   const { year, make, model } = useParams<{ year: string; make: string; model: string }>();
@@ -54,9 +55,9 @@ export const VehicleDetails: React.FC = () => {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [isPriceAlertsModalOpen, setIsPriceAlertsModalOpen] = useState(false);
-  const [hasPriceAlertForVehicle, setHasPriceAlertForVehicle] = useState(false);
   const [reviewModalRating, setReviewModalRating] = useState<number | undefined>(undefined);
   const [isReviewAccordionOpen, setIsReviewAccordionOpen] = useState(false);
+  const [userReviewsActiveTab, setUserReviewsActiveTab] = useState<'reviews' | 'comments' | undefined>(undefined);
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const [isStaffTooltipVisible, setIsStaffTooltipVisible] = useState(false);
   const hideTooltipTimeout = useRef<number | null>(null);
@@ -69,7 +70,7 @@ export const VehicleDetails: React.FC = () => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentGalleryImages, setCurrentGalleryImages] = useState<string[]>([]);
-  
+
   // Google One Tap for high-intent MMP page
   const vehicleInfo = useMemo(() => ({
     year: parseInt(decodedYear, 10),
@@ -87,7 +88,7 @@ export const VehicleDetails: React.FC = () => {
   // Auth prompt for unauthenticated user actions
   const { isAuthPromptOpen, promptAction, closeAuthPrompt, requireAuth } = useAuthPrompt();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
-  
+
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
   // Using useMemo instead of useState + useEffect prevents the flash of incorrect rating
@@ -95,17 +96,17 @@ export const VehicleDetails: React.FC = () => {
     try {
       console.log('🔍 Loading vehicle data synchronously - BUILD VERSION: 2024-11-23-v3-MAZDA-FIX');
       console.log('🔍 URL params:', { decodedYear, decodedMake, decodedModel });
-      
+
       const vehicles = getVehicles();
       console.log('✅ Total vehicles fetched:', vehicles.length);
-      
+
       // Build slug from URL params for exact matching
       const urlSlug = `${decodedYear}/${decodedMake}/${decodedModel}`;
       console.log('🔎 Looking for slug:', urlSlug);
-      
+
       // First try to match by slug (most reliable)
       let matchingVehicle = vehicles.find(v => v.slug === urlSlug);
-      
+
       if (matchingVehicle) {
         console.log('✅✅✅ FOUND matching vehicle by slug:', matchingVehicle);
         console.log('✅ Rating:', matchingVehicle.staffRating);
@@ -113,20 +114,20 @@ export const VehicleDetails: React.FC = () => {
         console.log('✅ Gallery Images:', matchingVehicle.galleryImages?.length || 0);
         return matchingVehicle;
       }
-      
+
       // Fallback to year/make/model matching
       const normalizedUrlModel = decodedModel.replace(/-/g, ' ').toLowerCase();
       console.log('🔎 Trying year/make/model match:', { year: decodedYear, make: decodedMake, model: normalizedUrlModel });
-      
+
       matchingVehicle = vehicles.find(v => {
         const yearMatch = v.year === decodedYear;
         const makeMatch = v.make === decodedMake;
         const normalizedDbModel = v.model.replace(/-/g, ' ').toLowerCase();
         const modelMatch = normalizedDbModel === normalizedUrlModel;
-        
+
         return yearMatch && makeMatch && modelMatch;
       });
-      
+
       if (matchingVehicle) {
         console.log('✅✅✅ FOUND matching vehicle from API:', matchingVehicle);
         console.log('✅ Rating:', matchingVehicle.staffRating);
@@ -180,15 +181,15 @@ export const VehicleDetails: React.FC = () => {
 
   // Generate local listings
   const [localListings, setLocalListings] = useState<any[]>([]);
-  
+
   useEffect(() => {
     const fetchListings = async () => {
     const vehicleImage = apiVehicleData?.image || vehicleImageFor(vehicleName);
       try {
         const listings = await getLocalListings(
-          decodedYear, 
-          decodedMake, 
-          decodedModel.replace(/-/g, ' '), 
+          decodedYear,
+          decodedMake,
+          decodedModel.replace(/-/g, ' '),
           vehicleImage
         );
         setLocalListings(listings);
@@ -197,7 +198,7 @@ export const VehicleDetails: React.FC = () => {
         setLocalListings([]); // Set empty array on error
       }
     };
-    
+
     fetchListings();
   }, [decodedYear, decodedMake, decodedModel, apiVehicleData, vehicleName]);
 
@@ -246,22 +247,22 @@ export const VehicleDetails: React.FC = () => {
     console.log('🖼️ apiVehicleData?.image:', apiVehicleData?.image);
     console.log('🖼️ apiVehicleData?.galleryImages:', apiVehicleData?.galleryImages);
     console.log('🖼️ isPrimeTemplate:', isPrimeTemplate);
-    
+
     // PRIORITY 1: Use API gallery images if available
     if (apiVehicleData?.galleryImages && apiVehicleData.galleryImages.length > 0) {
       console.log('✅✅✅ Using API gallery images:', apiVehicleData.galleryImages.length);
       return apiVehicleData.galleryImages;
     }
-    
+
     // PRIORITY 2: For prime template vehicles, check articles first (they have multiple images)
     // For non-prime vehicles, use single API image if available
     if (!isPrimeTemplate && apiVehicleData?.image) {
       console.log('✅ Using single API image:', apiVehicleData.image);
       return [apiVehicleData.image];
     }
-    
+
     console.log('⚠️⚠️⚠️ Checking articles for images...');
-    
+
     // PRIORITY 3: Find matching article
     for (const article of Object.values(articles)) {
       if (article.motortrendScore?.vehicleName) {
@@ -287,7 +288,7 @@ export const VehicleDetails: React.FC = () => {
         }
       }
     }
-    
+
     // PRIORITY 4: For prime template, use displayName to find article if vehicleName didn't match
     if (isPrimeTemplate && displayName !== vehicleName) {
       console.log('🔄 Trying displayName for article match:', displayName);
@@ -315,13 +316,13 @@ export const VehicleDetails: React.FC = () => {
         }
       }
     }
-    
+
     // PRIORITY 5: Use single API vehicle image if available (fallback for prime template)
     if (apiVehicleData?.image) {
       console.log('✅ Using single API image as fallback:', apiVehicleData.image);
       return [apiVehicleData.image];
     }
-    
+
     // PRIORITY 6: Fallback to hero image if no article found
     console.log('🔄 Using fallback vehicleImageFor');
     return [vehicleImageFor(vehicleName)];
@@ -332,7 +333,7 @@ export const VehicleDetails: React.FC = () => {
     if (!galleryImages || galleryImages.length <= 1) {
       return;
     }
-    
+
     galleryImages.forEach((imageUrl) => {
       const img = new Image();
       img.src = imageUrl;
@@ -344,16 +345,16 @@ export const VehicleDetails: React.FC = () => {
     if (!galleryImages || galleryImages.length <= 1) {
       return;
     }
-    
+
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => {
         return (prevIndex + 1) % galleryImages.length;
       });
     }, 5000); // 5 seconds
-    
+
     return () => clearInterval(interval);
   }, [galleryImages]);
-  
+
   // Reset image index when gallery images change
   useEffect(() => {
     setCurrentImageIndex(0);
@@ -666,7 +667,7 @@ export const VehicleDetails: React.FC = () => {
         }
       ];
     }
-    
+
     // Default reviews for other vehicles
     return [
       {
@@ -788,7 +789,7 @@ export const VehicleDetails: React.FC = () => {
       5: 7   // 5 stars: 7 reviews = 28%
     };
     // Total: 25 reviews = 100%
-    
+
     console.log('[VehicleDetails] NEW Rating counts:', counts, 'Total:', Object.values(counts).reduce((a, b) => a + b, 0));
     return counts;
   };
@@ -797,36 +798,36 @@ export const VehicleDetails: React.FC = () => {
     const percentages: RatingDistributionData = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
     let totalCount = 0;
     for (let i = 1; i <= 5; i++) totalCount += (counts[i] || 0);
-    
+
     console.log('Rating Counts:', counts);
     console.log('Total Count:', totalCount);
-    
+
     if (totalCount === 0) return percentages;
 
     let currentSum = 0;
     let maxKey = 1;
     let maxVal = 0;
-    
+
     for (let i = 1; i <= 5; i++) {
       const p = Math.round(((counts[i] || 0) / totalCount) * 100);
       percentages[i] = p;
       currentSum += p;
-      
+
       if (p > maxVal) {
         maxVal = p;
         maxKey = i;
       }
     }
-    
+
     // Ensure sum is 100%
     const diff = 100 - currentSum;
     if (diff !== 0) {
       percentages[maxKey] += diff;
     }
-    
+
     console.log('Rating Percentages:', percentages);
     console.log('Percentage Sum:', Object.values(percentages).reduce((a, b) => a + b, 0));
-    
+
     return percentages;
   };
 
@@ -899,6 +900,20 @@ export const VehicleDetails: React.FC = () => {
   console.log('[VehicleDetails] vehicleData.communityRatingCount:', vehicleData.communityRatingCount);
   console.log('[VehicleDetails] vehicleData.ratingDistribution:', vehicleData.ratingDistribution);
 
+  const vehicleCommentCount = useMemo(() => {
+    if (showEmptyState) return 0;
+    try {
+      const savedCommentsJson = localStorage.getItem(`comments_v2_${vehicleName}`);
+      if (savedCommentsJson) {
+        const savedComments = JSON.parse(savedCommentsJson);
+        if (Array.isArray(savedComments)) return savedComments.length;
+      }
+    } catch (error) {
+      console.error('Error loading vehicle comment count:', error);
+    }
+    return 2;
+  }, [showEmptyState, vehicleName]);
+
   // Check if vehicle is saved on mount
   useEffect(() => {
     try {
@@ -915,16 +930,6 @@ export const VehicleDetails: React.FC = () => {
     } catch (error) {
       console.error('Error checking saved vehicle status:', error);
     }
-  }, [vehicleName]);
-
-  // Sync price alert status from localStorage (and when user signs up in modal)
-  useEffect(() => {
-    setHasPriceAlertForVehicle(hasPriceAlert(vehicleName));
-  }, [vehicleName]);
-  useEffect(() => {
-    const onUpdate = () => setHasPriceAlertForVehicle(hasPriceAlert(vehicleName));
-    window.addEventListener('priceAlertsUpdated', onUpdate);
-    return () => window.removeEventListener('priceAlertsUpdated', onUpdate);
   }, [vehicleName]);
 
   // Note: Vehicle data is now loaded synchronously via useMemo above
@@ -1132,6 +1137,13 @@ export const VehicleDetails: React.FC = () => {
     }
   };
 
+  const handleCommentsLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    setUserReviewsActiveTab('comments');
+    window.history.pushState(null, '', '#community-ratings');
+    handleScrollToCommunityRatings();
+  };
+
   const handleScrollToStaffRating = () => {
     const staffRatingSection = document.getElementById('staff-rating');
     if (staffRatingSection) {
@@ -1165,7 +1177,7 @@ export const VehicleDetails: React.FC = () => {
       type: 'motortrend',
       value: parseFloat(formatScore(vehicleData.staffRating)), // Pass as number 0-10
       onClick: handleScrollToStaffRating,
-      iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
+      iconSrc: MT_BRAND_ICON,
       iconAlt: 'MT',
       format: 'vehicle-details'
     },
@@ -1244,8 +1256,8 @@ export const VehicleDetails: React.FC = () => {
                   />
                 ))
               ) : (
-                <img 
-                  src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image} 
+                <img
+                  src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image}
                   alt={vehicleName}
                   className="vehicle-details__prime-hero-slide vehicle-details__prime-hero-slide--active"
                 />
@@ -1271,9 +1283,10 @@ export const VehicleDetails: React.FC = () => {
                   onClick={handleOpenRatingModal}
                   aria-label="Rate This Car"
                 >
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                    alt="Rate"
+                  <Icon
+                    name="star"
+                    variant="outlined"
+                    size={24}
                     className="vehicle-details__rate-star-icon"
                   />
                   <span className="vehicle-details__rate-star-tooltip">Rate This Car</span>
@@ -1300,9 +1313,9 @@ export const VehicleDetails: React.FC = () => {
                     <span className="vehicle-details__prime-rating-label-bottom">Rating</span>
                   </div>
                   <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
+                    src={MT_BRAND_ICON}
                     alt="MotorTrend"
-                    className="vehicle-details__prime-rating-icon"
+                    className="vehicle-details__prime-rating-icon vehicle-details__prime-rating-icon--mt"
                   />
                   <span className="vehicle-details__prime-rating-value">{formatScore(vehicleData.staffRating)}</span>
                 </div>
@@ -1311,11 +1324,19 @@ export const VehicleDetails: React.FC = () => {
                     <span className="vehicle-details__prime-rating-label-top">Rating</span>
                     <span className="vehicle-details__prime-rating-label-bottom">Reviews</span>
                   </div>
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                    alt="Community Rating Star"
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    role="img"
+                    aria-label="Community rating star"
                     className="vehicle-details__prime-rating-icon"
-                  />
+                  >
+                    <path
+                      d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                      fill="var(--color-rating-community, #33C4FF)"
+                    />
+                  </svg>
                   <span className="vehicle-details__prime-rating-value">
                     {(vehicleData.communityRating).toFixed(1)}
                   </span>
@@ -1357,22 +1378,16 @@ export const VehicleDetails: React.FC = () => {
                 <span>{vehicleData.year}</span>
               </div>
               <div className="vehicle-details__top-actions">
-                <button className="vehicle-details__social-btn">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024b646d130002b7881d/facebook.svg"
-                    alt="Facebook"
-                    width={30}
-                    height={30}
-                  />
-                </button>
-                <button className="vehicle-details__social-btn">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/6902024891bc910002b23381/x.svg"
-                    alt="X"
-                    width={30}
-                    height={30}
-                  />
-                </button>
+                <a
+                  className="vehicle-details__comments-link"
+                  href="#community-ratings"
+                  onClick={handleCommentsLinkClick}
+                  aria-label={`Jump to ${vehicleCommentCount} vehicle comments`}
+                >
+                  <Icon name="forum" size={18} />
+                  <span>Comments</span>
+                  <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
+                </a>
 {/* HIDDEN: ArticleReactions thumbs up
                 <ArticleReactions
                   articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
@@ -1409,12 +1424,7 @@ export const VehicleDetails: React.FC = () => {
                   </button>
                 </div>
                 <div className="vehicle-details__award">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg"
-                    alt="Trophy"
-                    width={20}
-                    height={20}
-                  />
+                  <Icon name="emoji_events" size={20} className="vehicle-details__award-icon" />
                   <span>{vehicleData.award}</span>
                 </div>
               </div>
@@ -1441,8 +1451,8 @@ export const VehicleDetails: React.FC = () => {
                 placement="bottom"
                 className="staff-rating-tooltip-popover"
               >
-                <div 
-                  className="vehicle-details__rating-section vehicle-details__rating-section--motortrend" 
+                <div
+                  className="vehicle-details__rating-section vehicle-details__rating-section--motortrend"
                   onClick={handleScrollToStaffRating}
                   onMouseEnter={handleStaffTooltipMouseEnter}
                   onMouseLeave={handleStaffTooltipMouseLeave}
@@ -1453,7 +1463,7 @@ export const VehicleDetails: React.FC = () => {
                   </div>
                   <div className="vehicle-details__rating-label-row">
                     <img
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
+                      src={MT_BRAND_ICON}
                       alt="MT"
                       className="vehicle-details__rating-mt-logo"
                     />
@@ -1479,8 +1489,8 @@ export const VehicleDetails: React.FC = () => {
                 placement="bottom"
                 className="rating-tooltip-popover"
               >
-                <div 
-                  className="vehicle-details__rating-section vehicle-details__rating-section--community" 
+                <div
+                  className="vehicle-details__rating-section vehicle-details__rating-section--community"
                   onClick={handleScrollToCommunityRatings}
                   onMouseEnter={handleTooltipMouseEnter}
                   onMouseLeave={handleTooltipMouseLeave}
@@ -1585,7 +1595,7 @@ export const VehicleDetails: React.FC = () => {
           {/* Hero Image (hidden for prime template) */}
           {!isPrimeTemplate && (
             <div className="vehicle-details__hero">
-              <div 
+              <div
                 className="vehicle-details__hero-image"
                 onClick={() => setIsGalleryOpen(true)}
                 style={{ cursor: 'pointer' }}
@@ -1609,8 +1619,8 @@ export const VehicleDetails: React.FC = () => {
                     />
                   ))
                 ) : (
-                  <img 
-                    src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image} 
+                  <img
+                    src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image}
                     alt={vehicleName}
                     className="vehicle-details__hero-slide vehicle-details__hero-slide--active"
                   />
@@ -1631,7 +1641,7 @@ export const VehicleDetails: React.FC = () => {
                 onClick={() => setIsGalleryOpen(true)}
               >
                 <Icon name="photo_library" size={20} />
-                <span>{galleryImages.length} Photos</span>
+                <span>{galleryImages.length}</span>
               </button>
               <button className="vehicle-details__action-btn">
                 <Icon name="list" size={20} />
@@ -1640,14 +1650,6 @@ export const VehicleDetails: React.FC = () => {
               <button className={`vehicle-details__action-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
                 <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
                 <span>{isSaved ? 'Saved!' : 'Save'}</span>
-              </button>
-              <button
-                className={`vehicle-details__action-btn ${hasPriceAlertForVehicle ? 'saved' : ''}`}
-                onClick={() => setIsPriceAlertsModalOpen(true)}
-                aria-label={hasPriceAlertForVehicle ? 'Manage price alerts' : 'Get price alerts'}
-              >
-                <Icon name="notifications" variant={hasPriceAlertForVehicle ? 'filled' : 'outlined'} size={20} />
-                <span>{hasPriceAlertForVehicle ? 'Price alerts on' : 'Price Alerts'}</span>
               </button>
               {!isPrimeTemplate && (
                 <button className="vehicle-details__cta-primary">
@@ -1663,7 +1665,7 @@ export const VehicleDetails: React.FC = () => {
             <div className="vehicle-details__motortrend-header">
               <h2>MotorTrend Review</h2>
               <img
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg"
+                src={MT_BRAND_ICON}
                 alt="MotorTrend Logo"
                 className="vehicle-details__motortrend-logo"
               />
@@ -1672,12 +1674,7 @@ export const VehicleDetails: React.FC = () => {
               <div className="vehicle-details__score-header">
                 <h3>{vehicleName}</h3>
                 <div className="vehicle-details__score-award">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg"
-                    alt="Trophy"
-                    width={24}
-                    height={24}
-                  />
+                  <Icon name="emoji_events" size={24} className="vehicle-details__award-icon" />
                   <span>{vehicleData.award}</span>
                   <Icon name="keyboard_arrow_down" size={16} />
                 </div>
@@ -1687,10 +1684,10 @@ export const VehicleDetails: React.FC = () => {
                   <div className="vehicle-details__score-circle">
                     <span className="vehicle-details__score-number">{formatScore(vehicleData.staffRating)}</span>
                     <div className="vehicle-details__score-label-row">
-                      <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                        alt="MotorTrend" 
-                        className="vehicle-details__score-mt-badge" 
+                      <img
+                        src={MT_BRAND_ICON}
+                        alt="MotorTrend"
+                        className="vehicle-details__score-mt-badge"
                       />
                       <span className="vehicle-details__score-label">MotorTrend Rating</span>
                     </div>
@@ -1747,7 +1744,7 @@ export const VehicleDetails: React.FC = () => {
                         <span className="vehicle-details__reviewer-name">Zach Gale</span>
                         <div className="vehicle-details__reviewer-badge--with-tooltip">
                           <img
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
+                            src={MT_BRAND_ICON}
                             alt="MT badge"
                             className="vehicle-details__reviewer-badge"
                             width={16}
@@ -1835,9 +1832,9 @@ export const VehicleDetails: React.FC = () => {
             <div className="vehicle-details__pros-cons-inner">
               <div className="vehicle-details__pros">
                 <div className="vehicle-details__pros-header">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690689ed9108fa000230136f/recommend.svg"
-                    alt="Pros"
+                  <Icon
+                    name="thumb_up"
+                    size={24}
                     className="vehicle-details__pros-icon"
                   />
                   <h3>Pros</h3>
@@ -1851,9 +1848,9 @@ export const VehicleDetails: React.FC = () => {
               <div className="vehicle-details__divider"></div>
               <div className="vehicle-details__cons">
                 <div className="vehicle-details__cons-header">
-                  <img
-                    src="https://d2kde5ohu8qb21.cloudfront.net/files/690689eb9108fa000230136e/recommend-1.svg"
-                    alt="Cons"
+                  <Icon
+                    name="thumb_down"
+                    size={24}
                     className="vehicle-details__cons-icon"
                   />
                   <h3>Cons</h3>
@@ -2004,7 +2001,7 @@ export const VehicleDetails: React.FC = () => {
           )}
 
           {/* User Reviews */}
-          <div id="community-ratings">
+          <div id="community-ratings" className="vehicle-details__community-ratings-anchor">
             <UserReviews
               vehicleName={vehicleName}
               communityRating={vehicleData.communityRating}
@@ -2021,6 +2018,7 @@ export const VehicleDetails: React.FC = () => {
               onWriteReview={() => setIsWriteReviewModalOpen(true)}
               onUpdateReview={handleUpdateReview}
               defaultTab="reviews"
+              activeTab={userReviewsActiveTab}
               showEmptyState={showEmptyState}
             />
           </div>
@@ -2275,7 +2273,7 @@ export const VehicleDetails: React.FC = () => {
         isOpen={isPriceAlertsModalOpen}
         onClose={() => setIsPriceAlertsModalOpen(false)}
         vehicleName={vehicleName}
-        onSignedUp={() => setHasPriceAlertForVehicle(true)}
+        onSignedUp={() => undefined}
       />
 
       {/* Auth Prompt Modal for unauthenticated users */}

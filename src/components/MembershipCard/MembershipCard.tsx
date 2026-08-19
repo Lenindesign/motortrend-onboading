@@ -63,7 +63,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
     transform: 'translate(-50%, -50%)',
     width: '110%',
     height: '70%',
-    backgroundImage: 'url("https://d2kde5ohu8qb21.cloudfront.net/files/6929d1a44c063a0002bb760d/union.svg")',
+    backgroundImage: 'url("https://www.motortrend.com/files/6929d1a44c063a0002bb760d/union.svg")',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
     backgroundPosition: 'center',
@@ -170,14 +170,14 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
     <div className={`membership-card--animated ${className}`} style={cardStyle}>
       {/* Watermark */}
       <div style={watermarkStyle} />
-      
+
       <div style={contentStyle}>
         {/* Header with Logo and Title */}
         <div style={headerStyle}>
           <div style={logoStyle}>
-            <img 
-              src="https://d2kde5ohu8qb21.cloudfront.net/files/68fabbe380bc4f00028943ef/mt40.svg" 
-              alt="MotorTrend Logo" 
+            <img
+              src="https://www.motortrend.com/files/68fabbe380bc4f00028943ef/mt40.svg"
+              alt="MotorTrend Logo"
               style={logoImgStyle}
             />
           </div>
@@ -186,7 +186,7 @@ export const MembershipCard: React.FC<MembershipCardProps> = ({
             <p style={subtitleStyle}>MotorTrend Member</p>
           </div>
         </div>
-        
+
         {/* Details Grid - 2x2 layout */}
         <div style={detailsStyle}>
           <div style={detailItemStyle}>

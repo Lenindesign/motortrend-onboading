@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import type { 
+import type {
   Community as ICommunity,
   Post
 } from '../../api/communityApi';
-import { 
-  getCommunities, 
-  getCommunityBySlug, 
-  getPosts, 
-  getPostById, 
-  toggleJoin, 
+import {
+  getCommunities,
+  getCommunityBySlug,
+  getPosts,
+  getPostById,
+  toggleJoin,
   toggleVote
 } from '../../api/communityApi';
 import { CommunitySidebar } from '../../components/Community/CommunitySidebar';
@@ -31,13 +31,13 @@ const CommunityPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated } = useAuth();
-  
+
   // Data State
   const [communities, setCommunities] = useState<ICommunity[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentCommunity, setCurrentCommunity] = useState<ICommunity | undefined>(undefined);
   const [currentPost, setCurrentPost] = useState<Post | undefined>(undefined);
-  
+
   // UI State
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [isCreateCommunityOpen, setIsCreateCommunityOpen] = useState(false);
@@ -45,18 +45,18 @@ const CommunityPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<'hot' | 'new' | 'top'>('hot');
   const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
-  
+
   // Toast State
   const [toast, setToast] = useState<{ message: string; type: ToastType; isVisible: boolean }>({
     message: '',
     type: 'info',
     isVisible: false,
   });
-  
+
   const showToast = (message: string, type: ToastType = 'info') => {
     setToast({ message, type, isVisible: true });
   };
-  
+
   const hideToast = () => {
     setToast(prev => ({ ...prev, isVisible: false }));
   };
@@ -64,12 +64,12 @@ const CommunityPage: React.FC = () => {
   // Initial Load & Refresh
   const loadData = async (showLoading = true) => {
     if (showLoading) setIsLoading(true);
-    
+
     // Simulate async loading for better UX feedback
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     setCommunities(getCommunities());
-    
+
     if (postId) {
        setCurrentPost(getPostById(postId));
     } else {
@@ -83,13 +83,13 @@ const CommunityPage: React.FC = () => {
         setPosts(getPosts(comm.id));
       } else {
         // Community not found, redirect or show error? For now just show all posts
-        setPosts(getPosts()); 
+        setPosts(getPosts());
       }
     } else {
       setCurrentCommunity(undefined);
       setPosts(getPosts());
     }
-    
+
     setIsLoading(false);
   };
 
@@ -105,7 +105,7 @@ const CommunityPage: React.FC = () => {
         setUserAvatar(user.avatarUrl);
         return;
       }
-      
+
       // Fall back to localStorage
       try {
         const onboardingData = localStorage.getItem('onboardingData');
@@ -152,10 +152,10 @@ const CommunityPage: React.FC = () => {
     // Get community state before toggle
     const community = communities.find(c => c.id === id);
     const wasJoined = community?.isJoined;
-    
+
     toggleJoin(id);
     loadData(false); // Refresh without loading indicator
-    
+
     // Show toast
     if (community) {
       showToast(
@@ -193,16 +193,16 @@ const CommunityPage: React.FC = () => {
     showToast('Community created successfully!', 'success');
     navigate(`/community/${newSlug}`);
   };
-  
+
   const handleSavePost = (_postId: string, isSaved: boolean) => {
     showToast(isSaved ? 'Post saved!' : 'Post removed from saved', isSaved ? 'success' : 'info');
   };
-  
+
   const handleSharePost = (postId: string) => {
     // Get the post to find its community
     const post = posts.find(p => p.id === postId);
     const postCommunity = post ? communities.find(c => c.id === post.communityId) : null;
-    
+
     if (postCommunity) {
       const url = `${window.location.origin}/community/${postCommunity.slug}/post/${postId}`;
       navigator.clipboard.writeText(url).then(() => {
@@ -234,17 +234,17 @@ const CommunityPage: React.FC = () => {
   return (
     <div className="community-page">
       <div className="community-page__container">
-        
+
         {/* Left Sidebar */}
-        <CommunitySidebar 
-          communities={communities} 
-          onJoinToggle={handleJoinToggle} 
+        <CommunitySidebar
+          communities={communities}
+          onJoinToggle={handleJoinToggle}
           onCreateCommunity={handleOpenCreateCommunity}
         />
 
         {/* Main Content */}
         <main className="community-page__main">
-          
+
           {/* Loading State */}
           {isLoading ? (
             <div className="community-page__loading">
@@ -271,14 +271,14 @@ const CommunityPage: React.FC = () => {
                    </h1>
                    <span className="community-page__banner-slug">c/{currentCommunity.slug}</span>
                  </div>
-                 <button 
+                 <button
                    className={`community-page__join-btn ${currentCommunity.isJoined ? 'community-page__join-btn--joined' : ''}`}
                    onClick={() => handleJoinToggle(currentCommunity.id)}
                  >
                    {currentCommunity.isJoined ? 'Joined' : 'Join'}
                  </button>
                </div>
-               
+
                {/* Mobile Community Info - Only visible on mobile */}
                <div className="community-page__mobile-info">
                  <p className="community-page__mobile-description">{currentCommunity.description}</p>
@@ -306,7 +306,7 @@ const CommunityPage: React.FC = () => {
             <div className="community-page__mobile-communities">
               <div className="community-page__mobile-communities-scroll">
                 {communities.filter(c => c.isJoined).slice(0, 10).map(comm => (
-                  <button 
+                  <button
                     key={comm.id}
                     className="community-page__mobile-community-chip"
                     onClick={() => navigate(`/community/${comm.slug}`)}
@@ -328,24 +328,24 @@ const CommunityPage: React.FC = () => {
             <div className="community-page__create-post-bar">
               <div className="community-page__user-avatar">
                 {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt="User avatar" 
+                  <img
+                    src={userAvatar}
+                    alt="User avatar"
                     className="community-page__avatar-img"
                   />
                 ) : (
                   <div className="community-page__avatar-logo">
-                    <img 
-                      src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg" 
-                      alt="MotorTrend" 
+                    <img
+                      src="https://www.motortrend.com/files/68f6de8441f73a00024a546f/mtavatar.svg"
+                      alt="MotorTrend"
                       className="community-page__avatar-logo-img"
                     />
                   </div>
                 )}
               </div>
-              <input 
-                type="text" 
-                placeholder={isAuthenticated ? "Create Post" : "Sign in to create a post"} 
+              <input
+                type="text"
+                placeholder={isAuthenticated ? "Create Post" : "Sign in to create a post"}
                 className="community-page__create-input"
                 onClick={handleOpenCreatePost}
                 readOnly
@@ -361,21 +361,21 @@ const CommunityPage: React.FC = () => {
           {/* Filter/Sort Bar (Feed only) */}
           {!postId && (
             <div className="community-page__sort-bar">
-               <button 
+               <button
                  className={`community-page__sort-btn ${sortBy === 'hot' ? 'community-page__sort-btn--active' : ''}`}
                  onClick={() => setSortBy('hot')}
                >
                  <Icon name="local_fire_department" size={20} />
                  Hot
                </button>
-               <button 
+               <button
                  className={`community-page__sort-btn ${sortBy === 'new' ? 'community-page__sort-btn--active' : ''}`}
                  onClick={() => setSortBy('new')}
                >
                  <Icon name="new_releases" size={20} />
                  New
                </button>
-               <button 
+               <button
                  className={`community-page__sort-btn ${sortBy === 'top' ? 'community-page__sort-btn--active' : ''}`}
                  onClick={() => setSortBy('top')}
                >
@@ -389,14 +389,14 @@ const CommunityPage: React.FC = () => {
           {postId && currentPost ? (
             <div className="community-page__post-detail">
               {/* Back Navigation */}
-              <button 
+              <button
                 className="community-page__back-btn"
                 onClick={() => navigate(currentCommunity ? `/community/${currentCommunity.slug}` : '/community')}
               >
                 <Icon name="arrow_back" size={20} />
                 <span>Back to {currentCommunity ? currentCommunity.name : 'Feed'}</span>
               </button>
-              <PostCard 
+              <PostCard
                 post={currentPost}
                 community={currentCommunity || undefined}
                 onVote={handleVote}
@@ -417,11 +417,11 @@ const CommunityPage: React.FC = () => {
                   </div>
                   <h3 className="community-page__empty-title">No posts yet</h3>
                   <p className="community-page__empty-text">
-                    {currentCommunity 
+                    {currentCommunity
                       ? `Be the first to share something in ${currentCommunity.name}!`
                       : 'Join communities and start sharing your thoughts!'}
                   </p>
-                  <button 
+                  <button
                     className="community-page__empty-cta"
                     onClick={handleOpenCreatePost}
                   >
@@ -434,9 +434,9 @@ const CommunityPage: React.FC = () => {
                   // Find community for this post
                   const postCommunity = communities.find(c => c.id === post.communityId);
                   return (
-                    <PostCard 
-                      key={post.id} 
-                      post={post} 
+                    <PostCard
+                      key={post.id}
+                      post={post}
                       community={postCommunity}
                       onVote={handleVote}
                       onSave={handleSavePost}
@@ -478,7 +478,7 @@ const CommunityPage: React.FC = () => {
                   <Icon name="cake" size={16} />
                   Created {new Date(currentCommunity.createdAt).toLocaleDateString()}
                 </div>
-                <button 
+                <button
                   className="community-info-card__create-btn"
                   onClick={handleOpenCreatePost}
                 >
@@ -504,7 +504,7 @@ const CommunityPage: React.FC = () => {
                      .map(post => {
                        const postCommunity = communities.find(c => c.id === post.communityId);
                        return (
-                         <div 
+                         <div
                            key={post.id}
                            className="community-recommended-post"
                            onClick={() => {
@@ -515,8 +515,8 @@ const CommunityPage: React.FC = () => {
                          >
                            <div className="community-recommended-post__community">
                              {postCommunity?.icon ? (
-                               <img 
-                                 src={postCommunity.icon} 
+                               <img
+                                 src={postCommunity.icon}
                                  alt={postCommunity.name}
                                  className="community-recommended-post__icon"
                                />
@@ -576,26 +576,26 @@ const CommunityPage: React.FC = () => {
       </div>
 
       {/* Modals */}
-      <CreatePostModal 
+      <CreatePostModal
         isOpen={isCreatePostOpen}
         onClose={() => setIsCreatePostOpen(false)}
         communities={communities}
         initialCommunityId={currentCommunity?.id}
         onPostCreated={handlePostCreated}
       />
-      
+
       <CreateCommunityModal
         isOpen={isCreateCommunityOpen}
         onClose={() => setIsCreateCommunityOpen(false)}
         onCommunityCreated={handleCommunityCreated}
       />
-      
+
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         initialMode="signin"
       />
-      
+
       {/* Toast Notifications */}
       <CommunityToast
         message={toast.message}

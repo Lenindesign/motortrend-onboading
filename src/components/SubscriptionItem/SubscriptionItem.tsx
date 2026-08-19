@@ -17,9 +17,9 @@ export interface SubscriptionItemProps {
   className?: string;
 }
 
-export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({ 
-  name, 
-  logo, 
+export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
+  name,
+  logo,
   isActive = false,
   isFindMore = false,
   onClick,
@@ -138,10 +138,10 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
         ) : (
           <div style={logoPlaceholderStyle}>
             {isFindMore && (
-              <img 
-                src="https://d2kde5ohu8qb21.cloudfront.net/files/68f64af5e852a20002f9bc06/more.svg" 
-                alt="Find More" 
-                width="116" 
+              <img
+                src="https://www.motortrend.com/files/68f64af5e852a20002f9bc06/more.svg"
+                alt="Find More"
+                width="116"
                 height="116"
                 style={{ borderRadius: 'var(--border-radius-md, 8px)' }}
               />
@@ -149,7 +149,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
           </div>
         )}
         {isActive && (
-          <div 
+          <div
             style={badgeStyle}
             onClick={handleBadgeClick}
             onMouseEnter={() => setIsBadgeHovered(true)}
@@ -163,7 +163,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
           </div>
         )}
         {!isActive && !isFindMore && (
-          <div 
+          <div
             style={badgeStyle}
             onClick={handleBadgeClick}
             onMouseEnter={() => setIsBadgeHovered(true)}

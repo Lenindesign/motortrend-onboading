@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextField } from '../../design-system/components';
 import LocationAutocomplete from '../../components/LocationAutocomplete';
 // Using SVG illustration from URL
-const step1Illustration = 'https://d2kde5ohu8qb21.cloudfront.net/files/68f56011a481f700027e1857/group1318348097.svg';
+const step1Illustration = 'https://www.motortrend.com/files/68f56011a481f700027e1857/group1318348097.svg';
 import './OnboardingStep1.css';
 import Icon from '../../components/Icon';
 

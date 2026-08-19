@@ -72,7 +72,7 @@ export const RatingGrid: React.FC<RatingGridProps> = ({
         {/* Column 1: MotorTrend Logo + Score */}
         <div className="rating-grid__cell rating-grid__cell--motortrend">
           <img
-            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
+            src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
             alt="MotorTrend"
             className="rating-grid__mt-logo"
           />

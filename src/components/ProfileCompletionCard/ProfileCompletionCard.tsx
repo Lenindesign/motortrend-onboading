@@ -14,9 +14,9 @@ import { useRating } from '../../contexts/RatingContext';
 import { CardShell } from '../atoms/CardShell/CardShell';
 
 // Using new graphics for user types
-const buyerImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/69101763c398630002aedb21/buyer.svg';
-const enthusiastImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017650e4b090002079ec0/enthusiast.svg';
-const bothImage = 'https://d2kde5ohu8qb21.cloudfront.net/files/691017670e4b090002079ec2/both.svg';
+const buyerImage = 'https://www.motortrend.com/files/69101763c398630002aedb21/buyer.svg';
+const enthusiastImage = 'https://www.motortrend.com/files/691017650e4b090002079ec0/enthusiast.svg';
+const bothImage = 'https://www.motortrend.com/files/691017670e4b090002079ec2/both.svg';
 
 export interface OnboardingStatus {
   step1: boolean;

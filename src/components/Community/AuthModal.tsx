@@ -291,7 +291,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </button>
           
           <img
-            src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg"
+            src="https://www.motortrend.com/files/68f6de8441f73a00024a546f/mtavatar.svg"
             alt="MotorTrend"
             style={logoStyle}
           />

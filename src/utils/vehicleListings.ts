@@ -135,10 +135,10 @@ function generateRealisticMileage(year: number): number {
  */
 const vehicleListingImages: Record<string, string[]> = {
   '2026-bentley-continental-gt-supersports': [
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd34bc179600027d188e/f78d2e19ba9d9ab1093200e441e1948ax.avif',
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd15eea5d80002ef4f36/d3c368dd4db34a71991a03465fd97a9bx.avif',
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd0c7be8e500020c5075/2e0a2b261a27534a358d319b45fe8de4x.avif',
-    'https://d2kde5ohu8qb21.cloudfront.net/files/691afd0a7be8e500020c5074/1b215920f0bed0292fa2a366f6b7c86bx.avif',
+    'https://www.motortrend.com/files/691afd34bc179600027d188e/f78d2e19ba9d9ab1093200e441e1948ax.avif',
+    'https://www.motortrend.com/files/691afd15eea5d80002ef4f36/d3c368dd4db34a71991a03465fd97a9bx.avif',
+    'https://www.motortrend.com/files/691afd0c7be8e500020c5075/2e0a2b261a27534a358d319b45fe8de4x.avif',
+    'https://www.motortrend.com/files/691afd0a7be8e500020c5074/1b215920f0bed0292fa2a366f6b7c86bx.avif',
   ],
   '2025-chevrolet-corvette-zr1': [
     'https://www.motortrend.com/files/691b05132301ef0002f28cb8/621d52b9ab9894256510bf3018db47a1.jpg',

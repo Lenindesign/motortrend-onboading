@@ -44,18 +44,18 @@ interface TopTenCarouselLeadsProps {
   showLeads?: boolean;
 }
 
-export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({ 
-  className = '', 
+export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
+  className = '',
   initialVehicleType = 'SUV',
   initialSubcategory = 'All',
   showLeads = true
 }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  
+
   // Auth prompt modal state
   const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
-  
+
   const [selectedVehicleType, setSelectedVehicleType] = useState<VehicleType>(initialVehicleType);
   const [selectedSubcategory, setSelectedSubcategory] = useState<Subcategory>(initialSubcategory);
   const [ratingType, setRatingType] = useState<RatingType>('MotorTrend');
@@ -69,19 +69,19 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   const [sliderWidth, setSliderWidth] = useState<number>(0);
   const [sliderHeight, setSliderHeight] = useState<number | null>(null);
   const [isInView, setIsInView] = useState(false);
-  
+
   // Responsive state
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isTablet, setIsTablet] = useState(window.innerWidth <= 1024);
-  
+
   // Determine if leads should stack based on slider width (< 1028px)
   const shouldStackLeads = sliderWidth > 0 && sliderWidth < 1028;
-  
+
   // Hover states
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [hoveredDot, setHoveredDot] = useState<number | null>(null);
   const [isSaveBtnHovered, setIsSaveBtnHovered] = useState(false);
-  
+
   // Touch/swipe state
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -90,11 +90,11 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   // Saved modal state (for vehicles)
   const [isSavedModalOpen, setIsSavedModalOpen] = useState(false);
   const [savedVehicleName, setSavedVehicleName] = useState('');
-  
+
   // Listings state
   const [currentListings, setCurrentListings] = useState<LocalListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(false);
-  
+
   // Saved modal state (for leads)
   const [isSavedLeadModalOpen, setIsSavedLeadModalOpen] = useState(false);
   const [savedLeadTitle, setSavedLeadTitle] = useState('');
@@ -140,21 +140,21 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   // Track container width for layout decisions
   useEffect(() => {
     if (!carouselRef.current) return;
-    
+
     const updateWidth = () => {
       if (carouselRef.current) {
         const width = carouselRef.current.getBoundingClientRect().width;
         setSliderWidth(width);
       }
     };
-    
+
     requestAnimationFrame(updateWidth);
-    
+
     const resizeObserver = new ResizeObserver(updateWidth);
     resizeObserver.observe(carouselRef.current);
-    
+
     window.addEventListener('resize', updateWidth);
-    
+
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', updateWidth);
@@ -164,20 +164,20 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   // Track slider height for sidebar sync
   useEffect(() => {
     if (!sliderRef.current) return;
-    
+
     const updateHeight = () => {
       if (sliderRef.current) {
         const height = sliderRef.current.getBoundingClientRect().height;
         setSliderHeight(height);
       }
     };
-    
+
     // Use requestAnimationFrame to ensure layout is complete
     requestAnimationFrame(updateHeight);
-    
+
     const resizeObserver = new ResizeObserver(updateHeight);
     resizeObserver.observe(sliderRef.current);
-    
+
     return () => {
       resizeObserver.disconnect();
     };
@@ -204,13 +204,13 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
       console.error('Error loading saved vehicles:', error);
     }
     };
-    
+
     loadSavedVehicles();
-    
+
     // Listen for profile/onboarding data updates
     window.addEventListener('onboardingDataUpdated', loadSavedVehicles);
     window.addEventListener('storage', loadSavedVehicles);
-    
+
     return () => {
       window.removeEventListener('onboardingDataUpdated', loadSavedVehicles);
       window.removeEventListener('storage', loadSavedVehicles);
@@ -225,7 +225,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     try {
       const onboardingData = localStorage.getItem('onboardingData');
       let data = onboardingData ? JSON.parse(onboardingData) : { vehicles: [] };
-      
+
       if (!data.vehicles) data.vehicles = [];
 
       const vehicleIndex = data.vehicles.findIndex((v: { name: string }) => v.name === vehicle.name);
@@ -325,12 +325,12 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
 
   const carouselVehicles: CarouselVehicle[] = useMemo(() => {
     let filteredVehicles = allVehicleItems;
-    
+
     if (selectedVehicleType === 'Recommended For You') {
       try {
         const onboardingData = localStorage.getItem('onboardingData');
         const savedVehicleNames = new Set<string>();
-        
+
         if (onboardingData) {
           const data = JSON.parse(onboardingData);
           if (data.vehicles && Array.isArray(data.vehicles) && data.vehicles.length > 0) {
@@ -339,9 +339,9 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
             });
           }
         }
-        
+
         const savedVehiclesList = allVehicleItems.filter(vehicle => savedVehicleNames.has(vehicle.name.toLowerCase().trim()));
-        
+
         if (savedVehiclesList.length < 10) {
           const remainingCount = 10 - savedVehiclesList.length;
           const savedVehicleNamesSet = new Set(savedVehiclesList.map(v => v.name.toLowerCase().trim()));
@@ -383,7 +383,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
       const communityRating = vehicleItem.communityRating ?? generateCommunityRating(vehicleItem.name);
       const vehicleImage = (vehicleItem.image && typeof vehicleItem.image === 'string' && vehicleItem.image.trim() !== '' && vehicleItem.image.startsWith('http'))
         ? vehicleItem.image : vehicleImageFor(vehicleItem.name);
-      
+
       return { id: `vehicle-${index}`, name: vehicleItem.name, year, make, model, image: vehicleImage, galleryImages: vehicleItem.galleryImages, bodyStyle: vehicleItem.bodyStyle, staffRating, communityRating, vehicleYear, priceMin: vehicleItem.priceMin };
     });
 
@@ -419,21 +419,21 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
   useEffect(() => {
     const loadListings = async () => {
       if (carouselVehicles.length === 0) return;
-      
+
       const currentVehicle = carouselVehicles[currentSlide];
       if (!currentVehicle) return;
-      
+
       setIsLoadingListings(true);
-      
+
       // Use gallery images as fallbacks if available
-      const fallbackImages = currentVehicle.galleryImages && currentVehicle.galleryImages.length > 0 
-        ? currentVehicle.galleryImages 
+      const fallbackImages = currentVehicle.galleryImages && currentVehicle.galleryImages.length > 0
+        ? currentVehicle.galleryImages
         : [currentVehicle.image];
-      
+
       // Generate mock listings first for instant display with fallback images
       const mockListings = generateLocalListings(currentVehicle.year, currentVehicle.image, 5, fallbackImages);
       setCurrentListings(mockListings);
-      
+
       try {
         const parsed = parseVehicleName(currentVehicle.name);
         console.log('🔍 Fetching listings for:', parsed, 'with', fallbackImages.length, 'fallback images');
@@ -570,7 +570,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
     selectedSubcategory,
     initialVehicleType,
   });
-  
+
   if (carouselVehicles.length === 0) {
     console.log('[TopTenCarouselLeads] No vehicles found, returning null');
     return null;
@@ -590,7 +590,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
 
   // Stack layout when slider width < 1028px OR when explicitly no leads
   const shouldStackLayout = shouldStackLeads || !showLeads;
-  
+
   const layoutStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: shouldStackLayout ? 'column' : 'row',
@@ -920,7 +920,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
       <div style={layoutStyle}>
         {/* Carousel Section */}
         <div style={carouselContainerStyle}>
-          <div 
+          <div
             ref={sliderRef}
             style={sliderStyle}
             onMouseEnter={handleMouseEnter}
@@ -961,13 +961,13 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                 <Icon name="keyboard_arrow_down" size={20} style={arrowStyle} />
               </div>
             </div>
-            
+
             <div style={trackStyle}>
               {carouselVehicles.map((vehicle, index) => (
                 <div key={vehicle.id} style={slideStyle} onClick={() => handleVehicleClick(vehicle)}>
                   <div style={imageContainerStyle}>
                     <img src={vehicle.image} alt={vehicle.name} style={getImageStyle(index === currentSlide)} />
-                    
+
                     <button
                       style={saveBtnStyle}
                       onClick={(e) => { e.stopPropagation(); handleSaveVehicle(vehicle); }}
@@ -977,12 +977,12 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                     >
                       <Icon name={savedVehicles.has(vehicle.name) ? 'bookmark' : 'bookmark_border'} variant={savedVehicles.has(vehicle.name) ? 'filled' : 'outlined'} size={24} />
                     </button>
-                    
+
                     <div style={infoBoxStyle(index === currentSlide)}>
                       {/* Main content layout - Left side (badges + name) and Right side (ratings) */}
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
                         gap: '16px',
                       }}>
@@ -994,16 +994,16 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                                           </div>
                                           <h2 style={nameStyle}>
                                             #{vehicle.rank}{' '}
-                                            <span 
-                                              style={{ 
-                                                cursor: 'pointer', 
+                                            <span
+                                              style={{
+                                                cursor: 'pointer',
                                                 pointerEvents: 'auto',
                                                 transition: 'opacity 0.2s ease',
                                               }}
-                                              onClick={(e) => { 
-                                                e.preventDefault(); 
-                                                e.stopPropagation(); 
-                                                navigate(`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`); 
+                                              onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                navigate(`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}`);
                                               }}
                                               onMouseEnter={(e) => { (e.target as HTMLSpanElement).style.opacity = '0.8'; }}
                                               onMouseLeave={(e) => { (e.target as HTMLSpanElement).style.opacity = '1'; }}
@@ -1015,7 +1015,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                                             </span>
                                           </h2>
                         </div>
-                        
+
                         {/* Right side - Rating Bar (centered vertically) */}
                         <div style={{
                           display: 'flex',
@@ -1031,10 +1031,10 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                             paddingRight: '16px',
                             height: '36px',
                           }}>
-                            <img 
-                              src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                              alt="MotorTrend" 
-                              style={{ width: '24px', height: '24px' }} 
+                            <img
+                              src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                              alt="MotorTrend"
+                              style={{ width: '24px', height: '24px' }}
                             />
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center' }}>
                               <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
@@ -1062,7 +1062,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                               }}>MT Rating</span>
                             </div>
                           </div>
-                          
+
                           {/* Vertical Divider */}
                           <div style={{
                             width: '1px',
@@ -1070,7 +1070,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                             backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
                             alignSelf: 'center',
                           }} />
-                          
+
                           {/* User Reviews Section */}
                           <div style={{
                             display: 'flex',
@@ -1097,7 +1097,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                 </div>
               ))}
             </div>
-            
+
             {carouselVehicles.length > 1 && (
               <>
                 <button
@@ -1118,7 +1118,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                 >
                   <Icon name="chevron_right" size={32} />
                 </button>
-                
+
                 <div style={dotsContainerStyle}>
                   {carouselVehicles.map((vehicle, index) => (
                     <button
@@ -1175,7 +1175,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                           cx="18" cy="18" r="16" fill="none" stroke="#FFFFFF" strokeWidth={index === currentSlide ? '2.5' : '2'} strokeLinecap="round"
                           strokeDasharray={index === currentSlide && !isSliderHovered ? '100 100' : '0 100'}
                           transform="rotate(-90 18 18)"
-                          style={{ 
+                          style={{
                             transition: isSliderHovered ? 'stroke-dasharray 0.2s ease' : 'stroke-dasharray 0.3s ease',
                             opacity: index === currentSlide ? 1 : 0,
                             animation: index === currentSlide && !isSliderHovered ? 'progressCircle 5s linear infinite' : 'none',
@@ -1196,7 +1196,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
         </div>
 
         {/* Sidebar Section */}
-        <div 
+        <div
           style={sidebarContainerStyle}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -1233,7 +1233,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
             ) : (
               <div style={listingsListStyle}>
                 {currentListings.slice(0, shouldStackLayout ? 5 : 3).map((listing) => (
-                  <div 
+                  <div
                     key={listing.id}
                     style={{
                       flex: shouldStackLayout ? '0 0 auto' : undefined,
@@ -1265,9 +1265,9 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                     />
                   </div>
                 ))}
-                
+
                 {currentListings.length > (shouldStackLayout ? 5 : 3) && (
-                  <div 
+                  <div
                     style={{
                       flex: shouldStackLayout ? '0 0 auto' : undefined,
                       width: shouldStackLayout ? '140px' : '100%',
@@ -1278,7 +1278,7 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
                       scrollSnapAlign: shouldStackLayout ? 'start' : undefined,
                     }}
                   >
-                    <button 
+                    <button
                       style={{
                         fontFamily: 'var(--font-body, Geist, sans-serif)',
                         width: shouldStackLayout ? 'auto' : '100%',
@@ -1314,10 +1314,10 @@ export const TopTenCarouselLeads: React.FC<TopTenCarouselLeadsProps> = ({
 
       <SavedModal isOpen={isSavedModalOpen} onClose={() => setIsSavedModalOpen(false)} itemTitle={savedVehicleName} itemType="vehicle" />
       <SavedModal isOpen={isSavedLeadModalOpen} onClose={() => setIsSavedLeadModalOpen(false)} itemTitle={savedLeadTitle} itemType="lead" />
-      <AuthPromptModal 
-        isOpen={isAuthPromptOpen} 
-        onClose={() => setIsAuthPromptOpen(false)} 
-        action="bookmark" 
+      <AuthPromptModal
+        isOpen={isAuthPromptOpen}
+        onClose={() => setIsAuthPromptOpen(false)}
+        action="bookmark"
       />
     </div>
   );

@@ -5,7 +5,6 @@
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { MessageCircle } from 'lucide-react';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import { UserReviews } from '../../components/UserReviews';
@@ -35,7 +34,7 @@ import './Article.css';
 export const Article: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  
+
   // Premium articles (no sidebar, no ads)
   const premiumArticles = [
     'how-motortrend-tests-cars',
@@ -50,7 +49,7 @@ export const Article: React.FC = () => {
     '2026-motortrend-car-of-the-year'
   ];
   const isPremiumArticle = slug ? premiumArticles.includes(slug) : false;
-  
+
   // Load bookmark state from localStorage on mount
   const [isSaved, setIsSaved] = useState(() => {
     if (!slug) return false;
@@ -74,21 +73,18 @@ export const Article: React.FC = () => {
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [isVehicleAccordionOpen] = useState(false);
   const [reviewsTabActive, setReviewsTabActive] = useState<boolean | undefined>(undefined);
-  const [isCommentTooltipVisible, setIsCommentTooltipVisible] = useState(false);
-  const [commentTooltipPosition, setCommentTooltipPosition] = useState({ top: 0, left: 0 });
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
-  const commentIconRef = useRef<HTMLSpanElement>(null);
   const justSavedReviewRef = useRef<boolean>(false);
   const loadMoreArticlesRef = useRef<HTMLDivElement>(null);
   const { getUserRating, setUserRating, clearRating } = useRating();
   const { isAuthenticated } = useAuth();
-  
+
   // Auth prompt modal state
   const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
   const [authPromptAction, setAuthPromptAction] = useState<'rate' | 'review' | 'save' | 'comment'>('rate');
-  
+
   // Q&A modal state
   const [isQAModalOpen, setIsQAModalOpen] = useState(false);
   const [qaQuestions, setQaQuestions] = useState<QAItem[]>([]);
@@ -96,7 +92,7 @@ export const Article: React.FC = () => {
   // Photo gallery state
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
+
   // Lazy load articles state
   const [articlesToShow, setArticlesToShow] = useState(5);
 
@@ -107,13 +103,13 @@ export const Article: React.FC = () => {
   const renderStarRating = (ratingValue: number) => {
     // ratingValue is already on 0-10 scale, convert to 0-5 scale for display
     const normalizedRating = ratingValue / 2;
-    
+
     return (
       <div className="article__rating-stars">
         {[1, 2, 3, 4, 5].map((star) => {
           const isFilled = star < Math.ceil(normalizedRating);
           const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
-          
+
           return (
             <div key={star} className={`article__star-wrapper ${isHalf ? 'article__star-wrapper--half' : ''}`}>
               {/* Outline star */}
@@ -149,7 +145,7 @@ export const Article: React.FC = () => {
       </div>
     );
   };
-  
+
   // Load article data based on slug
   const articleData = useMemo(() => {
     const loadedArticle = slug ? getArticleBySlug(slug) : getDefaultArticle();
@@ -159,48 +155,48 @@ export const Article: React.FC = () => {
     }
     return loadedArticle;
   }, [slug]);
-  
+
   // Generate consistent comment count based on article slug
   const commentCount = useMemo(() => {
     const hash = (slug || 'default').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return Math.floor((hash % 50) + 10); // Random count between 10-59
   }, [slug]);
-  
+
   // Get all article images for gallery
   const articleImages = useMemo(() => {
     return articleData.images || [];
   }, [articleData]);
-  
+
   // Gallery handlers
   const handleImageClick = useCallback((index: number) => {
     setCurrentImageIndex(index);
     setGalleryOpen(true);
     document.body.style.overflow = 'hidden';
   }, []);
-  
+
   const handleCloseGallery = useCallback(() => {
     setGalleryOpen(false);
     document.body.style.overflow = '';
   }, []);
-  
+
   const handleGalleryNext = useCallback(() => {
     setCurrentImageIndex((prev) => (prev + 1) % articleImages.length);
   }, [articleImages.length]);
-  
+
   const handleGalleryPrev = useCallback(() => {
     setCurrentImageIndex((prev) => (prev - 1 + articleImages.length) % articleImages.length);
   }, [articleImages.length]);
-  
+
   const handleGalleryGoTo = useCallback((index: number) => {
     if (index >= 0 && index < articleImages.length) {
       setCurrentImageIndex(index);
     }
   }, [articleImages.length]);
-  
+
   // Keyboard navigation for gallery
   useEffect(() => {
     if (!galleryOpen) return;
-    
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         handleCloseGallery();
@@ -212,7 +208,7 @@ export const Article: React.FC = () => {
         handleGalleryNext();
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [galleryOpen, handleCloseGallery, handleGalleryPrev, handleGalleryNext]);
@@ -260,16 +256,16 @@ export const Article: React.FC = () => {
     // If no year found, just replace dashes with spaces
     return name.replace(/-/g, ' ').trim();
   }, [articleData]);
-  
+
   // Check if this is a comparison article with multiple vehicles
   const comparisonVehicles = useMemo(() => {
     return articleData.comparisonVehicles || [];
   }, [articleData]);
-  
+
   const isComparisonArticle = comparisonVehicles.length > 1;
   const primaryVehicle = isComparisonArticle ? comparisonVehicles[0] : vehicleName;
   const additionalVehicles = isComparisonArticle ? comparisonVehicles.slice(1) : [];
-  
+
   // Parse vehicle name to get year, make, and model for navigation
   const vehiclePath = useMemo(() => {
     const targetVehicle = isComparisonArticle ? primaryVehicle : vehicleName;
@@ -293,14 +289,14 @@ export const Article: React.FC = () => {
   }, [apiVehicleDataForBar, articleData.motortrendScore, stickyBarVehicleName, vehicleName]);
   const communityRatingForBar = useMemo(() => apiVehicleDataForBar?.communityRating ?? generateCommunityRating(stickyBarVehicleName), [apiVehicleDataForBar, stickyBarVehicleName]);
   const userRatingForBar = getUserRating(stickyBarVehicleName);
-  
+
   const userRating = getUserRating(vehicleName);
 
   // Check if user has an existing review and get it
   const existingUserReview = useMemo(() => {
     return reviews.find(review => review.reviewerName === 'You') || null;
   }, [reviews]);
-  
+
   const hasExistingReview = existingUserReview !== null;
 
   // Article data - using loaded article
@@ -308,32 +304,32 @@ export const Article: React.FC = () => {
 
   const handleBookmark = () => {
     if (!slug) return;
-    
+
     if (!isAuthenticated) {
       setAuthPromptAction('save');
       setIsAuthPromptOpen(true);
       return;
     }
-    
+
     const newBookmarkState = !isSaved;
     setIsSaved(newBookmarkState);
-    
+
     try {
       // Get current saved articles
       const savedArticlesJson = localStorage.getItem('savedArticles');
       const savedArticles: string[] = savedArticlesJson ? JSON.parse(savedArticlesJson) : [];
-      
+
       // Get current saved articles metadata
       const savedArticlesMetadataJson = localStorage.getItem('savedArticlesMetadata');
-      const savedArticlesMetadata: Record<string, { title: string; author: string; date: string; imageUrl: string; slug: string }> = 
+      const savedArticlesMetadata: Record<string, { title: string; author: string; date: string; imageUrl: string; slug: string }> =
         savedArticlesMetadataJson ? JSON.parse(savedArticlesMetadataJson) : {};
-      
+
       if (newBookmarkState) {
         // Add article to saved list
         if (!savedArticles.includes(slug)) {
           savedArticles.push(slug);
         }
-        
+
         // Save article metadata
         savedArticlesMetadata[slug] = {
           title: article.title,
@@ -342,7 +338,7 @@ export const Article: React.FC = () => {
           imageUrl: article.heroImage,
           slug: slug
         };
-        
+
         // Show saved modal
         setIsSavedModalOpen(true);
       } else {
@@ -351,11 +347,11 @@ export const Article: React.FC = () => {
         if (index > -1) {
           savedArticles.splice(index, 1);
         }
-        
+
         // Remove article metadata
         delete savedArticlesMetadata[slug];
       }
-      
+
       // Save to localStorage
       localStorage.setItem('savedArticles', JSON.stringify(savedArticles));
       localStorage.setItem('savedArticlesMetadata', JSON.stringify(savedArticlesMetadata));
@@ -380,7 +376,7 @@ export const Article: React.FC = () => {
     const generateQAData = (): QAItem[] => {
       const vName = vehicleName || articleData.title;
       const hash = (slug || 'default').split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      
+
       // Load user-submitted questions from localStorage
       const savedQAKey = `articleQA_${slug || 'default'}`;
       let savedQuestions: QAItem[] = [];
@@ -517,7 +513,7 @@ export const Article: React.FC = () => {
       const key = 'userQAActivity';
       const existing = localStorage.getItem(key);
       const activities: typeof activity[] = existing ? JSON.parse(existing) : [];
-      
+
       // Avoid duplicates (same question + same type)
       const isDuplicate = activities.some(
         a => a.questionId === activity.questionId && a.type === activity.type
@@ -709,7 +705,7 @@ export const Article: React.FC = () => {
       justSavedReviewRef.current = false;
       return;
     }
-    
+
     try {
       // Use the same key format as VehicleDetails page for consistency
       const savedReviewsKey = `vehicleReviews_${vehicleName}`;
@@ -740,7 +736,7 @@ export const Article: React.FC = () => {
   const communityRating = useMemo(() => {
     return apiVehicleData?.communityRating ?? generateCommunityRating(vehicleName);
   }, [apiVehicleData, vehicleName]);
-  
+
   const staffRating = useMemo(() => {
     // Priority 1: API data (single source of truth)
     if (apiVehicleData?.staffRating) {
@@ -753,7 +749,7 @@ export const Article: React.FC = () => {
     // Priority 3: Generated rating (fallback only)
     return generateStaffRating(vehicleName);
   }, [apiVehicleData, motortrendScore, article.motortrendScore, vehicleName]);
-  
+
   // Generate scores for staff rating tooltip
   const staffRatingScores = useMemo(() => ({
     performance: motortrendScore.scores.performance,
@@ -761,7 +757,7 @@ export const Article: React.FC = () => {
     tech: motortrendScore.scores.tech,
     value: motortrendScore.scores.value,
   }), [motortrendScore.scores]);
-  
+
   // Rating distribution for community rating tooltip
   const ratingDistribution = useMemo(() => ({
     1: 5,
@@ -775,7 +771,7 @@ export const Article: React.FC = () => {
     9: 50,
     10: 18,
   }), []);
-  
+
   // Handlers for rating modal
   const handleOpenRatingModal = (vehicleForModal?: string) => {
     if (!isAuthenticated) {
@@ -805,7 +801,7 @@ export const Article: React.FC = () => {
         const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
         // Filter out reviews where reviewerName is 'You'
         const filteredReviews = savedReviews.filter(review => review.reviewerName !== 'You');
-        
+
         // Update localStorage
         if (filteredReviews.length > 0) {
           localStorage.setItem(savedReviewsKey, JSON.stringify(filteredReviews));
@@ -813,7 +809,7 @@ export const Article: React.FC = () => {
           // If no reviews left, remove the key entirely
           localStorage.removeItem(savedReviewsKey);
         }
-        
+
         // Update local state
         const generatedReviews = generateUserReviews(ratingModalVehicleName);
         const generatedIds = new Set(generatedReviews.map(r => r.id));
@@ -823,7 +819,7 @@ export const Article: React.FC = () => {
     } catch (error) {
       console.error('Error removing review:', error);
     }
-    
+
     setIsRatingModalOpen(false);
   };
 
@@ -874,7 +870,7 @@ export const Article: React.FC = () => {
   const handleScrollToCommunityRatings = () => {
     // Force open the Reviews tab
     setReviewsTabActive(true);
-    
+
     const communityRatingsSection = document.getElementById('community-ratings');
     if (communityRatingsSection) {
       const headerOffset = 100; // Account for sticky nav bar height
@@ -896,7 +892,7 @@ export const Article: React.FC = () => {
   const handleViewReview = () => {
     // Set reviews tab to be active
     setReviewsTabActive(true);
-    
+
     // Scroll to reviews section
     const reviewsSection = document.getElementById('community-ratings');
     if (reviewsSection) {
@@ -910,7 +906,7 @@ export const Article: React.FC = () => {
       });
     }
     setIsToastVisible(false);
-    
+
     // Reset after a delay to allow normal tab switching
     setTimeout(() => {
       setReviewsTabActive(undefined);
@@ -927,7 +923,7 @@ export const Article: React.FC = () => {
         const savedReviews: ReviewData[] = JSON.parse(savedReviewsJson);
         const updatedReviews = savedReviews.map(r => r.id === reviewId ? updatedReview : r);
         localStorage.setItem(savedReviewsKey, JSON.stringify(updatedReviews));
-        
+
         // Update local state
         const generatedReviews = generateUserReviews(vehicleName);
         const generatedIds = new Set(generatedReviews.map(r => r.id));
@@ -1028,7 +1024,7 @@ export const Article: React.FC = () => {
   // Intersection Observer for lazy loading
   useEffect(() => {
     if (!loadMoreArticlesRef.current) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -1063,7 +1059,7 @@ export const Article: React.FC = () => {
   useEffect(() => {
     const loadListings = async () => {
       if (!vehicleName) return;
-      
+
       setIsLoadingListings(true);
       try {
         const parsed = parseVehicleName(vehicleName);
@@ -1085,7 +1081,7 @@ export const Article: React.FC = () => {
         setIsLoadingListings(false);
       }
     };
-    
+
     loadListings();
   }, [vehicleName]);
 
@@ -1111,7 +1107,7 @@ export const Article: React.FC = () => {
               type: 'motortrend',
               value: isComparisonArticle ? staffRatingForBar : staffRating,
               onClick: handleScrollToStaffRating,
-              iconSrc: 'https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg',
+              iconSrc: 'https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg',
               iconAlt: 'MT',
               format: 'vehicle-details'
             },
@@ -1152,6 +1148,12 @@ export const Article: React.FC = () => {
           staffRatingScores={(!isComparisonArticle || stickyBarVehicleName === vehicleName) ? staffRatingScores : undefined}
           ratingDistribution={ratingDistribution}
           totalReviews={communityRatingCount}
+          commentsLink={{
+            href: '#community-ratings',
+            label: 'Comments',
+            count: commentCount,
+            ariaLabel: `Jump to ${commentCount} article comments`
+          }}
         />
       )}
       <div className="article__container">
@@ -1172,7 +1174,7 @@ export const Article: React.FC = () => {
               const staffRatingForVehicle = apiVehicleData?.staffRating ?? generateStaffRating(vehicle);
               const communityRatingForVehicle = apiVehicleData?.communityRating ?? generateCommunityRating(vehicle);
               const userRatingForVehicle = getUserRating(vehicle);
-              
+
               return (
                 <div key={index} className="article__vehicle-accordion-item">
                   <div className="article__vehicle-accordion-left">
@@ -1190,10 +1192,10 @@ export const Article: React.FC = () => {
                         <span className="article__rating-label-top">MotorTrend</span>
                         <span className="article__rating-label-bottom">Rating</span>
                       </div>
-                      <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                        alt="MotorTrend" 
-                        className="article__rating-icon article__rating-icon--staff" 
+                      <img
+                        src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                        alt="MotorTrend"
+                        className="article__rating-icon article__rating-icon--staff"
                       />
                                       <span className="article__rating-value">{typeof staffRatingForVehicle === 'number' ? staffRatingForVehicle.toFixed(1) : staffRatingForVehicle}</span>
                     </div>
@@ -1202,17 +1204,17 @@ export const Article: React.FC = () => {
                         <span className="article__rating-label-top">Community</span>
                         <span className="article__rating-label-bottom">Rating ({communityRatingCount})</span>
                       </div>
-                      <img 
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg" 
-                        alt="Community Rating Star" 
-                        className="article__rating-icon article__rating-icon--community" 
+                      <img
+                        src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
+                        alt="Community Rating Star"
+                        className="article__rating-icon article__rating-icon--community"
                       />
                       <span className="article__rating-value">
                         {communityRatingForVehicle.toFixed(1)}
                       </span>
                     </div>
-                    <button 
-                      className="article__rate-btn article__rate-btn--mobile-hide" 
+                    <button
+                      className="article__rate-btn article__rate-btn--mobile-hide"
                       onClick={() => {
                         setUserRating(vehicle, 0);
                         setIsRatingModalOpen(true);
@@ -1224,10 +1226,10 @@ export const Article: React.FC = () => {
                             <span className="article__rating-label-top">Your</span>
                             <span className="article__rating-label-bottom">Rating</span>
                           </div>
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
-                            alt="Your Rating Star" 
-                            className="article__rating-icon article__rating-icon--add-rate" 
+                          <img
+                            src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
+                            alt="Your Rating Star"
+                            className="article__rating-icon article__rating-icon--add-rate"
                           />
                           <span className="article__rating-value">{userRatingForVehicle}</span>
                         </>
@@ -1237,17 +1239,17 @@ export const Article: React.FC = () => {
                             <span className="article__rating-label-top">Rate</span>
                             <span className="article__rating-label-bottom">This Car</span>
                           </div>
-                          <img 
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
-                            alt="Add Rating Star" 
-                            className="article__rating-icon article__rating-icon--add-rate" 
+                          <img
+                            src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
+                            alt="Add Rating Star"
+                            className="article__rating-icon article__rating-icon--add-rate"
                           />
                         </>
                       )}
                     </button>
                   </div>
                   <div className="article__vehicle-accordion-right">
-                    <button 
+                    <button
                       className="article__cta"
                       onClick={() => {
                         const listingsSection = document.querySelector('.article__listings');
@@ -1293,42 +1295,11 @@ export const Article: React.FC = () => {
                 </span>
                 <span className="article__byline-separator">|</span>
                 <span className="article__byline-date">{article.date}</span>
-                <span className="article__byline-separator">|</span>
-                <span 
-                  ref={commentIconRef}
-                  className="article__byline-section article__byline-section--clickable"
-                  onClick={() => {
-                    const commentsSection = document.getElementById('community-ratings');
-                    if (commentsSection) {
-                      const headerOffset = 100; // Account for sticky nav bar height
-                      const elementPosition = commentsSection.getBoundingClientRect().top;
-                      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                      window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                      });
-                    }
-                  }}
-                  onMouseEnter={() => {
-                    if (commentIconRef.current) {
-                      const rect = commentIconRef.current.getBoundingClientRect();
-                      setCommentTooltipPosition({
-                        top: rect.top - 40, // Position above the icon
-                        left: rect.left + rect.width / 2
-                      });
-                      setIsCommentTooltipVisible(true);
-                    }
-                  }}
-                  onMouseLeave={() => setIsCommentTooltipVisible(false)}
-                >
-                  <MessageCircle size={18} />
-                </span>
                 {/* HIDDEN: ArticleReactions thumbs up
                 <span className="article__byline-separator">|</span>
-                <ArticleReactions 
-                  articleSlug={slug || 'default'} 
-                  vehicleName={primaryVehicle || vehicleName || undefined} 
+                <ArticleReactions
+                  articleSlug={slug || 'default'}
+                  vehicleName={primaryVehicle || vehicleName || undefined}
                 />
                 */}
               </div>
@@ -1359,7 +1330,7 @@ export const Article: React.FC = () => {
                     </span>
                   )}
                 </button>
-                <button 
+                <button
                   className={`article__save-btn ${isSaved ? 'saved' : ''}`}
                   onClick={handleBookmark}
                   aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
@@ -1408,14 +1379,14 @@ export const Article: React.FC = () => {
                         const tocIndex = article.content
                           .slice(0, index)
                           .filter(b => b.type === "heading").length;
-                        
+
                         // Extract vehicle name from heading for Top 10 articles
                         let vehicleNameForImage: string | null = null;
                         let rankingNumber: string | null = null;
                         let vehicleImageUrl: string | null = null;
                         let motortrendScoreForImage: number | null = null;
                         let userScoreForImage: number | null = null;
-                        
+
                         if (isPremiumArticle && block.text) {
                           // Extract vehicle name and ranking from heading (e.g., "10. 2025 Kia K4" -> ranking: "10", vehicle: "2025 Kia K4")
                           const headingMatch = block.text.match(/^(\d+)\.\s*(.+)$/);
@@ -1429,18 +1400,18 @@ export const Article: React.FC = () => {
                             vehicleImageUrl = apiVehicleDataForImage?.image ?? vehicleImageFor(vehicleNameForImage);
                           }
                         }
-                        
+
                         // Use vehicle-specific image if available, otherwise fall back to index-based
                         const imageToUse = vehicleImageUrl || (imageIndex < contentImages.length ? contentImages[imageIndex] : null);
-                        
+
                         // Check if next block is a paragraph - for listicles, render heading first, then image, then paragraph
                         const nextBlock = article.content[index + 1];
                         const isListicleItem = isPremiumArticle && imageToUse && nextBlock?.type === "paragraph";
-                        
+
                         if (isListicleItem) {
                           // Render heading first (above photo)
                           elements.push(
-                            <h2 
+                            <h2
                               key={`heading-${index}`}
                               id={`heading-${tocIndex}`}
                               className="article__heading"
@@ -1448,14 +1419,14 @@ export const Article: React.FC = () => {
                               {block.text}
                             </h2>
                           );
-                          
+
                           // Render image after heading
                         if (imageToUse) {
                           const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
-                          
+
                           elements.push(
-                            <div 
-                              key={`image-after-${index}`} 
+                            <div
+                              key={`image-after-${index}`}
                               className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                             >
                               {rankingNumber && (
@@ -1466,8 +1437,8 @@ export const Article: React.FC = () => {
                                   </span>
                                 </div>
                               )}
-                              <img 
-                                src={imageToUse} 
+                              <img
+                                src={imageToUse}
                                 alt={vehicleNameForImage || `${article.title} - Image ${imageIndex + 2}`}
                                 className={`article__image article__image-clickable ${isPremiumArticle ? 'article__image--premium' : ''}`}
                                 onClick={() => {
@@ -1515,10 +1486,10 @@ export const Article: React.FC = () => {
                                   <div className="article__ratings-list">
                                     <div className="article__rating-item">
                                       <div className="article__rating-score-row">
-                                        <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                          alt="MotorTrend" 
-                                          className="article__rating-mt-badge" 
+                                        <img
+                                          src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                                          alt="MotorTrend"
+                                          className="article__rating-mt-badge"
                                         />
                                         <div className="article__rating-score-large">
                                           {motortrendScoreForImage.toFixed(1)}
@@ -1549,7 +1520,7 @@ export const Article: React.FC = () => {
                           // Original behavior: render heading first, then image
                           // Render the heading
                           elements.push(
-                            <h2 
+                            <h2
                               key={`heading-${index}`}
                               id={`heading-${tocIndex}`}
                               className="article__heading"
@@ -1561,10 +1532,10 @@ export const Article: React.FC = () => {
                           // Add an image after the heading if available
                           if (imageToUse) {
                             const galleryIndex = imageIndex + 1; // +1 because hero image is at index 0
-                            
+
                             elements.push(
-                              <div 
-                                key={`image-after-${index}`} 
+                              <div
+                                key={`image-after-${index}`}
                                 className={`article__image-wrapper ${isPremiumArticle ? 'article__image-wrapper--premium' : ''}`}
                               >
                                 {rankingNumber && (
@@ -1575,8 +1546,8 @@ export const Article: React.FC = () => {
                                     </span>
                                   </div>
                                 )}
-                                <img 
-                                  src={imageToUse} 
+                                <img
+                                  src={imageToUse}
                                   alt={vehicleNameForImage || `${article.title} - Image ${imageIndex + 2}`}
                                   className={`article__image article__image-clickable ${isPremiumArticle ? 'article__image--premium' : ''}`}
                                   onClick={() => {
@@ -1597,10 +1568,10 @@ export const Article: React.FC = () => {
                                     <div className="article__ratings-list">
                                       <div className="article__rating-item">
                                         <div className="article__rating-score-row">
-                                          <img 
-                                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                            alt="MotorTrend" 
-                                            className="article__rating-mt-badge" 
+                                          <img
+                                            src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                                            alt="MotorTrend"
+                                            className="article__rating-mt-badge"
                                           />
                                           <div className="article__rating-score-large">
                                             {motortrendScoreForImage.toFixed(1)}
@@ -1618,7 +1589,7 @@ export const Article: React.FC = () => {
                                         </div>
                                       </div>
                                     </div>
-                                    <button 
+                                    <button
                                       className="article__listing-btn"
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -1651,13 +1622,13 @@ export const Article: React.FC = () => {
                         // Add MotorTrend Score component after the 8th paragraph (skip for premium articles)
                         if (paragraphCount === 8 && !isPremiumArticle && motortrendScore) {
                           const formatScore = (score: number) => score.toFixed(1);
-                          
+
                           elements.push(
                             <div key="motortrend-score" id="motortrend-score" className="article__motortrend-score">
                               <div className="article__motortrend-header">
                                 <h2>MotorTrend Review</h2>
                                 <img
-                                  src="https://d2kde5ohu8qb21.cloudfront.net/files/68f6570b3ed26800022d87b6/mt-logo2.svg"
+                                  src="https://www.motortrend.com/files/68f6570b3ed26800022d87b6/mt-logo2.svg"
                                   alt="MotorTrend Logo"
                                   className="article__motortrend-logo"
                                 />
@@ -1667,7 +1638,7 @@ export const Article: React.FC = () => {
                                   <h3>{motortrendScore.vehicleName}</h3>
                                   <div className="article__score-award">
                                     <img
-                                      src="https://d2kde5ohu8qb21.cloudfront.net/files/690203caffe978000201e639/trophie-11.svg"
+                                      src="https://www.motortrend.com/files/690203caffe978000201e639/trophie-11.svg"
                                       alt="Trophy"
                                       width={24}
                                       height={24}
@@ -1681,10 +1652,10 @@ export const Article: React.FC = () => {
                                     <div className="article__score-circle">
                                       <span className="article__score-number">{formatScore(motortrendScore.overallRating)}</span>
                                       <div className="article__score-label-row">
-                                        <img 
-                                          src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" 
-                                          alt="MotorTrend" 
-                                          className="article__score-mt-badge" 
+                                        <img
+                                          src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
+                                          alt="MotorTrend"
+                                          className="article__score-mt-badge"
                                         />
                                         <span className="article__score-label">MotorTrend Rating</span>
                                       </div>
@@ -1741,7 +1712,7 @@ export const Article: React.FC = () => {
                                           <span className="article__reviewer-name">{motortrendScore.reviewer.name}</span>
                                           <div className="article__reviewer-badge--with-tooltip">
                                             <img
-                                              src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
+                                              src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
                                               alt="MT badge"
                                               className="article__reviewer-badge"
                                               width={16}
@@ -1768,7 +1739,7 @@ export const Article: React.FC = () => {
                                       const vehicleNameForLink = motortrendScore.vehicleName;
                                       const parsed = parseVehicleName(vehicleNameForLink);
                                       const vehiclePath = parsed ? `/vehicles/${parsed.year}/${parsed.make}/${parsed.model}` : '#';
-                                      
+
                                       return (
                                         <button
                                           className="article__review-accordion-button"
@@ -1891,8 +1862,8 @@ export const Article: React.FC = () => {
                       className={`article__photo-gallery-item article__photo-gallery-item--${index === 0 ? 'large' : index < 3 ? 'medium' : 'small'}`}
                       onClick={() => handleImageClick(index)}
                     >
-                      <img 
-                        src={image} 
+                      <img
+                        src={image}
                         alt={`${article.title} - Photo ${index + 1}`}
                         className="article__photo-gallery-thumb"
                       />
@@ -2021,14 +1992,14 @@ export const Article: React.FC = () => {
                 <h3 className="article__sidebar-title">Related Articles</h3>
                 <div className="article__sidebar-articles">
                   {relatedArticles.map((relatedArticle) => (
-                    <div 
+                    <div
                       key={relatedArticle.id}
                       className="article__sidebar-article"
                       onClick={() => handleRelatedArticleClick(relatedArticle.slug)}
                     >
                       <div className="article__sidebar-article-image">
-                        <img 
-                          src={relatedArticle.imageUrl} 
+                        <img
+                          src={relatedArticle.imageUrl}
                           alt={relatedArticle.title}
                         />
                       </div>
@@ -2077,35 +2048,35 @@ export const Article: React.FC = () => {
           console.log('Article: onSubmit called with review:', review);
           console.log('Article: vehicleName:', vehicleName);
           console.log('Article: isEditMode:', hasExistingReview, 'existingReview:', existingUserReview);
-          
+
           if (!vehicleName || vehicleName.trim() === '') {
             console.error('Article: Cannot save review - vehicleName is empty');
             return;
           }
-          
+
           try {
             // Remove the _vehicleName helper property from review before processing
             const reviewWithVehicleName = review as ReviewData & { _vehicleName?: string };
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { _vehicleName, ...cleanReview } = reviewWithVehicleName;
-            
+
             console.log('Article: Processing review, cleanReview:', cleanReview);
-            
+
             // Convert File objects to preview URLs for display
             const reviewWithPreviews: ReviewData = {
               ...cleanReview,
               mediaPreviews: cleanReview.mediaFiles?.map((file: File) => URL.createObjectURL(file)) || []
             };
-            
+
             // Use the same key format as VehicleDetails page for consistency
             const savedReviewsKey = `vehicleReviews_${vehicleName}`;
             console.log('Article: Using localStorage key:', savedReviewsKey);
-            
+
             // Get existing reviews
             const savedReviewsJson = localStorage.getItem(savedReviewsKey);
             const savedReviews: ReviewData[] = savedReviewsJson ? JSON.parse(savedReviewsJson) : [];
             console.log('Article: Found', savedReviews.length, 'existing reviews');
-            
+
             // If editing, update the existing review; otherwise add a new one
             let updatedReviews: ReviewData[];
             if (hasExistingReview && existingUserReview) {
@@ -2114,13 +2085,13 @@ export const Article: React.FC = () => {
                 ...reviewWithPreviews,
                 id: existingUserReview.id, // Keep original ID
                 date: existingUserReview.date, // Keep original date
-                updatedDate: new Date().toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
+                updatedDate: new Date().toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
                 })
               };
-              updatedReviews = savedReviews.map(r => 
+              updatedReviews = savedReviews.map(r =>
                 r.id === existingUserReview.id ? reviewToUpdate : r
               );
               console.log('Article: Updated existing review with ID:', existingUserReview.id);
@@ -2129,7 +2100,7 @@ export const Article: React.FC = () => {
               updatedReviews = [reviewWithPreviews, ...savedReviews];
               console.log('Article: Added new review, total reviews:', updatedReviews.length);
             }
-            
+
             // Save to localStorage (convert File objects to strings for storage)
             // Note: File objects can't be serialized, so we only save the preview URLs
             const reviewsToSave = updatedReviews.map(r => ({
@@ -2137,10 +2108,10 @@ export const Article: React.FC = () => {
               mediaFiles: undefined, // Remove File objects as they can't be serialized
               mediaPreviews: r.mediaPreviews || [] // Keep preview URLs
             }));
-            
+
             localStorage.setItem(savedReviewsKey, JSON.stringify(reviewsToSave));
             console.log('Article: Successfully saved review to localStorage for:', vehicleName);
-            
+
             // Verify the save worked
             const verifySave = localStorage.getItem(savedReviewsKey);
             if (verifySave) {
@@ -2149,45 +2120,45 @@ export const Article: React.FC = () => {
             } else {
               console.error('Article: Save verification failed - no data found in localStorage');
             }
-            
+
             // Mark that we just saved a review to prevent useEffect from overwriting
             justSavedReviewRef.current = true;
-            
+
             // Update local state IMMEDIATELY using functional update to prevent race conditions
             // This ensures the new review appears right away, even if useEffect runs
             setReviews(() => {
               // Get generated reviews (these are static, so we can compute them)
               const generatedReviews = generateUserReviews(vehicleName);
               const generatedIds = new Set(generatedReviews.map(r => r.id));
-              
+
               // Filter out any generated reviews from our updated list
               const uniqueSavedReviews = updatedReviews.filter(r => !generatedIds.has(r.id));
-              
+
               // Combine: saved reviews (with our new one) + generated reviews
               const newReviewsList = [...uniqueSavedReviews, ...generatedReviews];
-              
+
               console.log('Article: Updated local reviews state, total reviews:', newReviewsList.length);
               console.log('Article: New review ID:', reviewWithPreviews.id);
               console.log('Article: New review title:', reviewWithPreviews.title);
-              
+
               return newReviewsList;
             });
-            
+
             // Only increment count if it's a new review, not an edit
             if (!hasExistingReview) {
               setCommunityRatingCount(prev => prev + 1);
             }
-            
+
             // Close modal immediately after successful save
             setIsWriteReviewModalOpen(false);
             console.log('Article: Modal closed after successful save');
-            
+
             // Show success toast after a brief delay
             setTimeout(() => {
               setIsToastVisible(true);
               console.log('Article: Showing success toast');
             }, 300);
-            
+
             // Clear rating and reset flag after everything is done
             setTimeout(() => {
               setReviewModalRating(undefined);
@@ -2249,8 +2220,8 @@ export const Article: React.FC = () => {
 
             {/* Gallery Image */}
             <div className="article__gallery-image-wrapper">
-              <img 
-                src={articleImages[currentImageIndex]} 
+              <img
+                src={articleImages[currentImageIndex]}
                 alt={`${article.title} - Image ${currentImageIndex + 1}`}
                 className="article__gallery-image"
               />
@@ -2291,22 +2262,6 @@ export const Article: React.FC = () => {
         itemType="article"
       />
 
-      {/* Comment Tooltip */}
-      {isCommentTooltipVisible && (
-        <div 
-          className="article__comment-tooltip"
-          style={{
-            position: 'fixed',
-            top: commentTooltipPosition.top,
-            left: commentTooltipPosition.left,
-            transform: 'translateX(-50%)',
-            zIndex: 99999
-          }}
-        >
-          View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-        </div>
-      )}
-
       {/* Auth Prompt Modal */}
       <AuthPromptModal
         isOpen={isAuthPromptOpen}
@@ -2333,4 +2288,3 @@ export const Article: React.FC = () => {
 };
 
 export default Article;
-

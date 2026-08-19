@@ -1117,7 +1117,7 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
                   <div style={ratingsListStyle}>
                     <a href={`/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model}#motortrend-review`} style={getRatingItemStyle(true)} onClick={(e) => e.stopPropagation()}>
                       <div style={scoreRowStyle}>
-                        <img src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={mtBadgeStyle} />
+                        <img src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg" alt="MotorTrend" style={mtBadgeStyle} />
                         <div style={scoreLargeStyle}>{vehicle.staffRating.toFixed(1)}<span style={scoreMaxStyle}>/10</span></div>
                       </div>
                       <div style={labelRowStyle}>

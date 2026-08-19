@@ -3,7 +3,7 @@
  * Migrated to inline styles for Tailwind compatibility
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
 import { Button } from '../../design-system/components/Button/Button';
@@ -11,13 +11,15 @@ import { Button } from '../../design-system/components/Button/Button';
 export interface AvatarBannerModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onSave: (avatarUrl: string, bannerUrl: string) => void;
+  onSave: (avatarUrl: string, bannerUrl: string, location: string) => void;
   currentAvatar?: string;
   currentBanner?: string;
+  currentLocation?: string;
+  autoFocusLocation?: boolean;
 }
 
 const avatarOptions = [
-  { id: 'motortrend-logo', name: 'MotorTrend', url: 'https://d2kde5ohu8qb21.cloudfront.net/files/68f6de8441f73a00024a546f/mtavatar.svg', type: 'logo' },
+  { id: 'motortrend-logo', name: 'MotorTrend', url: '/images/mt-brand-icon.svg', type: 'logo' },
   { id: 'avatar-1', name: 'Classic Car', url: 'https://www.motortrend.com/files/68f78e98afbb8d0002a273ac/classic.png', type: 'photo' },
   { id: 'avatar-2', name: 'Supercar', url: 'https://www.motortrend.com/files/68f78e979a927f00029054d1/supercar.png', type: 'photo' },
   { id: 'avatar-3', name: 'Off-Road', url: 'https://www.motortrend.com/files/68f78e964fba630002fdc12d/offroad.png', type: 'photo' },
@@ -40,15 +42,20 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
   onClose,
   onSave,
   currentAvatar,
-  currentBanner
+  currentBanner,
+  currentLocation,
+  autoFocusLocation = false
 }) => {
   const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar || avatarOptions[0].url);
   const [selectedBanner, setSelectedBanner] = useState(currentBanner || bannerOptions[0].url);
+  const [profileLocation, setProfileLocation] = useState(currentLocation || '');
   const [activeTab, setActiveTab] = useState<'avatar' | 'banner'>('avatar');
   const [isCloseHovered, setIsCloseHovered] = useState(false);
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isResolvingLocation, setIsResolvingLocation] = useState(false);
+  const locationInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -57,7 +64,58 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleSave = () => { onSave(selectedAvatar, selectedBanner); onClose(); };
+  useEffect(() => {
+    setProfileLocation(currentLocation || '');
+  }, [currentLocation, isVisible]);
+
+  useEffect(() => {
+    if (!isVisible || !autoFocusLocation) return;
+    const focusTimer = window.setTimeout(() => {
+      locationInputRef.current?.focus();
+      locationInputRef.current?.select();
+    }, 0);
+    return () => window.clearTimeout(focusTimer);
+  }, [autoFocusLocation, isVisible]);
+
+  const resolveZipToLocation = async (value: string): Promise<string> => {
+    const trimmed = value.trim();
+    const zipMatch = trimmed.match(/^(\d{5})(?:-\d{4})?$/);
+    if (!zipMatch) return trimmed;
+
+    try {
+      setIsResolvingLocation(true);
+      const response = await fetch(`https://api.zippopotam.us/us/${zipMatch[1]}`);
+      if (!response.ok) return trimmed;
+
+      const data: {
+        places?: Array<{
+          'place name'?: string;
+          'state abbreviation'?: string;
+        }>;
+      } = await response.json();
+      const place = data.places?.[0];
+      if (place?.['place name'] && place?.['state abbreviation']) {
+        return `${place['place name']}, ${place['state abbreviation']}`;
+      }
+    } catch (error) {
+      console.error('ZIP location lookup failed:', error);
+    } finally {
+      setIsResolvingLocation(false);
+    }
+
+    return trimmed;
+  };
+
+  const handleLocationBlur = async () => {
+    const resolvedLocation = await resolveZipToLocation(profileLocation);
+    setProfileLocation(resolvedLocation);
+  };
+
+  const handleSave = async () => {
+    const resolvedLocation = await resolveZipToLocation(profileLocation);
+    onSave(selectedAvatar, selectedBanner, resolvedLocation);
+    onClose();
+  };
 
   // Styles
   const modalStyle: React.CSSProperties = { backgroundColor: 'var(--color-white, #FFFFFF)' };
@@ -65,7 +123,12 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
   const headerStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '20px 20px 0' : 'var(--spacing-3, 24px) var(--spacing-4, 32px) 0', borderBottom: '1px solid var(--color-neutrals-7, #F4F5F6)', marginBottom: 'var(--spacing-3, 24px)' };
   const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '24px', lineHeight: 1.2, color: 'var(--color-neutrals-2, #23262F)', margin: 0 };
   const closeBtnStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', background: isCloseHovered ? 'var(--color-neutrals-7, #F4F5F6)' : 'none', border: 'none', borderRadius: 'var(--border-radius-circle, 50%)', color: isCloseHovered ? 'var(--color-neutrals-2, #23262F)' : 'var(--color-neutrals-4, #6E7481)', cursor: 'pointer', transition: 'all 150ms ease-in-out' };
-  const tabsStyle: React.CSSProperties = { display: 'flex', padding: isMobile ? '0 20px' : '0 var(--spacing-4, 32px)', gap: 'var(--spacing-2, 16px)', marginBottom: 'var(--spacing-3, 24px)', flexDirection: isMobile ? 'column' : 'row' };
+  const controlsStyle: React.CSSProperties = { display: 'flex', alignItems: isMobile ? 'stretch' : 'center', padding: isMobile ? '0 20px' : '0 var(--spacing-4, 32px)', gap: 'var(--spacing-2, 16px)', marginBottom: 'var(--spacing-3, 24px)', flexDirection: isMobile ? 'column' : 'row' };
+  const tabsStyle: React.CSSProperties = { display: 'flex', gap: 'var(--spacing-2, 16px)', flexDirection: isMobile ? 'column' : 'row', flexShrink: 0 };
+  const locationFieldStyle: React.CSSProperties = { position: 'relative', flex: 1, minWidth: isMobile ? '100%' : '220px' };
+  const locationIconStyle: React.CSSProperties = { position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-neutrals-4, #6E7481)', pointerEvents: 'none' };
+  const locationInputStyle: React.CSSProperties = { width: '100%', height: '40px', padding: '0 14px 0 42px', border: '1px solid var(--color-neutrals-6, #E6E8EC)', borderRadius: 'var(--border-radius-md, 8px)', backgroundColor: 'var(--color-white, #FFFFFF)', color: 'var(--color-neutrals-2, #23262F)', fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '14px', lineHeight: 1.4, outline: 'none' };
+  const visuallyHiddenStyle: React.CSSProperties = { position: 'absolute', width: '1px', height: '1px', padding: 0, margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 };
   
   const getTabStyle = (tabId: string, isActive: boolean): React.CSSProperties => {
     const isHovered = hoveredTab === tabId;
@@ -98,13 +161,32 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
           </button>
         </div>
 
-        <div style={tabsStyle}>
-          <button style={getTabStyle('avatar', activeTab === 'avatar')} onClick={() => setActiveTab('avatar')} onMouseEnter={() => setHoveredTab('avatar')} onMouseLeave={() => setHoveredTab(null)}>
-            <Icon name="person" size={20} /> Avatar
-          </button>
-          <button style={getTabStyle('banner', activeTab === 'banner')} onClick={() => setActiveTab('banner')} onMouseEnter={() => setHoveredTab('banner')} onMouseLeave={() => setHoveredTab(null)}>
-            <Icon name="image" size={20} /> Banner
-          </button>
+        <div style={controlsStyle}>
+          <div style={tabsStyle}>
+            <button style={getTabStyle('avatar', activeTab === 'avatar')} onClick={() => setActiveTab('avatar')} onMouseEnter={() => setHoveredTab('avatar')} onMouseLeave={() => setHoveredTab(null)}>
+              <Icon name="person" size={20} /> Avatar
+            </button>
+            <button style={getTabStyle('banner', activeTab === 'banner')} onClick={() => setActiveTab('banner')} onMouseEnter={() => setHoveredTab('banner')} onMouseLeave={() => setHoveredTab(null)}>
+              <Icon name="image" size={20} /> Banner
+            </button>
+          </div>
+          <div style={locationFieldStyle}>
+            <label htmlFor="profile-location" style={visuallyHiddenStyle}>Profile location</label>
+            <Icon name="location_on" size={18} style={locationIconStyle} />
+            <input
+              ref={locationInputRef}
+              id="profile-location"
+              type="text"
+              value={profileLocation}
+              onChange={(event) => setProfileLocation(event.target.value)}
+              onBlur={handleLocationBlur}
+              placeholder="City, State or ZIP"
+              autoComplete="address-level2"
+              inputMode="text"
+              aria-busy={isResolvingLocation}
+              style={locationInputStyle}
+            />
+          </div>
         </div>
 
         <div style={contentStyle}>
@@ -145,7 +227,9 @@ export const AvatarBannerModal: React.FC<AvatarBannerModalProps> = ({
 
         <div style={actionsStyle}>
           <Button color="neutrals3" variant="solid" size="default" onClick={onClose}>Cancel</Button>
-          <Button color="blue" variant="solid" size="default" onClick={handleSave}>Save Changes</Button>
+          <Button color="blue" variant="solid" size="default" onClick={handleSave}>
+            {isResolvingLocation ? 'Checking Location...' : 'Save Changes'}
+          </Button>
         </div>
       </div>
     </ModalShell>

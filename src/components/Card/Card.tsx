@@ -637,13 +637,13 @@ export const Card: React.FC<CardProps> = ({
                         </div>
                         {isMotorTrendRating ? (
                           <img
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/692374f1d13f5100022ddf61/mticon.svg"
+                            src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
                             alt="MotorTrend"
                             style={ratingMtLogoStyle}
                           />
                         ) : (
                           <img
-                            src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                            src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
                             alt="User Rating"
                             style={ratingStarStyle}
                           />
@@ -669,7 +669,7 @@ export const Card: React.FC<CardProps> = ({
                       onMouseLeave={() => setIsRateOptionHovered(false)}
                     >
                       <img
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde547554840002bab60c/star.svg"
+                        src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
                         alt="User rated star"
                         style={ratingStarStyle}
                       />
@@ -686,7 +686,7 @@ export const Card: React.FC<CardProps> = ({
                       onMouseLeave={() => setIsRateStarHovered(false)}
                     >
                       <img
-                        src="https://d2kde5ohu8qb21.cloudfront.net/files/691bde5264217700021d6b71/star-stroke.svg"
+                        src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
                         alt="Rate star"
                         style={ratingStarStyle}
                       />
