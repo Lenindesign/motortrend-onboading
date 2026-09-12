@@ -1,5 +1,11 @@
-export default async function handler() {
-  const response = await fetch('https://www.motortrend.com/news', {
+export default async function handler(request: Request) {
+  const requestUrl = new URL(request.url);
+  const articleUrl = requestUrl.searchParams.get('url');
+  const targetUrl = articleUrl && /^https:\/\/www\.motortrend\.com\/(news|reviews|features)\//.test(articleUrl)
+    ? articleUrl
+    : 'https://www.motortrend.com/news';
+
+  const response = await fetch(targetUrl, {
     headers: {
       Accept: 'text/html',
       'User-Agent': 'MotorTrend prototype news feed',

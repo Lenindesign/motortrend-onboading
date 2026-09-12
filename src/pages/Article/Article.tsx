@@ -25,6 +25,8 @@ import { getArticleBySlug, getDefaultArticle, articles } from '../../utils/artic
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { vehicleImageFor } from '../../utils/vehicleImages';
+import { getMotorTrendArticle } from '../../services/motortrendFeedService';
+import type { Article as ArticleData } from '../../types/article';
 // HIDDEN: import { ArticleReactions } from '../../components/ArticleReactions';
 import { QAModal, type QAItem } from '../../components/QAModal';
 import StickyRateBar from '../../components/StickyRateBar';
@@ -42,47 +44,20 @@ interface LiveArticleProps {
 
 const LiveArticle: React.FC<LiveArticleProps> = ({ title, imageUrl, sourceUrl, author, date, category }) => {
   const navigate = useNavigate();
-  return (
-    <article className="article" style={{ padding: '32px 24px 80px' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-        <button className="article__back-button" onClick={() => navigate(-1)}>
-          <Icon name="arrow_back" size={18} /> Back to stories
-        </button>
-        <div className="article__layout" style={{ marginTop: '24px' }}>
-          <main className="article__content-column">
-            <div className="article__header">
-              <span className="article__category">{category || 'MotorTrend | Latest News'}</span>
-              <h1 className="article__title">{title}</h1>
-              <p className="article__excerpt">The latest from MotorTrend’s editorial team, presented in the MotorTrend prototype article experience.</p>
-            </div>
-            <div className="article__byline-row">
-              <div className="article__byline-content">
-                <span className="article__byline-author"><span className="article__author-label">By</span><span className="article__author-name">{author || 'MotorTrend Staff'}</span></span>
-                <span className="article__byline-separator">|</span>
-                <span className="article__byline-date">{date || 'Latest'}</span>
-              </div>
-              <span className="article__live-badge">LIVE STORY</span>
-            </div>
-            <div className="article__hero-wrapper">
-              <ArticleHero imageUrl={imageUrl} title={title} onImageClick={() => undefined} />
-            </div>
-            <div className="article__content-wrapper">
-              <div className="article__main">
-                <div className="article__content">
-                  <p>This live story is connected to MotorTrend’s current news feed for prototype purposes. The headline, image, and source metadata are loaded from the latest available MotorTrend content.</p>
-                  <p>Use the source link below to read the complete editorial story on MotorTrend.com.</p>
-                  <p><a className="article__source-link" href={sourceUrl} target="_blank" rel="noreferrer">Read the full story on MotorTrend.com →</a></p>
-                </div>
-              </div>
-            </div>
-          </main>
-          <aside className="article__sidebar">
-            <AdContainer width={300} height={600} label="SVOD 200 x 420" position="right-column" imageUrl="https://www.motortrend.com/files/6911649d074b1800020014b0/5094655339108271500.jpeg" />
-          </aside>
-        </div>
-      </div>
-    </article>
-  );
+  const [article, setArticle] = useState<ArticleData | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    getMotorTrendArticle(sourceUrl, { title, heroImage: imageUrl, category: category || 'News' })
+      .then((loaded) => { if (active) setArticle(loaded); })
+      .catch(() => {
+        if (active) setArticle({ title, author: author || 'MotorTrend Staff', date: date || 'Latest', category: category || 'News', heroImage: imageUrl, images: [imageUrl], excerpt: 'The latest from MotorTrend’s editorial team.', content: [{ type: 'paragraph', text: 'This live story could not be loaded completely. Read the original story for the full editorial experience.' }] });
+      });
+    return () => { active = false; };
+  }, [author, category, date, imageUrl, sourceUrl, title]);
+
+  if (!article) return <div className="article" style={{ padding: '80px 24px', textAlign: 'center' }}>Loading complete story…</div>;
+  return <ArticleTemplate liveArticle={article} liveSourceUrl={sourceUrl} onLiveBack={() => navigate(-1)} />;
 };
 
 export const Article: React.FC = () => {
@@ -101,7 +76,7 @@ export const Article: React.FC = () => {
   return <ArticleTemplate />;
 };
 
-const ArticleTemplate: React.FC = () => {
+const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: string; onLiveBack?: () => void }> = ({ liveArticle, liveSourceUrl, onLiveBack }) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 
@@ -218,13 +193,13 @@ const ArticleTemplate: React.FC = () => {
 
   // Load article data based on slug
   const articleData = useMemo(() => {
-    const loadedArticle = slug ? getArticleBySlug(slug) : getDefaultArticle();
+    const loadedArticle = liveArticle || (slug ? getArticleBySlug(slug) : getDefaultArticle());
     if (!loadedArticle) {
       // Fallback to default if article not found
       return getDefaultArticle();
     }
     return loadedArticle;
-  }, [slug]);
+  }, [liveArticle, slug]);
 
   // Generate consistent comment count based on article slug
   const commentCount = useMemo(() => {
@@ -1157,6 +1132,13 @@ const ArticleTemplate: React.FC = () => {
 
   return (
     <div className="article">
+      {liveArticle && onLiveBack && (
+        <div className="article__container" style={{ paddingTop: '24px' }}>
+          <button className="article__back-button" onClick={onLiveBack}>
+            <Icon name="arrow_back" size={18} /> Back to stories
+          </button>
+        </div>
+      )}
       {/* Rating bar scrolls with content; global navigation owns sticky behavior. */}
       {!shouldHideRatingBar && (
         <StickyRateBar
@@ -1426,6 +1408,9 @@ const ArticleTemplate: React.FC = () => {
             <div className="article__content-wrapper">
               <div className="article__main">
                 <div className="article__content">
+                  {liveArticle && liveSourceUrl && (
+                    <p><a className="article__source-link" href={liveSourceUrl} target="_blank" rel="noreferrer">Read the original story on MotorTrend.com →</a></p>
+                  )}
                   {(() => {
                     // Count headings to distribute images
                     const headingIndices: number[] = [];

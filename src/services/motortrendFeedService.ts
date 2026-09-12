@@ -1,4 +1,5 @@
 import type { RiverItem } from '../components/River';
+import type { Article } from '../types/article';
 
 const feedUrl = import.meta.env.VITE_MOTORTREND_RSS_URL || 'https://www.motortrend.com/feed/';
 const liveNewsPageUrl = '/api/motortrend-news';
@@ -39,6 +40,51 @@ function getPageImage(anchor: Element): string {
   const image = anchor.querySelector('img');
   const srcset = image?.getAttribute('srcset')?.split(',')[0]?.trim().split(' ')[0];
   return image?.getAttribute('src') || image?.getAttribute('data-src') || srcset || '';
+}
+
+function getImageUrl(image: Element): string {
+  const srcset = image.getAttribute('srcset')?.split(',').pop()?.trim().split(' ')[0];
+  return image.getAttribute('src') || image.getAttribute('data-src') || srcset || '';
+}
+
+export function parseMotorTrendArticle(markup: string, fallback: Pick<Article, 'title' | 'heroImage' | 'category'>): Article {
+  const document = new DOMParser().parseFromString(markup, 'text/html');
+  const title = document.querySelector('[data-testid="article-title"]')?.textContent?.trim()
+    || document.querySelector('h1')?.textContent?.trim()
+    || fallback.title;
+  const excerpt = document.querySelector('.rte-simple-html-paragraph')?.textContent?.trim()
+    || `The latest from MotorTrend’s editorial team: ${title}`;
+  const author = document.querySelector('[data-testid="byline"]')?.textContent?.trim() || 'MotorTrend Staff';
+  const contentRoot = document.querySelector('article') || document.body;
+  const content = Array.from(contentRoot.querySelectorAll('h2[data-component="HeaderElement"], p[data-nitrous-content-readable-section="true"]'))
+    .map((element) => ({
+      type: element.tagName.toLowerCase() === 'h2' ? 'heading' as const : 'paragraph' as const,
+      text: element.textContent?.trim() || '',
+    }))
+    .filter((block) => block.text.length > 0);
+  const images = Array.from(contentRoot.querySelectorAll('img'))
+    .map(getImageUrl)
+    .filter((url) => url && !url.startsWith('data:') && !url.includes('logo') && !url.includes('icon'))
+    .map((url) => new URL(url, 'https://www.motortrend.com').toString())
+    .filter((url, index, all) => all.indexOf(url) === index);
+  const heroImage = images[0] || fallback.heroImage;
+
+  return {
+    title,
+    author,
+    date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+    category: fallback.category,
+    heroImage,
+    images: images.length > 0 ? images : [heroImage],
+    excerpt,
+    content: content.length > 0 ? content : [{ type: 'paragraph', text: excerpt }],
+  };
+}
+
+export async function getMotorTrendArticle(sourceUrl: string, fallback: Pick<Article, 'title' | 'heroImage' | 'category'>): Promise<Article> {
+  const response = await fetch(`/api/motortrend-article?url=${encodeURIComponent(sourceUrl)}`, { headers: { Accept: 'text/html' } });
+  if (!response.ok) throw new Error(`MotorTrend article returned ${response.status}`);
+  return parseMotorTrendArticle(await response.text(), fallback);
 }
 
 function parseMotorTrendNewsPage(markup: string, limit: number): RiverItem[] {
