@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import { UserReviews } from '../../components/UserReviews';
@@ -31,7 +31,77 @@ import StickyRateBar from '../../components/StickyRateBar';
 import ArticleHero from '../../components/ArticleHero/ArticleHero';
 import './Article.css';
 
+interface LiveArticleProps {
+  title: string;
+  imageUrl: string;
+  sourceUrl: string;
+  author: string;
+  date: string;
+  category: string;
+}
+
+const LiveArticle: React.FC<LiveArticleProps> = ({ title, imageUrl, sourceUrl, author, date, category }) => {
+  const navigate = useNavigate();
+  return (
+    <article className="article" style={{ padding: '32px 24px 80px' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+        <button className="article__back-button" onClick={() => navigate(-1)}>
+          <Icon name="arrow_back" size={18} /> Back to stories
+        </button>
+        <div className="article__layout" style={{ marginTop: '24px' }}>
+          <main className="article__content-column">
+            <div className="article__header">
+              <span className="article__category">{category || 'MotorTrend | Latest News'}</span>
+              <h1 className="article__title">{title}</h1>
+              <p className="article__excerpt">The latest from MotorTrend’s editorial team, presented in the MotorTrend prototype article experience.</p>
+            </div>
+            <div className="article__byline-row">
+              <div className="article__byline-content">
+                <span className="article__byline-author"><span className="article__author-label">By</span><span className="article__author-name">{author || 'MotorTrend Staff'}</span></span>
+                <span className="article__byline-separator">|</span>
+                <span className="article__byline-date">{date || 'Latest'}</span>
+              </div>
+              <span className="article__live-badge">LIVE STORY</span>
+            </div>
+            <div className="article__hero-wrapper">
+              <ArticleHero imageUrl={imageUrl} title={title} onImageClick={() => undefined} />
+            </div>
+            <div className="article__content-wrapper">
+              <div className="article__main">
+                <div className="article__content">
+                  <p>This live story is connected to MotorTrend’s current news feed for prototype purposes. The headline, image, and source metadata are loaded from the latest available MotorTrend content.</p>
+                  <p>Use the source link below to read the complete editorial story on MotorTrend.com.</p>
+                  <p><a className="article__source-link" href={sourceUrl} target="_blank" rel="noreferrer">Read the full story on MotorTrend.com →</a></p>
+                </div>
+              </div>
+            </div>
+          </main>
+          <aside className="article__sidebar">
+            <AdContainer width={300} height={600} label="SVOD 200 x 420" position="right-column" imageUrl="https://www.motortrend.com/files/6911649d074b1800020014b0/5094655339108271500.jpeg" />
+          </aside>
+        </div>
+      </div>
+    </article>
+  );
+};
+
 export const Article: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const isLiveArticle = searchParams.get('live') === 'true';
+  if (isLiveArticle) {
+    return <LiveArticle
+      title={searchParams.get('title') || 'MotorTrend Latest News'}
+      imageUrl={searchParams.get('image') || ''}
+      sourceUrl={searchParams.get('source') || 'https://www.motortrend.com/news'}
+      author={searchParams.get('author') || 'MotorTrend Staff'}
+      date={searchParams.get('date') || ''}
+      category={searchParams.get('category') || 'MotorTrend | Latest News'}
+    />;
+  }
+  return <ArticleTemplate />;
+};
+
+const ArticleTemplate: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
 

@@ -15,6 +15,7 @@ import { addSearchedVehicle } from '../PersonalizedVehicles';
 import { searchArticles, articles as articlesData } from '../../utils/articles';
 import type { Vehicle } from '../../types/vehicle';
 import type { Article } from '../../types/article';
+import { NotificationInbox } from '../NotificationInbox';
 
 export interface GlobalHeaderProps {
   onSignInClick?: () => void;
@@ -3064,6 +3065,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               Subscribe
             </button>
           )}
+
+          <NotificationInbox />
 
           {isAuthenticated ? (
             <div style={userMenuStyle} ref={userMenuRef}>

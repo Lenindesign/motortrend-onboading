@@ -4,6 +4,7 @@
  */
 
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Suspense } from 'react';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -63,6 +64,16 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
+const HomeFeedLoading: React.FC = () => (
+  <div style={{ minHeight: '620px', padding: '48px 24px', background: '#f7f8fb' }}>
+    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <div style={{ width: '240px', height: '28px', borderRadius: '6px', background: '#e2e5eb', marginBottom: '28px' }} />
+      <div style={{ height: '420px', borderRadius: '12px', background: 'linear-gradient(100deg, #e2e5eb 30%, #f3f4f7 50%, #e2e5eb 70%)', backgroundSize: '200% 100%', animation: 'home-feed-shimmer 1.4s infinite' }} />
+      <style>{'@keyframes home-feed-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }'}</style>
+    </div>
+  </div>
+);
+
 function App() {
   return (
     <AuthProvider>
@@ -72,7 +83,7 @@ function App() {
         <AppLayout>
           <Routes>
               {/* Default route - show home page */}
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Suspense fallback={<HomeFeedLoading />}><Home /></Suspense>} />
               
               {/* Sign In Page */}
               <Route path="/signin" element={<SignIn />} />

@@ -39,6 +39,7 @@ import { PersonalizedVehicles, getViewedVehicles } from '../../components/Person
 import { TrendingStories } from '../../components/TrendingStories';
 import { DynamicHomeRenderer } from '../../components/DynamicHomeRenderer';
 import './Home.css';
+import { readMotorTrendFeedItems } from '../../services/motortrendFeedService';
 
 // Get vehicle database from API - NO HARDCODED DATA
 const apiVehicles = getVehicles();
@@ -77,6 +78,7 @@ export const Home: React.FC = () => {
   const navigate = useNavigate();
   const { getUserRating } = useRating();
   const [searchParams] = useSearchParams();
+  const liveNewsItems = readMotorTrendFeedItems();
 
   // Dynamic layout is now enabled by default (Journey Builder integration)
   // Can be disabled via URL param: ?useDynamicLayout=false
@@ -915,14 +917,28 @@ export const Home: React.FC = () => {
     },
   ] as (RiverItem & { categories?: ContentCategory[] })[], [navigate]);
 
+  // Use feed stories for the lead module when the feed provides enough image-backed items.
+  // Keeping the local set as a fallback makes the prototype resilient to feed/CORS issues.
+  const liveRecommendedItems = useMemo(() => {
+    const items = liveNewsItems?.filter(item => item.title && item.imageUrl).slice(0, 4);
+    return items && items.length >= 4 ? items : null;
+  }, [liveNewsItems]);
+  const resolvedHeroData = liveRecommendedItems
+    ? liveRecommendedItems[0]
+    : heroData;
+  const resolvedVerticalCards = liveRecommendedItems
+    ? liveRecommendedItems.slice(1).map(item => ({ ...item, type: 'Article' as const }))
+    : verticalCards;
+
   // verticalCards are already sorted by persona in their useMemo
-  const sortedVerticalCards = verticalCards;
+  const sortedVerticalCards = resolvedVerticalCards;
 
   const sortedNewsItems = useMemo(() => {
+    const availableNewsItems = liveNewsItems || newsItems;
     // Filter out stories based on persona
     const filteredNewsItems = (() => {
       if (persona?.name === 'Practical Paula') {
-        return newsItems.filter(item =>
+        return availableNewsItems.filter(item =>
           !(item.title.includes('Bentley') && item.title.includes('Supersports')) &&
           !item.title.includes('Subaru WRX tS') &&
           !(item.title.includes('Dodge Charger') && item.title.includes('Has Been Fixed')) &&
@@ -932,19 +948,19 @@ export const Home: React.FC = () => {
         );
       }
       if (persona?.name === 'Gearhead Greg') {
-        return newsItems.filter(item =>
+        return availableNewsItems.filter(item =>
           !(item.title.includes('Honda CR-V TrailSport') || item.title.includes('CR-V TrailSport')) &&
           !(item.title.includes('Kia Sportage') && item.title.includes('Built for Buyers')) &&
           !(item.title.includes('Cadillac Optiq-V') || item.title.includes('Optiq-V'))
         );
       }
-      return newsItems;
+      return availableNewsItems;
     })();
 
     // Filter out stories that appear in hero or vertical cards to avoid duplicates
     const heroAndCardsTitles = new Set([
-      heroData.title,
-      ...verticalCards.map(card => card.title)
+      resolvedHeroData.title,
+      ...sortedVerticalCards.map(card => card.title)
     ]);
 
     const withoutHeroAndCards = filteredNewsItems.filter(item =>
@@ -984,7 +1000,7 @@ export const Home: React.FC = () => {
     }
 
     return finalSortedItems;
-  }, [userType, newsItems, persona, heroData, verticalCards]);
+  }, [userType, newsItems, liveNewsItems, persona, resolvedHeroData, sortedVerticalCards]);
 
   // Split news items for Latest Car News river (up to 10 stories)
   const sortedNewsItemsRiver3 = useMemo(() => {
@@ -1976,7 +1992,7 @@ export const Home: React.FC = () => {
             <div className="home__left-column">
               <HeroPlusThree
                 title="Recommended For You"
-                hero={heroData}
+                hero={resolvedHeroData}
                 cards={sortedVerticalCards}
               />
             </div>
@@ -2891,8 +2907,4 @@ export const Home: React.FC = () => {
 };
 
 export default Home;
-
-
-
-
 

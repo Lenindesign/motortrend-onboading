@@ -21,6 +21,7 @@ import { TrendingStories } from '../TrendingStories';
 import { AdContainer } from '../AdContainer';
 import { articles } from '../../utils/articles';
 import type { RiverItem } from '../River';
+import { readMotorTrendFeedItems } from '../../services/motortrendFeedService';
 import {
   getCurrentLayoutAsync,
   resolveDynamicProps,
@@ -263,6 +264,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isIndicatorCollapsed, setIsIndicatorCollapsed] = useState(true); // Start collapsed by default
   const [viewedVehiclesCount, setViewedVehiclesCount] = useState(() => getViewedVehicles().length);
+  const liveNewsItems = readMotorTrendFeedItems();
   
   // Check for preview mode URL parameters
   const isPreviewMode = searchParams.get('preview') === 'true';
@@ -273,7 +275,27 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
   
   // Get articles data for NewsSection and HeroPlusThree
   const { heroData, verticalCards, newsItems } = useMemo(() => getArticlesData(navigate), [navigate]);
-  
+  const liveRecommendedItems = useMemo(() => {
+    const items = liveNewsItems?.filter(item => item.title && item.imageUrl).slice(0, 4);
+    return items && items.length >= 4 ? items : null;
+  }, [liveNewsItems]);
+  const resolvedHeroData = liveRecommendedItems
+    ? {
+        imageUrl: liveRecommendedItems[0].imageUrl,
+        title: liveRecommendedItems[0].title,
+        onClick: () => liveRecommendedItems[0].onClick?.(),
+      }
+    : heroData;
+  const resolvedVerticalCards = liveRecommendedItems
+    ? liveRecommendedItems.slice(1).map(item => ({
+        imageUrl: item.imageUrl,
+        title: item.title,
+        type: 'Article' as const,
+        onClick: () => item.onClick?.(),
+      }))
+    : verticalCards;
+  const resolvedNewsItems = liveNewsItems || newsItems;
+
   // Track viewed vehicles count for PersonalizedVehicles move-to-top logic
   useEffect(() => {
     const updateCount = () => {
@@ -448,10 +470,10 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
     // For components that need data, provide it
     const dataProps: Record<string, unknown> = {};
     if (componentPreviewId === 'NewsSection') {
-      dataProps.items = newsItems;
+      dataProps.items = resolvedNewsItems;
     } else if (componentPreviewId === 'HeroPlusThree') {
-      dataProps.hero = heroData;
-      dataProps.cards = verticalCards;
+      dataProps.hero = resolvedHeroData;
+      dataProps.cards = resolvedVerticalCards;
     }
     
     return (
@@ -720,9 +742,9 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
           key={`${section.componentId}-${index}`}
           section={section}
           index={index}
-          heroData={heroData}
-          verticalCards={verticalCards}
-          newsItems={newsItems}
+          heroData={resolvedHeroData}
+          verticalCards={resolvedVerticalCards}
+          newsItems={resolvedNewsItems}
         />
       ))}
     </>
@@ -730,4 +752,3 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
 };
 
 export default DynamicHomeRenderer;
-
