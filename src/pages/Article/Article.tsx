@@ -1132,13 +1132,6 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
 
   return (
     <div className="article">
-      {liveArticle && onLiveBack && (
-        <div className="article__container" style={{ paddingTop: '24px' }}>
-          <button className="article__back-button" onClick={onLiveBack}>
-            <Icon name="arrow_back" size={18} /> Back to stories
-          </button>
-        </div>
-      )}
       {/* Rating bar scrolls with content; global navigation owns sticky behavior. */}
       {!shouldHideRatingBar && (
         <StickyRateBar
@@ -1209,6 +1202,11 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
         />
       )}
       <div className="article__container">
+        {liveArticle && onLiveBack && (
+          <button className="article__back-button" onClick={onLiveBack}>
+            <Icon name="arrow_back" size={18} /> Back to stories
+          </button>
+        )}
         {/* Vehicle Accordion - Additional Vehicles */}
         {isComparisonArticle && isVehicleAccordionOpen && (
           <div className="article__vehicle-accordion">
