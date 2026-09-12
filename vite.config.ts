@@ -21,6 +21,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: () => '/news',
       },
+      '/api/motortrend-article': {
+        target: 'https://www.motortrend.com',
+        changeOrigin: true,
+        rewrite: (requestPath) => {
+          const url = new URL(`http://localhost${requestPath}`).searchParams.get('url');
+          if (!url) return '/news';
+          const source = new URL(url);
+          return `${source.pathname}${source.search}`;
+        },
+      },
     },
   },
   test: {
