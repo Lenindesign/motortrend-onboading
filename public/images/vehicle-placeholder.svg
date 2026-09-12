@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-label="Vehicle image unavailable">
+  <rect width="800" height="480" fill="#eef1f4"/>
+  <g fill="none" stroke="#7b8490" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M155 312h490l-38-91c-8-18-25-30-45-32l-95-10-57-61H348l-57 61-95 10c-20 2-37 14-45 32l-38 91z"/>
+    <path d="M246 190h308M202 252h396"/>
+    <circle cx="245" cy="322" r="39" fill="#eef1f4"/>
+    <circle cx="555" cy="322" r="39" fill="#eef1f4"/>
+  </g>
+</svg>

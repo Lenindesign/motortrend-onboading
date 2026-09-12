@@ -1,5 +1,26 @@
 // Map common makes/models to representative images used across the app
 const vehicleImageMap: Record<string, string> = {
+  // Current ranking cards: use the exact vehicle photography from MotorTrend's
+  // station-wagon rankings instead of a body-style or unrelated-model fallback.
+  '2026 porsche taycan': 'https://hips.hearstapps.com/mtg-prod/6838ef17067aeb00074ff693/1-2026-porsche-taycan-4s-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  'porsche taycan': 'https://hips.hearstapps.com/mtg-prod/6838ef17067aeb00074ff693/1-2026-porsche-taycan-4s-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  'taycan': 'https://hips.hearstapps.com/mtg-prod/6838ef17067aeb00074ff693/1-2026-porsche-taycan-4s-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 mercedes-benz e-class': 'https://hips.hearstapps.com/mtg-prod/67f58e62b785450008ebea99/2026mercedesbenzamge53hybridwagonphevturboi6awd-7.jpg?*&w=768&width=768&q=75&format=webp',
+  'mercedes-benz e-class': 'https://hips.hearstapps.com/mtg-prod/67f58e62b785450008ebea99/2026mercedesbenzamge53hybridwagonphevturboi6awd-7.jpg?*&w=768&width=768&q=75&format=webp',
+  'e-class': 'https://hips.hearstapps.com/mtg-prod/67f58e62b785450008ebea99/2026mercedesbenzamge53hybridwagonphevturboi6awd-7.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 bmw m5': 'https://hips.hearstapps.com/mtg-prod/681aa0ea8a61fc00085504b7/1-2026-bmw-m5-touring-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  'bmw m5': 'https://hips.hearstapps.com/mtg-prod/681aa0ea8a61fc00085504b7/1-2026-bmw-m5-touring-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  'm5': 'https://hips.hearstapps.com/mtg-prod/681aa0ea8a61fc00085504b7/1-2026-bmw-m5-touring-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 kia k4': 'https://hips.hearstapps.com/mtg-prod/67ff06c20f30ec000862760f/2026kiak4hatchback2.jpg?*&w=768&width=768&q=75&format=webp',
+  'kia k4': 'https://hips.hearstapps.com/mtg-prod/67ff06c20f30ec000862760f/2026kiak4hatchback2.jpg?*&w=768&width=768&q=75&format=webp',
+  'k4': 'https://hips.hearstapps.com/mtg-prod/67ff06c20f30ec000862760f/2026kiak4hatchback2.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 honda civic': 'https://hips.hearstapps.com/mtg-prod/6707f6705d904b00088b2753/010-2025-honda-civic-hybrid-sport-touring-tailight.jpg?*&w=768&width=768&q=75&format=webp',
+  'honda civic': 'https://hips.hearstapps.com/mtg-prod/6707f6705d904b00088b2753/010-2025-honda-civic-hybrid-sport-touring-tailight.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 bmw 2-series': 'https://hips.hearstapps.com/mtg-prod/667f20b229d1c10008f49d06/10-2025-bmw-2-series-coupe-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  'bmw 2-series': 'https://hips.hearstapps.com/mtg-prod/667f20b229d1c10008f49d06/10-2025-bmw-2-series-coupe-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  '2-series': 'https://hips.hearstapps.com/mtg-prod/667f20b229d1c10008f49d06/10-2025-bmw-2-series-coupe-front-view.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 chevrolet corvette stingray / grand sport': 'https://hips.hearstapps.com/mtg-prod/67b7d6cc3193690008b4d013/008-2025-chevrolet-corvette-012825.jpg?*&w=768&width=768&q=75&format=webp',
+  '2026 ford mustang': 'https://hips.hearstapps.com/mtg-prod/6846f7743854b300092f9d98/2026fordmustangfxpackage1.jpg?*&w=768&width=768&q=75&format=webp',
   // Sports/Performance
   'mustang': 'https://www.motortrend.com/files/68c9c7f8c0aa4a0002763d55/002-2025-ford-mustang-gtd-front-three-quarter-action.jpg',
   'camaro': 'https://www.motortrend.com/files/68da999cde18ff0002d1b4a0/000-2014-chevy-camaro-zl1-chett-levay-lead.jpg',
@@ -815,7 +836,6 @@ const vehicleImageMap: Record<string, string> = {
   'stinger': 'https://www.motortrend.com/files/65c317fbd42a2f00084bae9d/2020-kia-stinger-gt2-awd-front-three-quarter-in-motion-2.jpg',
   '2025 kia k4': 'https://www.motortrend.com/files/690bee21e8d4260002e9c7bd/013-2025-kia-ev6.jpg',
   '2025 kia k 4': 'https://www.motortrend.com/files/690bee21e8d4260002e9c7bd/013-2025-kia-ev6.jpg',
-  'kia k4': 'https://www.motortrend.com/files/690bee21e8d4260002e9c7bd/013-2025-kia-ev6.jpg',
   'kia k 4': 'https://www.motortrend.com/files/690bee21e8d4260002e9c7bd/013-2025-kia-ev6.jpg',
   'sorento': 'https://www.motortrend.com/files/65a4c7d2fc59180008160501/3-2025-kia-sorento-hybrid-front-view.jpg',
   'kia sorento': 'https://www.motortrend.com/files/65a4c7d2fc59180008160501/3-2025-kia-sorento-hybrid-front-view.jpg',
@@ -980,7 +1000,9 @@ export const vehicleImageFor = (vehicleName: string): string => {
   for (const key of keysBySpecificity) {
     if (name.includes(key)) return vehicleImageMap[key];
   }
-  return 'https://www.motortrend.com/files/6812b286427f560008656f60/2026-toyota-camry-nightshade-001.jpg';
+  // Never show an unrelated vehicle when a model is not mapped. A neutral
+  // placeholder makes missing editorial data visible without mislabeling a car.
+  return '/images/vehicle-placeholder.svg';
 };
 
 export default vehicleImageFor;
@@ -1031,5 +1053,3 @@ export const parseVehicleName = (vehicleName: string): { year: string; make: str
     model: encodeURIComponent(model)
   };
 };
-
-
