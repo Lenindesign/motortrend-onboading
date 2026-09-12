@@ -51,7 +51,7 @@ function parseMotorTrendNewsPage(markup: string, limit: number): RiverItem[] {
     const href = anchor.getAttribute('href') || '';
     const imageUrl = getPageImage(anchor);
     if (title.length < 24 || !imageUrl || !href || seen.has(href)) continue;
-    if (!/(motortrend\.com\/)?(news|reviews|features)\//.test(href)) continue;
+    if (!/\/?(news|reviews|features)\//.test(href)) continue;
 
     const link = new URL(href, 'https://www.motortrend.com').toString();
     seen.add(href);
