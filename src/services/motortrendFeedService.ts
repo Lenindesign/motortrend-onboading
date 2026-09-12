@@ -74,20 +74,26 @@ async function getMotorTrendPageItems(limit: number): Promise<RiverItem[]> {
 }
 
 export async function getMotorTrendFeedItems(limit = 20): Promise<RiverItem[]> {
+  try {
+    const pageItems = await getMotorTrendPageItems(limit);
+    if (pageItems.length > 0) return pageItems;
+  } catch {
+    // Fall back to the public RSS feed if the server-side page proxy is unavailable.
+  }
+
   let response: Response;
   try {
     response = await fetch(feedUrl, { headers: { Accept: 'application/rss+xml, application/atom+xml, text/xml' } });
   } catch {
-    // MotorTrend's feed URL is cross-origin and may be blocked before it can be parsed.
-    return getMotorTrendPageItems(limit);
+    return [];
   }
-  if (!response.ok) return getMotorTrendPageItems(limit);
+  if (!response.ok) return [];
 
   const document = new DOMParser().parseFromString(await response.text(), 'application/xml');
   const items = Array.from(document.querySelectorAll('item, entry')).slice(0, limit);
 
   if (items.length === 0) {
-    return getMotorTrendPageItems(limit);
+    return [];
   }
 
   return items.map(item => {
