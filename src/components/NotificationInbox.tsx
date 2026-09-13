@@ -80,7 +80,7 @@ function HeadlessNotificationInbox() {
 
       {open && (
         <section className="mt-notification-panel" aria-label="Notification inbox">
-          <header>
+          <div className="mt-notification-panel-header">
             <h2>Inbox</h2>
             <div>
               {unreadCount > 0 && (
@@ -92,7 +92,7 @@ function HeadlessNotificationInbox() {
                 ×
               </button>
             </div>
-          </header>
+          </div>
 
           {isLoading && <p className="mt-notification-state">Loading notifications…</p>}
           {error && <p className="mt-notification-state">Notifications are temporarily unavailable.</p>}
@@ -146,9 +146,9 @@ function HeadlessNotificationInbox() {
         .mt-notification-trigger span { font-family: 'Material Symbols Outlined'; font-size: 25px; }
         .mt-notification-trigger b { position: absolute; top: 0; right: -2px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 99px; background: #e90c17; color: #fff; font: 700 10px/18px Arial, sans-serif; }
         .mt-notification-panel { position: absolute; z-index: 100; top: 48px; right: 0; width: min(420px, calc(100vw - 32px)); max-height: min(620px, calc(100vh - 90px)); overflow: hidden; border: 1px solid #36363b; border-radius: 16px; background: #141416; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
-        .mt-notification-panel header { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #303035; }
-        .mt-notification-panel h2 { margin: 0; color: #fff; font-size: 18px; font-weight: 700; }
-        .mt-notification-panel header div { display: flex; align-items: center; gap: 12px; }
+        .mt-notification-panel-header { display: flex; align-items: center; justify-content: space-between; min-height: 0; padding: 18px 20px; border-bottom: 1px solid #303035; }
+        .mt-notification-panel-header h2 { margin: 0; color: #fff !important; font-size: 18px; font-weight: 700; line-height: 1.2; }
+        .mt-notification-panel-header > div { display: flex; align-items: center; gap: 12px; }
         .mt-notification-action, .mt-notification-close { border: 0; background: transparent; color: #c4c4ca; cursor: pointer; }
         .mt-notification-action { padding: 6px 8px; border-radius: 5px; font-size: 12px; }
         .mt-notification-action:hover { background: #29292f; color: #fff; }
