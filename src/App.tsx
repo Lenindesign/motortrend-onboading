@@ -12,6 +12,7 @@ import SignIn from './pages/SignIn';
 import { OnboardingStep1, OnboardingStep2, OnboardingStep3, OnboardingStep4 } from './pages/Onboarding';
 import Welcome from './pages/Welcome';
 import Profile from './pages/Profile';
+import NotificationPreferences from './pages/NotificationPreferences';
 import { Membership } from './pages/Membership';
 import VehicleDetails from './pages/VehicleDetails';
 import { VehicleInventory } from './pages/VehicleInventory';
@@ -153,6 +154,7 @@ function App() {
               <Route path="/my-account/profile" element={<Profile />} />
               <Route path="/my-account/saved-items" element={<Profile />} />
               <Route path="/my-account/subscriptions" element={<Profile />} />
+              <Route path="/my-account/notifications" element={<NotificationPreferences />} />
               
               {/* Membership Page */}
               <Route path="/membership" element={<Membership />} />

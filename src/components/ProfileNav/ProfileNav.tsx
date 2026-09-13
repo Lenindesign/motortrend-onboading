@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Icon from '../Icon';
 
-export type ProfileNavTab = 'my-account' | 'saved-items' | 'subscriptions';
+export type ProfileNavTab = 'my-account' | 'saved-items' | 'subscriptions' | 'notifications';
 
 export interface ProfileNavProps {
   activeTab?: ProfileNavTab;
@@ -41,6 +41,7 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
     { id: 'my-account', label: 'Profile', path: '/my-account/profile', icon: 'account_circle' },
     { id: 'saved-items', label: 'Saved', path: '/my-account/saved-items', icon: 'bookmark_border' },
     { id: 'subscriptions', label: 'Subscriptions', path: '/my-account/subscriptions', icon: 'newspaper' },
+    { id: 'notifications', label: 'Notifications', path: '/my-account/notifications', icon: 'notifications' },
   ];
 
   // Container styles - responsive
@@ -128,4 +129,3 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
 };
 
 export default ProfileNav;
-
