@@ -10,13 +10,9 @@ function getSubscriberId(user: ReturnType<typeof useAuth>['user']): string {
     return user.id;
   }
 
-  // Demo users previously shared the configured Novu subscriber, which caused
-  // notifications from one demo session to appear in every other session.
-  if (user?.email) {
-    const demoKey = user.email.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
-    return `motortrend-demo-${demoKey}`;
-  }
-
+  // The anonymous preview account maps to the seeded Novu subscriber so the
+  // demo inbox can show real workflow notifications. Registered users remain
+  // isolated by their own Auth user ID above.
   return configuredSubscriberId || '6aa4b90867ef7f19e018b5c6';
 }
 
