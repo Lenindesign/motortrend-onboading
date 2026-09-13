@@ -294,7 +294,7 @@ export const DynamicHomeRenderer: React.FC<DynamicHomeRendererProps> = ({
         onClick: () => item.onClick?.(),
       }))
     : verticalCards;
-  const resolvedNewsItems = liveNewsItems || newsItems;
+  const resolvedNewsItems = liveNewsItems.length > 0 ? liveNewsItems : newsItems;
 
   // Track viewed vehicles count for PersonalizedVehicles move-to-top logic
   useEffect(() => {

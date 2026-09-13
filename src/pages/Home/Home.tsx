@@ -934,7 +934,7 @@ export const Home: React.FC = () => {
   const sortedVerticalCards = resolvedVerticalCards;
 
   const sortedNewsItems = useMemo(() => {
-    const availableNewsItems = liveNewsItems || newsItems;
+    const availableNewsItems = liveNewsItems.length > 0 ? liveNewsItems : newsItems;
     // Filter out stories based on persona
     const filteredNewsItems = (() => {
       if (persona?.name === 'Practical Paula') {
@@ -2907,4 +2907,3 @@ export const Home: React.FC = () => {
 };
 
 export default Home;
-

@@ -3,7 +3,7 @@
  * Displays the newest articles and vehicles
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HeroPlusThree } from '../../components/HeroPlusThree';
 import { NewsSection } from '../../components/NewsSection';
@@ -11,6 +11,7 @@ import { VehiclesSection } from '../../components/VehiclesSection';
 import { AdContainer } from '../../components/AdContainer';
 import type { RiverItem } from '../../components/River';
 import { articles } from '../../utils/articles';
+import { getMotorTrendFeedItems } from '../../services/motortrendFeedService';
 import './LatestNews.css';
 
 // Full vehicle database
@@ -71,6 +72,22 @@ const carDatabase = [
 
 const LatestNews: React.FC = () => {
   const navigate = useNavigate();
+  const [liveNewsItems, setLiveNewsItems] = useState<RiverItem[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    getMotorTrendFeedItems(20)
+      .then((items) => {
+        if (mounted && items.length > 0) setLiveNewsItems(items);
+      })
+      .catch(() => {
+        // Keep the local article library visible if the live feed is unavailable.
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Get all articles sorted by date (newest first)
   const latestArticles = useMemo(() => {
@@ -119,6 +136,15 @@ const LatestNews: React.FC = () => {
 
   // Hero data - use first latest article
   const heroData = useMemo(() => {
+    if (liveNewsItems.length > 0) {
+      const firstLiveItem = liveNewsItems[0];
+      return {
+        imageUrl: firstLiveItem.imageUrl,
+        title: firstLiveItem.title,
+        onClick: firstLiveItem.onClick,
+      };
+    }
+
     if (latestArticles.length > 0) {
       const firstArticle = latestArticles[0];
       return {
@@ -134,10 +160,19 @@ const LatestNews: React.FC = () => {
       title: 'Latest News: Stay Up to Date with MotorTrend',
       onClick: () => navigate('/latest-news'),
     };
-  }, [latestArticles, navigate]);
+  }, [latestArticles, liveNewsItems, navigate]);
 
   // Vertical cards - next 3 latest articles
   const verticalCards = useMemo(() => {
+    if (liveNewsItems.length > 0) {
+      return liveNewsItems.slice(1, 4).map((item) => ({
+        imageUrl: item.imageUrl,
+        title: item.title,
+        type: 'Article' as const,
+        onClick: item.onClick,
+      }));
+    }
+
     return latestArticles.slice(1, 4).map(({ slug, article }) => ({
       imageUrl: article.heroImage,
       title: article.title,
@@ -146,7 +181,7 @@ const LatestNews: React.FC = () => {
         navigate(`/article/${slug}`);
       },
     }));
-  }, [latestArticles, navigate]);
+  }, [latestArticles, liveNewsItems, navigate]);
 
   // Vehicles for VehiclesSection - newest vehicles
   const vehiclesData = useMemo(() => {
@@ -157,6 +192,8 @@ const LatestNews: React.FC = () => {
 
   // News items for river section - remaining latest articles
   const newsItems = useMemo(() => {
+    if (liveNewsItems.length > 0) return liveNewsItems.slice(4);
+
     return latestArticles.slice(4).map(({ slug, article }) => ({
       imageUrl: article.heroImage,
       title: article.title,
@@ -167,7 +204,7 @@ const LatestNews: React.FC = () => {
         navigate(`/article/${slug}`);
       },
     })) as RiverItem[];
-  }, [latestArticles, navigate]);
+  }, [latestArticles, liveNewsItems, navigate]);
 
   return (
     <div className="latest-news">
@@ -242,4 +279,3 @@ const LatestNews: React.FC = () => {
 };
 
 export default LatestNews;
-

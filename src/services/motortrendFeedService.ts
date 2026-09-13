@@ -2,8 +2,24 @@ import type { RiverItem } from '../components/River';
 import type { Article } from '../types/article';
 
 const feedUrl = import.meta.env.VITE_MOTORTREND_RSS_URL || 'https://www.motortrend.com/feed/';
-const liveNewsPageUrl = '/api/motortrend-news';
+// Use the function's canonical production URL so this still works if Netlify's
+// pretty /api redirect is omitted from a deploy configuration.
+const liveNewsPageUrl = import.meta.env.PROD
+  ? '/.netlify/functions/motortrend-news'
+  : '/api/motortrend-news';
 const assetCdnUrl = 'https://d2kde5ohu8qb21.cloudfront.net';
+const feedRequestTimeoutMs = 3500;
+
+async function fetchWithTimeout(input: RequestInfo | URL, init: RequestInit = {}, timeoutMs = feedRequestTimeoutMs): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
 
 function useHearstAssetCdn(url: string): string {
   return url.replace('https://www.motortrend.com/files/', `${assetCdnUrl}/files/`);
@@ -82,7 +98,10 @@ export function parseMotorTrendArticle(markup: string, fallback: Pick<Article, '
 }
 
 export async function getMotorTrendArticle(sourceUrl: string, fallback: Pick<Article, 'title' | 'heroImage' | 'category'>): Promise<Article> {
-  const response = await fetch(`/api/motortrend-article?url=${encodeURIComponent(sourceUrl)}`, { headers: { Accept: 'text/html' } });
+  const articleProxyUrl = import.meta.env.PROD
+    ? '/.netlify/functions/motortrend-news'
+    : '/api/motortrend-article';
+  const response = await fetchWithTimeout(`${articleProxyUrl}?url=${encodeURIComponent(sourceUrl)}`, { headers: { Accept: 'text/html' } });
   if (!response.ok) throw new Error(`MotorTrend article returned ${response.status}`);
   return parseMotorTrendArticle(await response.text(), fallback);
 }
@@ -114,7 +133,7 @@ function parseMotorTrendNewsPage(markup: string, limit: number): RiverItem[] {
 }
 
 async function getMotorTrendPageItems(limit: number): Promise<RiverItem[]> {
-  const response = await fetch(liveNewsPageUrl, { headers: { Accept: 'text/html' } });
+  const response = await fetchWithTimeout(liveNewsPageUrl, { headers: { Accept: 'text/html' } });
   if (!response.ok) throw new Error(`MotorTrend news page returned ${response.status}`);
   return parseMotorTrendNewsPage(await response.text(), limit);
 }
@@ -129,7 +148,7 @@ export async function getMotorTrendFeedItems(limit = 20): Promise<RiverItem[]> {
 
   let response: Response;
   try {
-    response = await fetch(feedUrl, { headers: { Accept: 'application/rss+xml, application/atom+xml, text/xml' } });
+    response = await fetchWithTimeout(feedUrl, { headers: { Accept: 'application/rss+xml, application/atom+xml, text/xml' } });
   } catch {
     return [];
   }
@@ -172,7 +191,13 @@ export async function getMotorTrendFeedItems(limit = 20): Promise<RiverItem[]> {
 function createFeedResource() {
   let status: 'pending' | 'fulfilled' = 'pending';
   let result: RiverItem[] = [];
-  const promise = getMotorTrendFeedItems().then(
+  const feedPromise = getMotorTrendFeedItems();
+  // Never hold the entire homepage hostage to an external feed. The local
+  // article library is the intentional fallback when the feed is slow.
+  const promise = Promise.race([
+    feedPromise,
+    new Promise<RiverItem[]>((resolve) => window.setTimeout(() => resolve([]), feedRequestTimeoutMs + 500)),
+  ]).then(
     items => {
       result = items;
       status = 'fulfilled';
@@ -182,6 +207,7 @@ function createFeedResource() {
       status = 'fulfilled';
     },
   );
+  void feedPromise.catch(() => undefined);
 
   return {
     read() {
