@@ -38,7 +38,7 @@ function renderNotificationBody(body: string) {
 
 function HeadlessNotificationInbox() {
   const novu = useNovu();
-  const { notifications, isLoading, error, readAll } = useNotifications({ limit: 50 });
+  const { notifications, isLoading, error, readAll, refetch } = useNotifications({ limit: 50 });
   const [open, setOpen] = useState(false);
 
   const uniqueNotifications = useMemo(() => {
@@ -61,6 +61,20 @@ function HeadlessNotificationInbox() {
   const runAction = async (notification: Notification, destination?: string) => {
     if (!notification.isRead) await novu.notifications.read({ notificationId: notification.id });
     if (destination?.startsWith('/')) window.location.assign(destination.replaceAll('&amp;', '&'));
+  };
+
+  const toggleRead = async (notification: Notification) => {
+    if (notification.isRead) {
+      await novu.notifications.unread({ notificationId: notification.id });
+    } else {
+      await novu.notifications.read({ notificationId: notification.id });
+    }
+    await refetch();
+  };
+
+  const deleteNotification = async (notification: Notification) => {
+    await novu.notifications.delete({ notificationId: notification.id });
+    await refetch();
   };
 
   if (!applicationIdentifier) return null;
@@ -132,6 +146,28 @@ function HeadlessNotificationInbox() {
                       )}
                     </div>
                   )}
+                  <div className="mt-notification-item-controls" aria-label="Notification controls">
+                    <button
+                      type="button"
+                      className="mt-notification-control"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        void toggleRead(notification);
+                      }}
+                    >
+                      {notification.isRead ? 'Mark unread' : 'Mark read'}
+                    </button>
+                    <button
+                      type="button"
+                      className="mt-notification-control mt-notification-control-danger"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        void deleteNotification(notification);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -168,19 +204,23 @@ function HeadlessNotificationInbox() {
         .mt-notification-content small { color: #85858d; font-size: 11px; }
         .mt-notification-item i { grid-column: 3; width: 7px; height: 7px; margin-top: 6px; border-radius: 50%; background: #e90c17; }
         .mt-notification-buttons { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+        .mt-notification-item-controls { display: flex; grid-column: 2 / 4; gap: 12px; padding-top: 2px; }
+        .mt-notification-control { padding: 0; border: 0; background: transparent; color: #a6a6ad; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .mt-notification-control:hover { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+        .mt-notification-control-danger:hover { color: #ff6670; }
         .mt-notification-primary, .mt-notification-secondary { min-height: 30px; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: 700; cursor: pointer; }
         .mt-notification-primary { border: 1px solid #e90c17; background: #e90c17; color: #fff; }
         .mt-notification-primary:hover { background: #ff2630; }
         .mt-notification-secondary { border: 1px solid #77777f; background: transparent; color: #fff; }
         .mt-notification-secondary:hover { border-color: #fff; background: #29292f; }
         .mt-notification-state { margin: 0; padding: 56px 20px; color: #a6a6ad; text-align: center; font-size: 14px; }
-        .mt-notification-trigger:focus-visible, .mt-notification-action:focus-visible, .mt-notification-close:focus-visible, .mt-notification-content:focus-visible, .mt-notification-primary:focus-visible, .mt-notification-secondary:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+        .mt-notification-trigger:focus-visible, .mt-notification-action:focus-visible, .mt-notification-close:focus-visible, .mt-notification-content:focus-visible, .mt-notification-primary:focus-visible, .mt-notification-secondary:focus-visible, .mt-notification-control:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
         @media (max-width: 560px) {
           .mt-notification-panel { position: fixed; top: 70px; right: 16px; left: 16px; width: auto; max-height: calc(100vh - 86px); }
           .mt-notification-list { max-height: calc(100vh - 160px); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .mt-notification-trigger, .mt-notification-item, .mt-notification-action, .mt-notification-close, .mt-notification-primary, .mt-notification-secondary { transition: none; }
+          .mt-notification-trigger, .mt-notification-item, .mt-notification-action, .mt-notification-close, .mt-notification-primary, .mt-notification-secondary, .mt-notification-control { transition: none; }
         }
       `}</style>
     </div>
