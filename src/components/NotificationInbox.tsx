@@ -79,7 +79,7 @@ function HeadlessNotificationInbox() {
       </button>
 
       {open && (
-        <section className="mt-notification-panel" aria-label="Notification inbox">
+        <div className="mt-notification-panel" role="dialog" aria-label="Notification inbox">
           <div className="mt-notification-panel-header">
             <span className="mt-notification-panel-title">Inbox</span>
             <div>
@@ -136,7 +136,7 @@ function HeadlessNotificationInbox() {
               ))}
             </div>
           )}
-        </section>
+        </div>
       )}
 
       <style>{`
@@ -145,7 +145,7 @@ function HeadlessNotificationInbox() {
         .mt-notification-trigger:hover { background: rgba(255,255,255,.1); }
         .mt-notification-trigger span { font-family: 'Material Symbols Outlined'; font-size: 25px; }
         .mt-notification-trigger b { position: absolute; top: 0; right: -2px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 99px; background: #e90c17; color: #fff; font: 700 10px/18px Arial, sans-serif; }
-        .mt-notification-panel { position: absolute; z-index: 100; top: 48px; right: 0; width: min(420px, calc(100vw - 32px)); max-height: min(620px, calc(100vh - 90px)); overflow: hidden; border: 1px solid #36363b; border-radius: 16px; background: #141416; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+        .mt-notification-panel { position: absolute; z-index: 100; top: 48px; right: 0; box-sizing: border-box; width: min(420px, calc(100vw - 32px)); max-height: min(620px, calc(100vh - 90px)); padding-top: 32px !important; padding-bottom: 32px !important; overflow: hidden; border: 1px solid #36363b; border-radius: 16px; background: #141416; box-shadow: 0 18px 50px rgba(0,0,0,.45); }
         .mt-notification-panel-header { display: flex !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important; width: 100% !important; height: 58px !important; min-height: 58px !important; max-height: 58px !important; margin: 0 !important; padding: 18px 20px !important; border-bottom: 1px solid #303035; overflow: visible !important; }
         .mt-notification-panel-title { display: block !important; margin: 0 !important; padding: 0 !important; color: #fff !important; font: 700 18px/22px Arial, sans-serif !important; }
         .mt-notification-panel-header > div { display: flex; align-items: center; gap: 12px; }
