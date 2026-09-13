@@ -1,20 +1,67 @@
 import { Inbox } from '@novu/react';
+import type { Notification } from '@novu/js/ui';
 import { useAuth } from '../contexts/AuthContext';
 
 const applicationIdentifier = import.meta.env.VITE_NOVU_APPLICATION_IDENTIFIER;
 const configuredSubscriberId = import.meta.env.VITE_NOVU_SUBSCRIBER_ID;
 
+function getSubscriberId(user: ReturnType<typeof useAuth>['user']): string {
+  if (user && !user.isAnonymous) {
+    return user.id;
+  }
+
+  // Demo users previously shared the configured Novu subscriber, which caused
+  // notifications from one demo session to appear in every other session.
+  if (user?.email) {
+    const demoKey = user.email.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-');
+    return `motortrend-demo-${demoKey}`;
+  }
+
+  return configuredSubscriberId || '6aa4b90867ef7f19e018b5c6';
+}
+
 export function NotificationInbox() {
   const { user } = useAuth();
-  const subscriberId = configuredSubscriberId || user?.id || '6aa4b90867ef7f19e018b5c6';
-  const openLatestNews = () => window.location.assign('/latest-news');
+  const subscriberId = getSubscriberId(user);
+
+  const getNotificationDestination = (notification: Notification): string => {
+    const data = notification.data ?? {};
+    const candidate = [
+      data.url,
+      data.route,
+      data.path,
+      data.href,
+      notification.redirect?.url,
+      notification.primaryAction?.redirect?.url,
+      notification.secondaryAction?.redirect?.url,
+    ].find(
+      (value): value is string => typeof value === 'string' && value.startsWith('/') && !value.startsWith('//'),
+    );
+
+    // Workflows can provide a destination in data. Older workflows fall back to the live feed.
+    return candidate ? candidate.replaceAll('&amp;', '&') : '/latest-news';
+  };
+
+  const openNotification = (notification: Notification) => {
+    window.location.assign(getNotificationDestination(notification));
+  };
 
   if (!applicationIdentifier) {
     return null;
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', color: '#FFFFFF' }} aria-label="Notifications">
+    <div
+      style={{ display: 'flex', alignItems: 'center', color: '#FFFFFF' }}
+      aria-label="Notifications"
+      onClickCapture={(event) => {
+        const anchor = (event.target as HTMLElement).closest('a');
+        const href = anchor?.getAttribute('href');
+        if (!anchor || !href || !href.includes('&amp;')) return;
+        event.preventDefault();
+        window.location.assign(href.replaceAll('&amp;', '&'));
+      }}
+    >
       <style>{`
         .nv-inbox__popoverContent .nv-inboxContent > div:nth-of-type(3) {
           display: none !important;
@@ -26,7 +73,7 @@ export function NotificationInbox() {
         routerPush={(path: string) => {
           window.location.assign(path);
         }}
-        onNotificationClick={openLatestNews}
+        onNotificationClick={openNotification}
         renderAvatar={() => (
           <span
             aria-label="MotorTrend"
