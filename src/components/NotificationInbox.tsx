@@ -108,6 +108,35 @@ function HeadlessNotificationInbox() {
             </div>
           </div>
 
+          <article className="mt-notification-preview" aria-label="Sample price alert preview">
+            <div className="mt-notification-preview-heading">
+              <div className="mt-notification-preview-label-group">
+                <span className="mt-notification-preview-label">Price alert</span>
+                <details className="mt-notification-info">
+                  <summary aria-label="How price alerts work">i</summary>
+                  <div className="mt-notification-info-popover" role="tooltip">
+                    <strong>How price alerts work</strong>
+                    <p>Users receive alerts only after showing clear intent—not for every vehicle.</p>
+                    <ol>
+                      <li>Save or request alerts for a specific year, make, and model.</li>
+                      <li>Choose price drops, a target price, incentives, or local dealer deals.</li>
+                      <li>Add a ZIP code so “near you” is meaningful.</li>
+                      <li>Pause or remove alerts from the profile watchlist.</li>
+                    </ol>
+                    <p>Repeated visits, comparisons, listing views, deal clicks, ZIP entry, and lead activity can also help personalize recommendations.</p>
+                    <em>Save this Civic and get notified when prices drop or incentives change.</em>
+                  </div>
+                </details>
+              </div>
+              <span className="mt-notification-preview-status">Preview</span>
+            </div>
+            <strong>2026 Honda Civic price alert</strong>
+            <p><b className="mt-notification-preview__price-drop-label">Price drop</b> — A deal changed near you. View the latest listings and incentives for this vehicle.</p>
+            <button type="button" className="mt-notification-primary" onClick={() => window.location.assign('/vehicles/2026/Honda/Civic')}>
+              View deals
+            </button>
+          </article>
+
           {isLoading && <p className="mt-notification-state">Loading notifications…</p>}
           {error && <p className="mt-notification-state">Notifications are temporarily unavailable.</p>}
           {!isLoading && !error && uniqueNotifications.length === 0 && (
@@ -185,6 +214,25 @@ function HeadlessNotificationInbox() {
         .mt-notification-panel-header { display: flex !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important; width: 100% !important; height: 58px !important; min-height: 58px !important; max-height: 58px !important; margin: 0 !important; padding: 18px 20px !important; border-bottom: 1px solid #303035; overflow: visible !important; }
         .mt-notification-panel-title { display: block !important; margin: 0 !important; padding: 0 !important; color: #fff !important; font: 700 18px/22px Arial, sans-serif !important; }
         .mt-notification-panel-header > div { display: flex; align-items: center; gap: 12px; }
+        .mt-notification-preview { margin: 12px 20px 0; padding: 14px; border: 1px solid #4b5361; border-radius: 10px; background: linear-gradient(135deg, #202631, #191b20); color: #fff; }
+        .mt-notification-preview-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 9px; }
+        .mt-notification-preview-label-group { display: flex; align-items: center; gap: 6px; }
+        .mt-notification-preview-label { color: #aeb9c9; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+        .mt-notification-info { position: relative; }
+        .mt-notification-info summary { display: grid; width: 15px; height: 15px; place-items: center; border: 1px solid #75c98a; border-radius: 50%; color: #75c98a; cursor: pointer; font: 700 10px/1 Arial, sans-serif; list-style: none; }
+        .mt-notification-info summary::-webkit-details-marker { display: none; }
+        .mt-notification-info summary:hover, .mt-notification-info[open] summary { background: #75c98a; color: #18221b; }
+        .mt-notification-info-popover { position: absolute; z-index: 2; top: 24px; left: -8px; width: 280px; padding: 14px; border: 1px solid #4b5361; border-radius: 8px; background: #202631; color: #d9dde5; box-shadow: 0 10px 24px rgba(0,0,0,.35); font-size: 11px; line-height: 1.4; }
+        .mt-notification-info-popover strong { display: block; margin-bottom: 7px; color: #fff; font-size: 13px; }
+        .mt-notification-info-popover p { margin: 7px 0; color: #c4c8d0; font-size: 11px; }
+        .mt-notification-info-popover ol { margin: 7px 0; padding-left: 17px; }
+        .mt-notification-info-popover li { margin: 4px 0; }
+        .mt-notification-info-popover em { color: #75c98a; font-style: normal; }
+        .mt-notification-preview-status { color: #8f98a8; font-size: 10px; }
+        .mt-notification-preview strong { display: block; font-size: 14px; line-height: 1.3; }
+        .mt-notification-preview p { margin: 5px 0 12px; color: #c4c8d0; font-size: 12px; line-height: 1.45; }
+        .mt-notification-preview p b { color: #75b9f4; font-weight: 800; }
+        .mt-notification-preview p .mt-notification-preview__price-drop-label { color: #75c98a; }
         .mt-notification-action, .mt-notification-close { border: 0; background: transparent; color: #c4c4ca; cursor: pointer; }
         .mt-notification-action { padding: 6px 8px; border-radius: 5px; font-size: 12px; }
         .mt-notification-action:hover { background: #29292f; color: #fff; }

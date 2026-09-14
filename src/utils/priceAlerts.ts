@@ -3,7 +3,16 @@
  * Persists signups in localStorage for vehicles the user wants price/incentive alerts for.
  */
 
+import { parseVehicleName } from './vehicleImages';
+
 const STORAGE_KEY = 'priceAlertSignups';
+
+export function getPriceAlertDestination(vehicleName: string): string {
+  const { year, make, model } = parseVehicleName(vehicleName);
+  return year && make && model
+    ? `/vehicles/${encodeURIComponent(year)}/${encodeURIComponent(make)}/${encodeURIComponent(model)}`
+    : '/deals';
+}
 
 export interface PriceAlertSignup {
   email: string;
@@ -27,7 +36,7 @@ export async function notifyPriceAlertSignup(
         email,
         vehicleName,
         zip,
-        destination: window.location.pathname,
+        destination: getPriceAlertDestination(vehicleName),
       }),
     });
     if (!response.ok) return false;

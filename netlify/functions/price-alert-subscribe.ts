@@ -35,7 +35,7 @@ export default async function handler(request: Request) {
   const zip = typeof body.zip === 'string' ? body.zip.trim() : '';
   const destination = typeof body.destination === 'string' && body.destination.startsWith('/')
     ? body.destination
-    : '/my-account/saved-items';
+    : '/deals';
 
   if (!subscriberId || !email || !vehicleName) {
     return json({ error: 'subscriberId, email, and vehicleName are required' }, 400);

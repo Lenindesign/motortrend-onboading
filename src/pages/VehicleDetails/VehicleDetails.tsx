@@ -1660,6 +1660,22 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
+          {vehicleName === '2026 Honda Civic' && (
+            <aside className="vehicle-details__price-drop" aria-label="Sample price drop alert">
+              <div>
+                <span className="vehicle-details__price-drop-label">Price alert</span>
+                <strong>Price drop — 2026 Honda Civic</strong>
+                <p>From <b>$31,000</b>, down <b>$850</b> near you. Updated today.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => document.querySelector('.vehicle-details__listings')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              >
+                See deals
+              </button>
+            </aside>
+          )}
+
           {/* MotorTrend Score */}
           <div id="staff-rating" className="vehicle-details__motortrend-score">
             <div className="vehicle-details__motortrend-header">
