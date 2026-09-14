@@ -12,6 +12,33 @@ export interface PriceAlertSignup {
   updatedAt: string;
 }
 
+export async function notifyPriceAlertSignup(
+  vehicleName: string,
+  email: string,
+  zip?: string,
+  subscriberId?: string,
+): Promise<boolean> {
+  try {
+    const response = await fetch('/api/price-alert-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subscriberId: subscriberId || import.meta.env.VITE_NOVU_SUBSCRIBER_ID || '6aa4b90867ef7f19e018b5c6',
+        email,
+        vehicleName,
+        zip,
+        destination: window.location.pathname,
+      }),
+    });
+    if (!response.ok) return false;
+    const result = await response.json() as { configured?: boolean };
+    return result.configured === true;
+  } catch (error) {
+    console.warn('Price alert notification could not be sent:', error);
+    return false;
+  }
+}
+
 function getStored(): PriceAlertSignup | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

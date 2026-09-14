@@ -7,7 +7,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
-import { signUpForPriceAlert } from '../../utils/priceAlerts';
+import { notifyPriceAlertSignup, signUpForPriceAlert } from '../../utils/priceAlerts';
+import { useAuth } from '../../contexts/AuthContext';
 
 export interface PriceAlertsModalProps {
   isOpen: boolean;
@@ -25,12 +26,13 @@ export const PriceAlertsModal: React.FC<PriceAlertsModalProps> = ({
   onSignedUp,
 }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [zip, setZip] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     const trimmed = email.trim();
@@ -45,6 +47,7 @@ export const PriceAlertsModal: React.FC<PriceAlertsModalProps> = ({
     }
     const vehicle = vehicleName?.trim() || 'this vehicle';
     signUpForPriceAlert(vehicle, trimmed, zip.trim() || undefined);
+    void notifyPriceAlertSignup(vehicle, trimmed, zip.trim() || undefined, user && !user.isAnonymous ? user.id : undefined);
     setSubmitted(true);
     onSignedUp?.();
     setTimeout(() => {
