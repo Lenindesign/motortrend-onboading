@@ -293,20 +293,6 @@ export const QAModal: React.FC<QAModalProps> = ({
     letterSpacing: '0.5px',
   };
 
-  const editorPickBadgeStyle: React.CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '4px',
-    padding: '2px 8px',
-    background: '#33C4FF',
-    color: 'var(--color-neutrals-1, #141416)',
-    borderRadius: '4px',
-    fontSize: '10px',
-    fontWeight: 600,
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  };
-
   const answersSectionStyle: React.CSSProperties = {
     marginTop: '12px',
     marginLeft: '52px',
@@ -508,13 +494,6 @@ export const QAModal: React.FC<QAModalProps> = ({
 
                 {/* Question Content */}
                 <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
-                    {q.isEditorPick && (
-                      <span style={editorPickBadgeStyle}>
-                        Editor's Pick
-                      </span>
-                    )}
-                  </div>
                   <p style={questionTextStyle}>{q.question}</p>
                   <div style={questionMetaStyle}>
                     <span style={{ fontWeight: 500 }}>{q.author}</span>
