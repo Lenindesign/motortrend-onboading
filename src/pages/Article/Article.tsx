@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { useParams, useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useParams, useNavigate, Link, useSearchParams, useLocation } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import { AdContainer } from '../../components/AdContainer';
 import { UserReviews } from '../../components/UserReviews';
@@ -62,7 +62,8 @@ const LiveArticle: React.FC<LiveArticleProps> = ({ title, imageUrl, sourceUrl, a
 
 export const Article: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const isLiveArticle = searchParams.get('live') === 'true';
+  const location = useLocation();
+  const isLiveArticle = searchParams.get('live') === 'true' || location.pathname === '/article/live';
   if (isLiveArticle) {
     return <LiveArticle
       title={searchParams.get('title') || 'MotorTrend Latest News'}
@@ -663,53 +664,6 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
       prev.map(q =>
         q.id === questionId
           ? { ...q, answers: q.answers.map(a => a.id === answerId ? { ...a, upvotes: a.upvotes + 1 } : a) }
-          : q
-      )
-    );
-  };
-
-  // AI answer generator - creates contextual responses based on the question and vehicle/article
-  const handleAskAI = (questionId: string, questionText: string) => {
-    const vName = vehicleName || articleData.title;
-    const qLower = questionText.toLowerCase();
-
-    // Generate a contextual AI response based on question keywords
-    let aiResponse = '';
-
-    if (qLower.includes('fuel') || qLower.includes('mpg') || qLower.includes('range') || qLower.includes('economy') || qLower.includes('efficient')) {
-      aiResponse = `Based on the article and available data for the ${vName}, fuel efficiency is competitive within its segment. EPA estimates should be taken as a guideline — real-world results typically vary by 5-10% depending on driving conditions, terrain, and driving style. For the most accurate numbers, consider MotorTrend's long-term testing data which reflects mixed real-world driving scenarios.`;
-    } else if (qLower.includes('price') || qLower.includes('cost') || qLower.includes('worth') || qLower.includes('value') || qLower.includes('afford')) {
-      aiResponse = `The ${vName} offers solid value in its price bracket. When evaluating cost, consider the total ownership picture: insurance rates, expected maintenance costs, resale value, and available incentives or rebates. The mid-trim often represents the best value-to-feature ratio. Check our local listings for current market pricing in your area.`;
-    } else if (qLower.includes('reliab') || qLower.includes('problem') || qLower.includes('issue') || qLower.includes('recall') || qLower.includes('break')) {
-      aiResponse = `Reliability data for the ${vName} is based on manufacturer track records, early owner reports, and industry projections. While it's still early for long-term data on newer models, the platform and powertrain have proven dependable in MotorTrend's extended testing. Always check for any open recalls or TSBs (Technical Service Bulletins) before purchasing.`;
-    } else if (qLower.includes('compare') || qLower.includes('vs') || qLower.includes('versus') || qLower.includes('competitor') || qLower.includes('better than')) {
-      aiResponse = `The ${vName} competes well in its segment. Key differentiators include its design philosophy, tech integration, and driving dynamics. For a detailed head-to-head comparison, check out MotorTrend's comparison tool where you can evaluate specs, ratings, and pricing side by side. Each competitor has unique strengths depending on your priorities.`;
-    } else if (qLower.includes('family') || qLower.includes('kid') || qLower.includes('car seat') || qLower.includes('space') || qLower.includes('room') || qLower.includes('cargo')) {
-      aiResponse = `For family use, the ${vName} offers a practical interior layout. Key considerations include LATCH system accessibility for car seats, rear legroom measurements, cargo volume with seats up and folded, and the number of USB ports for passengers. MotorTrend's review covers the interior dimensions in detail — we recommend test-fitting your specific car seats during a dealership visit.`;
-    } else if (qLower.includes('drive') || qLower.includes('handle') || qLower.includes('ride') || qLower.includes('comfort') || qLower.includes('steer')) {
-      aiResponse = `According to MotorTrend's testing of the ${vName}, the driving experience prioritizes a balance of comfort and engagement. The suspension tuning provides composed handling without sacrificing ride comfort on rough surfaces. Steering feel is responsive and well-weighted. For specific driving impressions, refer to our detailed performance scores in the MotorTrend Review section of this article.`;
-    } else if (qLower.includes('tech') || qLower.includes('screen') || qLower.includes('infotainment') || qLower.includes('carplay') || qLower.includes('android')) {
-      aiResponse = `The ${vName}'s technology suite is a strong point. It features modern infotainment with responsive touchscreen controls, wireless smartphone integration (Apple CarPlay and Android Auto), and a comprehensive driver assistance package. The user interface is intuitive, though some deeper settings require menu navigation. OTA updates keep the system current with new features over time.`;
-    } else if (qLower.includes('buy') || qLower.includes('purchase') || qLower.includes('deal') || qLower.includes('negotiate') || qLower.includes('lease')) {
-      aiResponse = `When shopping for the ${vName}, here are some tips based on current market conditions: Check multiple dealerships for competitive quotes, look into manufacturer incentives and loyalty programs, consider timing your purchase around model-year transitions for better deals, and don't overlook certified pre-owned options if available. Use our marketplace to compare local listings and prices.`;
-    } else {
-      aiResponse = `Based on MotorTrend's review and testing of the ${vName}, here's what we can share: This vehicle has been evaluated across performance, efficiency, technology, and value dimensions. Our editorial team has driven and tested it extensively. For the most specific answer to your question, we recommend checking the detailed sections of this article, the MotorTrend Score breakdown, and user reviews from verified owners below.`;
-    }
-
-    // Add the AI answer to the question
-    const aiAnswer = {
-      id: `a-ai-${Date.now()}`,
-      text: aiResponse,
-      author: 'MotorTrend AI',
-      isAI: true,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      upvotes: 0,
-    };
-
-    setQaQuestions(prev =>
-      prev.map(q =>
-        q.id === questionId
-          ? { ...q, answers: [aiAnswer, ...q.answers] }
           : q
       )
     );
@@ -1359,7 +1313,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
                   onClick={() => setIsQAModalOpen(true)}
                   aria-label="Open Q&A"
                 >
-                  <Icon name="auto_awesome" size={20} />
+                  <Icon name="question_answer" size={20} />
                   <span>Q&A</span>
                   {qaQuestions.length > 0 && (
                     <span style={{
@@ -2334,7 +2288,6 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
         onSubmitAnswer={handleSubmitAnswer}
         onUpvoteQuestion={handleUpvoteQuestion}
         onUpvoteAnswer={handleUpvoteAnswer}
-        onAskAI={handleAskAI}
       />
     </div>
   );
