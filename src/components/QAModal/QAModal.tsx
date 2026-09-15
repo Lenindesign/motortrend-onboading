@@ -4,7 +4,18 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import Icon from '../Icon';
+import {
+  ArrowUp,
+  ArrowsIn,
+  ArrowsOut,
+  CaretDown,
+  CaretUp,
+  ChatCircle,
+  PaperPlaneTilt,
+  Question,
+  SealCheck,
+  ThumbsUp,
+} from '@phosphor-icons/react';
 import { ModalShell } from '../atoms/ModalShell';
 
 export interface QAItem {
@@ -62,6 +73,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   const [hoveredUpvote, setHoveredUpvote] = useState<string | null>(null);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [votedIds, setVotedIds] = useState<string[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const votedStorageKey = `qa-votes:${articleSlug}`;
 
@@ -134,6 +146,20 @@ export const QAModal: React.FC<QAModalProps> = ({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: '4px',
+  };
+
+  const modalActionStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '34px',
+    height: '34px',
+    padding: 0,
+    background: 'transparent',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    borderRadius: 'var(--border-radius-sm, 4px)',
+    color: 'var(--color-neutrals-3, #353945)',
+    cursor: 'pointer',
   };
 
   const titleStyle: React.CSSProperties = {
@@ -407,16 +433,28 @@ export const QAModal: React.FC<QAModalProps> = ({
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}
-      width="640px"
+      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : '640px'}
+      maxWidth={isExpanded ? '1100px' : '640px'}
+      maxHeight={isExpanded ? 'calc(100vh - 32px)' : '90vh'}
+      style={isExpanded ? { height: 'calc(100vh - 32px)' } : undefined}
     >
       {/* Header */}
       <div style={headerStyle}>
         <div style={titleRowStyle}>
           <h2 style={titleStyle}>
-            <Icon name="forum" size={24} />
+            <ChatCircle size={24} weight="regular" />
             Q&A
             <span style={countBadgeStyle}>{questions.length}</span>
           </h2>
+          <button
+            type="button"
+            style={modalActionStyle}
+            onClick={() => setIsExpanded((expanded) => !expanded)}
+            aria-label={isExpanded ? 'Shrink Q&A modal' : 'Expand Q&A modal'}
+            title={isExpanded ? 'Shrink' : 'Expand'}
+          >
+            {isExpanded ? <ArrowsIn size={18} weight="regular" /> : <ArrowsOut size={18} weight="regular" />}
+          </button>
         </div>
         <p style={subtitleStyle}>
           Ask questions about <strong>{vehicleName || articleTitle}</strong> and get answers from editors and the community.
@@ -447,7 +485,7 @@ export const QAModal: React.FC<QAModalProps> = ({
             disabled={!newQuestion.trim() || isSubmitting}
           >
             {isSubmitting ? 'Posting...' : 'Ask Community'}
-            <Icon name="send" size={16} />
+            <PaperPlaneTilt size={16} weight="regular" />
           </button>
         </div>
       </div>
@@ -471,7 +509,7 @@ export const QAModal: React.FC<QAModalProps> = ({
       <div style={questionsListStyle}>
         {sortedQuestions.length === 0 ? (
           <div style={emptyStyle}>
-            <Icon name="help_outline" size={40} style={{ color: 'var(--color-neutrals-5, #B1B5C3)', marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
+            <Question size={40} weight="regular" color="var(--color-neutrals-5, #B1B5C3)" style={{ marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
             <p style={{ margin: '0 0 4px', fontWeight: 600, color: 'var(--color-neutrals-2, #23262F)' }}>No questions yet</p>
             <p style={{ margin: 0 }}>Be the first to ask about this {vehicleName ? 'vehicle' : 'article'}!</p>
           </div>
@@ -488,7 +526,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                   onMouseEnter={() => setHoveredUpvote(q.id)}
                   onMouseLeave={() => setHoveredUpvote(null)}
                 >
-                  <Icon name="arrow_upward" size={14} />
+                  <ArrowUp size={14} weight="regular" />
                   <span style={{ fontSize: '12px', fontWeight: 600 }}>{q.upvotes}</span>
                 </button>
 
@@ -509,7 +547,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                       style={answersToggleStyle}
                       onClick={() => setExpandedQuestion(expandedQuestion === q.id ? null : q.id)}
                     >
-                      <Icon name={expandedQuestion === q.id ? 'expand_less' : 'expand_more'} size={18} />
+                      {expandedQuestion === q.id ? <CaretUp size={18} weight="regular" /> : <CaretDown size={18} weight="regular" />}
                       {expandedQuestion === q.id ? 'Hide answers' : `View ${q.answers.length} ${q.answers.length === 1 ? 'answer' : 'answers'}`}
                     </button>
                   )}
@@ -533,7 +571,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                               </span>
                               {answer.isEditor && (
                                 <span style={editorBadgeStyle}>
-                                  <Icon name="verified" size={10} />
+                                  <SealCheck size={10} weight="regular" />
                                   Editor
                                 </span>
                               )}
@@ -555,7 +593,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                               onMouseEnter={() => setHoveredUpvote(`answer-${answer.id}`)}
                               onMouseLeave={() => setHoveredUpvote(null)}
                             >
-                              <Icon name="thumb_up" size={12} />
+                              <ThumbsUp size={12} weight="regular" />
                               <span style={{ fontSize: '11px', fontWeight: 600 }}>{answer.upvotes}</span>
                             </button>
                           </div>
@@ -577,7 +615,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                           onClick={() => handleSubmitAnswer(q.id)}
                           disabled={!answerText.trim()}
                         >
-                          <Icon name="send" size={16} />
+                          <PaperPlaneTilt size={16} weight="regular" />
                         </button>
                       </div>
                     </div>
