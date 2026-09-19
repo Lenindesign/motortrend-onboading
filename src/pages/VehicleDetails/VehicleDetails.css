@@ -652,14 +652,28 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
+  min-height: 48px;
+  padding: 0 12px;
   background: var(--color-white);
-  border: 2px solid var(--color-neutrals-5);
-  border-radius: 6px;
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
   color: var(--color-neutrals-2);
-  font-family: var(--font-body);
+  font-family: var(--font-heading);
   font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 4px 20px rgba(20, 20, 22, 0.06);
   cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vehicle-details__year-dropdown:hover {
+  background: var(--color-neutrals-8);
+  border-color: var(--color-neutrals-5);
+}
+
+.vehicle-details__year-dropdown:focus-within {
+  outline: 2px solid var(--color-primary-1);
+  outline-offset: 2px;
 }
 
 .vehicle-details__year-dropdown select {
@@ -675,16 +689,35 @@
 .vehicle-details__ymm-actions {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .vehicle-details__compare-control {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
   color: var(--color-neutrals-2);
+  font-family: var(--font-heading);
   font-size: 16px;
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 4px 20px rgba(20, 20, 22, 0.06);
   cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.vehicle-details__compare-control:hover {
+  background: var(--color-neutrals-8);
+  border-color: var(--color-neutrals-5);
+}
+
+.vehicle-details__compare-control:focus-within {
+  outline: 2px solid var(--color-primary-1);
+  outline-offset: 2px;
 }
 
 .vehicle-details__compare-control input {
@@ -695,9 +728,15 @@
 }
 
 .vehicle-details__save-btn--ymm {
+  min-height: 48px;
   min-width: 108px;
+  padding: 0 20px;
   justify-content: center;
   background: var(--color-primary-2, #ff3b42);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 4px 20px rgba(20, 20, 22, 0.06);
 }
 
 .vehicle-details__save-btn--ymm:hover,
