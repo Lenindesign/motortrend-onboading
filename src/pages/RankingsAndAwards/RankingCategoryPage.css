@@ -231,7 +231,8 @@ html {
 
 .ranking-category-page__subcategory-row {
   position: sticky;
-  top: 144px;
+  /* The desktop GlobalHeader occupies 120px; dock directly beneath it. */
+  top: 128px;
   z-index: 20;
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 28px;
@@ -255,8 +256,9 @@ html {
   gap: 10px;
   overflow-x: auto;
   scrollbar-width: none;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  /* Keep the rail flush beneath the sticky header while giving the pills
+     equal breathing room inside the rail itself. */
+  padding-block: 16px;
 }
 
 .ranking-category-page__subcategory-track::-webkit-scrollbar {

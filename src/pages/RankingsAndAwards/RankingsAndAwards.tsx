@@ -258,50 +258,102 @@ type LiveRankingEntry = {
   rank: number;
   rating: number;
   priceRange: string;
+  priceMin: number;
+  priceMax: number;
   fuelType: Vehicle['fuelType'];
   mpg?: string;
   subcategory: string;
   sourceUrl: string;
 };
 
-// Each row is intentionally built from the #1 vehicle on its primary production
-// subcategory pages, rather than from ranks 1–3 on a single overall page.
-export const LIVE_RANKING_ENTRIES: Record<string, LiveRankingEntry[]> = {
-  SUV: [
-    { year: '2026', make: 'Subaru', model: 'Crosstrek', rank: 1, rating: 9.5, priceRange: '$28,445 - $35,245', fuelType: 'Gas', mpg: '26/33', subcategory: 'Subcompact SUVs', sourceUrl: 'https://www.motortrend.com/cars/subaru/crosstrek' },
-    { year: '2026', make: 'Kia', model: 'Sportage', rank: 1, rating: 9.5, priceRange: '$30,285 - $41,185', fuelType: 'Gas', subcategory: 'Compact SUVs', sourceUrl: 'https://www.motortrend.com/cars/kia/sportage/2026' },
-    { year: '2026', make: 'Ford', model: 'Expedition', rank: 1, rating: 9.4, priceRange: '$65,495 - $87,155', fuelType: 'Gas', subcategory: 'Full-Size SUVs', sourceUrl: 'https://www.motortrend.com/cars/ford/expedition/2026' },
-  ],
-  Sedan: [
-    { year: '2026', make: 'Kia', model: 'K4', rank: 1, rating: 9.5, priceRange: '$23,535 - $30,135', fuelType: 'Gas', mpg: '30/40', subcategory: 'Compact Sedans', sourceUrl: 'https://www.motortrend.com/cars/kia/k4/2026' },
-    { year: '2026', make: 'Toyota', model: 'Camry', rank: 1, rating: 9.5, priceRange: '$30,895 - $38,820', fuelType: 'Hybrid', mpg: '52/49', subcategory: 'Midsize Sedans', sourceUrl: 'https://www.motortrend.com/cars/toyota/camry/2026' },
-    { year: '2026', make: 'Genesis', model: 'G90', rank: 1, rating: 9.5, priceRange: '$94,245 - $107,945', fuelType: 'Gas', mpg: '18/26', subcategory: 'Full-Size Sedans', sourceUrl: 'https://www.motortrend.com/cars/genesis/g90/2026' },
-  ],
-  Truck: [
-    { year: '2026', make: 'Ford', model: 'Maverick', rank: 1, rating: 9.5, priceRange: '$29,990 - $43,270', fuelType: 'Hybrid', mpg: '42/35', subcategory: 'Compact Trucks', sourceUrl: 'https://www.motortrend.com/cars/ford/maverick/2026' },
-    { year: '2026', make: 'Ford', model: 'Ranger', rank: 1, rating: 9.5, priceRange: '$35,445 - $49,350', fuelType: 'Gas', mpg: '21/25', subcategory: 'Midsize Pickup Trucks', sourceUrl: 'https://www.motortrend.com/cars/ford/ranger/2026' },
-    { year: '2026', make: 'Ram', model: '1500', rank: 1, rating: 9.5, priceRange: '$44,820 - $91,595', fuelType: 'Gas', mpg: '20/25', subcategory: 'Full-Size Trucks', sourceUrl: 'https://www.motortrend.com/cars/ram/1500/2026' },
-  ],
-  Coupe: [
-    { year: '2026', make: 'Chevrolet', model: 'Corvette Stingray / Grand Sport', rank: 1, rating: 9.5, priceRange: '$72,495 - $86,645', fuelType: 'Gas', mpg: '16/25', subcategory: 'Premium Performance Coupes', sourceUrl: 'https://www.motortrend.com/cars/chevrolet/corvette/2026' },
-    { year: '2026', make: 'Ford', model: 'Mustang', rank: 1, rating: 9.5, priceRange: '$34,990 - $64,875', fuelType: 'Gas', mpg: '22/33', subcategory: 'Performance Coupes', sourceUrl: 'https://www.motortrend.com/cars/ford/mustang/2026' },
-    { year: '2026', make: 'BMW', model: '2-Series', rank: 1, rating: 9.2, priceRange: '$43,550 - $54,850', fuelType: 'Gas', mpg: '26/35', subcategory: 'Premium Sports Cars', sourceUrl: 'https://www.motortrend.com/cars/bmw/2-series/2026' },
-  ],
-  Hatchback: [
-    { year: '2026', make: 'Honda', model: 'Civic', rank: 1, rating: 9.3, priceRange: '$25,990 - $34,890', fuelType: 'Hybrid', subcategory: 'Compact Hatchbacks', sourceUrl: 'https://www.motortrend.com/cars/honda/civic-hybrid/2026' },
-    { year: '2026', make: 'Toyota', model: 'Corolla', rank: 1, rating: 8.5, priceRange: '$24,420 - $30,635', fuelType: 'Gas', mpg: '32/41', subcategory: 'Small Hatchbacks', sourceUrl: 'https://www.motortrend.com/cars/toyota/corolla/2026' },
-    { year: '2026', make: 'Kia', model: 'K4', rank: 1, rating: 9.5, priceRange: '$23,535 - $30,135', fuelType: 'Gas', mpg: '30/40', subcategory: 'Compact Hybrid Hatchbacks', sourceUrl: 'https://www.motortrend.com/cars/kia/k4/2026' },
-  ],
-  Convertible: [
-    { year: '2026', make: 'Porsche', model: '911', rank: 1, rating: 9.1, priceRange: '$137,850 - $247,650', fuelType: 'Gas', subcategory: 'Premium Performance Coupes', sourceUrl: 'https://www.motortrend.com/cars/porsche/911' },
-    { year: '2026', make: 'Ford', model: 'Mustang', rank: 1, rating: 9.5, priceRange: '$34,990 - $64,875', fuelType: 'Gas', mpg: '22/33', subcategory: 'Performance Coupes', sourceUrl: 'https://www.motortrend.com/cars/ford/mustang/2026' },
-    { year: '2026', make: 'Chevrolet', model: 'Corvette Stingray / Grand Sport', rank: 1, rating: 9.5, priceRange: '$72,495 - $86,645', fuelType: 'Gas', mpg: '16/25', subcategory: 'Premium Performance Coupes', sourceUrl: 'https://www.motortrend.com/cars/chevrolet/corvette/2026' },
-  ],
-  Wagon: [
-    { year: '2026', make: 'Porsche', model: 'Taycan', rank: 1, rating: 9.5, priceRange: '$108,050 - $245,950', fuelType: 'Electric', mpg: '94/92', subcategory: 'Performance Station Wagons', sourceUrl: 'https://www.motortrend.com/cars/porsche/taycan/2026' },
-    { year: '2026', make: 'Mercedes-Benz', model: 'E-Class', rank: 1, rating: 9.5, priceRange: '$65,150 - $76,850', fuelType: 'Gas', mpg: '22/31', subcategory: 'Luxury Station Wagons', sourceUrl: 'https://www.motortrend.com/cars/mercedes-benz/e-class/2026' },
-    { year: '2026', make: 'BMW', model: 'M5', rank: 1, rating: 9.2, priceRange: '$126,850 - $126,850', fuelType: 'Hybrid', subcategory: 'Hybrid Station Wagons', sourceUrl: 'https://www.motortrend.com/cars/bmw/m5' },
-  ],
+const categorySubcategoryFor = (vehicle: Vehicle, category: string) => {
+  const price = vehicle.priceMin;
+  const name = `${vehicle.make} ${vehicle.model}`.toLowerCase();
+  if (category === 'SUV') {
+    if (vehicle.fuelType === 'Electric') return 'Best Electric Compact SUVs';
+    if (vehicle.fuelType === 'Hybrid' || vehicle.fuelType === 'Plug-in Hybrid') return 'Best Compact Hybrid SUVs';
+    if (vehicle.seatingCapacity && vehicle.seatingCapacity >= 7) return 'Best 3-Row SUVs for Families';
+    if (price < 30000) return 'Best Subcompact SUVs';
+    if (price >= 60000) return 'Best Full-Size SUVs';
+    return 'Best Compact SUVs';
+  }
+  if (category === 'Sedan') {
+    if (vehicle.fuelType === 'Electric') return 'Best Electric Sedans';
+    if (vehicle.fuelType === 'Hybrid' || vehicle.fuelType === 'Plug-in Hybrid') return 'Best Midsize Sedans';
+    if (price < 30000) return 'Best Compact Sedans';
+    if (price >= 70000 || /g90|s-class|7 series|model s|eqe/.test(name)) return 'Best Full-Size Sedans';
+    return 'Best Midsize Sedans';
+  }
+  if (category === 'Truck') {
+    if (vehicle.fuelType === 'Electric') return 'Best Electric Trucks';
+    if (price < 35000) return 'Best Compact Trucks';
+    if (price < 55000) return 'Best Midsize Pickup Trucks';
+    return 'Best Full-Size Trucks';
+  }
+  if (category === 'Hatchback') return vehicle.fuelType === 'Hybrid' ? 'Best Compact Hybrid Hatchbacks' : price < 30000 ? 'Best Small Hatchbacks' : 'Best Compact Hatchbacks';
+  if (category === 'Convertible') return price >= 70000 ? 'Best Luxury Convertibles' : 'Best Performance Convertibles';
+  if (category === 'Wagon') return vehicle.fuelType === 'Hybrid' ? 'Best Hybrid Station Wagons' : price >= 50000 ? 'Best Luxury Station Wagons' : 'Best Performance Station Wagons';
+  return price >= 50000 ? 'Best Premium Performance Coupes' : 'Best Performance Coupes';
+};
+
+const sourcePathFor = (vehicle: Vehicle) => `/vehicles/${vehicle.year}/${vehicle.make}/${vehicle.model.replace(/\s+/g, '-')}`;
+
+// Rankings are sourced from the normalized vehicle catalog. Its image fields resolve
+// to Hearst/MotorTrend CDN photography, so every card uses the same real vehicle
+// record for its metadata, rating, price, and image.
+export const LIVE_RANKING_ENTRIES: Record<string, LiveRankingEntry[]> = Object.fromEntries(
+  BODY_STYLE_CONFIG.map(({ key }) => {
+    const entries = vehicleDatabase
+      .filter((vehicle) => vehicle.bodyStyle.toLowerCase() === key.toLowerCase())
+      .map((vehicle) => ({
+        year: vehicle.year,
+        make: vehicle.make,
+        model: vehicle.model,
+        rank: 0,
+        rating: vehicle.staffRating,
+        priceRange: vehicle.priceRange,
+        priceMin: vehicle.priceMin,
+        priceMax: vehicle.priceMax,
+        fuelType: vehicle.fuelType,
+        mpg: vehicle.mpg,
+        subcategory: categorySubcategoryFor(vehicle, key),
+        sourceUrl: sourcePathFor(vehicle),
+      }))
+      .sort((a, b) => b.rating - a.rating || a.priceMin - b.priceMin)
+      .map((entry, _index, all) => ({
+        ...entry,
+        rank: all.filter((candidate) => candidate.subcategory === entry.subcategory && candidate.rating > entry.rating).length + 1,
+      }));
+    return [key, entries];
+  }),
+) as Record<string, LiveRankingEntry[]>;
+
+export const rankingEntriesForSubcategory = (entries: LiveRankingEntry[], label: string) => {
+  const normalized = label.toLowerCase();
+  if (normalized.startsWith('#1 ranked') || normalized === 'all subcategories') return entries;
+  let filtered = entries;
+  if (normalized.includes('electric')) filtered = filtered.filter((entry) => entry.fuelType === 'Electric');
+  else if (normalized.includes('hybrid')) filtered = filtered.filter((entry) => entry.fuelType === 'Hybrid' || entry.fuelType === 'Plug-in Hybrid');
+  else if (normalized.includes('under-') || normalized.includes('under $')) {
+    const threshold = Number(normalized.match(/(?:under[- ]?\$?)(\d+)/)?.[1] ?? 0) * 1000;
+    filtered = filtered.filter((entry) => entry.priceMin < threshold);
+  } else if (normalized.includes('over-') || normalized.includes('over $')) {
+    const threshold = Number(normalized.match(/(?:over[- ]?\$?)(\d+)/)?.[1] ?? 70) * 1000;
+    filtered = filtered.filter((entry) => entry.priceMin >= threshold);
+  } else if (normalized.includes('safest') || normalized.includes('family') || normalized.includes('3-row') || normalized.includes('7-seater') || normalized.includes('8-seater')) {
+    filtered = filtered.filter((entry) => entry.subcategory.includes('3-Row') || entry.subcategory.includes('Full-Size'));
+  } else if (normalized.includes('performance') || normalized.includes('sports')) {
+    filtered = filtered.filter((entry) => entry.rating >= 8.5);
+  } else if (normalized.includes('luxury') || normalized.includes('premium')) {
+    filtered = filtered.filter((entry) => entry.priceMin >= 50000);
+  } else if (normalized.includes('compact') || normalized.includes('small') || normalized.includes('subcompact')) {
+    filtered = filtered.filter((entry) => entry.priceMin < 40000);
+  } else if (normalized.includes('midsize')) {
+    filtered = filtered.filter((entry) => entry.priceMin >= 30000 && entry.priceMin < 70000);
+  } else if (normalized.includes('full-size')) {
+    filtered = filtered.filter((entry) => entry.priceMin >= 60000);
+  }
+  return (filtered.length ? filtered : entries).sort((a, b) => b.rating - a.rating || a.priceMin - b.priceMin);
 };
 
 const formatMoney = (value: number) => `$${value.toLocaleString()}`;
@@ -370,6 +422,53 @@ const makeRankedVehicle = (entry: LiveRankingEntry, bodyStyle: string): RankedVe
   };
 };
 
+const featuredEntriesForCategory = (category: string, entries: LiveRankingEntry[], fallbackEntries: LiveRankingEntry[]) => {
+  const categoryLabels = (CATEGORY_SUBCATEGORIES[category] ?? []).map(([label]) => label);
+  const configuredSubcategories = categoryLabels
+    .filter((label) => !label.startsWith('#1 Ranked'))
+    .slice(0, 3);
+  const topRankedLabel = categoryLabels.find((label) => label.startsWith('#1 Ranked'));
+  if (configuredSubcategories.length < 3 && topRankedLabel) configuredSubcategories.push(topRankedLabel);
+  const selectedSubcategories = new Set<string>();
+  const selectedVehicles = new Set<string>();
+  const pool = [...entries, ...fallbackEntries];
+  const configuredEntries = configuredSubcategories.map((label) => {
+    const exactLabel = label.toLowerCase();
+    const exactEntry = pool.find((entry) => entry.subcategory.toLowerCase() === exactLabel);
+    const semanticEntry = pool.find((entry) => {
+      if (selectedSubcategories.has(entry.subcategory)) return false;
+      const subcategory = entry.subcategory.toLowerCase();
+      if (exactLabel.includes('subcompact')) return subcategory.includes('subcompact');
+      if (exactLabel.includes('compact')) return subcategory.includes('compact') && !subcategory.includes('subcompact');
+      if (exactLabel.includes('midsize')) return subcategory.includes('midsize');
+      if (exactLabel.includes('full-size')) return subcategory.includes('full-size');
+      return false;
+    });
+    const priceFallback = pool.find((entry) => {
+      if (selectedSubcategories.has(entry.subcategory) || entry.fuelType === 'Electric' || entry.fuelType === 'Hybrid' || entry.fuelType === 'Plug-in Hybrid') return false;
+      if (exactLabel.includes('subcompact')) return entry.priceMin < 30000;
+      if (exactLabel.includes('compact')) return entry.priceMin >= 30000 && entry.priceMin < 50000;
+      if (exactLabel.includes('midsize')) return entry.priceMin >= 35000 && entry.priceMin < 70000;
+      return false;
+    });
+    const entry = exactEntry
+      ?? semanticEntry
+      ?? priceFallback
+      // Some body styles have fewer catalog records than editorial
+      // subcategories; keep the three-column overview populated with a
+      // distinct real vehicle rather than dropping the column.
+      ?? pool.find((candidate) => !selectedVehicles.has(candidate.sourceUrl));
+    if (!entry) return null;
+    selectedSubcategories.add(entry.subcategory);
+    selectedVehicles.add(entry.sourceUrl);
+    // The overview represents the first-ranked vehicle for the requested
+    // category, even when the catalog only has a price-based fallback.
+    return { ...entry, subcategory: label, rank: 1 };
+  }).filter((entry): entry is LiveRankingEntry => Boolean(entry));
+
+  return configuredEntries.slice(0, 3);
+};
+
 const getBodyStyleRows = (selectedYear: string): BodyStyleRow[] => (
   BODY_STYLE_CONFIG
     .map((config) => {
@@ -378,12 +477,17 @@ const getBodyStyleRows = (selectedYear: string): BodyStyleRow[] => (
         .filter((vehicle) => vehicle.year === selectedYear)
         .sort((a, b) => b.staffRating - a.staffRating);
 
-      const liveEntries = LIVE_RANKING_ENTRIES[config.key]?.filter((entry) => entry.year === selectedYear) ?? [];
+      const allLiveEntries = LIVE_RANKING_ENTRIES[config.key] ?? [];
+      const yearEntries = allLiveEntries.filter((entry) => entry.year === selectedYear);
+      // Keep every category populated when the selected model year is not yet
+      // represented in the catalog; the fallback remains real catalog data.
+      const sourceEntries = yearEntries.length ? yearEntries : allLiveEntries;
+      const featuredEntries = featuredEntriesForCategory(config.key, sourceEntries, allLiveEntries);
 
       return {
         ...config,
-        count: vehicles.length,
-        vehicles: liveEntries.map((entry) => makeRankedVehicle(entry, config.key)),
+        count: vehicles.length || sourceEntries.length,
+        vehicles: featuredEntries.slice(0, 3).map((entry) => makeRankedVehicle(entry, config.key)),
       };
     })
     .filter((row) => row.vehicles.length > 0)
@@ -504,7 +608,7 @@ const RankingsAndAwards: React.FC = () => {
                 <article className="rankings-awards__vehicle-card" key={`${row.key}-${vehicle.subcategory}-${vehicle.sourceUrl}`}>
                   <a className="rankings-awards__vehicle-card-link" href={vehiclePath(vehicle)} target="_blank" rel="noreferrer">
                     <div className="rankings-awards__vehicle-card-title">
-                      Best {vehicle.subcategory}
+                      {vehicle.subcategory.startsWith('Best ') ? vehicle.subcategory : `Best ${vehicle.subcategory}`}
                     </div>
                     <div className="rankings-awards__vehicle-media">
                       <img src={vehicle.image} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} loading="lazy" />

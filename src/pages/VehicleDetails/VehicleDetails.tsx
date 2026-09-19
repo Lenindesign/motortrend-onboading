@@ -5,6 +5,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { CaretDown, Chat, CheckSquare, Square } from '@phosphor-icons/react';
 import Icon from '../../components/Icon';
 import { UserReviews } from '../../components/UserReviews';
 import { AIInsights } from '../../components/AIInsights';
@@ -42,6 +43,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import './VehicleDetails.css';
 
 const MT_BRAND_ICON = '/images/mt-brand-icon.svg';
+const MT_BRAND_ICON_WHITE = 'https://www-stage.motortrend.com/_assets/design-tokens/motortrend/static/images/favicon.95f5755.ico';
 
 export const VehicleDetails: React.FC = () => {
   const { year, make, model } = useParams<{ year: string; make: string; model: string }>();
@@ -52,6 +54,7 @@ export const VehicleDetails: React.FC = () => {
   const decodedModel = decodeURIComponent(model || '3-Series');
   const [selectedYear, setSelectedYear] = useState<string>(decodedYear);
   const [isSaved, setIsSaved] = useState(false);
+  const [isCompared, setIsCompared] = useState(false);
   const [vehicleRelationship, setVehicleRelationship] = useState<'own' | 'want' | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
@@ -1230,7 +1233,7 @@ export const VehicleDetails: React.FC = () => {
       type: 'motortrend',
       value: parseFloat(formatScore(vehicleData.staffRating)), // Pass as number 0-10
       onClick: handleScrollToStaffRating,
-      iconSrc: MT_BRAND_ICON,
+      iconSrc: MT_BRAND_ICON_WHITE,
       iconAlt: 'MT',
       format: 'vehicle-details'
     },
@@ -1367,7 +1370,7 @@ export const VehicleDetails: React.FC = () => {
                     <span className="vehicle-details__prime-rating-label-bottom">Rating</span>
                   </div>
                   <img
-                    src={MT_BRAND_ICON}
+                    src={MT_BRAND_ICON_WHITE}
                     alt="MotorTrend"
                     className="vehicle-details__prime-rating-icon vehicle-details__prime-rating-icon--mt"
                   />
@@ -1432,18 +1435,6 @@ export const VehicleDetails: React.FC = () => {
                 <span>{vehicleData.year}</span>
               </div>
               <div className="vehicle-details__top-section-utilities">
-                <div className="vehicle-details__top-actions">
-                  <a
-                    className="vehicle-details__comments-link"
-                    href="#community-ratings"
-                    onClick={handleCommentsLinkClick}
-                    aria-label={`Jump to ${vehicleCommentCount} vehicle comments`}
-                  >
-                    <Icon name="forum" size={18} />
-                    <span>Comments</span>
-                    <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
-                  </a>
-                </div>
                 <div className="vehicle-details__ymm-controls">
                   <label className="vehicle-details__year-dropdown">
                     <select
@@ -1455,21 +1446,33 @@ export const VehicleDetails: React.FC = () => {
                         <option key={availableYear} value={availableYear}>{availableYear}</option>
                       ))}
                     </select>
-                    <Icon name="keyboard_arrow_down" size={20} />
+                    <CaretDown size={20} weight="bold" aria-hidden="true" />
                   </label>
                   <div className="vehicle-details__ymm-actions">
+                    <a
+                      className="vehicle-details__comments-link"
+                      href="#community-ratings"
+                      onClick={handleCommentsLinkClick}
+                      aria-label={`Jump to ${vehicleCommentCount} vehicle comments`}
+                    >
+                      <Chat size={20} weight="regular" aria-hidden="true" />
+                      <span>Comments</span>
+                      <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
+                    </a>
                     <label className="vehicle-details__compare-control">
-                      <input type="checkbox" aria-label="Compare vehicle" />
+                      <input
+                        type="checkbox"
+                        checked={isCompared}
+                        onChange={(event) => setIsCompared(event.target.checked)}
+                        aria-label="Compare vehicle"
+                      />
+                      {isCompared ? (
+                        <CheckSquare className="vehicle-details__utility-icon" size={20} weight="regular" aria-hidden="true" />
+                      ) : (
+                        <Square className="vehicle-details__utility-icon" size={20} weight="regular" aria-hidden="true" />
+                      )}
                       <span>Compare</span>
                     </label>
-                    <button
-                      type="button"
-                      className="vehicle-details__save-btn vehicle-details__save-btn--ymm"
-                      onClick={handleSave}
-                    >
-                      <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={18} />
-                      <span>{isSaved ? 'Saved' : 'Save'}</span>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -1879,7 +1882,7 @@ export const VehicleDetails: React.FC = () => {
                         <span className="vehicle-details__reviewer-name">Zach Gale</span>
                         <div className="vehicle-details__reviewer-badge--with-tooltip">
                           <img
-                            src={MT_BRAND_ICON}
+                            src={MT_BRAND_ICON_WHITE}
                             alt="MT badge"
                             className="vehicle-details__reviewer-badge"
                             width={16}

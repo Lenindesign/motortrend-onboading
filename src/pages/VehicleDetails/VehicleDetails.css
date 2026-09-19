@@ -445,6 +445,7 @@
   min-height: 24px;
   max-width: 24px;
   max-height: 24px;
+  border-radius: 2px;
 }
 
 /* MT logo smaller than blue stars in prime template */
@@ -606,12 +607,12 @@
   border-radius: var(--border-radius-md);
   color: var(--color-neutrals-2);
   cursor: pointer;
-  padding: 0 16px;
+  padding: 0 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 48px;
+  min-height: 40px;
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
@@ -665,7 +666,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 48px;
+  min-height: 40px;
   padding: 0 12px;
   background: var(--color-white);
   border: 1px solid var(--color-neutrals-6);
@@ -709,7 +710,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  min-height: 48px;
+  min-height: 40px;
   padding: 0 12px;
   border: 1px solid var(--color-neutrals-6);
   border-radius: var(--border-radius-md);
@@ -734,16 +735,27 @@
 }
 
 .vehicle-details__compare-control input {
-  width: 24px;
-  height: 24px;
-  margin: 0;
-  accent-color: var(--color-primary-1);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.vehicle-details__utility-icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .vehicle-details__save-btn--ymm {
-  min-height: 48px;
-  min-width: 108px;
-  padding: 0 20px;
+  min-height: 40px;
+  min-width: 100px;
+  padding: 0 16px;
   justify-content: center;
   background: var(--color-primary-2, #ff3b42);
   border-radius: var(--border-radius-md);
@@ -1449,12 +1461,16 @@
 }
 
 .vehicle-details__save-btn.vehicle-details__save-btn--ymm {
-  background-color: #e90c17;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-neutrals-6);
+  color: var(--color-neutrals-2);
 }
 
 .vehicle-details__save-btn.vehicle-details__save-btn--ymm:hover,
 .vehicle-details__save-btn.vehicle-details__save-btn--ymm.saved {
-  background-color: #c70812;
+  background-color: var(--color-neutrals-2);
+  border-color: var(--color-neutrals-2);
+  color: var(--color-white);
 }
 
 .vehicle-details__play-btn {

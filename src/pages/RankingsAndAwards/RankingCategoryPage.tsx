@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import vehicleDatabase from '../../data/vehicles';
 import { vehicleImageFor } from '../../utils/vehicleImages';
-import { CATEGORY_SUBCATEGORIES, LIVE_RANKING_ENTRIES, RankingCategoryIcon, RANKINGS_NAV_ITEMS } from './RankingsAndAwards';
+import { CATEGORY_SUBCATEGORIES, LIVE_RANKING_ENTRIES, RankingCategoryIcon, RANKINGS_NAV_ITEMS, rankingEntriesForSubcategory } from './RankingsAndAwards';
 import './RankingCategoryPage.css';
 import './RankingsAndAwards.css';
 
@@ -237,10 +237,7 @@ const RankingCategoryPage: React.FC = () => {
                 <p>Explore MotorTrend&apos;s {label.toLowerCase()} rankings, expert testing, and buying advice.</p>
                 <div className="ranking-category-page__subcategory-section-layout">
                   <div className="ranking-category-page__subcategory-section-cards">
-                    {(label === 'All Subcategories' || label.startsWith('#1 Ranked')
-                      ? entries.slice(0, 3)
-                      : entries.filter((entry) => label.toLowerCase().replace('crossovers', 'suvs').includes(entry.subcategory.toLowerCase().split(' ')[0]) || entry.subcategory.toLowerCase().includes(label.toLowerCase().replace('crossovers', 'suvs').replace('best ', '').replace('sedans', '').trim()))
-                    ).map(renderRankingCard)}
+                    {rankingEntriesForSubcategory(entries, label).slice(0, 3).map(renderRankingCard)}
                   </div>
                   <aside className="ranking-category-page__subcategory-section-ad" aria-label="Advertisement">
                     <span>Advertisement</span>
