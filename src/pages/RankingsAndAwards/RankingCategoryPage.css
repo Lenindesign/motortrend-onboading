@@ -840,6 +840,8 @@ html {
 .ranking-category-page__card-description a {
   color: var(--color-neutrals-2, #252833);
   font-weight: var(--font-weight-semibold, 600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .ranking-category-page__sr-only {
