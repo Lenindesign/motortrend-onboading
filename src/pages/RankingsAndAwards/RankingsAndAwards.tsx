@@ -14,6 +14,8 @@ import type { Vehicle } from '../../types/vehicle';
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import './RankingsAndAwards.css';
 
+const rankingSubcategorySlug = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
 type BodyStyleConfig = {
   key: string;
   title: string;
@@ -478,9 +480,13 @@ const RankingsAndAwards: React.FC = () => {
               {openSubcategory === row.key && (
                 <div className="rankings-awards__subcategory-list" role="menu" aria-label={`${row.title} subcategories`}>
                   {(CATEGORY_SUBCATEGORIES[row.key] ?? []).map(([label, href]) => (
-                    <a key={href} href={href} target="_blank" rel="noreferrer" role="menuitem">
+                    <Link
+                      key={href}
+                      to={`/rankings-awards/${row.key.toLowerCase()}/${rankingSubcategorySlug(label)}`}
+                      role="menuitem"
+                    >
                       {label}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}
