@@ -37,7 +37,6 @@ import { WhatIsMyCarWorth } from '../../components/WhatIsMyCarWorth';
 import { UserRatingsReviews } from '../../components/UserRatingsReviews';
 import { PersonalizedVehicles, getViewedVehicles } from '../../components/PersonalizedVehicles';
 import { TrendingStories } from '../../components/TrendingStories';
-import { PollOfTheDay } from '../../components/PollOfTheDay/PollOfTheDay';
 import { DynamicHomeRenderer } from '../../components/DynamicHomeRenderer';
 import './Home.css';
 import { readMotorTrendFeedItems } from '../../services/motortrendFeedService';
@@ -1996,7 +1995,6 @@ export const Home: React.FC = () => {
                 hero={resolvedHeroData}
                 cards={sortedVerticalCards}
               />
-              <PollOfTheDay />
             </div>
             <div className="home__right-column">
               <AdContainer

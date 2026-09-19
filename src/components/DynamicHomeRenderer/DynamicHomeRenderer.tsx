@@ -19,7 +19,6 @@ import { UserRatingsReviews } from '../UserRatingsReviews';
 import { PersonalizedVehicles, getViewedVehicles } from '../PersonalizedVehicles';
 import { TrendingStories } from '../TrendingStories';
 import { AdContainer } from '../AdContainer';
-import { PollOfTheDay } from '../PollOfTheDay/PollOfTheDay';
 import { articles } from '../../utils/articles';
 import type { RiverItem } from '../River';
 import { readMotorTrendFeedItems } from '../../services/motortrendFeedService';
@@ -228,7 +227,6 @@ const DynamicSection: React.FC<DynamicSectionProps> = ({
     <div key={`section-${index}`} className="home__section">
       <div className="home__left-column">
         <Component {...finalProps} />
-        {section.componentId === 'HeroPlusThree' && <PollOfTheDay />}
       </div>
       {showAd && (
         <div className="home__right-column">
