@@ -327,7 +327,7 @@
 }
 
 .rankings-awards__body-row h2 {
-  margin: 0;
+  margin: 0 0 var(--spacing-1, 8px);
   color: var(--color-neutrals-1, #141416);
   font-family: var(--font-heading, Poppins, sans-serif);
   font-size: var(--font-size-lg, 24px);
@@ -398,27 +398,8 @@
 }
 
 .rankings-awards__body-row-cta {
-  display: inline-flex;
-  min-height: 36px;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-1, 8px);
   margin-top: var(--spacing-3, 24px);
-  padding: var(--spacing-1, 8px) var(--spacing-2, 16px);
-  border: 1px solid var(--color-neutrals-1, #141416);
-  border-radius: var(--border-radius-sm, 4px);
-  background: var(--color-neutrals-1, #141416);
-  color: var(--color-white, #FFFFFF);
-  font-size: var(--font-size-sm, 14px);
-  font-weight: var(--font-weight-semibold, 600);
-  line-height: 1;
-  text-decoration: none;
-}
-
-.rankings-awards__body-row-cta:hover {
-  border-color: var(--color-primary-1, #E90C17);
-  background: var(--color-primary-1, #E90C17);
-  color: var(--color-white, #FFFFFF);
+  align-self: flex-start;
 }
 
 .rankings-awards__cards {

@@ -191,7 +191,7 @@ const navigationItems = [
         ]
       },
       middleColumn: {
-        logo: 'https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg',
+        logo: '/images/mt-brand-icon.svg',
         description: 'Find your new ride on MotorTrend\'s Collection of New and Used Cars.',
       },
       rightColumn: {
@@ -338,6 +338,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   };
   const [userData, setUserData] = useState<{
     name: string;
+    email?: string;
     avatar?: string;
   } | null>(null);
   const [notificationCount, setNotificationCount] = useState(0);
@@ -484,6 +485,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           console.log('GlobalHeader: Loading user data from localStorage:', data);
           setUserData({
             name: data.name || 'User',
+            email: data.email,
             avatar: data.avatar
           });
         } else {
@@ -573,6 +575,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           setUserData(prev => {
             const newData = {
               name: data.name || prev?.name || 'User',
+              email: data.email || prev?.email,
               avatar: data.avatar
             };
             console.log('GlobalHeader: Setting user data to:', newData);
@@ -596,6 +599,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
           setUserData(prev => {
             const newData = {
               name: data.name || prev?.name || 'User',
+              email: data.email || prev?.email,
               avatar: data.avatar
             };
             console.log('GlobalHeader: Setting user data from storage to:', newData);
@@ -617,10 +621,11 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         if (onboardingData) {
           const data = JSON.parse(onboardingData);
           setUserData(prev => {
-            if (prev?.name !== data.name || prev?.avatar !== data.avatar) {
-              console.log('GlobalHeader: Periodic check - data changed from', prev, 'to', { name: data.name, avatar: data.avatar });
+            if (prev?.name !== data.name || prev?.email !== data.email || prev?.avatar !== data.avatar) {
+              console.log('GlobalHeader: Periodic check - data changed from', prev, 'to', { name: data.name, email: data.email, avatar: data.avatar });
               return {
                 name: data.name || 'User',
+                email: data.email,
                 avatar: data.avatar
               };
             }
@@ -1828,7 +1833,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           View All →
                         </span>
                         <img
-                          src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                          src="/images/mt-brand-icon.svg"
                           alt="MotorTrend Marketplace"
                           style={{ height: '16px', width: 'auto' }}
                         />
@@ -2124,7 +2129,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                             View All →
                           </span>
                           <img
-                            src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                            src="/images/mt-brand-icon.svg"
                             alt="MotorTrend Marketplace"
                             style={{ height: '16px', width: 'auto' }}
                           />
@@ -2409,7 +2414,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           View All →
                         </span>
                         <img
-                          src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                          src="/images/mt-brand-icon.svg"
                           alt="MotorTrend Marketplace"
                           style={{ height: '16px', width: 'auto' }}
                         />
@@ -2741,7 +2746,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               View All →
                             </span>
                             <img
-                              src="https://www.motortrend.com/files/692ca3b608d7da000211b79d/marketplace-logo-motortrend-v31.svg"
+                              src="/images/mt-brand-icon.svg"
                               alt="MotorTrend Marketplace"
                               style={{ height: '16px', width: 'auto' }}
                             />
@@ -3127,7 +3132,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     </div>
                     <div style={userDetailsStyle}>
                       <div style={userNameStyle}>{userData?.name || 'User'}</div>
-                      <div style={userEmailStyle}>user@example.com</div>
+                      <div style={userEmailStyle}>{userData?.email || 'No email available'}</div>
                     </div>
                   </div>
                   <div style={dropdownDividerStyle}></div>
@@ -3167,6 +3172,18 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     <Icon name="newspaper" size={16} style={{ color: hoveredUserDropdownItem === 'subscriptions' ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-4, #6E7481)', flexShrink: 0, transition: 'color var(--transition-fast, 150ms ease-in-out)' }} />
                     Subscriptions
                   </button>
+                  <button
+                    style={getDropdownItemStyle('notifications')}
+                    onMouseEnter={() => setHoveredUserDropdownItem('notifications')}
+                    onMouseLeave={() => setHoveredUserDropdownItem(null)}
+                    onClick={() => {
+                      navigate('/my-account/notifications');
+                      setShowUserDropdown(false);
+                    }}
+                  >
+                    <Icon name="notifications" size={16} style={{ color: hoveredUserDropdownItem === 'notifications' ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-4, #6E7481)', flexShrink: 0, transition: 'color var(--transition-fast, 150ms ease-in-out)' }} />
+                    Notifications
+                  </button>
                   <div style={dropdownDividerStyle}></div>
                   <button
                     style={getDropdownItemStyle('signout', true)}
@@ -3197,7 +3214,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         <nav style={{
           display: isMobile ? 'none' : 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           gap: 'var(--spacing-4, 32px)',
           padding: isLargeScreen ? '12px 0' : '12px 0',
           borderTop: '1px solid rgba(255, 255, 255, 0.1)',
@@ -3348,6 +3365,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               };
 
               const megaDropdownContentStyle: React.CSSProperties = {
+                width: '100%',
                 maxWidth: '1280px',
                 margin: '0 auto',
                 display: 'flex',
@@ -3355,6 +3373,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                 padding: '32px 0',
                 paddingLeft: contentLeft !== null ? `${contentLeft}px` : '80px',
                 paddingRight: !isLargeScreen ? '16px' : undefined,
+                boxSizing: 'border-box',
                 gap: 0,
                 position: 'relative'
               };
@@ -3400,7 +3419,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                     <div style={megaDropdownContentStyle}>
                       {(item as any).megaDropdown.type === 'news' ? (
                         <>
-                          <div style={{ flex: '0 0 auto', padding: '0 48px', paddingLeft: 0 }}>
+                          <div style={{ flex: '0 1 auto', minWidth: 0, padding: '0 32px', paddingLeft: 0 }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                               <Link
                                 to={(item as any).megaDropdown.newsCategories.allNews.href}
@@ -3429,7 +3448,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                                   <Icon name="chevron_right" size={21} style={{ color: 'var(--color-neutrals-6, #E6E8EC)', flexShrink: 0, marginLeft: '4px' }} />
                                 )}
                               </Link>
-                              <div style={{ display: 'flex', gap: '48px', marginTop: 0 }}>
+                              <div style={{ display: 'flex', gap: '32px', marginTop: 0 }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                   {(item as any).megaDropdown.newsCategories.leftColumn.map((category: any) => (
                                     <Link
@@ -3488,7 +3507,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                             </div>
                           </div>
                           <div style={{ width: '1px', height: 'auto', minHeight: '120px', backgroundColor: 'var(--color-neutrals-3, #353945)', flexShrink: 0, alignSelf: 'stretch' }}></div>
-                          <div style={{ flex: '0 0 auto', padding: '0 48px' }}>
+                          <div style={{ flex: '0 1 190px', minWidth: 0, padding: '0 32px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                               {(item as any).megaDropdown.storiesCategories.map((category: any, catIdx: number) => (
                                 <Link
@@ -3521,24 +3540,24 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                               ))}
                             </div>
                           </div>
-                          <div style={{ flex: 1, padding: '0 48px 0 48px', maxWidth: '500px', marginLeft: 'auto' }}>
+                          <div style={{ flex: '1 1 0', minWidth: 0, padding: '0 0 0 32px', maxWidth: '420px', marginLeft: 'auto' }}>
                             <Link
                               to={(item as any).megaDropdown.featuredContent.href}
-                              style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', textDecoration: 'none', color: 'inherit' }}
+                              style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', minWidth: 0, textDecoration: 'none', color: 'inherit' }}
                               onClick={() => setActiveDropdown(null)}
                             >
-                              <div style={{ flexShrink: 0, width: '200px', height: '120px', borderRadius: 'var(--border-radius-md, 8px)', overflow: 'hidden' }}>
+                              <div style={{ flex: '0 1 200px', minWidth: '140px', height: '120px', borderRadius: 'var(--border-radius-md, 8px)', overflow: 'hidden' }}>
                                 <img
                                   src={(item as any).megaDropdown.featuredContent.image}
                                   alt={(item as any).megaDropdown.featuredContent.title}
                                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 />
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', flex: 1 }}>
+                              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', flex: '1 1 0', minWidth: 0 }}>
                                 <div style={{ fontFamily: "'Geist', var(--font-body, sans-serif)", fontWeight: 400, fontSize: '14px', lineHeight: '18px', color: 'var(--color-white, #FFFFFF)', marginBottom: '8px' }}>
                                   {(item as any).megaDropdown.featuredContent.badge}
                                 </div>
-                                <div style={{ fontFamily: "'Poppins', var(--font-heading, sans-serif)", fontWeight: 600, fontSize: '18px', lineHeight: '24px', color: 'var(--color-neutrals-7, #F4F5F6)', margin: 0 }}>
+                                <div style={{ fontFamily: "'Poppins', var(--font-heading, sans-serif)", fontWeight: 600, fontSize: '18px', lineHeight: '24px', color: 'var(--color-neutrals-7, #F4F5F6)', margin: 0, overflowWrap: 'anywhere' }}>
                                   {(item as any).megaDropdown.featuredContent.title}
                                 </div>
                               </div>
@@ -3780,7 +3799,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                       ) : (item as any).megaDropdown.type === 'rankings' ? (
                         <>
                           {/* Left Column: Rankings Grid */}
-                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', paddingRight: '48px' }}>
+                          <div style={{ flex: '1 1 0', minWidth: 0, display: 'flex', flexDirection: 'column', paddingRight: '48px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                               <Link
                                 to="/rankings"
@@ -3844,7 +3863,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                           <div style={{ width: '1px', height: 'auto', minHeight: '120px', backgroundColor: 'var(--color-neutrals-3, #353945)', flexShrink: 0, alignSelf: 'stretch' }}></div>
 
                           {/* Right Column: Awards */}
-                          <div style={{ flex: '0 0 550px', display: 'flex', flexDirection: 'column', paddingLeft: '48px', paddingRight: 0 }}>
+                          <div style={{ flex: '1 1 0', minWidth: 0, maxWidth: '550px', display: 'flex', flexDirection: 'column', paddingLeft: '48px', paddingRight: 0 }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                               <Link
                                 to="/awards"
@@ -4113,45 +4132,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             }
             return null;
           })}
-
-          {/* Our Brands Dropdown */}
-          <div style={{ position: 'relative', marginLeft: 'auto', display: isMobile ? 'none' : 'block' }} ref={brandsRef}>
-            <select
-              style={{
-                fontFamily: "'Geist', var(--font-body, sans-serif)",
-                fontWeight: 400,
-                fontSize: '16px',
-                lineHeight: '24px',
-                letterSpacing: '-0.16px',
-                color: 'var(--color-neutrals-6, #E6E8EC)',
-                backgroundColor: 'transparent',
-                border: 'none',
-                borderRadius: 0,
-                padding: 0,
-                paddingRight: '20px',
-                cursor: 'pointer',
-                outline: 'none',
-                transition: 'all var(--transition-fast, 150ms ease-in-out)',
-                appearance: 'none',
-                backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23E8E8E8' stroke-width='1.33' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")",
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 0 center',
-                minWidth: '113px'
-              }}
-              onChange={(e) => {
-                if (e.target.value) {
-                  window.open(e.target.value, '_blank');
-                }
-              }}
-              defaultValue=""
-            >
-              <option value="" disabled style={{ backgroundColor: 'var(--color-neutrals-1, #141416)', color: 'var(--color-neutrals-6, #E6E8EC)' }}>Our Brands</option>
-              <option value="https://www.motortrend.com" style={{ backgroundColor: 'var(--color-neutrals-1, #141416)', color: 'var(--color-neutrals-6, #E6E8EC)' }}>MotorTrend</option>
-              <option value="https://www.hotrod.com" style={{ backgroundColor: 'var(--color-neutrals-1, #141416)', color: 'var(--color-neutrals-6, #E6E8EC)' }}>Hot Rod</option>
-              <option value="https://www.automobilemag.com" style={{ backgroundColor: 'var(--color-neutrals-1, #141416)', color: 'var(--color-neutrals-6, #E6E8EC)' }}>Automobile</option>
-              <option value="https://www.trucktrend.com" style={{ backgroundColor: 'var(--color-neutrals-1, #141416)', color: 'var(--color-neutrals-6, #E6E8EC)' }}>Truck Trend</option>
-            </select>
-          </div>
 
           {/* Global Active/Hover Indicator */}
           <div

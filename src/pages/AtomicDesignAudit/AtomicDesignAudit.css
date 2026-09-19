@@ -142,7 +142,7 @@
   color: var(--color-neutrals-5);
 }
 
-.audit-sidebar__search .material-icons {
+.audit-sidebar__search svg {
   color: var(--color-neutrals-5);
   flex-shrink: 0;
 }
@@ -692,7 +692,7 @@ h2.audit-section__title,
   color: var(--color-neutrals-4);
 }
 
-.audit-timeline-item__metric .material-icons {
+.audit-timeline-item__metric svg {
   color: var(--color-semantic-success);
 }
 

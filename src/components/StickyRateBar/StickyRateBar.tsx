@@ -168,8 +168,9 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     display: 'flex',
     flexDirection: 'column',
     gap: isMobile ? '4px' : (isSticky ? '8px' : '16px'),
-    flexShrink: isMobile ? 1 : 0,
-    minWidth: isMobile ? 0 : undefined,
+    flexShrink: 1,
+    minWidth: 0,
+    maxWidth: isMobile ? '100%' : 'min(50vw, 620px)',
     flex: isMobile ? '1 1 0' : undefined,
     transition: 'gap var(--transition-normal, 250ms ease-in-out)',
   };
@@ -204,11 +205,15 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const vehicleNameStyle: React.CSSProperties = {
     fontFamily: 'var(--font-heading, Poppins, sans-serif)',
     fontWeight: 700,
-    fontSize: isMobile ? '24px' : (isSticky ? '24px' : '36px'),
+    fontSize: isMobile
+      ? 'clamp(18px, 5vw, 24px)'
+      : (isSticky ? 'clamp(18px, 2vw, 24px)' : 'clamp(24px, 3vw, 36px)'),
     lineHeight: '1.2em',
     color: 'var(--color-white, #FFFFFF)',
     whiteSpace: isMobile ? 'normal' : 'nowrap',
-    flexShrink: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    flexShrink: 1,
     textDecoration: 'none',
     transition: 'font-size var(--transition-normal, 250ms ease-in-out), opacity var(--transition-fast, all 150ms ease-in-out)',
     opacity: isVehicleNameHovered ? 0.8 : 1,
@@ -217,7 +222,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   const ratingsStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: isMobile ? '8px' : 'var(--spacing-4, 32px)',
+    gap: isMobile ? '8px' : '16px',
     flexShrink: 0,
     justifyContent: 'flex-end',
     flexWrap: 'nowrap',
@@ -261,7 +266,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
     width: '1px',
     height: isMobile ? '24px' : '40px',
     backgroundColor: 'var(--color-neutrals-4, #6E7481)',
-    margin: isMobile ? '0 4px' : '0 var(--spacing-3, 24px)',
+    margin: isMobile ? '0 4px' : '0 12px',
     flexShrink: 0,
   };
 

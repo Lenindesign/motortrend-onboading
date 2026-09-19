@@ -649,7 +649,7 @@
   color: var(--color-primary-1, #E90C17);
 }
 
-.journey-builder__canvas-drop-zone--active .material-symbols-outlined {
+.journey-builder__canvas-drop-zone--active svg {
   color: var(--color-primary-1, #E90C17);
 }
 
@@ -1128,7 +1128,7 @@
   color: var(--color-neutrals-8, #FCFCFD);
 }
 
-.journey-builder__preview-modal-title > .material-symbols-outlined {
+.journey-builder__preview-modal-title > svg {
   color: var(--color-primary-1, #E90C17);
 }
 
@@ -1310,4 +1310,3 @@
     flex: 1;
   }
 }
-

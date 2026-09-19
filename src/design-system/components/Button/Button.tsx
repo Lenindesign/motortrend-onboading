@@ -17,6 +17,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   fullWidth?: boolean;
+  component?: React.ElementType;
+  to?: string;
   children: React.ReactNode;
 }
 
@@ -128,6 +130,7 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   iconPosition = 'left',
   fullWidth = false,
+  component,
   children,
   className = '',
   disabled = false,
@@ -207,8 +210,10 @@ export const Button: React.FC<ButtonProps> = ({
     alignItems: 'center',
   };
 
+  const Component = component || 'button';
+
   return (
-    <button 
+    <Component
       className={className}
       style={{ ...baseStyle, ...style }}
       disabled={disabled}
@@ -219,7 +224,7 @@ export const Button: React.FC<ButtonProps> = ({
       {icon && iconPosition === 'left' && <span style={iconStyle}>{icon}</span>}
       <span style={labelStyle}>{children}</span>
       {icon && iconPosition === 'right' && <span style={iconStyle}>{icon}</span>}
-    </button>
+    </Component>
   );
 };
 

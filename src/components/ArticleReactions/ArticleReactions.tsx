@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ThumbsUp } from 'lucide-react';
+import { ThumbsUp } from '@phosphor-icons/react';
 
 interface Reaction {
   id: string;
@@ -265,7 +265,7 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
           <span style={triggerIconStyle}>{userReactionData.emoji}</span>
         ) : (
           <span style={{ ...triggerIconStyle, color: 'var(--color-neutrals-2, #23262F)' }}>
-            <ThumbsUp size={22} />
+            <ThumbsUp size={22} weight="regular" />
           </span>
         )}
       </button>
@@ -292,4 +292,3 @@ export const ArticleReactions: React.FC<ArticleReactionsProps> = ({
 };
 
 export default ArticleReactions;
-

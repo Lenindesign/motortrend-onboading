@@ -27,11 +27,14 @@ import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleLi
 import { vehicleImageFor } from '../../utils/vehicleImages';
 import { getMotorTrendArticle } from '../../services/motortrendFeedService';
 import type { Article as ArticleData } from '../../types/article';
+import { vehicleDatabase } from '../../data/vehicles';
 // HIDDEN: import { ArticleReactions } from '../../components/ArticleReactions';
 import { QAModal, type QAItem } from '../../components/QAModal';
 import StickyRateBar from '../../components/StickyRateBar';
 import ArticleHero from '../../components/ArticleHero/ArticleHero';
 import './Article.css';
+
+const MT_BRAND_ICON_WHITE = 'https://www-stage.motortrend.com/_assets/design-tokens/motortrend/static/images/favicon.95f5755.ico';
 
 interface LiveArticleProps {
   title: string;
@@ -273,18 +276,22 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
     if (articleData.motortrendScore?.vehicleName) {
       name = articleData.motortrendScore.vehicleName;
     } else {
-      // Try to extract vehicle name from title (e.g., "2026 Hyundai Ioniq 6 N First Drive" -> "2026 Hyundai Ioniq 6 N")
-      const titleMatch = articleData.title.match(/^(\d{4}\s+[\w\s]+?)(?:\s+(?:First Drive|Review|Yearlong|Verdict))/i);
-      if (titleMatch) {
-        name = titleMatch[1].trim();
+      const normalizedTitle = articleData.title.trim().toLowerCase();
+      // Prefer an exact cataloged YMM prefix so article wording such as
+      // "Pricing and Features Revealed" can never become part of the model.
+      const catalogMatch = [...vehicleDatabase]
+        .sort((a, b) => b.model.length - a.model.length)
+        .find((vehicle) => normalizedTitle.startsWith(
+          `${vehicle.year} ${vehicle.make} ${vehicle.model}`.toLowerCase(),
+        ));
+      if (catalogMatch) {
+        name = `${catalogMatch.year} ${catalogMatch.make} ${catalogMatch.model}`;
       } else {
-        // Fallback: use first part of title before colon
-        const colonIndex = articleData.title.indexOf(':');
-        if (colonIndex > 0) {
-          name = articleData.title.substring(0, colonIndex).trim();
-        } else {
-          name = articleData.title;
-        }
+        // Fallback for valid YMMs not present in the local vehicle catalog.
+        const titleMatch = articleData.title.match(
+          /^(\d{4}\s+[\w-]+\s+.+?)(?=\s+(?:Lineup|Pricing|Features|Adds|Gets|Teams|Updates|Review|First Drive|Yearlong|Verdict|Reveals|Is)\b|:|$)/i,
+        );
+        if (titleMatch) name = titleMatch[1].trim();
       }
     }
     // Normalize: replace dashes with spaces in the model part to match VehicleDetails format
@@ -299,8 +306,9 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
       const normalizedModel = modelParts.join(' ').replace(/-/g, ' ');
       return `${year} ${make} ${normalizedModel}`.trim();
     }
-    // If no year found, just replace dashes with spaces
-    return name.replace(/-/g, ' ').trim();
+    // Generic live/news headlines are not vehicle YMMs. Do not surface the
+    // article headline as the vehicle label in the rating bar.
+    return '';
   }, [articleData]);
 
   // Check if this is a comparison article with multiple vehicles
@@ -1052,7 +1060,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
 
   // Check if rating bar should be hidden for this article
   // Car of the Year article should show rating bar even though it's premium
-  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || (isPremiumArticle && slug !== '2026-motortrend-car-of-the-year');
+  const shouldHideRatingBar = slug === 'honda-electric-sports-car-timing-uncertain' || slug === 'longbow-speedster-electric-sports-car' || (!vehicleName && !isComparisonArticle) || (isPremiumArticle && slug !== '2026-motortrend-car-of-the-year');
 
   // Fetch local listings when vehicle changes
   useEffect(() => {
@@ -1106,7 +1114,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
               type: 'motortrend',
               value: isComparisonArticle ? staffRatingForBar : staffRating,
               onClick: handleScrollToStaffRating,
-              iconSrc: 'https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg',
+              iconSrc: MT_BRAND_ICON_WHITE,
               iconAlt: 'MT',
               format: 'vehicle-details'
             },

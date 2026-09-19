@@ -357,23 +357,6 @@ export const Card: React.FC<CardProps> = ({
     pointerEvents: 'none',
   };
 
-  const ratingStarStyle: React.CSSProperties = {
-    width: isMobile ? '16px' : '18px',
-    height: isMobile ? '16px' : '18px',
-    minWidth: isMobile ? '16px' : '18px',
-    minHeight: isMobile ? '16px' : '18px',
-    maxWidth: isMobile ? '16px' : '18px',
-    maxHeight: isMobile ? '16px' : '18px',
-    objectFit: 'contain',
-    display: 'block',
-    lineHeight: 1,
-    margin: 0,
-    padding: 0,
-    background: 'transparent',
-    border: 'none',
-    flexShrink: 0,
-  };
-
   const ratingMtLogoStyle: React.CSSProperties = {
     width: isMobile ? '16px' : '20px',
     height: isMobile ? '16px' : '20px',
@@ -511,7 +494,7 @@ export const Card: React.FC<CardProps> = ({
                 onMouseLeave={() => setIsBookmarkHovered(false)}
                 aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
               >
-                <Icon name={isBookmarked ? 'bookmark' : 'bookmark_border'} variant={isBookmarked ? 'filled' : 'outlined'} size={20} />
+                <Icon name="bookmark_border" variant={isBookmarked ? 'filled' : 'outlined'} size={20} />
               </button>
             )}
             {showPlayIcon && (
@@ -636,17 +619,9 @@ export const Card: React.FC<CardProps> = ({
                           {tooltipText}
                         </div>
                         {isMotorTrendRating ? (
-                          <img
-                            src="https://www.motortrend.com/files/692374f1d13f5100022ddf61/mticon.svg"
-                            alt="MotorTrend"
-                            style={ratingMtLogoStyle}
-                          />
+                          <img src="/images/mt-brand-icon.svg" alt="MotorTrend" style={ratingMtLogoStyle} />
                         ) : (
-                          <img
-                            src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                            alt="User Rating"
-                            style={ratingStarStyle}
-                          />
+                          <Icon name="star" variant="filled" size={isMobile ? 16 : 18} aria-hidden="true" />
                         )}
                         <span style={{ fontFamily: "'Geist', system-ui, -apple-system, sans-serif", fontSize: '14px', color: 'var(--color-neutrals-2, #23262F)' }}>
                           {rating.value}
@@ -668,11 +643,7 @@ export const Card: React.FC<CardProps> = ({
                       onMouseEnter={() => setIsRateOptionHovered(true)}
                       onMouseLeave={() => setIsRateOptionHovered(false)}
                     >
-                      <img
-                        src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                        alt="User rated star"
-                        style={ratingStarStyle}
-                      />
+                      <Icon name="star" variant="filled" size={isMobile ? 16 : 18} aria-hidden="true" />
                       <span style={ratingValueStyle}>{(userRating / 20).toFixed(1)}/5</span>
                     </button>
                   ) : (
@@ -685,11 +656,7 @@ export const Card: React.FC<CardProps> = ({
                       onMouseEnter={() => setIsRateStarHovered(true)}
                       onMouseLeave={() => setIsRateStarHovered(false)}
                     >
-                      <img
-                        src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
-                        alt="Rate star"
-                        style={ratingStarStyle}
-                      />
+                      <Icon name="star" variant="outlined" size={isMobile ? 16 : 18} aria-hidden="true" />
                       <span style={rateStarTooltipStyle}>Rate This Car</span>
                     </button>
                   )}

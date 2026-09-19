@@ -151,9 +151,10 @@ export const ProfileBanner: React.FC<ProfileBannerProps> = ({
   const logoImgStyle: React.CSSProperties = {
     width: '100%',
     height: 'auto',
-    maxWidth: '72px',
-    maxHeight: '72px',
+    maxWidth: '48px',
+    maxHeight: '36.24px',
     objectFit: 'contain',
+    filter: 'brightness(0) invert(1)',
   };
 
   const infoStyle: React.CSSProperties = {

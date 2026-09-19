@@ -692,7 +692,7 @@
 
 .vehicle-details__year-dropdown select {
   appearance: none;
-  border: 0;
+  border: 1px solid var(--color-neutrals-6);
   outline: 0;
   background: transparent;
   color: inherit;
@@ -1629,6 +1629,7 @@
 .vehicle-details__relationship-btn.is-selected {
   background: var(--color-neutrals-1);
   color: var(--color-white);
+  border-color: var(--color-neutrals-1);
   box-shadow: var(--shadow-depth-2);
 }
 

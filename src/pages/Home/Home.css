@@ -1247,10 +1247,7 @@
   height: 100%;
 }
 
-.home__fullscreen-nav .material-symbols-outlined,
-.home__fullscreen-nav .material-icons,
-.home__fullscreen-nav .material-icons-round,
-.home__fullscreen-nav .material-icons-sharp {
+.home__fullscreen-nav svg {
   margin: 0;
   padding: 0;
   display: flex;
@@ -1262,10 +1259,7 @@
 }
 
 .home__fullscreen-nav--next .icon,
-.home__fullscreen-nav--next .material-symbols-outlined,
-.home__fullscreen-nav--next .material-icons,
-.home__fullscreen-nav--next .material-icons-round,
-.home__fullscreen-nav--next .material-icons-sharp {
+.home__fullscreen-nav--next svg {
   transform: translateX(-1px);
   margin-left: 0;
   margin-right: 0;

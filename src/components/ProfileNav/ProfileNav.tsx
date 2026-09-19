@@ -83,7 +83,7 @@ export const ProfileNav: React.FC<ProfileNavProps> = ({
       : (isHovered ? 'var(--color-neutrals-6, #E6E8EC)' : 'transparent'),
     border: `1px solid ${isActive ? 'var(--color-neutrals-3, #353945)' : 'var(--color-neutrals-6, #E6E8EC)'}`,
     borderRadius: 'var(--border-radius-md, 8px)',
-    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 600,
     fontSize: isMobile ? '13px' : '14px',
     lineHeight: '1em',

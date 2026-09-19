@@ -1250,7 +1250,7 @@ export const Profile: React.FC<ProfileProps> = ({
                     <div className="profile-section__header-row">
                       <h3 className="profile-section__heading">
                         <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <Icon name="auto_awesome" size={20} />
+                          <Icon name="question_answer" size={20} />
                           My Q&A Activity
                         </span>
                       </h3>
@@ -1420,19 +1420,19 @@ export const Profile: React.FC<ProfileProps> = ({
                   <div className="profile-subscriptions-grid">
                     <SubscriptionItem
                       name="MotorTrend"
-                      logo="https://www.motortrend.com/files/68f64a2ae852a20002f9bc03/mt-nl.svg"
+                      logo="/images/mt-brand-icon.svg"
                       isActive={newsletterSubscriptions['MotorTrend']}
                       onToggleSubscription={handleNewsletterToggle}
                     />
                     <SubscriptionItem
                       name="HOT ROD"
-                      logo="https://www.motortrend.com/files/68f64aa7e852a20002f9bc04/hr-nl.svg"
+                      logo="/images/hotrod-brand-icon.svg"
                       isActive={newsletterSubscriptions['HOT ROD']}
                       onToggleSubscription={handleNewsletterToggle}
                     />
                     <SubscriptionItem
                       name="Events"
-                      logo="https://www.motortrend.com/files/69040ce5e09a72000286cf1d/event.png"
+                      logo="/images/events-hero-bg.png"
                       isActive={newsletterSubscriptions['Events']}
                       onToggleSubscription={handleNewsletterToggle}
                     />

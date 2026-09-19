@@ -80,7 +80,8 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
     width: '100%',
     height: '100%',
     borderRadius: 'var(--border-radius-circle, 50%)',
-    objectFit: 'cover',
+    objectFit: 'contain',
+    padding: name === 'MotorTrend' || name === 'HOT ROD' ? '24px' : 0,
     backgroundColor: 'var(--color-neutrals-2, #23262F)',
     boxShadow: 'var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.04))',
   };
@@ -216,4 +217,3 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
     </CardShell>
   );
 };
-

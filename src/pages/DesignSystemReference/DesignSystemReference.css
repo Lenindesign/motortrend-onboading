@@ -144,7 +144,7 @@
   color: var(--color-neutrals-5);
 }
 
-.ds-sidebar__search .material-icons {
+.ds-sidebar__search svg {
   color: var(--color-neutrals-5);
   flex-shrink: 0;
 }

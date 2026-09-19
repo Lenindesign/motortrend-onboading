@@ -156,6 +156,10 @@
   width: 100%;
 }
 
+.profile-section--qa .profile-section__content {
+  align-items: stretch;
+}
+
 .profile-section__header-row {
   display: flex;
   flex-direction: row;
@@ -190,14 +194,20 @@
 }
 
 .profile-section__heading {
-  font-family: 'Poppins', var(--font-heading);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  gap: 8px;
+  font-family: var(--font-gilroy, 'Poppins', var(--font-heading));
   font-weight: var(--font-weight-semibold);
-  font-size: 20px;
-  line-height: 1.4em;
-  color: var(--color-neutrals-1);
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--color-neutrals-2);
   margin: 0;
-  width: 451px;
-  height: 19px;
+  width: auto;
+  height: auto;
+  text-align: left;
 }
 
 .profile-section__empty {
@@ -451,12 +461,16 @@
 }
 
 .profile-connected-accounts-title {
-  font-family: var(--font-gilroy);
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  font-family: var(--font-gilroy, 'Poppins', var(--font-heading));
   font-weight: var(--font-weight-semibold);
   font-size: 24px;
-  line-height: 1.17em;
-  color: var(--neutrals-1);
+  line-height: 1.2;
+  color: var(--color-neutrals-2);
   margin: 0;
+  text-align: left;
 }
 
 .profile-connected-accounts-list {
@@ -1151,4 +1165,3 @@
     font-size: 16px;
   }
 }
-

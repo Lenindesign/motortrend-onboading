@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GoogleOneTap } from '../../components/GoogleOneTap';
 import { Icon } from '../../components/Icon';
+import { Button } from '../../design-system/components';
 import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
 import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import vehicleDatabase from '../../data/vehicles';
@@ -597,10 +598,18 @@ const RankingsAndAwards: React.FC = () => {
               )}
               </div>
               <p>{row.description.replace(/\.$/, '')} across {rankedSubcategoryCount(row.key)} subcategories.</p>
-              <Link className="rankings-awards__body-row-cta" to={`/rankings-awards/${row.key.toLowerCase()}`}>
+              <Button
+                className="rankings-awards__body-row-cta"
+                component={Link}
+                to={`/rankings-awards/${row.key.toLowerCase()}`}
+                color="secondary"
+                variant="solid"
+                size="default"
+                icon={<Icon name="arrow_forward" size={18} />}
+                iconPosition="right"
+              >
                 View All
-                <Icon name="arrow_forward" size={18} />
-              </Link>
+              </Button>
             </div>
 
             <div className="rankings-awards__cards" aria-label={`${row.title} top ranked vehicles`}>
