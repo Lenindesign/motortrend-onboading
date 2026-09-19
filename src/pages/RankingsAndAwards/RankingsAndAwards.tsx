@@ -433,7 +433,7 @@ const RankingsAndAwards: React.FC = () => {
             Find the Best Car for You
           </h1>
           <p className="rankings-awards__subtitle">
-            MotorTrend editors rate, compare, and rank the latest cars, trucks, and SUVs across {bodyStyleRows.length} categories so shoppers can move from research to shortlist faster.
+            MotorTrend editors rate, compare, and rank the latest cars, trucks, and SUVs across 13 categories so shoppers can move from research to shortlist faster.
           </p>
         </div>
       </section>
@@ -475,7 +475,7 @@ const RankingsAndAwards: React.FC = () => {
                 aria-expanded={openSubcategory === row.key}
                 onClick={() => setOpenSubcategory(openSubcategory === row.key ? null : row.key)}
               >
-                <span>All Subcategories</span>
+                <span>{rankedSubcategoryCount(row.key)} Subcategories</span>
                 <Icon name={openSubcategory === row.key ? 'expand_less' : 'expand_more'} size={18} />
               </button>
               {openSubcategory === row.key && (
