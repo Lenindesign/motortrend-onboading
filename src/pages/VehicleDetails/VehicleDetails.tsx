@@ -29,6 +29,8 @@ import { PhotoGallery } from '../../components/PhotoGallery';
 import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import { Popover } from '../../components/atoms/Popover';
 import { LocalListingsSidebar } from '../../components/LocalListingsSidebar';
+import { PollOfTheDay } from '../../components/PollOfTheDay/PollOfTheDay';
+import { BracketVoting } from '../../components/BracketVoting/BracketVoting';
 import { getLocalListings } from '../../utils/localListings';
 import { addViewedVehicle } from '../../components/PersonalizedVehicles';
 import { GoogleOneTap } from '../../components/GoogleOneTap';
@@ -50,6 +52,7 @@ export const VehicleDetails: React.FC = () => {
   const decodedModel = decodeURIComponent(model || '3-Series');
   const [selectedYear, setSelectedYear] = useState<string>(decodedYear);
   const [isSaved, setIsSaved] = useState(false);
+  const [vehicleRelationship, setVehicleRelationship] = useState<'own' | 'shop' | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
@@ -161,6 +164,46 @@ export const VehicleDetails: React.FC = () => {
       addViewedVehicle(vehicleName);
     }
   }, [vehicleName]);
+
+  useEffect(() => {
+    try {
+      const savedRelationship = localStorage.getItem(`vehicleRelationship:${vehicleName}`);
+      setVehicleRelationship(savedRelationship === 'own' || savedRelationship === 'shop' ? savedRelationship : null);
+    } catch {
+      setVehicleRelationship(null);
+    }
+  }, [vehicleName]);
+
+  const handleVehicleRelationship = (relationship: 'own' | 'shop' | null) => {
+    setVehicleRelationship(relationship);
+    if (relationship) {
+      localStorage.setItem(`vehicleRelationship:${vehicleName}`, relationship);
+    } else {
+      localStorage.removeItem(`vehicleRelationship:${vehicleName}`);
+    }
+
+    try {
+      const onboardingData = localStorage.getItem('onboardingData');
+      const data = onboardingData ? JSON.parse(onboardingData) : {};
+      if (!Array.isArray(data.vehicles)) data.vehicles = [];
+
+      const existingVehicle = data.vehicles.find(
+        (vehicle: { name?: string }) => vehicle.name?.trim().toLowerCase() === vehicleName.trim().toLowerCase()
+      );
+
+      if (existingVehicle) {
+        if (relationship) existingVehicle.ownership = relationship === 'own' ? 'own' : 'want';
+        else data.vehicles = data.vehicles.filter((vehicle: { name?: string }) => vehicle !== existingVehicle);
+      } else {
+        if (relationship) data.vehicles.push({ name: vehicleName, ownership: relationship === 'own' ? 'own' : 'want' });
+      }
+
+      localStorage.setItem('onboardingData', JSON.stringify(data));
+      window.dispatchEvent(new CustomEvent('onboardingDataUpdated', { detail: { vehicles: data.vehicles } }));
+    } catch (error) {
+      console.error('Error saving vehicle relationship:', error);
+    }
+  };
 
   useEffect(() => {
     if (isAuthLoading || !isAuthenticated) return;
@@ -1169,7 +1212,7 @@ export const VehicleDetails: React.FC = () => {
 
   // Both tooltips now follow their elements on scroll (no hide on scroll)
 
-  const availableYears = ['2025', '2024', '2023', '2022', '2021'];
+  const availableYears = Array.from(new Set([decodedYear, '2025', '2024', '2023', '2022', '2021']));
 
   // Prepare ratings for StickyRateBar component
   const stickyRatings: RatingItem[] = [
@@ -1226,6 +1269,7 @@ export const VehicleDetails: React.FC = () => {
         staffRatingScores={vehicleData.scores}
         ratingDistribution={vehicleData.ratingDistribution}
         totalReviews={vehicleData.communityRatingCount}
+        hideBuyersGuide
       />
 
       {/* Prime Template: Full-width hero with score overlay */}
@@ -1427,6 +1471,37 @@ export const VehicleDetails: React.FC = () => {
                   <Icon name="emoji_events" size={20} className="vehicle-details__award-icon" />
                   <span>{vehicleData.award}</span>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {!isPrimeTemplate && (
+            <div className="vehicle-details__ymm-controls">
+              <label className="vehicle-details__year-dropdown">
+                <select
+                  value={selectedYear}
+                  onChange={(event) => setSelectedYear(event.target.value)}
+                  aria-label="Select model year"
+                >
+                  {availableYears.map((availableYear) => (
+                    <option key={availableYear} value={availableYear}>{availableYear}</option>
+                  ))}
+                </select>
+                <Icon name="keyboard_arrow_down" size={20} />
+              </label>
+              <div className="vehicle-details__ymm-actions">
+                <label className="vehicle-details__compare-control">
+                  <input type="checkbox" aria-label="Compare vehicle" />
+                  <span>Compare</span>
+                </label>
+                <button
+                  type="button"
+                  className="vehicle-details__save-btn vehicle-details__save-btn--ymm"
+                  onClick={handleSave}
+                >
+                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={18} />
+                  <span>{isSaved ? 'Saved' : 'Save'}</span>
+                </button>
               </div>
             </div>
           )}
@@ -1660,6 +1735,39 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
+          <div className="vehicle-details__below-content-layout">
+          <div className="vehicle-details__below-content-main">
+          <section className="vehicle-details__relationship" aria-labelledby="vehicle-relationship-title">
+            <div className="vehicle-details__relationship-copy">
+              <span className="vehicle-details__relationship-kicker">Quick Selector</span>
+              <h2 id="vehicle-relationship-title">What is your current relationship to this car?</h2>
+            </div>
+            <div className="vehicle-details__relationship-actions">
+              <button
+                type="button"
+                className={`vehicle-details__relationship-btn ${vehicleRelationship === 'own' ? 'is-selected' : ''}`}
+                onClick={() => handleVehicleRelationship(vehicleRelationship === 'own' ? null : 'own')}
+              >
+                Verified Owner
+              </button>
+              <button
+                type="button"
+                className={`vehicle-details__relationship-btn ${vehicleRelationship === 'shop' ? 'is-selected' : ''}`}
+                onClick={() => handleVehicleRelationship(vehicleRelationship === 'shop' ? null : 'shop')}
+              >
+                Active Shopper
+              </button>
+            </div>
+            {vehicleRelationship && (
+              <div className="vehicle-details__relationship-confirmation" role="status">
+                <span className="vehicle-details__relationship-confirmation-icon" aria-hidden="true">✓</span>
+                <span>
+                  As an <strong>{vehicleRelationship === 'own' ? 'Owner' : 'Active Shopper'}</strong>, you can directly answer live shopper questions in the community board below.
+                </span>
+              </div>
+            )}
+          </section>
+
           {vehicleName === '2026 Honda Civic' && (
             <aside className="vehicle-details__price-drop" aria-label="Sample price drop alert">
               <div>
@@ -1880,6 +1988,28 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
+          {/* Owner Sentiment */}
+          <section className="vehicle-details__owner-sentiment" aria-labelledby="owner-sentiment-title">
+            <h2 id="owner-sentiment-title">Would owners buy it again?</h2>
+            <p className="vehicle-details__owner-sentiment-summary">
+              <strong>68%</strong> of {vehicleName} owners say they would buy it again
+            </p>
+            <div className="vehicle-details__owner-sentiment-labels" aria-hidden="true">
+              <span>Yes 68%</span>
+              <span>No 32%</span>
+            </div>
+            <div className="vehicle-details__owner-sentiment-bar" role="img" aria-label="68 percent would buy this vehicle again and 32 percent would not">
+              <span style={{ width: '68%' }} />
+            </div>
+            <div className="vehicle-details__owner-sentiment-counts">
+              <span>412 would buy again · 194 would not</span>
+              <span>Based on 606 owner responses</span>
+            </div>
+            <p className="vehicle-details__owner-sentiment-note">
+              Owners are asked this question by notification, and their answers move this bar.
+            </p>
+          </section>
+
           {/* Photo Gallery Bento (Show when 3+ photos available) */}
           {galleryImages.length >= 3 && (
             <div className="vehicle-details__photo-gallery-bento">
@@ -2016,6 +2146,8 @@ export const VehicleDetails: React.FC = () => {
             </div>
           )}
 
+          <BracketVoting />
+
           {/* User Reviews */}
           <div id="community-ratings" className="vehicle-details__community-ratings-anchor">
             <UserReviews
@@ -2061,6 +2193,11 @@ export const VehicleDetails: React.FC = () => {
               </div>
             </div>
           </div>
+          </div>
+          <aside className="vehicle-details__below-content-ad" aria-label="Advertisement">
+            <span>ADVERTISEMENT</span>
+          </aside>
+          </div>
         </div>
 
         {/* Right Sidebar */}
@@ -2082,6 +2219,10 @@ export const VehicleDetails: React.FC = () => {
               alt="Advertisement"
               className="vehicle-details__ad-image"
             />
+          </div>
+
+          <div className="vehicle-details__sidebar-poll">
+            <PollOfTheDay />
           </div>
 
           {/* Related Articles */}

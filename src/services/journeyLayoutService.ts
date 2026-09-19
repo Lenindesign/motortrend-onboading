@@ -80,10 +80,15 @@ export async function getLayouts(): Promise<Record<LayoutKey, LayoutConfig>> {
           
           // If localStorage has sections for this layout, use those (they're more recent due to RLS blocking Supabase writes)
           const useLocalSections = localLayout?.sections && localLayout.sections.length > 0;
+          const sections = useLocalSections
+            ? localLayout.sections
+            : supabaseLayout.sections.length > 0
+              ? supabaseLayout.sections
+              : (homePageLayouts.layouts as Record<LayoutKey, LayoutConfig>)[key as LayoutKey]?.sections || [];
           
           mergedLayouts[key] = {
             ...supabaseLayout,
-            sections: useLocalSections ? localLayout.sections : supabaseLayout.sections,
+            sections,
           };
         }
         
@@ -405,4 +410,3 @@ export function subscribeToLayoutChanges(
     }
   };
 }
-

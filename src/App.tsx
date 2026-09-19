@@ -29,6 +29,7 @@ import LatestNews from './pages/LatestNews';
 import Videos from './pages/Videos';
 import Community from './pages/Community';
 import RankingsAndAwards from './pages/RankingsAndAwards';
+import RankingCategoryPage from './pages/RankingsAndAwards/RankingCategoryPage';
 import { EmailPreviewPage, RateYourCarEmailPreview } from './pages/EmailPreviewPage';
 import Documentation from './pages/Documentation';
 import { BentleyShowcase } from './pages/BentleyShowcase';
@@ -128,6 +129,7 @@ function App() {
               <Route path="/community/:slug/post/:postId" element={<Community />} />
               
               {/* Rankings & Awards Page */}
+              <Route path="/rankings-awards/:category" element={<RankingCategoryPage />} />
               <Route path="/rankings-awards" element={<RankingsAndAwards />} />
               
               {/* Events Pages */}

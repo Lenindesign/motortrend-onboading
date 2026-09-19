@@ -33,7 +33,7 @@ type BodyStyleRow = BodyStyleConfig & {
   vehicles: RankedVehicle[];
 };
 
-const RankingCategoryIcon: React.FC<{ src: string }> = ({ src }) => {
+export const RankingCategoryIcon: React.FC<{ src: string }> = ({ src }) => {
   const [svgMarkup, setSvgMarkup] = useState<string | null>(null);
 
   useEffect(() => {
@@ -128,7 +128,7 @@ const BODY_STYLE_CONFIG: BodyStyleConfig[] = [
   },
 ];
 
-const RANKINGS_NAV_ITEMS = [
+export const RANKINGS_NAV_ITEMS = [
   { label: 'Best SUVs', href: '#suv', image: '/images/body-style-icons/suv.svg' },
   { label: 'Best Sedans', href: '#sedan', image: '/images/body-style-icons/sedan.svg' },
   { label: 'Best Crossovers', href: '#suv', image: '/images/body-style-icons/hatchback.svg' },
@@ -182,15 +182,37 @@ const SUV_SUBCATEGORIES = [
   ['Safest SUVs', 'https://www.motortrend.com/rankings/suvs/safest'],
 ] as const;
 
-const CATEGORY_SUBCATEGORIES: Record<string, readonly (readonly [string, string])[]> = {
+const CROSSOVER_SUBCATEGORIES = [
+  ['#1 Ranked Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/top-rated'],
+  ['Best Subcompact Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/subcompact'],
+  ['Best Compact Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/compact'],
+  ['Best Midsize Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/midsize'],
+  ['Best Electric Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/electric'],
+  ['Best Hybrid Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/hybrid'],
+  ['Safest Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/safest'],
+  ['Cheapest Crossovers', 'https://www.motortrend.com/rankings/suvs/crossovers/cheapest'],
+] as const;
+
+export const CATEGORY_SUBCATEGORIES: Record<string, readonly (readonly [string, string])[]> = {
   SUV: SUV_SUBCATEGORIES,
+  Crossover: CROSSOVER_SUBCATEGORIES,
   Sedan: [
     ['#1 Ranked Sedans', 'https://www.motortrend.com/rankings/sedans/top-rated'],
     ['Best Compact Sedans', 'https://www.motortrend.com/rankings/sedans/compact'],
     ['Best Midsize Sedans', 'https://www.motortrend.com/rankings/sedans/midsize'],
     ['Best Full-Size Sedans', 'https://www.motortrend.com/rankings/sedans/full-size'],
     ['Cheapest Sedans', 'https://www.motortrend.com/rankings/sedans/cheapest'],
+    ['Sedans Under $30,000', 'https://www.motortrend.com/rankings/sedans/under-30k'],
+    ['Sedans Under $40,000', 'https://www.motortrend.com/rankings/sedans/under-40k'],
+    ['Sedans Under $50,000', 'https://www.motortrend.com/rankings/sedans/under-50k'],
+    ['Sedans Under $70,000', 'https://www.motortrend.com/rankings/sedans/under-70k'],
+    ['Best Sedans Over $70,000', 'https://www.motortrend.com/rankings/sedans/over-70k'],
     ['Safest Sedans', 'https://www.motortrend.com/rankings/sedans/safest'],
+    ['Best Family Sedans', 'https://www.motortrend.com/rankings/sedans/family'],
+    ['Best Premium Sedans', 'https://www.motortrend.com/rankings/sedans/premium'],
+    ['Best Compact Performance Sedans', 'https://www.motortrend.com/rankings/sedans/performance-compact'],
+    ['Best Performance Sedans', 'https://www.motortrend.com/rankings/sedans/performance'],
+    ['Sedans with the Most Gas Mileage', 'https://www.motortrend.com/rankings/sedans/gas-mileage'],
   ],
   Truck: [
     ['#1 Ranked Trucks', 'https://www.motortrend.com/rankings/pickup-trucks/top-rated'],
@@ -241,7 +263,7 @@ type LiveRankingEntry = {
 
 // Each row is intentionally built from the #1 vehicle on its primary production
 // subcategory pages, rather than from ranks 1–3 on a single overall page.
-const LIVE_RANKING_ENTRIES: Record<string, LiveRankingEntry[]> = {
+export const LIVE_RANKING_ENTRIES: Record<string, LiveRankingEntry[]> = {
   SUV: [
     { year: '2026', make: 'Subaru', model: 'Crosstrek', rank: 1, rating: 9.5, priceRange: '$28,445 - $35,245', fuelType: 'Gas', mpg: '26/33', subcategory: 'Subcompact SUVs', sourceUrl: 'https://www.motortrend.com/cars/subaru/crosstrek' },
     { year: '2026', make: 'Kia', model: 'Sportage', rank: 1, rating: 9.5, priceRange: '$30,285 - $41,185', fuelType: 'Gas', subcategory: 'Compact SUVs', sourceUrl: 'https://www.motortrend.com/cars/kia/sportage/2026' },
@@ -464,7 +486,7 @@ const RankingsAndAwards: React.FC = () => {
               )}
               </div>
               <p>{row.description}</p>
-              <Link className="rankings-awards__body-row-cta" to={`/vehicles?bodyStyle=${encodeURIComponent(row.key)}`}>
+              <Link className="rankings-awards__body-row-cta" to={`/rankings-awards/${row.key.toLowerCase()}`}>
                 View All
                 <Icon name="arrow_forward" size={18} />
               </Link>

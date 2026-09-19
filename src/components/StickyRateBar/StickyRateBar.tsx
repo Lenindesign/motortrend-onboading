@@ -46,6 +46,8 @@ export interface StickyRateBarProps {
   ratingDistribution?: { [key: number]: number };
   totalReviews?: number;
   hideCtaButton?: boolean;
+  /** Match the vehicle-detail header, which only shows the local-listings CTA. */
+  hideBuyersGuide?: boolean;
   commentsLink?: {
     href: string;
     label: string;
@@ -71,6 +73,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
   ratingDistribution,
   totalReviews,
   hideCtaButton,
+  hideBuyersGuide = false,
   commentsLink
 }) => {
   const navigate = useNavigate();
@@ -699,7 +702,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
       <div style={contentStyle}>
         <div style={nameContainerStyle}>
           <div style={badgesRowStyle}>
-            {!isMobile && vehiclePath ? (
+            {!isMobile && vehiclePath && !hideBuyersGuide ? (
               <a
                 href={vehiclePath}
                 style={buyersGuideBadgeStyle}
@@ -715,7 +718,7 @@ const StickyRateBar: React.FC<StickyRateBarProps> = ({
                   variant="secondary"
                 />
               </a>
-            ) : !isMobile ? (
+            ) : !isMobile && !hideBuyersGuide ? (
               <div style={buyersGuideBadgeStyle}>
                 <Badge variant="info" size="sm">Buyers Guide</Badge>
               </div>

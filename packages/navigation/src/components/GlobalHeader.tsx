@@ -2385,4 +2385,3 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = ({
 };
 
 export default GlobalHeader;
-
