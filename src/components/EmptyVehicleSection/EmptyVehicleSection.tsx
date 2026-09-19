@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import Icon from '../Icon';
 
 export interface EmptyVehicleSectionProps {
   type: 'own' | 'want';
@@ -44,11 +45,9 @@ export const EmptyVehicleSection: React.FC<EmptyVehicleSectionProps> = ({
     marginBottom: '16px',
   };
 
-  // Icon image styles
-  const iconImgStyle: React.CSSProperties = {
-    width: '64px',
-    height: '64px',
-    objectFit: 'contain',
+  const iconStyle: React.CSSProperties = {
+    fontSize: '48px',
+    color: 'var(--color-neutrals-4, #6E7481)',
   };
 
   // Text styles
@@ -71,11 +70,7 @@ export const EmptyVehicleSection: React.FC<EmptyVehicleSectionProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div style={iconContainerStyle}>
-        <img 
-          src="https://www.motortrend.com/files/68f64af5e852a20002f9bc06/more.svg"
-          alt="Add vehicle"
-          style={iconImgStyle}
-        />
+        <Icon name="add_circle_outline" size={48} style={iconStyle} />
       </div>
       <p style={textStyle}>{text}</p>
     </div>
@@ -83,4 +78,3 @@ export const EmptyVehicleSection: React.FC<EmptyVehicleSectionProps> = ({
 };
 
 export default EmptyVehicleSection;
-
