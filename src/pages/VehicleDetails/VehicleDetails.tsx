@@ -1431,24 +1431,54 @@ export const VehicleDetails: React.FC = () => {
                 <span> / </span>
                 <span>{vehicleData.year}</span>
               </div>
-              <div className="vehicle-details__top-actions">
-                <a
-                  className="vehicle-details__comments-link"
-                  href="#community-ratings"
-                  onClick={handleCommentsLinkClick}
-                  aria-label={`Jump to ${vehicleCommentCount} vehicle comments`}
-                >
-                  <Icon name="forum" size={18} />
-                  <span>Comments</span>
-                  <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
-                </a>
-{/* HIDDEN: ArticleReactions thumbs up
+              <div className="vehicle-details__top-section-utilities">
+                <div className="vehicle-details__top-actions">
+                  <a
+                    className="vehicle-details__comments-link"
+                    href="#community-ratings"
+                    onClick={handleCommentsLinkClick}
+                    aria-label={`Jump to ${vehicleCommentCount} vehicle comments`}
+                  >
+                    <Icon name="forum" size={18} />
+                    <span>Comments</span>
+                    <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
+                  </a>
+                </div>
+                <div className="vehicle-details__ymm-controls">
+                  <label className="vehicle-details__year-dropdown">
+                    <select
+                      value={selectedYear}
+                      onChange={(event) => setSelectedYear(event.target.value)}
+                      aria-label="Select model year"
+                    >
+                      {availableYears.map((availableYear) => (
+                        <option key={availableYear} value={availableYear}>{availableYear}</option>
+                      ))}
+                    </select>
+                    <Icon name="keyboard_arrow_down" size={20} />
+                  </label>
+                  <div className="vehicle-details__ymm-actions">
+                    <label className="vehicle-details__compare-control">
+                      <input type="checkbox" aria-label="Compare vehicle" />
+                      <span>Compare</span>
+                    </label>
+                    <button
+                      type="button"
+                      className="vehicle-details__save-btn vehicle-details__save-btn--ymm"
+                      onClick={handleSave}
+                    >
+                      <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={18} />
+                      <span>{isSaved ? 'Saved' : 'Save'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {/* HIDDEN: ArticleReactions thumbs up
                 <ArticleReactions
                   articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
                   vehicleName={vehicleName}
                 />
                 */}
-              </div>
             </div>
           )}
 
@@ -1481,37 +1511,6 @@ export const VehicleDetails: React.FC = () => {
                   <Icon name="emoji_events" size={20} className="vehicle-details__award-icon" />
                   <span>{vehicleData.award}</span>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {!isPrimeTemplate && (
-            <div className="vehicle-details__ymm-controls">
-              <label className="vehicle-details__year-dropdown">
-                <select
-                  value={selectedYear}
-                  onChange={(event) => setSelectedYear(event.target.value)}
-                  aria-label="Select model year"
-                >
-                  {availableYears.map((availableYear) => (
-                    <option key={availableYear} value={availableYear}>{availableYear}</option>
-                  ))}
-                </select>
-                <Icon name="keyboard_arrow_down" size={20} />
-              </label>
-              <div className="vehicle-details__ymm-actions">
-                <label className="vehicle-details__compare-control">
-                  <input type="checkbox" aria-label="Compare vehicle" />
-                  <span>Compare</span>
-                </label>
-                <button
-                  type="button"
-                  className="vehicle-details__save-btn vehicle-details__save-btn--ymm"
-                  onClick={handleSave}
-                >
-                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={18} />
-                  <span>{isSaved ? 'Saved' : 'Save'}</span>
-                </button>
               </div>
             </div>
           )}
