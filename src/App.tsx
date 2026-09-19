@@ -129,6 +129,7 @@ function App() {
               <Route path="/community/:slug/post/:postId" element={<Community />} />
               
               {/* Rankings & Awards Page */}
+              <Route path="/rankings-awards/:category/:subcategory" element={<RankingCategoryPage />} />
               <Route path="/rankings-awards/:category" element={<RankingCategoryPage />} />
               <Route path="/rankings-awards" element={<RankingsAndAwards />} />
               

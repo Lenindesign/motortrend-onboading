@@ -70,14 +70,19 @@ const TROPHY_TOP_ICON = 'https://www.motortrend.com/uploads/sites/5/2020/06/trop
 const subcategoryId = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 const RankingCategoryPage: React.FC = () => {
-  const { category = 'suv' } = useParams();
+  const { category = 'suv', subcategory } = useParams();
   const normalizedCategory = category.toLowerCase();
   const meta = CATEGORY_META[normalizedCategory] ?? CATEGORY_META.suv;
   const categoryName = meta.title.replace(/^Best /, '').replace(/s$/, '');
   const entries = LIVE_RANKING_ENTRIES[normalizedCategory === 'suv' ? 'SUV' : normalizedCategory[0].toUpperCase() + normalizedCategory.slice(1)] ?? LIVE_RANKING_ENTRIES.SUV;
   const categoryKey = normalizedCategory === 'suv' ? 'SUV' : normalizedCategory[0].toUpperCase() + normalizedCategory.slice(1);
-  const subcategoryLinks = (CATEGORY_SUBCATEGORIES[categoryKey] ?? meta.subcategories.map((label) => [label, '#'] as const))
+  const allSubcategoryLinks = (CATEGORY_SUBCATEGORIES[categoryKey] ?? meta.subcategories.map((label) => [label, '#'] as const))
     .filter(([label]) => label !== 'All Subcategories' && !label.startsWith('#1 Ranked'));
+  const selectedSubcategory = subcategory
+    ? allSubcategoryLinks.find(([label]) => subcategoryId(label) === subcategory.toLowerCase())
+    : undefined;
+  const isFullListPage = Boolean(selectedSubcategory);
+  const subcategoryLinks = isFullListPage ? [selectedSubcategory!] : allSubcategoryLinks;
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [activeSubcategory, setActiveSubcategory] = useState('');
   const categoryRailRef = useRef<HTMLDivElement>(null);
@@ -217,7 +222,7 @@ const RankingCategoryPage: React.FC = () => {
 
       <section className="ranking-category-page__container ranking-category-page__content">
         <div className="ranking-category-page__subcategory-sections">
-          {subcategoryLinks.map(([label, href], index) => (
+          {subcategoryLinks.map(([label], index) => (
             <React.Fragment key={label}>
               <section className="ranking-category-page__subcategory-section" id={subcategoryId(label)}>
                 <div className="ranking-category-page__subcategory-section-header">
@@ -225,8 +230,8 @@ const RankingCategoryPage: React.FC = () => {
                     <span className="ranking-category-page__subcategory-kicker">{index === 0 ? 'Featured rankings' : `${categoryName} rankings`}</span>
                     <h2>{label}</h2>
                   </div>
-                  {href.startsWith('http') && (
-                    <a href={href} target="_blank" rel="noreferrer">See Full List<Icon name="arrow_forward" size={17} /></a>
+                  {!isFullListPage && (
+                    <Link to={`/rankings-awards/${normalizedCategory}/${subcategoryId(label)}`}>See Full List<Icon name="arrow_forward" size={17} /></Link>
                   )}
                 </div>
                 <p>Explore MotorTrend&apos;s {label.toLowerCase()} rankings, expert testing, and buying advice.</p>
