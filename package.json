@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "deploy:netlify": "node scripts/deploy-netlify-via-github.mjs",
     "lint": "eslint .",
     "lint:css": "node scripts/lint-css-tokens.js",
     "lint:all": "npm run lint && npm run lint:css",
