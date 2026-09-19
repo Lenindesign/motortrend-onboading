@@ -15,6 +15,7 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import './RankingsAndAwards.css';
 
 const rankingSubcategorySlug = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const rankedSubcategoryCount = (key: string) => (CATEGORY_SUBCATEGORIES[key] ?? []).filter(([label]) => !label.startsWith('#1 Ranked')).length;
 
 type BodyStyleConfig = {
   key: string;
@@ -432,7 +433,7 @@ const RankingsAndAwards: React.FC = () => {
             Find the Best Car for You
           </h1>
           <p className="rankings-awards__subtitle">
-            MotorTrend editors rate, compare, and rank the latest cars, trucks, and SUVs so shoppers can move from research to shortlist faster.
+            MotorTrend editors rate, compare, and rank the latest cars, trucks, and SUVs across {bodyStyleRows.length} categories so shoppers can move from research to shortlist faster.
           </p>
         </div>
       </section>
@@ -491,7 +492,7 @@ const RankingsAndAwards: React.FC = () => {
                 </div>
               )}
               </div>
-              <p>{row.description}</p>
+              <p>{row.description.replace(/\.$/, '')} across {rankedSubcategoryCount(row.key)} subcategories.</p>
               <Link className="rankings-awards__body-row-cta" to={`/rankings-awards/${row.key.toLowerCase()}`}>
                 View All
                 <Icon name="arrow_forward" size={18} />
