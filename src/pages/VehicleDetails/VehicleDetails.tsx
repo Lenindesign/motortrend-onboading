@@ -168,7 +168,17 @@ export const VehicleDetails: React.FC = () => {
   useEffect(() => {
     try {
       const savedRelationship = localStorage.getItem(`vehicleRelationship:${vehicleName}`);
-      setVehicleRelationship(savedRelationship === 'own' ? 'own' : savedRelationship === 'want' || savedRelationship === 'shop' ? 'want' : null);
+      if (savedRelationship === 'own' || savedRelationship === 'want' || savedRelationship === 'shop') {
+        setVehicleRelationship(savedRelationship === 'own' ? 'own' : 'want');
+        return;
+      }
+
+      const onboardingData = localStorage.getItem('onboardingData');
+      const data = onboardingData ? JSON.parse(onboardingData) : null;
+      const savedVehicle = data?.vehicles?.find(
+        (vehicle: { name?: string; ownership?: string }) => vehicle.name?.trim().toLowerCase() === vehicleName.trim().toLowerCase()
+      );
+      setVehicleRelationship(savedVehicle?.ownership === 'own' ? 'own' : savedVehicle?.ownership === 'want' ? 'want' : null);
     } catch {
       setVehicleRelationship(null);
     }
