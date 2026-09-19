@@ -1748,6 +1748,7 @@ export const VehicleDetails: React.FC = () => {
                 className={`vehicle-details__relationship-btn ${vehicleRelationship === 'own' ? 'is-selected' : ''}`}
                 onClick={() => handleVehicleRelationship(vehicleRelationship === 'own' ? null : 'own')}
               >
+                <span className="vehicle-details__relationship-emoji" aria-hidden="true">🔑</span>
                 I own this
               </button>
               <button
@@ -1755,6 +1756,7 @@ export const VehicleDetails: React.FC = () => {
                 className={`vehicle-details__relationship-btn ${vehicleRelationship === 'want' ? 'is-selected' : ''}`}
                 onClick={() => handleVehicleRelationship(vehicleRelationship === 'want' ? null : 'want')}
               >
+                <span className="vehicle-details__relationship-emoji" aria-hidden="true">😍</span>
                 I'm shopping for one
               </button>
             </div>

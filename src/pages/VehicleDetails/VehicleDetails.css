@@ -1541,6 +1541,12 @@
   transition: all var(--transition-fast);
 }
 
+.vehicle-details__relationship-emoji {
+  margin-right: 8px;
+  font-size: 18px;
+  line-height: 1;
+}
+
 .vehicle-details__relationship-btn:hover {
   background-color: var(--color-neutrals-6);
 }
