@@ -822,7 +822,7 @@ html {
   background: var(--color-neutrals-1, #141416);
   color: #fff;
   font-size: 14px;
-  font-weight: var(--font-weight-semibold, 600);
+  font-weight: var(--font-weight-bold, 700);
   text-decoration: none;
 }
 
