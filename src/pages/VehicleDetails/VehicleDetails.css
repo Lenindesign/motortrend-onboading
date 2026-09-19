@@ -614,7 +614,7 @@
   min-height: 48px;
   font-family: var(--font-heading);
   font-size: var(--font-size-base);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   line-height: 1;
   text-decoration: none;
   transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
@@ -802,6 +802,7 @@
   padding: 6px 12px;
   border-radius: var(--border-radius-xl);
   font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -843,6 +844,7 @@
   border-radius: var(--border-radius-sm);
   font-family: var(--font-body);
   font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-neutrals-8);
   cursor: pointer;
   transition: all var(--transition-fast);
