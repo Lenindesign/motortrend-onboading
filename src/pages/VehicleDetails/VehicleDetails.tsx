@@ -52,7 +52,7 @@ export const VehicleDetails: React.FC = () => {
   const decodedModel = decodeURIComponent(model || '3-Series');
   const [selectedYear, setSelectedYear] = useState<string>(decodedYear);
   const [isSaved, setIsSaved] = useState(false);
-  const [vehicleRelationship, setVehicleRelationship] = useState<'own' | 'shop' | null>(null);
+  const [vehicleRelationship, setVehicleRelationship] = useState<'own' | 'want' | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [isWriteReviewModalOpen, setIsWriteReviewModalOpen] = useState(false);
   const [isToastVisible, setIsToastVisible] = useState(false);
@@ -168,13 +168,13 @@ export const VehicleDetails: React.FC = () => {
   useEffect(() => {
     try {
       const savedRelationship = localStorage.getItem(`vehicleRelationship:${vehicleName}`);
-      setVehicleRelationship(savedRelationship === 'own' || savedRelationship === 'shop' ? savedRelationship : null);
+      setVehicleRelationship(savedRelationship === 'own' ? 'own' : savedRelationship === 'want' || savedRelationship === 'shop' ? 'want' : null);
     } catch {
       setVehicleRelationship(null);
     }
   }, [vehicleName]);
 
-  const handleVehicleRelationship = (relationship: 'own' | 'shop' | null) => {
+  const handleVehicleRelationship = (relationship: 'own' | 'want' | null) => {
     setVehicleRelationship(relationship);
     if (relationship) {
       localStorage.setItem(`vehicleRelationship:${vehicleName}`, relationship);
@@ -192,10 +192,10 @@ export const VehicleDetails: React.FC = () => {
       );
 
       if (existingVehicle) {
-        if (relationship) existingVehicle.ownership = relationship === 'own' ? 'own' : 'want';
+        if (relationship) existingVehicle.ownership = relationship;
         else data.vehicles = data.vehicles.filter((vehicle: { name?: string }) => vehicle !== existingVehicle);
       } else {
-        if (relationship) data.vehicles.push({ name: vehicleName, ownership: relationship === 'own' ? 'own' : 'want' });
+        if (relationship) data.vehicles.push({ name: vehicleName, ownership: relationship });
       }
 
       localStorage.setItem('onboardingData', JSON.stringify(data));
@@ -1748,14 +1748,14 @@ export const VehicleDetails: React.FC = () => {
                 className={`vehicle-details__relationship-btn ${vehicleRelationship === 'own' ? 'is-selected' : ''}`}
                 onClick={() => handleVehicleRelationship(vehicleRelationship === 'own' ? null : 'own')}
               >
-                Verified Owner
+                I own this
               </button>
               <button
                 type="button"
-                className={`vehicle-details__relationship-btn ${vehicleRelationship === 'shop' ? 'is-selected' : ''}`}
-                onClick={() => handleVehicleRelationship(vehicleRelationship === 'shop' ? null : 'shop')}
+                className={`vehicle-details__relationship-btn ${vehicleRelationship === 'want' ? 'is-selected' : ''}`}
+                onClick={() => handleVehicleRelationship(vehicleRelationship === 'want' ? null : 'want')}
               >
-                Active Shopper
+                I'm shopping for one
               </button>
             </div>
             {vehicleRelationship && (
