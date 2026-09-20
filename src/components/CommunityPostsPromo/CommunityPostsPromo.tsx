@@ -263,6 +263,17 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
     objectFit: 'cover',
   };
 
+  const communityIconFallbackStyle: React.CSSProperties = {
+    ...communityIconStyle,
+    backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px',
+    fontWeight: 600,
+    color: 'var(--color-neutrals-4, #6E7481)',
+  };
+
   const communityPlaceholderStyle: React.CSSProperties = {
     width: '24px',
     height: '24px',
@@ -382,7 +393,21 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
                     onMouseLeave={() => setHoveredCommunityId(null)}
                   >
                     {community.icon ? (
-                      <img src={community.icon} alt={community.name} style={communityIconStyle} />
+                      <>
+                        <img
+                          src={community.icon}
+                          alt={community.name}
+                          style={communityIconStyle}
+                          onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                            const fallback = event.currentTarget.nextElementSibling as HTMLElement | null;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
+                        <div style={{ ...communityIconFallbackStyle, display: 'none' }} aria-hidden="true">
+                          {community.name[0]}
+                        </div>
+                      </>
                     ) : (
                       <div style={communityPlaceholderStyle}>{community.name[0]}</div>
                     )}
@@ -424,4 +449,3 @@ export const CommunityPostsPromo: React.FC<CommunityPostsPromoProps> = ({
 };
 
 export default CommunityPostsPromo;
-

@@ -25,7 +25,6 @@ import { RatingDistributionTooltip, type RatingDistributionData } from '../../co
 import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
 import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { articles } from '../../utils/articles';
-import { ArticleReactions } from '../../components/ArticleReactions';
 import { PhotoGallery } from '../../components/PhotoGallery';
 import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import { Popover } from '../../components/atoms/Popover';
@@ -69,7 +68,6 @@ export const VehicleDetails: React.FC = () => {
   const hideTooltipTimeout = useRef<number | null>(null);
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
-  const primeHeroRef = useRef<HTMLDivElement>(null);
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
   const [listings, setListings] = useState<VehicleListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
@@ -258,43 +256,7 @@ export const VehicleDetails: React.FC = () => {
     fetchListings();
   }, [decodedYear, decodedMake, decodedModel, apiVehicleData, vehicleName]);
 
-  // Check if this is a Prime template vehicle
-  // Includes: hardcoded vehicles, award winners, and all performance cars (priceMin > $150k)
-  const isPrimeTemplate = (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') ||
-    (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') ||
-    (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') ||
-    (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1') ||
-    (decodedYear === '2026' && decodedMake === 'Cadillac' && decodedModel === 'Escalade-IQ') ||
-    (decodedYear === '2026' && decodedMake === 'Volkswagen' && (decodedModel === 'Golf-GTI-R' || decodedModel === 'Golf-GTI-/-R' || decodedModel === 'Golf-GTI-%2F-R')) ||
-    (decodedYear === '2025' && decodedMake === 'Ram' && decodedModel === '1500') ||
-    // All performance cars (vehicles with starting price > $150,000)
-    (apiVehicleData?.priceMin && apiVehicleData.priceMin > 150000);
-
-  // Display name for prime template
-  const displayName = (() => {
-    if (decodedYear === '2026' && decodedMake === 'Bentley' && decodedModel === 'Continental-GT-Supersports') {
-      return '2026 Bentley Continental GT';
-    }
-    if (decodedYear === '2026' && decodedMake === 'Ferrari' && decodedModel === '296-Speciale') {
-      return '2026 Ferrari 296 Speciale';
-    }
-    if (decodedYear === '2025' && decodedMake === 'Porsche' && decodedModel === '718-Cayman') {
-      return '2025 Porsche 718 Cayman';
-    }
-    if (decodedYear === '2025' && decodedMake === 'Chevrolet' && decodedModel === 'Corvette-ZR1') {
-      return '2025 Chevrolet Corvette ZR1';
-    }
-    if (decodedYear === '2026' && decodedMake === 'Cadillac' && decodedModel === 'Escalade-IQ') {
-      return '2026 Cadillac Escalade IQ';
-    }
-    if (decodedYear === '2026' && decodedMake === 'Volkswagen' && (decodedModel === 'Golf-GTI-R' || decodedModel === 'Golf-GTI-/-R' || decodedModel === 'Golf-GTI-%2F-R')) {
-      return '2026 Volkswagen Golf GTI / R';
-    }
-    if (decodedYear === '2025' && decodedMake === 'Ram' && decodedModel === '1500') {
-      return '2025 Ram 1500';
-    }
-    return vehicleName;
-  })();
+  const displayName = vehicleName;
 
   // Get images from article for gallery
   const galleryImages = useMemo(() => {
@@ -302,7 +264,6 @@ export const VehicleDetails: React.FC = () => {
     console.log('🖼️ apiVehicleData:', apiVehicleData);
     console.log('🖼️ apiVehicleData?.image:', apiVehicleData?.image);
     console.log('🖼️ apiVehicleData?.galleryImages:', apiVehicleData?.galleryImages);
-    console.log('🖼️ isPrimeTemplate:', isPrimeTemplate);
 
     // PRIORITY 1: Use API gallery images if available
     if (apiVehicleData?.galleryImages && apiVehicleData.galleryImages.length > 0) {
@@ -310,9 +271,8 @@ export const VehicleDetails: React.FC = () => {
       return apiVehicleData.galleryImages;
     }
 
-    // PRIORITY 2: For prime template vehicles, check articles first (they have multiple images)
-    // For non-prime vehicles, use single API image if available
-    if (!isPrimeTemplate && apiVehicleData?.image) {
+    // PRIORITY 2: Use the API image when a gallery is not available.
+    if (apiVehicleData?.image) {
       console.log('✅ Using single API image:', apiVehicleData.image);
       return [apiVehicleData.image];
     }
@@ -345,44 +305,10 @@ export const VehicleDetails: React.FC = () => {
       }
     }
 
-    // PRIORITY 4: For prime template, use displayName to find article if vehicleName didn't match
-    if (isPrimeTemplate && displayName !== vehicleName) {
-      console.log('🔄 Trying displayName for article match:', displayName);
-      for (const article of Object.values(articles)) {
-        if (article.motortrendScore?.vehicleName) {
-          const articleVehicleName = article.motortrendScore.vehicleName.toLowerCase()
-            .replace(/\s*\/\s*/g, '/')
-            .replace(/-/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-          const currentDisplayName = displayName.toLowerCase()
-            .replace(/\s*\/\s*/g, '/')
-            .replace(/-/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-
-          if (articleVehicleName === currentDisplayName ||
-            articleVehicleName.includes(currentDisplayName) ||
-            currentDisplayName.includes(articleVehicleName)) {
-            console.log('📰 Using article images with displayName:', article.images?.length || 0);
-            if (article.images && article.images.length > 0) {
-              return article.images;
-            }
-          }
-        }
-      }
-    }
-
-    // PRIORITY 5: Use single API vehicle image if available (fallback for prime template)
-    if (apiVehicleData?.image) {
-      console.log('✅ Using single API image as fallback:', apiVehicleData.image);
-      return [apiVehicleData.image];
-    }
-
-    // PRIORITY 6: Fallback to hero image if no article found
+    // PRIORITY 3: Fallback to hero image if no API or article image is available.
     console.log('🔄 Using fallback vehicleImageFor');
     return [vehicleImageFor(vehicleName)];
-  }, [vehicleName, apiVehicleData, isPrimeTemplate, displayName]);
+  }, [vehicleName, apiVehicleData]);
 
   // Preload all gallery images for smooth transitions
   useEffect(() => {
@@ -1285,144 +1211,12 @@ export const VehicleDetails: React.FC = () => {
         hideBuyersGuide
       />
 
-      {/* Prime Template: Full-width hero with score overlay */}
-      {isPrimeTemplate && (
-        <>
-          <div ref={primeHeroRef} className="vehicle-details__prime-hero">
-            <div
-              className="vehicle-details__prime-hero-image"
-              onClick={() => setIsGalleryOpen(true)}
-              style={{ cursor: 'pointer' }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setIsGalleryOpen(true);
-                }
-              }}
-              aria-label="Open photo gallery"
-            >
-              {galleryImages && galleryImages.length > 1 ? (
-                galleryImages.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`${vehicleName} - Photo ${index + 1}`}
-                    className={`vehicle-details__prime-hero-slide ${index === currentImageIndex ? 'vehicle-details__prime-hero-slide--active' : ''}`}
-                  />
-                ))
-              ) : (
-                <img
-                  src={galleryImages && galleryImages.length > 0 ? galleryImages[0] : vehicleData.image}
-                  alt={vehicleName}
-                  className="vehicle-details__prime-hero-slide vehicle-details__prime-hero-slide--active"
-                />
-              )}
-            </div>
-
-            {/* Top Section Overlay (Breadcrumbs + Actions) */}
-            <div className="vehicle-details__prime-top-overlay">
-              <div className="vehicle-details__breadcrumbs">
-                <Link to="/">Home</Link>
-                <span> / </span>
-                <Link to="/cars">Cars</Link>
-                <span> / </span>
-                <span>{vehicleData.make}</span>
-                <span> / </span>
-                <span>{vehicleData.model}</span>
-                <span> / </span>
-                <span>{vehicleData.year}</span>
-              </div>
-              <div className="vehicle-details__top-actions">
-                <button
-                  className="vehicle-details__rate-star-btn"
-                  onClick={handleOpenRatingModal}
-                  aria-label="Rate This Car"
-                >
-                  <Icon
-                    name="star"
-                    variant="outlined"
-                    size={24}
-                    className="vehicle-details__rate-star-icon"
-                  />
-                  <span className="vehicle-details__rate-star-tooltip">Rate This Car</span>
-                </button>
-                <ArticleReactions
-                  articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
-                  vehicleName={vehicleName}
-                  showTooltipsBelow={true}
-                />
-                <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
-                  <Icon name="bookmark_border" variant={isSaved ? 'filled' : 'outlined'} size={20} />
-                  <span>{isSaved ? 'Saved!' : 'Save'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Score Overlay (Listicle Style) */}
-            <div className="vehicle-details__prime-score-overlay">
-              <span className="vehicle-details__prime-vehicle-name">{displayName}</span>
-              <div className="vehicle-details__prime-ratings-list">
-                <div className="vehicle-details__prime-rating-item">
-                  <div className="vehicle-details__prime-rating-label-wrapper">
-                    <span className="vehicle-details__prime-rating-label-top">MotorTrend</span>
-                    <span className="vehicle-details__prime-rating-label-bottom">Rating</span>
-                  </div>
-                  <img
-                    src={MT_BRAND_ICON_WHITE}
-                    alt="MotorTrend"
-                    className="vehicle-details__prime-rating-icon vehicle-details__prime-rating-icon--mt"
-                  />
-                  <span className="vehicle-details__prime-rating-value">{formatScore(vehicleData.staffRating)}</span>
-                </div>
-                <div className="vehicle-details__prime-rating-item vehicle-details__prime-rating-item--community">
-                  <div className="vehicle-details__prime-rating-label-wrapper">
-                    <span className="vehicle-details__prime-rating-label-top">Rating</span>
-                    <span className="vehicle-details__prime-rating-label-bottom">Reviews</span>
-                  </div>
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    role="img"
-                    aria-label="Community rating star"
-                    className="vehicle-details__prime-rating-icon"
-                  >
-                    <path
-                      d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                      fill="var(--color-rating-community, #33C4FF)"
-                    />
-                  </svg>
-                  <span className="vehicle-details__prime-rating-value">
-                    {(vehicleData.communityRating).toFixed(1)}
-                  </span>
-                </div>
-              </div>
-              <button
-                className="vehicle-details__prime-cta"
-                onClick={() => {
-                  const listingsSection = document.querySelector('.vehicle-details__listings');
-                  if (listingsSection) {
-                    listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-              >
-                See Local Listings
-              </button>
-            </div>
-          </div>
-
-        </>
-      )}
-
       {/* Content Layout */}
-      <div className={`vehicle-details__content-layout ${isPrimeTemplate ? 'vehicle-details__content-layout--prime' : ''}`}>
+      <div className="vehicle-details__content-layout">
         {/* Left Content */}
         <div className="vehicle-details__left-content">
-          {/* Breadcrumbs, Social Icons, and Save Button (hidden for prime template) */}
-          {!isPrimeTemplate && (
-            <div className="vehicle-details__top-section">
+          {/* Breadcrumbs, Social Icons, and Save Button */}
+          <div className="vehicle-details__top-section">
               <div className="vehicle-details__breadcrumbs">
                 <Link to="/">Home</Link>
                 <span> / </span>
@@ -1476,18 +1270,10 @@ export const VehicleDetails: React.FC = () => {
                   </div>
                 </div>
               </div>
-              {/* HIDDEN: ArticleReactions thumbs up
-                <ArticleReactions
-                  articleSlug={`${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase()}
-                  vehicleName={vehicleName}
-                />
-                */}
-            </div>
-          )}
+          </div>
 
-          {/* Vehicle Title and Year Selection (hidden for prime template) */}
-          {!isPrimeTemplate && (
-            <div className="vehicle-details__title-section">
+          {/* Vehicle Title and Year Selection */}
+          <div className="vehicle-details__title-section">
               <div className="vehicle-details__title-row">
                 <h1 className="vehicle-details__title">
                   {displayName}
@@ -1515,12 +1301,10 @@ export const VehicleDetails: React.FC = () => {
                   <span>{vehicleData.award}</span>
                 </div>
               </div>
-            </div>
-          )}
+          </div>
 
-          {/* Ratings Section (hidden for prime template since ratings show on hero) */}
-          {!isPrimeTemplate && (
-            <div ref={ratingsBarRef} className="vehicle-details__rating-bar">
+          {/* Ratings Section */}
+          <div ref={ratingsBarRef} className="vehicle-details__rating-bar">
               {/* 1. MotorTrend Rating */}
               <Popover
                 content={
@@ -1677,11 +1461,9 @@ export const VehicleDetails: React.FC = () => {
                   Rate This Vehicle{userRating > 0 && <span className="vehicle-details__rating-highlight"> ({(userRating / 20) % 1 === 0 ? (userRating / 20) : (userRating / 20).toFixed(1)}/5)</span>}
                 </div>
               </div>
-            </div>
-          )}
-          {/* Hero Image (hidden for prime template) */}
-          {!isPrimeTemplate && (
-            <div className="vehicle-details__hero">
+          </div>
+          {/* Hero Image */}
+          <div className="vehicle-details__hero">
               <div
                 className="vehicle-details__hero-image"
                 onClick={() => setIsGalleryOpen(true)}
@@ -1713,8 +1495,7 @@ export const VehicleDetails: React.FC = () => {
                   />
                 )}
               </div>
-            </div>
-          )}
+          </div>
 
           {/* Price and Actions */}
           <div className="vehicle-details__price-section">
@@ -1738,12 +1519,10 @@ export const VehicleDetails: React.FC = () => {
                 <Icon name="bookmark_border" variant={isSaved ? 'filled' : 'outlined'} size={20} />
                 <span>{isSaved ? 'Saved!' : 'Save'}</span>
               </button>
-              {!isPrimeTemplate && (
-                <button className="vehicle-details__cta-primary">
-                  <Icon name="search" size={20} />
-                  <span>See Local Listings</span>
-                </button>
-              )}
+              <button className="vehicle-details__cta-primary">
+                <Icon name="search" size={20} />
+                <span>See Local Listings</span>
+              </button>
             </div>
           </div>
 
