@@ -88,7 +88,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
   const scoreStarIconStyle: React.CSSProperties = { width: '100%', height: '100%', objectFit: 'contain' };
   const ratingNumberStyle: React.CSSProperties = { position: 'absolute', top: '83px', left: '50%', transform: 'translate(-50%, -55%)', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '48px', lineHeight: 1, color: 'var(--color-white, #FFFFFF)', textShadow: '0 2px 8px rgba(0,0,0,0.3)', zIndex: 2, letterSpacing: '-1px' };
   const titleWrapperStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '16px' };
-  const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '14px', lineHeight: 1.4, color: 'var(--color-rating-motortrend, #FFB74D)', margin: 0, textTransform: 'uppercase', letterSpacing: '2px' };
+  const titleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '14px', lineHeight: 1.4, color: 'var(--color-rating-community, #33CCFF)', margin: 0, textTransform: 'uppercase', letterSpacing: '2px' };
   const vehicleNameStyle: React.CSSProperties = { fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '28px', lineHeight: 1.2, color: 'var(--color-white, #FFFFFF)', margin: '0 0 8px', maxWidth: '90%' };
   const closeBtnStyle: React.CSSProperties = { background: isCloseHovered ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px', cursor: 'pointer', borderRadius: 'var(--border-radius-circle, 50%)', color: 'var(--color-white, #FFFFFF)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '24px', right: '24px', transform: isCloseHovered ? 'rotate(90deg)' : 'none' };
   const contentStyle: React.CSSProperties = { padding: '32px 40px 0', textAlign: 'center', width: '100%', boxSizing: 'border-box' };
@@ -111,7 +111,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
           <div style={titleSectionStyle}>
             <div style={mainRatingStyle}>
               <div style={scoreStarStyle}>
-                <Icon name="star" variant="filled" size={140} style={{ ...scoreStarIconStyle, color: 'var(--color-rating-motortrend, #FFB74D)' }} />
+                <Icon name="star" variant="filled" size={140} style={{ ...scoreStarIconStyle, color: 'var(--color-rating-community, #33CCFF)' }} />
                 <span style={ratingNumberStyle}>{hoveredRating > 0 ? hoveredRating / 20 : (selectedRating > 0 ? selectedRating / 20 : '0')}</span>
               </div>
             </div>
@@ -150,7 +150,7 @@ export const RatingModal: React.FC<RatingModalProps> = ({
                         name="star"
                         variant={showFullStar || showHalfStar ? 'filled' : 'outlined'}
                         size={48}
-                        style={{ ...starIconStyle, color: 'var(--color-rating-motortrend, #FFB74D)', opacity: showHalfStar ? 0.5 : 1 }}
+                        style={{ ...starIconStyle, color: 'var(--color-rating-community, #33CCFF)', opacity: showHalfStar ? 0.5 : 1 }}
                       />
                     </div>
                     <button style={starClickStyle(true)} onClick={() => handleStarClick(oddRating)} onMouseEnter={() => handleStarHover(oddRating)} onMouseLeave={handleStarLeave} aria-label={`Rate ${oddRating}`} />

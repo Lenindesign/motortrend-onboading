@@ -27,8 +27,8 @@
 }
 
 .bracket-voting__eyebrow {
-  background: #fdebed;
-  color: var(--color-primary-1);
+  background: var(--color-neutrals-1, #141416);
+  color: var(--color-white, #FFFFFF);
 }
 
 .bracket-voting__pill {
@@ -67,7 +67,7 @@
 }
 
 .bracket-voting__progress .is-current {
-  border-color: var(--color-primary-1);
+  border-color: var(--color-rating-community, #33CCFF);
   color: var(--color-neutrals-2);
   font-weight: 600;
 }
@@ -121,24 +121,24 @@
 }
 
 .bracket-voting__option em {
-  color: var(--color-primary-1);
+  color: var(--color-rating-community, #33CCFF);
   font-size: 11px;
   font-style: normal;
   font-weight: 700;
 }
 
 .bracket-voting__option.is-selected {
-  color: var(--color-primary-1);
+  color: var(--color-rating-community, #33CCFF);
 }
 
 .bracket-voting__bar {
   position: absolute;
   inset: 0 auto 0 0;
-  background: #f7dadd;
+  background: #d6f3ff;
 }
 
 .bracket-voting__option.is-selected .bracket-voting__bar {
-  background: #f7dadd;
+  background: #d6f3ff;
 }
 
 .bracket-voting__votes {

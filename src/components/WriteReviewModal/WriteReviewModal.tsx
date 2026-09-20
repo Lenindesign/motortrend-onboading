@@ -10,6 +10,7 @@ import { Button, TextField } from '../../design-system/components';
 import { useRating } from '../../contexts/RatingContext';
 import { computeOverallRating } from '../../utils/ratingUtils';
 import { getVehicleBodyStyle } from '../../utils/vehicleBodyStyles';
+import Icon from '../Icon';
 import type { ReviewData, VerificationLevel, VehicleRelationship } from '../UserReviews/UserReviews';
 
 interface WriteReviewModalProps {
@@ -1087,25 +1088,12 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
       return (
         <div key={starPosition} style={wrapperSize}>
           <div style={visualSize}>
-            {showHalfStar ? (
-              <img 
-                src="https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg"
-                alt={`${oddRating} star rating`}
-                style={iconSize}
-              />
-            ) : showFullStar ? (
-              <img 
-                src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                alt={`${evenRating} star rating`}
-                style={iconSize}
-              />
-            ) : (
-              <img 
-                src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
-                alt="Empty star"
-                style={iconSize}
-              />
-            )}
+            <Icon
+              name="star"
+              variant={showHalfStar || showFullStar ? 'filled' : 'outlined'}
+              size={size === 'large' ? 36 : 24}
+              style={{ ...iconSize, color: 'var(--color-rating-community, #33CCFF)', opacity: showHalfStar ? 0.5 : 1 }}
+            />
           </div>
           <button
             style={{

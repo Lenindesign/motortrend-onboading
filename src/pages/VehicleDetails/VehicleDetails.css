@@ -1617,6 +1617,29 @@
   line-height: 1;
 }
 
+.vehicle-details__relationship-radio {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.65;
+}
+
+.vehicle-details__relationship-radio::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
 .vehicle-details__relationship-btn:hover {
   background-color: var(--color-neutrals-6);
 }
@@ -1631,6 +1654,15 @@
   color: var(--color-white);
   border-color: var(--color-neutrals-1);
   box-shadow: var(--shadow-depth-2);
+}
+
+.vehicle-details__relationship-btn.is-selected .vehicle-details__relationship-radio {
+  opacity: 1;
+}
+
+.vehicle-details__relationship-btn.is-selected .vehicle-details__relationship-radio::after {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .vehicle-details__sidebar-poll {

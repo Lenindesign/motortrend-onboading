@@ -505,10 +505,42 @@ const RankingsAndAwards: React.FC = () => {
   const selectedYear = availableYears[0] ?? '2026';
   const bodyStyleRows = useMemo(() => getBodyStyleRows(selectedYear), [selectedYear]);
   const subnavTrackRef = useRef<HTMLDivElement>(null);
+  const bodyRowRefs = useRef<Record<string, HTMLElement | null>>({});
+  const subnavLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const [activeCategory, setActiveCategory] = useState(bodyStyleRows[0]?.key.toLowerCase() ?? 'suv');
   const [openSubcategory, setOpenSubcategory] = useState<string | null>(null);
   const scrollSubnav = (direction: 'left' | 'right') => {
     subnavTrackRef.current?.scrollBy({ left: direction === 'left' ? -360 : 360, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const sections = bodyStyleRows
+      .map((row) => bodyRowRefs.current[row.key.toLowerCase()])
+      .filter((section): section is HTMLElement => Boolean(section));
+    if (!sections.length) return undefined;
+
+    const observer = new IntersectionObserver((entries) => {
+      const visibleSections = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      const nextSection = visibleSections[0]?.target as HTMLElement | undefined;
+      if (nextSection) setActiveCategory(nextSection.id);
+    }, { rootMargin: '-57px 0px -20% 0px', threshold: 0 });
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [bodyStyleRows]);
+
+  useEffect(() => {
+    const track = subnavTrackRef.current;
+    const link = subnavLinkRefs.current[activeCategory];
+    if (!track || !link) return;
+
+    const linkCenter = link.offsetLeft + (link.offsetWidth / 2);
+    track.scrollTo({ left: Math.max(0, linkCenter - (track.clientWidth / 2)), behavior: 'smooth' });
+  }, [activeCategory]);
+
+  const activeNavIndex = RANKINGS_NAV_ITEMS.findIndex((item) => item.href === `#${activeCategory}`);
   // The overview represents the complete rankings catalog, not just the three
   // featured #1 cards rendered in each visible row. Include every vehicle in
   // the local rankings dataset and every primary destination in the category
@@ -550,7 +582,16 @@ const RankingsAndAwards: React.FC = () => {
           </button>
           <div className="rankings-awards__subnav-track" ref={subnavTrackRef}>
             {RANKINGS_NAV_ITEMS.map((item, index) => (
-              <a className={`rankings-awards__subnav-link${index === 0 ? ' is-active' : ''}`} href={item.href} key={item.label}>
+              <a
+                className={`rankings-awards__subnav-link${index === activeNavIndex ? ' is-active' : ''}`}
+                href={item.href}
+                key={item.label}
+                ref={(link) => {
+                  const target = item.href.slice(1);
+                  const firstMatchingIndex = RANKINGS_NAV_ITEMS.findIndex((navItem) => navItem.href === item.href);
+                  if (index === firstMatchingIndex) subnavLinkRefs.current[target] = link;
+                }}
+              >
                 <RankingCategoryIcon src={item.image} />
                 <span>{item.label}</span>
               </a>
@@ -567,7 +608,11 @@ const RankingsAndAwards: React.FC = () => {
       <div className="rankings-awards__container rankings-awards__body-rows">
         {bodyStyleRows.map((row, index) => (
           <React.Fragment key={row.key}>
-            <section className="rankings-awards__body-row" id={row.key.toLowerCase()}>
+            <section
+              className="rankings-awards__body-row"
+              id={row.key.toLowerCase()}
+              ref={(section) => { bodyRowRefs.current[row.key.toLowerCase()] = section; }}
+            >
             <div className="rankings-awards__body-row-intro">
               <img className="rankings-awards__body-row-icon" src={row.icon} alt="" />
               <h2>{row.title}</h2>
@@ -580,7 +625,7 @@ const RankingsAndAwards: React.FC = () => {
                 aria-expanded={openSubcategory === row.key}
                 onClick={() => setOpenSubcategory(openSubcategory === row.key ? null : row.key)}
               >
-                <span>{rankedSubcategoryCount(row.key)} Subcategories</span>
+                <span>{rankedSubcategoryCount(row.key)} {row.key === 'SUV' ? 'SUV Types' : `${row.key} Types`}</span>
                 <Icon name={openSubcategory === row.key ? 'expand_less' : 'expand_more'} size={18} />
               </button>
               {openSubcategory === row.key && (

@@ -359,6 +359,7 @@ html {
   font-size: 24px;
   font-weight: 800;
   line-height: 1.15;
+  text-align: left;
 }
 
 .ranking-category-page__subcategory-section-header > a {
@@ -747,7 +748,7 @@ html {
   gap: 2px;
   flex-shrink: 0;
   border-radius: 4px;
-  background: var(--color-neutrals-1, #141416);
+  background: var(--color-neutrals-3, #353945);
   color: var(--color-neutrals-7, #fff);
   white-space: nowrap;
 }
@@ -882,6 +883,10 @@ html {
     grid-template-columns: 1fr;
   }
 
+  .ranking-category-page__subcategory-section-cards {
+    grid-template-columns: 1fr;
+  }
+
   .ranking-category-page__sidebar {
     position: static;
     order: 2;
@@ -897,6 +902,10 @@ html {
 }
 
 @media (max-width: 600px) {
+  .ranking-category-page .rankings-awards__subnav {
+    position: static;
+  }
+
   .ranking-category-page__hero {
     height: 240px;
     min-height: 240px;
@@ -904,6 +913,12 @@ html {
 
   .ranking-category-page__hero-kicker {
     font-size: 14px;
+  }
+
+  .ranking-category-page__hero h1 {
+    max-width: 100%;
+    font-size: 28px;
+    line-height: 1;
   }
 
   .ranking-category-page__hero-description p {
@@ -920,13 +935,25 @@ html {
   }
 
   .ranking-category-page__subcategory-row {
-    top: 128px;
+    top: 57px;
   }
 
   .ranking-category-page__subcategory-section-header {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .ranking-category-page__subcategory-section-ad {
+    width: 300px;
+    min-height: 250px;
+    height: 250px;
+    margin-inline: auto;
+    padding-top: 0;
+  }
+
+  .ranking-category-page__subcategory-breaker-ad {
+    display: none;
   }
 
   .ranking-category-page__intro {

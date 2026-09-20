@@ -1354,7 +1354,7 @@ export const VehicleDetails: React.FC = () => {
                   showTooltipsBelow={true}
                 />
                 <button className={`vehicle-details__save-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
-                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                  <Icon name="bookmark_border" variant={isSaved ? 'filled' : 'outlined'} size={20} />
                   <span>{isSaved ? 'Saved!' : 'Save'}</span>
                 </button>
               </div>
@@ -1735,7 +1735,7 @@ export const VehicleDetails: React.FC = () => {
                 <span>Specs</span>
               </button>
               <button className={`vehicle-details__action-btn ${isSaved ? 'saved' : ''}`} onClick={handleSave}>
-                <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                <Icon name="bookmark_border" variant={isSaved ? 'filled' : 'outlined'} size={20} />
                 <span>{isSaved ? 'Saved!' : 'Save'}</span>
               </button>
               {!isPrimeTemplate && (
@@ -1758,16 +1758,20 @@ export const VehicleDetails: React.FC = () => {
               <button
                 type="button"
                 className={`vehicle-details__relationship-btn ${vehicleRelationship === 'own' ? 'is-selected' : ''}`}
+                aria-pressed={vehicleRelationship === 'own'}
                 onClick={() => handleVehicleRelationship(vehicleRelationship === 'own' ? null : 'own')}
               >
+                <span className="vehicle-details__relationship-radio" aria-hidden="true" />
                 <span className="vehicle-details__relationship-emoji" aria-hidden="true">🔑</span>
                 I own this
               </button>
               <button
                 type="button"
                 className={`vehicle-details__relationship-btn ${vehicleRelationship === 'want' ? 'is-selected' : ''}`}
+                aria-pressed={vehicleRelationship === 'want'}
                 onClick={() => handleVehicleRelationship(vehicleRelationship === 'want' ? null : 'want')}
               >
+                <span className="vehicle-details__relationship-radio" aria-hidden="true" />
                 <span className="vehicle-details__relationship-emoji" aria-hidden="true">😍</span>
                 I'm shopping for one
               </button>
