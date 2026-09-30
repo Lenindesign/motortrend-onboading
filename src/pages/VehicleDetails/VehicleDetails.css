@@ -535,6 +535,17 @@
   margin-bottom: var(--spacing-3);
 }
 
+.vehicle-details__poll-preview + .vehicle-details__poll-preview {
+  margin-top: var(--spacing-3);
+}
+
+.vehicle-details__poll-preview-label {
+  margin: 0 0 var(--spacing-component-sm);
+  color: var(--color-neutrals-4);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
 /* Top Section */
 .vehicle-details__top-section {
   display: flex;

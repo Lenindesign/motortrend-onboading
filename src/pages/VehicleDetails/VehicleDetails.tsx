@@ -1942,7 +1942,14 @@ export const VehicleDetails: React.FC = () => {
           <BracketVoting />
 
           <div className="vehicle-details__content-poll">
-            <PollOfTheDay variant="horizontal" />
+            <div className="vehicle-details__poll-preview">
+              <p className="vehicle-details__poll-preview-label">Preview · Not voted yet · With photos</p>
+              <PollOfTheDay variant="horizontal" previewBeforeVote />
+            </div>
+            <div className="vehicle-details__poll-preview">
+              <p className="vehicle-details__poll-preview-label">Preview · Not voted yet · No photos</p>
+              <PollOfTheDay variant="horizontal" previewBeforeVote showPhotos={false} />
+            </div>
           </div>
 
           {/* User Reviews */}
