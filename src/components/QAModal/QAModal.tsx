@@ -3,7 +3,7 @@
  * Modal for asking questions, viewing answers, and browsing common Q&A on article pages
  */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useId } from 'react';
 import {
   ArrowUp,
   ArrowsIn,
@@ -15,8 +15,10 @@ import {
   Question,
   SealCheck,
   ThumbsUp,
+  X,
 } from '@phosphor-icons/react';
 import { ModalShell } from '../atoms/ModalShell';
+import './QAModal.css';
 
 export interface QAItem {
   id: string;
@@ -64,12 +66,17 @@ export const QAModal: React.FC<QAModalProps> = ({
   onUpvoteQuestion,
   onUpvoteAnswer,
 }) => {
+  const instanceId = useId().replace(/:/g, '');
+  const titleId = `${instanceId}-title`;
+  const questionInputId = `${instanceId}-question-input`;
   const [activeTab, setActiveTab] = useState<'unanswered' | 'recent'>('recent');
   const [newQuestion, setNewQuestion] = useState('');
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const [submitMessage, setSubmitMessage] = useState('');
   const [hoveredUpvote, setHoveredUpvote] = useState<string | null>(null);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [votedIds, setVotedIds] = useState<string[]>([]);
@@ -92,19 +99,33 @@ export const QAModal: React.FC<QAModalProps> = ({
     if (hasVoted(id)) return;
     const nextVotes = [...votedIds, id];
     setVotedIds(nextVotes);
-    localStorage.setItem(votedStorageKey, JSON.stringify(nextVotes));
+    try {
+      localStorage.setItem(votedStorageKey, JSON.stringify(nextVotes));
+    } catch {
+      // Keep the vote available for the current session when storage is unavailable.
+    }
     callback();
   };
 
-  // Focus input when modal opens
+  // Move focus into the dialog and return it to the opener when it closes.
   useEffect(() => {
-    if (isOpen && questionInputRef.current) {
-      setTimeout(() => questionInputRef.current?.focus(), 300);
-    }
+    if (!isOpen) return;
+    previousFocusRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const focusTimer = window.setTimeout(() => questionInputRef.current?.focus(), 300);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      if (previousFocusRef.current?.isConnected) previousFocusRef.current.focus();
+    };
   }, [isOpen]);
 
   // Sort questions based on active tab
-  const sortedQuestions = [...questions].sort((a, b) => {
+  const questionsForTab = activeTab === 'unanswered'
+    ? questions.filter((question) => question.answers.length === 0)
+    : questions;
+  const sortedQuestions = [...questionsForTab].sort((a, b) => {
     if (activeTab === 'recent') return new Date(b.date).getTime() - new Date(a.date).getTime();
     if (activeTab === 'unanswered') return a.answers.length - b.answers.length;
     return 0;
@@ -115,6 +136,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     setIsSubmitting(true);
     onSubmitQuestion(newQuestion.trim());
     setNewQuestion('');
+    setSubmitMessage('Your question was posted.');
     setTimeout(() => {
       setIsSubmitting(false);
     }, 500);
@@ -152,8 +174,8 @@ export const QAModal: React.FC<QAModalProps> = ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '34px',
-    height: '34px',
+    width: '44px',
+    height: '44px',
     padding: 0,
     background: 'transparent',
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
@@ -199,7 +221,6 @@ export const QAModal: React.FC<QAModalProps> = ({
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
     borderRadius: 'var(--border-radius-md, 8px)',
     resize: 'vertical',
-    outline: 'none',
     transition: 'border-color 150ms ease',
     boxSizing: 'border-box',
   };
@@ -211,26 +232,10 @@ export const QAModal: React.FC<QAModalProps> = ({
     marginTop: '10px',
   };
 
-  const askBtnStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '10px 20px',
-    background: newQuestion.trim() ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-5, #B1B5C3)',
-    border: 'none',
-    borderRadius: 'var(--border-radius-md, 8px)',
-    fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontWeight: 600,
-    fontSize: '14px',
-    color: 'var(--color-white, #FFFFFF)',
-    cursor: newQuestion.trim() ? 'pointer' : 'not-allowed',
-    transition: 'all 150ms ease',
-  };
-
   const hintStyle: React.CSSProperties = {
     fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '11px',
-    color: 'var(--color-neutrals-5, #B1B5C3)',
+    fontSize: '12px',
+    color: 'var(--color-neutrals-4, #6E7481)',
   };
 
   const tabsStyle: React.CSSProperties = {
@@ -248,7 +253,8 @@ export const QAModal: React.FC<QAModalProps> = ({
     color: activeTab === tab ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-4, #6E7481)',
     background: hoveredTab === tab ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
     border: 'none',
-    borderBottom: activeTab === tab ? '2px solid var(--color-neutrals-1, #141416)' : '2px solid transparent',
+    borderBottom: activeTab === tab ? '2px solid var(--color-primary-1, #E90C17)' : '2px solid transparent',
+    minHeight: '44px',
     cursor: 'pointer',
     transition: 'all 150ms ease',
     borderRadius: '4px 4px 0 0',
@@ -283,6 +289,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     cursor: voted ? 'default' : 'pointer',
     transition: 'all 150ms ease',
     minWidth: '40px',
+    minHeight: '44px',
     color: count > 0 ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)',
     flexShrink: 0,
   });
@@ -300,6 +307,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
+    flexWrap: 'wrap',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '12px',
     color: 'var(--color-neutrals-4, #6E7481)',
@@ -371,7 +379,6 @@ export const QAModal: React.FC<QAModalProps> = ({
     backgroundColor: 'var(--color-neutrals-7, #F4F5F6)',
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
     borderRadius: 'var(--border-radius-md, 8px)',
-    outline: 'none',
     resize: 'none',
     minHeight: '40px',
     boxSizing: 'border-box' as const,
@@ -381,13 +388,13 @@ export const QAModal: React.FC<QAModalProps> = ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '40px',
-    height: '40px',
-    background: answerText.trim() ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-5, #B1B5C3)',
+    width: '44px',
+    height: '44px',
+    background: answerText.trim() ? 'var(--color-neutrals-1, #141416)' : 'var(--color-neutrals-6, #E6E8EC)',
     border: 'none',
     borderRadius: 'var(--border-radius-md, 8px)',
     cursor: answerText.trim() ? 'pointer' : 'not-allowed',
-    color: 'white',
+    color: answerText.trim() ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-3, #353945)',
     flexShrink: 0,
     transition: 'all 150ms ease',
   };
@@ -398,7 +405,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     gap: '4px',
     background: 'none',
     border: 'none',
-    padding: '4px 0',
+    padding: '8px 0',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '13px',
     fontWeight: 500,
@@ -433,42 +440,63 @@ export const QAModal: React.FC<QAModalProps> = ({
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}
-      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : '640px'}
+      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : 'min(640px, calc(100vw - 32px))'}
       maxWidth={isExpanded ? '1100px' : '640px'}
       maxHeight={isExpanded ? 'calc(100vh - 32px)' : '90vh'}
+      ariaLabelledBy={titleId}
+      className="qa-modal__panel"
       style={isExpanded ? { height: 'calc(100vh - 32px)' } : undefined}
     >
       {/* Header */}
-      <div style={headerStyle}>
+      <div className="qa-modal__header" style={headerStyle}>
         <div style={titleRowStyle}>
-          <h2 style={titleStyle}>
-            <ChatCircle size={24} weight="regular" />
+          <h2 id={titleId} className="qa-modal__title" style={titleStyle}>
+            <ChatCircle size={24} weight="regular" color="var(--color-primary-1)" />
             Q&A
             <span style={countBadgeStyle}>{questions.length}</span>
           </h2>
-          <button
-            type="button"
-            style={modalActionStyle}
-            onClick={() => setIsExpanded((expanded) => !expanded)}
-            aria-label={isExpanded ? 'Shrink Q&A modal' : 'Expand Q&A modal'}
-            title={isExpanded ? 'Shrink' : 'Expand'}
-          >
-            {isExpanded ? <ArrowsIn size={18} weight="regular" /> : <ArrowsOut size={18} weight="regular" />}
-          </button>
+          <div className="qa-modal__header-actions">
+            <button
+              type="button"
+              className="qa-modal__expand"
+              style={modalActionStyle}
+              onClick={() => setIsExpanded((expanded) => !expanded)}
+              aria-label={isExpanded ? 'Shrink Q&A modal' : 'Expand Q&A modal'}
+              title={isExpanded ? 'Shrink' : 'Expand'}
+            >
+              {isExpanded ? <ArrowsIn size={18} weight="regular" /> : <ArrowsOut size={18} weight="regular" />}
+            </button>
+            <button
+              type="button"
+              className="qa-modal__close"
+              style={modalActionStyle}
+              onClick={onClose}
+              aria-label="Close Q&A modal"
+              title="Close"
+            >
+              <X size={18} weight="regular" />
+            </button>
+          </div>
         </div>
         <p style={subtitleStyle}>
-          Ask questions about <strong>{vehicleName || articleTitle}</strong> and get answers from editors and the community.
+          Ask about <strong>{vehicleName || articleTitle}</strong> and get answers from MotorTrend editors and the community.
         </p>
       </div>
 
       {/* Ask a Question */}
-      <div style={askSectionStyle}>
+      <div className="qa-modal__ask" style={askSectionStyle}>
+        <label className="qa-modal__field-label" htmlFor={questionInputId}>Ask the community</label>
         <textarea
+          id={questionInputId}
           ref={questionInputRef}
+          className="qa-modal__textarea"
           style={textareaStyle}
-          placeholder="Ask a question about this vehicle or article..."
+          placeholder="What would you like to know?"
           value={newQuestion}
-          onChange={(e) => setNewQuestion(e.target.value)}
+          onChange={(e) => {
+            setNewQuestion(e.target.value);
+            if (submitMessage) setSubmitMessage('');
+          }}
           onKeyDown={(e) => handleKeyDown(e, () => handleSubmitQuestion())}
           onFocus={(e) => {
             e.currentTarget.style.borderColor = 'var(--color-neutrals-3, #353945)';
@@ -477,10 +505,11 @@ export const QAModal: React.FC<QAModalProps> = ({
             e.currentTarget.style.borderColor = 'var(--color-neutrals-6, #E6E8EC)';
           }}
         />
-        <div style={askBtnRowStyle}>
-          <span style={hintStyle}>Press {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'} + Enter to submit</span>
+        <div className="qa-modal__ask-actions" style={askBtnRowStyle}>
+          <span className="qa-modal__hint" style={hintStyle}>Press {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'} + Enter to submit</span>
           <button
-            style={askBtnStyle}
+            type="button"
+            className="qa-modal__submit cta cta--primary cta--default"
             onClick={() => handleSubmitQuestion()}
             disabled={!newQuestion.trim() || isSubmitting}
           >
@@ -488,14 +517,17 @@ export const QAModal: React.FC<QAModalProps> = ({
             <PaperPlaneTilt size={16} weight="regular" />
           </button>
         </div>
+        <p className="qa-modal__status" role="status" aria-live="polite">{submitMessage}</p>
       </div>
 
       {/* Tabs */}
-      <div style={tabsStyle}>
+      <div className="qa-modal__tabs" style={tabsStyle} role="group" aria-label="Filter questions">
         {(['recent', 'unanswered'] as const).map((tab) => (
           <button
             key={tab}
+            type="button"
             style={getTabStyle(tab)}
+            aria-pressed={activeTab === tab}
             onClick={() => setActiveTab(tab)}
             onMouseEnter={() => setHoveredTab(tab)}
             onMouseLeave={() => setHoveredTab(null)}
@@ -506,23 +538,30 @@ export const QAModal: React.FC<QAModalProps> = ({
       </div>
 
       {/* Questions List */}
-      <div style={questionsListStyle}>
+      <div className="qa-modal__questions-list" style={questionsListStyle}>
         {sortedQuestions.length === 0 ? (
           <div style={emptyStyle}>
             <Question size={40} weight="regular" color="var(--color-neutrals-5, #B1B5C3)" style={{ marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
-            <p style={{ margin: '0 0 4px', fontWeight: 600, color: 'var(--color-neutrals-2, #23262F)' }}>No questions yet</p>
-            <p style={{ margin: 0 }}>Be the first to ask about this {vehicleName ? 'vehicle' : 'article'}!</p>
+            <p style={{ margin: '0 0 4px', fontWeight: 600, color: 'var(--color-neutrals-2, #23262F)' }}>
+              {activeTab === 'unanswered' ? 'No unanswered questions' : 'No questions yet'}
+            </p>
+            <p style={{ margin: 0 }}>
+              {activeTab === 'unanswered'
+                ? 'You’re all caught up.'
+                : `Be the first to ask about this ${vehicleName ? 'vehicle' : 'article'}!`}
+            </p>
           </div>
         ) : (
           sortedQuestions.map((q) => (
             <div key={q.id} style={questionCardStyle}>
               <div style={questionHeaderStyle}>
                 {/* Upvote */}
-                <button
-                  style={upvoteBtnStyle(q.id, q.upvotes, hasVoted(q.id))}
-                  onClick={() => recordVote(q.id, () => onUpvoteQuestion(q.id))}
-                  disabled={hasVoted(q.id)}
-                  aria-label={hasVoted(q.id) ? 'You upvoted this question' : 'Upvote question'}
+                  <button
+                    type="button"
+                    style={upvoteBtnStyle(q.id, q.upvotes, hasVoted(q.id))}
+                    onClick={() => recordVote(q.id, () => onUpvoteQuestion(q.id))}
+                    disabled={hasVoted(q.id)}
+                    aria-label={hasVoted(q.id) ? `You upvoted: ${q.question}` : `Upvote question: ${q.question}`}
                   onMouseEnter={() => setHoveredUpvote(q.id)}
                   onMouseLeave={() => setHoveredUpvote(null)}
                 >
@@ -544,8 +583,11 @@ export const QAModal: React.FC<QAModalProps> = ({
                   {/* Answers Toggle */}
                   {q.answers.length > 0 && (
                     <button
+                      type="button"
+                      className="qa-modal__answers-toggle"
                       style={answersToggleStyle}
                       onClick={() => setExpandedQuestion(expandedQuestion === q.id ? null : q.id)}
+                      aria-expanded={expandedQuestion === q.id}
                     >
                       {expandedQuestion === q.id ? <CaretUp size={18} weight="regular" /> : <CaretDown size={18} weight="regular" />}
                       {expandedQuestion === q.id ? 'Hide answers' : `View ${q.answers.length} ${q.answers.length === 1 ? 'answer' : 'answers'}`}
@@ -554,7 +596,7 @@ export const QAModal: React.FC<QAModalProps> = ({
 
                   {/* Answers Section */}
                   {(expandedQuestion === q.id || q.answers.length === 0) && (
-                    <div style={answersSectionStyle}>
+                    <div className="qa-modal__answers" style={answersSectionStyle}>
                       {q.answers.map((answer) => (
                         <div key={answer.id} style={answerCardStyle}>
                           <div style={answerAvatarStyle}>
@@ -579,6 +621,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                             </div>
                             <p style={answerTextStyle}>{answer.text}</p>
                             <button
+                              type="button"
                               style={{ 
                                 ...upvoteBtnStyle(`answer-${answer.id}`, answer.upvotes, hasVoted(`answer-${answer.id}`)),
                                 flexDirection: 'row',
@@ -589,7 +632,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                               }}
                               onClick={() => recordVote(`answer-${answer.id}`, () => onUpvoteAnswer(q.id, answer.id))}
                               disabled={hasVoted(`answer-${answer.id}`)}
-                              aria-label={hasVoted(`answer-${answer.id}`) ? 'You upvoted this answer' : 'Upvote answer'}
+                              aria-label={hasVoted(`answer-${answer.id}`) ? `You liked this answer by ${answer.author}` : `Like answer by ${answer.author}`}
                               onMouseEnter={() => setHoveredUpvote(`answer-${answer.id}`)}
                               onMouseLeave={() => setHoveredUpvote(null)}
                             >
@@ -603,7 +646,9 @@ export const QAModal: React.FC<QAModalProps> = ({
                       {/* Answer Input */}
                       <div style={answerInputRowStyle}>
                         <textarea
+                          className="qa-modal__answer-input"
                           style={answerInputStyle}
+                          aria-label={`Write an answer to: ${q.question}`}
                           placeholder="Write an answer..."
                           value={expandedQuestion === q.id ? answerText : ''}
                           onChange={(e) => setAnswerText(e.target.value)}
@@ -611,9 +656,12 @@ export const QAModal: React.FC<QAModalProps> = ({
                           rows={1}
                         />
                         <button
+                          type="button"
+                          className="qa-modal__answer-submit"
                           style={sendBtnStyle}
                           onClick={() => handleSubmitAnswer(q.id)}
                           disabled={!answerText.trim()}
+                          aria-label={`Post answer to: ${q.question}`}
                         >
                           <PaperPlaneTilt size={16} weight="regular" />
                         </button>

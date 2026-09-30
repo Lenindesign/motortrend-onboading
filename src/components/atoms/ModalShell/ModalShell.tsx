@@ -29,6 +29,8 @@ export interface ModalShellProps {
   closeOnEscape?: boolean;
   /** Custom className for the modal content */
   className?: string;
+  /** ID of the heading that names the dialog */
+  ariaLabelledBy?: string;
   /** Animation variant */
   animation?: 'fade-slide' | 'slide-right';
   /** z-index for the modal (default: 1000) */
@@ -103,6 +105,7 @@ export const ModalShell: React.FC<ModalShellProps> = ({
   closeOnOverlayClick = true,
   closeOnEscape = true,
   className = '',
+  ariaLabelledBy,
   animation = 'fade-slide',
   zIndex = 1000,
   style
@@ -147,6 +150,26 @@ export const ModalShell: React.FC<ModalShellProps> = ({
     }
   };
 
+  const handleDialogKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Tab') return;
+
+    const focusableElements = Array.from(e.currentTarget.querySelectorAll<HTMLElement>(
+      'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => element.getClientRects().length > 0);
+
+    if (focusableElements.length === 0) return;
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault();
+      lastElement.focus();
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault();
+      firstElement.focus();
+    }
+  };
+
   // Build overlay styles
   const shellStyle: React.CSSProperties = {
     position: 'fixed',
@@ -181,8 +204,11 @@ export const ModalShell: React.FC<ModalShellProps> = ({
     <div
       style={shellStyle}
       onClick={handleOverlayClick}
+      onKeyDown={handleDialogKeyDown}
       role="dialog"
       aria-modal="true"
+      aria-labelledby={ariaLabelledBy}
+      tabIndex={-1}
     >
       <div className={className} style={contentStyle}>
         {children}
@@ -190,5 +216,4 @@ export const ModalShell: React.FC<ModalShellProps> = ({
     </div>
   );
 };
-
 
