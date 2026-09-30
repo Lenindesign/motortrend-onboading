@@ -510,7 +510,7 @@
 .vehicle-details__content-layout--prime {
   max-width: 1280px;
   margin: 0 auto;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
   padding: 32px 16px 0;
 }
 
@@ -531,19 +531,8 @@
   min-width: 0;
 }
 
-.vehicle-details__below-content-ad {
-  position: sticky;
-  top: 24px;
-  width: 300px;
-  height: 600px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 12px;
-  background: var(--color-neutrals-7);
-  color: var(--color-neutrals-4);
-  font-size: 11px;
-  letter-spacing: 0.08em;
+.vehicle-details__content-poll {
+  margin-bottom: var(--spacing-3);
 }
 
 /* Top Section */
@@ -1669,37 +1658,6 @@
   margin-bottom: var(--spacing-5);
 }
 
-.vehicle-details__sidebar-poll .poll-of-the-day {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  padding: 20px;
-  border-top-width: 3px;
-}
-
-.vehicle-details__sidebar-poll .poll-of-the-day h2 {
-  font-size: 22px;
-  font-weight: var(--font-weight-semibold);
-}
-
-.vehicle-details__sidebar-poll .poll-of-the-day__intro p {
-  font-size: 13px;
-}
-
-.vehicle-details__sidebar-poll .poll-of-the-day__choices {
-  margin-top: 0;
-}
-
-.vehicle-details__sidebar-poll .poll-of-the-day__choice-content {
-  padding: 11px 12px;
-  font-size: 14px;
-}
-
-.vehicle-details__sidebar-poll .poll-of-the-day__meta {
-  grid-column: 1;
-  margin: 0;
-}
-
 .vehicle-details__price-drop {
   display: flex;
   align-items: center;
@@ -2048,6 +2006,13 @@
   gap: 4px;
 }
 
+.vehicle-details__listing-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-gap-sm);
+}
+
 .vehicle-details__listing-price {
   font-family: var(--font-heading);
   font-weight: var(--font-weight-semibold);
@@ -2059,6 +2024,24 @@
   font-family: var(--font-body);
   font-size: 14px;
   color: var(--color-neutrals-3);
+}
+
+.vehicle-details__listing-condition {
+  flex: none;
+  padding: var(--spacing-component-xs) var(--spacing-component-sm);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-neutrals-6);
+  color: var(--color-neutrals-3);
+  font-size: var(--font-size-xs);
+}
+
+.vehicle-details__listing-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-gap-sm);
+  color: var(--color-neutrals-3);
+  font-family: var(--font-body);
+  font-size: var(--font-size-xs);
 }
 
 .vehicle-details__listing-details {
@@ -2721,10 +2704,6 @@
 
   .vehicle-details__below-content-layout {
     grid-template-columns: 1fr;
-  }
-
-  .vehicle-details__below-content-ad {
-    display: none;
   }
 
   .vehicle-details__save-btn {

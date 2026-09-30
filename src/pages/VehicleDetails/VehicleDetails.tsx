@@ -23,12 +23,11 @@ import { useRating } from '../../contexts/RatingContext';
 import { type ReviewData } from '../../components/UserReviews';
 import { RatingDistributionTooltip, type RatingDistributionData } from '../../components/RatingDistributionTooltip';
 import { StaffRatingTooltip } from '../../components/StaffRatingTooltip';
-import { fetchVehicleListings, type VehicleListing } from '../../utils/vehicleListings';
 import { articles } from '../../utils/articles';
 import { PhotoGallery } from '../../components/PhotoGallery';
 import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import { Popover } from '../../components/atoms/Popover';
-import { LocalListingsSidebar } from '../../components/LocalListingsSidebar';
+import { LocalListingsSidebar, type LocalListing } from '../../components/LocalListingsSidebar';
 import { PollOfTheDay } from '../../components/PollOfTheDay/PollOfTheDay';
 import { BracketVoting } from '../../components/BracketVoting/BracketVoting';
 import { getLocalListings } from '../../utils/localListings';
@@ -69,7 +68,7 @@ export const VehicleDetails: React.FC = () => {
   const hideStaffTooltipTimeout = useRef<number | null>(null);
   const ratingsBarRef = useRef<HTMLDivElement>(null);
   const [communityRatingCount, setCommunityRatingCount] = useState(25);
-  const [listings, setListings] = useState<VehicleListing[]>([]);
+  const [localListings, setLocalListings] = useState<LocalListing[]>([]);
   const [isLoadingListings, setIsLoadingListings] = useState(true);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -233,27 +232,30 @@ export const VehicleDetails: React.FC = () => {
     }
   }, [authPromptContextId, isAuthLoading, isAuthenticated]);
 
-  // Generate local listings
-  const [localListings, setLocalListings] = useState<any[]>([]);
-
+  // Load one shared listings set for both the content well and sidebar.
   useEffect(() => {
+    let cancelled = false;
     const fetchListings = async () => {
-    const vehicleImage = apiVehicleData?.image || vehicleImageFor(vehicleName);
+      setIsLoadingListings(true);
+      const vehicleImage = apiVehicleData?.image || vehicleImageFor(vehicleName);
       try {
-        const listings = await getLocalListings(
+        const fetchedListings = await getLocalListings(
           decodedYear,
           decodedMake,
           decodedModel.replace(/-/g, ' '),
           vehicleImage
         );
-        setLocalListings(listings);
+        if (!cancelled) setLocalListings(fetchedListings);
       } catch (error) {
         console.error('❌ Error fetching listings:', error);
-        setLocalListings([]); // Set empty array on error
+        if (!cancelled) setLocalListings([]);
+      } finally {
+        if (!cancelled) setIsLoadingListings(false);
       }
     };
 
     fetchListings();
+    return () => { cancelled = true; };
   }, [decodedYear, decodedMake, decodedModel, apiVehicleData, vehicleName]);
 
   const displayName = vehicleName;
@@ -930,33 +932,6 @@ export const VehicleDetails: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vehicleName]);
-
-  // Fetch local listings when vehicle changes
-  useEffect(() => {
-    const loadListings = async () => {
-      setIsLoadingListings(true);
-      try {
-        const yearNum = parseInt(decodedYear) || new Date().getFullYear();
-        const fetchedListings = await fetchVehicleListings(yearNum, decodedMake, decodedModel, 4);
-        // Set images for listings using vehicleImageFor only as fallback
-        const listingsWithImages = fetchedListings.map((listing) => {
-          const listingVehicleName = `${listing.year} ${listing.make} ${listing.model}`;
-          return {
-            ...listing,
-            image: listing.image || vehicleImageFor(listingVehicleName)
-          };
-        });
-        setListings(listingsWithImages);
-      } catch (error) {
-        console.error('Error fetching listings:', error);
-        setListings([]);
-      } finally {
-        setIsLoadingListings(false);
-      }
-    };
-
-    loadListings();
-  }, [decodedYear, decodedMake, decodedModel]);
 
   const handleSave = () => {
     if (!requireAuth('bookmark')) return;
@@ -1848,25 +1823,46 @@ export const VehicleDetails: React.FC = () => {
                 <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: 'var(--spacing-4)', color: 'var(--color-neutrals-4)' }}>
                   Loading listings...
                 </div>
-              ) : listings.length > 0 ? (
-                listings.map((listing) => (
+              ) : localListings.length > 0 ? (
+                localListings.slice(0, 4).map((listing) => (
                   <div key={listing.id} className="vehicle-details__listing-card">
                     <div className="vehicle-details__listing-image">
-                      <img src={listing.image || vehicleData.image} alt={listing.name} />
+                      {(listing.photoUrls?.[0] || listing.imageUrl) && (
+                        <img
+                          src={listing.photoUrls?.[0] || listing.imageUrl}
+                          alt={`${listing.year} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}${listing.trim ? ` ${listing.trim}` : ''}`}
+                          onError={(event) => event.currentTarget.remove()}
+                        />
+                      )}
                     </div>
                     <div className="vehicle-details__listing-info">
-                      <div className="vehicle-details__listing-price">{listing.price}</div>
-                      <div className="vehicle-details__listing-name">{listing.name}</div>
+                      <div className="vehicle-details__listing-heading">
+                        <div className="vehicle-details__listing-name">
+                          {listing.year} {decodedMake} {decodedModel.replace(/-/g, ' ')}{listing.trim ? ` ${listing.trim}` : ''}
+                        </div>
+                        <span className="vehicle-details__listing-condition">{listing.condition}</span>
+                      </div>
+                      <div className="vehicle-details__listing-price">${listing.price.toLocaleString()}</div>
                       <div className="vehicle-details__listing-details">
                         <span>
                           <Icon name="speed" size={16} />
-                          {listing.mileage}
+                          {listing.mileage === 0 ? 'New' : `${listing.mileage.toLocaleString()} mi`}
+                        </span>
+                        <span>
+                          <Icon name="store" size={16} />
+                          {listing.dealerName}
                         </span>
                         <span>
                           <Icon name="location_on" size={16} />
-                          {listing.dealer}
+                          {listing.location} · {listing.distance} mi away
                         </span>
                       </div>
+                      {(listing.exteriorColor || listing.interiorColor) && (
+                        <div className="vehicle-details__listing-colors">
+                          {listing.exteriorColor && <span>Exterior: {listing.exteriorColor}</span>}
+                          {listing.interiorColor && <span>Interior: {listing.interiorColor}</span>}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -1945,6 +1941,10 @@ export const VehicleDetails: React.FC = () => {
 
           <BracketVoting />
 
+          <div className="vehicle-details__content-poll">
+            <PollOfTheDay variant="horizontal" />
+          </div>
+
           {/* User Reviews */}
           <div id="community-ratings" className="vehicle-details__community-ratings-anchor">
             <UserReviews
@@ -1991,137 +1991,93 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
           </div>
-          <aside className="vehicle-details__below-content-ad" aria-label="Advertisement">
-            <span>ADVERTISEMENT</span>
-          </aside>
-          </div>
-        </div>
-
-        {/* Right Sidebar */}
-        <div className="vehicle-details__sidebar">
-          {/* Local Listings Sidebar */}
-          <LocalListingsSidebar
-            vehicleName={`${decodedMake} ${decodedModel.replace(/-/g, ' ')}`}
-            listings={localListings}
-            onViewAllListings={() => {
-              console.log('View all listings clicked');
-              // TODO: Navigate to listings page or open modal
-            }}
-          />
-
-          {/* Ad Space 1 */}
-          <div className="vehicle-details__ad">
-            <img
-              src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
-              alt="Advertisement"
-              className="vehicle-details__ad-image"
+          {/* Existing Right Sidebar */}
+          <div className="vehicle-details__sidebar">
+            {/* Local Listings Sidebar */}
+            <LocalListingsSidebar
+              vehicleName={`${decodedMake} ${decodedModel.replace(/-/g, ' ')}`}
+              listings={localListings}
+              onViewAllListings={() => {
+                console.log('View all listings clicked');
+                // TODO: Navigate to listings page or open modal
+              }}
             />
-          </div>
 
-          <div className="vehicle-details__sidebar-poll">
-            <PollOfTheDay />
-          </div>
+            {/* Ad Space 1 */}
+            <div className="vehicle-details__ad">
+              <img
+                src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+                alt="Advertisement"
+                className="vehicle-details__ad-image"
+              />
+            </div>
 
-          {/* Related Articles */}
-          <div className="vehicle-details__sidebar-section">
-            <h3>Related Articles</h3>
-            <div className="vehicle-details__sidebar-articles">
-              {(() => {
-                const relatedArticles: React.ReactElement[] = [];
-                const addedSlugs = new Set<string>();
+            <div className="vehicle-details__sidebar-poll">
+              <PollOfTheDay />
+            </div>
 
-                // Normalize current vehicle info for matching
-                const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
-                const normalizedMake = decodedMake.toLowerCase();
-                const normalizedYear = decodedYear.toLowerCase();
+            {/* Related Articles */}
+            <div className="vehicle-details__sidebar-section">
+              <h3>Related Articles</h3>
+              <div className="vehicle-details__sidebar-articles">
+                {(() => {
+                  const relatedArticles: React.ReactElement[] = [];
+                  const addedSlugs = new Set<string>();
 
-                // Helper function to normalize vehicle name for comparison
-                const normalizeForComparison = (name: string): string => {
-                  return name.toLowerCase().replace(/-/g, ' ').trim();
-                };
+                  // Normalize current vehicle info for matching
+                  const normalizedModel = decodedModel.toLowerCase().replace(/-/g, ' ');
+                  const normalizedMake = decodedMake.toLowerCase();
+                  const normalizedYear = decodedYear.toLowerCase();
 
-                // Helper function to check if two vehicle names match
-                const vehiclesMatch = (articleVehicleName: string, currentYear: string, currentMake: string, currentModel: string): boolean => {
-                  const normalizedArticleName = normalizeForComparison(articleVehicleName);
+                  // Helper function to normalize vehicle name for comparison
+                  const normalizeForComparison = (name: string): string => {
+                    return name.toLowerCase().replace(/-/g, ' ').trim();
+                  };
 
-                  // Extract year, make, model from article vehicle name
-                  const parts = normalizedArticleName.split(/\s+/);
-                  const yearIndex = parts.findIndex(part => /^\d{4}$/.test(part));
+                  // Helper function to check if two vehicle names match
+                  const vehiclesMatch = (articleVehicleName: string, currentYear: string, currentMake: string, currentModel: string): boolean => {
+                    const normalizedArticleName = normalizeForComparison(articleVehicleName);
 
-                  if (yearIndex === -1) {
-                    // No year found, try to match by make and model only
-                    const articleMake = parts[0] || '';
-                    const articleModel = parts.slice(1).join(' ');
-                    return normalizeForComparison(currentMake) === articleMake &&
-                      normalizeForComparison(currentModel).includes(articleModel) ||
-                      articleModel.includes(normalizeForComparison(currentModel));
-                  }
+                    // Extract year, make, model from article vehicle name
+                    const parts = normalizedArticleName.split(/\s+/);
+                    const yearIndex = parts.findIndex(part => /^\d{4}$/.test(part));
 
-                  const articleYear = parts[yearIndex];
-                  const articleMake = parts[yearIndex + 1] || '';
-                  const articleModel = parts.slice(yearIndex + 2).join(' ');
+                    if (yearIndex === -1) {
+                      // No year found, try to match by make and model only
+                      const articleMake = parts[0] || '';
+                      const articleModel = parts.slice(1).join(' ');
+                      return normalizeForComparison(currentMake) === articleMake &&
+                        normalizeForComparison(currentModel).includes(articleModel) ||
+                        articleModel.includes(normalizeForComparison(currentModel));
+                    }
 
-                  // Match by year, make, and model (flexible matching)
-                  const yearMatch = articleYear === normalizeForComparison(currentYear);
-                  const makeMatch = normalizeForComparison(currentMake) === articleMake;
-                  const modelMatch = normalizeForComparison(currentModel).includes(articleModel) ||
-                    articleModel.includes(normalizeForComparison(currentModel)) ||
-                    normalizedArticleName.includes(normalizeForComparison(currentModel));
+                    const articleYear = parts[yearIndex];
+                    const articleMake = parts[yearIndex + 1] || '';
+                    const articleModel = parts.slice(yearIndex + 2).join(' ');
 
-                  // Also check if the full vehicle name contains key parts
-                  const fullNameMatch = normalizedArticleName.includes(normalizeForComparison(currentMake)) &&
-                    normalizedArticleName.includes(normalizeForComparison(currentModel));
+                    // Match by year, make, and model (flexible matching)
+                    const yearMatch = articleYear === normalizeForComparison(currentYear);
+                    const makeMatch = normalizeForComparison(currentMake) === articleMake;
+                    const modelMatch = normalizeForComparison(currentModel).includes(articleModel) ||
+                      articleModel.includes(normalizeForComparison(currentModel)) ||
+                      normalizedArticleName.includes(normalizeForComparison(currentModel));
 
-                  return (yearMatch && makeMatch && modelMatch) || fullNameMatch;
-                };
+                    // Also check if the full vehicle name contains key parts
+                    const fullNameMatch = normalizedArticleName.includes(normalizeForComparison(currentMake)) &&
+                      normalizedArticleName.includes(normalizeForComparison(currentModel));
 
-                // Find articles that match the current vehicle
-                Object.entries(articles).forEach(([slug, article]) => {
-                  if (relatedArticles.length >= 3) return;
+                    return (yearMatch && makeMatch && modelMatch) || fullNameMatch;
+                  };
 
-                  const articleVehicleName = article.motortrendScore?.vehicleName;
-                  if (!articleVehicleName) return;
-
-                  // Check if this article's vehicle matches the current vehicle
-                  if (vehiclesMatch(articleVehicleName, normalizedYear, normalizedMake, normalizedModel)) {
-                    addedSlugs.add(slug);
-                    relatedArticles.push(
-                      <Link
-                        key={slug}
-                        to={`/articles/${slug}`}
-                        className="vehicle-details__sidebar-article"
-                      >
-                        <div className="vehicle-details__sidebar-article-image">
-                          <img src={article.heroImage} alt={article.title} />
-                        </div>
-                        <div className="vehicle-details__sidebar-article-content">
-                          <h4>{article.title}</h4>
-                          <p className="vehicle-details__sidebar-article-meta">
-                            {article.author} | {article.date}
-                          </p>
-                        </div>
-                      </Link>
-                    );
-                  }
-                });
-
-                // Add default articles if we don't have enough
-                // Try to load from articles data first, then fall back to hardcoded defaults
-                if (relatedArticles.length < 3) {
-                  const defaultArticleSlugs = [
-                    '2024-kia-ev9-yearlong-review-verdict',
-                    'new-details-2026-rivian-r2-ev-suv-battery-charging',
-                    '2025-acura-adx-awd-yearlong-review-arrival'
-                  ];
-
-                  defaultArticleSlugs.forEach((slug) => {
+                  // Find articles that match the current vehicle
+                  Object.entries(articles).forEach(([slug, article]) => {
                     if (relatedArticles.length >= 3) return;
 
-                    // Skip if already added as a matching article
-                    if (addedSlugs.has(slug)) return;
+                    const articleVehicleName = article.motortrendScore?.vehicleName;
+                    if (!articleVehicleName) return;
 
-                    const article = articles[slug];
-                    if (article) {
+                    // Check if this article's vehicle matches the current vehicle
+                    if (vehiclesMatch(articleVehicleName, normalizedYear, normalizedMake, normalizedModel)) {
                       addedSlugs.add(slug);
                       relatedArticles.push(
                         <Link
@@ -2142,43 +2098,85 @@ export const VehicleDetails: React.FC = () => {
                       );
                     }
                   });
-                }
 
-                return relatedArticles.slice(0, 3);
-              })()}
-            </div>
-          </div>
+                  // Add default articles if we don't have enough
+                  // Try to load from articles data first, then fall back to hardcoded defaults
+                  if (relatedArticles.length < 3) {
+                    const defaultArticleSlugs = [
+                      '2024-kia-ev9-yearlong-review-verdict',
+                      'new-details-2026-rivian-r2-ev-suv-battery-charging',
+                      '2025-acura-adx-awd-yearlong-review-arrival'
+                    ];
 
-          {/* Ad Space 2 */}
-          <div className="vehicle-details__ad">
-            <img
-              src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
-              alt="Advertisement"
-              className="vehicle-details__ad-image"
-            />
-          </div>
+                    defaultArticleSlugs.forEach((slug) => {
+                      if (relatedArticles.length >= 3) return;
 
-          {/* Newsletter Signup */}
-          <div className="vehicle-details__sidebar-section">
-            <h3>Stay Updated</h3>
-            <div className="vehicle-details__newsletter">
-              <p>Get the latest automotive news and reviews delivered to your inbox.</p>
-              <div className="vehicle-details__newsletter-form">
-                <input type="email" placeholder="Enter your email" />
-                <button>Subscribe</button>
+                      // Skip if already added as a matching article
+                      if (addedSlugs.has(slug)) return;
+
+                      const article = articles[slug];
+                      if (article) {
+                        addedSlugs.add(slug);
+                        relatedArticles.push(
+                          <Link
+                            key={slug}
+                            to={`/articles/${slug}`}
+                            className="vehicle-details__sidebar-article"
+                          >
+                            <div className="vehicle-details__sidebar-article-image">
+                              <img src={article.heroImage} alt={article.title} />
+                            </div>
+                            <div className="vehicle-details__sidebar-article-content">
+                              <h4>{article.title}</h4>
+                              <p className="vehicle-details__sidebar-article-meta">
+                                {article.author} | {article.date}
+                              </p>
+                            </div>
+                          </Link>
+                        );
+                      }
+                    });
+                  }
+
+                  return relatedArticles.slice(0, 3);
+                })()}
               </div>
             </div>
-          </div>
 
-          {/* Ad Space 3 */}
-          <div className="vehicle-details__ad">
-            <img
-              src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
-              alt="Advertisement"
-              className="vehicle-details__ad-image"
-            />
+            {/* Ad Space 2 */}
+            <div className="vehicle-details__ad">
+              <img
+                src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+                alt="Advertisement"
+                className="vehicle-details__ad-image"
+              />
+            </div>
+
+            {/* Newsletter Signup */}
+            <div className="vehicle-details__sidebar-section">
+              <h3>Stay Updated</h3>
+              <div className="vehicle-details__newsletter">
+                <p>Get the latest automotive news and reviews delivered to your inbox.</p>
+                <div className="vehicle-details__newsletter-form">
+                  <input type="email" placeholder="Enter your email" />
+                  <button>Subscribe</button>
+                </div>
+              </div>
+            </div>
+
+            {/* Ad Space 3 */}
+            <div className="vehicle-details__ad">
+              <img
+                src="https://www.motortrend.com/files/6908c04df6c54e0002bc1a7c/subaruad.jpg"
+                alt="Advertisement"
+                className="vehicle-details__ad-image"
+              />
+            </div>
+          </div>
           </div>
         </div>
+
+
       </div>
 
       {/* Rating Modal */}

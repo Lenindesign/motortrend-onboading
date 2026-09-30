@@ -1713,13 +1713,15 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
                                   {/* Reviewer Avatar Section */}
                                   <div className="article__reviewer-section">
                                     <div className="article__reviewer-avatar-group">
-                                      <img
-                                        src={motortrendScore.reviewer.avatar}
-                                        alt="Reviewer avatar"
-                                        className="article__reviewer-avatar"
-                                        width={43}
-                                        height={43}
-                                      />
+                                      {motortrendScore.reviewer.avatar && (
+                                        <img
+                                          src={motortrendScore.reviewer.avatar}
+                                          alt="Reviewer avatar"
+                                          className="article__reviewer-avatar"
+                                          width={43}
+                                          height={43}
+                                        />
+                                      )}
                                     </div>
                                     <div className="article__reviewer-info">
                                       <div className="article__reviewer-header">

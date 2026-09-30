@@ -98,7 +98,7 @@ export const ArticleScoreCard: React.FC<ArticleScoreCardProps> = ({ score, vehic
       </div>
 
       <div style={reviewerStyle}>
-        <img src={score.reviewer.avatar} alt={score.reviewer.name} style={avatarStyle} />
+        {score.reviewer.avatar && <img src={score.reviewer.avatar} alt={score.reviewer.name} style={avatarStyle} />}
         <div style={reviewerInfoStyle}>
           <div style={reviewerNameStyle}>
             {score.reviewer.name}

@@ -51,7 +51,7 @@ export const ListingCard: React.FC<ListingCardProps> = ({
   const [isCtaHovered, setIsCtaHovered] = useState(false);
   const [isSaved, setIsSaved] = useState(() => isLeadSaved(listing.id));
 
-  const photos = listing.photoUrls || [listing.imageUrl];
+  const photos = (listing.photoUrls?.length ? listing.photoUrls : [listing.imageUrl]).filter(Boolean);
   const hasMultiplePhotos = photos.length > 1;
   const isCompact = variant === 'compact';
   const year = vehicleYear || listing.year;
@@ -296,16 +296,16 @@ export const ListingCard: React.FC<ListingCardProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Section */}
-      <div style={imageContainerStyle} onClick={handleImageClick}>
-        <img
-          src={photos[currentPhotoIndex]}
-          alt={`${year} ${vehicleName}`}
-          style={imageStyle}
-          loading="lazy"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = 'https://www.motortrend.com/files/placeholder-vehicle.jpg';
-          }}
-        />
+      <div style={imageContainerStyle} onClick={() => photos.length > 0 && handleImageClick()}>
+        {photos[currentPhotoIndex] && (
+          <img
+            src={photos[currentPhotoIndex]}
+            alt={`${year} ${vehicleName}`}
+            style={imageStyle}
+            loading="lazy"
+            onError={(e) => e.currentTarget.remove()}
+          />
+        )}
 
         {/* Save Button */}
         <button
@@ -404,4 +404,3 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 };
 
 export default ListingCard;
-

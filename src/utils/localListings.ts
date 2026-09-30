@@ -72,38 +72,39 @@ export function generateLocalListings(
 ): LocalListing[] {
   const listings: LocalListing[] = [];
   const baseYear = parseInt(vehicleYear);
-  
+
   // Build available images pool from fallback images or just the main image
-  const availableImages = fallbackImages && fallbackImages.length > 0 
-    ? fallbackImages 
-    : [vehicleImage];
+  const availableImages = (fallbackImages && fallbackImages.length > 0
+    ? fallbackImages
+    : [vehicleImage]).filter((image) => Boolean(image) && !image.includes('vehicle-placeholder') && !image.includes('placeholder-vehicle'));
+  if (availableImages.length === 0) return [];
 
   for (let i = 0; i < count; i++) {
     const isNew = i < 2; // First 2 listings are new
     const isCPO = !isNew && i === 2; // Third listing is CPO
     const yearVariation = isNew ? 0 : Math.floor(Math.random() * 3); // Used cars can be up to 3 years old
     const listingYear = (baseYear - yearVariation).toString();
-    
+
     const basePrice = isNew ? 35000 + Math.random() * 30000 : 25000 + Math.random() * 25000;
     const price = Math.round(basePrice / 100) * 100; // Round to nearest hundred
-    
+
     const mileage = isNew ? 0 : Math.round((Math.random() * 50000 + 5000) / 100) * 100;
-    
+
     const condition = isNew ? 'New' : isCPO ? 'Certified Pre-Owned' : 'Used';
-    
+
     const distance = Math.round(Math.random() * 50 + 1);
-    
+
     // Use the main listing image (cycle through available images for each listing)
     const mainImage = availableImages[i % availableImages.length];
-    
+
     // Generate photo URLs using all available images for gallery
     // Start from a different offset for each listing to add variety
     const photoCount = Math.min(availableImages.length, Math.floor(Math.random() * 5) + 3);
     const startOffset = i % availableImages.length;
-    const photoUrls = Array(photoCount).fill(null).map((_, idx) => 
+    const photoUrls = Array(photoCount).fill(null).map((_, idx) =>
       availableImages[(startOffset + idx) % availableImages.length]
     );
-    
+
     listings.push({
       id: `listing-${i}-${Date.now()}`,
       dealerName: dealerNames[Math.floor(Math.random() * dealerNames.length)],
@@ -140,30 +141,30 @@ export async function getLocalListings(
   fallbackImages?: string[]
 ): Promise<LocalListing[]> {
   console.log(`🔍 Fetching listings for: ${year} ${make} ${model}`);
-  
+
   // Build available images pool from fallback images or just the main image
-  const availableImages = fallbackImages && fallbackImages.length > 0 
-    ? fallbackImages 
-    : [vehicleImage];
-  
+  const availableImages = (fallbackImages && fallbackImages.length > 0
+    ? fallbackImages
+    : [vehicleImage]).filter((image) => Boolean(image) && !image.includes('vehicle-placeholder') && !image.includes('placeholder-vehicle'));
+
   // Try MotorTrend API first (preferred - rydeshopper inventory photos)
   try {
     const { fetchMotortrendListings } = await import('../api/motortrendListingsApi');
     const listings = await fetchMotortrendListings(year, make, model, zipCode || '90001', 5);
-    
+
     console.log(`📊 MotorTrend API returned ${listings.length} listings`);
-    
+
     if (listings.length > 0) {
       // If images are placeholders or broken, use images from our vehicles database
       const listingsWithImages = listings.map((l, idx) => {
         const hasValidImage = l.imageUrl && !l.imageUrl.includes('placeholder');
         const hasValidPhotos = l.photoUrls && l.photoUrls.length > 0 && !l.photoUrls[0]?.includes('placeholder');
-        
-        const fallbackImage = availableImages[idx % availableImages.length];
-        const fallbackPhotos = availableImages.length > 1 
+
+        const fallbackImage = availableImages.length ? availableImages[idx % availableImages.length] : '';
+        const fallbackPhotos = availableImages.length > 1
           ? Array(Math.min(availableImages.length, 5)).fill(null).map((_, i) => availableImages[(idx + i) % availableImages.length])
-          : [fallbackImage];
-        
+          : fallbackImage ? [fallbackImage] : [];
+
         return {
           ...l,
           imageUrl: hasValidImage ? l.imageUrl : fallbackImage,
@@ -178,32 +179,32 @@ export async function getLocalListings(
   } catch (error: any) {
     console.warn('⚠️ MotorTrend API error, trying MarketCheck:', error?.message);
   }
-  
+
   // Try MarketCheck API as fallback
   try {
     const { getMarketcheckListings } = await import('../api/marketcheckApi');
     const listings = await getMarketcheckListings(year, make, model, zipCode);
-    
+
     console.log(`📊 Marketcheck returned ${listings.length} listings`);
-    
+
     if (listings.length > 0) {
       // Use fallback images if API images are missing
       const listingsWithFallback = listings.map((l, idx) => {
         const hasValidImage = l.imageUrl && l.imageUrl.length > 0;
         const hasValidPhotos = l.photoUrls && l.photoUrls.length > 0;
-        
-        const fallbackImage = availableImages[idx % availableImages.length];
-        const fallbackPhotos = availableImages.length > 1 
+
+        const fallbackImage = availableImages.length ? availableImages[idx % availableImages.length] : '';
+        const fallbackPhotos = availableImages.length > 1
           ? Array(Math.min(availableImages.length, 5)).fill(null).map((_, i) => availableImages[(idx + i) % availableImages.length])
-          : [fallbackImage];
-        
+          : fallbackImage ? [fallbackImage] : [];
+
         return {
           ...l,
           imageUrl: hasValidImage ? l.imageUrl : fallbackImage,
           photoUrls: hasValidPhotos ? l.photoUrls : fallbackPhotos
         };
       });
-      console.log('✅ Using real listings from Marketcheck API with fallback images:', 
+      console.log('✅ Using real listings from Marketcheck API with fallback images:',
         listingsWithFallback.map(l => ({ name: l.dealerName, photos: l.photoUrls?.length || 0 }))
       );
       return listingsWithFallback;
@@ -217,10 +218,11 @@ export async function getLocalListings(
       console.warn('❌ Marketcheck API error, using mock data:', error?.message);
     }
   }
-  
+
   // Fallback to mock data with vehicle gallery images
+  if (availableImages.length === 0) return [];
   console.log('📝 Using mock listings data with', availableImages.length, 'fallback images');
-  return generateLocalListings(year, vehicleImage, 5, fallbackImages);
+  return generateLocalListings(year, vehicleImage, 5, availableImages);
 }
 
 /**
@@ -235,4 +237,3 @@ export function getLocalListingsSync(
 ): LocalListing[] {
   return generateLocalListings(year, vehicleImage, 5, fallbackImages);
 }
-

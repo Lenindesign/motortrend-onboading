@@ -1000,9 +1000,8 @@ export const vehicleImageFor = (vehicleName: string): string => {
   for (const key of keysBySpecificity) {
     if (name.includes(key)) return vehicleImageMap[key];
   }
-  // Never show an unrelated vehicle when a model is not mapped. A neutral
-  // placeholder makes missing editorial data visible without mislabeling a car.
-  return '/images/vehicle-placeholder.svg';
+  // Leave unknown vehicles without an image rather than showing a generic placeholder.
+  return '';
 };
 
 export default vehicleImageFor;

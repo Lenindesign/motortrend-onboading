@@ -177,7 +177,7 @@ export async function fetchMarketcheckListings(
         firstPhoto: photoUrls[0] || 'none'
       });
       
-      const imageUrl = photoUrls[0] || 'https://www.motortrend.com/files/placeholder-vehicle.jpg';
+      const imageUrl = photoUrls[0] || '';
 
       // Extract dealer name from dealer object, source, or heading
       let dealerName = 'Local Dealer';
@@ -295,4 +295,3 @@ export async function getMarketcheckListings(
     throw error;
   }
 }
-

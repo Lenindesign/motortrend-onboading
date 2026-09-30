@@ -97,7 +97,7 @@ export interface ReviewerInfo {
   name: string;
   
   /** Reviewer avatar URL */
-  avatar: string;
+  avatar?: string;
   
   /** Review date */
   date: string;
@@ -311,4 +311,3 @@ export interface ArticleQueryOptions extends ArticleFilters {
   /** Sort direction */
   sortOrder?: 'asc' | 'desc';
 }
-

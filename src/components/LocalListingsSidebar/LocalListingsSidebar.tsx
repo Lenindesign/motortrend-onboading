@@ -71,7 +71,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     });
     setSavedLeads(saved);
   }, [listings]);
-  
+
   const formatPrice = (price: number): string => `$${price.toLocaleString()}`;
   const formatMileage = (mileage: number): string => mileage === 0 ? 'New' : `${mileage.toLocaleString()} mi`;
 
@@ -101,7 +101,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
     e.stopPropagation();
     const wasSaved = toggleSaveLead(listing, vehicleName);
     const listingTitle = `${listing.year} ${vehicleName}${listing.trim ? ` ${listing.trim}` : ''}`;
-    
+
     if (wasSaved) {
       setSavedLeads(prev => new Set(prev).add(listing.id));
       setSavedLeadTitle(listingTitle);
@@ -131,7 +131,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
       if (!listing) return;
       const photos = listing.photoUrls || [listing.imageUrl];
       if (photos.length <= 1) return;
-      
+
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
         handlePrevPhoto(focusedListingId, photos.length);
@@ -441,13 +441,13 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
 
       <div style={listStyle}>
         {listings.map((listing) => {
-          const photos = listing.photoUrls || [listing.imageUrl];
+          const photos = (listing.photoUrls?.length ? listing.photoUrls : [listing.imageUrl]).filter(Boolean);
           const currentIndex = currentPhotoIndex[listing.id] || 0;
           const hasMultiplePhotos = photos.length > 1;
 
           return (
-            <div 
-              key={listing.id} 
+            <div
+              key={listing.id}
               style={getItemStyle(listing.id)}
               onMouseEnter={() => setHoveredListingId(listing.id)}
               onMouseLeave={() => setHoveredListingId(null)}
@@ -455,17 +455,20 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
               onFocus={() => setFocusedListingId(listing.id)}
               onBlur={() => setFocusedListingId(null)}
             >
-              <div 
+              <div
                 style={getImageContainerStyle(listing.id)}
-                onClick={() => handleImageClick(photos, currentIndex, listing)}
+                onClick={() => photos.length > 0 && handleImageClick(photos, currentIndex, listing)}
               >
-                <img 
-                  src={photos[currentIndex]} 
-                  alt={`${listing.year} ${vehicleName}`}
-                  style={getImageStyle(listing.id)}
-                  loading="lazy"
-                />
-                
+                {photos[currentIndex] && (
+                  <img
+                    src={photos[currentIndex]}
+                    alt={`${listing.year} ${vehicleName}`}
+                    style={getImageStyle(listing.id)}
+                    loading="lazy"
+                    onError={(event) => event.currentTarget.remove()}
+                  />
+                )}
+
                 <button
                   style={getSaveBtnStyle(listing.id)}
                   onClick={(e) => handleSaveLead(listing, e)}
@@ -473,17 +476,17 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
                   onMouseLeave={() => setHoveredSaveBtn(null)}
                   aria-label={savedLeads.has(listing.id) ? 'Unsave lead' : 'Save lead'}
                 >
-                  <Icon 
-                    name={savedLeads.has(listing.id) ? 'bookmark' : 'bookmark_border'} 
+                  <Icon
+                    name={savedLeads.has(listing.id) ? 'bookmark' : 'bookmark_border'}
                     variant={savedLeads.has(listing.id) ? 'filled' : 'outlined'}
-                    size={20} 
+                    size={20}
                   />
                 </button>
-                
+
                 {listing.condition === 'Certified Pre-Owned' && (
                   <span style={badgeStyle}>CPO</span>
                 )}
-                
+
                 {hasMultiplePhotos && (
                   <>
                     <button
@@ -550,7 +553,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
                   </div>
                 )}
 
-                <button 
+                <button
                   style={getCtaStyle(listing.id)}
                   onMouseEnter={() => setHoveredCta(listing.id)}
                   onMouseLeave={() => setHoveredCta(null)}
@@ -565,7 +568,7 @@ export const LocalListingsSidebar: React.FC<LocalListingsSidebarProps> = ({
       </div>
 
       {listings.length > 0 && (
-        <button 
+        <button
           style={viewAllStyle}
           onClick={onViewAllListings}
           onMouseEnter={() => setIsViewAllHovered(true)}

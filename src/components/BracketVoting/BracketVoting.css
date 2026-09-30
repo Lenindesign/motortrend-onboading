@@ -72,6 +72,85 @@
   font-weight: 600;
 }
 
+.bracket-voting__reference-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: -4px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-neutrals-2);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.bracket-voting__reference-toggle span {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cfd4db;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.bracket-voting__reference {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid #dfe2e7;
+  border-radius: var(--border-radius-md);
+  background: #f7f8fa;
+}
+
+.bracket-voting__reference-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-neutrals-2);
+  font-size: 13px;
+}
+
+.bracket-voting__reference-heading span {
+  color: var(--color-neutrals-4);
+  font-size: 11px;
+}
+
+.bracket-voting__reference-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.bracket-voting__reference-matchup {
+  display: grid;
+  gap: 5px;
+  padding: 9px 10px;
+  border: 1px solid #e1e4e8;
+  border-radius: 5px;
+  background: #fff;
+  color: var(--color-neutrals-4);
+  font-size: 12px;
+}
+
+.bracket-voting__reference-matchup span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bracket-voting__reference-matchup b {
+  color: var(--color-neutrals-2);
+}
+
 .bracket-voting__matchups {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -141,6 +220,11 @@
   background: #d6f3ff;
 }
 
+.bracket-voting__option:disabled:not(.is-selected) {
+  cursor: default;
+  opacity: .9;
+}
+
 .bracket-voting__votes {
   margin-top: 10px;
   letter-spacing: normal;
@@ -149,6 +233,7 @@
 
 .bracket-voting__reminder {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: 8px;
   margin-top: 18px;
@@ -157,6 +242,12 @@
   color: var(--color-neutrals-4);
   font-size: 14px;
   font-weight: 600;
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
 }
 
 .bracket-voting__reminder span {
@@ -178,6 +269,20 @@
   background: #2d8941;
 }
 
+.bracket-voting__auth-note,
+.bracket-voting__error {
+  margin: 10px 0 0;
+  font-size: 12px;
+}
+
+.bracket-voting__auth-note {
+  color: var(--color-neutrals-4);
+}
+
+.bracket-voting__error {
+  color: var(--color-primary-1, #E90C17);
+}
+
 @media (max-width: 700px) {
   .bracket-voting {
     padding: 20px;
@@ -188,6 +293,10 @@
   }
 
   .bracket-voting__matchups {
+    grid-template-columns: 1fr;
+  }
+
+  .bracket-voting__reference-grid {
     grid-template-columns: 1fr;
   }
 }
