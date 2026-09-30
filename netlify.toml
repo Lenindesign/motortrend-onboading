@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run build && STORYBOOK_BASE_PATH=/storybook/ npm run build-storybook && mkdir -p dist/storybook && cp -R storybook-static/. dist/storybook/"
   publish = "dist"
 
 [functions]
