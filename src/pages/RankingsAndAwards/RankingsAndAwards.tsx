@@ -7,7 +7,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GoogleOneTap } from '../../components/GoogleOneTap';
 import { Icon } from '../../components/Icon';
-import { Button } from '../../design-system/components';
 import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
 import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import vehicleDatabase from '../../data/vehicles';
@@ -133,14 +132,14 @@ const BODY_STYLE_CONFIG: BodyStyleConfig[] = [
 ];
 
 export const RANKINGS_NAV_ITEMS = [
-  { label: 'Best SUVs', href: '#suv', image: '/images/body-style-icons/suv.svg' },
-  { label: 'Best Sedans', href: '#sedan', image: '/images/body-style-icons/sedan.svg' },
-  { label: 'Best Crossovers', href: '#suv', image: '/images/body-style-icons/hatchback.svg' },
-  { label: 'Best Trucks', href: '#truck', image: '/images/body-style-icons/truck.svg' },
-  { label: 'Best Coupes', href: '#coupe', image: '/images/body-style-icons/coupe.svg' },
-  { label: 'Best Convertibles', href: '#convertible', image: '/images/body-style-icons/convertible.svg' },
-  { label: 'Best Wagons', href: '#wagon', image: '/images/body-style-icons/van.svg' },
-  { label: 'Best Hatchbacks', href: '#hatchback', image: '/images/body-style-icons/hatchback.svg' },
+  { label: 'Best SUVs', href: '/rankings-awards/suv', image: '/images/body-style-icons/suv.svg' },
+  { label: 'Best Sedans', href: '/rankings-awards/sedan', image: '/images/body-style-icons/sedan.svg' },
+  { label: 'Best Crossovers', href: '/rankings-awards/crossover', image: '/images/body-style-icons/hatchback.svg' },
+  { label: 'Best Trucks', href: '/rankings-awards/truck', image: '/images/body-style-icons/truck.svg' },
+  { label: 'Best Coupes', href: '/rankings-awards/coupe', image: '/images/body-style-icons/coupe.svg' },
+  { label: 'Best Convertibles', href: '/rankings-awards/convertible', image: '/images/body-style-icons/convertible.svg' },
+  { label: 'Best Wagons', href: '/rankings-awards/wagon', image: '/images/body-style-icons/van.svg' },
+  { label: 'Best Hatchbacks', href: '/rankings-awards/hatchback', image: '/images/body-style-icons/hatchback.svg' },
   { label: 'Best Used Cars', href: '/used-cars', image: '/images/body-style-icons/sedan.svg' },
 ];
 
@@ -505,42 +504,10 @@ const RankingsAndAwards: React.FC = () => {
   const selectedYear = availableYears[0] ?? '2026';
   const bodyStyleRows = useMemo(() => getBodyStyleRows(selectedYear), [selectedYear]);
   const subnavTrackRef = useRef<HTMLDivElement>(null);
-  const bodyRowRefs = useRef<Record<string, HTMLElement | null>>({});
-  const subnavLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
-  const [activeCategory, setActiveCategory] = useState(bodyStyleRows[0]?.key.toLowerCase() ?? 'suv');
-  const [openSubcategory, setOpenSubcategory] = useState<string | null>(null);
+  const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const scrollSubnav = (direction: 'left' | 'right') => {
     subnavTrackRef.current?.scrollBy({ left: direction === 'left' ? -360 : 360, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    const sections = bodyStyleRows
-      .map((row) => bodyRowRefs.current[row.key.toLowerCase()])
-      .filter((section): section is HTMLElement => Boolean(section));
-    if (!sections.length) return undefined;
-
-    const observer = new IntersectionObserver((entries) => {
-      const visibleSections = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      const nextSection = visibleSections[0]?.target as HTMLElement | undefined;
-      if (nextSection) setActiveCategory(nextSection.id);
-    }, { rootMargin: '-57px 0px -20% 0px', threshold: 0 });
-
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, [bodyStyleRows]);
-
-  useEffect(() => {
-    const track = subnavTrackRef.current;
-    const link = subnavLinkRefs.current[activeCategory];
-    if (!track || !link) return;
-
-    const linkCenter = link.offsetLeft + (link.offsetWidth / 2);
-    track.scrollTo({ left: Math.max(0, linkCenter - (track.clientWidth / 2)), behavior: 'smooth' });
-  }, [activeCategory]);
-
-  const activeNavIndex = RANKINGS_NAV_ITEMS.findIndex((item) => item.href === `#${activeCategory}`);
   // The overview represents the complete rankings catalog, not just the three
   // featured #1 cards rendered in each visible row. Include every vehicle in
   // the local rankings dataset and every primary destination in the category
@@ -581,20 +548,11 @@ const RankingsAndAwards: React.FC = () => {
             <Icon name="chevron_left" size={24} />
           </button>
           <div className="rankings-awards__subnav-track" ref={subnavTrackRef}>
-            {RANKINGS_NAV_ITEMS.map((item, index) => (
-              <a
-                className={`rankings-awards__subnav-link${index === activeNavIndex ? ' is-active' : ''}`}
-                href={item.href}
-                key={item.label}
-                ref={(link) => {
-                  const target = item.href.slice(1);
-                  const firstMatchingIndex = RANKINGS_NAV_ITEMS.findIndex((navItem) => navItem.href === item.href);
-                  if (index === firstMatchingIndex) subnavLinkRefs.current[target] = link;
-                }}
-              >
+            {RANKINGS_NAV_ITEMS.map((item) => (
+              <Link className="rankings-awards__subnav-link" to={item.href} key={item.label}>
                 <RankingCategoryIcon src={item.image} />
                 <span>{item.label}</span>
-              </a>
+              </Link>
             ))}
           </div>
           <button className="rankings-awards__subnav-arrow" type="button" aria-label="Scroll ranking categories right" onClick={() => scrollSubnav('right')}>
@@ -611,107 +569,100 @@ const RankingsAndAwards: React.FC = () => {
             <section
               className="rankings-awards__body-row"
               id={row.key.toLowerCase()}
-              ref={(section) => { bodyRowRefs.current[row.key.toLowerCase()] = section; }}
             >
             <div className="rankings-awards__body-row-intro">
               <img className="rankings-awards__body-row-icon" src={row.icon} alt="" />
               <h2>{row.title}</h2>
-              <div className="rankings-awards__subcategory-menu">
-              <button
-                className="rankings-awards__subcategory-select"
-                type="button"
-                aria-label={`View all ${row.title} subcategories`}
-                aria-haspopup="menu"
-                aria-expanded={openSubcategory === row.key}
-                onClick={() => setOpenSubcategory(openSubcategory === row.key ? null : row.key)}
-              >
-                <span>{rankedSubcategoryCount(row.key)} {row.key === 'SUV' ? 'SUV Types' : `${row.key} Types`}</span>
-                <Icon name={openSubcategory === row.key ? 'expand_less' : 'expand_more'} size={18} />
-              </button>
-              {openSubcategory === row.key && (
-                <div className="rankings-awards__subcategory-list" role="menu" aria-label={`${row.title} subcategories`}>
-                  {(CATEGORY_SUBCATEGORIES[row.key] ?? []).map(([label, href]) => (
-                    <Link
-                      key={href}
-                      to={`/rankings-awards/${row.key.toLowerCase()}/${rankingSubcategorySlug(label)}`}
-                      role="menuitem"
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-              </div>
+              <Link className="rankings-awards__body-row-cta" to={`/rankings-awards/${row.key.toLowerCase()}`}>
+                View All Rankings
+              </Link>
               <p>{row.description.replace(/\.$/, '')} across {rankedSubcategoryCount(row.key)} subcategories.</p>
-              <Button
-                className="rankings-awards__body-row-cta"
-                component={Link}
-                to={`/rankings-awards/${row.key.toLowerCase()}`}
-                color="secondary"
-                variant="solid"
-                size="default"
-                icon={<Icon name="arrow_forward" size={18} />}
-                iconPosition="right"
-              >
-                View All
-              </Button>
             </div>
 
             <div className="rankings-awards__cards" aria-label={`${row.title} top ranked vehicles`}>
               {row.vehicles.map((vehicle) => (
                 <article className="rankings-awards__vehicle-card" key={`${row.key}-${vehicle.subcategory}-${vehicle.sourceUrl}`}>
-                  <a className="rankings-awards__vehicle-card-link" href={vehiclePath(vehicle)} target="_blank" rel="noreferrer">
-                    <div className="rankings-awards__vehicle-card-title">
-                      {vehicle.subcategory.startsWith('Best ') ? vehicle.subcategory : `Best ${vehicle.subcategory}`}
+                  <div className="rankings-awards__vehicle-card-title">
+                    {vehicle.subcategory.startsWith('Best ') ? vehicle.subcategory : `Best ${vehicle.subcategory}`}
+                  </div>
+                  <div className="rankings-awards__vehicle-media" aria-hidden="true">
+                    <img
+                      className="rankings-awards__vehicle-photo"
+                      src={vehicle.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {vehicle.rank === 1 ? (
+                      <img
+                        className="rankings-awards__rank-badge rankings-awards__rank-badge--graphic"
+                        src="/images/number-1.svg"
+                        alt=""
+                      />
+                    ) : (
+                      <span className="rankings-awards__rank-badge">#{vehicle.rank}</span>
+                    )}
+                  </div>
+
+                  <div className="rankings-awards__vehicle-body">
+                    <div className="rankings-awards__vehicle-head">
+                      <Link className="rankings-awards__vehicle-name" to={vehiclePath(vehicle)}>
+                        {vehicle.year} {vehicle.make} {vehicle.model}
+                      </Link>
+                      <div className="rankings-awards__rating" aria-label={`MotorTrend rating ${vehicle.staffRating} out of 10`}>
+                        <strong>{vehicle.staffRating}</strong>
+                        <span>/10</span>
+                      </div>
                     </div>
-                    <div className="rankings-awards__vehicle-media">
-                      <img src={vehicle.image} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} loading="lazy" />
-                      {vehicle.rank === 1 ? (
-                        <img
-                          className="rankings-awards__rank-badge rankings-awards__rank-badge--graphic"
-                          src="/images/number-1.svg"
-                          alt="Ranked number 1"
-                        />
-                      ) : (
-                        <span className="rankings-awards__rank-badge">#{vehicle.rank}</span>
+
+                    <dl className="rankings-awards__vehicle-specs">
+                      <div>
+                        <dt>MSRP</dt>
+                        <dd>{formatPriceRange(vehicle)}</dd>
+                      </div>
+                      <div>
+                        <dt>Powertrain</dt>
+                        <dd>{vehicle.fuelType}</dd>
+                      </div>
+                      {vehicle.mpg && (
+                        <div>
+                          <dt>MPG</dt>
+                          <dd>{vehicle.mpg}</dd>
+                        </div>
                       )}
+                    </dl>
+
+                    <div className="rankings-awards__card-actions">
+                      <Link className="rankings-awards__shop-link" to={vehiclePath(vehicle)}>Shop New {vehicle.model}</Link>
+                      <Link className="rankings-awards__full-list-link" to={`/rankings-awards/${row.key.toLowerCase()}/${rankingSubcategorySlug(vehicle.subcategory)}`}>
+                        See Full List
+                      </Link>
                     </div>
-
-                    <div className="rankings-awards__vehicle-body">
-                      <div className="rankings-awards__vehicle-head">
-                        <h3>{vehicle.year} {vehicle.make} {vehicle.model}</h3>
-                        <div className="rankings-awards__rating" aria-label={`MotorTrend rating ${vehicle.staffRating} out of 10`}>
-                          <strong>{vehicle.staffRating}</strong>
-                          <span>/10</span>
-                        </div>
-                      </div>
-
-                      <dl className="rankings-awards__vehicle-specs">
-                        <div>
-                          <dt>MSRP</dt>
-                          <dd>{formatPriceRange(vehicle)}</dd>
-                        </div>
-                        <div>
-                          <dt>Powertrain</dt>
-                          <dd>{vehicle.fuelType}</dd>
-                        </div>
-                        {vehicle.mpg && (
-                          <div>
-                            <dt>MPG</dt>
-                            <dd>{vehicle.mpg}</dd>
-                          </div>
-                        )}
-                      </dl>
-
-                      <div className="rankings-awards__card-actions">
-                        <span className="rankings-awards__shop-link">Shop New {vehicle.model}</span>
-                        <span className="rankings-awards__full-list-link">See Full List</span>
-                      </div>
-                    </div>
-                  </a>
+                  </div>
                 </article>
               ))}
             </div>
+            <button
+              className="rankings-awards__row-toggle"
+              type="button"
+              aria-expanded={expandedRows.includes(row.key)}
+              aria-controls={`ranking-subcategories-${row.key.toLowerCase()}`}
+              onClick={() => setExpandedRows((current) => current.includes(row.key)
+                ? current.filter((key) => key !== row.key)
+                : [...current, row.key])}
+            >
+              {expandedRows.includes(row.key) ? 'See Less' : 'See More'} {row.title} Rankings
+              <Icon name={expandedRows.includes(row.key) ? 'expand_less' : 'expand_more'} size={20} />
+            </button>
+            {expandedRows.includes(row.key) && (
+              <nav className="rankings-awards__expanded-links" id={`ranking-subcategories-${row.key.toLowerCase()}`} aria-label={`${row.title} rankings`}>
+                {(CATEGORY_SUBCATEGORIES[row.key] ?? []).filter(([label]) => !label.startsWith('#1 Ranked')).map(([label]) => (
+                  <Link key={label} to={`/rankings-awards/${row.key.toLowerCase()}/${rankingSubcategorySlug(label)}`}>
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            )}
             </section>
             {(index + 1) % 2 === 0 && index < bodyStyleRows.length - 1 && <BreakerAd />}
           </React.Fragment>
