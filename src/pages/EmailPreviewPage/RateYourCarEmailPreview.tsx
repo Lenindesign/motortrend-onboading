@@ -7,6 +7,7 @@
  */
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { getUserCDPProfile } from '../../utils/cdpTracking';
 import { getViewedVehicles } from '../../components/PersonalizedVehicles';
 import { vehicleImageFor } from '../../utils/vehicleImages';
@@ -14,23 +15,38 @@ import './EmailPreviewPage.css';
 
 const EMAIL_VARIANTS = {
   personalized: {
+    slug: 'personalized',
     path: '/emails/rate-your-car.html',
     label: 'Personalized (vehicle known)',
     description: 'Sent when we know the car the user drives (from onboarding, garage, or CDP).',
   },
   generic: {
+    slug: 'generic',
     path: '/emails/rate-your-car-generic.html',
     label: 'Generic (vehicle unknown)',
     description: 'Sent when we have no vehicle data — copy drives them to the search step.',
   },
   reviewRequest: {
+    slug: 'review-request',
     path: '/emails/rate-your-car-review-request.html',
     label: 'Review request (already rated)',
     description: 'Sent after a user has rated a known vehicle — copy asks for the story behind the rating.',
   },
+  whatDoYouDrive: {
+    slug: 'what-do-you-drive',
+    path: '/emails/what-do-you-drive.html',
+    label: 'What do you drive? (welcome)',
+    description: 'Sent to new accounts with no vehicle on file — CTA deep-links into Add My Car.',
+  },
 } as const;
 
 type Variant = keyof typeof EMAIL_VARIANTS;
+
+/** Each variant has its own URL: /email-preview/rate-your-car/:variantSlug */
+const PREVIEW_BASE_PATH = '/email-preview/rate-your-car';
+
+const variantFromSlug = (slug: string | undefined): Variant | undefined =>
+  (Object.keys(EMAIL_VARIANTS) as Variant[]).find((v) => EMAIL_VARIANTS[v].slug === slug);
 
 const DEFAULT_STARS_GIF = 'https://www.motortrend.com/files/691bde547554840002bab60c/star.svg';
 
@@ -60,6 +76,9 @@ interface MergeTags {
   genericSedanImageUrl: string;
   genericSuvImageUrl: string;
   unsubscribeUrl: string;
+  addCarUrl: string;
+  shoppingUrl: string;
+  coveredCarImageUrl: string;
 }
 
 const applyMergeTags = (html: string, tags: MergeTags): string =>
@@ -74,7 +93,10 @@ const applyMergeTags = (html: string, tags: MergeTags): string =>
     .replaceAll('{{genericTruckImageUrl}}', tags.genericTruckImageUrl)
     .replaceAll('{{genericSedanImageUrl}}', tags.genericSedanImageUrl)
     .replaceAll('{{genericSuvImageUrl}}', tags.genericSuvImageUrl)
-    .replaceAll('{{unsubscribeUrl}}', tags.unsubscribeUrl);
+    .replaceAll('{{unsubscribeUrl}}', tags.unsubscribeUrl)
+    .replaceAll('{{addCarUrl}}', tags.addCarUrl)
+    .replaceAll('{{shoppingUrl}}', tags.shoppingUrl)
+    .replaceAll('{{coveredCarImageUrl}}', tags.coveredCarImageUrl);
 
 const getVehicleName = (v: unknown): string => {
   if (!v || typeof v !== 'object') return '';
@@ -85,7 +107,10 @@ const getVehicleName = (v: unknown): string => {
 };
 
 export const RateYourCarEmailPreview: React.FC = () => {
-  const [variant, setVariant] = useState<Variant>('personalized');
+  const { variantSlug } = useParams<{ variantSlug: string }>();
+  const navigate = useNavigate();
+  const variant: Variant = variantFromSlug(variantSlug) ?? 'personalized';
+  const setVariant = (v: Variant) => navigate(`${PREVIEW_BASE_PATH}/${EMAIL_VARIANTS[v].slug}`);
   const [rawHtml, setRawHtml] = useState<string>('');
   const [loadError, setLoadError] = useState<string>('');
   const [device, setDevice] = useState<DeviceMode>('desktop');
@@ -143,6 +168,9 @@ export const RateYourCarEmailPreview: React.FC = () => {
       genericSedanImageUrl: DEFAULT_GENERIC_SEDAN_IMAGE_URL,
       genericSuvImageUrl: DEFAULT_GENERIC_SUV_IMAGE_URL,
       unsubscribeUrl: `${origin}/my-account/subscriptions`,
+      addCarUrl: `${origin}/my-account/saved`,
+      shoppingUrl: `${origin}/onboarding`,
+      coveredCarImageUrl: `${origin}/emails/covered-car.png`,
     };
   }, [variant, firstName, vehicleName, starsGifUrl]);
 
@@ -166,6 +194,10 @@ export const RateYourCarEmailPreview: React.FC = () => {
       // Best-effort
     }
   };
+
+  if (variantSlug && !variantFromSlug(variantSlug)) {
+    return <Navigate to={PREVIEW_BASE_PATH} replace />;
+  }
 
   return (
     <div className="email-preview-page">
@@ -195,13 +227,13 @@ export const RateYourCarEmailPreview: React.FC = () => {
             ))}
           </select>
         </div>
-        {variant !== 'generic' && (
+        {variant !== 'generic' && variant !== 'whatDoYouDrive' && (
           <div className="email-preview-page__control-group">
             <label>First name</label>
             <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
           </div>
         )}
-        {variant !== 'generic' && (
+        {variant !== 'generic' && variant !== 'whatDoYouDrive' && (
           <div className="email-preview-page__control-group">
             <label>Vehicle</label>
             <input type="text" value={vehicleName} onChange={(e) => setVehicleName(e.target.value)} />
@@ -225,7 +257,7 @@ export const RateYourCarEmailPreview: React.FC = () => {
 
         <a
           className="email-preview-page__btn"
-          href={tags.ratingUrl}
+          href={variant === 'whatDoYouDrive' ? tags.addCarUrl : tags.ratingUrl}
           target="_blank"
           rel="noreferrer"
           style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}

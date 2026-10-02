@@ -141,6 +141,7 @@ function App() {
               {/* Email Preview Page (for CDP/personalization demo) */}
               <Route path="/email-preview" element={<EmailPreviewPage />} />
               <Route path="/email-preview/rate-your-car" element={<RateYourCarEmailPreview />} />
+              <Route path="/email-preview/rate-your-car/:variantSlug" element={<RateYourCarEmailPreview />} />
               
               {/* Onboarding Steps */}
               <Route path="/onboarding/step1" element={<OnboardingStep1 />} />
