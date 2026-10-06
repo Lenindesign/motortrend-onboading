@@ -1005,7 +1005,7 @@
 .rankings-awards__expanded-links {
   display: grid;
   grid-column: 1 / -1;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px 24px;
   margin: -24px -20px 0;
   padding: 20px 32px 24px;
@@ -1013,7 +1013,7 @@
 }
 
 .rankings-awards__expanded-links a {
-  color: var(--color-primary-1, #E90C17);
+  color: var(--color-neutrals-1, #141416);
   font-size: var(--font-size-sm, 14px);
   font-weight: var(--font-weight-semibold, 600);
   line-height: 1.4;
