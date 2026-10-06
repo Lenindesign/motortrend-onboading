@@ -656,7 +656,7 @@ const RankingsAndAwards: React.FC = () => {
             </button>
             {expandedRows.includes(row.key) && (
               <nav className="rankings-awards__expanded-links" id={`ranking-subcategories-${row.key.toLowerCase()}`} aria-label={`${row.title} rankings`}>
-                {(CATEGORY_SUBCATEGORIES[row.key] ?? []).filter(([label]) => !label.startsWith('#1 Ranked')).map(([label]) => (
+                {(CATEGORY_SUBCATEGORIES[row.key] ?? []).filter(([label]) => !label.startsWith('#1 Ranked')).slice(0, 12).map(([label]) => (
                   <Link key={label} to={`/rankings-awards/${row.key.toLowerCase()}/${rankingSubcategorySlug(label)}`}>
                     {label}
                   </Link>
