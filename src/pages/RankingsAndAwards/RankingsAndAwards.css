@@ -329,8 +329,8 @@
     left: 0;
     width: 100%;
     margin: 0;
-    padding: 5px 42px 5px 10px;
-    background: rgba(255, 255, 255, 0.96);
+    padding: 0 42px 0 10px;
+    background: rgba(255, 255, 255, 0.5);
     box-shadow: 0 -4px 18px rgba(20, 20, 22, 0.22);
     backdrop-filter: blur(8px);
   }
