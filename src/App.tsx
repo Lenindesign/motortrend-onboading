@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { Suspense } from 'react';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
+import { MobileAdhesionAd } from './components/MobileAdhesionAd/MobileAdhesionAd';
 import { ScrollToTop } from './components/ScrollToTop';
 import SignIn from './pages/SignIn';
 import { OnboardingStep1, OnboardingStep2, OnboardingStep3, OnboardingStep4 } from './pages/Onboarding';
@@ -62,6 +63,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {children}
       </main>
       {!isFullScreenPage && <GlobalFooter />}
+      <MobileAdhesionAd />
     </div>
   );
 };

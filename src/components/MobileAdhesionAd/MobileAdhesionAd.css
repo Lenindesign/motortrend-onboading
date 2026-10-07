@@ -1,0 +1,62 @@
+.mobile-adhesion-ad {
+  display: none;
+}
+
+@media (max-width: 820px) {
+  .mobile-adhesion-ad {
+    position: fixed;
+    z-index: 1000;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 42px 0 10px;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 -4px 18px rgba(20, 20, 22, 0.22);
+    backdrop-filter: blur(8px);
+  }
+
+  .mobile-adhesion-ad__link {
+    display: block;
+    width: min(320px, 100%);
+    flex: 0 1 320px;
+  }
+
+  .mobile-adhesion-ad__link img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .mobile-adhesion-ad__close {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid var(--color-neutrals-6, #d9dce1);
+    border-radius: 50%;
+    background: var(--color-white, #fff);
+    color: var(--color-neutrals-3, #353944);
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .mobile-adhesion-ad__close span {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .mobile-adhesion-ad__close:focus-visible {
+    outline: 2px solid var(--color-primary-1, #ed1c24);
+    outline-offset: 2px;
+  }
+}

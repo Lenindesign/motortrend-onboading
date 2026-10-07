@@ -81,9 +81,6 @@ const BreakerAd: React.FC = () => {
       <a className="rankings-awards__breaker-ad-link rankings-awards__breaker-ad-link--desktop" href="https://www.nissanusa.com/" target="_blank" rel="noreferrer">
         <img src="/images/nissan-breaker-ad.png" alt="Nissan year-end sales event" />
       </a>
-      <a className="rankings-awards__breaker-ad-link rankings-awards__breaker-ad-link--mobile" href="https://www.dgdg.com/" target="_blank" rel="noreferrer">
-        <img src="/images/dgdg-adhesion-ad.png" alt="DGDG dealership advertisement" />
-      </a>
       <button className="rankings-awards__breaker-ad-close" type="button" aria-label="Close advertisement" onClick={() => setIsVisible(false)}>
         <span aria-hidden="true">×</span>
       </button>
