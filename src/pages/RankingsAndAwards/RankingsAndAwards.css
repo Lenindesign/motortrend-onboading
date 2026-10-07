@@ -340,17 +340,15 @@
   }
 
   .rankings-awards__breaker-ad-link {
-    width: min(100%, 420px);
-    height: 50px;
+    width: min(320px, 100%);
+    height: auto;
     margin: 0 auto;
     box-shadow: none;
   }
 
   .rankings-awards__breaker-ad-link img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+    height: auto;
   }
 
   .rankings-awards__breaker-ad-close {

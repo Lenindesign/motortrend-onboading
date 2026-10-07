@@ -78,8 +78,8 @@ const BreakerAd: React.FC = () => {
   return (
     <aside className="rankings-awards__breaker-ad" aria-label="Advertisement">
       <span className="rankings-awards__breaker-ad-label">Advertisement</span>
-      <a className="rankings-awards__breaker-ad-link" href="https://www.nissanusa.com/" target="_blank" rel="noreferrer">
-        <img src="/images/nissan-breaker-ad.png" alt="Nissan year-end sales event" />
+      <a className="rankings-awards__breaker-ad-link" href="https://www.dgdg.com/" target="_blank" rel="noreferrer">
+        <img src="/images/dgdg-adhesion-ad.png" alt="DGDG dealership advertisement" />
       </a>
       <button className="rankings-awards__breaker-ad-close" type="button" aria-label="Close advertisement" onClick={() => setIsVisible(false)}>
         <span aria-hidden="true">×</span>
