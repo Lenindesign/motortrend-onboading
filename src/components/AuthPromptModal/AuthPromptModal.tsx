@@ -16,6 +16,7 @@ export type AuthPromptAction = 'save' | 'comment' | 'review' | 'rate' | 'bookmar
 interface AuthPromptModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onAuthRedirect?: () => void;
   action?: AuthPromptAction;
   /** Custom title override */
   title?: string;
@@ -80,6 +81,7 @@ const actionIcon: Record<AuthPromptAction, { name: string; variant: IconVariant 
 export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   isOpen,
   onClose,
+  onAuthRedirect,
   action = 'default',
   title: customTitle,
   description: customDescription,
@@ -109,6 +111,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
 
   const routeToAuth = (mode: 'signin' | 'signup') => {
     persistIntent();
+    onAuthRedirect?.();
 
     const params = new URLSearchParams();
     if (mode === 'signup') params.set('mode', 'signup');

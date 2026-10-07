@@ -3,6 +3,7 @@ type PriceAlertRequest = {
   email?: string;
   vehicleName?: string;
   zip?: string;
+  alertTypes?: string[];
   destination?: string;
 };
 
@@ -33,12 +34,18 @@ export default async function handler(request: Request) {
   const email = typeof body.email === 'string' ? body.email.trim() : '';
   const vehicleName = typeof body.vehicleName === 'string' ? body.vehicleName.trim() : '';
   const zip = typeof body.zip === 'string' ? body.zip.trim() : '';
+  const alertTypes = Array.isArray(body.alertTypes)
+    ? [...new Set(body.alertTypes.filter((type): type is 'incentives' | 'lease' => type === 'incentives' || type === 'lease'))]
+    : [];
   const destination = typeof body.destination === 'string' && body.destination.startsWith('/')
     ? body.destination
     : '/deals';
 
   if (!subscriberId || !email || !vehicleName) {
     return json({ error: 'subscriberId, email, and vehicleName are required' }, 400);
+  }
+  if (!/^\d{5}$/.test(zip) || alertTypes.length === 0) {
+    return json({ error: 'A valid ZIP code and at least one alert type are required' }, 400);
   }
 
   const novuResponse = await fetch('https://api.novu.co/v1/events/trigger', {
@@ -53,6 +60,7 @@ export default async function handler(request: Request) {
       payload: {
         vehicleName,
         zip,
+        alertTypes,
         destination,
         alertType: 'price-alert-subscription',
       },

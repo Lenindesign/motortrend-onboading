@@ -1,0 +1,101 @@
+.price-alerts-modal {
+  padding: 28px 24px;
+  color: var(--color-neutrals-1, #141416);
+  font-family: var(--font-body, Geist, sans-serif);
+}
+
+.price-alerts-modal__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.price-alerts-modal__icon {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-md, 8px);
+  background: rgba(233, 12, 23, 0.08);
+  color: var(--color-primary-1, #E90C17);
+}
+
+.price-alerts-modal__header h2 {
+  margin: 0;
+  color: var(--color-neutrals-1, #141416);
+  font-family: var(--font-heading, Poppins, sans-serif);
+  font-size: 20px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.25;
+}
+
+.price-alerts-modal__intro {
+  margin: 0 0 20px;
+  color: var(--color-neutrals-4, #6E7481);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.price-alerts-modal__form {
+  display: grid;
+  gap: 16px;
+}
+
+.price-alerts-modal__field label span {
+  color: var(--color-primary-1, #E90C17);
+}
+
+.price-alerts-modal__error {
+  margin: -4px 0 0;
+  color: var(--color-primary-1, #E90C17);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.price-alerts-modal__submit:focus-visible {
+  outline: 2px solid var(--color-primary-1, #E90C17);
+  outline-offset: 3px;
+}
+
+.price-alerts-modal__submit {
+  background: var(--color-neutrals-1, #141416) !important;
+  color: var(--color-white, #fff) !important;
+}
+
+.price-alerts-modal__submit:hover:not(:disabled) {
+  background: var(--color-neutrals-2, #25272d) !important;
+}
+
+.price-alerts-modal__submit svg {
+  color: var(--color-primary-1, #e90c17) !important;
+}
+
+.price-alerts-modal__submit:disabled {
+  cursor: wait;
+}
+
+.price-alerts-modal__success {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: var(--border-radius-md, 8px);
+  background: rgba(0, 128, 0, 0.08);
+  color: var(--color-semantic-success, #0A7B0A);
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.4;
+}
+
+@media (max-width: 520px) {
+  .price-alerts-modal {
+    padding: 24px 20px;
+  }
+
+  .price-alerts-modal__header h2 {
+    font-size: 18px;
+  }
+}

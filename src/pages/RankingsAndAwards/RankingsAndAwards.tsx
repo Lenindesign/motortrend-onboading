@@ -70,14 +70,23 @@ export const RankingCategoryIcon: React.FC<{ src: string }> = ({ src }) => {
   );
 };
 
-const BreakerAd: React.FC = () => (
-  <aside className="rankings-awards__breaker-ad" aria-label="Advertisement">
-    <span className="rankings-awards__breaker-ad-label">Advertisement</span>
-    <a className="rankings-awards__breaker-ad-link" href="https://www.nissanusa.com/" target="_blank" rel="noreferrer">
-      <img src="/images/nissan-breaker-ad.png" alt="Nissan year-end sales event" />
-    </a>
-  </aside>
-);
+const BreakerAd: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (!isVisible) return null;
+
+  return (
+    <aside className="rankings-awards__breaker-ad" aria-label="Advertisement">
+      <span className="rankings-awards__breaker-ad-label">Advertisement</span>
+      <a className="rankings-awards__breaker-ad-link" href="https://www.nissanusa.com/" target="_blank" rel="noreferrer">
+        <img src="/images/nissan-breaker-ad.png" alt="Nissan year-end sales event" />
+      </a>
+      <button className="rankings-awards__breaker-ad-close" type="button" aria-label="Close advertisement" onClick={() => setIsVisible(false)}>
+        <Icon name="close" size={18} />
+      </button>
+    </aside>
+  );
+};
 
 const BODY_STYLE_CONFIG: BodyStyleConfig[] = [
   {

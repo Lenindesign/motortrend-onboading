@@ -117,7 +117,7 @@ export const TextField: React.FC<TextFieldProps> = ({
   return (
     <div className={className} style={containerStyle}>
       {label && (
-        <label style={labelStyle}>
+        <label htmlFor={props.id} style={labelStyle}>
           {label}
         </label>
       )}

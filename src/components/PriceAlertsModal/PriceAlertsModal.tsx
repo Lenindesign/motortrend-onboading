@@ -1,21 +1,21 @@
-/**
- * Price Alerts Modal – MVP
- * Sign up for price/incentive alerts for a vehicle. Option to just get emails or register for community.
- */
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { ModalShell } from '../atoms/ModalShell';
 import Icon from '../Icon';
-import { notifyPriceAlertSignup, signUpForPriceAlert } from '../../utils/priceAlerts';
+import { Button, TextField } from '../../design-system/components';
+import {
+  getPriceAlertSignup,
+  notifyPriceAlertSignup,
+  signUpForPriceAlert,
+} from '../../utils/priceAlerts';
 import { useAuth } from '../../contexts/AuthContext';
+import './PriceAlertsModal.css';
 
 export interface PriceAlertsModalProps {
   isOpen: boolean;
   onClose: () => void;
   /** Vehicle name for context e.g. "2025 Honda Accord" */
   vehicleName?: string;
-  /** Called after successful signup (so parent can refresh state) */
+  /** Called after the alert has been created successfully */
   onSignedUp?: () => void;
 }
 
@@ -25,164 +25,130 @@ export const PriceAlertsModal: React.FC<PriceAlertsModalProps> = ({
   vehicleName,
   onSignedUp,
 }) => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [email, setEmail] = useState('');
   const [zip, setZip] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (!isOpen) return;
+    const savedSignup = getPriceAlertSignup();
+    setEmail(savedSignup?.email ?? '');
+    setZip(savedSignup?.zip ?? '');
+    setSubmitted(false);
     setError('');
-    const trimmed = email.trim();
-    if (!trimmed) {
-      setError('Please enter your email address.');
+  }, [isOpen, vehicleName]);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError('');
+
+    const trimmedEmail = email.trim();
+    const trimmedZip = zip.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError('Enter a valid email address to continue.');
       return;
     }
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(trimmed)) {
-      setError('Please enter a valid email address.');
+    if (!/^\d{5}$/.test(trimmedZip)) {
+      setError('Enter a valid 5-digit ZIP code to find local offers.');
       return;
     }
     const vehicle = vehicleName?.trim() || 'this vehicle';
-    signUpForPriceAlert(vehicle, trimmed, zip.trim() || undefined);
-    void notifyPriceAlertSignup(vehicle, trimmed, zip.trim() || undefined, user && !user.isAnonymous ? user.id : undefined);
-    setSubmitted(true);
-    onSignedUp?.();
-    setTimeout(() => {
-      onClose();
-      setSubmitted(false);
-      setEmail('');
-      setZip('');
-    }, 1800);
+    setIsSubmitting(true);
+    try {
+      const configured = await notifyPriceAlertSignup(
+        vehicle,
+        trimmedEmail,
+        trimmedZip,
+        user && !user.isAnonymous ? user.id : undefined,
+      );
+      if (!configured) {
+        setError('We couldn’t set up your alerts right now. Please try again shortly.');
+        return;
+      }
+
+      signUpForPriceAlert(vehicle, trimmedEmail, trimmedZip);
+      setSubmitted(true);
+      onSignedUp?.();
+      window.setTimeout(() => {
+        onClose();
+      }, 1800);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleRegisterAndAlerts = () => {
-    onClose();
-    navigate('/signin?intent=register&returnUrl=' + encodeURIComponent(window.location.pathname));
-  };
-
-  const title = vehicleName ? `Price alerts for ${vehicleName}` : 'Price alerts';
-  const subtitle = vehicleName
-    ? `We'll email you when prices or incentives change for this vehicle.`
-    : `We'll email you when prices or incentives change for your saved vehicles.`;
+  const vehicleLabel = vehicleName ? ` for ${vehicleName}` : '';
 
   return (
-    <ModalShell isOpen={isOpen} onClose={onClose} width="440px">
-      <div style={{ padding: '28px 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-          <div style={{
-            width: '44px', height: '44px', borderRadius: 'var(--border-radius-md, 8px)',
-            background: 'rgba(233, 12, 23, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <Icon name="notifications" size={24} style={{ color: 'var(--color-primary-1, #E90C17)' }} />
-          </div>
-          <h2 style={{
-            fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 700, fontSize: '20px',
-            color: 'var(--color-neutrals-1, #141416)', margin: 0,
-          }}>
-            {title}
-          </h2>
-        </div>
-        <p style={{
-          fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '14px', lineHeight: 1.5,
-          color: 'var(--color-neutrals-4, #6E7481)', margin: '0 0 24px',
-        }}>
-          {subtitle}
+    <ModalShell isOpen={isOpen} onClose={onClose} maxWidth="480px" ariaLabelledBy="price-alerts-title">
+      <div className="price-alerts-modal">
+        <header className="price-alerts-modal__header">
+          <h2 id="price-alerts-title">Get price alerts{vehicleLabel}</h2>
+        </header>
+        <p className="price-alerts-modal__intro">
+          Get emailed when new deals become available for this vehicle, including incentives, cash offers, and lease deals. No account is required.
         </p>
 
         {submitted ? (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: '12px', padding: '16px',
-            background: 'rgba(0, 128, 0, 0.08)', borderRadius: 'var(--border-radius-md, 8px)',
-            color: 'var(--color-semantic-success, #0A7B0A)',
-          }}>
+          <div className="price-alerts-modal__success" role="status" aria-live="polite">
             <Icon name="check_circle" size={24} />
-            <span style={{ fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 600 }}>You're signed up for price alerts.</span>
+            <span>Your deal alerts are set for {vehicleName || 'this vehicle'}.</span>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '16px' }}>
-              <label htmlFor="price-alert-email" style={{
-                display: 'block', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '12px', fontWeight: 600,
-                color: 'var(--color-neutrals-3, #353945)', marginBottom: '6px',
-              }}>
-                Email address <span style={{ color: 'var(--color-primary-1)' }}>*</span>
-              </label>
-              <input
-                id="price-alert-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                autoComplete="email"
-                style={{
-                  width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body, Geist, sans-serif)',
-                  fontSize: '14px', color: 'var(--color-neutrals-1, #141416)', backgroundColor: 'var(--color-white, #FFFFFF)',
-                  border: '1px solid var(--color-neutrals-6, #E6E8EC)',
-                  borderRadius: 'var(--border-radius-md, 8px)', outline: 'none', boxSizing: 'border-box',
-                }}
-              />
-            </div>
-            <div style={{ marginBottom: '20px' }}>
-              <label htmlFor="price-alert-zip" style={{
-                display: 'block', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '12px', fontWeight: 600,
-                color: 'var(--color-neutrals-3, #353945)', marginBottom: '6px',
-              }}>
-                Zip code <span style={{ color: 'var(--color-neutrals-5)', fontWeight: 400 }}>(optional, for local incentives)</span>
-              </label>
-              <input
-                id="price-alert-zip"
-                type="text"
-                value={zip}
-                onChange={(e) => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
-                placeholder="12345"
-                maxLength={5}
-                style={{
-                  width: '100%', padding: '12px 14px', fontFamily: 'var(--font-body, Geist, sans-serif)',
-                  fontSize: '14px', color: 'var(--color-neutrals-1, #141416)', backgroundColor: 'var(--color-white, #FFFFFF)',
-                  border: '1px solid var(--color-neutrals-6, #E6E8EC)',
-                  borderRadius: 'var(--border-radius-md, 8px)', outline: 'none', boxSizing: 'border-box',
-                }}
-              />
-            </div>
-            {error && (
-              <p style={{ color: 'var(--color-primary-1)', fontSize: '13px', marginBottom: '12px' }}>{error}</p>
-            )}
-            <button
+          <form className="price-alerts-modal__form" onSubmit={handleSubmit} noValidate>
+            <TextField
+              className="price-alerts-modal__field"
+              label={<>Email address <span aria-hidden="true">*</span></>}
+              id="price-alert-email"
+              aria-label="Email address"
+              aria-describedby={error ? 'price-alert-error' : undefined}
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+              required
+              fullWidth
+            />
+
+            <TextField
+              className="price-alerts-modal__field"
+              label={<>ZIP code <span aria-hidden="true">*</span></>}
+              id="price-alert-zip"
+              aria-label="ZIP code"
+              aria-describedby={error ? 'price-alert-error' : 'price-alert-zip-help'}
+              type="text"
+              inputMode="numeric"
+              value={zip}
+              onChange={(event) => setZip(event.target.value.replace(/\D/g, '').slice(0, 5))}
+              placeholder="12345"
+              autoComplete="postal-code"
+              maxLength={5}
+              required
+              helperText={<span id="price-alert-zip-help">Used to find offers available near you.</span>}
+              fullWidth
+            />
+
+            {error && <p className="price-alerts-modal__error" id="price-alert-error" role="alert">{error}</p>}
+
+            <Button
+              className="price-alerts-modal__submit"
               type="submit"
-              style={{
-                width: '100%', padding: '14px', background: 'var(--color-neutrals-1, #141416)', color: 'white',
-                border: 'none', borderRadius: 'var(--border-radius-md, 8px)',
-                fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 600, fontSize: '14px',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              }}
+              color="primary"
+              size="large"
+              fullWidth
+              disabled={isSubmitting}
+              icon={<Icon name="notifications" variant="filled" size={20} />}
+              style={{ height: '48px' }}
             >
-              <Icon name="notifications" size={20} />
-              Get price alerts
-            </button>
+              {isSubmitting ? 'Setting up alerts…' : 'Get price alerts'}
+            </Button>
           </form>
         )}
 
-        {!submitted && (
-          <p style={{
-            fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: '13px', color: 'var(--color-neutrals-4, #6E7481)',
-            marginTop: '20px', textAlign: 'center',
-          }}>
-            Or{' '}
-            <button
-              type="button"
-              onClick={handleRegisterAndAlerts}
-              style={{
-                background: 'none', border: 'none', padding: 0, color: 'var(--color-primary-1)', fontWeight: 600,
-                cursor: 'pointer', textDecoration: 'underline',
-              }}
-            >
-              register for community & get price alerts
-            </button>
-          </p>
-        )}
       </div>
     </ModalShell>
   );

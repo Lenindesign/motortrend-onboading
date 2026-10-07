@@ -692,7 +692,7 @@
 
 .vehicle-details__year-dropdown select {
   appearance: none;
-  border: 1px solid var(--color-neutrals-6);
+  border: 0;
   outline: 0;
   background: transparent;
   color: inherit;
@@ -1498,6 +1498,13 @@
   gap: var(--spacing-3);
 }
 
+.vehicle-details__price-summary {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
 .vehicle-details__price {
   display: flex;
   align-items: center;
@@ -1513,6 +1520,49 @@
   margin: 0;
 }
 
+.vehicle-details__price-alert-btn {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  padding: 8px 24px;
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-md);
+  background: var(--color-neutrals-8);
+  color: var(--color-neutrals-3);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(20, 20, 22, 0.06);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.vehicle-details__price-alert-btn svg {
+  color: var(--color-primary-1);
+}
+
+.vehicle-details__price-alert-btn:hover {
+  background: var(--color-neutrals-7);
+}
+
+.vehicle-details__price-alert-btn.is-active svg {
+  color: var(--color-white);
+}
+
+.vehicle-details__price-alert-btn.is-active {
+  border-color: var(--color-neutrals-3);
+  background: var(--color-neutrals-3);
+  color: var(--color-white);
+}
+
+.vehicle-details__price-alert-btn:focus-visible {
+  outline: 2px solid var(--color-primary-1);
+  outline-offset: 3px;
+}
+
 .vehicle-details__relationship {
   display: flex;
   flex-direction: column;
@@ -1523,6 +1573,52 @@
   border-radius: var(--border-radius-lg);
   background: var(--color-white);
   box-shadow: var(--shadow-depth-2);
+}
+
+.vehicle-contributions {
+  display: grid;
+  gap: var(--spacing-2);
+  margin: 0 0 var(--spacing-4);
+  padding: var(--spacing-card-lg);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-depth-2);
+}
+.vehicle-contributions h2, .vehicle-contributions p { margin: 0; }
+.vehicle-contributions h2 { color: var(--color-neutrals-1); font: var(--font-weight-semibold) var(--font-size-xl)/1.2 var(--font-heading); }
+.vehicle-contributions__eyebrow, .vehicle-contributions__exploratory > span { color: var(--color-primary-1); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); letter-spacing: .04em; text-transform: uppercase; }
+.vehicle-contributions__relationship { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-component-sm); padding: 12px 16px; border-radius: var(--border-radius-pill); background: var(--color-neutrals-7); }
+.vehicle-contributions__relationship p { flex-basis: 100%; color: var(--color-neutrals-3); font-weight: var(--font-weight-medium); }
+.vehicle-contributions__relationship button, .vehicle-contributions__answer-actions button, .vehicle-contributions__question-form button { min-height: 40px; padding: 8px 16px; border: 1px solid var(--color-neutrals-5); border-radius: var(--border-radius-pill); background: var(--color-white); color: var(--color-neutrals-2); font: var(--font-weight-semibold) var(--font-size-sm) var(--font-heading); cursor: pointer; }
+.vehicle-contributions__relationship button { display: inline-flex; flex: 1 1 0; align-items: center; justify-content: center; gap: 8px; border-color: transparent; background: transparent; text-align: center; }
+.vehicle-contributions__relationship button::before { width: 16px; height: 16px; flex: 0 0 16px; border: 2px solid var(--color-neutrals-4); border-radius: 50%; background: var(--color-white); content: ''; }
+.vehicle-contributions__relationship button.is-selected { border-color: var(--color-neutrals-1); background: var(--color-neutrals-1); color: var(--color-white); }
+.vehicle-contributions__relationship button.is-selected::before { border: 5px solid var(--color-primary-1); }
+.vehicle-contributions__confirmation { padding: 12px 14px; border-radius: var(--border-radius-md); background: var(--color-semantic-success-light); color: var(--color-semantic-success-dark); font-size: var(--font-size-sm); }
+.vehicle-contributions__prompt { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; padding-top: 14px; border-top: 1px solid var(--color-neutrals-6); }
+.vehicle-contributions__prompt > div:first-child { display: grid; gap: 3px; }
+.vehicle-contributions__prompt > div:first-child span, .vehicle-contributions__results small { color: var(--color-neutrals-4); font-size: var(--font-size-xs); }
+.vehicle-contributions__email-preview { grid-column: 1 / -1; justify-self: start; color: var(--color-primary-1); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
+.vehicle-contributions__answer-actions { display: flex; gap: 8px; }
+.vehicle-contributions__results { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 12px; min-width: 210px; font-size: var(--font-size-sm); }
+.vehicle-contributions__results small { grid-column: 1 / -1; }
+.vehicle-contributions__bar { grid-column: 1 / -1; height: 6px; overflow: hidden; border-radius: 8px; background: var(--color-neutrals-6); }
+.vehicle-contributions__bar i { display: block; height: 100%; background: var(--color-primary-1); }
+.vehicle-contributions__exploratory { display: grid; gap: 12px; padding: 14px; border: 1px dashed var(--color-neutrals-5); border-radius: var(--border-radius-md); background: var(--color-neutrals-7); }
+.vehicle-contributions__exploratory .vehicle-contributions__prompt { border-top: 0; padding-top: 0; }
+.vehicle-contributions__exploratory label { color: var(--color-neutrals-3); font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); }
+.vehicle-contributions__question-form { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.vehicle-contributions__question-form textarea { min-height: 66px; resize: vertical; padding: 10px 12px; border: 1px solid var(--color-neutrals-5); border-radius: var(--border-radius-md); font: inherit; }
+.vehicle-contributions__question-form button:disabled { opacity: .5; cursor: not-allowed; }
+
+@media (max-width: 520px) {
+  .vehicle-contributions__relationship { border-radius: var(--border-radius-lg); }
+  .vehicle-contributions__relationship button { flex-basis: 100%; }
+}
+
+@media (min-width: 769px) {
+  .vehicle-contributions h2 { text-align: left; }
 }
 
 .vehicle-details__relationship-copy {
@@ -2814,6 +2910,17 @@
     align-items: flex-start;
     gap: 16px;
     padding: 16px 0;
+  }
+
+  .vehicle-details__price-summary {
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .vehicle-details__price-alert-btn {
+    width: 100%;
   }
 
   .vehicle-details__price-drop {

@@ -30,7 +30,9 @@ import { Popover } from '../../components/atoms/Popover';
 import { LocalListingsSidebar, type LocalListing } from '../../components/LocalListingsSidebar';
 import { PollOfTheDay } from '../../components/PollOfTheDay/PollOfTheDay';
 import { BracketVoting } from '../../components/BracketVoting/BracketVoting';
+import { VehicleContributionPrompts } from '../../components/VehicleContributionPrompts/VehicleContributionPrompts';
 import { getLocalListings } from '../../utils/localListings';
+import { hasPriceAlert } from '../../utils/priceAlerts';
 import { addViewedVehicle } from '../../components/PersonalizedVehicles';
 import { GoogleOneTap } from '../../components/GoogleOneTap';
 import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
@@ -52,6 +54,7 @@ export const VehicleDetails: React.FC = () => {
   const decodedModel = decodeURIComponent(model || '3-Series');
   const [selectedYear, setSelectedYear] = useState<string>(decodedYear);
   const [isSaved, setIsSaved] = useState(false);
+  const [isPriceAlertActive, setIsPriceAlertActive] = useState(false);
   const [isCompared, setIsCompared] = useState(false);
   const [vehicleRelationship, setVehicleRelationship] = useState<'own' | 'want' | null>(null);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
@@ -90,7 +93,7 @@ export const VehicleDetails: React.FC = () => {
 
   // Auth prompt for unauthenticated user actions
   const { isAuthPromptOpen, promptAction, closeAuthPrompt, requireAuth } = useAuthPrompt();
-  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
@@ -158,29 +161,17 @@ export const VehicleDetails: React.FC = () => {
     [decodedYear, decodedMake, decodedModel]
   );
 
+  useEffect(() => {
+    const updatePriceAlertState = () => setIsPriceAlertActive(hasPriceAlert(vehicleName));
+    updatePriceAlertState();
+    window.addEventListener('priceAlertsUpdated', updatePriceAlertState);
+    return () => window.removeEventListener('priceAlertsUpdated', updatePriceAlertState);
+  }, [vehicleName]);
+
   // Track viewed vehicle for personalization
   useEffect(() => {
     if (vehicleName) {
       addViewedVehicle(vehicleName);
-    }
-  }, [vehicleName]);
-
-  useEffect(() => {
-    try {
-      const savedRelationship = localStorage.getItem(`vehicleRelationship:${vehicleName}`);
-      if (savedRelationship === 'own' || savedRelationship === 'want' || savedRelationship === 'shop') {
-        setVehicleRelationship(savedRelationship === 'own' ? 'own' : 'want');
-        return;
-      }
-
-      const onboardingData = localStorage.getItem('onboardingData');
-      const data = onboardingData ? JSON.parse(onboardingData) : null;
-      const savedVehicle = data?.vehicles?.find(
-        (vehicle: { name?: string; ownership?: string }) => vehicle.name?.trim().toLowerCase() === vehicleName.trim().toLowerCase()
-      );
-      setVehicleRelationship(savedVehicle?.ownership === 'own' ? 'own' : savedVehicle?.ownership === 'want' ? 'want' : null);
-    } catch {
-      setVehicleRelationship(null);
     }
   }, [vehicleName]);
 
@@ -1474,9 +1465,21 @@ export const VehicleDetails: React.FC = () => {
 
           {/* Price and Actions */}
           <div className="vehicle-details__price-section">
-            <div className="vehicle-details__price">
-              <span className="vehicle-details__price-range">{vehicleData.priceRange}</span>
-              <Icon name="keyboard_arrow_down" size={20} />
+            <div className="vehicle-details__price-summary">
+              <div className="vehicle-details__price">
+                <span className="vehicle-details__price-range">{vehicleData.priceRange}</span>
+                <Icon name="keyboard_arrow_down" size={20} />
+              </div>
+              <button
+                className={`vehicle-details__price-alert-btn${isPriceAlertActive ? ' is-active' : ''}`}
+                type="button"
+                aria-haspopup="dialog"
+                aria-label={`${isPriceAlertActive ? 'Update' : 'Get'} price alerts for ${vehicleName}`}
+                onClick={() => setIsPriceAlertsModalOpen(true)}
+              >
+                <Icon name="notifications" variant="filled" size={18} />
+                <span>{isPriceAlertActive ? 'Price Alerts On' : 'Get Price Alerts'}</span>
+              </button>
             </div>
             <div className="vehicle-details__actions">
               <button
@@ -1503,42 +1506,14 @@ export const VehicleDetails: React.FC = () => {
 
           <div className="vehicle-details__below-content-layout">
           <div className="vehicle-details__below-content-main">
-          <section className="vehicle-details__relationship" aria-labelledby="vehicle-relationship-title">
-            <div className="vehicle-details__relationship-copy">
-              <span className="vehicle-details__relationship-kicker">Quick Selector</span>
-              <h2 id="vehicle-relationship-title">What is your current relationship to this car?</h2>
-            </div>
-            <div className="vehicle-details__relationship-actions">
-              <button
-                type="button"
-                className={`vehicle-details__relationship-btn ${vehicleRelationship === 'own' ? 'is-selected' : ''}`}
-                aria-pressed={vehicleRelationship === 'own'}
-                onClick={() => handleVehicleRelationship(vehicleRelationship === 'own' ? null : 'own')}
-              >
-                <span className="vehicle-details__relationship-radio" aria-hidden="true" />
-                <span className="vehicle-details__relationship-emoji" aria-hidden="true">🔑</span>
-                I own this
-              </button>
-              <button
-                type="button"
-                className={`vehicle-details__relationship-btn ${vehicleRelationship === 'want' ? 'is-selected' : ''}`}
-                aria-pressed={vehicleRelationship === 'want'}
-                onClick={() => handleVehicleRelationship(vehicleRelationship === 'want' ? null : 'want')}
-              >
-                <span className="vehicle-details__relationship-radio" aria-hidden="true" />
-                <span className="vehicle-details__relationship-emoji" aria-hidden="true">😍</span>
-                I'm shopping for one
-              </button>
-            </div>
-            {vehicleRelationship && (
-              <div className="vehicle-details__relationship-confirmation" role="status">
-                <span className="vehicle-details__relationship-confirmation-icon" aria-hidden="true">✓</span>
-                <span>
-                  As an <strong>{vehicleRelationship === 'own' ? 'Owner' : 'Active Shopper'}</strong>, you can directly answer live shopper questions in the community board below.
-                </span>
-              </div>
-            )}
-          </section>
+          <VehicleContributionPrompts
+            vehicleName={vehicleName}
+            vehicleUrl={`/vehicles/${encodeURIComponent(decodedYear)}/${encodeURIComponent(decodedMake)}/${encodeURIComponent(decodedModel)}`}
+            relationship={vehicleRelationship}
+            onRelationshipChange={(next) => handleVehicleRelationship(vehicleRelationship === next ? null : next)}
+            showRepurchase={false}
+            showReliability={false}
+          />
 
           {vehicleName === '2026 Honda Civic' && (
             <aside className="vehicle-details__price-drop" aria-label="Sample price drop alert">
@@ -1760,27 +1735,15 @@ export const VehicleDetails: React.FC = () => {
             </div>
           </div>
 
-          {/* Owner Sentiment */}
-          <section className="vehicle-details__owner-sentiment" aria-labelledby="owner-sentiment-title">
-            <h2 id="owner-sentiment-title">Would owners buy it again?</h2>
-            <p className="vehicle-details__owner-sentiment-summary">
-              <strong>68%</strong> of {vehicleName} owners say they would buy it again
-            </p>
-            <div className="vehicle-details__owner-sentiment-labels" aria-hidden="true">
-              <span>Yes 68%</span>
-              <span>No 32%</span>
-            </div>
-            <div className="vehicle-details__owner-sentiment-bar" role="img" aria-label="68 percent would buy this vehicle again and 32 percent would not">
-              <span style={{ width: '68%' }} />
-            </div>
-            <div className="vehicle-details__owner-sentiment-counts">
-              <span>412 would buy again · 194 would not</span>
-              <span>Based on 606 owner responses</span>
-            </div>
-            <p className="vehicle-details__owner-sentiment-note">
-              Owners are asked this question by notification, and their answers move this bar.
-            </p>
-          </section>
+          <VehicleContributionPrompts
+            vehicleName={vehicleName}
+            vehicleUrl={`/vehicles/${encodeURIComponent(decodedYear)}/${encodeURIComponent(decodedMake)}/${encodeURIComponent(decodedModel)}`}
+            relationship={vehicleRelationship}
+            repurchaseEligible={vehicleRelationship === 'own' || userRating > 0 || Boolean(user && reviews.some((review) => review.reviewerName === user.displayName))}
+            reliabilityEligible={vehicleRelationship === 'own'}
+            onRelationshipChange={(next) => handleVehicleRelationship(vehicleRelationship === next ? null : next)}
+            showRelationship={false}
+          />
 
           {/* Photo Gallery Bento (Show when 3+ photos available) */}
           {galleryImages.length >= 3 && (
@@ -1942,14 +1905,7 @@ export const VehicleDetails: React.FC = () => {
           <BracketVoting />
 
           <div className="vehicle-details__content-poll">
-            <div className="vehicle-details__poll-preview">
-              <p className="vehicle-details__poll-preview-label">Preview · Not voted yet · With photos</p>
-              <PollOfTheDay variant="horizontal" previewBeforeVote />
-            </div>
-            <div className="vehicle-details__poll-preview">
-              <p className="vehicle-details__poll-preview-label">Preview · Not voted yet · No photos</p>
-              <PollOfTheDay variant="horizontal" previewBeforeVote showPhotos={false} />
-            </div>
+            <PollOfTheDay variant="horizontal" />
           </div>
 
           {/* User Reviews */}
@@ -2017,10 +1973,6 @@ export const VehicleDetails: React.FC = () => {
                 alt="Advertisement"
                 className="vehicle-details__ad-image"
               />
-            </div>
-
-            <div className="vehicle-details__sidebar-poll">
-              <PollOfTheDay />
             </div>
 
             {/* Related Articles */}
@@ -2232,7 +2184,7 @@ export const VehicleDetails: React.FC = () => {
         isOpen={isPriceAlertsModalOpen}
         onClose={() => setIsPriceAlertsModalOpen(false)}
         vehicleName={vehicleName}
-        onSignedUp={() => undefined}
+        onSignedUp={() => setIsPriceAlertActive(true)}
       />
 
       {/* Auth Prompt Modal for unauthenticated users */}

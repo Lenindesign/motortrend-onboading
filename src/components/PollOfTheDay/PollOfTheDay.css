@@ -243,6 +243,9 @@
   border-top: 1px solid var(--poll-line);
 }
 
+.poll-matchup__auth-note { margin: var(--spacing-component-sm) 0 0; color: var(--poll-muted); font-size: var(--font-size-xs); line-height: var(--line-height-normal); }
+.poll-matchup__error { margin: var(--spacing-component-sm) 0 0; color: var(--color-semantic-error-dark); font-size: var(--font-size-sm); }
+
 .poll-matchup__footer p {
   margin: 0;
   color: var(--color-neutrals-3);

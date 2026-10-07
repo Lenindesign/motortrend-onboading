@@ -1,4 +1,7 @@
-import React, { useId, useMemo, useState } from 'react';
+import React, { useCallback, useId, useMemo, useRef, useState } from 'react';
+import { AuthPromptModal } from '../AuthPromptModal';
+import { useAuth } from '../../contexts/AuthContext';
+import { useAuthPrompt } from '../../hooks/useAuthPrompt';
 import './PollOfTheDay.css';
 
 type PollOption = {
@@ -46,16 +49,20 @@ export const PollOfTheDay: React.FC<PollOfTheDayProps> = ({
   showPhotos = true,
 }) => {
   const instanceId = useId().replace(/:/g, '');
+  const { isAuthenticated } = useAuth();
+  const { isAuthPromptOpen, promptAction, requireAuth, closeAuthPrompt } = useAuthPrompt();
+  const authRedirectInProgress = useRef(false);
   const titleId = `${instanceId}-poll-title`;
   const statusId = `${instanceId}-poll-status`;
   const pollDate = useMemo(() => new Date().toISOString().slice(0, 10), []);
   const storageKey = `motortrend-poll-${pollDate}`;
   const voteKey = `${storageKey}-vote`;
+  const pendingKey = `${storageKey}-pending`;
   const [votes, setVotes] = useState<Record<string, number>>(() => {
     try {
       const saved = localStorage.getItem(storageKey);
       return saved ? { ...seedVotes, ...JSON.parse(saved) } : seedVotes;
-    } catch {
+      } catch {
       return seedVotes;
     }
   });
@@ -67,6 +74,13 @@ export const PollOfTheDay: React.FC<PollOfTheDayProps> = ({
       return null;
     }
   });
+  const [pendingOption, setPendingOption] = useState<PollOption['id'] | null>(() => {
+    try {
+      const saved = sessionStorage.getItem(pendingKey);
+      return pollOptions.some(({ id }) => id === saved) ? saved as PollOption['id'] : null;
+    } catch { return null; }
+  });
+  const [voteError, setVoteError] = useState('');
 
   React.useEffect(() => {
     const syncPoll = (event: Event) => {
@@ -84,22 +98,62 @@ export const PollOfTheDay: React.FC<PollOfTheDayProps> = ({
   const percentageFor = (optionId: string) => Math.round(((votes[optionId] || 0) / totalVotes) * 100);
   const visibleSelectedOption = previewBeforeVote ? null : selectedOption;
 
-  const handleVote = (optionId: PollOption['id']) => {
+  const handleVote = useCallback((optionId: PollOption['id']) => {
     if (selectedOption || previewBeforeVote) return;
+    setVoteError('');
+    if (!requireAuth('default')) {
+      setPendingOption(optionId);
+      try { sessionStorage.setItem(pendingKey, optionId); } catch { /* keep intent in memory */ }
+      return;
+    }
 
     const nextVotes = { ...votes, [optionId]: (votes[optionId] || 0) + 1 };
-    setVotes(nextVotes);
-    setSelectedOption(optionId);
+    let previousVotes: string | null = null;
+    let previousVote: string | null = null;
+    let snapshotAvailable = false;
     try {
+      previousVotes = localStorage.getItem(storageKey);
+      previousVote = localStorage.getItem(voteKey);
+      snapshotAvailable = true;
       localStorage.setItem(storageKey, JSON.stringify(nextVotes));
       localStorage.setItem(voteKey, optionId);
     } catch {
-      // The in-page results remain available when storage is disabled.
+      if (snapshotAvailable) {
+        try {
+          if (previousVotes === null) localStorage.removeItem(storageKey);
+          else localStorage.setItem(storageKey, previousVotes);
+          if (previousVote === null) localStorage.removeItem(voteKey);
+          else localStorage.setItem(voteKey, previousVote);
+        } catch { /* keep the failed vote hidden in this session */ }
+      }
+      try { sessionStorage.removeItem(pendingKey); } catch { /* local demo only */ }
+      setVoteError('We couldn’t save your vote. Please try again.');
+      return;
     }
+    setVotes(nextVotes);
+    setSelectedOption(optionId);
+    try { sessionStorage.removeItem(pendingKey); } catch { /* ignore storage cleanup failure */ }
+    setPendingOption(null);
     window.dispatchEvent(new CustomEvent<PollUpdate>('motortrend-poll-update', {
       detail: { storageKey, votes: nextVotes, selectedOption: optionId },
     }));
+  }, [selectedOption, previewBeforeVote, requireAuth, votes, storageKey, voteKey, pendingKey]);
+
+  const cancelAuthPrompt = () => {
+    closeAuthPrompt();
+    if (!isAuthenticated && !authRedirectInProgress.current) {
+      setPendingOption(null);
+      try { sessionStorage.removeItem(pendingKey); } catch { /* local demo only */ }
+    }
   };
+
+  React.useEffect(() => {
+    if (isAuthenticated && pendingOption) {
+      const optionToVote = pendingOption;
+      setPendingOption(null);
+      handleVote(optionToVote);
+    }
+  }, [isAuthenticated, pendingOption, handleVote]);
 
   const leader = percentageFor('bronco') >= percentageFor('wrangler') ? 'Bronco' : 'Wrangler';
   const leaderId = leader.toLowerCase();
@@ -167,8 +221,13 @@ export const PollOfTheDay: React.FC<PollOfTheDayProps> = ({
             ? `You voted for the ${visibleSelectedOption === 'bronco' ? 'Bronco' : 'Wrangler'}. ${leader} leads ${percentageFor(leaderId)} to ${percentageFor(leaderId === 'bronco' ? 'wrangler' : 'bronco')} percent.`
             : 'Choose a side to reveal how the community voted.'}
         </p>
-        <span className="poll-matchup__vote-count">{totalVotes.toLocaleString()} votes</span>
+        <span className="poll-matchup__vote-count">
+          {visibleSelectedOption && totalVotes >= 10 ? `${totalVotes.toLocaleString()} votes` : ''}
+        </span>
       </footer>
+      {voteError && <p className="poll-matchup__error" role="alert">{voteError}</p>}
+      {!visibleSelectedOption && !previewBeforeVote && <p className="poll-matchup__auth-note">Sign in or create an account to vote. Results stay hidden until your vote is recorded.</p>}
+      <AuthPromptModal isOpen={isAuthPromptOpen} onClose={cancelAuthPrompt} onAuthRedirect={() => { authRedirectInProgress.current = true; }} action={promptAction} title="Join to vote" description="Sign in or create an account. We’ll keep your choice and submit your vote when you’re done." contextId={`poll-${pollDate}`} />
     </section>
   );
 };

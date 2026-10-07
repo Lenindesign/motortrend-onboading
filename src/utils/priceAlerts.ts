@@ -7,6 +7,8 @@ import { parseVehicleName } from './vehicleImages';
 
 const STORAGE_KEY = 'priceAlertSignups';
 
+export type PriceAlertType = 'incentives' | 'lease';
+
 export function getPriceAlertDestination(vehicleName: string): string {
   const { year, make, model } = parseVehicleName(vehicleName);
   return year && make && model
@@ -18,14 +20,16 @@ export interface PriceAlertSignup {
   email: string;
   zip?: string;
   vehicles: string[];
+  alertTypesByVehicle?: Record<string, PriceAlertType[]>;
   updatedAt: string;
 }
 
 export async function notifyPriceAlertSignup(
   vehicleName: string,
   email: string,
-  zip?: string,
+  zip: string,
   subscriberId?: string,
+  alertTypes: PriceAlertType[] = ['incentives', 'lease'],
 ): Promise<boolean> {
   try {
     const response = await fetch('/api/price-alert-subscribe', {
@@ -36,6 +40,7 @@ export async function notifyPriceAlertSignup(
         email,
         vehicleName,
         zip,
+        alertTypes,
         destination: getPriceAlertDestination(vehicleName),
       }),
     });
@@ -85,22 +90,33 @@ export function getPriceAlertSignup(): PriceAlertSignup | null {
 }
 
 /** Sign up for price alerts for a vehicle. If email provided, update stored email. */
-export function signUpForPriceAlert(vehicleName: string, email: string, zip?: string): void {
+export function signUpForPriceAlert(
+  vehicleName: string,
+  email: string,
+  zip: string,
+  alertTypes: PriceAlertType[] = ['incentives', 'lease'],
+): void {
   const current = getStored();
   const vehicles = current?.vehicles ?? [];
+  const alertTypesByVehicle = {
+    ...current?.alertTypesByVehicle,
+    [vehicleName]: alertTypes,
+  };
   if (vehicles.includes(vehicleName)) {
     setStored({
       email: email || (current?.email ?? ''),
-      zip: zip ?? current?.zip,
+      zip,
       vehicles,
+      alertTypesByVehicle,
       updatedAt: new Date().toISOString(),
     });
     return;
   }
   setStored({
     email: email || (current?.email ?? ''),
-    zip: zip ?? current?.zip,
+    zip,
     vehicles: [...vehicles, vehicleName],
+    alertTypesByVehicle,
     updatedAt: new Date().toISOString(),
   });
 }
@@ -127,7 +143,7 @@ export function removePriceAlert(vehicleName: string): void {
 }
 
 /** Toggle price alert for a vehicle; returns new state (true = now has alert) */
-export function togglePriceAlert(vehicleName: string, email: string, zip?: string): boolean {
+export function togglePriceAlert(vehicleName: string, email: string, zip = ''): boolean {
   if (hasPriceAlert(vehicleName)) {
     removePriceAlert(vehicleName);
     return false;

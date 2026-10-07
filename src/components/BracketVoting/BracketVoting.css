@@ -300,3 +300,9 @@
     grid-template-columns: 1fr;
   }
 }
+.bracket-voting__round-complete { display: grid; gap: 4px; margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: #edf7ef; color: var(--color-neutrals-2); }
+.bracket-voting__round-complete span { color: var(--color-neutrals-4); font-size: 13px; }
+.bracket-voting__advance { justify-self: start; margin-top: 4px; padding: 9px 14px; border: 0; border-radius: 4px; background: var(--color-neutrals-1, #141416); color: var(--color-white, #FFFFFF); font-size: 13px; font-weight: 700; cursor: pointer; }
+.bracket-voting__reminder-channels { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; padding: 10px 12px; border: 1px solid var(--color-neutrals-6); border-radius: 8px; color: var(--color-neutrals-3); font-size: 13px; }
+.bracket-voting__reminder-channels legend { padding: 0 4px; font-weight: 600; }
+.bracket-voting__reminder-channels label { display: inline-flex; align-items: center; gap: 6px; }
