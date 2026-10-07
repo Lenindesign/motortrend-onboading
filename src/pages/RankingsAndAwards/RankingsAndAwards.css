@@ -336,9 +336,7 @@
   }
 
   .rankings-awards__breaker-ad-label {
-    margin-bottom: 2px;
-    font-size: 8px;
-    line-height: 10px;
+    display: none;
   }
 
   .rankings-awards__breaker-ad-link {
@@ -369,6 +367,14 @@
     color: var(--color-neutrals-3, #353944);
     transform: translateY(-50%);
     cursor: pointer;
+  }
+
+  .rankings-awards__breaker-ad-close span {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
   }
 
   .rankings-awards__breaker-ad-close:focus-visible {

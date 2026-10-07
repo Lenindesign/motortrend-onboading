@@ -82,7 +82,7 @@ const BreakerAd: React.FC = () => {
         <img src="/images/nissan-breaker-ad.png" alt="Nissan year-end sales event" />
       </a>
       <button className="rankings-awards__breaker-ad-close" type="button" aria-label="Close advertisement" onClick={() => setIsVisible(false)}>
-        <Icon name="close" size={18} />
+        <span aria-hidden="true">×</span>
       </button>
     </aside>
   );
