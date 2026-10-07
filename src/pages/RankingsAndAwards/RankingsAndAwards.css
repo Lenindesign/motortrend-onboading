@@ -316,6 +316,10 @@
   height: auto;
 }
 
+.rankings-awards__breaker-ad-link--mobile {
+  display: none;
+}
+
 .rankings-awards__breaker-ad-close {
   display: none;
 }
@@ -344,6 +348,14 @@
     height: auto;
     margin: 0 auto;
     box-shadow: none;
+  }
+
+  .rankings-awards__breaker-ad-link--desktop {
+    display: none;
+  }
+
+  .rankings-awards__breaker-ad-link--mobile {
+    display: block;
   }
 
   .rankings-awards__breaker-ad-link img {
