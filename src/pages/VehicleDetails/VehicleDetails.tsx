@@ -31,6 +31,7 @@ import { LocalListingsSidebar, type LocalListing } from '../../components/LocalL
 import { PollOfTheDay } from '../../components/PollOfTheDay/PollOfTheDay';
 import { BracketVoting } from '../../components/BracketVoting/BracketVoting';
 import { VehicleContributionPrompts } from '../../components/VehicleContributionPrompts/VehicleContributionPrompts';
+import { VehicleRankingModule } from '../../components/VehicleRankingModule/VehicleRankingModule';
 import { getLocalListings } from '../../utils/localListings';
 import { hasPriceAlert } from '../../utils/priceAlerts';
 import { addViewedVehicle } from '../../components/PersonalizedVehicles';
@@ -1691,6 +1692,8 @@ export const VehicleDetails: React.FC = () => {
             onRelationshipChange={(next) => handleVehicleRelationship(vehicleRelationship === next ? null : next)}
             showRelationship={false}
           />
+
+          <VehicleRankingModule year={decodedYear} make={decodedMake} model={decodedModel} />
 
           {/* Photo Gallery Bento (Show when 3+ photos available) */}
           {galleryImages.length >= 3 && (

@@ -1,0 +1,265 @@
+.vehicle-ranking {
+  margin: 0 0 var(--spacing-4, 32px);
+  padding: var(--spacing-card-lg, 24px);
+  border: 1px solid var(--color-neutrals-6, #e6e8ec);
+  border-radius: var(--border-radius-lg, 12px);
+  background: var(--color-white, #fff);
+  box-shadow: var(--shadow-depth-2, 0 2px 8px rgba(20, 20, 22, 0.08));
+}
+
+.vehicle-ranking__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.vehicle-ranking__header > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.vehicle-ranking__eyebrow {
+  margin: 0 0 4px;
+  color: var(--color-primary-1, #ed1c24);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vehicle-ranking h2 {
+  margin: 0;
+  color: var(--color-neutrals-1, #141416);
+  font-family: var(--font-heading, Poppins, sans-serif);
+  font-size: clamp(22px, 2.5vw, 30px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.15;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.vehicle-ranking__category-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary-1, #ed1c24);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: none;
+}
+
+.vehicle-ranking__category-link:hover {
+  text-decoration: underline;
+}
+
+.vehicle-ranking__position {
+  margin: 12px 0 18px;
+  color: var(--color-neutrals-2, #262830);
+  font-family: var(--font-heading, Poppins, sans-serif);
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.25;
+}
+
+.vehicle-ranking__position span {
+  color: var(--color-primary-1, #ed1c24);
+}
+
+.vehicle-ranking__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.vehicle-ranking__card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-neutrals-6, #e6e8ec);
+  border-radius: var(--border-radius-md, 8px);
+  background: var(--color-white, #fff);
+  box-shadow: 0 2px 6px rgba(20, 20, 22, 0.1);
+}
+
+.vehicle-ranking__card--current {
+  border: 2px solid var(--color-primary-1, #ed1c24);
+}
+
+.vehicle-ranking__photo-link {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--color-neutrals-7, #f4f5f6);
+}
+
+.vehicle-ranking__photo-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 180ms ease;
+}
+
+.vehicle-ranking__photo-link:hover img {
+  transform: scale(1.03);
+}
+
+.vehicle-ranking__rank-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 2px solid var(--color-neutrals-1, #141416);
+  border-radius: 50%;
+  background: var(--color-white, #fff);
+  color: var(--color-neutrals-1, #141416);
+  font-family: var(--font-heading, Poppins, sans-serif);
+  font-size: 22px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
+.vehicle-ranking__card--current .vehicle-ranking__rank-badge {
+  border-color: var(--color-white, #fff);
+  background: var(--color-primary-1, #ed1c24);
+  color: var(--color-white, #fff);
+  box-shadow: 0 0 0 2px var(--color-primary-1, #ed1c24);
+}
+
+.vehicle-ranking__card-content {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.vehicle-ranking__vehicle-line {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vehicle-ranking__vehicle-line h3 {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-neutrals-1, #141416);
+  font-family: var(--font-heading, Poppins, sans-serif);
+  font-size: clamp(14px, 1.4vw, 18px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.25;
+}
+
+.vehicle-ranking__rating {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: 2px;
+  padding-left: 10px;
+  border-left: 1px solid var(--color-neutrals-5, #b7bcc5);
+  color: var(--color-neutrals-1, #141416);
+  font-family: var(--font-heading, Poppins, sans-serif);
+}
+
+.vehicle-ranking__rating strong {
+  font-size: 20px;
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
+.vehicle-ranking__rating small {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.vehicle-ranking__price {
+  margin: 0;
+  color: var(--color-neutrals-3, #555b66);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.vehicle-ranking__shop-link {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border: 1px solid var(--color-primary-1, #ed1c24);
+  border-radius: var(--border-radius-sm, 4px);
+  background: var(--color-white, #fff);
+  color: var(--color-primary-1, #ed1c24);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.vehicle-ranking__card--current .vehicle-ranking__shop-link,
+.vehicle-ranking__shop-link:hover {
+  background: var(--color-primary-1, #ed1c24);
+  color: var(--color-white, #fff);
+}
+
+.vehicle-ranking__shop-link:focus-visible,
+.vehicle-ranking__category-link:focus-visible,
+.vehicle-ranking__photo-link:focus-visible {
+  outline: 3px solid var(--color-neutrals-1, #141416);
+  outline-offset: 3px;
+}
+
+@media (max-width: 820px) {
+  .vehicle-ranking {
+    padding: 20px;
+  }
+
+  .vehicle-ranking__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vehicle-ranking__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .vehicle-ranking__category-link {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 520px) {
+  .vehicle-ranking {
+    padding: 16px;
+  }
+
+  .vehicle-ranking__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .vehicle-ranking__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vehicle-ranking h2 {
+    white-space: normal;
+  }
+
+  .vehicle-ranking__card-content {
+    padding: 12px;
+  }
+}
