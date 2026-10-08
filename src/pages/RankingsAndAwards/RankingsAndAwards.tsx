@@ -70,16 +70,19 @@ export const RankingCategoryIcon: React.FC<{ src: string }> = ({ src }) => {
   );
 };
 
-const BreakerAd: React.FC = () => {
+const BreakerAd: React.FC<{ mobileInline?: boolean }> = ({ mobileInline = false }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   if (!isVisible) return null;
 
   return (
-    <aside className="rankings-awards__breaker-ad" aria-label="Advertisement">
+    <aside className={`rankings-awards__breaker-ad${mobileInline ? ' rankings-awards__breaker-ad--mobile-inline' : ''}`} aria-label="Advertisement">
       <span className="rankings-awards__breaker-ad-label">Advertisement</span>
       <a className="rankings-awards__breaker-ad-link rankings-awards__breaker-ad-link--desktop" href="https://www.nissanusa.com/" target="_blank" rel="noreferrer">
         <img src="/images/nissan-breaker-ad.png" alt="Nissan year-end sales event" />
+      </a>
+      <a className="rankings-awards__breaker-ad-link rankings-awards__breaker-ad-link--mobile" href="https://www.dgdg.com/" target="_blank" rel="noreferrer">
+        <img src="/images/dgdg-breaker-ad-300x250.png" alt="DGDG and Stevens Creek Hyundai advertisement" />
       </a>
       <button className="rankings-awards__breaker-ad-close" type="button" aria-label="Close advertisement" onClick={() => setIsVisible(false)}>
         <span aria-hidden="true">×</span>
@@ -673,7 +676,7 @@ const RankingsAndAwards: React.FC = () => {
               </nav>
             )}
             </section>
-            {(index + 1) % 2 === 0 && index < bodyStyleRows.length - 1 && <BreakerAd />}
+            {(index + 1) % 2 === 0 && index < bodyStyleRows.length - 1 && <BreakerAd mobileInline />}
           </React.Fragment>
         ))}
       </div>
