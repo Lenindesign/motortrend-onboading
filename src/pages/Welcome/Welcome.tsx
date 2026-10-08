@@ -10,6 +10,7 @@ import confetti from 'canvas-confetti';
 const motortrendLogo = 'https://www.motortrend.com/files/68f3fc9ccfecd100026f4650/mtlogo.png';
 import { MembershipCard } from '../../components/MembershipCard';
 import { getCurrentJoinDate } from '../../utils/dateUtils';
+import Icon from '../../components/Icon';
 // parseVehicleName was previously used for vehicle image lookups
 // import { parseVehicleName } from '../../utils/vehicleImages';
 import './Welcome.css';
@@ -154,9 +155,7 @@ export const Welcome: React.FC<WelcomeProps> = () => {
             onClick={() => navigate('/')}
           >
             <span>Close</span>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 16L14 10L8 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <Icon name="keyboard_arrow_right" size={20} />
           </button>
         </div>
       </div>
@@ -165,4 +164,3 @@ export const Welcome: React.FC<WelcomeProps> = () => {
 };
 
 export default Welcome;
-

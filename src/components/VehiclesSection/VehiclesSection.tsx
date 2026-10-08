@@ -472,7 +472,7 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
         <div style={displayMoreStyle}>
           <button style={displayMoreBtnStyle} onClick={() => setVehiclesToShow(prev => prev + 6)} onMouseEnter={() => setIsDisplayMoreHovered(true)} onMouseLeave={() => setIsDisplayMoreHovered(false)} type="button" aria-label="Display more vehicles">
             <span>Display More</span>
-            <svg style={chevronStyle} width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            <Icon name="keyboard_arrow_down" size={20} style={chevronStyle} />
           </button>
         </div>
       )}
@@ -488,4 +488,3 @@ export const VehiclesSection: React.FC<VehiclesSectionProps> = ({
 };
 
 export default VehiclesSection;
-

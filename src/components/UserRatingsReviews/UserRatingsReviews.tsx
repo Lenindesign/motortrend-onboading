@@ -536,16 +536,10 @@ export const UserRatingsReviews: React.FC<UserRatingsReviewsProps> = ({ classNam
           const isFilled = star <= Math.floor(starRating);
           const isHalf = star === Math.ceil(starRating) && starRating % 1 !== 0;
           return (
-            <img
+            <Icon
               key={star}
-              src={
-                isFilled
-                  ? "https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                  : isHalf
-                  ? "https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg"
-                  : "https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
-              }
-              alt={`Star ${star}`}
+              name={isHalf ? 'star_half' : 'star'}
+              variant={isFilled || isHalf ? 'filled' : 'outlined'}
               style={starStyle}
             />
           );
@@ -750,4 +744,3 @@ export const UserRatingsReviews: React.FC<UserRatingsReviewsProps> = ({ classNam
 };
 
 export default UserRatingsReviews;
-

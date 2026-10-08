@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
-import googleLogo from '../../assets/images/google-logo.svg';
 import Icon from '../Icon';
 import './SignInToSaveModal.css';
 import { saveSignInToSaveIntent } from './signInToSaveIntent';
@@ -214,7 +213,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
               className="sign-in-save-modal__social"
               onClick={() => handleSocialAuth('google')}
             >
-              <img src={googleLogo} alt="" />
+              <Icon name="google_logo" size={20} style={{ color: '#4285F4' }} />
               <span>Continue with Google</span>
             </button>
 

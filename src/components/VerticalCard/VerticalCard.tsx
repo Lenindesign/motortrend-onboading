@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import Icon from '../Icon';
 import { CardShell } from '../atoms/CardShell/CardShell';
 import { useImageFallback } from '../../hooks/useImageFallback';
 
@@ -48,10 +49,9 @@ export const VerticalCard: React.FC<VerticalCardProps> = ({
           <img src={imgSrc} alt={title} style={imageStyle} onError={handleImageError} />
           {type === 'Video' && (
             <div style={playOverlayStyle}>
-              <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style={playIconStyle}>
-                <circle cx="32" cy="32" r="32" fill="var(--color-overlay-dark, rgba(0,0,0,0.5))" />
-                <path d="M26 20L26 44L42 32L26 20Z" fill="white"/>
-              </svg>
+              <span style={{ ...playIconStyle, display: 'flex', width: 64, height: 64, alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: 'var(--color-overlay-dark, rgba(0,0,0,0.5))' }}>
+                <Icon name="play" variant="filled" size={32} style={{ color: 'white' }} />
+              </span>
             </div>
           )}
         </div>

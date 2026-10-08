@@ -157,9 +157,7 @@ export const OnboardingStep4: React.FC<OnboardingStep4Props> = () => {
                     <div className="checkbox-container">
                       <div className={`checkbox ${selectedNewsletters.includes(newsletter.id) ? 'checkbox--checked' : ''}`}>
                         {selectedNewsletters.includes(newsletter.id) && (
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
+                          <Icon name="check" size={16} />
                         )}
                       </div>
                     </div>

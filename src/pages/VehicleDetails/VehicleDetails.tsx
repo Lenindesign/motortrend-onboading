@@ -1339,33 +1339,12 @@ export const VehicleDetails: React.FC = () => {
                       const isHalf = star === Math.ceil(userRatingValue) && userRatingValue % 1 !== 0;
                       return (
                         <div key={star} className={`vehicle-details__rating-star-wrapper ${isHalf ? 'vehicle-details__rating-star-wrapper--half' : ''}`}>
-                          {/* Outline star */}
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--outline">
-                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                              fill="none"
-                              stroke="#33C4FF"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          {/* Filled star (full or half) */}
-                          {isFilled && (
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--filled">
-                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                fill="#33C4FF"
-                              />
-                            </svg>
-                          )}
-                          {isHalf && (
-                            <div className="vehicle-details__rating-star-half-fill">
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                  fill="#33C4FF"
-                                />
-                              </svg>
-                            </div>
-                          )}
+                          <Icon
+                            name={isHalf ? 'star_half' : 'star'}
+                            variant={isFilled || isHalf ? 'filled' : 'outlined'}
+                            className={isFilled || isHalf ? 'vehicle-details__rating-star--filled' : 'vehicle-details__rating-star--outline'}
+                            style={{ color: '#33C4FF' }}
+                          />
                         </div>
                       );
                     })}
@@ -1391,33 +1370,12 @@ export const VehicleDetails: React.FC = () => {
                         aria-label={`Rate ${star} stars`}
                       >
                         <div className={`vehicle-details__rating-star-wrapper ${isHalf ? 'vehicle-details__rating-star-wrapper--half' : ''}`}>
-                          {/* Outline star */}
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--outline">
-                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                              fill="none"
-                              stroke="#33C4FF"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          {/* Filled star (full or half) */}
-                          {isFilled && (
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="vehicle-details__rating-star--filled">
-                              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                fill="#33C4FF"
-                              />
-                            </svg>
-                          )}
-                          {isHalf && (
-                            <div className="vehicle-details__rating-star-half-fill">
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                  fill="#33C4FF"
-                                />
-                              </svg>
-                            </div>
-                          )}
+                          <Icon
+                            name={isHalf ? 'star_half' : 'star'}
+                            variant={isFilled || isHalf ? 'filled' : 'outlined'}
+                            className={isFilled || isHalf ? 'vehicle-details__rating-star--filled' : 'vehicle-details__rating-star--outline'}
+                            style={{ color: '#33C4FF' }}
+                          />
                         </div>
                       </button>
                     );
@@ -1643,22 +1601,11 @@ export const VehicleDetails: React.FC = () => {
                     aria-expanded={isReviewAccordionOpen}
                   >
                     <span>Read Full Review</span>
-                    <svg
+                    <Icon
+                      name="keyboard_arrow_down"
+                      size={20}
                       className={`vehicle-details__review-accordion-chevron ${isReviewAccordionOpen ? 'vehicle-details__review-accordion-chevron--open' : ''}`}
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 7.5L10 12.5L15 7.5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    />
                   </button>
                   {isReviewAccordionOpen && (
                     <div className="vehicle-details__review-accordion-content">

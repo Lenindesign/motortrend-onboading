@@ -627,20 +627,6 @@
   left: 0;
 }
 
-.home__carousel-star-half-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.home__carousel-star-half-fill svg {
-  width: 18px;
-  height: 18px;
-}
-
 .home__carousel-rating-text {
   color: var(--color-white);
   font-size: 14px;

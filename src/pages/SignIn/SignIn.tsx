@@ -10,9 +10,6 @@ import { useAuth } from '../../contexts/AuthContext';
 import './SignIn.css';
 // Using MotorTrend main logo from URL
 const motorTrendLogo = 'https://www.motortrend.com/files/68f3fc9ccfecd100026f4650/mtlogo.png';
-import googleLogo from '../../assets/images/google-logo.svg';
-import facebookIcon from '../../assets/icons/facebook-icon.svg';
-import appleIcon from '../../assets/icons/apple-icon.svg';
 import Icon from '../../components/Icon';
 
 export interface SignInProps {
@@ -148,7 +145,7 @@ export const SignIn: React.FC<SignInProps> = () => {
             className="social-btn social-btn--google"
             onClick={() => handleSocialSignIn('google')}
           >
-            <img src={googleLogo} alt="" className="social-btn__icon" />
+            <Icon name="google_logo" size={24} className="social-btn__icon" style={{ color: '#4285F4' }} />
             <span className="social-btn__label">Continue with Google</span>
           </button>
 
@@ -156,7 +153,7 @@ export const SignIn: React.FC<SignInProps> = () => {
             className="social-btn social-btn--facebook"
             onClick={() => handleSocialSignIn('facebook')}
           >
-            <img src={facebookIcon} alt="" className="social-btn__icon" />
+            <Icon name="facebook_logo" size={24} className="social-btn__icon" style={{ color: '#1877F2' }} />
             <span className="social-btn__label">Continue with Facebook</span>
           </button>
 
@@ -164,7 +161,7 @@ export const SignIn: React.FC<SignInProps> = () => {
             className="social-btn social-btn--apple"
             onClick={() => handleSocialSignIn('apple')}
           >
-            <img src={appleIcon} alt="" className="social-btn__icon" />
+            <Icon name="apple_logo" size={24} className="social-btn__icon" style={{ color: '#141416' }} />
             <span className="social-btn__label">Continue with Apple</span>
           </button>
         </div>

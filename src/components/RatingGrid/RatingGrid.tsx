@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react';
+import { Star, StarHalf } from '@phosphor-icons/react';
 import './RatingGrid.css';
 
 export interface RatingGridProps {
@@ -33,19 +34,16 @@ export const RatingGrid: React.FC<RatingGridProps> = ({
     const hasHalfStar = rating % 1 >= 0.5;
 
     for (let i = 1; i <= 5; i++) {
-      const isFilled = interactive 
-        ? i <= (hoverRating || userRating)
-        : i <= fullStars || (i === fullStars + 1 && hasHalfStar);
+      const isFilled = interactive ? i <= (hoverRating || userRating) : i <= fullStars;
+      const isHalf = !interactive && i === fullStars + 1 && hasHalfStar;
+      const StarIcon = isHalf ? StarHalf : Star;
 
       stars.push(
-        <svg
+        <StarIcon
           key={i}
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill={isFilled ? 'var(--color-primary-1)' : 'none'}
-          stroke={isFilled ? 'var(--color-primary-1)' : 'var(--color-neutrals-5)'}
-          strokeWidth="2"
+          size={24}
+          weight={isFilled || isHalf ? 'fill' : 'regular'}
+          color={isFilled || isHalf ? 'var(--color-primary-1)' : 'var(--color-neutrals-5)'}
           className={interactive ? 'rating-grid__star--interactive' : ''}
           onMouseEnter={() => interactive && setHoverRating(i)}
           onMouseLeave={() => interactive && setHoverRating(0)}
@@ -56,9 +54,7 @@ export const RatingGrid: React.FC<RatingGridProps> = ({
             }
           }}
           style={{ cursor: interactive ? 'pointer' : 'default' }}
-        >
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
+        />
       );
     }
 
@@ -120,6 +116,5 @@ export const RatingGrid: React.FC<RatingGridProps> = ({
 };
 
 export default RatingGrid;
-
 
 

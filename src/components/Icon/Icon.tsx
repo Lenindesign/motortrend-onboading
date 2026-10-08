@@ -12,11 +12,11 @@ import {
   CalendarBlank, CalendarCheck, CalendarDots, CalendarX, Car, CaretDown, CaretLeft, CaretRight, CaretUp,
   ChartBar, ChartLineUp, Chat, ChatCircle, ChatCircleDots, ChatCircleText, ChatsCircle, Check, CheckCircle,
   Circle, Clock, ClockCounterClockwise, Compass, Copy, Cube, DotsSixVertical, Eye, EyeSlash, Faders, FileText,
-  Flame, Gear, Globe, GridFour, HandSwipeRight, Heart, House, Image, Images, Info, Lightning, List, MagicWand,
+  Flame, Gear, Globe, GoogleLogo, FacebookLogo, AppleLogo, GridFour, HandSwipeRight, Heart, House, Image, Images, Info, Lightning, List, MagicWand,
   MagnifyingGlass, MagnifyingGlassMinus, MapPin, Megaphone, Minus, Newspaper, Note, NotePencil, Palette,
-  PaperPlaneTilt, PencilSimple, PlayCircle, Plus, PlusCircle, PuzzlePiece, Question, Quotes, Rows, ShareNetwork,
+  PaperPlaneTilt, PencilSimple, Play, PlayCircle, Plus, PlusCircle, PuzzlePiece, Question, Quotes, Rows, ShareNetwork, ShieldCheck,
   SignIn, SignOut, Signpost, SortAscending, Sparkle, Speedometer, SquaresFour, Star, Storefront, Tag, TextAa,
-  ThumbsDown, ThumbsUp, Ticket, Trash, TrendUp, Trophy, UploadSimple, User, UserCircle, Users, Warning, WarningCircle,
+  ThumbsDown, ThumbsUp, Ticket, Trash, TrendUp, Trophy, UploadSimple, User, UserCircle, Users, Warning, WarningCircle, X, StarHalf,
 } from '@phosphor-icons/react';
 
 export type IconVariant = 'outlined' | 'filled' | 'rounded' | 'sharp';
@@ -48,14 +48,14 @@ const iconMap: Record<string, string> = {
   drag_indicator: 'DotsSixVertical', edit: 'PencilSimple', edit_note: 'NotePencil', emoji_events: 'Trophy', error: 'WarningCircle', event: 'CalendarBlank',
   event_available: 'CalendarCheck', event_busy: 'CalendarX', event_note: 'Calendar', expand_less: 'CaretUp', expand_more: 'CaretDown', explore: 'Compass',
   extension: 'PuzzlePiece', favorite: 'Heart', format_quote: 'Quotes', forum: 'ChatCircleText', grid_view: 'GridFour', group: 'Users', help: 'Question',
-  history: 'ClockCounterClockwise', home: 'House', image: 'Image', info: 'Info', input: 'SignIn', insights: 'ChartLineUp', keyboard_arrow_down: 'CaretDown',
-  keyboard_arrow_up: 'CaretUp', leaderboard: 'ChartBar', list: 'List', local_activity: 'Ticket', local_fire_department: 'Flame', local_offer: 'Tag', location_on: 'MapPin',
+  history: 'ClockCounterClockwise', home: 'House', image: 'Image', info: 'Info', input: 'SignIn', insights: 'ChartLineUp', google_logo: 'GoogleLogo', facebook_logo: 'FacebookLogo', apple_logo: 'AppleLogo', keyboard_arrow_down: 'CaretDown',
+  keyboard_arrow_up: 'CaretUp', keyboard_arrow_right: 'CaretRight', leaderboard: 'ChartBar', list: 'List', local_activity: 'Ticket', local_fire_department: 'Flame', local_offer: 'Tag', location_on: 'MapPin',
   login: 'SignIn', logout: 'SignOut', new_releases: 'Megaphone', newspaper: 'Newspaper', notifications: 'Bell', open_in_full: 'ArrowsOut', open_in_new: 'ArrowSquareOut',
-  palette: 'Palette', person: 'User', photo_library: 'Images', play_circle: 'PlayCircle', preview: 'Eye', question_answer: 'ChatCircleDots', radio_button_unchecked: 'Circle',
-  rate_review: 'Note', refresh: 'ArrowClockwise', reply: 'ArrowBendUpLeft', restore: 'ClockCounterClockwise', reviews: 'ChatsCircle', route: 'Signpost', schedule: 'Clock',
+  palette: 'Palette', person: 'User', photo_library: 'Images', play: 'Play', play_circle: 'PlayCircle', preview: 'Eye', question_answer: 'ChatCircleDots', radio_button_unchecked: 'Circle',
+  rate_review: 'Note', refresh: 'ArrowClockwise', reply: 'ArrowBendUpLeft', restore: 'ClockCounterClockwise', reviews: 'ChatsCircle', route: 'Signpost', schedule: 'Clock', shield_check: 'ShieldCheck',
   search: 'MagnifyingGlass', search_off: 'MagnifyingGlassMinus', send: 'PaperPlaneTilt', settings: 'Gear', share: 'ShareNetwork', smart_button: 'MagicWand', sort: 'SortAscending',
   space_bar: 'Minus', speed: 'Speedometer', star: 'Star', store: 'Storefront', swipe: 'HandSwipeRight', sync: 'ArrowsClockwise', text_fields: 'TextAa', thumb_down: 'ThumbsDown', thumb_up: 'ThumbsUp',
-  trending_up: 'TrendUp', tune: 'Faders', upcoming: 'CalendarDots', upload: 'UploadSimple', view_agenda: 'Rows', visibility: 'Eye', visibility_off: 'EyeSlash', warning: 'Warning',
+  star_half: 'StarHalf', trending_up: 'TrendUp', tune: 'Faders', upcoming: 'CalendarDots', upload: 'UploadSimple', view_agenda: 'Rows', visibility: 'Eye', visibility_off: 'EyeSlash', warning: 'Warning',
   web: 'Globe', widgets: 'Cube', workspaces: 'SquaresFour',
 };
 
@@ -65,11 +65,11 @@ const phosphorIcons: Record<string, PhosphorIcon> = {
   CalendarBlank, CalendarCheck, CalendarDots, CalendarX, Car, CaretDown, CaretLeft, CaretRight, CaretUp,
   ChartBar, ChartLineUp, Chat, ChatCircle, ChatCircleDots, ChatCircleText, ChatsCircle, Check, CheckCircle,
   Circle, Clock, ClockCounterClockwise, Compass, Copy, Cube, DotsSixVertical, Eye, EyeSlash, Faders, FileText,
-  Flame, Gear, Globe, GridFour, HandSwipeRight, Heart, House, Image, Images, Info, Lightning, List, MagicWand,
+  Flame, Gear, Globe, GoogleLogo, FacebookLogo, AppleLogo, GridFour, HandSwipeRight, Heart, House, Image, Images, Info, Lightning, List, MagicWand,
   MagnifyingGlass, MagnifyingGlassMinus, MapPin, Megaphone, Minus, Newspaper, Note, NotePencil, Palette,
-  PaperPlaneTilt, PencilSimple, PlayCircle, Plus, PlusCircle, PuzzlePiece, Question, Quotes, Rows, ShareNetwork,
+  PaperPlaneTilt, PencilSimple, Play, PlayCircle, Plus, PlusCircle, PuzzlePiece, Question, Quotes, Rows, ShareNetwork, ShieldCheck,
   SignIn, SignOut, Signpost, SortAscending, Sparkle, Speedometer, SquaresFour, Star, Storefront, Tag, TextAa,
-  ThumbsDown, ThumbsUp, Ticket, Trash, TrendUp, Trophy, UploadSimple, User, UserCircle, Users, Warning, WarningCircle,
+  ThumbsDown, ThumbsUp, Ticket, Trash, TrendUp, Trophy, UploadSimple, User, UserCircle, Users, Warning, WarningCircle, X, StarHalf,
 };
 
 const variantWeight: Record<IconVariant, 'regular' | 'fill'> = {

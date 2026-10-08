@@ -9,9 +9,6 @@ import { vehicleImageFor } from '../../utils/vehicleImages';
 import type { ReviewData } from '../../components/UserReviews/UserReviews';
 
 const PRIMARY = 'var(--color-primary-1, #E90C17)';
-const STAR_FILLED = 'https://www.motortrend.com/files/691bde547554840002bab60c/star.svg';
-const STAR_HALF = 'https://www.motortrend.com/files/691c8ba6a619270002cb5797/half-star.svg';
-const STAR_EMPTY = 'https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg';
 
 const RATING_LABELS: Record<number, string> = {
   10: 'Awful', 20: 'Poor', 30: 'Below Average', 40: 'Fair',
@@ -188,11 +185,7 @@ export const RateYourCar: React.FC = () => {
               onMouseLeave={() => setHoveredStarIdx(null)}
             >
               <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 1 }}>
-                <img
-                  src={half ? STAR_HALF : full ? STAR_FILLED : STAR_EMPTY}
-                  alt=""
-                  style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.15))' }}
-                />
+            <Icon name={half ? 'star_half' : 'star'} variant={full || half ? 'filled' : 'outlined'} size={38} style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.15))' }} />
               </div>
               <button
                 style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '100%', background: 'none', border: 'none', cursor: 'pointer', zIndex: 2 }}
@@ -408,7 +401,7 @@ export const RateYourCar: React.FC = () => {
                       width: isMobile ? '76px' : '84px', height: isMobile ? '76px' : '84px',
                       animation: displayRating > 0 ? 'rycPulse 0.4s ease-out' : 'none',
                     }}>
-                      <img src={STAR_FILLED} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.45))' }} />
+                      <Icon name="star" variant="filled" size={isMobile ? 76 : 84} style={{ filter: 'drop-shadow(0 8px 18px rgba(0,0,0,0.45))' }} />
                       <span style={{
                         position: 'absolute', top: '58%', left: '50%',
                         transform: 'translate(-50%, -50%)',
@@ -529,12 +522,7 @@ export const RateYourCar: React.FC = () => {
                   const isFull = val <= selectedRating;
                   const isHalf = !isFull && halfVal <= selectedRating;
                   return (
-                    <img
-                      key={i}
-                      src={isFull ? STAR_FILLED : isHalf ? STAR_HALF : STAR_EMPTY}
-                      alt=""
-                      style={{ width: '28px', height: '28px' }}
-                    />
+                    <Icon key={i} name={isHalf ? 'star_half' : 'star'} variant={isFull || isHalf ? 'filled' : 'outlined'} size={28} />
                   );
                 })}
                 <span style={{

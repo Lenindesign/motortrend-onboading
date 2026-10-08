@@ -665,25 +665,6 @@
   z-index: 2;
 }
 
-.article__star-wrapper--half .article__star--filled {
-  display: none;
-}
-
-.article__star-half-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.article__star-half-fill svg {
-  width: 18px;
-  height: 18px;
-}
-
 .article__rating-text {
   color: var(--color-white);
   font-size: 14px;

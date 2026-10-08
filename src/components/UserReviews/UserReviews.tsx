@@ -564,42 +564,12 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
     style: React.CSSProperties,
     ariaLabel = 'Rating star'
   ) => {
-    const clipId = `user-review-star-${String(key).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
     const fillColor = 'var(--color-rating-community, #33C4FF)';
 
     return (
-      <svg
-        key={key}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-label={ariaLabel}
-        style={style}
-      >
-        {state === 'half' && (
-          <defs>
-            <clipPath id={clipId}>
-              <rect x="0" y="0" width="12" height="24" />
-            </clipPath>
-          </defs>
-        )}
-        <path
-          d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-          fill={state === 'filled' ? fillColor : 'none'}
-          stroke={fillColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {state === 'half' && (
-          <path
-            d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-            fill={fillColor}
-            clipPath={`url(#${clipId})`}
-          />
-        )}
-      </svg>
+      <span key={key} role="img" aria-label={ariaLabel} style={style}>
+        <Icon name={state === 'half' ? 'star_half' : 'star'} variant={state === 'empty' ? 'outlined' : 'filled'} style={{ color: fillColor }} />
+      </span>
     );
   };
 
@@ -767,9 +737,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                 {displayedReviews.length === 0 ? (
                   <div style={emptyStateContainerStyle}>
                     <div style={emptyStateIconStyle}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="var(--color-neutrals-4, #777E90)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                      <Icon name="star" size={32} style={{ color: 'var(--color-neutrals-4, #777E90)' }} />
                     </div>
                     <h3 style={emptyStateTitleStyle}>No Reviews Yet</h3>
                     <p style={emptyStateDescStyle}>
@@ -784,9 +752,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                      <Icon name="add" size={16} />
                       Write the First Review
                     </button>
                   </div>
@@ -861,9 +827,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
                     {expandedReview === review.id && replies[review.id] && replies[review.id].length > 0 && (
                       <div style={repliesStyle}>
                         <div style={{ fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: 'var(--font-size-sm, 14px)', color: 'var(--color-neutrals-2, #23262F)', marginBottom: 'var(--spacing-2, 16px)', display: 'flex', alignItems: 'center', gap: 'var(--spacing-1, 8px)' }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
+                          <Icon name="chat_bubble_outline" size={16} />
                           {replies[review.id].length} {replies[review.id].length === 1 ? 'Comment' : 'Comments'}
                         </div>
                         {replies[review.id].map((reply, i) => (
@@ -929,9 +893,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
               {getSortedComments().length === 0 ? (
                 <div style={emptyStateContainerStyle}>
                   <div style={emptyStateIconStyle}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="var(--color-neutrals-4, #777E90)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <Icon name="chat_bubble_outline" size={32} style={{ color: 'var(--color-neutrals-4, #777E90)' }} />
                   </div>
                   <h3 style={emptyStateTitleStyle}>No Comments Yet</h3>
                   <p style={emptyStateDescStyle}>

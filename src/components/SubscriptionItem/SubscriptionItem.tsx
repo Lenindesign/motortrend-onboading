@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { CardShell } from '../atoms/CardShell/CardShell';
+import Icon from '../Icon';
 
 export interface SubscriptionItemProps {
   name: string;
@@ -157,10 +158,9 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
             onMouseLeave={() => setIsBadgeHovered(false)}
             title="Click to unsubscribe"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="12" fill="#E90C17"/>
-              <path d="M7 12L10 15L17 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <span style={{ width: 24, height: 24, display: 'grid', placeItems: 'center', borderRadius: '50%', background: '#E90C17', color: '#fff' }}>
+              <Icon name="check" size={16} />
+            </span>
           </div>
         )}
         {!isActive && !isFindMore && (
@@ -171,9 +171,7 @@ export const SubscriptionItem: React.FC<SubscriptionItemProps> = ({
             onMouseLeave={() => setIsBadgeHovered(false)}
             title="Click to subscribe"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ color: 'rgba(255, 255, 255, 1)' }}>
-              <circle cx="12" cy="12" r="11" fill="rgba(255, 255, 255, 1)" stroke="#E6E8EC" strokeWidth="2"/>
-            </svg>
+            <Icon name="circle" size={24} style={{ color: '#E6E8EC' }} />
           </div>
         )}
       </div>

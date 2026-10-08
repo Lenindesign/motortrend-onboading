@@ -161,33 +161,12 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
 
           return (
             <div key={star} className={`article__star-wrapper ${isHalf ? 'article__star-wrapper--half' : ''}`}>
-              {/* Outline star */}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__star article__star--outline">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                  fill="none"
-                  stroke="#33C4FF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {/* Filled star (full or half) */}
-              {isFilled && (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__star article__star--filled">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    fill="#33C4FF"
-                  />
-                </svg>
-              )}
-              {isHalf && (
-                <div className="article__star-half-fill">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="article__star">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                      fill="#33C4FF"
-                    />
-                  </svg>
-                </div>
-              )}
+              <Icon
+                name={isHalf ? 'star_half' : 'star'}
+                variant={isFilled || isHalf ? 'filled' : 'outlined'}
+                className={`article__star ${isFilled || isHalf ? 'article__star--filled' : 'article__star--outline'}`}
+                style={{ color: '#33C4FF' }}
+              />
             </div>
           );
         })}
@@ -1216,11 +1195,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
                         <span className="article__rating-label-top">Community</span>
                         <span className="article__rating-label-bottom">Rating ({communityRatingCount})</span>
                       </div>
-                      <img
-                        src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                        alt="Community Rating Star"
-                        className="article__rating-icon article__rating-icon--community"
-                      />
+                      <Icon name="star" variant="filled" size={20} className="article__rating-icon article__rating-icon--community" />
                       <span className="article__rating-value">
                         {communityRatingForVehicle.toFixed(1)}
                       </span>
@@ -1238,11 +1213,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
                             <span className="article__rating-label-top">Your</span>
                             <span className="article__rating-label-bottom">Rating</span>
                           </div>
-                          <img
-                            src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                            alt="Your Rating Star"
-                            className="article__rating-icon article__rating-icon--add-rate"
-                          />
+                          <Icon name="star" variant="filled" size={20} className="article__rating-icon article__rating-icon--add-rate" />
                           <span className="article__rating-value">{userRatingForVehicle}</span>
                         </>
                       ) : (
@@ -1251,11 +1222,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
                             <span className="article__rating-label-top">Rate</span>
                             <span className="article__rating-label-bottom">This Car</span>
                           </div>
-                          <img
-                            src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
-                            alt="Add Rating Star"
-                            className="article__rating-icon article__rating-icon--add-rate"
-                          />
+                          <Icon name="star" variant="outlined" size={20} className="article__rating-icon article__rating-icon--add-rate" />
                         </>
                       )}
                     </button>
@@ -1347,7 +1314,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
                   onClick={handleBookmark}
                   aria-label={isSaved ? "Remove bookmark" : "Bookmark article"}
                 >
-                  <Icon name="bookmark" variant={isSaved ? 'filled' : 'outlined'} size={20} />
+                  <Icon name={isSaved ? 'bookmark' : 'bookmark_border'} variant={isSaved ? 'filled' : 'outlined'} size={20} />
                   <span>{isSaved ? 'Saved!' : 'Save'}</span>
                 </button>
               </div>

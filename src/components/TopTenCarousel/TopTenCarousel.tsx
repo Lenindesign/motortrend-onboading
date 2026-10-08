@@ -497,23 +497,13 @@ export const TopTenCarousel: React.FC<TopTenCarouselProps> = ({
           const isFilled = star < Math.ceil(normalizedRating);
           const isHalf = star === Math.ceil(normalizedRating) && normalizedRating % 1 !== 0;
           return (
-            <div key={star} style={{ position: 'relative', width: '18px', height: '18px', flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', top: 0, left: 0 }}>
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="none" stroke="#33C4FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {isFilled && (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', top: 0, left: 0 }}>
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#33C4FF" />
-                </svg>
-              )}
-              {isHalf && (
-                <div style={{ position: 'absolute', top: 0, left: 0, width: '50%', height: '100%', overflow: 'hidden' }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#33C4FF" />
-                  </svg>
-                </div>
-              )}
-            </div>
+            <Icon
+              key={star}
+              name={isHalf ? 'star_half' : 'star'}
+              variant={isFilled || isHalf ? 'filled' : 'outlined'}
+              size={18}
+              style={{ color: '#33C4FF' }}
+            />
           );
         })}
       </div>

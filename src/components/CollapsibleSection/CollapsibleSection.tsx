@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import Icon from '../Icon';
 
 export interface CollapsibleSectionProps {
   title: string;
@@ -103,15 +104,7 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
             <p style={descriptionStyle}>{description}</p>
           )}
         </div>
-        <svg 
-          width="24" 
-          height="24" 
-          viewBox="0 0 24 24" 
-          fill="none"
-          style={arrowStyle}
-        >
-          <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <Icon name={isOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'} size={24} style={arrowStyle} />
       </div>
       {isOpen && children && (
         <div style={bodyStyle}>
@@ -121,4 +114,3 @@ export const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({
     </div>
   );
 };
-

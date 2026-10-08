@@ -1885,33 +1885,12 @@ export const Home: React.FC = () => {
 
           return (
             <div key={star} className={`home__carousel-star-wrapper ${isHalf ? 'home__carousel-star-wrapper--half' : ''}`}>
-              {/* Outline star */}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="home__carousel-star home__carousel-star--outline">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                  fill="none"
-                  stroke="#33C4FF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {/* Filled star (full or half) */}
-              {isFilled && (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="home__carousel-star home__carousel-star--filled">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    fill="#33C4FF"
-                  />
-                </svg>
-              )}
-              {isHalf && (
-                <div className="home__carousel-star-half-fill">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="home__carousel-star">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                      fill="#33C4FF"
-                    />
-                  </svg>
-                </div>
-              )}
+              <Icon
+                name={isHalf ? 'star_half' : 'star'}
+                variant={isFilled || isHalf ? 'filled' : 'outlined'}
+                className={`home__carousel-star ${isFilled || isHalf ? 'home__carousel-star--filled' : 'home__carousel-star--outline'}`}
+                style={{ color: '#33C4FF' }}
+              />
             </div>
           );
         })}
@@ -2280,15 +2259,7 @@ export const Home: React.FC = () => {
                                   <span className="home__carousel-rating-label-bottom">Rating</span>
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
-                                  <img
-                                    src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                                    alt="Your Rating Star"
-                                    className="home__carousel-rating-icon add-rate"
-                                    loading="eager"
-                                    onError={(e) => {
-                                      console.error('Failed to load star icon:', e);
-                                    }}
-                                  />
+                                  <Icon name="star" variant="filled" size={20} className="home__carousel-rating-icon add-rate" />
                                   <span className="home__carousel-rating-value">
                                     {getUserRating(vehicle.name)}
                                   </span>
@@ -2443,15 +2414,7 @@ export const Home: React.FC = () => {
                                   <span className="home__carousel-rating-label-bottom">Rating</span>
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
-                                  <img
-                                    src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                                    alt="Your Rating Star"
-                                    className="home__carousel-rating-icon add-rate"
-                                    loading="eager"
-                                    onError={(e) => {
-                                      console.error('Failed to load star icon:', e);
-                                    }}
-                                  />
+                                  <Icon name="star" variant="filled" size={20} className="home__carousel-rating-icon add-rate" />
                                   <span className="home__carousel-rating-value">
                                     {getUserRating(vehicle.name)}
                                   </span>
@@ -2579,15 +2542,7 @@ export const Home: React.FC = () => {
                                   <span className="home__carousel-rating-label-bottom">Rating</span>
                                 </div>
                                 <div className="home__carousel-rating-value-wrapper">
-                                  <img
-                                    src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                                    alt="Your Rating Star"
-                                    className="home__carousel-rating-icon add-rate"
-                                    loading="eager"
-                                    onError={(e) => {
-                                      console.error('Failed to load star icon:', e);
-                                    }}
-                                  />
+                                  <Icon name="star" variant="filled" size={20} className="home__carousel-rating-icon add-rate" />
                                   <span className="home__carousel-rating-value">
                                     {getUserRating(vehicle.name)}
                                   </span>
@@ -2803,11 +2758,7 @@ export const Home: React.FC = () => {
                       </span>
                     </div>
                     <div className="home__fullscreen-rating-value-wrapper">
-                      <img
-                        src="https://www.motortrend.com/files/691bde547554840002bab60c/star.svg"
-                        alt="Community Rating Star"
-                        className="home__fullscreen-rating-icon community"
-                      />
+                      <Icon name="star" variant="filled" size={20} className="home__fullscreen-rating-icon community" />
                       <span className="home__fullscreen-rating-value">
                         {(fullscreenVehicle.communityRating / 2) % 1 === 0 ? fullscreenVehicle.communityRating / 2 : (fullscreenVehicle.communityRating / 2).toFixed(1)}
                       </span>
@@ -2820,11 +2771,7 @@ export const Home: React.FC = () => {
                         <span className="home__fullscreen-rating-label-bottom">Rating</span>
                       </div>
                       <div className="home__fullscreen-rating-value-wrapper">
-                        <img
-                          src="https://www.motortrend.com/files/691bde5264217700021d6b71/star-stroke.svg"
-                          alt="Your Rating Star"
-                          className="home__fullscreen-rating-icon add-rate"
-                        />
+                        <Icon name="star" variant="outlined" size={20} className="home__fullscreen-rating-icon add-rate" />
                         <span className="home__fullscreen-rating-value">
                           {getUserRating(fullscreenVehicle.name)}
                         </span>

@@ -1174,9 +1174,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
             onMouseEnter={() => setIsCloseBtnHovered(true)}
             onMouseLeave={() => setIsCloseBtnHovered(false)}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <Icon name="close" size={24} />
           </button>
         </div>
 
@@ -1220,9 +1218,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                   <img src={vehicleImage} alt={vehicleName} style={vehicleImgStyle} />
                 ) : (
                   <div style={vehiclePlaceholderStyle}>
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                      <path d="M3 12L12 3L21 12L12 21L3 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <Icon name="widgets" size={40} />
                   </div>
                 )}
               </div>
@@ -1282,9 +1278,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     onMouseLeave={() => setIsExpandBtnHovered(false)}
                     aria-label={isTextareaExpanded ? 'Collapse' : 'Expand to fullscreen'}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M8 3H5C3.89543 3 3 3.89543 3 5V8M21 8V5C21 3.89543 20.1046 3 19 3H16M16 21H19C20.1046 21 21 20.1046 21 19V16M3 16V19C3 20.1046 3.89543 21 5 21H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <Icon name="open_in_full" size={20} />
                   </button>
                 </div>
                 <textarea
@@ -1388,11 +1382,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                     onMouseLeave={() => setIsMediaPlaceholderHovered(false)}
                   >
                     <div style={mediaPlaceholderStyle}>
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
+                      <Icon name="image" size={24} />
                     </div>
                   </label>
                   
@@ -1413,9 +1403,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                             onMouseLeave={() => setHoveredMediaRemove(null)}
                             aria-label="Remove media"
                           >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M18 6L6 18M6 6L18 18"/>
-                            </svg>
+                            <Icon name="close" size={16} />
                           </button>
                         </div>
                       ))}
@@ -1443,10 +1431,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 fullWidth
                 helperText={
                   <div style={vinDisclaimerStyle}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary-500, #E90C17)', flexShrink: 0, marginTop: '2px' }}>
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      <path d="M12 8v4M12 16h.01"/>
-                    </svg>
+                    <Icon name="shield_check" size={16} style={{ color: 'var(--color-primary-500, #E90C17)', flexShrink: 0, marginTop: '2px' }} />
                     <span style={{ fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: '12px', lineHeight: '1.5em', color: 'var(--color-neutrals-3, #353945)' }}>
                       Your VIN information is 100% confidential and will be securely stored. It is only used for verification purposes.
                     </span>
@@ -1490,9 +1475,7 @@ const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
                 onMouseLeave={() => setIsFullscreenCloseHovered(false)}
                 aria-label="Collapse"
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <Icon name="close" size={24} />
               </button>
             </div>
             <textarea
