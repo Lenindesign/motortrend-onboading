@@ -453,10 +453,10 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
   const reviewTitleStyle: React.CSSProperties = { fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: 'var(--font-size-md, 18px)', lineHeight: '1.333em', color: 'var(--color-neutrals-1, #141416)', marginBottom: 'var(--spacing-component-md, 12px)' };
   const reviewContentStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: 'var(--font-size-base, 16px)', lineHeight: '1.6em', color: 'var(--color-neutrals-2, #23262F)', marginBottom: 'var(--spacing-2, 16px)' };
   const categoryRatingsStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', columnGap: isMobile ? '0' : '48px', rowGap: isMobile ? '16px' : '12px', marginTop: 'var(--spacing-2, 16px)', marginBottom: 'var(--spacing-2, 16px)', paddingTop: 'var(--spacing-2, 16px)', borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)', minWidth: 0 };
-  const categoryRatingStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : 'var(--spacing-component-md, 12px)', minWidth: 0, overflow: 'hidden' };
+  const categoryRatingStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : 'var(--spacing-component-md, 12px)', minWidth: 0 };
   const categoryNameStyle: React.CSSProperties = { fontFamily: 'var(--font-body, Geist, sans-serif)', fontWeight: 400, fontSize: isMobile ? '13px' : 'var(--font-size-xs, 12px)', lineHeight: '1.375em', color: 'var(--color-neutrals-1, #141416)', minWidth: isMobile ? '100px' : 0, flexShrink: isMobile ? 0 : 1, whiteSpace: isMobile ? 'nowrap' : undefined };
-  const categoryStarsStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '2px', flex: 1, justifyContent: 'flex-end' };
-  const categoryStarStyle: React.CSSProperties = { width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px', objectFit: 'contain', flexShrink: 0 };
+  const categoryStarsStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '2px', flex: '0 0 auto', justifyContent: 'flex-end' };
+  const categoryStarStyle: React.CSSProperties = { width: isMobile ? '14px' : '16px', height: isMobile ? '14px' : '16px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 };
   const categoryScoreStyle: React.CSSProperties = { fontFamily: 'var(--font-heading, Poppins, sans-serif)', fontWeight: 600, fontSize: isMobile ? '14px' : 'var(--font-size-base, 16px)', lineHeight: '1.375em', color: 'var(--color-neutrals-1, #141416)', minWidth: isMobile ? '28px' : '24px', textAlign: 'right', flexShrink: 0 };
   const reviewActionsStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: isMobile ? 'var(--spacing-component-md, 12px)' : 'var(--spacing-2, 16px)', marginBottom: 0, paddingTop: 'var(--spacing-component-md, 12px)', borderTop: '1px solid var(--color-neutrals-6, #E6E8EC)', flexWrap: isMobile ? 'wrap' : 'nowrap' };
   const getActionBtnStyle = (btnId: string, isActive: boolean = false, isEdit: boolean = false): React.CSSProperties => ({ display: 'flex', alignItems: 'center', gap: '6px', background: isActive ? 'var(--color-primary-50, #FFF0F0)' : (hoveredActionBtn === btnId ? 'var(--color-neutrals-7, #F4F5F6)' : 'none'), border: 'none', padding: isMobile ? '6px 10px' : 'var(--spacing-1, 8px) var(--spacing-component-md, 12px)', borderRadius: 'var(--border-radius-md, 8px)', fontFamily: 'var(--font-body, Geist, sans-serif)', fontSize: isMobile ? '13px' : 'var(--font-size-sm, 14px)', fontWeight: 500, color: isActive ? 'var(--color-primary-500, #E90C17)' : (isEdit ? 'var(--color-primary-500, #E90C17)' : (hoveredActionBtn === btnId ? 'var(--color-neutrals-2, #23262F)' : 'var(--color-neutrals-3, #353945)')), cursor: 'pointer', transition: 'all var(--transition-fast, 150ms ease-in-out)', textDecoration: 'none' });
@@ -568,7 +568,7 @@ export const UserReviews: React.FC<UserReviewsProps> = ({
 
     return (
       <span key={key} role="img" aria-label={ariaLabel} style={style}>
-        <Icon name={state === 'half' ? 'star_half' : 'star'} variant={state === 'empty' ? 'outlined' : 'filled'} style={{ color: fillColor }} />
+        <Icon name={state === 'half' ? 'star_half' : 'star'} variant={state === 'empty' ? 'outlined' : 'filled'} size={style.width as number} style={{ color: fillColor, display: 'block', flexShrink: 0 }} />
       </span>
     );
   };

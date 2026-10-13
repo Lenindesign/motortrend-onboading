@@ -17,7 +17,7 @@ import {
   SkipForward,
   WarningCircle,
 } from '@phosphor-icons/react';
-import { Button, CardShell, Section, TextField } from '../../design-system/components';
+import { Button, CardShell, TextField } from '../../design-system/components';
 import {
   getVehicleBySlug,
   getVehicles,
@@ -80,6 +80,65 @@ const steps: StepMeta[] = [
     label: 'Estimate',
     title: 'Your MotorTrend payment estimate',
     copy: 'Use this as your planning snapshot, then shop the vehicles that fit the number.',
+  },
+];
+
+const calculatorFaqs = [
+  {
+    question: 'How does the MotorTrend Auto Loan Calculator work?',
+    answer: 'Choose a vehicle price or monthly payment, then adjust the loan terms, vehicle, trade-in, taxes, and fees. The estimate updates as you go. It is a planning tool, not a loan approval or dealer quote.',
+  },
+  {
+    question: 'What does estimated buying power mean?',
+    answer: 'It is an approximate vehicle price supported by the payment and financing assumptions you selected. A lender’s offer, final vehicle price, taxes, fees, and trade-in can change the actual amount.',
+  },
+  {
+    question: 'How much car can I afford based on a monthly payment?',
+    answer: 'Use a payment that leaves room for insurance, fuel or charging, maintenance, registration, and other monthly expenses. Compare loan terms and total cost too, since a longer loan can lower the payment while increasing interest.',
+  },
+  {
+    question: 'What is included in a monthly car payment?',
+    answer: 'A loan payment typically covers principal and interest. Taxes, title, registration, dealer fees, and add-ons may also be included if you finance them. Insurance and running costs are usually separate.',
+  },
+  {
+    question: 'How does APR affect my car payment?',
+    answer: 'A higher APR generally raises both the monthly payment and total interest. Compare APR, term, amount financed, and total paid alongside the monthly number.',
+  },
+  {
+    question: 'How does my credit score affect an auto loan estimate?',
+    answer: 'Your credit profile can affect the APR a lender offers. This calculator uses an estimate; the rate and terms you qualify for depend on a lender’s review of your full application.',
+  },
+  {
+    question: 'Is a longer car loan term better?',
+    answer: 'A longer term can lower the monthly payment, but usually increases total interest and can leave you owing more than the vehicle is worth for longer.',
+  },
+  {
+    question: 'How much should I put down on a car?',
+    answer: 'A larger down payment reduces the amount financed and can lower interest. Choose an amount that fits your budget while leaving enough savings for other costs and emergencies.',
+  },
+  {
+    question: 'How does a trade-in affect my car loan?',
+    answer: 'Trade equity can reduce the amount you finance. If your payoff is higher than the vehicle’s trade-in value, rolling that negative equity into a new loan increases the amount borrowed.',
+  },
+  {
+    question: 'Should I include taxes and fees in my auto loan estimate?',
+    answer: 'Including estimated taxes and fees can make the payment estimate more complete. Paying them upfront keeps them out of the loan; financing them increases the amount borrowed and may increase interest.',
+  },
+  {
+    question: 'What is an out-the-door price, and why does it matter?',
+    answer: 'The out-the-door price is the total price including required taxes and fees. It helps you compare the full cost of offers and estimate how much you may need to finance.',
+  },
+  {
+    question: 'Should I get preapproved before visiting a dealer?',
+    answer: 'Preapproval can give you a useful rate and budget to compare with dealer financing. Review the APR, term, fees, and total cost of each offer before deciding.',
+  },
+  {
+    question: 'Why do some vehicles show APR, rebate, or lease deals?',
+    answer: 'Manufacturer offers can vary by vehicle, location, eligibility, and time. Confirm the current terms and qualifications with the manufacturer or participating dealer.',
+  },
+  {
+    question: 'What should I do after the calculator finds cars in my budget?',
+    answer: 'Compare vehicles, total ownership costs, and current financing offers. Then confirm pricing, taxes, fees, and loan terms with a lender or dealer.',
   },
 ];
 
@@ -1195,18 +1254,23 @@ export const AutoLoanCalculator: React.FC = () => {
 
   return (
     <div className="mt-loan-calc">
-      <Section className="mt-loan-calc__hero" fullWidth padding="none" as="section">
+      <section className="mt-loan-calc__hero">
         <div className="mt-loan-calc__hero-inner">
-          <span className="mt-loan-calc__hero-kicker">MotorTrend payment planner</span>
-          <h1>See what your monthly budget can really buy.</h1>
+          <nav className="mt-loan-calc__breadcrumb" aria-label="Breadcrumb">
+            <Link to="/">Home</Link>
+            <span aria-hidden="true">/</span>
+            <span>Auto Loan Calculator</span>
+          </nav>
+          <span className="mt-loan-calc__hero-kicker">MotorTrend shopping tools</span>
+          <h1>Auto Loan Calculator</h1>
           <p>
-            Keep the structure of the full loan-planning wizard, but tuned to the MotorTrend app’s sharper,
-            more editorial visual system.
+            See what your monthly budget can really buy. Estimate payments, compare financing costs, and
+            explore vehicles that fit your budget. No personal information required.
           </p>
         </div>
-      </Section>
+      </section>
 
-      <Section className="mt-loan-calc__shell-wrap" fullWidth padding="none" as="section">
+      <section className="mt-loan-calc__shell-wrap">
         <CardShell
           hasHover={false}
           padding="none"
@@ -1226,7 +1290,12 @@ export const AutoLoanCalculator: React.FC = () => {
                   key={step.label}
                   className={`mt-loan-calc__step-dot${index === stepIndex ? ' is-active' : index < stepIndex ? ' is-complete' : ''}`}
                 >
-                  <button type="button" className="mt-loan-calc__step-button" onClick={() => goToStep(index)}>
+                  <button
+                    type="button"
+                    className="mt-loan-calc__step-button"
+                    aria-current={index === stepIndex ? 'step' : undefined}
+                    onClick={() => goToStep(index)}
+                  >
                     <span className="mt-loan-calc__step-number">
                       {index < stepIndex ? <Check size={16} weight="bold" aria-hidden /> : index + 1}
                     </span>
@@ -1352,7 +1421,69 @@ export const AutoLoanCalculator: React.FC = () => {
             )}
           </div>
         </CardShell>
-      </Section>
+      </section>
+
+      <div className="mt-loan-calc__below">
+        <div className="mt-loan-calc__below-inner">
+        <section className="mt-loan-calc__info-section" aria-labelledby="mt-loan-calc-afford-heading">
+          <div className="mt-loan-calc__section-heading">
+            <span className="mt-loan-calc__section-kicker">Plan with confidence</span>
+            <h2 id="mt-loan-calc-afford-heading">Understand what you can afford</h2>
+            <p>Connect your monthly budget with the full cost of buying and financing a vehicle.</p>
+          </div>
+          <div className="mt-loan-calc__info-grid">
+            <article className="mt-loan-calc__info-card">
+              <span className="mt-loan-calc__info-mark"><CurrencyDollar size={20} weight="bold" aria-hidden /></span>
+              <h3>Budget-first guidance</h3>
+              <p>Start with a vehicle price or a monthly payment, then see how your loan assumptions change the estimate.</p>
+            </article>
+            <article className="mt-loan-calc__info-card">
+              <span className="mt-loan-calc__info-mark"><Info size={20} weight="bold" aria-hidden /></span>
+              <h3>Taxes, fees, and trade-in context</h3>
+              <p>Include estimated taxes, registration, dealer fees, and trade equity for a clearer view of the amount financed.</p>
+            </article>
+            <article className="mt-loan-calc__info-card">
+              <span className="mt-loan-calc__info-mark"><Car size={20} weight="bold" aria-hidden /></span>
+              <h3>Recommendations for your budget</h3>
+              <p>Use your estimate to explore vehicles near your target and build a shortlist that fits your plans.</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="mt-loan-calc__info-section" aria-labelledby="mt-loan-calc-tools-heading">
+          <div className="mt-loan-calc__section-heading">
+            <span className="mt-loan-calc__section-kicker">Keep researching</span>
+            <h2 id="mt-loan-calc-tools-heading">Shopping tools</h2>
+          </div>
+          <div className="mt-loan-calc__tools-grid">
+            <Link className="mt-loan-calc__tool-card" to="/vehicles">
+              <span>Browse inventory</span><strong>Shop for cars</strong><ArrowRight size={20} aria-hidden />
+            </Link>
+            <Link className="mt-loan-calc__tool-card" to="/rate-your-car">
+              <span>Share your ownership experience</span><strong>Rate a car</strong><ArrowRight size={20} aria-hidden />
+            </Link>
+            <Link className="mt-loan-calc__tool-card" to="/compare-vehicles">
+              <span>Compare your shortlist</span><strong>Compare vehicles</strong><ArrowRight size={20} aria-hidden />
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-loan-calc__info-section mt-loan-calc__faq" aria-labelledby="mt-loan-calc-faq-heading">
+          <div className="mt-loan-calc__section-heading">
+            <span className="mt-loan-calc__section-kicker">Auto financing basics</span>
+            <h2 id="mt-loan-calc-faq-heading">Frequently asked questions</h2>
+          </div>
+          <div className="mt-loan-calc__faq-list">
+            {calculatorFaqs.map(({ question, answer }) => (
+              <details key={question} className="mt-loan-calc__faq-item">
+                <summary>{question}<CaretDown size={18} weight="bold" aria-hidden /></summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+        </div>
+      </div>
     </div>
   );
 };

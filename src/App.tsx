@@ -4,7 +4,7 @@
  */
 
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import GlobalHeader from './components/GlobalHeader';
 import GlobalFooter from './components/GlobalFooter';
 import { MobileAdhesionAd } from './components/MobileAdhesionAd/MobileAdhesionAd';
@@ -43,10 +43,11 @@ import TopTenManagement from './pages/TopTenManagement/TopTenManagement';
 import { JourneyBuilder } from './pages/JourneyBuilder';
 import { Events, EventsCommunity } from './pages/Events';
 import RateYourCar from './pages/RateYourCar';
-import AutoLoanCalculator from './pages/AutoLoanCalculator';
 import { RatingProvider } from './contexts/RatingContext';
 import { AuthProvider } from './contexts/AuthContext';
 import './App.css';
+
+const AutoLoanCalculator = lazy(() => import('./pages/AutoLoanCalculator'));
 
 // Layout component that conditionally renders header/footer
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -199,8 +200,8 @@ function App() {
               <Route path="/rate-your-car" element={<RateYourCar />} />
 
               {/* Auto Loan Calculator */}
-              <Route path="/auto-loan-calculator" element={<AutoLoanCalculator />} />
-              <Route path="/auto-loan-calculator/:stepSlug" element={<AutoLoanCalculator />} />
+              <Route path="/auto-loan-calculator" element={<Suspense fallback={<HomeFeedLoading />}><AutoLoanCalculator /></Suspense>} />
+              <Route path="/auto-loan-calculator/:stepSlug" element={<Suspense fallback={<HomeFeedLoading />}><AutoLoanCalculator /></Suspense>} />
               
               {/* Catch all route - redirect to sign in */}
               <Route path="*" element={<Navigate to="/signin" replace />} />
