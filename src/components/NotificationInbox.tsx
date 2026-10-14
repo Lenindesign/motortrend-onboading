@@ -298,20 +298,6 @@ export function NotificationInbox() {
     }
   };
 
-  const markAllRead = async () => {
-    setUnreadCount(0);
-    setItems((current) => current.map((item) => ({ ...item, read_at: new Date().toISOString() })));
-    try {
-      const options = { method: 'POST', body: JSON.stringify({ user_type: 'mylo', user_id: userId || 'demo_user' }) };
-      if (previewMode) mockRequest('/read-all', options);
-      else await request('/read-all', options);
-    } catch {
-      setListError(true);
-      await refreshCount();
-      await loadFirstPage();
-    }
-  };
-
   const dismiss = async (item: NotificationItem) => {
     if (busyIds.has(item.id)) return;
     setBusyIds((current) => new Set(current).add(item.id));
@@ -328,6 +314,51 @@ export function NotificationInbox() {
     }
   };
 
+  const deleteAll = async () => {
+    if (!items.length || !window.confirm('Delete all notifications? This can’t be undone.')) return;
+
+    setLoadingList(true);
+    setListError(false);
+    try {
+      const allItems: NotificationItem[] = [];
+      let pageNumber = 1;
+      let totalPages = 1;
+
+      do {
+        const query = new URLSearchParams({
+          user_type: 'mylo',
+          user_id: userId || 'demo_user',
+          page: String(pageNumber),
+          page_size: String(PAGE_SIZE),
+        });
+        const page = previewMode
+          ? mockRequest<NotificationPage>(`?${query}`)
+          : await request<NotificationPage>(`?${query}`);
+        allItems.push(...(page.items ?? []));
+        totalPages = page.total_pages ?? 1;
+        pageNumber += 1;
+      } while (pageNumber <= totalPages);
+
+      for (const item of allItems) {
+        const options = { method: 'POST', body: JSON.stringify({ notification_id: item.id }) };
+        if (previewMode) mockRequest('/dismiss', options);
+        else await request('/dismiss', options);
+      }
+
+      setItems([]);
+      setHasMore(false);
+      setUnreadCount(0);
+      setCurrentPage(1);
+      setCountError(false);
+    } catch {
+      setListError(true);
+      await refreshCount();
+      await loadFirstPage();
+    } finally {
+      setLoadingList(false);
+    }
+  };
+
   return (
     <div className="mt-headless-notifications" ref={rootRef}>
       <button type="button" className="mt-notification-trigger" aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}${countError ? ', count unavailable' : ''}`} aria-expanded={open} onClick={toggleOpen}>
@@ -339,7 +370,7 @@ export function NotificationInbox() {
         <header className="mt-notification-panel-header">
           <strong>Notifications</strong>
           <div className="mt-notification-panel-actions">
-            {unreadCount > 0 && <button type="button" className="mt-notification-action" onClick={() => void markAllRead()}>Mark all as read</button>}
+            {items.length > 0 && <button type="button" className="mt-notification-action" onClick={() => void deleteAll()}>Delete all</button>}
             <button type="button" className="mt-notification-close" aria-label="Close notifications" onClick={() => setOpen(false)}><Icon name="close" size={18} /></button>
           </div>
         </header>
