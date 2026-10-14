@@ -18,6 +18,7 @@ export interface SignInToSaveModalProps {
   saveIntent?: boolean;
   appearance?: 'brand' | 'dark';
   showSocialAuth?: boolean;
+  beforeSignIn?: () => void;
 }
 
 const itemConfig: Record<SignInToSaveItemType, { label: string; icon: string; copy: string }> = {
@@ -59,6 +60,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
   saveIntent = true,
   appearance = 'brand',
   showSocialAuth = true,
+  beforeSignIn,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -153,6 +155,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
 
   const routeToAuth = (mode: 'signin' | 'signup', provider?: 'google') => {
     persistIntent();
+    if (mode === 'signin') beforeSignIn?.();
 
     const params = new URLSearchParams();
     if (mode === 'signup') params.set('mode', 'signup');

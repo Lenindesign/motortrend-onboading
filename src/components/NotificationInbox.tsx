@@ -22,6 +22,7 @@ type NotificationPage = { items: NotificationItem[]; count: number; page: number
 
 const apiBase = '/api/ugc/notifications';
 const PAGE_SIZE = 10;
+const OPEN_AFTER_DEMO_SIGN_IN_KEY = 'mt-notifications-open-after-demo-sign-in';
 
 const mockRows: Array<{ kind: string; body: string; url: string }> = [
   { kind: 'reply', body: 'Jordan Lee replied to your comment on the 2026 Toyota Corolla.', url: '/vehicles/2026/Toyota/Corolla#comments' },
@@ -148,7 +149,8 @@ export function NotificationInbox() {
   const location = useLocation();
   const navigate = useNavigate();
   const signedIn = !!user && !user.isAnonymous;
-  const previewMode = import.meta.env.DEV && !!user?.isAnonymous;
+  const demoPreviewHost = typeof window !== 'undefined' && window.location.hostname === 'motortrend-onboarding.netlify.app';
+  const previewMode = !!user?.isAnonymous && (import.meta.env.DEV || demoPreviewHost);
   const canViewInbox = signedIn || previewMode;
   const userId = user?.id;
   const [unreadCount, setUnreadCount] = useState(0);
@@ -225,6 +227,13 @@ export function NotificationInbox() {
       setLoadingList(false);
     }
   }, [previewMode, userId]);
+
+  useEffect(() => {
+    if (!previewMode || window.sessionStorage.getItem(OPEN_AFTER_DEMO_SIGN_IN_KEY) !== '1') return;
+    window.sessionStorage.removeItem(OPEN_AFTER_DEMO_SIGN_IN_KEY);
+    setOpen(true);
+    void loadFirstPage();
+  }, [loadFirstPage, previewMode]);
 
   const toggleOpen = () => {
     if (authLoading) return;
@@ -370,6 +379,9 @@ export function NotificationInbox() {
         saveIntent={false}
         appearance="dark"
         showSocialAuth={false}
+        beforeSignIn={() => {
+          if (import.meta.env.DEV || demoPreviewHost) window.sessionStorage.setItem(OPEN_AFTER_DEMO_SIGN_IN_KEY, '1');
+        }}
       />
 
       <style>{`
