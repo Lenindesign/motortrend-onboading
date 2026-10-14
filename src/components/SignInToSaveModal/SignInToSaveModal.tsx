@@ -12,6 +12,12 @@ export interface SignInToSaveModalProps {
   itemType: SignInToSaveItemType;
   itemName?: string;
   itemImage?: string;
+  titleOverride?: string;
+  copyOverride?: string;
+  iconOverride?: string;
+  saveIntent?: boolean;
+  appearance?: 'brand' | 'dark';
+  showSocialAuth?: boolean;
 }
 
 const itemConfig: Record<SignInToSaveItemType, { label: string; icon: string; copy: string }> = {
@@ -47,6 +53,12 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
   itemType,
   itemName,
   itemImage,
+  titleOverride,
+  copyOverride,
+  iconOverride,
+  saveIntent = true,
+  appearance = 'brand',
+  showSocialAuth = true,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -56,7 +68,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
   const config = itemConfig[itemType];
   const currentPath = `${location.pathname}${location.search}${location.hash}`;
 
-  const title = `Sign in to save this ${config.label}`;
+  const title = titleOverride || `Sign in to save this ${config.label}`;
   const titleId = useMemo(() => `sign-in-save-title-${itemType}`, [itemType]);
   const descriptionId = useMemo(() => `sign-in-save-description-${itemType}`, [itemType]);
 
@@ -129,6 +141,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
   if (!isOpen || typeof document === 'undefined') return null;
 
   const persistIntent = () => {
+    if (!saveIntent) return;
     saveSignInToSaveIntent({
       itemType,
       itemName,
@@ -182,10 +195,10 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
 
         <div className="sign-in-save-modal__inner">
           <header className="sign-in-save-modal__header">
-            <div className="sign-in-save-modal__badge" aria-hidden="true">
-              <Icon name={config.icon} variant="outlined" size={30} />
+            <div className={`sign-in-save-modal__badge${appearance === 'dark' ? ' sign-in-save-modal__badge--dark' : ''}`} aria-hidden="true">
+              <Icon name={iconOverride || config.icon} variant="outlined" size={30} />
             </div>
-            <p className="sign-in-save-modal__brand">MotorTrend</p>
+            <p className={`sign-in-save-modal__brand${appearance === 'dark' ? ' sign-in-save-modal__brand--dark' : ''}`}>MotorTrend</p>
             <h2 className="sign-in-save-modal__title" id={titleId}>
               {title}
             </h2>
@@ -193,7 +206,7 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
               <p className="sign-in-save-modal__item-name">{itemName}</p>
             )}
             <p className="sign-in-save-modal__copy" id={descriptionId}>
-              {config.copy}
+              {copyOverride || config.copy}
             </p>
           </header>
 
@@ -208,16 +221,19 @@ export const SignInToSaveModal: React.FC<SignInToSaveModalProps> = ({
           )}
 
           <div className="sign-in-save-modal__actions">
-            <button
-              type="button"
-              className="sign-in-save-modal__social"
-              onClick={() => handleSocialAuth('google')}
-            >
-              <Icon name="google_logo" size={20} style={{ color: '#4285F4' }} />
-              <span>Continue with Google</span>
-            </button>
-
-            <div className="sign-in-save-modal__divider">or</div>
+            {showSocialAuth && (
+              <>
+                <button
+                  type="button"
+                  className="sign-in-save-modal__social"
+                  onClick={() => handleSocialAuth('google')}
+                >
+                  <Icon name="google_logo" size={20} style={{ color: '#4285F4' }} />
+                  <span>Continue with Google</span>
+                </button>
+                <div className="sign-in-save-modal__divider">or</div>
+              </>
+            )}
 
             <button
               type="button"

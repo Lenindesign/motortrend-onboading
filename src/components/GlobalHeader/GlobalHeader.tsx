@@ -8,7 +8,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import motorTrendLogo from '../../assets/images/motortrend-logo.svg';
 import Icon from '../Icon';
-import { Badge } from '../../design-system/components';
 import { parseVehicleName } from '../../utils/vehicleImages';
 import { searchVehicles, getFilterOptions, getVehicles, getSimilarVehicles } from '../../api/vehiclesApi';
 import { addSearchedVehicle } from '../PersonalizedVehicles';
@@ -341,7 +340,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     email?: string;
     avatar?: string;
   } | null>(null);
-  const [notificationCount, setNotificationCount] = useState(0);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const navMenuRef = useRef<HTMLDivElement>(null);
   const researchVehiclesNavRef = useRef<HTMLDivElement>(null);
@@ -521,48 +519,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
       window.removeEventListener('onboardingDataUpdated', handleCustomEvent);
     };
   }, [location.pathname]);
-
-  // Check for notification count
-  useEffect(() => {
-    const checkNotification = () => {
-      const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
-      const notificationSeen = localStorage.getItem('profileNotificationSeen') === 'true';
-
-      // Calculate notification count (profile completion + new features)
-      let count = 0;
-      if (onboardingComplete && !notificationSeen) {
-        count += 1; // Profile completion notification
-      }
-      setNotificationCount(count);
-    };
-
-    // Check on mount
-    checkNotification();
-
-    // Listen for storage changes
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'onboardingComplete' || e.key === 'profileNotificationSeen') {
-        checkNotification();
-      }
-    };
-
-    // Listen for custom events
-    const handleCustomEvent = () => {
-      checkNotification();
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('profileNotificationUpdated', handleCustomEvent);
-
-    // Periodic check
-    const intervalId = setInterval(checkNotification, 500);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('profileNotificationUpdated', handleCustomEvent);
-      clearInterval(intervalId);
-    };
-  }, []);
 
   // Listen for onboarding data updates to keep avatar in sync
   useEffect(() => {
@@ -1458,13 +1414,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
     objectFit: 'contain',
     filter: 'brightness(0) invert(1)',
     transform: 'translateZ(0)',
-  };
-
-  const notificationBadgeStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: isMobile ? '-4px' : '-6px',
-    right: isMobile ? '-4px' : '-6px',
-    zIndex: 10
   };
 
   const userDropdownStyle: React.CSSProperties = {
@@ -3098,13 +3047,6 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                         style={mtAvatarImgStyle}
                       />
                     </span>
-                  )}
-                  {notificationCount > 0 && (
-                    <div style={notificationBadgeStyle}>
-                      <Badge variant="error" size="sm" circle aria-label={`${notificationCount} new notification${notificationCount > 1 ? 's' : ''}`}>
-                        {notificationCount}
-                      </Badge>
-                    </div>
                   )}
                 </div>
               </button>

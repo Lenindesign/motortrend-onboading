@@ -24,13 +24,6 @@
   animation: signInSaveModalIn 180ms ease-out;
 }
 
-.sign-in-save-modal::before {
-  content: "";
-  display: block;
-  height: 5px;
-  background: var(--color-primary-1, #E90C17);
-}
-
 .sign-in-save-modal__inner {
   padding: 26px 28px 24px;
 }
@@ -73,6 +66,11 @@
   box-shadow: 0 14px 30px rgba(233, 12, 23, 0.28);
 }
 
+.sign-in-save-modal__badge--dark {
+  background: var(--color-neutrals-1, #141416);
+  box-shadow: none;
+}
+
 .sign-in-save-modal__header {
   display: flex;
   flex-direction: column;
@@ -87,6 +85,10 @@
   font-weight: var(--font-weight-bold, 600);
   color: var(--color-primary-1, #E90C17);
   text-transform: uppercase;
+}
+
+.sign-in-save-modal__brand--dark {
+  color: var(--color-neutrals-1, #141416);
 }
 
 .sign-in-save-modal__title {
