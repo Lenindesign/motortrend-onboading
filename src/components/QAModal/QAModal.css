@@ -48,6 +48,12 @@
   border-radius: 0 0 var(--border-radius-md-lg, 8px) var(--border-radius-md-lg, 8px);
 }
 
+.qa-modal__inline .qa-modal__tabs,
+.qa-modal__inline .qa-modal__questions-list {
+  padding-right: var(--spacing-modal-md, 28px) !important;
+  padding-left: var(--spacing-modal-md, 28px) !important;
+}
+
 .qa-modal__inline .qa-modal__questions-list {
   max-height: none !important;
   overflow: visible;

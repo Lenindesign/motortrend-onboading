@@ -71,7 +71,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   const instanceId = useId().replace(/:/g, '');
   const titleId = `${instanceId}-title`;
   const questionInputId = `${instanceId}-question-input`;
-  const [activeTab, setActiveTab] = useState<'unanswered' | 'recent' | 'answered'>('recent');
+  const [activeTab, setActiveTab] = useState<'unanswered' | 'answered'>('unanswered');
   const [newQuestion, setNewQuestion] = useState('');
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState('');
@@ -129,11 +129,7 @@ export const QAModal: React.FC<QAModalProps> = ({
     : activeTab === 'answered'
       ? questions.filter((question) => question.answers.length > 0)
       : questions;
-  const sortedQuestions = [...questionsForTab].sort((a, b) => {
-    if (activeTab === 'recent') return new Date(b.date).getTime() - new Date(a.date).getTime();
-    if (activeTab === 'unanswered') return a.answers.length - b.answers.length;
-    return 0;
-  });
+  const sortedQuestions = [...questionsForTab].sort((a, b) => a.answers.length - b.answers.length);
 
   const handleSubmitQuestion = () => {
     if (!newQuestion.trim()) return;
@@ -522,7 +518,7 @@ export const QAModal: React.FC<QAModalProps> = ({
 
       {/* Tabs */}
       <div className="qa-modal__tabs" style={tabsStyle} role="group" aria-label="Filter questions">
-        {(['recent', 'unanswered', 'answered'] as const).map((tab) => (
+        {(['unanswered', 'answered'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -532,7 +528,7 @@ export const QAModal: React.FC<QAModalProps> = ({
             onMouseEnter={() => setHoveredTab(tab)}
             onMouseLeave={() => setHoveredTab(null)}
           >
-            {tab === 'recent' ? 'Latest questions' : tab === 'unanswered' ? 'Needs an answer' : 'Answered questions'}
+            {tab === 'unanswered' ? 'Needs an answer' : 'Answered questions'}
           </button>
         ))}
       </div>
