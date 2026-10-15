@@ -61,6 +61,42 @@
   font-size: 14px;
 }
 
+.bracket-voting__time-travel {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 220px);
+  align-items: center;
+  gap: var(--spacing-1) var(--spacing-2);
+  margin-top: 14px;
+  padding: var(--spacing-1) var(--spacing-2);
+  border: 1px dashed var(--color-neutrals-6);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-neutrals-8);
+}
+
+.bracket-voting__time-travel label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bracket-voting__time-travel select {
+  min-height: 34px;
+  padding: var(--spacing-1) var(--spacing-4) var(--spacing-1) var(--spacing-2);
+  border: 1px solid var(--color-neutrals-6);
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-white);
+  color: var(--color-neutrals-2);
+  font: inherit;
+  font-size: 12px;
+}
+
+.bracket-voting__time-travel p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-neutrals-4);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
 .bracket-voting__progress {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -91,7 +127,7 @@
   background: transparent;
   color: var(--color-neutrals-2);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -367,11 +403,13 @@
 .bracket-voting__full-bracket-round + .bracket-voting__full-bracket-round { border-left: 1px solid var(--color-neutrals-6); }
 .bracket-voting__full-bracket-round h3 { margin: 0 0 12px; font-size: 13px; font-weight: 700; }
 .bracket-voting__full-bracket-matches { display: flex; min-height: 560px; flex-direction: column; justify-content: space-around; gap: 8px; }
+.bracket-voting__full-bracket-pending { display: grid; min-height: 180px; align-content: center; padding: var(--spacing-2, 16px); border: 1px dashed var(--color-neutrals-6); border-radius: var(--border-radius-sm); color: var(--color-neutrals-4); font-size: 11px; line-height: 1.5; text-align: center; }
 .bracket-voting__full-bracket-match { min-width: 0; padding: 8px; border: 1px solid #dfe2e7; border-radius: 5px; background: #fff; }
 .bracket-voting__full-bracket-match-label { display: block; margin-bottom: 6px; color: var(--color-neutrals-4); font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 .bracket-voting__full-bracket-entry { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: center; gap: 6px; min-height: 40px; padding: 5px; border-radius: 3px; background: #f1f3f5; }
 .bracket-voting__full-bracket-entry + .bracket-voting__full-bracket-entry { margin-top: 4px; }
 .bracket-voting__full-bracket-entry.is-sample-winner { border: 1px solid var(--color-primary-1, #e90c17); background: #fff3f4; }
+.bracket-voting__full-bracket-entry.is-user-pick { box-shadow: inset 0 0 0 1px var(--color-neutrals-2, #23262f); }
 .bracket-voting__full-bracket-seed { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; border-radius: 50%; background: #e0e3e7; color: #30343b; font-size: 10px; font-weight: 700; }
 .bracket-voting__full-bracket-entry > span:nth-child(2) { display: grid; min-width: 0; gap: 2px; }
 .bracket-voting__full-bracket-entry strong { font-size: 10px; line-height: 1.25; }
@@ -380,6 +418,7 @@
 .bracket-voting__full-bracket-advances,
 .bracket-voting__full-bracket-bye { display: inline-block; border-radius: 3px; padding: 3px 6px; font-size: 9px; font-weight: 800; line-height: 1.2; text-transform: uppercase; }
 .bracket-voting__full-bracket-advances { background: var(--color-primary-1, #e90c17); color: #fff; }
+.bracket-voting__full-bracket-pick { display: inline-block; border-radius: 3px; padding: 3px 6px; background: var(--color-neutrals-2, #23262f); color: #fff; font-size: 9px; font-weight: 800; line-height: 1.2; text-transform: uppercase; }
 .bracket-voting__full-bracket-bye { background: #e2e5e9; color: #353a42; }
 .bracket-voting__full-bracket-note { margin: 0; padding: 12px 28px 18px; border-top: 1px solid var(--color-neutrals-6); color: var(--color-neutrals-4); font-size: 11px; }
 
@@ -607,6 +646,11 @@
   color: var(--color-neutrals-2);
 }
 
+.bracket-voting__option.is-selected .bracket-voting__preview-seed {
+  background: var(--color-neutrals-1, #141416);
+  color: var(--color-white, #fff);
+}
+
 .bracket-voting__result-count {
   display: grid;
   justify-items: end;
@@ -758,6 +802,10 @@
 
   .bracket-voting__topline {
     flex-direction: column;
+  }
+
+  .bracket-voting__time-travel {
+    grid-template-columns: 1fr;
   }
 
   .bracket-voting__reset {

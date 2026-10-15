@@ -55,6 +55,8 @@
 }
 
 .qa-modal__inline .qa-modal__questions-list {
+  box-sizing: border-box;
+  min-height: calc(var(--spacing-6, 48px) * 5);
   max-height: none !important;
   overflow: visible;
 }

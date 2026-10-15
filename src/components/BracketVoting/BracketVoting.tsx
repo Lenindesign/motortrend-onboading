@@ -131,18 +131,28 @@ export const BracketVoting: React.FC = () => {
   const roundPicksComplete = matchups.length > 0 && matchups.every(({ config }) => demo.picks[pickKey(demo.round, config.id)]);
   const finalMatchup = activeRound.number === bracket.roundCount ? matchups[0] : undefined;
 
-  const sampleRounds = useMemo(() => bracket.rounds.map((round, index) => ({
-    ...round,
-    matchups: (round.matchups ?? []).flatMap((config) => {
-      const first = resolveGeneration(config.first, index, {});
-      const second = resolveGeneration(config.second, index, {});
-      if (!first || !second) return [];
-      const winner = config.votes[0] === config.votes[1]
-        ? (first.seed < second.seed ? first : second)
-        : (config.votes[0] > config.votes[1] ? first : second);
-      return [{ config, first, second, winner }];
-    }),
-  })), []);
+  const sampleRounds = useMemo(() => bracket.rounds.map((round, index) => {
+    const pending = round.number > demo.round;
+    const configs = round.matchups ?? [];
+    const roundComplete = !pending && (round.number < demo.round || (configs.length > 0 && configs.every((config) => demo.picks[pickKey(round.number, config.id)])));
+    return {
+      ...round,
+      pending,
+      roundComplete,
+      matchups: pending ? [] : configs.flatMap((config) => {
+        const first = resolveGeneration(config.first, index, demo.picks);
+        const second = resolveGeneration(config.second, index, demo.picks);
+        if (!first || !second) return [];
+        const selected = demo.picks[pickKey(round.number, config.id)];
+        const firstVotes = config.votes[0] + Number(selected === first.id);
+        const secondVotes = config.votes[1] + Number(selected === second.id);
+        const winner = firstVotes === secondVotes
+          ? (first.seed < second.seed ? first : second)
+          : (firstVotes > secondVotes ? first : second);
+        return [{ config, first, second, winner, selected, firstVotes, secondVotes }];
+      }),
+    };
+  }), [demo.picks, demo.round]);
 
   const selectOption = (matchupId: string, generationId: string) => {
     const key = pickKey(demo.round, matchupId);
@@ -204,6 +214,18 @@ export const BracketVoting: React.FC = () => {
 
       <h2 id="bracket-voting-title">{bracket.title}</h2>
       <p className="bracket-voting__intro">Choose a generation in each matchup to see results and move through the bracket.</p>
+
+      <div className="bracket-voting__time-travel">
+        <label htmlFor="bracket-demo-round">Demo time travel</label>
+        <select
+          id="bracket-demo-round"
+          value={demo.round}
+          onChange={(event) => setDemo((current) => ({ ...current, round: Number(event.target.value) }))}
+        >
+          {bracket.rounds.map((round) => <option value={round.number} key={round.id}>{round.label}</option>)}
+        </select>
+        <p>The spec calls for editor-scheduled round openings but does not set a daily or weekly cadence. This control simulates those dates for demos.</p>
+      </div>
 
       <div className="bracket-voting__progress" aria-label="Bracket progress">
         {bracket.rounds.map((round) => (
@@ -353,7 +375,7 @@ export const BracketVoting: React.FC = () => {
           <div>
             <span className="bracket-voting__eyebrow">Sample bracket</span>
             <h2 id={fullBracketTitleId}>{bracket.question}</h2>
-            <p>All 14 generations across four rounds. Red labels mark each sample winner and the champion.</p>
+            <p>Round dates are editor-scheduled in the live experience. This demo lets you jump ahead; mock vote totals determine who advances.</p>
           </div>
           <button
             ref={fullBracketCloseRef}
@@ -371,20 +393,27 @@ export const BracketVoting: React.FC = () => {
               <section className="bracket-voting__full-bracket-round" key={round.id} aria-label={round.label}>
                 <h3>{round.label}</h3>
                 <div className="bracket-voting__full-bracket-matches">
-                  {round.matchups?.map(({ config, first, second, winner }, matchupIndex) => (
+                  {round.pending ? (
+                    <div className="bracket-voting__full-bracket-pending">
+                      Advance demo time to open this round.
+                    </div>
+                  ) : round.matchups?.map(({ config, first, second, winner, selected, firstVotes, secondVotes }, matchupIndex) => (
                     <article className="bracket-voting__full-bracket-match" key={config.id}>
                       <span className="bracket-voting__full-bracket-match-label">{round.label === 'Opening round' ? `Matchup ${matchupIndex + 1}` : `Match ${matchupIndex + 1}`}</span>
                       {[first, second].map((generation) => (
-                        <div className={`bracket-voting__full-bracket-entry ${generation.id === winner.id ? 'is-sample-winner' : ''}`} key={generation.id}>
+                        <div className={`bracket-voting__full-bracket-entry ${winner?.id === generation.id ? 'is-sample-winner' : ''} ${generation.id === selected ? 'is-user-pick' : ''}`} key={generation.id}>
                           <span className="bracket-voting__full-bracket-seed">{generation.seed}</span>
-                          <span><strong>Generation {generation.generation}</strong><small>{generation.name} · {generation.years}</small></span>
+                          <span><strong>Generation {generation.generation}</strong><small>{generation.name} · {generation.years} · {formatVotes(generation.id === first.id ? firstVotes : secondVotes)} sample votes</small></span>
                           <span className="bracket-voting__full-bracket-statuses">
                             {round.number === 2 && bracket.rounds[0].byes?.includes(generation.id) && (
                               <span className="bracket-voting__full-bracket-bye">First-round bye</span>
                             )}
-                            {generation.id === winner.id && (
+                            {generation.id === selected && (
+                              <span className="bracket-voting__full-bracket-pick">Your pick</span>
+                            )}
+                            {winner?.id === generation.id && (
                               <span className="bracket-voting__full-bracket-advances">
-                                {round.number === bracket.roundCount ? 'Sample champion' : 'Advances'}
+                                {!round.roundComplete ? 'Current leader' : round.number === bracket.roundCount ? 'Demo champion' : 'Advances'}
                               </span>
                             )}
                           </span>
@@ -397,7 +426,7 @@ export const BracketVoting: React.FC = () => {
             ))}
           </div>
         </div>
-        <p className="bracket-voting__full-bracket-note">Sample results are for illustration only. Your picks in the demo do not change this bracket.</p>
+        <p className="bracket-voting__full-bracket-note">This demo combines sample votes with your picks. Picks stay in this browser and do not count as live contest votes.</p>
       </ModalShell>
     </section>
   );
