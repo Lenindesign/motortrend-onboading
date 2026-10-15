@@ -131,8 +131,7 @@ function isAllowedException(value) {
 /**
  * Parse CSS and check for violations
  */
-function lintCssFile(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+function lintCssContent(filePath, content) {
   const lines = content.split('\n');
   const errors = [];
   
@@ -193,6 +192,10 @@ function lintCssFile(filePath) {
   return errors;
 }
 
+function lintCssFile(filePath) {
+  return lintCssContent(filePath, fs.readFileSync(filePath, 'utf-8'));
+}
+
 /**
  * Recursively find all CSS files
  */
@@ -222,16 +225,46 @@ function findCssFiles(dir, fileList = []) {
  * from blocking commits that do not touch those files.
  */
 function findStagedCssFiles(projectRoot) {
-  const staged = execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR'], {
+  return execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR'], {
     cwd: projectRoot,
     encoding: 'utf8',
   })
     .split('\n')
     .filter(file => file.endsWith('.css'));
+}
 
-  return staged
-    .map(file => path.resolve(projectRoot, file))
-    .filter(file => fs.existsSync(file));
+function readGitFile(projectRoot, revision, file) {
+  try {
+    return execFileSync('git', ['show', `${revision}:${file}`], {
+      cwd: projectRoot,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    return '';
+  }
+}
+
+function lintStagedCssFile(projectRoot, file) {
+  const currentContent = readGitFile(projectRoot, '', file);
+  const baselineContent = readGitFile(projectRoot, 'HEAD', file);
+  const currentErrors = lintCssContent(path.resolve(projectRoot, file), currentContent);
+  const baselineErrors = lintCssContent(path.resolve(projectRoot, file), baselineContent);
+  const baselineCounts = new Map();
+  const diagnosticKey = error => `${error.property}|${error.value}`;
+
+  baselineErrors.forEach(error => {
+    const key = diagnosticKey(error);
+    baselineCounts.set(key, (baselineCounts.get(key) || 0) + 1);
+  });
+
+  return currentErrors.filter(error => {
+    const key = diagnosticKey(error);
+    const count = baselineCounts.get(key) || 0;
+    if (count === 0) return true;
+    baselineCounts.set(key, count - 1);
+    return false;
+  });
 }
 
 /**
@@ -283,9 +316,12 @@ function main() {
   console.log(`Found ${cssFiles.length} CSS files to check\n`);
   
   cssFiles.forEach(file => {
-    const errors = lintCssFile(file);
+    const filePath = path.resolve(projectRoot, file);
+    const errors = stagedOnly
+      ? lintStagedCssFile(projectRoot, file)
+      : lintCssFile(filePath);
     if (errors.length > 0) {
-      errorsByFile.set(file, errors);
+      errorsByFile.set(filePath, errors);
     }
   });
   

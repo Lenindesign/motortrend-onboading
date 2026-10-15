@@ -94,6 +94,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
     const total = counts.yes + counts.no;
     return { counts, total, yesPercent: Math.round(counts.yes / total * 100) };
   };
+  const hasCommunityPrompts = (repurchaseEligible && showRepurchase) || (reliabilityEligible && showReliability);
 
   const renderPrompt = (type: 'repurchase' | 'reliability', title: string) => {
     const { total, yesPercent } = result(type);
@@ -121,34 +122,82 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
   };
 
   return (
-    <section className="vehicle-contributions" aria-labelledby="vehicle-contributions-title">
-      <span className="vehicle-contributions__eyebrow">Quick Selector</span>
-      <h2 id="vehicle-contributions-title">What is your current relationship to this car?</h2>
-      {showRelationship && <div className="vehicle-contributions__relationship">
-        <p>Which best describes you?</p>
-        <button type="button" aria-pressed={relationship === 'own'} className={relationship === 'own' ? 'is-selected' : ''} onClick={() => chooseRelationship('own')}><span aria-hidden="true">🔑</span> I own this car.</button>
-        <button type="button" aria-pressed={relationship === 'want'} className={relationship === 'want' ? 'is-selected' : ''} onClick={() => chooseRelationship('want')}><span aria-hidden="true">😍</span> I’m interested in this car.</button>
-      </div>}
-      {confirmation && <p className="vehicle-contributions__confirmation" role="status">Added to your profile vehicle list. You can update this choice anytime.</p>}
-      {(repurchaseEligible && showRepurchase || reliabilityEligible && showReliability) && (
-        <>
-          {repurchaseEligible && showRepurchase && renderPrompt('repurchase', 'Would you buy this car again?')}
-          {reliabilityEligible && showReliability && <div className="vehicle-contributions__exploratory">
-            <span>Exploratory · reliability prompt · signed-in profile ownership required</span>
-            {!isAuthenticated ? <p>Sign in to confirm profile ownership before answering. Verification is simulated in this prototype.</p> : <>
-            {renderPrompt('reliability', 'Has this car been reliable for you?')}
-            <label htmlFor="vehicle-reliability-question">Share a reliability detail for the community Q&amp;A</label>
-            {submittedQuestion ? <p className="vehicle-contributions__confirmation" role="status">Submitted for moderation. This won’t appear publicly until reviewed.</p> : (
-              <div className="vehicle-contributions__question-form">
-                <textarea id="vehicle-reliability-question" value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={500} placeholder="What should future owners know?" />
-                <button type="button" onClick={askQuestion} disabled={question.trim().length < 8}>Submit for review</button>
+    <>
+      {(showRelationship || hasCommunityPrompts || confirmation) && (
+        <section
+          className="vehicle-contributions"
+          aria-labelledby={showRelationship ? 'vehicle-contributions-title' : undefined}
+          aria-label={showRelationship ? undefined : `${vehicleName} vehicle prompts`}
+        >
+          {showRelationship && (
+            <>
+              <span className="vehicle-contributions__eyebrow">Your vehicle list</span>
+              <h2 id="vehicle-contributions-title">What’s your relationship to the {vehicleName}?</h2>
+              <p className="vehicle-contributions__description">Choose a list for your profile. You can change this anytime.</p>
+              <div className="vehicle-contributions__relationship" role="group" aria-label={`Choose how the ${vehicleName} fits you`}>
+                <button
+                  type="button"
+                  aria-pressed={relationship === 'own'}
+                  className={relationship === 'own' ? 'is-selected' : ''}
+                  onClick={() => chooseRelationship('own')}
+                >
+                  <span className="vehicle-contributions__radio" aria-hidden="true" />
+                  <span className="vehicle-contributions__choice-copy">
+                    <strong>I own this car</strong>
+                    <small>Add to Cars I Own</small>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={relationship === 'want'}
+                  className={relationship === 'want' ? 'is-selected' : ''}
+                  onClick={() => chooseRelationship('want')}
+                >
+                  <span className="vehicle-contributions__radio" aria-hidden="true" />
+                  <span className="vehicle-contributions__choice-copy">
+                    <strong>I’m interested in this car</strong>
+                    <small>Add to Cars I Want</small>
+                  </span>
+                </button>
               </div>
-            )}
-            </>}
-          </div>}
-        </>
+            </>
+          )}
+          {confirmation && <p className="vehicle-contributions__confirmation" role="status">Added to your profile vehicle list. You can update this choice anytime.</p>}
+          {hasCommunityPrompts && (
+            <>
+              {repurchaseEligible && showRepurchase && renderPrompt('repurchase', 'Would you buy this car again?')}
+              {reliabilityEligible && showReliability && (
+                <div className="vehicle-contributions__exploratory">
+                  <span>Exploratory · reliability prompt · signed-in profile ownership required</span>
+                  {!isAuthenticated ? (
+                    <p>Sign in to confirm profile ownership before answering. Verification is simulated in this prototype.</p>
+                  ) : (
+                    <>
+                      {renderPrompt('reliability', 'Has this car been reliable for you?')}
+                      <label htmlFor="vehicle-reliability-question">Share a reliability detail for the community Q&amp;A</label>
+                      {submittedQuestion ? <p className="vehicle-contributions__confirmation" role="status">Submitted for moderation. This won’t appear publicly until reviewed.</p> : (
+                        <div className="vehicle-contributions__question-form">
+                          <textarea id="vehicle-reliability-question" value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={500} placeholder="What should future owners know?" />
+                          <button type="button" onClick={askQuestion} disabled={question.trim().length < 8}>Submit for review</button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </section>
       )}
-      <AuthPromptModal isOpen={isAuthPromptOpen} onClose={cancelAuthPrompt} onAuthRedirect={() => { authRedirectInProgress.current = true; }} action={promptAction} title="Join the MotorTrend community" description="Sign in or create a free account to add your vehicle and share your experience." contextId={`vehicle-contributions-${normalized}`} />
-    </section>
+      <AuthPromptModal
+        isOpen={isAuthPromptOpen}
+        onClose={cancelAuthPrompt}
+        onAuthRedirect={() => { authRedirectInProgress.current = true; }}
+        action={promptAction}
+        title="Join the MotorTrend community"
+        description="Sign in or create a free account to add your vehicle and share your experience."
+        contextId={`vehicle-contributions-${normalized}`}
+      />
+    </>
   );
 };

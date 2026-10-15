@@ -589,15 +589,13 @@
 
 .rankings-awards__rating {
   display: inline-flex;
-  width: 68px;
-  height: 36px;
+  width: auto;
+  height: auto;
   align-items: center;
   justify-content: center;
   gap: 2px;
   flex-shrink: 0;
-  border-radius: 4px;
-  background: var(--color-neutrals-3, #353945);
-  color: var(--color-neutrals-7, #fff);
+  color: var(--color-neutrals-1, #141416);
   white-space: nowrap;
 }
 
@@ -609,7 +607,7 @@
 }
 
 .rankings-awards__rating span {
-  color: var(--color-neutrals-7, #fff);
+  color: var(--color-neutrals-1, #141416);
   font-size: 9px;
   font-weight: var(--font-weight-semibold, 600);
   line-height: 1;
@@ -986,8 +984,8 @@
 }
 
 .rankings-awards__rating {
-  width: 62px;
-  height: 32px;
+  width: auto;
+  height: auto;
 }
 
 .rankings-awards__rating strong {

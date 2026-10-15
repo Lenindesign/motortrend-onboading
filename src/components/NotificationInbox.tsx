@@ -368,7 +368,7 @@ export function NotificationInbox() {
 
       {open && <section className="mt-notification-panel" role="dialog" aria-label="Notifications">
         <header className="mt-notification-panel-header">
-          <strong>Notifications</strong>
+          <div className="mt-notification-panel-title"><Icon name="notifications" size={18} /><strong>Notifications</strong></div>
           <div className="mt-notification-panel-actions">
             {items.length > 0 && <button type="button" className="mt-notification-action" onClick={() => void deleteAll()}>Delete all</button>}
             <button type="button" className="mt-notification-close" aria-label="Close notifications" onClick={() => setOpen(false)}><Icon name="close" size={18} /></button>
@@ -384,7 +384,7 @@ export function NotificationInbox() {
             return <article className={`mt-notification-item${isRead(item) ? '' : ' is-unread'}`} key={item.id}>
               <span className="mt-notification-avatar" aria-hidden="true"><img src="/images/mt-brand-icon.svg" alt="" /></span>
               <div className="mt-notification-main">
-                <div className="mt-notification-eyebrow"><span>{notificationTypeLabel(item.kind)}{previewMode && <span className="mt-notification-info" title="Development preview">i</span>}</span>{previewMode && <small>Preview</small>}</div>
+                <div className="mt-notification-eyebrow"><span>{notificationTypeLabel(item.kind)}</span></div>
                 <button type="button" className="mt-notification-content" onClick={() => void openItem(item)}>
                   <span className="mt-notification-summary">{item.body || 'You have a new notification.'}</span>
                 </button>
@@ -427,6 +427,7 @@ export function NotificationInbox() {
         .mt-notification-badge { position: absolute; top: -3px; right: -4px; box-sizing: border-box; min-width: 20px; height: 20px; padding: 0 5px; border: 1px solid #141416; border-radius: 99px; background: #e90c17; color: #fff; font: 700 11px/18px Arial, sans-serif; text-align: center; }
         .mt-notification-panel { position: absolute; z-index: 1000; top: calc(100% + 12px); right: 0; box-sizing: border-box; width: min(420px, calc(100vw - 24px)); max-height: min(620px, calc(100vh - 90px)); overflow: hidden; margin: 0; padding: 0; border: 1px solid #343439; border-radius: 16px; background: #141416; color: #f7f7f8; box-shadow: 0 16px 44px rgba(0,0,0,.35); }
         .mt-notification-panel-header { display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; min-height: 52px; margin: 0; padding: 0 20px; border-bottom: 1px solid #343439; }
+        .mt-notification-panel-title { display: flex; align-items: center; gap: 8px; }
         .mt-notification-panel-header strong { font-size: 17px; }
         .mt-notification-panel-actions { display: flex; align-items: center; gap: 8px; }
         .mt-notification-action, .mt-notification-close, .mt-notification-dismiss { border: 0; background: transparent; cursor: pointer; }
