@@ -40,6 +40,7 @@ import { useGoogleOneTap } from '../../hooks/useGoogleOneTap';
 import { HIGH_INTENT_PAGES } from '../../utils/cdpTracking';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
 import { AuthPromptModal, clearAuthPromptIntent, getAuthPromptIntent } from '../../components/AuthPromptModal';
+import { QAModal, type QAItem } from '../../components/QAModal';
 import { useAuth } from '../../contexts/AuthContext';
 import './VehicleDetails.css';
 
@@ -77,6 +78,8 @@ export const VehicleDetails: React.FC = () => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentGalleryImages, setCurrentGalleryImages] = useState<string[]>([]);
+  const [isQAModalOpen, setIsQAModalOpen] = useState(false);
+  const [vehicleQAQuestions, setVehicleQAQuestions] = useState<QAItem[]>([]);
 
   // Google One Tap for high-intent MMP page
   const vehicleInfo = useMemo(() => ({
@@ -157,6 +160,8 @@ export const VehicleDetails: React.FC = () => {
   // Normalize: replace dashes with spaces in model to ensure consistent format
   // This ensures "Ioniq-6-N" becomes "Ioniq 6 N" to match Article page format
   const vehicleName = `${decodedYear} ${decodedMake} ${decodedModel.replace(/-/g, ' ')}`;
+  const vehicleQASlug = `vehicle-${decodedYear}-${decodedMake}-${decodedModel}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const vehicleQAStorageKey = `vehicleQA_${vehicleQASlug}`;
   const authPromptContextId = useMemo(
     () => `vehicle:${decodedYear}:${decodedMake}:${decodedModel}`,
     [decodedYear, decodedMake, decodedModel]
@@ -1093,6 +1098,122 @@ export const VehicleDetails: React.FC = () => {
     handleScrollToCommunityRatings();
   };
 
+  useEffect(() => {
+    const seedQuestions: QAItem[] = [
+      {
+        id: `vehicle-qa-driving-${vehicleQASlug}`,
+        question: `How does the ${vehicleName} feel for everyday driving?`,
+        author: 'CarEnthusiast42',
+        date: 'Apr 12, 2026',
+        upvotes: 12,
+        isEditorPick: true,
+        answers: [{
+          id: `vehicle-qa-driving-answer-${vehicleQASlug}`,
+          text: 'Share how it handles your daily commute, including ride comfort, visibility, and ease of parking.',
+          author: 'MotorTrend Community Team',
+          isEditor: true,
+          date: 'Apr 13, 2026',
+          upvotes: 4,
+        }],
+      },
+      {
+        id: `vehicle-qa-trim-${vehicleQASlug}`,
+        question: `Which ${vehicleName} trim offers the best value?`,
+        author: 'SmartBuyer',
+        date: 'Apr 10, 2026',
+        upvotes: 8,
+        answers: [],
+      },
+      {
+        id: `vehicle-qa-space-${vehicleQASlug}`,
+        question: `How well does the ${vehicleName} work for passengers and cargo?`,
+        author: 'WeekendDriver',
+        date: 'Apr 8, 2026',
+        upvotes: 6,
+        answers: [],
+      },
+    ];
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(vehicleQAStorageKey) || '[]') as QAItem[];
+      const savedIds = new Set(saved.map((question) => question.id));
+      setVehicleQAQuestions([...saved, ...seedQuestions.filter((question) => !savedIds.has(question.id))]);
+    } catch {
+      setVehicleQAQuestions(seedQuestions);
+    }
+  }, [vehicleName, vehicleQAStorageKey, vehicleQASlug]);
+
+  const saveVehicleQAQuestions = (update: (questions: QAItem[]) => QAItem[]) => {
+    setVehicleQAQuestions((current) => {
+      const next = update(current);
+      try {
+        localStorage.setItem(vehicleQAStorageKey, JSON.stringify(next));
+      } catch { /* Keep the Q&A available for this session if storage is unavailable. */ }
+      return next;
+    });
+  };
+
+  const saveVehicleQAActivity = (type: 'asked' | 'liked', questionId: string, questionText: string) => {
+    try {
+      const existing = JSON.parse(localStorage.getItem('userQAActivity') || '[]');
+      const activity = {
+        type,
+        questionId,
+        questionText,
+        articleSlug: vehicleQASlug,
+        articleTitle: vehicleName,
+        targetUrl: `/vehicles/${encodeURIComponent(decodedYear)}/${encodeURIComponent(decodedMake)}/${encodeURIComponent(decodedModel)}`,
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      };
+      if (!existing.some((item: typeof activity) => item.questionId === questionId && item.type === type)) {
+        localStorage.setItem('userQAActivity', JSON.stringify([activity, ...existing].slice(0, 50)));
+      }
+    } catch { /* Q&A remains available if profile activity storage is unavailable. */ }
+  };
+
+  const handleVehicleQASubmitQuestion = (questionText: string) => {
+    if (!requireAuth('comment')) return;
+    const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const newQuestion: QAItem = {
+      id: `q-user-${Date.now()}`,
+      question: questionText,
+      author: 'You',
+      date,
+      upvotes: 0,
+      answers: [],
+    };
+    saveVehicleQAActivity('asked', newQuestion.id, questionText);
+    saveVehicleQAQuestions((current) => [newQuestion, ...current]);
+  };
+
+  const handleVehicleQASubmitAnswer = (questionId: string, answerText: string) => {
+    if (!requireAuth('comment')) return;
+    const answer = {
+      id: `a-user-${Date.now()}`,
+      text: answerText,
+      author: 'You',
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      upvotes: 0,
+    };
+    saveVehicleQAQuestions((current) => current.map((question) => question.id === questionId
+      ? { ...question, answers: [...question.answers, answer] }
+      : question));
+  };
+
+  const handleVehicleQAUpvoteQuestion = (questionId: string) => {
+    const question = vehicleQAQuestions.find((item) => item.id === questionId);
+    if (question) saveVehicleQAActivity('liked', question.id, question.question);
+    saveVehicleQAQuestions((current) => current.map((item) => item.id === questionId
+      ? { ...item, upvotes: item.upvotes + 1 }
+      : item));
+  };
+
+  const handleVehicleQAUpvoteAnswer = (questionId: string, answerId: string) => {
+    saveVehicleQAQuestions((current) => current.map((question) => question.id === questionId
+      ? { ...question, answers: question.answers.map((answer) => answer.id === answerId ? { ...answer, upvotes: answer.upvotes + 1 } : answer) }
+      : question));
+  };
+
   const handleScrollToStaffRating = () => {
     const staffRatingSection = document.getElementById('staff-rating');
     if (staffRatingSection) {
@@ -1220,6 +1341,16 @@ export const VehicleDetails: React.FC = () => {
                       <span>Comments</span>
                       <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
                     </a>
+                    <button
+                      type="button"
+                      className="vehicle-details__comments-link vehicle-details__qa-link"
+                      onClick={() => setIsQAModalOpen(true)}
+                      aria-label={`Open vehicle Q&A with ${vehicleQAQuestions.length} questions`}
+                    >
+                      <Icon name="question_answer" size={20} />
+                      <span>Q&amp;A</span>
+                      <span className="vehicle-details__comments-count">{vehicleQAQuestions.length}</span>
+                    </button>
                     <label className="vehicle-details__compare-control">
                       <input
                         type="checkbox"
@@ -2135,6 +2266,19 @@ export const VehicleDetails: React.FC = () => {
         onClose={() => setIsPriceAlertsModalOpen(false)}
         vehicleName={vehicleName}
         onSignedUp={() => setIsPriceAlertActive(true)}
+      />
+
+      <QAModal
+        isOpen={isQAModalOpen}
+        onClose={() => setIsQAModalOpen(false)}
+        articleTitle={vehicleName}
+        articleSlug={vehicleQASlug}
+        vehicleName={vehicleName}
+        questions={vehicleQAQuestions}
+        onSubmitQuestion={handleVehicleQASubmitQuestion}
+        onSubmitAnswer={handleVehicleQASubmitAnswer}
+        onUpvoteQuestion={handleVehicleQAUpvoteQuestion}
+        onUpvoteAnswer={handleVehicleQAUpvoteAnswer}
       />
 
       {/* Auth Prompt Modal for unauthenticated users */}

@@ -7,6 +7,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -216,6 +217,24 @@ function findCssFiles(dir, fileList = []) {
 }
 
 /**
+ * Return staged CSS paths for the pre-commit check. The default invocation
+ * remains a full source-tree audit; staged mode keeps existing baseline debt
+ * from blocking commits that do not touch those files.
+ */
+function findStagedCssFiles(projectRoot) {
+  const staged = execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR'], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+  })
+    .split('\n')
+    .filter(file => file.endsWith('.css'));
+
+  return staged
+    .map(file => path.resolve(projectRoot, file))
+    .filter(file => fs.existsSync(file));
+}
+
+/**
  * Format and print results
  */
 function printResults() {
@@ -254,11 +273,13 @@ function printResults() {
  * Main execution
  */
 function main() {
-  const srcDir = path.join(path.dirname(__dirname), 'src');
+  const projectRoot = path.dirname(__dirname);
+  const stagedOnly = process.argv.includes('--staged');
+  const srcDir = path.join(projectRoot, 'src');
   
-  console.log('🔍 Scanning CSS files for hardcoded values...\n');
+  console.log(`🔍 Scanning ${stagedOnly ? 'staged' : 'all source'} CSS files for hardcoded values...\n`);
   
-  const cssFiles = findCssFiles(srcDir);
+  const cssFiles = stagedOnly ? findStagedCssFiles(projectRoot) : findCssFiles(srcDir);
   console.log(`Found ${cssFiles.length} CSS files to check\n`);
   
   cssFiles.forEach(file => {

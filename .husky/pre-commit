@@ -4,7 +4,7 @@
 echo "🎨 Running design token governance checks..."
 
 # Run CSS token linter
-node scripts/lint-css-tokens.js
+node scripts/lint-css-tokens.js --staged
 
 # If the linter fails, prevent commit
 if [ $? -ne 0 ]; then
@@ -12,12 +12,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Run ESLint
-npm run lint
+# Run ESLint on staged files and block only newly introduced errors.
+node scripts/lint-staged-eslint.mjs
 
 # If ESLint fails, prevent commit
 if [ $? -ne 0 ]; then
-  echo "❌ ESLint errors detected. Please fix before committing."
+  echo "❌ New ESLint errors detected in staged files. Please fix before committing."
   exit 1
 fi
 

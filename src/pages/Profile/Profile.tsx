@@ -153,6 +153,7 @@ export const Profile: React.FC<ProfileProps> = ({
     questionText: string;
     articleSlug: string;
     articleTitle: string;
+    targetUrl?: string;
     date: string;
   }
   const [qaActivity, setQaActivity] = useState<QAActivity[]>([]);
@@ -1260,7 +1261,7 @@ export const Profile: React.FC<ProfileProps> = ({
                       {qaActivity.map((activity, index) => (
                         <div
                           key={`${activity.questionId}-${activity.type}-${index}`}
-                          onClick={() => navigate(`/articles/${activity.articleSlug}`)}
+                          onClick={() => navigate(activity.targetUrl || `/articles/${activity.articleSlug}`)}
                           style={{
                             display: 'flex',
                             gap: '16px',

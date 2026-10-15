@@ -159,8 +159,8 @@ export const QAModal: React.FC<QAModalProps> = ({
 
   // Styles
   const headerStyle: React.CSSProperties = {
-    padding: '24px 28px 0',
-    borderBottom: 'none',
+    padding: '24px 28px 18px',
+    borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
   };
 
   const titleRowStyle: React.CSSProperties = {
@@ -198,21 +198,22 @@ export const QAModal: React.FC<QAModalProps> = ({
 
   const subtitleStyle: React.CSSProperties = {
     fontFamily: 'var(--font-body, Geist, sans-serif)',
-    fontSize: '13px',
+    fontSize: '14px',
     color: 'var(--color-neutrals-4, #6E7481)',
-    margin: '0 0 20px 0',
+    margin: '6px 0 0',
     lineHeight: 1.4,
   };
 
   const askSectionStyle: React.CSSProperties = {
-    padding: '0 28px 20px',
+    padding: '20px 28px 22px',
+    background: 'var(--color-neutrals-8, #F8F9FA)',
     borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
   };
 
   const textareaStyle: React.CSSProperties = {
     width: '100%',
-    minHeight: '72px',
-    padding: '12px 16px',
+    minHeight: '60px',
+    padding: '12px 14px',
     fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontSize: '14px',
     lineHeight: 1.5,
@@ -241,7 +242,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   const tabsStyle: React.CSSProperties = {
     display: 'flex',
     gap: '4px',
-    padding: '16px 28px 0',
+    padding: '8px 28px 0',
     borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
   };
 
@@ -261,13 +262,13 @@ export const QAModal: React.FC<QAModalProps> = ({
   });
 
   const questionsListStyle: React.CSSProperties = {
-    padding: '0 28px 28px',
-    maxHeight: '400px',
+    padding: '0 28px 20px',
+    maxHeight: '440px',
     overflowY: 'auto',
   };
 
   const questionCardStyle: React.CSSProperties = {
-    padding: '20px 0',
+    padding: '18px 0',
     borderBottom: '1px solid var(--color-neutrals-6, #E6E8EC)',
   };
 
@@ -295,9 +296,9 @@ export const QAModal: React.FC<QAModalProps> = ({
   });
 
   const questionTextStyle: React.CSSProperties = {
-    fontFamily: 'var(--font-heading, Poppins, sans-serif)',
+    fontFamily: 'var(--font-body, Geist, sans-serif)',
     fontWeight: 600,
-    fontSize: '15px',
+    fontSize: '16px',
     lineHeight: 1.4,
     color: 'var(--color-neutrals-1, #141416)',
     margin: '0 0 6px 0',
@@ -328,10 +329,12 @@ export const QAModal: React.FC<QAModalProps> = ({
   };
 
   const answersSectionStyle: React.CSSProperties = {
-    marginTop: '12px',
+    marginTop: '14px',
     marginLeft: '52px',
-    padding: '12px 0 0',
-    borderTop: '1px solid var(--color-neutrals-7, #F4F5F6)',
+    padding: '12px 14px',
+    border: '1px solid var(--color-neutrals-6, #E6E8EC)',
+    borderRadius: '8px',
+    background: 'var(--color-neutrals-8, #F8F9FA)',
   };
 
   const answerCardStyle: React.CSSProperties = {
@@ -440,9 +443,9 @@ export const QAModal: React.FC<QAModalProps> = ({
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}
-      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : 'min(640px, calc(100vw - 32px))'}
-      maxWidth={isExpanded ? '1100px' : '640px'}
-      maxHeight={isExpanded ? 'calc(100vh - 32px)' : '90vh'}
+      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : 'min(720px, calc(100vw - 32px))'}
+      maxWidth={isExpanded ? '1100px' : '720px'}
+      maxHeight={isExpanded ? 'calc(100vh - 32px)' : '86vh'}
       ariaLabelledBy={titleId}
       className="qa-modal__panel"
       style={isExpanded ? { height: 'calc(100vh - 32px)' } : undefined}
@@ -478,14 +481,14 @@ export const QAModal: React.FC<QAModalProps> = ({
             </button>
           </div>
         </div>
-        <p style={subtitleStyle}>
-          Ask about <strong>{vehicleName || articleTitle}</strong> and get answers from MotorTrend editors and the community.
+        <p className="qa-modal__header-subtitle" style={subtitleStyle}>
+          Questions and answers about <strong>{vehicleName || articleTitle}</strong>
         </p>
       </div>
 
       {/* Ask a Question */}
       <div className="qa-modal__ask" style={askSectionStyle}>
-        <label className="qa-modal__field-label" htmlFor={questionInputId}>Ask the community</label>
+        <label className="qa-modal__field-label" htmlFor={questionInputId}>Ask a question</label>
         <textarea
           id={questionInputId}
           ref={questionInputRef}
@@ -506,7 +509,7 @@ export const QAModal: React.FC<QAModalProps> = ({
           }}
         />
         <div className="qa-modal__ask-actions" style={askBtnRowStyle}>
-          <span className="qa-modal__hint" style={hintStyle}>Press {navigator.platform.includes('Mac') ? '⌘' : 'Ctrl'} + Enter to submit</span>
+            <span className="qa-modal__hint" style={hintStyle}>Be specific about the trim, feature, or driving situation.</span>
           <button
             type="button"
             className="qa-modal__submit cta cta--primary cta--default"
@@ -532,7 +535,7 @@ export const QAModal: React.FC<QAModalProps> = ({
             onMouseEnter={() => setHoveredTab(tab)}
             onMouseLeave={() => setHoveredTab(null)}
           >
-            {tab === 'recent' ? 'Latest' : 'Unanswered'}
+            {tab === 'recent' ? 'Latest questions' : 'Needs an answer'}
           </button>
         ))}
       </div>
@@ -553,11 +556,12 @@ export const QAModal: React.FC<QAModalProps> = ({
           </div>
         ) : (
           sortedQuestions.map((q) => (
-            <div key={q.id} style={questionCardStyle}>
-              <div style={questionHeaderStyle}>
+            <div key={q.id} className="qa-modal__question" style={questionCardStyle}>
+              <div className="qa-modal__question-row" style={questionHeaderStyle}>
                 {/* Upvote */}
                   <button
                     type="button"
+                    className="qa-modal__vote"
                     style={upvoteBtnStyle(q.id, q.upvotes, hasVoted(q.id))}
                     onClick={() => recordVote(q.id, () => onUpvoteQuestion(q.id))}
                     disabled={hasVoted(q.id)}
@@ -570,9 +574,9 @@ export const QAModal: React.FC<QAModalProps> = ({
                 </button>
 
                 {/* Question Content */}
-                <div style={{ flex: 1 }}>
-                  <p style={questionTextStyle}>{q.question}</p>
-                  <div style={questionMetaStyle}>
+                <div className="qa-modal__question-content" style={{ flex: 1 }}>
+                  <p className="qa-modal__question-title" style={questionTextStyle}>{q.question}</p>
+                  <div className="qa-modal__question-meta" style={questionMetaStyle}>
                     <span style={{ fontWeight: 500 }}>{q.author}</span>
                     <span>·</span>
                     <span>{q.date}</span>
@@ -581,24 +585,25 @@ export const QAModal: React.FC<QAModalProps> = ({
                   </div>
 
                   {/* Answers Toggle */}
-                  {q.answers.length > 0 && (
-                    <button
-                      type="button"
-                      className="qa-modal__answers-toggle"
-                      style={answersToggleStyle}
-                      onClick={() => setExpandedQuestion(expandedQuestion === q.id ? null : q.id)}
-                      aria-expanded={expandedQuestion === q.id}
-                    >
-                      {expandedQuestion === q.id ? <CaretUp size={18} weight="regular" /> : <CaretDown size={18} weight="regular" />}
-                      {expandedQuestion === q.id ? 'Hide answers' : `View ${q.answers.length} ${q.answers.length === 1 ? 'answer' : 'answers'}`}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="qa-modal__answers-toggle"
+                    style={answersToggleStyle}
+                    onClick={() => {
+                      setAnswerText('');
+                      setExpandedQuestion(expandedQuestion === q.id ? null : q.id);
+                    }}
+                    aria-expanded={expandedQuestion === q.id}
+                  >
+                    {expandedQuestion === q.id ? <CaretUp size={18} weight="regular" /> : q.answers.length > 0 ? <CaretDown size={18} weight="regular" /> : <ChatCircle size={16} weight="regular" />}
+                    {expandedQuestion === q.id ? 'Hide answers' : q.answers.length > 0 ? `View ${q.answers.length} ${q.answers.length === 1 ? 'answer' : 'answers'}` : 'Write an answer'}
+                  </button>
 
                   {/* Answers Section */}
-                  {(expandedQuestion === q.id || q.answers.length === 0) && (
+                  {expandedQuestion === q.id && (
                     <div className="qa-modal__answers" style={answersSectionStyle}>
                       {q.answers.map((answer) => (
-                        <div key={answer.id} style={answerCardStyle}>
+                        <div key={answer.id} className="qa-modal__answer" style={answerCardStyle}>
                           <div style={answerAvatarStyle}>
                             {answer.author.charAt(0).toUpperCase()}
                           </div>
@@ -612,7 +617,7 @@ export const QAModal: React.FC<QAModalProps> = ({
                                 {answer.author}
                               </span>
                               {answer.isEditor && (
-                                <span style={editorBadgeStyle}>
+                                <span className="qa-modal__editor-badge" style={editorBadgeStyle}>
                                   <SealCheck size={10} weight="regular" />
                                   Editor
                                 </span>
