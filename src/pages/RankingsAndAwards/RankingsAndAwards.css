@@ -693,8 +693,9 @@
 
   .rankings-awards__body-row-cta {
     width: 100%;
-    padding-inline: 10px;
+    padding-inline: 0;
     font-size: 12px;
+    text-align: left;
     white-space: normal;
   }
 }
