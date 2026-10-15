@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Icon from './Icon';
 import { SignInToSaveModal } from './SignInToSaveModal';
+import { vehicleImageFor } from '../utils/vehicleImages';
 
 type NotificationItem = {
   id: string;
@@ -16,6 +17,8 @@ type NotificationItem = {
   created_at: string;
   read_at: string | null;
   dismissed_at?: string | null;
+  image_url?: string | null;
+  thumbnail_url?: string | null;
 };
 
 type NotificationPage = { items: NotificationItem[]; count: number; page: number; page_size: number; total_pages: number };
@@ -43,11 +46,20 @@ const mockRows: Array<{ kind: string; body: string; url: string }> = [
   { kind: 'bracket_voting', body: 'Voting is open for the next Offroad Showdown matchup.', url: '/rankings-awards/offroad-showdown' },
 ];
 
+function mockNotificationImage(url: string) {
+  const match = url.match(/^\/vehicles\/(\d{4})\/([^/]+)\/([^/?#]+)/);
+  if (!match) return undefined;
+  const [, year, make, model] = match;
+  const vehicleName = `${year} ${decodeURIComponent(make)} ${decodeURIComponent(model).replaceAll('-', ' ')}`;
+  return vehicleImageFor(vehicleName) || undefined;
+}
+
 let mockNotifications: NotificationItem[] = mockRows.map((row, index) => ({
   id: `preview-notification-${index + 1}`,
   kind: row.kind,
   body: row.body,
   url: row.url,
+  image_url: mockNotificationImage(row.url),
   created_at: new Date(Date.now() - (index * 17 + 4) * 60_000).toISOString(),
   read_at: index === 3 || index === 8 ? new Date(Date.now() - index * 60_000).toISOString() : null,
   dismissed_at: null,
@@ -128,10 +140,6 @@ function relativeTime(value?: string) {
 function actionLabel(item: NotificationItem) {
   const type = item.kind.toLowerCase();
   if (type.includes('price') || type.includes('deal') || type.includes('incentive')) return 'View deals';
-  if (type.includes('bracket') || type.includes('offroad') || type.includes('showdown')) return 'Go to Bracket';
-  if (type.includes('q&a') || type.includes('qa') || type.includes('question') || type.includes('answer')) return 'Go to Q&A';
-  if (type.includes('review')) return 'Go to Review';
-  if (type.includes('comment') || type.includes('reply') || type.includes('vote')) return 'Go to comment';
   return '';
 }
 
@@ -166,6 +174,7 @@ export function NotificationInbox() {
   const [countError, setCountError] = useState(false);
   const [listError, setListError] = useState(false);
   const [busyIds, setBusyIds] = useState<Set<string>>(new Set());
+  const [menuItemId, setMenuItemId] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const refreshCount = useCallback(async () => {
@@ -381,8 +390,9 @@ export function NotificationInbox() {
           {items.map((item) => {
             const label = actionLabel(item);
             const timestamp = item.created_at;
+            const thumbnail = item.image_url || item.thumbnail_url;
             return <article className={`mt-notification-item${isRead(item) ? '' : ' is-unread'}`} key={item.id}>
-              <span className="mt-notification-avatar" aria-hidden="true"><img src="/images/mt-brand-icon.svg" alt="" /></span>
+              <span className={`mt-notification-avatar${thumbnail ? ' has-thumbnail' : ''}`} aria-hidden="true"><img src={thumbnail || '/images/mt-brand-icon.svg'} alt="" onError={(event) => { event.currentTarget.src = '/images/mt-brand-icon.svg'; event.currentTarget.parentElement?.classList.remove('has-thumbnail'); }} /></span>
               <div className="mt-notification-main">
                 <div className="mt-notification-eyebrow"><span>{notificationTypeLabel(item.kind)}</span></div>
                 <button type="button" className="mt-notification-content" onClick={() => void openItem(item)}>
@@ -390,12 +400,16 @@ export function NotificationInbox() {
                 </button>
                 <small className="mt-notification-time">{relativeTime(timestamp)}</small>
                 {label && <button type="button" className="mt-notification-primary" onClick={() => void openItem(item)}>{label}</button>}
-                <div className="mt-notification-row-actions">
-                  {!isRead(item) && <button type="button" disabled={busyIds.has(item.id)} onClick={() => void markRead(item)}>Mark read</button>}
-                  <button type="button" disabled={busyIds.has(item.id)} onClick={() => void dismiss(item)}>Delete</button>
-                </div>
               </div>
-              {!isRead(item) && <span className="mt-notification-unread-dot" aria-label="Unread" />}
+              <div className="mt-notification-menu-wrap">
+                <button type="button" className="mt-notification-menu-trigger" aria-label="Notification options" aria-haspopup="menu" aria-expanded={menuItemId === item.id} disabled={busyIds.has(item.id)} onClick={() => setMenuItemId((current) => current === item.id ? null : item.id)}>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><circle cx="3" cy="9" r="1.5" /><circle cx="9" cy="9" r="1.5" /><circle cx="15" cy="9" r="1.5" /></svg>
+                </button>
+                {menuItemId === item.id && <div className="mt-notification-menu" role="menu">
+                  {!isRead(item) && <button type="button" role="menuitem" disabled={busyIds.has(item.id)} onClick={() => { setMenuItemId(null); void markRead(item); }}>Mark read</button>}
+                  <button type="button" role="menuitem" disabled={busyIds.has(item.id)} onClick={() => { setMenuItemId(null); void dismiss(item); }}>Delete</button>
+                </div>}
+              </div>
             </article>;
           })}
           {hasMore && <button type="button" className="mt-notification-more" disabled={loadingMore} onClick={() => void loadMore()}>{loadingMore ? 'Loading…' : 'Show more'}</button>}
@@ -436,22 +450,29 @@ export function NotificationInbox() {
         .mt-notification-close { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; color: #d0d0d4; }
         .mt-notification-close:hover { background: #29292d; color: #fff; }
         .mt-notification-list { max-height: min(560px, calc(100vh - 148px)); overflow-y: auto; }
-        .mt-notification-item { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: start; gap: 10px; padding: 15px 20px; border-bottom: 1px solid #303034; background: #141416; }
+        .mt-notification-item { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr) 24px; align-items: start; gap: 10px; padding: 15px 22px 15px 20px; border-bottom: 1px solid #303034; background: #232327; }
         .mt-notification-item.is-unread { background: #141416; }
-        .mt-notification-avatar { display: grid; width: 34px; height: 34px; margin-top: 20px; place-items: center; border-radius: 50%; background: #ed0011; }
-        .mt-notification-avatar img { display: block; width: 20px; height: auto; filter: brightness(0) invert(1); }
+        .mt-notification-item:not(.is-unread):hover { background: #2b2b30; }
+        .mt-notification-item.is-unread:hover { background: #202024; }
+        .mt-notification-avatar { display: grid; width: 64px; height: 64px; margin-top: 20px; place-items: center; border-radius: 50%; background: #ed0011; }
+        .mt-notification-avatar img { display: block; width: 22px; height: auto; filter: brightness(0) invert(1); }
+        .mt-notification-avatar.has-thumbnail { overflow: hidden; border-radius: 6px; background: #29292d; }
+        .mt-notification-avatar.has-thumbnail img { width: 100%; height: 100%; object-fit: cover; filter: none; }
         .mt-notification-main { display: grid; gap: 4px; min-width: 0; padding-right: 4px; }
         .mt-notification-eyebrow { display: flex; align-items: center; justify-content: space-between; min-height: 13px; color: #aeb7c6; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
         .mt-notification-eyebrow small { color: #9298a5; font-size: 10px; font-weight: 400; letter-spacing: 0; }
         .mt-notification-info { display: inline-grid; width: 13px; height: 13px; margin-left: 6px; place-items: center; border: 1px solid #67d69a; border-radius: 50%; color: #67d69a; font-size: 9px; letter-spacing: 0; }
         .mt-notification-content { display: block; min-width: 0; padding: 0; border: 0; background: transparent; color: #f6f6f7; text-align: left; cursor: pointer; }
-        .mt-notification-summary { font-size: 14px; line-height: 1.4; font-weight: 700; }
+        .mt-notification-summary { font-size: 14px; line-height: 1.25; font-weight: 700; }
         .mt-notification-time { color: #9298a5; font-size: 11px; }
-        .mt-notification-unread-dot { position: absolute; top: 22px; right: 19px; width: 7px; height: 7px; border-radius: 50%; background: #ed0011; }
-        .mt-notification-row-actions { display: flex; gap: 12px; }
-        .mt-notification-row-actions button { padding: 0; border: 0; background: transparent; color: #a6a6ad; font-size: 11px; font-weight: 700; cursor: pointer; }
-        .mt-notification-row-actions button:hover { color: #fff; }
-        .mt-notification-row-actions button:disabled { opacity: .5; cursor: wait; }
+        .mt-notification-menu-wrap { position: relative; justify-self: end; }
+        .mt-notification-menu-trigger { display: grid; width: 28px; height: 28px; margin-top: 8px; padding: 0; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #9298a5; cursor: pointer; }
+        .mt-notification-menu-trigger:hover, .mt-notification-menu-trigger[aria-expanded="true"] { background: #29292d; color: #fff; }
+        .mt-notification-menu-trigger:disabled { opacity: .5; cursor: wait; }
+        .mt-notification-menu { position: absolute; z-index: 2; top: 38px; right: 0; min-width: 132px; padding: 4px; border: 1px solid #3b3b41; border-radius: 8px; background: #202024; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+        .mt-notification-menu button { display: block; width: 100%; padding: 9px 10px; border: 0; border-radius: 5px; background: transparent; color: #f4f4f6; text-align: left; font-size: 12px; cursor: pointer; }
+        .mt-notification-menu button:hover { background: #34343a; }
+        .mt-notification-menu button:disabled { opacity: .5; cursor: wait; }
         .mt-notification-primary { justify-self: start; min-height: 30px; margin-top: 2px; padding: 5px 12px; border: 1px solid #ed0011; border-radius: 5px; background: #ed0011; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
         .mt-notification-primary:hover { background: #c90812; }
         .mt-notification-state { margin: 0; padding: 44px 20px; color: #b8b8bf; text-align: center; font-size: 14px; }
@@ -459,7 +480,7 @@ export function NotificationInbox() {
         .mt-notification-more { display: block; width: calc(100% - 32px); margin: 12px 16px 16px; padding: 10px; border: 1px solid #55555a; border-radius: 5px; background: #202024; color: #f4f4f6; font-weight: 700; cursor: pointer; }
         .mt-notification-more:hover { background: #303035; }
         .mt-notification-more:disabled { opacity: .6; cursor: wait; }
-        .mt-notification-trigger:focus-visible, .mt-notification-action:focus-visible, .mt-notification-close:focus-visible, .mt-notification-content:focus-visible, .mt-notification-primary:focus-visible, .mt-notification-dismiss:focus-visible, .mt-notification-more:focus-visible { outline: 2px solid #2585df; outline-offset: 2px; }
+        .mt-notification-trigger:focus-visible, .mt-notification-action:focus-visible, .mt-notification-close:focus-visible, .mt-notification-content:focus-visible, .mt-notification-primary:focus-visible, .mt-notification-menu-trigger:focus-visible, .mt-notification-menu button:focus-visible, .mt-notification-more:focus-visible { outline: 2px solid #2585df; outline-offset: 2px; }
         @media (max-width: 768px) { .mt-notification-panel { position: fixed; top: 64px; right: 12px; left: 12px; width: auto; max-height: calc(100vh - 76px); } .mt-notification-list { max-height: calc(100vh - 136px); } }
       `}</style>
     </div>
