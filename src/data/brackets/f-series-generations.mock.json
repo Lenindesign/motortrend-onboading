@@ -59,7 +59,7 @@
   "tieBreakRule": "higher-seed-advances",
   "reminderChannels": ["email", "onsite"],
   "generations": [
-    { "id": "generation-1", "seed": 1, "generation": 1, "years": "1948–1952", "name": "F-1 era" },
+    { "id": "generation-1", "seed": 1, "generation": 1, "years": "1948–1952", "name": "F-1 era", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Ford_F1_Pick-Up_%281948%29.JPG/1280px-Ford_F1_Pick-Up_%281948%29.JPG", "imageAlt": "Restored 1948 Ford F-1 pickup", "imageLicense": "CC0 1.0", "imageLicenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/", "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Ford_F1_Pick-Up_(1948).JPG" },
     { "id": "generation-2", "seed": 2, "generation": 2, "years": "1953–1956", "name": "F-100 era" },
     { "id": "generation-3", "seed": 3, "generation": 3, "years": "1957–1960", "name": "Styleside era", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/1957_Ford_F-100_%2810984759036%29.jpg/960px-1957_Ford_F-100_%2810984759036%29.jpg", "imageAlt": "1957 Ford F-100", "imageCredit": "John Lloyd", "imageLicense": "CC BY 2.0", "imageLicenseUrl": "https://creativecommons.org/licenses/by/2.0/", "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:1957_Ford_F-100_(10984759036).jpg" },
     { "id": "generation-4", "seed": 4, "generation": 4, "years": "1961–1966", "name": "Unibody era", "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/1963_Ford_F-100.jpg/960px-1963_Ford_F-100.jpg", "imageAlt": "1963 Ford F-100", "imageCredit": "AutoPhoto", "imageLicense": "CC BY 3.0", "imageLicenseUrl": "https://creativecommons.org/licenses/by/3.0/", "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:1963_Ford_F-100.jpg" },
