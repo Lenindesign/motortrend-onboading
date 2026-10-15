@@ -394,21 +394,23 @@ export function NotificationInbox() {
             return <article className={`mt-notification-item${isRead(item) ? '' : ' is-unread'}`} key={item.id}>
               <span className={`mt-notification-avatar${thumbnail ? ' has-thumbnail' : ''}`} aria-hidden="true"><img src={thumbnail || '/images/mt-brand-icon.svg'} alt="" onError={(event) => { event.currentTarget.src = '/images/mt-brand-icon.svg'; event.currentTarget.parentElement?.classList.remove('has-thumbnail'); }} /></span>
               <div className="mt-notification-main">
-                <div className="mt-notification-eyebrow"><span>{notificationTypeLabel(item.kind)}</span></div>
+                <div className="mt-notification-eyebrow">
+                  <span>{notificationTypeLabel(item.kind)}</span>
+                  <div className="mt-notification-menu-wrap">
+                    <button type="button" className="mt-notification-menu-trigger" aria-label="Notification options" aria-haspopup="menu" aria-expanded={menuItemId === item.id} disabled={busyIds.has(item.id)} onClick={() => setMenuItemId((current) => current === item.id ? null : item.id)}>
+                      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><circle cx="3" cy="9" r="1.5" /><circle cx="9" cy="9" r="1.5" /><circle cx="15" cy="9" r="1.5" /></svg>
+                    </button>
+                    {menuItemId === item.id && <div className="mt-notification-menu" role="menu">
+                      {!isRead(item) && <button type="button" role="menuitem" disabled={busyIds.has(item.id)} onClick={() => { setMenuItemId(null); void markRead(item); }}>Mark read</button>}
+                      <button type="button" role="menuitem" disabled={busyIds.has(item.id)} onClick={() => { setMenuItemId(null); void dismiss(item); }}>Delete</button>
+                    </div>}
+                  </div>
+                </div>
                 <button type="button" className="mt-notification-content" onClick={() => void openItem(item)}>
                   <span className="mt-notification-summary">{item.body || 'You have a new notification.'}</span>
                 </button>
                 <small className="mt-notification-time">{relativeTime(timestamp)}</small>
                 {label && <button type="button" className="mt-notification-primary" onClick={() => void openItem(item)}>{label}</button>}
-              </div>
-              <div className="mt-notification-menu-wrap">
-                <button type="button" className="mt-notification-menu-trigger" aria-label="Notification options" aria-haspopup="menu" aria-expanded={menuItemId === item.id} disabled={busyIds.has(item.id)} onClick={() => setMenuItemId((current) => current === item.id ? null : item.id)}>
-                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><circle cx="3" cy="9" r="1.5" /><circle cx="9" cy="9" r="1.5" /><circle cx="15" cy="9" r="1.5" /></svg>
-                </button>
-                {menuItemId === item.id && <div className="mt-notification-menu" role="menu">
-                  {!isRead(item) && <button type="button" role="menuitem" disabled={busyIds.has(item.id)} onClick={() => { setMenuItemId(null); void markRead(item); }}>Mark read</button>}
-                  <button type="button" role="menuitem" disabled={busyIds.has(item.id)} onClick={() => { setMenuItemId(null); void dismiss(item); }}>Delete</button>
-                </div>}
               </div>
             </article>;
           })}
@@ -450,26 +452,26 @@ export function NotificationInbox() {
         .mt-notification-close { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; color: #d0d0d4; }
         .mt-notification-close:hover { background: #29292d; color: #fff; }
         .mt-notification-list { max-height: min(560px, calc(100vh - 148px)); overflow-y: auto; }
-        .mt-notification-item { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr) 24px; align-items: start; gap: 10px; padding: 15px 22px 15px 20px; border-bottom: 1px solid #303034; background: #232327; }
+        .mt-notification-item { position: relative; display: grid; grid-template-columns: clamp(64px, 21%, 80px) minmax(0, 1fr); align-items: start; gap: 16px; padding: 15px 22px 15px 20px; border-bottom: 1px solid #303034; background: #232327; }
         .mt-notification-item.is-unread { background: #141416; }
         .mt-notification-item:not(.is-unread):hover { background: #2b2b30; }
         .mt-notification-item.is-unread:hover { background: #202024; }
-        .mt-notification-avatar { display: grid; width: 64px; height: 64px; margin-top: 20px; place-items: center; border-radius: 50%; background: #ed0011; }
+        .mt-notification-avatar { display: grid; width: 64px; height: 64px; margin-top: 10px; place-items: center; border-radius: 50%; background: #ed0011; }
         .mt-notification-avatar img { display: block; width: 22px; height: auto; filter: brightness(0) invert(1); }
-        .mt-notification-avatar.has-thumbnail { overflow: hidden; border-radius: 6px; background: #29292d; }
+        .mt-notification-avatar.has-thumbnail { width: 100%; height: auto; min-height: 64px; align-self: stretch; overflow: hidden; border-radius: 6px; background: #29292d; }
         .mt-notification-avatar.has-thumbnail img { width: 100%; height: 100%; object-fit: cover; filter: none; }
-        .mt-notification-main { display: grid; gap: 4px; min-width: 0; padding-right: 4px; }
-        .mt-notification-eyebrow { display: flex; align-items: center; justify-content: space-between; min-height: 13px; color: #aeb7c6; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
+        .mt-notification-main { display: grid; gap: 2px; min-width: 0; padding-right: 4px; }
+        .mt-notification-eyebrow { display: flex; align-items: center; justify-content: space-between; min-height: 16px; color: #aeb7c6; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
         .mt-notification-eyebrow small { color: #9298a5; font-size: 10px; font-weight: 400; letter-spacing: 0; }
         .mt-notification-info { display: inline-grid; width: 13px; height: 13px; margin-left: 6px; place-items: center; border: 1px solid #67d69a; border-radius: 50%; color: #67d69a; font-size: 9px; letter-spacing: 0; }
         .mt-notification-content { display: block; min-width: 0; padding: 0; border: 0; background: transparent; color: #f6f6f7; text-align: left; cursor: pointer; }
         .mt-notification-summary { font-size: 14px; line-height: 1.25; font-weight: 700; }
         .mt-notification-time { color: #9298a5; font-size: 11px; }
-        .mt-notification-menu-wrap { position: relative; justify-self: end; }
-        .mt-notification-menu-trigger { display: grid; width: 28px; height: 28px; margin-top: 8px; padding: 0; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #9298a5; cursor: pointer; }
+        .mt-notification-menu-wrap { position: relative; flex: 0 0 auto; width: 28px; height: 16px; margin-right: -10px; }
+        .mt-notification-menu-trigger { position: absolute; top: -6px; right: 0; display: grid; width: 28px; height: 28px; padding: 0; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #9298a5; cursor: pointer; }
         .mt-notification-menu-trigger:hover, .mt-notification-menu-trigger[aria-expanded="true"] { background: #29292d; color: #fff; }
         .mt-notification-menu-trigger:disabled { opacity: .5; cursor: wait; }
-        .mt-notification-menu { position: absolute; z-index: 2; top: 38px; right: 0; min-width: 132px; padding: 4px; border: 1px solid #3b3b41; border-radius: 8px; background: #202024; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+        .mt-notification-menu { position: absolute; z-index: 2; top: 26px; right: 0; min-width: 132px; padding: 4px; border: 1px solid #3b3b41; border-radius: 8px; background: #202024; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
         .mt-notification-menu button { display: block; width: 100%; padding: 9px 10px; border: 0; border-radius: 5px; background: transparent; color: #f4f4f6; text-align: left; font-size: 12px; cursor: pointer; }
         .mt-notification-menu button:hover { background: #34343a; }
         .mt-notification-menu button:disabled { opacity: .5; cursor: wait; }

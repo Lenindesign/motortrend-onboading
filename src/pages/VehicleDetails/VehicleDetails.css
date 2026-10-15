@@ -643,6 +643,10 @@
   scroll-margin-top: 110px;
 }
 
+.vehicle-details__qa-anchor {
+  scroll-margin-top: 110px;
+}
+
 /* Title Section */
 .vehicle-details__title-section {
   margin-bottom: var(--spacing-3);

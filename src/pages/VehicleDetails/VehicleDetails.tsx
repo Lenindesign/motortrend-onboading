@@ -5,7 +5,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
-import { CaretDown, Chat, CheckSquare, Square } from '@phosphor-icons/react';
+import { CaretDown, ChatCircle, CheckSquare, Square } from '@phosphor-icons/react';
 import Icon from '../../components/Icon';
 import { UserReviews } from '../../components/UserReviews';
 import { AIInsights } from '../../components/AIInsights';
@@ -78,7 +78,6 @@ export const VehicleDetails: React.FC = () => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentGalleryImages, setCurrentGalleryImages] = useState<string[]>([]);
-  const [isQAModalOpen, setIsQAModalOpen] = useState(false);
   const [vehicleQAQuestions, setVehicleQAQuestions] = useState<QAItem[]>([]);
 
   // Google One Tap for high-intent MMP page
@@ -1098,6 +1097,14 @@ export const VehicleDetails: React.FC = () => {
     handleScrollToCommunityRatings();
   };
 
+  const handleVehicleQALinkClick = () => {
+    const qaSection = document.getElementById('vehicle-qa');
+    if (qaSection) {
+      window.history.pushState(null, '', '#vehicle-qa');
+      qaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   useEffect(() => {
     const seedQuestions: QAItem[] = [
       {
@@ -1337,15 +1344,15 @@ export const VehicleDetails: React.FC = () => {
                       onClick={handleCommentsLinkClick}
                       aria-label={`Jump to ${vehicleCommentCount} vehicle comments`}
                     >
-                      <Chat size={20} weight="regular" aria-hidden="true" />
+                      <ChatCircle size={20} weight="regular" aria-hidden="true" />
                       <span>Comments</span>
                       <span className="vehicle-details__comments-count">{vehicleCommentCount}</span>
                     </a>
                     <button
                       type="button"
                       className="vehicle-details__comments-link vehicle-details__qa-link"
-                      onClick={() => setIsQAModalOpen(true)}
-                      aria-label={`Open vehicle Q&A with ${vehicleQAQuestions.length} questions`}
+                      onClick={handleVehicleQALinkClick}
+                      aria-label={`Jump to vehicle Q&A with ${vehicleQAQuestions.length} questions`}
                     >
                       <Icon name="question_answer" size={20} />
                       <span>Q&amp;A</span>
@@ -1989,6 +1996,22 @@ export const VehicleDetails: React.FC = () => {
             <PollOfTheDay variant="horizontal" />
           </div>
 
+          <div id="vehicle-qa" className="vehicle-details__qa-anchor">
+            <QAModal
+              inline
+              isOpen
+              onClose={() => {}}
+              articleTitle={vehicleName}
+              articleSlug={vehicleQASlug}
+              vehicleName={vehicleName}
+              questions={vehicleQAQuestions}
+              onSubmitQuestion={handleVehicleQASubmitQuestion}
+              onSubmitAnswer={handleVehicleQASubmitAnswer}
+              onUpvoteQuestion={handleVehicleQAUpvoteQuestion}
+              onUpvoteAnswer={handleVehicleQAUpvoteAnswer}
+            />
+          </div>
+
           {/* User Reviews */}
           <div id="community-ratings" className="vehicle-details__community-ratings-anchor">
             <UserReviews
@@ -2266,19 +2289,6 @@ export const VehicleDetails: React.FC = () => {
         onClose={() => setIsPriceAlertsModalOpen(false)}
         vehicleName={vehicleName}
         onSignedUp={() => setIsPriceAlertActive(true)}
-      />
-
-      <QAModal
-        isOpen={isQAModalOpen}
-        onClose={() => setIsQAModalOpen(false)}
-        articleTitle={vehicleName}
-        articleSlug={vehicleQASlug}
-        vehicleName={vehicleName}
-        questions={vehicleQAQuestions}
-        onSubmitQuestion={handleVehicleQASubmitQuestion}
-        onSubmitAnswer={handleVehicleQASubmitAnswer}
-        onUpvoteQuestion={handleVehicleQAUpvoteQuestion}
-        onUpvoteAnswer={handleVehicleQAUpvoteAnswer}
       />
 
       {/* Auth Prompt Modal for unauthenticated users */}

@@ -43,6 +43,7 @@ export interface QAAnswer {
 
 export interface QAModalProps {
   isOpen: boolean;
+  inline?: boolean;
   onClose: () => void;
   articleTitle: string;
   articleSlug: string;
@@ -56,6 +57,7 @@ export interface QAModalProps {
 
 export const QAModal: React.FC<QAModalProps> = ({
   isOpen,
+  inline = false,
   onClose,
   articleTitle,
   articleSlug,
@@ -69,7 +71,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   const instanceId = useId().replace(/:/g, '');
   const titleId = `${instanceId}-title`;
   const questionInputId = `${instanceId}-question-input`;
-  const [activeTab, setActiveTab] = useState<'unanswered' | 'recent'>('recent');
+  const [activeTab, setActiveTab] = useState<'unanswered' | 'recent' | 'answered'>('recent');
   const [newQuestion, setNewQuestion] = useState('');
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState('');
@@ -109,7 +111,7 @@ export const QAModal: React.FC<QAModalProps> = ({
 
   // Move focus into the dialog and return it to the opener when it closes.
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || inline) return;
     previousFocusRef.current = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null;
@@ -119,12 +121,14 @@ export const QAModal: React.FC<QAModalProps> = ({
       window.clearTimeout(focusTimer);
       if (previousFocusRef.current?.isConnected) previousFocusRef.current.focus();
     };
-  }, [isOpen]);
+  }, [isOpen, inline]);
 
   // Sort questions based on active tab
   const questionsForTab = activeTab === 'unanswered'
     ? questions.filter((question) => question.answers.length === 0)
-    : questions;
+    : activeTab === 'answered'
+      ? questions.filter((question) => question.answers.length > 0)
+      : questions;
   const sortedQuestions = [...questionsForTab].sort((a, b) => {
     if (activeTab === 'recent') return new Date(b.date).getTime() - new Date(a.date).getTime();
     if (activeTab === 'unanswered') return a.answers.length - b.answers.length;
@@ -439,26 +443,19 @@ export const QAModal: React.FC<QAModalProps> = ({
     color: 'var(--color-neutrals-2, #23262F)',
   };
 
-  return (
-    <ModalShell
-      isOpen={isOpen}
-      onClose={onClose}
-      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : 'min(720px, calc(100vw - 32px))'}
-      maxWidth={isExpanded ? '1100px' : '720px'}
-      maxHeight={isExpanded ? 'calc(100vh - 32px)' : '86vh'}
-      ariaLabelledBy={titleId}
-      className="qa-modal__panel"
-      style={isExpanded ? { height: 'calc(100vh - 32px)' } : undefined}
-    >
+  if (!isOpen && !inline) return null;
+
+  const content = (
+    <>
       {/* Header */}
       <div className="qa-modal__header" style={headerStyle}>
         <div style={titleRowStyle}>
           <h2 id={titleId} className="qa-modal__title" style={titleStyle}>
-            <ChatCircle size={24} weight="regular" color="var(--color-primary-1)" />
-            Q&A
-            <span style={countBadgeStyle}>{questions.length}</span>
+            {!inline && <ChatCircle size={24} weight="regular" color="var(--color-primary-1)" />}
+            {inline ? 'Questions & Answers' : 'Q&A'}
+            <span className={inline ? 'qa-modal__inline-count' : undefined} style={countBadgeStyle}>{questions.length}</span>
           </h2>
-          <div className="qa-modal__header-actions">
+          {!inline && <div className="qa-modal__header-actions">
             <button
               type="button"
               className="qa-modal__expand"
@@ -479,7 +476,7 @@ export const QAModal: React.FC<QAModalProps> = ({
             >
               <X size={18} weight="regular" />
             </button>
-          </div>
+          </div>}
         </div>
         <p className="qa-modal__header-subtitle" style={subtitleStyle}>
           Questions and answers about <strong>{vehicleName || articleTitle}</strong>
@@ -525,7 +522,7 @@ export const QAModal: React.FC<QAModalProps> = ({
 
       {/* Tabs */}
       <div className="qa-modal__tabs" style={tabsStyle} role="group" aria-label="Filter questions">
-        {(['recent', 'unanswered'] as const).map((tab) => (
+        {(['recent', 'unanswered', 'answered'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -535,7 +532,7 @@ export const QAModal: React.FC<QAModalProps> = ({
             onMouseEnter={() => setHoveredTab(tab)}
             onMouseLeave={() => setHoveredTab(null)}
           >
-            {tab === 'recent' ? 'Latest questions' : 'Needs an answer'}
+            {tab === 'recent' ? 'Latest questions' : tab === 'unanswered' ? 'Needs an answer' : 'Answered questions'}
           </button>
         ))}
       </div>
@@ -546,12 +543,14 @@ export const QAModal: React.FC<QAModalProps> = ({
           <div style={emptyStyle}>
             <Question size={40} weight="regular" color="var(--color-neutrals-5, #B1B5C3)" style={{ marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
             <p style={{ margin: '0 0 4px', fontWeight: 600, color: 'var(--color-neutrals-2, #23262F)' }}>
-              {activeTab === 'unanswered' ? 'No unanswered questions' : 'No questions yet'}
+              {activeTab === 'unanswered' ? 'No unanswered questions' : activeTab === 'answered' ? 'No answered questions yet' : 'No questions yet'}
             </p>
             <p style={{ margin: 0 }}>
               {activeTab === 'unanswered'
                 ? 'You’re all caught up.'
-                : `Be the first to ask about this ${vehicleName ? 'vehicle' : 'article'}!`}
+                : activeTab === 'answered'
+                  ? 'Answers to community questions will appear here.'
+                  : `Be the first to ask about this ${vehicleName ? 'vehicle' : 'article'}!`}
             </p>
           </div>
         ) : (
@@ -680,6 +679,23 @@ export const QAModal: React.FC<QAModalProps> = ({
         )}
       </div>
 
+    </>
+  );
+
+  if (inline) return <section className="qa-modal__inline">{content}</section>;
+
+  return (
+    <ModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      width={isExpanded ? 'min(1100px, calc(100vw - 32px))' : 'min(720px, calc(100vw - 32px))'}
+      maxWidth={isExpanded ? '1100px' : '720px'}
+      maxHeight={isExpanded ? 'calc(100vh - 32px)' : '86vh'}
+      ariaLabelledBy={titleId}
+      className="qa-modal__panel"
+      style={isExpanded ? { height: 'calc(100vh - 32px)' } : undefined}
+    >
+      {content}
     </ModalShell>
   );
 };
