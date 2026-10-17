@@ -18,7 +18,7 @@ type Round = {
   id: string;
   number: number;
   label: string;
-  status: string;
+  status?: string;
   byes?: string[];
   matchups?: Matchup[];
 };

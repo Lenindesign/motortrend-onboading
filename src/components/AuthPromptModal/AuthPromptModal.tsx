@@ -22,6 +22,8 @@ interface AuthPromptModalProps {
   title?: string;
   /** Custom description override */
   description?: string;
+  /** Custom supporting copy (the line under the title) override */
+  supportingCopy?: string;
   /** Optional vehicle name (e.g. for bookmark action) */
   vehicleName?: string;
   /** Optional vehicle image URL (shown when provided) */
@@ -85,6 +87,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   action = 'default',
   title: customTitle,
   description: customDescription,
+  supportingCopy: customSupportingCopy,
   vehicleName,
   vehicleImageUrl,
   contextId,
@@ -93,7 +96,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
   const location = useLocation();
   const content = actionContent[action];
   const title = customTitle || content.title;
-  const supportingCopy = content.supportingCopy;
+  const supportingCopy = customSupportingCopy || content.supportingCopy;
   const description = customDescription ?? content.description;
   const primaryButtonText = content.primaryButtonText ?? 'Sign In / Sign Up';
   const descriptionLines = description.split('\n').filter(Boolean);

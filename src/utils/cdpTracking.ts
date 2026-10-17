@@ -70,6 +70,8 @@ export interface CDPEvent {
   };
   email?: string;
   reason?: string;
+  /** Event-specific details, e.g. which bracket matchup was voted on. */
+  properties?: Record<string, string | number | boolean>;
   timestamp: string;
   sessionId?: string;
   deviceInfo?: {
