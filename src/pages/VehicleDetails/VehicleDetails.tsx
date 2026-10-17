@@ -29,7 +29,7 @@ import StickyRateBar, { type RatingItem } from '../../components/StickyRateBar';
 import { Popover } from '../../components/atoms/Popover';
 import { LocalListingsSidebar, type LocalListing } from '../../components/LocalListingsSidebar';
 import { PollOfTheDay } from '../../components/PollOfTheDay/PollOfTheDay';
-import { BracketVoting } from '../../components/BracketVoting/BracketVoting';
+import { BracketVotingV2 } from '../../components/BracketVotingV2/BracketVotingV2';
 import { VehicleContributionPrompts } from '../../components/VehicleContributionPrompts/VehicleContributionPrompts';
 import { VehicleRankingModule } from '../../components/VehicleRankingModule/VehicleRankingModule';
 import { getLocalListings } from '../../utils/localListings';
@@ -1990,11 +1990,7 @@ export const VehicleDetails: React.FC = () => {
             </div>
           )}
 
-          <BracketVoting />
-
-          <div className="vehicle-details__content-poll">
-            <PollOfTheDay variant="horizontal" />
-          </div>
+          <BracketVotingV2 />
 
           <div id="vehicle-qa" className="vehicle-details__qa-anchor">
             <QAModal
@@ -2037,6 +2033,11 @@ export const VehicleDetails: React.FC = () => {
 
           {/* AI Insights */}
           <AIInsights vehicleName={vehicleName} />
+
+          {/* Kept apart from the bracket so two voting modules aren't stacked. */}
+          <div className="vehicle-details__content-poll">
+            <PollOfTheDay variant="horizontal" />
+          </div>
 
           {/* Trims and Pricing */}
           <div className="vehicle-details__trims">
