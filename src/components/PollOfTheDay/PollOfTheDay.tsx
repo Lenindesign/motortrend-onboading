@@ -185,15 +185,17 @@ export const PollOfTheDay: React.FC<PollOfTheDayProps> = ({
               {index === 1 && <span className="poll-matchup__versus" aria-hidden="true"><span>VS</span></span>}
               <label
                 className={`poll-matchup__contender ${index === 1 ? 'poll-matchup__contender--right' : ''} ${!showPhotos ? 'poll-matchup__contender--text-only' : ''} ${isSelected ? 'is-selected' : ''}`}
-                style={{ '--poll-result': `${percentage}%` } as React.CSSProperties}
               >
-                {showPhotos && <img className="poll-matchup__image" src={option.image} alt={option.imageAlt} loading="lazy" />}
-                {showPhotos && <span className="poll-matchup__shade" aria-hidden="true" />}
-                <span className="poll-matchup__vehicle-name">
-                  <span className="poll-matchup__make">{option.make}</span>
-                  <span className="poll-matchup__model">{option.model}</span>
+                <span className="poll-matchup__photo">
+                  {showPhotos && <img className="poll-matchup__image" src={option.image} alt={option.imageAlt} loading="lazy" />}
+                  {showPhotos && <span className="poll-matchup__shade" aria-hidden="true" />}
+                  <span className="poll-matchup__vehicle-name">
+                    <span className="poll-matchup__make">{option.make}</span>
+                    <span className="poll-matchup__model">{option.model}</span>
+                  </span>
+                  {isSelected && <span className="poll-matchup__pick">✓ Your pick</span>}
+                  {!visibleSelectedOption && <span className="poll-matchup__action" aria-hidden="true">Vote {option.model}</span>}
                 </span>
-                <span className="poll-matchup__result-fill" aria-hidden="true" />
                 <input
                   type="radio"
                   name={`${instanceId}-motortrend-poll-vote`}
@@ -203,12 +205,17 @@ export const PollOfTheDay: React.FC<PollOfTheDayProps> = ({
                   onChange={() => handleVote(option.id)}
                   aria-label={`${option.make} ${option.model}${visibleSelectedOption ? `, ${percentage}% of votes${isSelected ? ', your choice' : ''}` : ', vote for this vehicle'}`}
                 />
-                <span className="poll-matchup__action" aria-hidden="true">
-                  <span className="poll-matchup__action-cta cta cta--secondary cta--default cta--full-width">
-                    <span className="poll-matchup__vote-action">Vote {option.model}</span>
-                    <span className="poll-matchup__result-action">{option.model}<b>{percentage}%</b></span>
+                {visibleSelectedOption && (
+                  <span className="poll-matchup__result" aria-hidden="true">
+                    <span className="poll-matchup__result-track">
+                      <span className="poll-matchup__result-fill" style={{ width: `${percentage}%` }} />
+                    </span>
+                    <span className="poll-matchup__result-row">
+                      <strong>{percentage}%</strong>
+                      <small>{(votes[option.id] || 0).toLocaleString()} votes</small>
+                    </span>
                   </span>
-                </span>
+                )}
               </label>
             </React.Fragment>
           );

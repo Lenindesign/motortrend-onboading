@@ -71,7 +71,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   const instanceId = useId().replace(/:/g, '');
   const titleId = `${instanceId}-title`;
   const questionInputId = `${instanceId}-question-input`;
-  const [activeTab, setActiveTab] = useState<'unanswered' | 'answered'>('unanswered');
+  const [activeTab, setActiveTab] = useState<'unanswered' | 'answered'>('answered');
   const [newQuestion, setNewQuestion] = useState('');
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const [answerText, setAnswerText] = useState('');
@@ -518,7 +518,7 @@ export const QAModal: React.FC<QAModalProps> = ({
 
       {/* Tabs */}
       <div className="qa-modal__tabs" style={tabsStyle} role="group" aria-label="Filter questions">
-        {(['unanswered', 'answered'] as const).map((tab) => (
+        {(['answered', 'unanswered'] as const).map((tab) => (
           <button
             key={tab}
             type="button"

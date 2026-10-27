@@ -345,6 +345,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const researchVehiclesNavRef = useRef<HTMLDivElement>(null);
   const rankingsAwardsNavRef = useRef<HTMLDivElement>(null);
   const buySellNavRef = useRef<HTMLDivElement>(null);
+  const [isMainNavOpen, setIsMainNavOpen] = useState(true);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -1170,34 +1171,48 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   };
 
   const contentStyle: React.CSSProperties = {
-    maxWidth: '1280px',
+    maxWidth: '1048px',
     width: '100%',
     margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
     gap: 0,
     padding: isLargeScreen ? '0' : (isMobile ? '0 12px' : '0 24px'),
-    minHeight: isMobile ? '56px' : '120px'
+    minHeight: isMobile ? '56px' : (isMainNavOpen ? '106px' : '66px')
   };
 
   const topRowStyle: React.CSSProperties = {
     display: 'grid',
-    gridTemplateColumns: isMobile ? 'auto minmax(0, 1fr) auto' : 'auto 1fr auto',
+    gridTemplateColumns: '1fr auto',
     alignItems: 'center',
     columnGap: isMobile ? '8px' : '0',
     rowGap: 'var(--spacing-3, 24px)',
-    paddingTop: isMobile ? '8px' : '16px',
-    paddingBottom: isMobile ? '8px' : '16px',
+    paddingTop: isMobile ? '8px' : '12px',
+    paddingBottom: isMobile ? '8px' : '12px',
     paddingLeft: 0,
     paddingRight: 0,
-    minHeight: isMobile ? '56px' : '80px'
+    minHeight: isMobile ? '56px' : '66px'
   };
 
   const leftSectionStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: isMobile ? '8px' : 'var(--spacing-3, 24px)',
+    gap: isMobile ? '8px' : '24px',
     flexShrink: 0
+  };
+
+  const menuButtonStyle: React.CSSProperties = {
+    width: isMobile ? '32px' : '24px',
+    height: isMobile ? '32px' : '32px',
+    padding: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    color: 'var(--color-white, #FFFFFF)',
+    background: 'transparent',
+    border: 0,
+    cursor: 'pointer'
   };
 
   const logoLinkStyle: React.CSSProperties = {
@@ -1209,24 +1224,25 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const logoStyle: React.CSSProperties = {
     height: isMobile ? '26px' : '36px',
     width: 'auto',
-    maxWidth: isMobile ? '112px' : '249px',
+    maxWidth: isMobile ? '112px' : '165px',
     objectFit: 'contain'
   };
 
   const rightSectionStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'flex-end',
     gap: isMobile ? '8px' : '16px',
     paddingRight: isLargeScreen ? 0 : undefined
   };
 
   const searchContainerStyle: React.CSSProperties = {
     position: 'relative',
-    width: isMobile ? '100%' : '600px',
-    maxWidth: isMobile ? '100%' : '600px',
+    width: isMobile ? '100%' : '490px',
+    maxWidth: isMobile ? '100%' : '490px',
     margin: '0 auto',
     flexShrink: isMobile ? 1 : 0,
-    minWidth: isMobile ? 0 : '600px'
+    minWidth: 0
   };
 
   const searchBoxStyle: React.CSSProperties = {
@@ -1500,6 +1516,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
         {/* Top Row: Logo, Search, Actions */}
         <div style={topRowStyle}>
           <div style={leftSectionStyle}>
+            <button
+              type="button"
+              style={menuButtonStyle}
+              aria-label={isMainNavOpen ? 'Hide main navigation' : 'Show main navigation'}
+              aria-expanded={isMainNavOpen}
+              aria-controls="global-main-navigation"
+              onClick={() => setIsMainNavOpen((open) => !open)}
+            >
+              <Icon name="menu" size={24} />
+            </button>
             <Link to="/" style={logoLinkStyle}>
               <img
                 src={motorTrendLogo}
@@ -1509,9 +1535,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             </Link>
           </div>
 
-          {/* Search and Sign In */}
-          <div style={rightSectionStyle}>
-          <div style={searchContainerStyle} ref={searchRef}>
+          <div style={{ ...searchContainerStyle, display: 'none' }} ref={searchRef}>
             <form style={searchBoxStyle} onSubmit={handleSearchSubmit} onMouseDown={handleSearchBoxMouseDown}>
               <Icon name="auto_awesome" size={16} style={searchSparkleStyle} />
               <input
@@ -3005,6 +3029,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
             )}
           </div>
 
+          {/* Account and site actions */}
+          <div style={rightSectionStyle}>
+
           {/* Subscribe Button - Only show if user is not authenticated */}
           {!isAuthenticated && (
             <button
@@ -3154,16 +3181,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
         {/* Bottom Row: Navigation Categories */}
         <nav style={{
-          display: isMobile ? 'none' : 'flex',
+          display: isMainNavOpen ? 'flex' : 'none',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          gap: 'var(--spacing-4, 32px)',
-          padding: isLargeScreen ? '12px 0' : '12px 0',
+          gap: isMobile ? '12px 20px' : '28px',
+          padding: isMobile ? '8px 0 12px' : '10px 0',
           borderTop: '1px solid rgba(255, 255, 255, 0.1)',
           width: '100%',
-          flexWrap: 'wrap',
+          flexWrap: isMobile ? 'wrap' : 'nowrap',
           position: 'relative'
-        }} ref={navMenuRef}>
+        }} ref={navMenuRef} id="global-main-navigation">
           {navigationItems.map((item) => {
             const isActive = isSectionActive(item);
             const isHovered = hoveredNavItem === item.label || activeDropdown === item.label;
@@ -3179,8 +3206,8 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
               gap: '4px',
               fontFamily: "'Geist', var(--font-body, sans-serif)",
               fontWeight: 400,
-              fontSize: '16px',
-              lineHeight: '24px',
+              fontSize: '14px',
+              lineHeight: '20px',
               letterSpacing: '-0.16px',
               color: isActive || isHovered ? 'var(--color-white, #FFFFFF)' : 'var(--color-neutrals-6, #E6E8EC)',
               textDecoration: 'none',

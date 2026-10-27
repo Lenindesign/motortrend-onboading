@@ -49,7 +49,6 @@ const storageKey = `motortrend-bracket-v2:${bracket.id}`;
 const simulatedDateKey = `motortrend-bracket-sim-date:${bracket.id}`;
 const pendingReminderKey = `motortrend-bracket-pending-reminder:${bracket.id}`;
 const reminderVisitKey = `motortrend-bracket-reminder-visit:${bracket.id}`;
-const generationById = new Map(bracket.generations.map((generation) => [generation.id, generation]));
 const emptyState: LocalState = { picks: {}, localVotes: {}, reminders: {}, returnTracked: {} };
 
 const formatVotes = (value: number) => new Intl.NumberFormat('en-US').format(value);
@@ -364,8 +363,6 @@ export const BracketVotingV2: React.FC = () => {
     };
   }), [now, counts]);
 
-  const byeGenerations = (openRound?.byes ?? []).map((id) => generationById.get(id)?.generation).filter(Boolean);
-
   const nextStep = (round: Round) => {
     const following = bracket.rounds.find((candidate) => candidate.number === round.number + 1);
     return following
@@ -418,7 +415,7 @@ export const BracketVotingV2: React.FC = () => {
       </div>
       <h2 id={`${uid}-title`} className="bv2__title">{bracket.title}</h2>
       {view !== 'strip' && (
-        <p className="bv2__intro">Fourteen generations, one champion.{phase.kind !== 'complete' && ' A new round opens every Monday.'}</p>
+        <p className="bv2__intro">America’s best-selling truck for 49 consecutive years. Vote through 14 generations and choose your champion.</p>
       )}
 
       <div className="bv2__progress" aria-label="Bracket progress">
@@ -474,10 +471,6 @@ export const BracketVotingV2: React.FC = () => {
               })}
             </div>
           </div>
-          {byeGenerations.length > 0 && index === 0 && !revealed && (
-            <p className="bv2__note">Generations {byeGenerations.join(' and ')} earned byes into the quarterfinals.</p>
-          )}
-
           <div className="bv2__h2h">
             {[current.first, current.second].map((generation, optionIndex) => {
               const mine = selected === generation.id;
@@ -496,7 +489,11 @@ export const BracketVotingV2: React.FC = () => {
                 >
                   <span className="bv2__photo">
                     {renderPhoto(generation)}
-                    {!revealed && <span className="bv2__vote-cta">Vote</span>}
+                    <span className="bv2__photo-copy" aria-hidden="true">
+                      <span>Ford</span>
+                      <strong>Generation {generation.generation}</strong>
+                    </span>
+                    {!revealed && <span className="bv2__vote-cta">Vote Generation {generation.generation}</span>}
                     {mine && (
                       <span className="bv2__mine">
                         <Check size={12} weight="bold" aria-hidden="true" />
@@ -505,11 +502,7 @@ export const BracketVotingV2: React.FC = () => {
                     )}
                   </span>
                   <span className="bv2__body">
-                    <span className="bv2__name-row">
-                      <strong className="bv2__name">Generation {generation.generation}</strong>
-                      <span className="bv2__years">{generation.years}</span>
-                    </span>
-                    <span className="bv2__era">{generation.name}</span>
+                    <span className="bv2__years">{generation.years}</span>
                     {generation.fact && <span className="bv2__fact">{generation.fact}</span>}
                     <span className={`bv2__result ${revealed ? 'is-visible' : ''}`} aria-hidden={!revealed}>
                       <span className="bv2__track">
@@ -524,7 +517,7 @@ export const BracketVotingV2: React.FC = () => {
                 </button>
               );
             })}
-            <span className="bv2__vs" aria-hidden="true">VS</span>
+            <span className="bv2__vs" aria-hidden="true"><span>VS</span></span>
           </div>
 
           <div className="bv2__status" aria-live="polite">
