@@ -451,8 +451,9 @@ export const BracketVotingV2: React.FC = () => {
       {openRound && view === 'voting' && current && outcome && (
         <div className="bv2__voting">
           <div className="bv2__match-meta">
-            <span className="bv2__match-label">{openRound.label} · Matchup {index + 1} of {matchups.length}</span>
-            <div className="bv2__dots" role="group" aria-label="Jump to a matchup">
+            <div className="bv2__match-heading">
+              <span className="bv2__match-label">{openRound.label} · Matchup {index + 1} of {matchups.length}</span>
+              <div className="bv2__dots" role="group" aria-label="Jump to a matchup">
               {matchups.map(({ config }, dotIndex) => {
                 const done = Boolean(local.picks[config.id]);
                 const isCurrent = dotIndex === index;
@@ -469,6 +470,7 @@ export const BracketVotingV2: React.FC = () => {
                   </button>
                 );
               })}
+              </div>
             </div>
           </div>
           <div className="bv2__h2h">
