@@ -27,11 +27,16 @@
 
 .qa-modal__inline-count {
   min-width: 22px !important;
-  height: var(--spacing-component-lg, 24px) !important;
+  height: var(--spacing-component-xl, 24px) !important;
   padding: 0 var(--spacing-component-sm, 8px) !important;
   border-radius: var(--border-radius-pill, 999px) !important;
   background: var(--color-neutrals-6, #E6E8EC) !important;
-  font-size: 12px !important;
+  color: var(--color-neutrals-2, #23262F) !important;
+  -webkit-text-fill-color: var(--color-neutrals-2, #23262F) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  flex: 0 0 auto;
 }
 
 .qa-modal__inline .qa-modal__ask {
@@ -56,9 +61,10 @@
 
 .qa-modal__inline .qa-modal__questions-list {
   box-sizing: border-box;
-  min-height: calc(var(--spacing-6, 48px) * 5);
+  min-height: 0;
   max-height: none !important;
   overflow: visible;
+  padding-bottom: 8px !important;
 }
 
 .qa-modal__title {
@@ -213,12 +219,51 @@
   color: var(--color-neutrals-3) !important;
 }
 
+.qa-modal__vote-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 40px;
+  gap: 0;
+}
+
+.qa-modal__vote-control .qa-modal__vote {
+  width: var(--spacing-4, 32px) !important;
+  min-width: var(--spacing-4, 32px) !important;
+  min-height: 22px !important;
+  padding: var(--spacing-component-xs, 4px) !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.qa-modal__vote-control .qa-modal__vote:hover:not(:disabled) {
+  color: var(--color-primary-1, #E90C17) !important;
+  background: var(--color-neutrals-7, #F4F5F6) !important;
+}
+
+.qa-modal__vote-control .qa-modal__vote.is-voted:disabled {
+  color: var(--color-primary-1, #E90C17) !important;
+  background: var(--color-semantic-error-light) !important;
+}
+
+.qa-modal__vote-control .qa-modal__vote:disabled:not(.is-voted) {
+  color: var(--color-neutrals-5, #B1B5C3) !important;
+  background: transparent !important;
+}
+
+.qa-modal__vote-count {
+  color: var(--color-neutrals-3, #353945);
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 18px;
+}
+
 .qa-modal__vote:hover:not(:disabled) {
   border-color: var(--color-neutrals-4) !important;
   background: var(--color-neutrals-8) !important;
 }
 
-.qa-modal__vote:disabled {
+.qa-modal__vote.is-voted:disabled {
   border-color: var(--color-semantic-error-light) !important;
   background: var(--color-semantic-error-light) !important;
   color: var(--color-primary-1) !important;

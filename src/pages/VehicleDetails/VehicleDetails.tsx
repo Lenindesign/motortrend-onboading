@@ -1215,6 +1215,12 @@ export const VehicleDetails: React.FC = () => {
       : item));
   };
 
+  const handleVehicleQADownvoteQuestion = (questionId: string) => {
+    saveVehicleQAQuestions((current) => current.map((item) => item.id === questionId
+      ? { ...item, downvotes: (item.downvotes || 0) + 1 }
+      : item));
+  };
+
   const handleVehicleQAUpvoteAnswer = (questionId: string, answerId: string) => {
     saveVehicleQAQuestions((current) => current.map((question) => question.id === questionId
       ? { ...question, answers: question.answers.map((answer) => answer.id === answerId ? { ...answer, upvotes: answer.upvotes + 1 } : answer) }
@@ -1605,7 +1611,6 @@ export const VehicleDetails: React.FC = () => {
           <div className="vehicle-details__below-content-main">
           <VehicleContributionPrompts
             vehicleName={vehicleName}
-            vehicleUrl={`/vehicles/${encodeURIComponent(decodedYear)}/${encodeURIComponent(decodedMake)}/${encodeURIComponent(decodedModel)}`}
             relationship={vehicleRelationship}
             onRelationshipChange={(next) => handleVehicleRelationship(vehicleRelationship === next ? null : next)}
             showRepurchase={false}
@@ -1823,7 +1828,6 @@ export const VehicleDetails: React.FC = () => {
 
           <VehicleContributionPrompts
             vehicleName={vehicleName}
-            vehicleUrl={`/vehicles/${encodeURIComponent(decodedYear)}/${encodeURIComponent(decodedMake)}/${encodeURIComponent(decodedModel)}`}
             relationship={vehicleRelationship}
             repurchaseEligible={vehicleRelationship === 'own' || userRating > 0 || Boolean(user && reviews.some((review) => review.reviewerName === user.displayName))}
             reliabilityEligible={vehicleRelationship === 'own'}
@@ -2004,6 +2008,7 @@ export const VehicleDetails: React.FC = () => {
               onSubmitQuestion={handleVehicleQASubmitQuestion}
               onSubmitAnswer={handleVehicleQASubmitAnswer}
               onUpvoteQuestion={handleVehicleQAUpvoteQuestion}
+              onDownvoteQuestion={handleVehicleQADownvoteQuestion}
               onUpvoteAnswer={handleVehicleQAUpvoteAnswer}
             />
           </div>

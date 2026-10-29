@@ -646,6 +646,12 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
     );
   };
 
+  const handleDownvoteQuestion = (questionId: string) => {
+    setQaQuestions(prev =>
+      prev.map(q => q.id === questionId ? { ...q, downvotes: (q.downvotes || 0) + 1 } : q)
+    );
+  };
+
   const handleUpvoteAnswer = (questionId: string, answerId: string) => {
     setQaQuestions(prev =>
       prev.map(q =>
@@ -2264,6 +2270,7 @@ const ArticleTemplate: React.FC<{ liveArticle?: ArticleData; liveSourceUrl?: str
         onSubmitQuestion={handleSubmitQuestion}
         onSubmitAnswer={handleSubmitAnswer}
         onUpvoteQuestion={handleUpvoteQuestion}
+        onDownvoteQuestion={handleDownvoteQuestion}
         onUpvoteAnswer={handleUpvoteAnswer}
       />
     </div>

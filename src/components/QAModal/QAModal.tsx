@@ -6,6 +6,7 @@
 import React, { useState, useRef, useEffect, useId } from 'react';
 import {
   ArrowUp,
+  ArrowDown,
   ArrowsIn,
   ArrowsOut,
   CaretDown,
@@ -27,6 +28,7 @@ export interface QAItem {
   authorAvatar?: string;
   date: string;
   upvotes: number;
+  downvotes?: number;
   answers: QAAnswer[];
   isEditorPick?: boolean;
 }
@@ -52,6 +54,7 @@ export interface QAModalProps {
   onSubmitQuestion: (question: string) => void;
   onSubmitAnswer: (questionId: string, answer: string) => void;
   onUpvoteQuestion: (questionId: string) => void;
+  onDownvoteQuestion: (questionId: string) => void;
   onUpvoteAnswer: (questionId: string, answerId: string) => void;
 }
 
@@ -66,6 +69,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   onSubmitQuestion,
   onSubmitAnswer,
   onUpvoteQuestion,
+  onDownvoteQuestion,
   onUpvoteAnswer,
 }) => {
   const instanceId = useId().replace(/:/g, '');
@@ -79,9 +83,9 @@ export const QAModal: React.FC<QAModalProps> = ({
   const questionInputRef = useRef<HTMLTextAreaElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const [submitMessage, setSubmitMessage] = useState('');
-  const [hoveredUpvote, setHoveredUpvote] = useState<string | null>(null);
+  const [hoveredVote, setHoveredVote] = useState<string | null>(null);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
-  const [votedIds, setVotedIds] = useState<string[]>([]);
+  const [votedIds, setVotedIds] = useState<Record<string, 'up' | 'down'>>({});
   const [isExpanded, setIsExpanded] = useState(false);
 
   const votedStorageKey = `qa-votes:${articleSlug}`;
@@ -89,17 +93,21 @@ export const QAModal: React.FC<QAModalProps> = ({
   useEffect(() => {
     try {
       const savedVotes = localStorage.getItem(votedStorageKey);
-      setVotedIds(savedVotes ? JSON.parse(savedVotes) : []);
+      const parsedVotes = savedVotes ? JSON.parse(savedVotes) : [];
+      // Migrate the previous array format, where every stored question vote was an upvote.
+      setVotedIds(Array.isArray(parsedVotes)
+        ? Object.fromEntries(parsedVotes.map((id: string) => [id, 'up']))
+        : parsedVotes);
     } catch {
-      setVotedIds([]);
+      setVotedIds({});
     }
   }, [votedStorageKey]);
 
-  const hasVoted = (id: string) => votedIds.includes(id);
+  const hasVoted = (id: string) => Boolean(votedIds[id]);
 
-  const recordVote = (id: string, callback: () => void) => {
+  const recordVote = (id: string, direction: 'up' | 'down', callback: () => void) => {
     if (hasVoted(id)) return;
-    const nextVotes = [...votedIds, id];
+    const nextVotes = { ...votedIds, [id]: direction };
     setVotedIds(nextVotes);
     try {
       localStorage.setItem(votedStorageKey, JSON.stringify(nextVotes));
@@ -262,7 +270,7 @@ export const QAModal: React.FC<QAModalProps> = ({
   });
 
   const questionsListStyle: React.CSSProperties = {
-    padding: '0 28px 20px',
+    padding: inline ? '0 28px 8px' : '0 28px 20px',
     maxHeight: '440px',
     overflowY: 'auto',
   };
@@ -278,20 +286,20 @@ export const QAModal: React.FC<QAModalProps> = ({
     alignItems: 'flex-start',
   };
 
-  const upvoteBtnStyle = (id: string, count: number, voted = false): React.CSSProperties => ({
+  const voteBtnStyle = (id: string, direction: 'up' | 'down', voted = false): React.CSSProperties => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     gap: '2px',
     padding: '6px 8px',
-    background: voted ? 'rgba(233, 12, 23, 0.08)' : hoveredUpvote === id ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
+    background: voted ? (votedIds[id] === direction ? 'rgba(233, 12, 23, 0.08)' : 'var(--color-neutrals-7, #F4F5F6)') : hoveredVote === `${id}-${direction}` ? 'var(--color-neutrals-7, #F4F5F6)' : 'none',
     border: '1px solid var(--color-neutrals-6, #E6E8EC)',
     borderRadius: 'var(--border-radius-sm, 4px)',
     cursor: voted ? 'default' : 'pointer',
     transition: 'all 150ms ease',
     minWidth: '40px',
-    minHeight: '44px',
-    color: count > 0 ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)',
+    minHeight: '22px',
+    color: votedIds[id] === direction ? 'var(--color-primary-1, #E90C17)' : 'var(--color-neutrals-4, #6E7481)',
     flexShrink: 0,
   });
 
@@ -435,7 +443,8 @@ export const QAModal: React.FC<QAModalProps> = ({
     backgroundColor: 'var(--color-neutrals-6, #E6E8EC)',
     borderRadius: '12px',
     fontSize: '12px',
-    fontWeight: 600,
+    lineHeight: 1,
+    fontWeight: 700,
     color: 'var(--color-neutrals-2, #23262F)',
   };
 
@@ -449,7 +458,7 @@ export const QAModal: React.FC<QAModalProps> = ({
           <h2 id={titleId} className="qa-modal__title" style={titleStyle}>
             {!inline && <ChatCircle size={24} weight="regular" color="var(--color-primary-1)" />}
             {inline ? 'Questions & Answers' : 'Q&A'}
-            <span className={inline ? 'qa-modal__inline-count' : undefined} style={countBadgeStyle}>{questions.length}</span>
+            <span className={inline ? 'qa-modal__inline-count' : undefined} style={countBadgeStyle} aria-label={`${questions.length} questions`} title={`${questions.length} questions`}>{questions.length}</span>
           </h2>
           {!inline && <div className="qa-modal__header-actions">
             <button
@@ -553,20 +562,33 @@ export const QAModal: React.FC<QAModalProps> = ({
           sortedQuestions.map((q) => (
             <div key={q.id} className="qa-modal__question" style={questionCardStyle}>
               <div className="qa-modal__question-row" style={questionHeaderStyle}>
-                {/* Upvote */}
+                <div className="qa-modal__vote-control" aria-label={`Vote on question: ${q.question}`}>
                   <button
                     type="button"
-                    className="qa-modal__vote"
-                    style={upvoteBtnStyle(q.id, q.upvotes, hasVoted(q.id))}
-                    onClick={() => recordVote(q.id, () => onUpvoteQuestion(q.id))}
+                    className={`qa-modal__vote${votedIds[q.id] === 'up' ? ' is-voted' : ''}`}
+                    style={voteBtnStyle(q.id, 'up', hasVoted(q.id))}
+                    onClick={() => recordVote(q.id, 'up', () => onUpvoteQuestion(q.id))}
                     disabled={hasVoted(q.id)}
-                    aria-label={hasVoted(q.id) ? `You upvoted: ${q.question}` : `Upvote question: ${q.question}`}
-                  onMouseEnter={() => setHoveredUpvote(q.id)}
-                  onMouseLeave={() => setHoveredUpvote(null)}
-                >
-                  <ArrowUp size={14} weight="regular" />
-                  <span style={{ fontSize: '12px', fontWeight: 600 }}>{q.upvotes}</span>
-                </button>
+                    aria-label={votedIds[q.id] === 'up' ? `You upvoted: ${q.question}` : `Upvote question: ${q.question}`}
+                    onMouseEnter={() => setHoveredVote(`${q.id}-up`)}
+                    onMouseLeave={() => setHoveredVote(null)}
+                  >
+                    <ArrowUp size={14} weight="regular" />
+                  </button>
+                  <span className="qa-modal__vote-count" aria-label={`${q.upvotes - (q.downvotes || 0)} net votes`}>{q.upvotes - (q.downvotes || 0)}</span>
+                  <button
+                    type="button"
+                    className={`qa-modal__vote${votedIds[q.id] === 'down' ? ' is-voted' : ''}`}
+                    style={voteBtnStyle(q.id, 'down', hasVoted(q.id))}
+                    onClick={() => recordVote(q.id, 'down', () => onDownvoteQuestion(q.id))}
+                    disabled={hasVoted(q.id)}
+                    aria-label={votedIds[q.id] === 'down' ? `You downvoted: ${q.question}` : `Downvote question: ${q.question}`}
+                    onMouseEnter={() => setHoveredVote(`${q.id}-down`)}
+                    onMouseLeave={() => setHoveredVote(null)}
+                  >
+                    <ArrowDown size={14} weight="regular" />
+                  </button>
+                </div>
 
                 {/* Question Content */}
                 <div className="qa-modal__question-content" style={{ flex: 1 }}>
@@ -622,19 +644,20 @@ export const QAModal: React.FC<QAModalProps> = ({
                             <p style={answerTextStyle}>{answer.text}</p>
                             <button
                               type="button"
+                              className={`qa-modal__vote${votedIds[`answer-${answer.id}`] === 'up' ? ' is-voted' : ''}`}
                               style={{ 
-                                ...upvoteBtnStyle(`answer-${answer.id}`, answer.upvotes, hasVoted(`answer-${answer.id}`)),
+                                ...voteBtnStyle(`answer-${answer.id}`, 'up', hasVoted(`answer-${answer.id}`)),
                                 flexDirection: 'row',
                                 padding: '4px 8px',
                                 gap: '4px',
                                 minWidth: 'auto',
                                 marginTop: '4px',
                               }}
-                              onClick={() => recordVote(`answer-${answer.id}`, () => onUpvoteAnswer(q.id, answer.id))}
+                              onClick={() => recordVote(`answer-${answer.id}`, 'up', () => onUpvoteAnswer(q.id, answer.id))}
                               disabled={hasVoted(`answer-${answer.id}`)}
                               aria-label={hasVoted(`answer-${answer.id}`) ? `You liked this answer by ${answer.author}` : `Like answer by ${answer.author}`}
-                              onMouseEnter={() => setHoveredUpvote(`answer-${answer.id}`)}
-                              onMouseLeave={() => setHoveredUpvote(null)}
+                              onMouseEnter={() => setHoveredVote(`answer-${answer.id}-up`)}
+                              onMouseLeave={() => setHoveredVote(null)}
                             >
                               <ThumbsUp size={12} weight="regular" />
                               <span style={{ fontSize: '11px', fontWeight: 600 }}>{answer.upvotes}</span>

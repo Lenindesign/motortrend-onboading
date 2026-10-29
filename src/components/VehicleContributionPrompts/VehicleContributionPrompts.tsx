@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AuthPromptModal } from '../AuthPromptModal';
 import { useAuth } from '../../contexts/AuthContext';
 import { useAuthPrompt } from '../../hooks/useAuthPrompt';
+import { Button, CardShell } from '../../design-system/components';
 
 type Relationship = 'own' | 'want' | null;
 type Props = {
   vehicleName: string;
-  vehicleUrl: string;
   relationship: Relationship;
   repurchaseEligible?: boolean;
   reliabilityEligible?: boolean;
@@ -20,7 +20,7 @@ const answerKey = (vehicle: string) => `vehicle-contribution-answers:${vehicle}`
 const promptKey = (vehicle: string) => `vehicle-contribution-prompts:${vehicle}`;
 const seedCounts = { repurchase: { yes: 18, no: 4 }, reliability: { yes: 22, no: 3 } };
 
-export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehicleUrl, relationship, repurchaseEligible = relationship === 'own', reliabilityEligible = relationship === 'own', onRelationshipChange, showRelationship = true, showRepurchase = true, showReliability = true }) => {
+export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relationship, repurchaseEligible = relationship === 'own', reliabilityEligible = relationship === 'own', onRelationshipChange, showRelationship = true, showRepurchase = true, showReliability = true }) => {
   const { isAuthenticated } = useAuth();
   const { isAuthPromptOpen, promptAction, requireAuth, closeAuthPrompt } = useAuthPrompt();
   const authRedirectInProgress = useRef(false);
@@ -31,8 +31,8 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
     } catch { return null; }
   });
   const [answers, setAnswers] = useState<Answers>({});
-  const [submittedQuestion, setSubmittedQuestion] = useState(false);
   const [question, setQuestion] = useState('');
+  const [submittedQuestion, setSubmittedQuestion] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const normalized = vehicleName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
@@ -69,8 +69,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
   };
 
   const askQuestion = () => {
-    if (!requireAuth('comment')) return;
-    if (question.trim().length < 8) return;
+    if (!requireAuth('comment') || question.trim().length < 8) return;
     try {
       const current = JSON.parse(localStorage.getItem(promptKey(normalized)) || '[]') as string[];
       localStorage.setItem(promptKey(normalized), JSON.stringify([...current, question.trim()]));
@@ -97,27 +96,82 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
   const hasCommunityPrompts = (repurchaseEligible && showRepurchase) || (reliabilityEligible && showReliability);
 
   const renderPrompt = (type: 'repurchase' | 'reliability', title: string) => {
-    const { total, yesPercent } = result(type);
+    const { counts, total, yesPercent } = result(type);
     const answer = answers[type];
+    const repurchase = type === 'repurchase';
+    const yesLabel = repurchase ? 'Yes, I would' : 'Yes';
+    const noLabel = repurchase ? 'No, I wouldn’t' : 'No';
     return (
-      <div className="vehicle-contributions__prompt" id={`vehicle-prompt-${type}`} key={type}>
-        <div><strong>{title}</strong><span>Quick community question</span></div>
-        {answer ? (
-          <div className="vehicle-contributions__results" role="status">
-            {total >= 10 ? <>
-              <span>{yesPercent}% Yes</span><span>{100 - yesPercent}% No</span>
-              <small>{total} responses · Your answer: {answer}</small>
-              <div className="vehicle-contributions__bar"><i style={{ width: `${yesPercent}%` }} /></div>
-            </> : <small>Your answer is saved. Results appear after 10 responses.</small>}
-          </div>
-        ) : (
-          <div className="vehicle-contributions__answer-actions">
-            <button type="button" onClick={() => submitAnswer(type, 'yes')}>Yes</button>
-            <button type="button" onClick={() => submitAnswer(type, 'no')}>No</button>
+      <CardShell
+        className={`vehicle-contributions__prompt ${repurchase ? 'vehicle-contributions__prompt--primary' : 'vehicle-contributions__prompt--secondary'}`}
+        hasHover={false}
+        background="var(--color-white)"
+        padding="lg"
+        noGap
+        style={{ gap: 'var(--spacing-3)' }}
+      >
+        <div className="vehicle-contributions__prompt-heading">
+          <span className="vehicle-contributions__prompt-eyebrow">{repurchase ? 'Owner sentiment · sample data' : 'Owner reliability · sample data'}</span>
+          <h2 id={`vehicle-prompt-${type}`}>{repurchase ? 'Would you buy this car again?' : title}</h2>
+          {answer ? (
+            <p className="vehicle-contributions__prompt-summary">
+              <strong>{yesPercent}%</strong>
+              <span>{repurchase ? `of ${vehicleName} sample owners say they would buy it again` : 'of sample owners say this vehicle has been reliable'}</span>
+            </p>
+          ) : (
+            <p className="vehicle-contributions__prompt-summary">{repurchase ? 'Vote to see how owners answered.' : 'Share what ownership has been like for you.'}</p>
+          )}
+        </div>
+
+        {answer && (
+          <div className="vehicle-contributions__results">
+            <div className="vehicle-contributions__result-labels" aria-hidden="true">
+              <span>Yes {yesPercent}%</span><span>No {100 - yesPercent}%</span>
+            </div>
+            <div
+              className="vehicle-contributions__bar"
+              role="img"
+              aria-label={repurchase
+                ? `${yesPercent}% of sample owners would buy this vehicle again; ${100 - yesPercent}% would not`
+                : `${yesPercent}% of sample owners say this vehicle has been reliable; ${100 - yesPercent}% say it has not`}
+            >
+              <i style={{ width: `${yesPercent}%` }} />
+            </div>
+            <div className="vehicle-contributions__result-counts">
+              <span>{repurchase ? `${counts.yes} would buy again · ${counts.no} would not` : `${counts.yes} say reliable · ${counts.no} say not`}</span>
+              <span>Based on {total} sample responses</span>
+            </div>
           </div>
         )}
-        <a className="vehicle-contributions__email-preview" href={`${vehicleUrl}?communityPrompt=${type}#vehicle-prompt-${type}`}>Email CTA preview ↗</a>
-      </div>
+
+        <div className="vehicle-contributions__vote-row">
+          {answer ? (
+            <p className="vehicle-contributions__confirmation" role="status">
+              Your response is saved: {answer === 'yes' ? yesLabel : noLabel}.
+            </p>
+          ) : (
+            <>
+              <p>{repurchase ? 'Have you owned this vehicle?' : 'Sign in to confirm ownership and answer.'}</p>
+              <div className="vehicle-contributions__answer-actions">
+                <Button color="primary" variant="outline" size="default" onClick={() => submitAnswer(type, 'yes')}>{yesLabel}</Button>
+                <Button color="neutrals3" variant="outline" size="default" onClick={() => submitAnswer(type, 'no')}>{noLabel}</Button>
+              </div>
+            </>
+          )}
+        </div>
+
+        {!repurchase && isAuthenticated && (
+          submittedQuestion ? (
+            <p className="vehicle-contributions__confirmation" role="status">Thanks. Your detail was submitted for review.</p>
+          ) : (
+            <div className="vehicle-contributions__question-form">
+              <label htmlFor="vehicle-reliability-question">What should future owners know?</label>
+              <textarea id="vehicle-reliability-question" value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={500} placeholder="Share a detail about your ownership experience" />
+              <Button color="neutrals3" variant="outline" size="default" onClick={askQuestion} disabled={question.trim().length < 8}>Share a detail</Button>
+            </div>
+          )
+        )}
+      </CardShell>
     );
   };
 
@@ -125,7 +179,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
     <>
       {(showRelationship || hasCommunityPrompts || confirmation) && (
         <section
-          className="vehicle-contributions"
+          className={`vehicle-contributions ${showRelationship ? '' : 'vehicle-contributions--prompts'}`}
           aria-labelledby={showRelationship ? 'vehicle-contributions-title' : undefined}
           aria-label={showRelationship ? undefined : `${vehicleName} vehicle prompts`}
         >
@@ -166,25 +220,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, vehic
           {hasCommunityPrompts && (
             <>
               {repurchaseEligible && showRepurchase && renderPrompt('repurchase', 'Would you buy this car again?')}
-              {reliabilityEligible && showReliability && (
-                <div className="vehicle-contributions__exploratory">
-                  <span>Exploratory · reliability prompt · signed-in profile ownership required</span>
-                  {!isAuthenticated ? (
-                    <p>Sign in to confirm profile ownership before answering. Verification is simulated in this prototype.</p>
-                  ) : (
-                    <>
-                      {renderPrompt('reliability', 'Has this car been reliable for you?')}
-                      <label htmlFor="vehicle-reliability-question">Share a reliability detail for the community Q&amp;A</label>
-                      {submittedQuestion ? <p className="vehicle-contributions__confirmation" role="status">Submitted for moderation. This won’t appear publicly until reviewed.</p> : (
-                        <div className="vehicle-contributions__question-form">
-                          <textarea id="vehicle-reliability-question" value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={500} placeholder="What should future owners know?" />
-                          <button type="button" onClick={askQuestion} disabled={question.trim().length < 8}>Submit for review</button>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
+              {reliabilityEligible && showReliability && renderPrompt('reliability', 'Has this car been reliable for you?')}
             </>
           )}
         </section>
