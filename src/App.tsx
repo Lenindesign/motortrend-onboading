@@ -31,7 +31,7 @@ import Videos from './pages/Videos';
 import Community from './pages/Community';
 import RankingsAndAwards from './pages/RankingsAndAwards';
 import RankingCategoryPage from './pages/RankingsAndAwards/RankingCategoryPage';
-import { EmailPreviewPage, RateYourCarEmailPreview } from './pages/EmailPreviewPage';
+import { ActivityDigestEmailPreview, EmailPreviewPage, RateYourCarEmailPreview } from './pages/EmailPreviewPage';
 import Documentation from './pages/Documentation';
 import { BentleyShowcase } from './pages/BentleyShowcase';
 import OnboardingDocumentation from './pages/OnboardingDocumentation';
@@ -143,6 +143,7 @@ function App() {
               
               {/* Email Preview Page (for CDP/personalization demo) */}
               <Route path="/email-preview" element={<EmailPreviewPage />} />
+              <Route path="/email-preview/activity-digest" element={<ActivityDigestEmailPreview />} />
               <Route path="/email-preview/rate-your-car" element={<RateYourCarEmailPreview />} />
               <Route path="/email-preview/rate-your-car/:variantSlug" element={<RateYourCarEmailPreview />} />
               
