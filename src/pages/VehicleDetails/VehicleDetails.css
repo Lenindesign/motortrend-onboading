@@ -1619,7 +1619,11 @@
 }
 .vehicle-contributions__prompt { display: grid; gap: var(--spacing-3); }
 .vehicle-contributions__prompt-heading { display: grid; gap: var(--spacing-1); }
+.vehicle-contributions__prompt-header { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-2); }
 .vehicle-contributions__prompt-eyebrow { color: var(--color-neutrals-4); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); letter-spacing: .04em; text-transform: uppercase; }
+.vehicle-contributions__reset-vote { flex: 0 0 auto; padding: 4px 8px; border: 1px solid var(--color-neutrals-6); border-radius: var(--border-radius-sm); background: var(--color-white); color: var(--color-neutrals-3); font: var(--font-weight-medium) var(--font-size-xs) var(--font-heading); cursor: pointer; }
+.vehicle-contributions__reset-vote:hover { border-color: var(--color-neutrals-4); color: var(--color-neutrals-1); }
+.vehicle-contributions__reset-vote:focus-visible { outline: 2px solid var(--color-primary-1); outline-offset: 2px; }
 .vehicle-contributions__prompt h2 { color: var(--color-neutrals-1); font: var(--font-weight-semibold) var(--font-size-xl)/1.2 var(--font-heading); }
 .vehicle-contributions__prompt-summary { display: flex; align-items: baseline; gap: var(--spacing-1); color: var(--color-neutrals-3); font-size: var(--font-size-md); line-height: 1.4; }
 .vehicle-contributions__prompt-summary strong { color: var(--color-primary-1); font-size: var(--font-size-xl); line-height: 1; font-weight: var(--font-weight-bold); }

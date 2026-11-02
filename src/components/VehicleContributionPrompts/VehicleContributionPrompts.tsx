@@ -68,6 +68,16 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
     try { localStorage.setItem(answerKey(normalized), JSON.stringify(next)); } catch { /* in-memory demo still works */ }
   };
 
+  const resetAnswer = (type: 'repurchase' | 'reliability') => {
+    const next = { ...answers };
+    delete next[type];
+    setAnswers(next);
+    try {
+      if (Object.keys(next).length === 0) localStorage.removeItem(answerKey(normalized));
+      else localStorage.setItem(answerKey(normalized), JSON.stringify(next));
+    } catch { /* in-memory demo still works */ }
+  };
+
   const askQuestion = () => {
     if (!requireAuth('comment') || question.trim().length < 8) return;
     try {
@@ -111,12 +121,25 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
         style={{ gap: 'var(--spacing-3)' }}
       >
         <div className="vehicle-contributions__prompt-heading">
-          <span className="vehicle-contributions__prompt-eyebrow">{repurchase ? 'Owner sentiment · sample data' : 'Owner reliability · sample data'}</span>
-          <h2 id={`vehicle-prompt-${type}`}>{repurchase ? 'Would you buy this car again?' : title}</h2>
+          <div className="vehicle-contributions__prompt-header">
+            <span className="vehicle-contributions__prompt-eyebrow">{repurchase ? 'Owner sentiment · sample data' : 'Owner reliability · sample data'}</span>
+            {answer && (
+              <button
+                type="button"
+                className="vehicle-contributions__reset-vote"
+                aria-label={`Reset ${repurchase ? 'recommendation' : 'reliability'} vote for testing`}
+                title="Reset this vote for testing"
+                onClick={() => resetAnswer(type)}
+              >
+                Reset vote
+              </button>
+            )}
+          </div>
+          <h2 id={`vehicle-prompt-${type}`}>{repurchase ? 'Would you recommend this car?' : title}</h2>
           {answer ? (
             <p className="vehicle-contributions__prompt-summary">
               <strong>{yesPercent}%</strong>
-              <span>{repurchase ? `of ${vehicleName} sample owners say they would buy it again` : 'of sample owners say this vehicle has been reliable'}</span>
+              <span>{repurchase ? `of ${vehicleName} sample owners would recommend it` : 'of sample owners say this vehicle has been reliable'}</span>
             </p>
           ) : (
             <p className="vehicle-contributions__prompt-summary">{repurchase ? 'Vote to see how owners answered.' : 'Share what ownership has been like for you.'}</p>
@@ -132,13 +155,13 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
               className="vehicle-contributions__bar"
               role="img"
               aria-label={repurchase
-                ? `${yesPercent}% of sample owners would buy this vehicle again; ${100 - yesPercent}% would not`
+                ? `${yesPercent}% of sample owners would recommend this vehicle; ${100 - yesPercent}% would not`
                 : `${yesPercent}% of sample owners say this vehicle has been reliable; ${100 - yesPercent}% say it has not`}
             >
               <i style={{ width: `${yesPercent}%` }} />
             </div>
             <div className="vehicle-contributions__result-counts">
-              <span>{repurchase ? `${counts.yes} would buy again · ${counts.no} would not` : `${counts.yes} say reliable · ${counts.no} say not`}</span>
+              <span>{repurchase ? `${counts.yes} would recommend · ${counts.no} would not` : `${counts.yes} say reliable · ${counts.no} say not`}</span>
               <span>Based on {total} sample responses</span>
             </div>
           </div>
@@ -146,8 +169,8 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
 
         <div className="vehicle-contributions__vote-row">
           {answer ? (
-            <p className="vehicle-contributions__confirmation" role="status">
-              Your response is saved: {answer === 'yes' ? yesLabel : noLabel}.
+            <p className="vehicle-contributions__vote-status" role="status" aria-live="polite">
+              Thanks for voting. {answer === 'yes' ? 'You’d recommend this car.' : 'You wouldn’t recommend this car.'}
             </p>
           ) : (
             <>
@@ -219,7 +242,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
           {confirmation && <p className="vehicle-contributions__confirmation" role="status">Added to your profile vehicle list. You can update this choice anytime.</p>}
           {hasCommunityPrompts && (
             <>
-              {repurchaseEligible && showRepurchase && renderPrompt('repurchase', 'Would you buy this car again?')}
+              {repurchaseEligible && showRepurchase && renderPrompt('repurchase', 'Would you recommend this car?')}
               {reliabilityEligible && showReliability && renderPrompt('reliability', 'Has this car been reliable for you?')}
             </>
           )}

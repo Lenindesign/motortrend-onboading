@@ -96,7 +96,7 @@ export const VehicleDetails: React.FC = () => {
 
   // Auth prompt for unauthenticated user actions
   const { isAuthPromptOpen, promptAction, closeAuthPrompt, requireAuth } = useAuthPrompt();
-  const { user, isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
   // Load API vehicle data synchronously on initial render to prevent rating flash
   // This ensures we have the correct rating (from API) immediately, not a generated one
@@ -1829,7 +1829,7 @@ export const VehicleDetails: React.FC = () => {
           <VehicleContributionPrompts
             vehicleName={vehicleName}
             relationship={vehicleRelationship}
-            repurchaseEligible={vehicleRelationship === 'own' || userRating > 0 || Boolean(user && reviews.some((review) => review.reviewerName === user.displayName))}
+            repurchaseEligible
             reliabilityEligible={vehicleRelationship === 'own'}
             onRelationshipChange={(next) => handleVehicleRelationship(vehicleRelationship === next ? null : next)}
             showRelationship={false}
