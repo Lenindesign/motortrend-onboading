@@ -18,7 +18,7 @@ type Props = {
 type Answers = Record<string, 'yes' | 'no'>;
 const answerKey = (vehicle: string) => `vehicle-contribution-answers:${vehicle}`;
 const promptKey = (vehicle: string) => `vehicle-contribution-prompts:${vehicle}`;
-const seedCounts = { repurchase: { yes: 18, no: 4 }, reliability: { yes: 22, no: 3 } };
+const seedCounts = { repurchase: { yes: 19, no: 4 }, reliability: { yes: 22, no: 3 } };
 
 export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relationship, repurchaseEligible = relationship === 'own', reliabilityEligible = relationship === 'own', onRelationshipChange, showRelationship = true, showRepurchase = true, showReliability = true }) => {
   const { isAuthenticated } = useAuth();
@@ -98,7 +98,9 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
 
   const result = (type: 'repurchase' | 'reliability') => {
     const counts = { ...seedCounts[type] };
-    const current = answers[type];
+    // Recommendation responses are collected by email; the page only displays
+    // the aggregate and must not add a local browser vote to the results.
+    const current = type === 'repurchase' ? undefined : answers[type];
     if (current) counts[current] += 1;
     const total = counts.yes + counts.no;
     return { counts, total, yesPercent: Math.round(counts.yes / total * 100) };
@@ -109,8 +111,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
     const { counts, total, yesPercent } = result(type);
     const answer = answers[type];
     const repurchase = type === 'repurchase';
-    const yesLabel = repurchase ? 'Yes, I would' : 'Yes';
-    const noLabel = repurchase ? 'No, I wouldn’t' : 'No';
+    const showResults = repurchase || Boolean(answer);
     return (
       <CardShell
         className={`vehicle-contributions__prompt ${repurchase ? 'vehicle-contributions__prompt--primary' : 'vehicle-contributions__prompt--secondary'}`}
@@ -123,7 +124,7 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
         <div className="vehicle-contributions__prompt-heading">
           <div className="vehicle-contributions__prompt-header">
             <span className="vehicle-contributions__prompt-eyebrow">{repurchase ? 'Owner sentiment · sample data' : 'Owner reliability · sample data'}</span>
-            {answer && (
+            {!repurchase && answer && (
               <button
                 type="button"
                 className="vehicle-contributions__reset-vote"
@@ -135,18 +136,18 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
               </button>
             )}
           </div>
-          <h2 id={`vehicle-prompt-${type}`}>{repurchase ? 'Would you recommend this car?' : title}</h2>
-          {answer ? (
+          {!repurchase && <h2 id={`vehicle-prompt-${type}`}>{title}</h2>}
+          {showResults ? (
             <p className="vehicle-contributions__prompt-summary">
               <strong>{yesPercent}%</strong>
               <span>{repurchase ? `of ${vehicleName} sample owners would recommend it` : 'of sample owners say this vehicle has been reliable'}</span>
             </p>
           ) : (
-            <p className="vehicle-contributions__prompt-summary">{repurchase ? 'Vote to see how owners answered.' : 'Share what ownership has been like for you.'}</p>
+            <p className="vehicle-contributions__prompt-summary">Share what ownership has been like for you.</p>
           )}
         </div>
 
-        {answer && (
+        {showResults && (
           <div className="vehicle-contributions__results">
             <div className="vehicle-contributions__result-labels" aria-hidden="true">
               <span>Yes {yesPercent}%</span><span>No {100 - yesPercent}%</span>
@@ -167,21 +168,23 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
           </div>
         )}
 
-        <div className="vehicle-contributions__vote-row">
-          {answer ? (
-            <p className="vehicle-contributions__vote-status" role="status" aria-live="polite">
-              Thanks for voting. {answer === 'yes' ? 'You’d recommend this car.' : 'You wouldn’t recommend this car.'}
-            </p>
-          ) : (
-            <>
-              <p>{repurchase ? 'Have you owned this vehicle?' : 'Sign in to confirm ownership and answer.'}</p>
-              <div className="vehicle-contributions__answer-actions">
-                <Button color="primary" variant="outline" size="default" onClick={() => submitAnswer(type, 'yes')}>{yesLabel}</Button>
-                <Button color="neutrals3" variant="outline" size="default" onClick={() => submitAnswer(type, 'no')}>{noLabel}</Button>
-              </div>
-            </>
-          )}
-        </div>
+        {!repurchase && (
+          <div className="vehicle-contributions__vote-row">
+            {answer ? (
+              <p className="vehicle-contributions__vote-status" role="status" aria-live="polite">
+                Thanks for sharing. {answer === 'yes' ? 'You said this car has been reliable.' : 'You said this car has not been reliable.'}
+              </p>
+            ) : (
+              <>
+                <p>Sign in to confirm ownership and answer.</p>
+                <div className="vehicle-contributions__answer-actions">
+                  <Button color="primary" variant="outline" size="default" onClick={() => submitAnswer(type, 'yes')}>Yes</Button>
+                  <Button color="secondary" variant="outline" size="default" onClick={() => submitAnswer(type, 'no')}>No</Button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {!repurchase && isAuthenticated && (
           submittedQuestion ? (
@@ -208,38 +211,50 @@ export const VehicleContributionPrompts: React.FC<Props> = ({ vehicleName, relat
         >
           {showRelationship && (
             <>
-              <span className="vehicle-contributions__eyebrow">Your vehicle list</span>
               <h2 id="vehicle-contributions-title">What’s your relationship to the {vehicleName}?</h2>
-              <p className="vehicle-contributions__description">Choose a list for your profile. You can change this anytime.</p>
-              <div className="vehicle-contributions__relationship" role="group" aria-label={`Choose how the ${vehicleName} fits you`}>
-                <button
-                  type="button"
-                  aria-pressed={relationship === 'own'}
-                  className={relationship === 'own' ? 'is-selected' : ''}
-                  onClick={() => chooseRelationship('own')}
-                >
+              <p id={`vehicle-contributions-description-${normalized}`} className="vehicle-contributions__description">Choose a list for your profile. You can change this anytime.</p>
+              <fieldset className="vehicle-contributions__relationship">
+                <legend className="vehicle-contributions__sr-only">Choose a list for the {vehicleName}</legend>
+                <label className={`vehicle-contributions__choice ${relationship === 'own' ? 'is-selected' : ''}`}>
+                  <input
+                    className="vehicle-contributions__radio-input"
+                    type="radio"
+                    name={`vehicle-relationship-${normalized}`}
+                    value="own"
+                    checked={relationship === 'own'}
+                    aria-describedby={`vehicle-contributions-description-${normalized}`}
+                    onChange={() => chooseRelationship('own')}
+                  />
                   <span className="vehicle-contributions__radio" aria-hidden="true" />
                   <span className="vehicle-contributions__choice-copy">
                     <strong>I own this car</strong>
-                    <small>Add to Cars I Own</small>
+                    <small>Cars I Own</small>
                   </span>
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={relationship === 'want'}
-                  className={relationship === 'want' ? 'is-selected' : ''}
-                  onClick={() => chooseRelationship('want')}
-                >
+                </label>
+                <label className={`vehicle-contributions__choice ${relationship === 'want' ? 'is-selected' : ''}`}>
+                  <input
+                    className="vehicle-contributions__radio-input"
+                    type="radio"
+                    name={`vehicle-relationship-${normalized}`}
+                    value="want"
+                    checked={relationship === 'want'}
+                    aria-describedby={`vehicle-contributions-description-${normalized}`}
+                    onChange={() => chooseRelationship('want')}
+                  />
                   <span className="vehicle-contributions__radio" aria-hidden="true" />
                   <span className="vehicle-contributions__choice-copy">
                     <strong>I’m interested in this car</strong>
-                    <small>Add to Cars I Want</small>
+                    <small>Cars I Want</small>
                   </span>
-                </button>
-              </div>
+                </label>
+              </fieldset>
             </>
           )}
-          {confirmation && <p className="vehicle-contributions__confirmation" role="status">Added to your profile vehicle list. You can update this choice anytime.</p>}
+          {confirmation && relationship && (
+            <p className="vehicle-contributions__confirmation" role="status" aria-live="polite">
+              Added to {relationship === 'own' ? 'Cars I Own' : 'Cars I Want'}. You can switch lists anytime.
+            </p>
+          )}
           {hasCommunityPrompts && (
             <>
               {repurchaseEligible && showRepurchase && renderPrompt('repurchase', 'Would you recommend this car?')}

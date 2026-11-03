@@ -38,6 +38,12 @@ const EMAIL_VARIANTS = {
     label: 'What do you drive? (welcome)',
     description: 'Sent to new accounts with no vehicle on file — CTA deep-links into Add My Car.',
   },
+  priceAlerts: {
+    slug: 'price-alerts',
+    path: '/emails/price-alerts.html',
+    label: 'Price alerts (new deals)',
+    description: 'A deal update digest for vehicles a shopper is watching, with new and changed offers.',
+  },
 } as const;
 
 type Variant = keyof typeof EMAIL_VARIANTS;
@@ -79,6 +85,15 @@ interface MergeTags {
   addCarUrl: string;
   shoppingUrl: string;
   coveredCarImageUrl: string;
+  homeUrl: string;
+  dealsUrl: string;
+  preferencesUrl: string;
+  rav4ImageUrl: string;
+  crvImageUrl: string;
+  cx5ImageUrl: string;
+  rav4Url: string;
+  crvUrl: string;
+  cx5Url: string;
 }
 
 const applyMergeTags = (html: string, tags: MergeTags): string =>
@@ -96,7 +111,16 @@ const applyMergeTags = (html: string, tags: MergeTags): string =>
     .replaceAll('{{unsubscribeUrl}}', tags.unsubscribeUrl)
     .replaceAll('{{addCarUrl}}', tags.addCarUrl)
     .replaceAll('{{shoppingUrl}}', tags.shoppingUrl)
-    .replaceAll('{{coveredCarImageUrl}}', tags.coveredCarImageUrl);
+    .replaceAll('{{coveredCarImageUrl}}', tags.coveredCarImageUrl)
+    .replaceAll('{{homeUrl}}', tags.homeUrl)
+    .replaceAll('{{dealsUrl}}', tags.dealsUrl)
+    .replaceAll('{{preferencesUrl}}', tags.preferencesUrl)
+    .replaceAll('{{rav4ImageUrl}}', tags.rav4ImageUrl)
+    .replaceAll('{{crvImageUrl}}', tags.crvImageUrl)
+    .replaceAll('{{cx5ImageUrl}}', tags.cx5ImageUrl)
+    .replaceAll('{{rav4Url}}', tags.rav4Url)
+    .replaceAll('{{crvUrl}}', tags.crvUrl)
+    .replaceAll('{{cx5Url}}', tags.cx5Url);
 
 const getVehicleName = (v: unknown): string => {
   if (!v || typeof v !== 'object') return '';
@@ -150,6 +174,7 @@ export const RateYourCarEmailPreview: React.FC = () => {
   const tags: MergeTags = useMemo(() => {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     const encodedVehicle = encodeURIComponent(vehicleName).replace(/%20/g, '+');
+    const dealsUrl = `${origin}/deals`;
     // Vehicle-specific variants deep-link to the pre-selected vehicle; generic
     // lands on the "What do you drive?" search step.
     const ratingUrl =
@@ -171,8 +196,22 @@ export const RateYourCarEmailPreview: React.FC = () => {
       addCarUrl: `${origin}/my-account/saved`,
       shoppingUrl: `${origin}/onboarding`,
       coveredCarImageUrl: `${origin}/emails/covered-car.png`,
+      homeUrl: `${origin}/`,
+      dealsUrl,
+      preferencesUrl: `${origin}/my-account/notifications`,
+      rav4ImageUrl: vehicleImageFor('2024 Toyota RAV4 Hybrid'),
+      crvImageUrl: vehicleImageFor('2025 Honda CR-V'),
+      cx5ImageUrl: vehicleImageFor('2026 Mazda CX-5'),
+      rav4Url: `${origin}/vehicles/2024/Toyota/RAV4`,
+      crvUrl: `${origin}/vehicles/2025/Honda/CR-V`,
+      cx5Url: `${origin}/vehicles/2026/Mazda/CX-5`,
     };
   }, [variant, firstName, vehicleName, starsGifUrl]);
+
+  const isPriceAlerts = variant === 'priceAlerts';
+  const previewTitle = isPriceAlerts ? 'Price Alerts — Email Preview' : 'Rate Your Car — Email Preview';
+  const openCtaUrl = isPriceAlerts ? tags.dealsUrl : variant === 'whatDoYouDrive' ? tags.addCarUrl : tags.ratingUrl;
+  const openCtaLabel = isPriceAlerts ? 'Open deals page →' : 'Open CTA link →';
 
   const renderedHtml = useMemo(() => (rawHtml ? applyMergeTags(rawHtml, tags) : ''), [rawHtml, tags]);
 
@@ -202,7 +241,7 @@ export const RateYourCarEmailPreview: React.FC = () => {
   return (
     <div className="email-preview-page">
       <div className="email-preview-page__header">
-        <h1>Rate Your Car — Email Preview</h1>
+        <h1>{previewTitle}</h1>
         <p>
           Live render of <code>{EMAIL_VARIANTS[variant].path}</code> with merge tags replaced. Edit values
           on the left; the iframe updates instantly.
@@ -233,16 +272,16 @@ export const RateYourCarEmailPreview: React.FC = () => {
             <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
           </div>
         )}
-        {variant !== 'generic' && variant !== 'whatDoYouDrive' && (
+        {!isPriceAlerts && variant !== 'generic' && variant !== 'whatDoYouDrive' && (
           <div className="email-preview-page__control-group">
             <label>Vehicle</label>
             <input type="text" value={vehicleName} onChange={(e) => setVehicleName(e.target.value)} />
           </div>
         )}
-        <div className="email-preview-page__control-group">
+        {!isPriceAlerts && <div className="email-preview-page__control-group">
           <label>Stars image / GIF URL</label>
           <input type="text" value={starsGifUrl} onChange={(e) => setStarsGifUrl(e.target.value)} />
-        </div>
+        </div>}
 
         <button
           className="email-preview-page__btn"
@@ -257,12 +296,12 @@ export const RateYourCarEmailPreview: React.FC = () => {
 
         <a
           className="email-preview-page__btn"
-          href={variant === 'whatDoYouDrive' ? tags.addCarUrl : tags.ratingUrl}
+          href={openCtaUrl}
           target="_blank"
           rel="noreferrer"
           style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
         >
-          Open CTA link →
+          {openCtaLabel}
         </a>
       </div>
 
@@ -279,11 +318,11 @@ export const RateYourCarEmailPreview: React.FC = () => {
         {!loadError && (
           <iframe
             ref={iframeRef}
-            title="Rate Your Car email preview"
+            title={isPriceAlerts ? 'MotorTrend price alerts email preview' : 'Rate Your Car email preview'}
             style={{
               width: device === 'desktop' ? 640 : 375,
               maxWidth: '100%',
-              height: 1400,
+              height: isPriceAlerts ? (device === 'desktop' ? 2050 : 2950) : 1400,
               border: '1px solid rgba(0,0,0,0.08)',
               borderRadius: 12,
               background: '#141416',
@@ -295,18 +334,31 @@ export const RateYourCarEmailPreview: React.FC = () => {
       </div>
 
       <div className="email-preview-page__instructions">
-        <h3>Deep-link reference</h3>
-        <ul>
-          <li>
-            <code>?vehicle=Name&amp;rating=80</code> → opens rate page, pre-fills 4 stars, auto-submits after 900ms.
-          </li>
-          <li>
-            <code>?vehicle=Name&amp;rating=80&amp;submit=0</code> → pre-fills but doesn't auto-submit (useful for testing).
-          </li>
-          <li>
-            Valid <code>rating</code> values: 10, 20, 30 … 100 (where 100 = 5 stars).
-          </li>
-        </ul>
+        {isPriceAlerts ? (
+          <>
+            <h3>Preview contents</h3>
+            <ul>
+              <li>Three watched vehicles with new or updated cash, financing, and lease offers.</li>
+              <li>Each deal link opens its matching vehicle page; the top link opens Deals.</li>
+              <li>Recipient name, vehicle photography, and destinations are filled in by the preview.</li>
+            </ul>
+          </>
+        ) : (
+          <>
+            <h3>Deep-link reference</h3>
+            <ul>
+              <li>
+                <code>?vehicle=Name&amp;rating=80</code> → opens rate page, pre-fills 4 stars, auto-submits after 900ms.
+              </li>
+              <li>
+                <code>?vehicle=Name&amp;rating=80&amp;submit=0</code> → pre-fills but doesn't auto-submit (useful for testing).
+              </li>
+              <li>
+                Valid <code>rating</code> values: 10, 20, 30 … 100 (where 100 = 5 stars).
+              </li>
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );

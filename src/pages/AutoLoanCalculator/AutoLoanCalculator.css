@@ -4,6 +4,11 @@
   color: var(--color-neutrals-1, #141416);
 }
 
+.mt-loan-calc :is(button, a, input, select):focus-visible {
+  outline: 3px solid var(--color-primary-1, #E90C17);
+  outline-offset: 3px;
+}
+
 .mt-loan-calc__hero {
   padding: 32px 0 48px;
   background:
@@ -37,17 +42,6 @@
 .mt-loan-calc__breadcrumb a:focus-visible {
   color: var(--color-white, #fff);
   text-decoration: underline;
-}
-
-.mt-loan-calc__hero-kicker {
-  display: inline-block;
-  margin-bottom: 10px;
-  font-family: var(--font-heading);
-  font-size: 12px;
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ff7379;
 }
 
 .mt-loan-calc__hero h1 {
@@ -667,6 +661,16 @@
   color: var(--color-neutrals-4);
 }
 
+.mt-loan-calc__budget-limit-note {
+  margin: 0 0 var(--spacing-2);
+  padding: var(--spacing-1);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-primary-1) 8%, transparent);
+  color: var(--color-primary-1);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .mt-loan-calc__warning-note {
   color: var(--color-primary-1);
 }
@@ -849,12 +853,17 @@
 .mt-loan-calc__search-result {
   display: grid;
   gap: 4px;
-  padding: 12px 14px;
+  padding: var(--spacing-1) var(--spacing-2);
   border: 0;
   border-radius: 10px;
   background: transparent;
   text-align: left;
   cursor: pointer;
+}
+
+.mt-loan-calc__search-result[aria-selected='true'],
+.mt-loan-calc__search-result:hover {
+  background: rgba(233, 12, 23, 0.06);
 }
 
 .mt-loan-calc__search-result strong {
@@ -864,11 +873,6 @@
 .mt-loan-calc__search-result span {
   font-size: 13px;
   color: var(--color-neutrals-4);
-}
-
-.mt-loan-calc__search-result.is-active,
-.mt-loan-calc__search-result:hover {
-  background: rgba(233, 12, 23, 0.06);
 }
 
 .mt-loan-calc__selected-vehicle {
@@ -1400,24 +1404,9 @@
   gap: 10px;
   padding: 30px 28px;
   border: 1px solid var(--color-neutrals-6);
-  border-radius: 8px;
+  border-radius: var(--border-radius-md);
   background: linear-gradient(180deg, #f8fbfb 0%, #eef4f5 100%);
   text-align: center;
-}
-
-.mt-loan-calc__estimate-save {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--color-neutrals-6);
-  border-radius: 999px;
-  background: var(--color-white);
-  color: var(--color-neutrals-3);
-  cursor: pointer;
 }
 
 .mt-loan-calc__estimate-amount {
@@ -2191,7 +2180,6 @@
   }
 
   .mt-loan-calc__step-name {
-    font-size: 10px;
-    letter-spacing: 0.03em;
+    display: none;
   }
 }

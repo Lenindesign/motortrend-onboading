@@ -465,7 +465,7 @@ export function NotificationInbox() {
         .mt-notification-eyebrow small { color: #9298a5; font-size: 10px; font-weight: 400; letter-spacing: 0; }
         .mt-notification-info { display: inline-grid; width: 13px; height: 13px; margin-left: 6px; place-items: center; border: 1px solid #67d69a; border-radius: 50%; color: #67d69a; font-size: 9px; letter-spacing: 0; }
         .mt-notification-content { display: block; min-width: 0; padding: 0; border: 0; background: transparent; color: #f6f6f7; text-align: left; cursor: pointer; }
-        .mt-notification-summary { font-size: 14px; line-height: 1.25; font-weight: 700; }
+        .mt-notification-summary { font-size: 14px; line-height: 1.15; font-weight: 700; }
         .mt-notification-time { color: #9298a5; font-size: 11px; }
         .mt-notification-menu-wrap { position: relative; flex: 0 0 auto; width: 28px; height: 16px; margin-right: -10px; }
         .mt-notification-menu-trigger { position: absolute; top: -6px; right: 0; display: grid; width: 28px; height: 28px; padding: 0; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #9298a5; cursor: pointer; }
