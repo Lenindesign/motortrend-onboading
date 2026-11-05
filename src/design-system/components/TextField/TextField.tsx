@@ -14,6 +14,7 @@ export interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInput
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   onIconClick?: () => void;
+  inputStyle?: React.CSSProperties;
 }
 
 export const TextField: React.FC<TextFieldProps> = ({
@@ -24,6 +25,7 @@ export const TextField: React.FC<TextFieldProps> = ({
   icon,
   iconPosition = 'right',
   onIconClick,
+  inputStyle: inputStyleOverride,
   className = '',
   disabled = false,
   type = 'text',
@@ -85,6 +87,7 @@ export const TextField: React.FC<TextFieldProps> = ({
     border: 'none',
     outline: 'none',
     cursor: disabled ? 'not-allowed' : undefined,
+    ...inputStyleOverride,
   };
 
   // Icon styles

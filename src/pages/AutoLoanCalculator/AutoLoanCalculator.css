@@ -10,26 +10,33 @@
 }
 
 .mt-loan-calc__hero {
-  padding: 32px 0 48px;
-  background:
-    radial-gradient(circle at 88% 0%, rgba(233, 12, 23, 0.2), transparent 30%),
-    linear-gradient(115deg, #141416 0%, #23262F 68%, #17181d 100%);
-  color: var(--color-white, #fff);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: calc(var(--spacing-6) * 5);
+  min-height: calc(var(--spacing-6) * 5);
+  overflow: hidden;
   border-bottom: 4px solid var(--color-primary-1, #E90C17);
+  background:
+    linear-gradient(90deg, rgba(20, 20, 22, 0.98) 0%, rgba(20, 20, 22, 0.86) 48%, rgba(20, 20, 22, 0.62) 100%),
+    linear-gradient(180deg, rgba(20, 20, 22, 0.66) 0%, rgba(20, 20, 22, 0.38) 42%, rgba(20, 20, 22, 0.88) 100%),
+    url('https://hips.hearstapps.com/mtg-prod/68ed96785887080002480fd7/001-2026-motortrend-coty-group.jpg') center / cover;
+  color: var(--color-white, #fff);
 }
 
 .mt-loan-calc__hero-inner {
-  max-width: 1200px;
+  box-sizing: border-box;
+  width: min(100% - var(--spacing-6), 1048px);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: var(--spacing-2) 0;
 }
 
 .mt-loan-calc__breadcrumb {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 22px;
-  color: rgba(255, 255, 255, 0.68);
+  gap: calc(var(--spacing-1) + 2px);
+  margin-bottom: calc(var(--spacing-1) + 2px);
+  color: color-mix(in srgb, var(--color-white) 68%, transparent);
   font-size: 13px;
 }
 
@@ -49,24 +56,24 @@
   width: 100%;
   max-width: none;
   font-family: var(--font-heading);
-  font-weight: var(--font-weight-semibold);
-  font-size: 48px;
-  line-height: 1.04;
+  font-weight: 800;
+  font-size: 54px;
+  line-height: 0.96;
   letter-spacing: -0.03em;
   text-wrap: balance;
 }
 
 .mt-loan-calc__hero p {
-  margin: 14px 0 0;
+  margin: var(--spacing-1) 0 0;
   padding-bottom: 0;
-  max-width: 66ch;
-  font-size: 18px;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.78);
+  max-width: 66.6667%;
+  font-size: 16px;
+  line-height: 1.22;
+  color: color-mix(in srgb, var(--color-white) 82%, transparent);
 }
 
 .mt-loan-calc__shell {
-  max-width: 1152px;
+  max-width: 1048px;
   margin: 0 auto;
   background: var(--color-neutrals-8);
   color: var(--color-neutrals-1);
@@ -78,7 +85,7 @@
 
 .mt-loan-calc__shell-top {
   position: sticky;
-  top: 0;
+  top: var(--mt-loan-calc-sticky-top, 80px);
   z-index: 20;
   padding: 28px 32px;
   background: var(--color-neutrals-8);
@@ -88,9 +95,10 @@
 }
 
 .mt-loan-calc__steps {
+  --mt-loan-calc-step-gap: 16px;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 16px;
+  column-gap: var(--mt-loan-calc-step-gap);
   list-style: none;
 }
 
@@ -105,9 +113,10 @@
 .mt-loan-calc__step-dot::after {
   content: '';
   position: absolute;
+  z-index: 0;
   top: 22px;
-  left: calc(50% + 26px);
-  width: calc(100% - 52px);
+  left: calc(50% + var(--spacing-2) + 6px);
+  width: calc(100% + var(--mt-loan-calc-step-gap) - 44px);
   height: 2px;
   background: var(--color-neutrals-6);
 }
@@ -187,15 +196,15 @@
   background: linear-gradient(180deg, #f4f5f6 0%, #eef1f3 100%);
   border-left: 1px solid var(--color-neutrals-6);
   border-bottom-right-radius: var(--border-radius-lg);
-  padding: 32px;
+  padding: 0 var(--spacing-4) var(--spacing-4);
 }
 
 .mt-loan-calc__summary-card {
   position: sticky;
-  top: 104px;
+  top: calc(var(--spacing-6) + var(--spacing-5));
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: calc(var(--spacing-2) + 2px);
   padding: 24px;
   border: 1px solid rgba(20, 20, 22, 0.08);
   border-radius: 16px;
@@ -301,7 +310,7 @@
 }
 
 .mt-loan-calc__shell-wrap {
-  --max-width-container: 1200px;
+  --max-width-container: 1048px;
   position: relative;
   z-index: 1;
   margin-top: -32px;
@@ -313,7 +322,7 @@
 }
 
 .mt-loan-calc__below-inner {
-  max-width: 1200px;
+  max-width: 1048px;
   margin: 0 auto;
 }
 
@@ -345,6 +354,14 @@
   letter-spacing: -0.025em;
 }
 
+#mt-loan-calc-afford-heading {
+  font-weight: var(--font-weight-semibold);
+}
+
+#mt-loan-calc-faq-heading {
+  font-weight: var(--font-weight-semibold);
+}
+
 .mt-loan-calc__section-heading p {
   margin: 10px 0 0;
   max-width: 64ch;
@@ -353,16 +370,17 @@
   line-height: 1.55;
 }
 
-.mt-loan-calc__info-grid,
-.mt-loan-calc__tools-grid {
+.mt-loan-calc__info-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
   gap: 16px;
 }
 
-.mt-loan-calc__info-card,
-.mt-loan-calc__tool-card {
+.mt-loan-calc__info-card {
+  box-sizing: border-box;
   min-width: 0;
+  width: 100%;
   padding: 24px;
   border: 1px solid var(--color-neutrals-6, #E6E8EC);
   border-radius: 12px;
@@ -386,6 +404,7 @@
   margin: 0 0 8px;
   font-family: var(--font-heading);
   font-size: 18px;
+  font-weight: var(--font-weight-semibold);
   line-height: 1.25;
 }
 
@@ -396,43 +415,8 @@
   line-height: 1.55;
 }
 
-.mt-loan-calc__tool-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  column-gap: 14px;
-  row-gap: 6px;
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
-}
-
-.mt-loan-calc__tool-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(233, 12, 23, 0.36);
-  box-shadow: 0 8px 20px rgba(20, 20, 22, 0.08);
-}
-
-.mt-loan-calc__tool-card > span {
-  grid-column: 1;
-  color: var(--color-neutrals-4, #6E7481);
-  font-size: 13px;
-}
-
-.mt-loan-calc__tool-card > strong {
-  grid-column: 1;
-  font-family: var(--font-heading);
-  font-size: 18px;
-}
-
-.mt-loan-calc__tool-card > svg {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  color: var(--color-primary-1, #E90C17);
-}
-
 .mt-loan-calc__faq {
-  max-width: 960px;
+  max-width: 1048px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -483,6 +467,8 @@
 }
 
 .mt-loan-calc__step-button {
+  position: relative;
+  z-index: 1;
   display: grid;
   justify-items: center;
   gap: 10px;
@@ -522,7 +508,7 @@
   padding: 24px;
   border: 1px solid var(--color-neutrals-6);
   border-radius: 16px;
-  background: var(--color-white);
+  background: linear-gradient(180deg, var(--color-white) 0%, #f8f9fb 100%);
   text-align: left;
   transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
 }
@@ -535,7 +521,6 @@
 .mt-loan-calc__choice-card.is-active {
   border-width: 3px;
   border-color: var(--color-primary-1);
-  background: linear-gradient(180deg, rgba(233, 12, 23, 0.06), rgba(233, 12, 23, 0.02));
 }
 
 .mt-loan-calc__choice-icon {
@@ -546,14 +531,28 @@
   height: 40px;
   border-radius: 999px;
   background: var(--color-neutrals-7);
-  color: var(--color-primary-1);
+  color: var(--color-neutrals-1);
+}
+
+.mt-loan-calc__choice-card.is-active .mt-loan-calc__choice-icon,
+.mt-loan-calc__vehicle-path-card.is-active .mt-loan-calc__choice-icon {
+  background: var(--color-neutrals-1);
+  color: var(--color-white);
 }
 
 .mt-loan-calc__choice-title {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-heading);
   font-size: 24px;
   font-weight: var(--font-weight-bold);
   line-height: 1.08;
+}
+
+.mt-loan-calc__choice-title-prefix {
+  font-size: 0.5em;
+  font-weight: var(--font-weight-regular, 400);
+  line-height: 1.2;
 }
 
 .mt-loan-calc__choice-copy {
@@ -611,11 +610,21 @@
   align-items: center;
 }
 
-.mt-loan-calc__control-head strong {
-  font-family: var(--font-heading);
-  font-size: 18px;
-  line-height: 1;
-  color: var(--color-neutrals-1);
+.mt-loan-calc__info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--spacing-1) / 4);
+  border: 0;
+  border-radius: 50%;
+  color: var(--color-neutrals-4);
+  background: transparent;
+  cursor: help;
+}
+
+.mt-loan-calc__info-button:focus-visible {
+  outline: 2px solid var(--color-primary-1);
+  outline-offset: 2px;
 }
 
 .mt-loan-calc__term-row {
@@ -648,6 +657,7 @@
   border-color: var(--color-primary-1);
   background: var(--color-primary-1);
   color: var(--color-white);
+  font-weight: 800;
 }
 
 .mt-loan-calc__mode-note,
@@ -917,7 +927,7 @@
   font-family: var(--font-heading);
   line-height: 1;
   text-align: right;
-  color: var(--color-primary-1);
+  color: var(--color-neutrals-1);
 }
 
 .mt-loan-calc__selected-vehicle-status span {
@@ -934,7 +944,7 @@
   font-size: 36px;
   line-height: 1;
   letter-spacing: -0.02em;
-  color: var(--color-primary-1);
+  color: var(--color-neutrals-1);
 }
 
 .mt-loan-calc__selected-vehicle-media {
@@ -1082,10 +1092,10 @@
 .mt-loan-calc__body-style-icon {
   display: block;
   justify-self: center;
-  width: min(140px, 100%);
+  width: calc(var(--spacing-6) + var(--spacing-5));
+  max-width: 100%;
   height: 62px;
   object-fit: contain;
-  object-position: center;
 }
 
 .mt-loan-calc__body-style-tile strong {
@@ -1418,7 +1428,7 @@
   font-size: 68px;
   line-height: 0.9;
   letter-spacing: -0.05em;
-  color: var(--color-primary-1);
+  color: var(--color-neutrals-1);
 }
 
 .mt-loan-calc__estimate-amount small {
@@ -1466,6 +1476,33 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--color-neutrals-4);
+}
+
+.mt-loan-calc__amount-financed--row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--spacing-2);
+  row-gap: var(--spacing-1);
+  padding: var(--spacing-2);
+  border: 1px solid var(--color-neutrals-6);
+  background: var(--color-neutrals-7);
+}
+
+.mt-loan-calc__amount-financed--row .mt-loan-calc__review-label {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing-1) - 2px);
+  margin: 0;
+}
+
+.mt-loan-calc__amount-financed--row strong {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 24px;
+}
+
+.mt-loan-calc__amount-financed--row p {
+  grid-column: 1 / -1;
 }
 
 .mt-loan-calc__estimate-accordion {
@@ -1596,6 +1633,13 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.mt-loan-calc__breakdown-list--estimate dd {
+  font-size: 17px;
+  line-height: 1.35;
 }
 
 .mt-loan-calc__breakdown-list--estimate .is-positive dd {
@@ -1932,10 +1976,6 @@
 }
 
 @media (max-width: 1100px) {
-  .mt-loan-calc__hero h1 {
-    font-size: 48px;
-  }
-
   .mt-loan-calc__shell-body {
     grid-template-columns: 1fr;
   }
@@ -1953,15 +1993,23 @@
 
 @media (max-width: 860px) {
   .mt-loan-calc__hero {
-    padding: 28px 0 44px;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
   }
 
   .mt-loan-calc__hero-inner {
-    padding: 0 16px;
+  width: min(100% - var(--spacing-4), 1048px);
+  padding: var(--spacing-5) 0;
   }
 
   .mt-loan-calc__hero h1 {
-    font-size: 40px;
+    font-size: 42px;
+  }
+
+  .mt-loan-calc__hero p {
+    max-width: 100%;
+    font-size: 16px;
   }
 
   .mt-loan-calc__shell {
@@ -1983,9 +2031,20 @@
     padding: 24px 20px;
   }
 
+  .mt-loan-calc__shell-top {
+    position: sticky;
+    top: var(--mt-loan-calc-sticky-top, 102px);
+    z-index: 30;
+    padding: calc(var(--spacing-1) + 4px) var(--spacing-2);
+  }
+
+  .mt-loan-calc__sidebar {
+    padding-top: 8px;
+  }
+
   .mt-loan-calc__steps {
+    --mt-loan-calc-step-gap: 8px;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 8px;
   }
 
   .mt-loan-calc__step-title {
@@ -1997,11 +2056,9 @@
     text-wrap: balance;
   }
 
-  .mt-loan-calc__choice-grid,
   .mt-loan-calc__field-grid,
   .mt-loan-calc__insight-band,
   .mt-loan-calc__info-grid,
-  .mt-loan-calc__tools-grid,
   .mt-loan-calc__vehicle-focus,
   .mt-loan-calc__loan-grid,
   .mt-loan-calc__vehicle-path-grid,
@@ -2012,6 +2069,26 @@
   .mt-loan-calc__selected-vehicle,
   .mt-loan-calc__condition-toggle--split {
     grid-template-columns: 1fr;
+  }
+
+  .mt-loan-calc__choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--spacing-1) + 4px);
+  }
+
+  .mt-loan-calc__choice-card {
+    min-width: 0;
+    gap: calc(var(--spacing-1) + 2px);
+    padding: var(--spacing-2) calc(var(--spacing-2) - 2px);
+  }
+
+  .mt-loan-calc__choice-title {
+    font-size: 18px;
+  }
+
+  .mt-loan-calc__choice-copy {
+    font-size: 13px;
+    line-height: 1.4;
   }
 
   .mt-loan-calc__term-row--wide {
@@ -2067,11 +2144,16 @@
 
 @media (max-width: 560px) {
   .mt-loan-calc__hero {
-    padding: 24px 0 36px;
+    padding: var(--spacing-4) 0;
+  }
+
+  .mt-loan-calc__hero-inner {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .mt-loan-calc__hero h1 {
-    font-size: 34px;
+    font-size: 30px;
   }
 
   .mt-loan-calc__shell-wrap {
@@ -2079,13 +2161,14 @@
   }
 
   .mt-loan-calc__breadcrumb {
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     font-size: 12px;
   }
 
   .mt-loan-calc__hero p,
   .mt-loan-calc__step-copy {
-    font-size: 16px;
+    font-size: 14px;
+    line-height: 1.25;
   }
 
   .mt-loan-calc__step-title {
@@ -2093,7 +2176,12 @@
   }
 
   .mt-loan-calc__choice-title {
-    font-size: 21px;
+    font-size: 17px;
+  }
+
+  .mt-loan-calc__choice-icon {
+    width: 36px;
+    height: 36px;
   }
 
   .mt-loan-calc__review-hero-amount {
@@ -2158,28 +2246,90 @@
     font-size: 26px;
   }
 
-  .mt-loan-calc__info-card,
-  .mt-loan-calc__tool-card {
+  .mt-loan-calc__info-card {
     padding: 20px;
   }
 
   .mt-loan-calc__step-dot {
+    gap: 0;
+  }
+
+  .mt-loan-calc__step-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
   }
 
+  .mt-loan-calc__step-name {
+    display: none;
+  }
+
+  .mt-loan-calc__step-dot.is-active .mt-loan-calc__step-name {
+    display: inline;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
   .mt-loan-calc__step-dot::after {
+    display: block;
     top: 18px;
-    left: calc(50% + 20px);
-    width: calc(100% - 40px);
+    left: calc(50% + var(--spacing-2) + 2px);
+    width: calc(100% + var(--mt-loan-calc-step-gap) - 36px);
+  }
+
+  .mt-loan-calc__step-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing-1) - 2px);
   }
 
   .mt-loan-calc__step-number {
-    width: 36px;
-    height: 36px;
+    width: calc(var(--spacing-4) + 4px);
+    height: calc(var(--spacing-4) + 4px);
+    flex: 0 0 calc(var(--spacing-4) + 4px);
     font-size: 14px;
   }
 
   .mt-loan-calc__step-name {
     display: none;
+  }
+
+  .mt-loan-calc__step-dot.is-active .mt-loan-calc__step-name {
+    display: inline;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 400px) {
+  .mt-loan-calc__shell-top {
+    top: var(--mt-loan-calc-sticky-top, 102px);
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .mt-loan-calc__step-button {
+    gap: calc(var(--spacing-1) / 2.6666667);
+  }
+
+  .mt-loan-calc__step-number {
+    width: var(--spacing-4);
+    height: var(--spacing-4);
+    flex-basis: var(--spacing-4);
+    font-size: 13px;
+  }
+
+  .mt-loan-calc__step-dot.is-active .mt-loan-calc__step-name {
+    display: inline;
+    position: static;
+    transform: none;
+    font-size: 9px;
+    line-height: 1;
+    letter-spacing: 0;
+    white-space: nowrap;
   }
 }

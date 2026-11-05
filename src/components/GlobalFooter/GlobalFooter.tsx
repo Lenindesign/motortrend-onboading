@@ -248,17 +248,6 @@ export const GlobalFooter: React.FC<GlobalFooterProps> = ({
                 </React.Fragment>
               ))}
             </p>
-            <p style={docsLinksStyle}>
-              <span style={docsLabelStyle}>Shopping tools: </span>
-              <Link
-                to="/auto-loan-calculator"
-                style={{ ...getLinkStyle('auto-loan-calculator'), fontWeight: 500 }}
-                onMouseEnter={() => setHoveredLink('auto-loan-calculator')}
-                onMouseLeave={() => setHoveredLink(null)}
-              >
-                Auto Loan Calculator
-              </Link>
-            </p>
           </div>
 
           {/* Right Section - Newsletter */}

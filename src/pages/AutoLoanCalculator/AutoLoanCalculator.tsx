@@ -8,7 +8,6 @@ import {
   CaretDown,
   CaretLeft,
   CaretRight,
-  Check,
   CheckCircle,
   CurrencyDollar,
   Info,
@@ -17,19 +16,16 @@ import {
   WarningCircle,
 } from '@phosphor-icons/react';
 import { Button, CardShell, TextField } from '../../design-system/components';
-import {
-  getVehicleBySlug,
-  getVehicles,
-  searchVehicles,
-  type Vehicle,
-} from '../../api/vehiclesApi';
+import { Tooltip } from '../../components/atoms/Tooltip';
+import { trackCDPEvent } from '../../utils/cdpTracking';
+import { getVehicleBySlug, searchVehicles, type Vehicle } from '../../api/vehiclesApi';
 import './AutoLoanCalculator.css';
 
 type StartMode = 'price' | 'monthly';
 type VehicleCondition = 'new' | 'used';
 type CalculatorStepSlug = 'loan-terms' | 'vehicle' | 'trade' | 'review';
 type VehiclePathMode = 'known' | 'browsing';
-type SelectedState = 'CA' | 'FL' | 'TX' | 'NY' | 'IL';
+type SelectedState = string;
 type BrowsableBodyStyle = 'SUV' | 'Sedan' | 'Truck' | 'Coupe' | 'Hatchback' | 'Wagon' | 'Convertible';
 type EstimateAccordionKey = 'totalInterest' | 'netTrade' | 'taxesFees';
 
@@ -78,7 +74,7 @@ const steps: StepMeta[] = [
     slug: 'review',
     label: 'Estimate',
     title: 'Your MotorTrend payment estimate',
-    copy: 'Use this as your planning snapshot, then shop the vehicles that fit the number.',
+    copy: 'Use this as a planning snapshot and adjust your assumptions at any time.',
   },
 ];
 
@@ -136,76 +132,86 @@ const calculatorFaqs = [
     answer: 'Manufacturer offers can vary by vehicle, location, eligibility, and time. Confirm the current terms and qualifications with the manufacturer or participating dealer.',
   },
   {
-    question: 'What should I do after the calculator finds cars in my budget?',
-    answer: 'Compare vehicles, total ownership costs, and current financing offers. Then confirm pricing, taxes, fees, and loan terms with a lender or dealer.',
+    question: 'What should I do after reviewing my estimate?',
+    answer: 'Compare total ownership costs and current financing offers. Confirm pricing, taxes, fees, and loan terms with a lender or dealer.',
   },
 ];
 
 const stateOptions: SelectOption<SelectedState>[] = [
-  { value: 'CA', label: 'California' },
-  { value: 'FL', label: 'Florida' },
-  { value: 'TX', label: 'Texas' },
-  { value: 'NY', label: 'New York' },
-  { value: 'IL', label: 'Illinois' },
-];
+  ['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'], ['CA', 'California'],
+  ['CO', 'Colorado'], ['CT', 'Connecticut'], ['DE', 'Delaware'], ['DC', 'District of Columbia'],
+  ['FL', 'Florida'], ['GA', 'Georgia'], ['HI', 'Hawaii'], ['ID', 'Idaho'], ['IL', 'Illinois'],
+  ['IN', 'Indiana'], ['IA', 'Iowa'], ['KS', 'Kansas'], ['KY', 'Kentucky'], ['LA', 'Louisiana'],
+  ['ME', 'Maine'], ['MD', 'Maryland'], ['MA', 'Massachusetts'], ['MI', 'Michigan'], ['MN', 'Minnesota'],
+  ['MS', 'Mississippi'], ['MO', 'Missouri'], ['MT', 'Montana'], ['NE', 'Nebraska'], ['NV', 'Nevada'],
+  ['NH', 'New Hampshire'], ['NJ', 'New Jersey'], ['NM', 'New Mexico'], ['NY', 'New York'],
+  ['NC', 'North Carolina'], ['ND', 'North Dakota'], ['OH', 'Ohio'], ['OK', 'Oklahoma'], ['OR', 'Oregon'],
+  ['PA', 'Pennsylvania'], ['RI', 'Rhode Island'], ['SC', 'South Carolina'], ['SD', 'South Dakota'],
+  ['TN', 'Tennessee'], ['TX', 'Texas'], ['UT', 'Utah'], ['VT', 'Vermont'], ['VA', 'Virginia'],
+  ['WA', 'Washington'], ['WV', 'West Virginia'], ['WI', 'Wisconsin'], ['WY', 'Wyoming'],
+].map(([value, label]) => ({ value, label }));
 
-const salesTaxRates: Record<SelectedState, number> = {
-  CA: 0.0725,
-  FL: 0.06,
-  TX: 0.0625,
-  NY: 0.04,
-  IL: 0.0625,
+// Runtime defaults and state estimates mirror the C/D calculator. Actual local
+// tax, title, registration, and dealer charges vary; shoppers can edit both fields.
+const stateDefaults: Record<SelectedState, { tax: number; fees: number }> = {
+  AL: { tax: 2, fees: 700 }, AK: { tax: 0, fees: 700 }, AZ: { tax: 5.6, fees: 700 },
+  AR: { tax: 6.5, fees: 400 }, CA: { tax: 7.25, fees: 400 }, CO: { tax: 2.9, fees: 700 },
+  CT: { tax: 6.35, fees: 700 }, DE: { tax: 5.25, fees: 700 }, DC: { tax: 6, fees: 700 },
+  FL: { tax: 6, fees: 1000 }, GA: { tax: 7, fees: 700 }, HI: { tax: 4, fees: 700 },
+  ID: { tax: 6, fees: 700 }, IL: { tax: 6.25, fees: 400 }, IN: { tax: 7, fees: 400 },
+  IA: { tax: 5, fees: 400 }, KS: { tax: 6.5, fees: 700 }, KY: { tax: 6, fees: 700 },
+  LA: { tax: 5, fees: 400 }, ME: { tax: 5.5, fees: 700 }, MD: { tax: 6.5, fees: 700 },
+  MA: { tax: 6.25, fees: 700 }, MI: { tax: 6, fees: 400 }, MN: { tax: 6.875, fees: 400 },
+  MS: { tax: 5, fees: 700 }, MO: { tax: 4.225, fees: 400 }, MT: { tax: 0, fees: 700 },
+  NE: { tax: 5.5, fees: 700 }, NV: { tax: 6.85, fees: 700 }, NH: { tax: 0, fees: 700 },
+  NJ: { tax: 6.625, fees: 700 }, NM: { tax: 4, fees: 700 }, NY: { tax: 4, fees: 400 },
+  NC: { tax: 3, fees: 1000 }, ND: { tax: 5, fees: 400 }, OH: { tax: 5.75, fees: 400 },
+  OK: { tax: 3.25, fees: 700 }, OR: { tax: 0, fees: 400 }, PA: { tax: 6, fees: 700 },
+  RI: { tax: 7, fees: 400 }, SC: { tax: 5, fees: 700 }, SD: { tax: 4, fees: 400 },
+  TN: { tax: 7, fees: 700 }, TX: { tax: 6.25, fees: 400 }, UT: { tax: 4.85, fees: 700 },
+  VT: { tax: 6, fees: 400 }, VA: { tax: 4.15, fees: 1000 }, WA: { tax: 7, fees: 400 },
+  WV: { tax: 6, fees: 400 }, WI: { tax: 5, fees: 400 }, WY: { tax: 4, fees: 700 },
 };
 
-const feeGuidanceCopy: Record<SelectedState, string> = {
-  CA: 'Registration, title, and dealer fees can run higher here. Use your best local estimate if you already have one.',
-  FL: 'Registration, title, and dealer fees vary by county and retailer. Treat this as planning guidance only.',
-  TX: 'Dealer fees, title, and registration can still move the out-the-door number. Adjust this if you have a local quote.',
-  NY: 'Taxes may be lower than some states, but title, registration, and doc fees still matter for the final estimate.',
-  IL: 'This is a good planning placeholder for registration and dealer charges before you have a written quote.',
-};
-
-const bodyStyleMap: Record<BrowsableBodyStyle, { label: string; iconSrc: string; description: string }> = {
+const bodyStyleMap: Record<BrowsableBodyStyle, { label: string; icon: string; description: string }> = {
   SUV: {
     label: 'SUV',
-    iconSrc: '/images/body-style-icons/suv.svg',
+    icon: '/images/body-style-icons/suv.svg',
     description: 'Family haulers, adventure rigs, and compact crossovers.',
   },
   Sedan: {
     label: 'Sedan',
-    iconSrc: '/images/body-style-icons/sedan.svg',
+    icon: '/images/body-style-icons/sedan.svg',
     description: 'Efficient commuters and sharper sport sedans.',
   },
   Truck: {
     label: 'Truck',
-    iconSrc: '/images/body-style-icons/truck.svg',
+    icon: '/images/body-style-icons/truck.svg',
     description: 'Pickups, tow rigs, and work-ready options.',
   },
   Coupe: {
     label: 'Coupe',
-    iconSrc: '/images/body-style-icons/coupe.svg',
+    icon: '/images/body-style-icons/coupe.svg',
     description: 'Two-door performance, style, and halo cars.',
   },
   Hatchback: {
     label: 'Hatchback',
-    iconSrc: '/images/body-style-icons/hatchback.svg',
+    icon: '/images/body-style-icons/hatchback.svg',
     description: 'Compact, practical, and often electrified picks.',
   },
   Wagon: {
     label: 'Wagon',
-    iconSrc: '/images/body-style-icons/van.svg',
+    icon: '/images/body-style-icons/van.svg',
     description: 'Long-roof utility with a lower stance.',
   },
   Convertible: {
     label: 'Convertible',
-    iconSrc: '/images/body-style-icons/convertible.svg',
+    icon: '/images/body-style-icons/convertible.svg',
     description: 'Top-down weekend and premium cruising options.',
   },
 };
 
 const browsableBodyStyles = Object.keys(bodyStyleMap) as BrowsableBodyStyle[];
-
-const defaultVehicleSlug = '2026/Honda/CR-V';
 
 const moneyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -217,6 +223,8 @@ const moneyFormatter = new Intl.NumberFormat('en-US', {
 function formatCurrency(value: number) {
   return moneyFormatter.format(Math.round(value));
 }
+
+const numericInputStyle: React.CSSProperties = { fontWeight: 700 };
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
@@ -244,6 +252,7 @@ function calculatePrincipalFromBudget(monthlyBudget: number, apr: number, termMo
 function calculateVehiclePriceFromBudget({
   principal,
   downPayment,
+  downPaymentPercent,
   netTradeIn,
   taxRate,
   fees,
@@ -251,6 +260,7 @@ function calculateVehiclePriceFromBudget({
 }: {
   principal: number;
   downPayment: number;
+  downPaymentPercent?: number;
   netTradeIn: number;
   taxRate: number;
   fees: number;
@@ -259,10 +269,18 @@ function calculateVehiclePriceFromBudget({
   const positiveEquity = Math.max(netTradeIn, 0);
   const negativeEquity = Math.max(-netTradeIn, 0);
   const includedFees = includeFees ? fees : 0;
-  const amountBeforeTax = principal + downPayment + positiveEquity - negativeEquity - includedFees;
-  const priceIncludingTax = (amountBeforeTax + positiveEquity * taxRate) / (1 + taxRate);
+  const includedTaxRate = includeFees ? taxRate : 0;
+  const equityCredit = positiveEquity * (includeFees ? 1 + taxRate : 1);
 
-  // When the trade-in credit exceeds the vehicle price, the taxable amount is zero.
+  if (downPaymentPercent !== undefined) {
+    const price = (principal - includedFees - negativeEquity + equityCredit)
+      / (1 - downPaymentPercent + includedTaxRate);
+    return Math.max(price, 0);
+  }
+
+  const amountBeforeTax = principal + downPayment + positiveEquity - negativeEquity - includedFees;
+  const priceIncludingTax = (amountBeforeTax + (includeFees ? positiveEquity * taxRate : 0))
+    / (1 + includedTaxRate);
   return priceIncludingTax <= positiveEquity ? amountBeforeTax : priceIncludingTax;
 }
 
@@ -309,11 +327,15 @@ function SelectField<T extends string>({
   );
 }
 
-function FieldLabelWithInfo({ children }: { children: React.ReactNode }) {
+function FieldLabelWithInfo({ children, tooltip }: { children: React.ReactNode; tooltip: string }) {
   return (
     <span className="mt-loan-calc__field-label-inline">
       {children}
-      <Info size={18} weight="regular" aria-hidden />
+      <Tooltip content={tooltip} trigger="hover" placement="top" showDelay={0}>
+        <button type="button" className="mt-loan-calc__info-button" aria-label={`More about ${String(children)}`}>
+          <Info size={16} weight="regular" aria-hidden />
+        </button>
+      </Tooltip>
     </span>
   );
 }
@@ -323,22 +345,23 @@ export const AutoLoanCalculator: React.FC = () => {
   const { stepSlug } = useParams<{ stepSlug?: CalculatorStepSlug }>();
   const [startMode, setStartMode] = useState<StartMode>('price');
   const [vehiclePrice, setVehiclePrice] = useState('30000');
-  const [monthlyBudget, setMonthlyBudget] = useState('592');
+  const [monthlyBudget, setMonthlyBudget] = useState('550');
   const [downPayment, setDownPayment] = useState('3000');
-  const [apr, setApr] = useState('7.0');
+  const [downPaymentIsCustom, setDownPaymentIsCustom] = useState(false);
+  const [apr, setApr] = useState('7.5');
   const [condition, setCondition] = useState<VehicleCondition>('new');
   const [loanTerm, setLoanTerm] = useState(60);
   const [vehiclePathMode, setVehiclePathMode] = useState<VehiclePathMode>('known');
-  const [vehicleSearch, setVehicleSearch] = useState('2026 Honda CR-V');
+  const [vehicleSearch, setVehicleSearch] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [activeSearchIndex, setActiveSearchIndex] = useState(0);
-  const [selectedVehicleSlug, setSelectedVehicleSlug] = useState(defaultVehicleSlug);
+  const [selectedVehicleSlug, setSelectedVehicleSlug] = useState('');
   const [browsedBodyStyle, setBrowsedBodyStyle] = useState<BrowsableBodyStyle>('SUV');
   const [tradeInValue, setTradeInValue] = useState('0');
   const [amountOwed, setAmountOwed] = useState('0');
-  const [selectedState, setSelectedState] = useState<SelectedState>('CA');
-  const [salesTaxPercent, setSalesTaxPercent] = useState((salesTaxRates.CA * 100).toFixed(2));
-  const [fees, setFees] = useState('1073');
+  const [selectedState, setSelectedState] = useState<SelectedState>('VA');
+  const [salesTaxPercent, setSalesTaxPercent] = useState(stateDefaults.VA.tax.toString());
+  const [fees, setFees] = useState(stateDefaults.VA.fees.toString());
   const [includeFeesInLoan, setIncludeFeesInLoan] = useState(true);
   const [openEstimateAccordions, setOpenEstimateAccordions] = useState<Record<EstimateAccordionKey, boolean>>({
     totalInterest: false,
@@ -348,19 +371,86 @@ export const AutoLoanCalculator: React.FC = () => {
   const searchMenuRef = useRef<HTMLDivElement | null>(null);
   const bodyStyleCarouselRef = useRef<HTMLDivElement | null>(null);
   const shellTopRef = useRef<HTMLDivElement | null>(null);
+  const hasCompletedRef = useRef(false);
+
+  useEffect(() => {
+    const header = document.querySelector<HTMLElement>('header.global-header');
+    if (!header) return undefined;
+
+    const rootStyle = document.documentElement.style;
+    const previousOffset = rootStyle.getPropertyValue('--mt-loan-calc-sticky-top');
+    const updateStickyOffset = () => {
+      rootStyle.setProperty('--mt-loan-calc-sticky-top', `${header.getBoundingClientRect().height}px`);
+    };
+
+    updateStickyOffset();
+    const resizeObserver = new ResizeObserver(updateStickyOffset);
+    resizeObserver.observe(header);
+    window.addEventListener('resize', updateStickyOffset);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateStickyOffset);
+      if (previousOffset) {
+        rootStyle.setProperty('--mt-loan-calc-sticky-top', previousOffset);
+      } else {
+        rootStyle.removeProperty('--mt-loan-calc-sticky-top');
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const previousTitle = document.title;
+    const description = document.querySelector('meta[name="description"]');
+    const previousDescription = description?.getAttribute('content');
+    const pageDescription = 'Estimate auto loan payments, compare financing costs, and see how vehicle price, down payment, APR, term, taxes, and trade-in value affect your budget.';
+    const pageMeta = description ?? document.createElement('meta');
+
+    document.title = 'Auto Loan Calculator | MotorTrend';
+    pageMeta.setAttribute('name', 'description');
+    pageMeta.setAttribute('content', pageDescription);
+    if (!description) document.head.appendChild(pageMeta);
+
+    return () => {
+      document.title = previousTitle;
+      if (description && previousDescription !== undefined) {
+        if (previousDescription === null) {
+          description.removeAttribute('content');
+        } else {
+          description.setAttribute('content', previousDescription);
+        }
+      } else if (!description) {
+        pageMeta.remove();
+      }
+    };
+  }, []);
 
   const stepIndex = getStepIndex(stepSlug);
   const previousStepIndexRef = useRef(stepIndex);
   const currentStep = steps[stepIndex];
-  const allVehicles = useMemo(() => getVehicles({ useApiOnly: true }), []);
-
   const selectedVehicle = useMemo(() => {
-    return getVehicleBySlug(selectedVehicleSlug) ?? allVehicles[0];
-  }, [allVehicles, selectedVehicleSlug]);
+    return selectedVehicleSlug ? getVehicleBySlug(selectedVehicleSlug) : undefined;
+  }, [selectedVehicleSlug]);
 
   useEffect(() => {
-    setSalesTaxPercent((salesTaxRates[selectedState] * 100).toFixed(2));
+    setSalesTaxPercent(stateDefaults[selectedState].tax.toString());
+    setFees(stateDefaults[selectedState].fees.toString());
   }, [selectedState]);
+
+  useEffect(() => {
+    trackCDPEvent({
+      event: 'calculator_step_viewed',
+      properties: { step: stepIndex + 1, stepName: steps[stepIndex].label.toLowerCase().replaceAll(' ', '_') },
+      timestamp: new Date().toISOString(),
+    });
+    if (stepIndex === steps.length - 1) {
+      trackCDPEvent({
+        event: hasCompletedRef.current ? 'calculator_estimate_adjusted' : 'calculator_completed',
+        timestamp: new Date().toISOString(),
+      });
+      hasCompletedRef.current = true;
+    }
+  }, [stepIndex]);
 
   useEffect(() => {
     const previousStepIndex = previousStepIndexRef.current;
@@ -372,7 +462,9 @@ export const AutoLoanCalculator: React.FC = () => {
     const frame = window.requestAnimationFrame(() => {
       if (!shellTopRef.current) return;
       const shellTop = shellTopRef.current.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: shellTop, behavior: 'auto' });
+      const stickyHeaderHeight = document.querySelector<HTMLElement>('header.global-header')?.getBoundingClientRect().height ?? 0;
+      const breathingRoom = 12;
+      window.scrollTo({ top: Math.max(0, shellTop - stickyHeaderHeight - breathingRoom), behavior: 'auto' });
     });
 
     return () => window.cancelAnimationFrame(frame);
@@ -406,7 +498,8 @@ export const AutoLoanCalculator: React.FC = () => {
       ? priceValue
       : calculateVehiclePriceFromBudget({
           principal: calculatePrincipalFromBudget(monthlyBudgetValue, aprValue, loanTerm),
-          downPayment: downPaymentValue,
+          downPayment: downPaymentIsCustom ? downPaymentValue : 0,
+          downPaymentPercent: downPaymentIsCustom ? undefined : 0.1,
           netTradeIn,
           taxRate: salesTaxRate,
           fees: feesValue,
@@ -414,11 +507,14 @@ export const AutoLoanCalculator: React.FC = () => {
         });
 
     const targetVehiclePrice = clamp(rawPrice, 5000, 120000);
+    const effectiveDownPayment = startMode === 'monthly' && !downPaymentIsCustom
+      ? targetVehiclePrice * 0.1
+      : downPaymentValue;
     const taxes = Math.max(targetVehiclePrice - Math.max(netTradeIn, 0), 0) * salesTaxRate;
     const taxesAndFees = taxes + feesValue;
     const financedPrincipal = Math.max(
       targetVehiclePrice
-        - downPaymentValue
+        - effectiveDownPayment
         - Math.max(netTradeIn, 0)
         + (includeFeesInLoan ? taxesAndFees : 0)
         + Math.max(-netTradeIn, 0),
@@ -427,12 +523,13 @@ export const AutoLoanCalculator: React.FC = () => {
     const monthlyPayment = calculateLoanPayment(financedPrincipal, aprValue, loanTerm);
     const totalLoanPayments = monthlyPayment * loanTerm;
     const totalInterestPaid = Math.max(totalLoanPayments - financedPrincipal, 0);
-    const cashDueAtSigning = downPaymentValue + (includeFeesInLoan ? 0 : taxesAndFees);
+    const cashDueAtSigning = effectiveDownPayment + (includeFeesInLoan ? 0 : taxesAndFees);
     const totalPaid = totalLoanPayments + cashDueAtSigning;
     const monthlyDelta = monthlyPayment - monthlyBudgetValue;
 
     return {
       targetVehiclePrice,
+      downPayment: effectiveDownPayment,
       taxes,
       taxesAndFees,
       financedPrincipal,
@@ -448,6 +545,7 @@ export const AutoLoanCalculator: React.FC = () => {
     amountOwedNumber,
     aprValue,
     downPaymentValue,
+    downPaymentIsCustom,
     feesValue,
     includeFeesInLoan,
     loanTerm,
@@ -463,70 +561,6 @@ export const AutoLoanCalculator: React.FC = () => {
     if (vehicleSearch.trim().length < 2) return [];
     return searchVehicles(vehicleSearch, 8);
   }, [vehicleSearch]);
-
-  const matchedBrowseVehicles = useMemo(() => {
-    const pool = getVehicles({
-      useApiOnly: true,
-      bodyStyle: [browsedBodyStyle],
-      sortBy: 'rating',
-      sortOrder: 'desc',
-    });
-
-    return pool
-      .filter((vehicle) => vehicle.priceMin <= derived.targetVehiclePrice * 1.2)
-      .slice(0, 4);
-  }, [browsedBodyStyle, derived.targetVehiclePrice]);
-
-  const selectedBrowseVehicles = useMemo(() => {
-    return matchedBrowseVehicles.map((vehicle) => ({
-      vehicle,
-      isInRange: vehicle.priceMin <= derived.targetVehiclePrice,
-      estimatedMonthly: calculateLoanPayment(
-        Math.max(
-          vehicle.priceMin
-            - downPaymentValue
-            - Math.max(netTradeIn, 0)
-            + (includeFeesInLoan ? vehicle.priceMin * salesTaxRate + feesValue : 0)
-            + Math.max(-netTradeIn, 0),
-          0,
-        ),
-        aprValue,
-        loanTerm,
-      ),
-    }));
-  }, [
-    aprValue,
-    derived.targetVehiclePrice,
-    downPaymentValue,
-    feesValue,
-    includeFeesInLoan,
-    loanTerm,
-    matchedBrowseVehicles,
-    netTradeIn,
-    salesTaxRate,
-  ]);
-
-  const reviewVehicleCards = useMemo(() => {
-    const sourceVehicles = selectedBrowseVehicles.length > 0
-      ? selectedBrowseVehicles.map(({ vehicle, estimatedMonthly }) => ({ vehicle, estimatedMonthly }))
-      : allVehicles.slice(0, 4).map((vehicle) => ({
-          vehicle,
-          estimatedMonthly: calculateLoanPayment(
-            Math.max(
-              vehicle.priceMin
-                - downPaymentValue
-                - Math.max(netTradeIn, 0)
-                + (includeFeesInLoan ? vehicle.priceMin * salesTaxRate + feesValue : 0)
-                + Math.max(-netTradeIn, 0),
-              0,
-            ),
-            aprValue,
-            loanTerm,
-          ),
-        }));
-
-    return sourceVehicles.slice(0, 4);
-  }, [allVehicles, aprValue, downPaymentValue, feesValue, includeFeesInLoan, loanTerm, netTradeIn, salesTaxRate, selectedBrowseVehicles]);
 
   const amortizationRows = useMemo(() => {
     let balance = derived.financedPrincipal;
@@ -561,38 +595,18 @@ export const AutoLoanCalculator: React.FC = () => {
   const selectedVehicleLabel = selectedVehicle
     ? `${selectedVehicle.year} ${selectedVehicle.make} ${selectedVehicle.model}`
     : 'No vehicle selected';
-  const selectedVehiclePath = selectedVehicle
-    ? `/vehicles/${encodeURIComponent(selectedVehicle.year)}/${encodeURIComponent(selectedVehicle.make)}/${encodeURIComponent(selectedVehicle.model)}`
-    : '/vehicles';
-
-  const handleSelectedVehicleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) {
-      return;
-    }
-
-    event.preventDefault();
-    navigate(selectedVehiclePath);
-  };
-
   const goToStep = (nextIndex: number) => {
     navigate(getStepPath(nextIndex));
   };
 
   const handleContinue = () => {
-    if (stepIndex < steps.length - 1) {
-      goToStep(stepIndex + 1);
-      return;
-    }
-
-    const params = new URLSearchParams();
-    params.set('priceMax', String(Math.round(derived.targetVehiclePrice)));
-    params.set('vehicleType', condition);
-    if (vehiclePathMode === 'browsing') {
-      params.set('bodyStyle', browsedBodyStyle);
-    } else if (selectedVehicle) {
-      params.set('search', `${selectedVehicle.make} ${selectedVehicle.model}`);
-    }
-    navigate(`/vehicles?${params.toString()}`);
+    if (stepIndex >= steps.length - 1) return;
+    trackCDPEvent({
+      event: 'calculator_continue_selected',
+      properties: { step: stepIndex + 1 },
+      timestamp: new Date().toISOString(),
+    });
+    goToStep(stepIndex + 1);
   };
 
   const handleBack = () => {
@@ -604,6 +618,7 @@ export const AutoLoanCalculator: React.FC = () => {
     setSelectedVehicleSlug(vehicle.slug);
     setVehicleSearch(`${vehicle.year} ${vehicle.make} ${vehicle.model}`);
     setShowSearchResults(false);
+    trackCDPEvent({ event: 'calculator_vehicle_selected', timestamp: new Date().toISOString() });
   };
 
   const scrollBodyStyleCarousel = (direction: -1 | 1) => {
@@ -634,9 +649,12 @@ export const AutoLoanCalculator: React.FC = () => {
           <span className="mt-loan-calc__choice-icon">
             <Car size={18} weight="regular" aria-hidden />
           </span>
-          <span className="mt-loan-calc__choice-title">Start with vehicle price</span>
+          <span className="mt-loan-calc__choice-title">
+            <span className="mt-loan-calc__choice-title-prefix">Start with</span>
+            <span>vehicle price</span>
+          </span>
           <span className="mt-loan-calc__choice-copy">
-            We&apos;ll use this price as your budget target throughout the experience.
+            We&apos;ll use this price as your target throughout the estimate.
           </span>
         </button>
 
@@ -649,7 +667,10 @@ export const AutoLoanCalculator: React.FC = () => {
           <span className="mt-loan-calc__choice-icon">
             <CurrencyDollar size={18} weight="regular" aria-hidden />
           </span>
-          <span className="mt-loan-calc__choice-title">Start with monthly budget</span>
+          <span className="mt-loan-calc__choice-title">
+            <span className="mt-loan-calc__choice-title-prefix">Start with</span>
+            <span>monthly budget</span>
+          </span>
           <span className="mt-loan-calc__choice-copy">
             Your monthly payment helps estimate a vehicle budget.
           </span>
@@ -668,10 +689,12 @@ export const AutoLoanCalculator: React.FC = () => {
             <TextField
               fullWidth
               label="Vehicle price target"
-              value={String(priceValue)}
+              value={vehiclePrice ? formatCurrency(parseNumericInput(vehiclePrice)) : ''}
+              inputStyle={numericInputStyle}
               inputMode="numeric"
-              onChange={(event) => setVehiclePrice(event.target.value.replace(/[^0-9]/g, ''))}
-              helperText="We’ll use this price as your budget target throughout the experience."
+              onChange={(event) => setVehiclePrice(event.target.value.replace(/\D/g, ''))}
+              onBlur={() => setVehiclePrice(String(priceValue))}
+              helperText="We’ll use this price as your target throughout the estimate."
             />
             <div className="mt-loan-calc__slider-block">
               <input
@@ -694,10 +717,12 @@ export const AutoLoanCalculator: React.FC = () => {
             <TextField
               fullWidth
               label="Monthly payment target"
-              value={String(monthlyBudgetValue)}
+              value={monthlyBudget}
+              inputStyle={numericInputStyle}
               inputMode="numeric"
               onChange={(event) => setMonthlyBudget(event.target.value.replace(/[^0-9]/g, ''))}
-              helperText="Your monthly payment helps estimate a vehicle budget."
+              onBlur={() => setMonthlyBudget(String(monthlyBudgetValue))}
+              helperText="We’ll keep this monthly target fixed as you adjust the financing terms."
             />
             <div className="mt-loan-calc__slider-block">
               <input
@@ -722,27 +747,33 @@ export const AutoLoanCalculator: React.FC = () => {
 
   const renderLoanTermsStep = () => (
     <div className="mt-loan-calc__step-stack mt-loan-calc__step-stack--loan">
-      <div className="mt-loan-calc__loan-control">
+        <div className="mt-loan-calc__loan-control">
         <div className="mt-loan-calc__control-head">
-          <FieldLabelWithInfo>Down payment</FieldLabelWithInfo>
-          <strong>{formatCurrency(downPaymentValue)}</strong>
+          <FieldLabelWithInfo tooltip="Cash paid toward the vehicle price. In the monthly-budget path, the default is 10% of the supported vehicle price.">Down payment</FieldLabelWithInfo>
         </div>
         <TextField
           fullWidth
-          value={String(downPaymentValue)}
+          value={downPaymentIsCustom ? downPayment : String(Math.round(derived.downPayment))}
+          inputStyle={numericInputStyle}
           inputMode="numeric"
           icon={<CurrencyDollar size={16} weight="bold" aria-hidden />}
           iconPosition="left"
-          onChange={(event) => setDownPayment(event.target.value.replace(/[^0-9]/g, ''))}
-          helperText={`${formatCurrency(downPaymentValue)} down upfront.`}
+          onChange={(event) => {
+            setDownPaymentIsCustom(true);
+            setDownPayment(event.target.value.replace(/[^0-9]/g, ''));
+          }}
+          helperText={`${formatCurrency(derived.downPayment)} down upfront.`}
         />
         <input
           type="range"
           min="0"
           max="25000"
           step="500"
-          value={downPaymentValue}
-          onChange={(event) => setDownPayment(event.target.value)}
+          value={Math.min(Math.round(derived.downPayment), 25000)}
+          onChange={(event) => {
+            setDownPaymentIsCustom(true);
+            setDownPayment(event.target.value);
+          }}
           className="mt-loan-calc__slider"
         />
         <div className="mt-loan-calc__slider-scale">
@@ -753,14 +784,15 @@ export const AutoLoanCalculator: React.FC = () => {
 
       <div className="mt-loan-calc__loan-control">
         <div className="mt-loan-calc__control-head">
-          <FieldLabelWithInfo>Interest rate (APR)</FieldLabelWithInfo>
-          <strong>{aprValue.toFixed(1)}%</strong>
+          <FieldLabelWithInfo tooltip="Annual percentage rate used to estimate interest. Enter the rate from a lender offer when you have one.">Interest rate (APR)</FieldLabelWithInfo>
         </div>
         <TextField
           fullWidth
-          value={aprValue.toFixed(1)}
+          value={apr}
+          inputStyle={numericInputStyle}
           inputMode="decimal"
           onChange={(event) => setApr(event.target.value.replace(/[^0-9.]/g, ''))}
+          onBlur={() => setApr(aprValue.toFixed(1))}
           helperText={`Planning range only. Current estimate uses ${aprValue.toFixed(1)}% APR.`}
         />
         <input
@@ -780,7 +812,7 @@ export const AutoLoanCalculator: React.FC = () => {
 
       <div className="mt-loan-calc__loan-control">
         <div className="mt-loan-calc__control-head">
-          <FieldLabelWithInfo>Loan term</FieldLabelWithInfo>
+          <FieldLabelWithInfo tooltip="The number of months to repay the loan. Longer terms can lower the payment but increase total interest.">Loan term</FieldLabelWithInfo>
         </div>
         <div className="mt-loan-calc__term-row mt-loan-calc__term-row--wide">
           {[12, 24, 36, 48, 60, 72, 84].map((term) => (
@@ -840,7 +872,7 @@ export const AutoLoanCalculator: React.FC = () => {
       </div>
 
       <div className="mt-loan-calc__vehicle-condition-section">
-        <FieldLabelWithInfo>New or used</FieldLabelWithInfo>
+        <FieldLabelWithInfo tooltip="Choose whether your estimate is for a new or used vehicle.">New or used</FieldLabelWithInfo>
         <div className="mt-loan-calc__condition-toggle mt-loan-calc__condition-toggle--split">
           {(['new', 'used'] as VehicleCondition[]).map((option) => (
             <button
@@ -861,7 +893,7 @@ export const AutoLoanCalculator: React.FC = () => {
           <div className="mt-loan-calc__search-wrap" ref={searchMenuRef}>
             <TextField
               fullWidth
-              label={<FieldLabelWithInfo>My next vehicle</FieldLabelWithInfo>}
+              label={<FieldLabelWithInfo tooltip="Search by model year, make, or model. Vehicle selection is optional and only adds context to this estimate.">My next vehicle</FieldLabelWithInfo>}
               value={vehicleSearch}
               placeholder="Start typing year, make, or model"
               role="combobox"
@@ -921,42 +953,41 @@ export const AutoLoanCalculator: React.FC = () => {
             )}
           </div>
 
-          <Link
-            className="mt-loan-calc__selected-vehicle mt-loan-calc__selected-vehicle--compact"
-            to={selectedVehiclePath}
-            aria-label={selectedVehicle ? `View ${selectedVehicleLabel}` : 'View vehicles'}
-            onClick={handleSelectedVehicleLinkClick}
-          >
-            {selectedVehicle?.image ? (
-              <div className="mt-loan-calc__selected-vehicle-media" aria-hidden="true">
-                <img
-                  className="mt-loan-calc__selected-vehicle-image"
-                  src={selectedVehicle.image}
-                  alt=""
-                />
-              </div>
-            ) : (
-              <span className="mt-loan-calc__selected-vehicle-fallback" aria-hidden="true">
-                Image unavailable
-              </span>
-            )}
-            <div className="mt-loan-calc__selected-vehicle-copy">
-              <span className="mt-loan-calc__review-label">
-                {condition === 'new' ? 'Selected vehicle' : 'Used-vehicle context'}
-              </span>
-              <h2>{selectedVehicle ? selectedVehicleLabel : 'Choose a vehicle'}</h2>
-            </div>
-            <div className="mt-loan-calc__selected-vehicle-status">
-              {selectedVehicle ? (
-                <>
-                  <span>Starting at</span>
-                  <strong>{formatCurrency(selectedVehicle.priceMin)}</strong>
-                </>
+          {selectedVehicle ? (
+            <Link
+              className="mt-loan-calc__selected-vehicle mt-loan-calc__selected-vehicle--compact"
+              to={`/vehicles/${encodeURIComponent(selectedVehicle.year)}/${encodeURIComponent(selectedVehicle.make)}/${encodeURIComponent(selectedVehicle.model.replace(/\s+/g, '-'))}`}
+              aria-label={`View ${selectedVehicleLabel} vehicle details`}
+              aria-live="polite"
+            >
+              {selectedVehicle.image ? (
+                <div className="mt-loan-calc__selected-vehicle-media" aria-hidden="true">
+                  <img className="mt-loan-calc__selected-vehicle-image" src={selectedVehicle.image} alt="" />
+                </div>
               ) : (
-                <strong>Not selected</strong>
+                <span className="mt-loan-calc__selected-vehicle-fallback" aria-hidden="true">Image unavailable</span>
               )}
+              <div className="mt-loan-calc__selected-vehicle-copy">
+                <span className="mt-loan-calc__review-label">
+                  {condition === 'new' ? 'Selected vehicle' : 'Used-vehicle context'}
+                </span>
+                <h2>{selectedVehicleLabel}</h2>
+              </div>
+              <div className="mt-loan-calc__selected-vehicle-status">
+                <span>Starting at</span>
+                <strong>{formatCurrency(selectedVehicle.priceMin)}</strong>
+              </div>
+            </Link>
+          ) : (
+            <div className="mt-loan-calc__selected-vehicle mt-loan-calc__selected-vehicle--compact" aria-live="polite">
+              <span className="mt-loan-calc__selected-vehicle-fallback" aria-hidden="true">Image unavailable</span>
+              <div className="mt-loan-calc__selected-vehicle-copy">
+                <span className="mt-loan-calc__review-label">Vehicle context</span>
+                <h2>Choose a vehicle</h2>
+              </div>
+              <div className="mt-loan-calc__selected-vehicle-status"><strong>Not selected</strong></div>
             </div>
-          </Link>
+          )}
         </div>
       ) : (
         <div className="mt-loan-calc__browse-layout">
@@ -980,7 +1011,7 @@ export const AutoLoanCalculator: React.FC = () => {
                 >
                   <img
                     className="mt-loan-calc__body-style-icon"
-                    src={bodyStyleMap[style].iconSrc}
+                    src={bodyStyleMap[style].icon}
                     alt=""
                     aria-hidden="true"
                   />
@@ -999,33 +1030,7 @@ export const AutoLoanCalculator: React.FC = () => {
             </button>
           </div>
 
-          <div className="mt-loan-calc__browse-results">
-            <div className="mt-loan-calc__browse-results-head">
-              <strong>Best {browsedBodyStyle.toLowerCase()} picks around your budget</strong>
-              <span>{selectedBrowseVehicles.length} shown</span>
-            </div>
-            <div className="mt-loan-calc__browse-results-list">
-              {selectedBrowseVehicles.map(({ vehicle, isInRange, estimatedMonthly }) => (
-                <button
-                  key={vehicle.slug}
-                  type="button"
-                  className="mt-loan-calc__browse-result-card"
-                  onClick={() => {
-                    setVehiclePathMode('known');
-                    applySearchResult(vehicle);
-                  }}
-                >
-                  <div className="mt-loan-calc__browse-result-copy">
-                    <strong>{vehicle.year} {vehicle.make} {vehicle.model}</strong>
-                    <span>Starts at {formatCurrency(vehicle.priceMin)} · {formatCurrency(estimatedMonthly)}/mo est.</span>
-                  </div>
-                  <span className={`mt-loan-calc__fit-badge${isInRange ? ' is-fit' : ''}`}>
-                    {isInRange ? 'In range' : 'Near range'}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          <p className="mt-loan-calc__fee-note">This step is optional. Choose a vehicle type to keep your estimate focused, or skip ahead.</p>
         </div>
       )}
     </div>
@@ -1036,8 +1041,9 @@ export const AutoLoanCalculator: React.FC = () => {
       <div className="mt-loan-calc__field-grid mt-loan-calc__field-grid--two">
         <TextField
           fullWidth
-          label={<FieldLabelWithInfo>Trade-in value</FieldLabelWithInfo>}
+          label={<FieldLabelWithInfo tooltip="Estimated value of the vehicle you plan to trade in. A dealer appraisal may differ.">Trade-in value</FieldLabelWithInfo>}
           value={tradeInValue}
+          inputStyle={numericInputStyle}
           inputMode="numeric"
           icon={<CurrencyDollar size={16} weight="bold" aria-hidden />}
           iconPosition="left"
@@ -1045,8 +1051,9 @@ export const AutoLoanCalculator: React.FC = () => {
         />
         <TextField
           fullWidth
-          label={<FieldLabelWithInfo>Amount owed on trade</FieldLabelWithInfo>}
+          label={<FieldLabelWithInfo tooltip="Remaining payoff on your trade-in. If this is higher than its value, the difference is negative equity.">Amount owed on trade</FieldLabelWithInfo>}
           value={amountOwed}
+          inputStyle={numericInputStyle}
           inputMode="numeric"
           icon={<CurrencyDollar size={16} weight="bold" aria-hidden />}
           iconPosition="left"
@@ -1054,27 +1061,21 @@ export const AutoLoanCalculator: React.FC = () => {
         />
       </div>
 
-      <button
-        type="button"
-        className="mt-loan-calc__inline-link"
-        onClick={() => navigate('/rate-your-car')}
-      >
-        Want a trade-in estimate?
-      </button>
-
       <div className="mt-loan-calc__field-grid mt-loan-calc__field-grid--three">
-        <SelectField label={<FieldLabelWithInfo>Your state</FieldLabelWithInfo>} value={selectedState} onChange={setSelectedState} options={stateOptions} />
+        <SelectField label={<FieldLabelWithInfo tooltip="Choose the state estimate used for sales tax and the initial registration and dealer-fee estimate.">Your state</FieldLabelWithInfo>} value={selectedState} onChange={setSelectedState} options={stateOptions} />
         <TextField
           fullWidth
-          label={<FieldLabelWithInfo>Sales tax (%)</FieldLabelWithInfo>}
+          label={<FieldLabelWithInfo tooltip="A state-level estimate. Local rates and vehicle tax rules can change the amount you owe.">Sales tax (%)</FieldLabelWithInfo>}
           value={salesTaxPercent}
+          inputStyle={numericInputStyle}
           inputMode="decimal"
           onChange={(event) => setSalesTaxPercent(event.target.value.replace(/[^0-9.]/g, ''))}
         />
         <TextField
           fullWidth
-          label={<FieldLabelWithInfo>Registration & dealer fees</FieldLabelWithInfo>}
+          label={<FieldLabelWithInfo tooltip="An editable planning estimate for registration and dealer fees. Confirm the actual charges locally.">Registration & dealer fees</FieldLabelWithInfo>}
           value={fees}
+          inputStyle={numericInputStyle}
           inputMode="numeric"
           icon={<CurrencyDollar size={16} weight="bold" aria-hidden />}
           iconPosition="left"
@@ -1083,7 +1084,7 @@ export const AutoLoanCalculator: React.FC = () => {
       </div>
 
       <p className="mt-loan-calc__fee-note">
-        {feeGuidanceCopy[selectedState]}
+        These are planning estimates. Local tax rules, registration costs, and dealer fees may differ; edit the values to match your situation.
       </p>
 
       {netTradeIn > 0 && (
@@ -1131,15 +1132,6 @@ export const AutoLoanCalculator: React.FC = () => {
           Based on a {formatCurrency(derived.targetVehiclePrice)} target vehicle price,
           {' '}{loanTerm} months, and {aprValue.toFixed(1)}% APR.
         </p>
-        <Button
-          color="primary"
-          size="large"
-          onClick={handleContinue}
-          icon={<ArrowRight size={18} weight="bold" aria-hidden />}
-          iconPosition="right"
-        >
-          See cars in your budget
-        </Button>
       </section>
 
       <section className="mt-loan-calc__estimate-panel">
@@ -1149,74 +1141,30 @@ export const AutoLoanCalculator: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-loan-calc__amount-financed">
-          <span className="mt-loan-calc__review-label">Amount financed</span>
-          <strong>{formatCurrency(derived.financedPrincipal)}</strong>
-          <p>
-            {formatCurrency(derived.targetVehiclePrice)} target price -
-            {' '}{formatCurrency(downPaymentValue)} cash down -
-            {' '}{formatCurrency(Math.max(netTradeIn, 0))} trade value +
-            {' '}{formatCurrency(derived.taxesAndFees)} taxes &amp; fees
-          </p>
-        </div>
-
-        <div className="mt-loan-calc__estimate-row-group">
+        <div className="mt-loan-calc__estimate-accordion-list">
           <dl className="mt-loan-calc__breakdown-list mt-loan-calc__breakdown-list--estimate">
-            <div><dt>Vehicle target price <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.targetVehiclePrice)}</dd></div>
-            <div className="is-positive"><dt>Down payment <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(downPaymentValue)}</dd></div>
+            <div><dt>Vehicle Target Price <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.targetVehiclePrice)}</dd></div>
           </dl>
 
-          <div className={`mt-loan-calc__estimate-accordion mt-loan-calc__estimate-accordion--row${openEstimateAccordions.totalInterest ? ' is-open' : ''}`}>
+          <div className={`mt-loan-calc__estimate-accordion mt-loan-calc__estimate-accordion--row${openEstimateAccordions.taxesFees ? ' is-open' : ''}`}>
             <button
               type="button"
               className="mt-loan-calc__estimate-accordion-summary"
-              aria-expanded={openEstimateAccordions.totalInterest}
-              onClick={() => toggleEstimateAccordion('totalInterest')}
+              aria-expanded={openEstimateAccordions.taxesFees}
+              onClick={() => toggleEstimateAccordion('taxesFees')}
             >
-              <span className="mt-loan-calc__accordion-label">Total interest paid <Info size={14} weight="regular" aria-hidden /></span>
-              <span className="mt-loan-calc__accordion-value is-alert">{formatCurrency(derived.totalInterestPaid)}</span>
+              <span className="mt-loan-calc__accordion-label">Estimated Taxes &amp; Fees <Info size={14} weight="regular" aria-hidden /></span>
+              <span className="mt-loan-calc__accordion-value is-alert">{formatCurrency(derived.taxesAndFees)}</span>
               <CaretDown size={18} weight="bold" aria-hidden />
             </button>
-            {openEstimateAccordions.totalInterest && (
-              <div className="mt-loan-calc__estimate-accordion-detail">
-                <dl className="mt-loan-calc__estimate-sublist">
-                  <div><dt>Amount financed</dt><dd>{formatCurrency(derived.financedPrincipal)}</dd></div>
-                  <div><dt>Total loan payments</dt><dd>{formatCurrency(derived.totalLoanPayments)}</dd></div>
-                  <div><dt>Rate &amp; term</dt><dd>{aprValue.toFixed(1)}% APR · {loanTerm} mo</dd></div>
-                </dl>
-                <div className="mt-loan-calc__amortization">
-                  <h3>Year-by-year amortization</h3>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Year</th>
-                        <th>Principal</th>
-                        <th>Interest</th>
-                        <th>Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {amortizationRows.map((row) => (
-                        <tr key={row.year}>
-                          <td>{row.year}</td>
-                          <td>{formatCurrency(row.principal)}</td>
-                          <td>{formatCurrency(row.interest)}</td>
-                          <td>{formatCurrency(row.balance)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            {openEstimateAccordions.taxesFees && (
+              <dl className="mt-loan-calc__estimate-accordion-detail mt-loan-calc__estimate-sublist">
+                <div><dt>Sales tax</dt><dd>{formatCurrency(derived.taxes)}</dd></div>
+                <div><dt>Dealer &amp; registration fee</dt><dd>{formatCurrency(feesValue)}</dd></div>
+              </dl>
             )}
           </div>
 
-          <dl className="mt-loan-calc__breakdown-list mt-loan-calc__breakdown-list--estimate">
-            <div><dt>Rate &amp; term</dt><dd>{aprValue.toFixed(1)}% APR · {loanTerm} mo</dd></div>
-          </dl>
-        </div>
-
-        <div className="mt-loan-calc__estimate-accordion-list">
           <div className={`mt-loan-calc__estimate-accordion mt-loan-calc__estimate-accordion--row${openEstimateAccordions.netTrade ? ' is-open' : ''}`}>
             <button
               type="button"
@@ -1224,7 +1172,7 @@ export const AutoLoanCalculator: React.FC = () => {
               aria-expanded={openEstimateAccordions.netTrade}
               onClick={() => toggleEstimateAccordion('netTrade')}
             >
-              <span className="mt-loan-calc__accordion-label">Net trade value <Info size={14} weight="regular" aria-hidden /></span>
+              <span className="mt-loan-calc__accordion-label">Net Trade Value <Info size={14} weight="regular" aria-hidden /></span>
               <span className="mt-loan-calc__accordion-value">{formatCurrency(netTradeIn)}</span>
               <CaretDown size={18} weight="bold" aria-hidden />
             </button>
@@ -1236,61 +1184,53 @@ export const AutoLoanCalculator: React.FC = () => {
             )}
           </div>
 
-          <div className={`mt-loan-calc__estimate-accordion mt-loan-calc__estimate-accordion--row${openEstimateAccordions.taxesFees ? ' is-open' : ''}`}>
+          <dl className="mt-loan-calc__breakdown-list mt-loan-calc__breakdown-list--estimate">
+            <div className="is-positive"><dt>Down Payment <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.downPayment)}</dd></div>
+          </dl>
+
+          <div className="mt-loan-calc__amount-financed mt-loan-calc__amount-financed--row">
+            <span className="mt-loan-calc__review-label">Amount Financed <Info size={14} weight="regular" aria-hidden /></span>
+            <strong>{formatCurrency(derived.financedPrincipal)}</strong>
+            <p>Based on vehicle price, down payment, net trade equity, and taxes and fees included in the loan · {aprValue.toFixed(1)}% APR for {loanTerm} months</p>
+          </div>
+
+          <div className={`mt-loan-calc__estimate-accordion mt-loan-calc__estimate-accordion--row${openEstimateAccordions.totalInterest ? ' is-open' : ''}`}>
             <button
               type="button"
               className="mt-loan-calc__estimate-accordion-summary"
-              aria-expanded={openEstimateAccordions.taxesFees}
-              onClick={() => toggleEstimateAccordion('taxesFees')}
+              aria-expanded={openEstimateAccordions.totalInterest}
+              onClick={() => toggleEstimateAccordion('totalInterest')}
             >
-              <span className="mt-loan-calc__accordion-label">Estimated taxes &amp; fees <Info size={14} weight="regular" aria-hidden /></span>
-              <span className="mt-loan-calc__accordion-value is-alert">{formatCurrency(derived.taxesAndFees)}</span>
+              <span className="mt-loan-calc__accordion-label">Total Interest Paid <Info size={14} weight="regular" aria-hidden /></span>
+              <span className="mt-loan-calc__accordion-value is-alert">{formatCurrency(derived.totalInterestPaid)}</span>
               <CaretDown size={18} weight="bold" aria-hidden />
             </button>
-            {openEstimateAccordions.taxesFees && (
-              <dl className="mt-loan-calc__estimate-accordion-detail mt-loan-calc__estimate-sublist">
-                <div><dt>Sales tax</dt><dd>{formatCurrency(derived.taxes)}</dd></div>
-                <div><dt>Dealer &amp; registration fee</dt><dd>{formatCurrency(feesValue)}</dd></div>
-              </dl>
+            {openEstimateAccordions.totalInterest && (
+              <div className="mt-loan-calc__estimate-accordion-detail">
+                <dl className="mt-loan-calc__estimate-sublist">
+                  <div><dt>Amount financed</dt><dd>{formatCurrency(derived.financedPrincipal)}</dd></div>
+                  <div><dt>Total loan payment</dt><dd>{formatCurrency(derived.totalLoanPayments)}</dd></div>
+                  <div><dt>Rate &amp; term</dt><dd>{aprValue.toFixed(1)}% APR · {loanTerm} mo</dd></div>
+                </dl>
+                <div className="mt-loan-calc__amortization">
+                  <h3>Year-by-year amortization</h3>
+                  <table>
+                    <thead><tr><th>Year</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+                    <tbody>{amortizationRows.map((row) => (
+                      <tr key={row.year}><td>{row.year}</td><td>{formatCurrency(row.principal)}</td><td>{formatCurrency(row.interest)}</td><td>{formatCurrency(row.balance)}</td></tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+              </div>
             )}
           </div>
-        </div>
 
-        <dl className="mt-loan-calc__breakdown-list mt-loan-calc__breakdown-list--estimate">
-          <div><dt>Total loan payments over {loanTerm} months <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.totalLoanPayments)}</dd></div>
-          <div><dt>Monthly payment <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.monthlyPayment)}/mo</dd></div>
-          <div className="is-strong"><dt>Estimated total paid <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.totalPaid)}</dd></div>
-        </dl>
-      </section>
+          <dl className="mt-loan-calc__breakdown-list mt-loan-calc__breakdown-list--estimate">
+            <div><dt>Total Loan Payment <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.totalLoanPayments)}</dd></div>
+            <div><dt>Monthly Payment <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.monthlyPayment)}/mo</dd></div>
+            <div className="is-strong"><dt>Estimated Total Paid <Info size={14} weight="regular" aria-hidden /></dt><dd>{formatCurrency(derived.totalPaid)}</dd></div>
+          </dl>
 
-      <section className="mt-loan-calc__estimate-panel mt-loan-calc__for-sale-panel">
-        <div className="mt-loan-calc__for-sale-head">
-          <div>
-            <h2 className="mt-loan-calc__breakdown-title">For sale near you</h2>
-            <p>Explore vehicles close to this budget and payment target.</p>
-          </div>
-          <Button color="neutral" variant="outline" onClick={() => navigate('/vehicles')}>
-            Browse all
-          </Button>
-        </div>
-        <div className="mt-loan-calc__nearby-grid">
-          {reviewVehicleCards.map(({ vehicle, estimatedMonthly }) => (
-            <button
-              key={vehicle.slug}
-              type="button"
-              className="mt-loan-calc__nearby-card"
-              onClick={() => navigate(`/vehicles/${vehicle.slug}`)}
-            >
-              {vehicle.image ? (
-                <img src={vehicle.image} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} />
-              ) : (
-                <span className="mt-loan-calc__nearby-image-fallback">Image unavailable</span>
-              )}
-              <strong>{vehicle.year} {vehicle.make} {vehicle.model}</strong>
-              <span>{formatCurrency(vehicle.priceMin)}</span>
-              <small>{formatCurrency(estimatedMonthly)}/mo est.</small>
-            </button>
-          ))}
         </div>
       </section>
 
@@ -1308,8 +1248,7 @@ export const AutoLoanCalculator: React.FC = () => {
           </nav>
           <h1>Auto Loan Calculator</h1>
           <p>
-            See what your monthly budget can really buy. Estimate payments, compare financing costs, and
-            explore vehicles that fit your budget. No personal information required.
+            Estimate monthly payments, compare financing costs, and see how your loan assumptions change the total. No personal information required.
           </p>
         </div>
       </section>
@@ -1320,12 +1259,6 @@ export const AutoLoanCalculator: React.FC = () => {
           padding="none"
           noGap
           className="mt-loan-calc__shell"
-          style={{
-            background: 'var(--color-neutrals-8, #FCFCFD)',
-            borderRadius: '16px',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.24)',
-            overflow: 'visible',
-          }}
         >
           <div className="mt-loan-calc__shell-top" ref={shellTopRef}>
             <ol className="mt-loan-calc__steps" aria-label="Calculator steps">
@@ -1342,7 +1275,7 @@ export const AutoLoanCalculator: React.FC = () => {
                     onClick={() => goToStep(index)}
                   >
                     <span className="mt-loan-calc__step-number">
-                      {index < stepIndex ? <Check size={16} weight="bold" aria-hidden /> : index + 1}
+                      {index + 1}
                     </span>
                     <span className="mt-loan-calc__step-name">{step.label}</span>
                   </button>
@@ -1393,15 +1326,17 @@ export const AutoLoanCalculator: React.FC = () => {
                       Start over
                     </button>
                   )}
-                  <Button
-                    color="primary"
-                    size="large"
-                    onClick={handleContinue}
-                    icon={<ArrowRight size={18} weight="bold" aria-hidden />}
-                    iconPosition="right"
-                  >
-                    {stepIndex === steps.length - 1 ? 'See cars in your budget' : 'Continue'}
-                  </Button>
+                  {stepIndex < steps.length - 1 && (
+                    <Button
+                      color="primary"
+                      size="large"
+                      onClick={handleContinue}
+                      icon={<ArrowRight size={18} weight="bold" aria-hidden />}
+                      iconPosition="right"
+                    >
+                      Continue
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -1412,12 +1347,6 @@ export const AutoLoanCalculator: React.FC = () => {
                 hasHover={false}
                 padding="lg"
                 className="mt-loan-calc__summary-card"
-                style={{
-                  background: 'var(--color-neutrals-8)',
-                  borderRadius: '16px',
-                  position: 'sticky',
-                  top: '104px',
-                }}
               >
                 <span className="mt-loan-calc__summary-kicker">Estimated monthly payment</span>
                 <div className="mt-loan-calc__summary-amount">
@@ -1433,7 +1362,7 @@ export const AutoLoanCalculator: React.FC = () => {
                   </div>
                   <div>
                     <dt>Down payment</dt>
-                    <dd>{formatCurrency(downPaymentValue)}</dd>
+                    <dd>{formatCurrency(derived.downPayment)}</dd>
                   </div>
                   <div>
                     <dt>Rate &amp; term</dt>
@@ -1441,7 +1370,7 @@ export const AutoLoanCalculator: React.FC = () => {
                   </div>
                   <div>
                     <dt>Vehicle context</dt>
-                    <dd>{vehiclePathMode === 'known' ? selectedVehicle?.make ?? 'Vehicle' : browsedBodyStyle}</dd>
+                    <dd>{vehiclePathMode === 'known' ? selectedVehicle?.make ?? 'Not selected' : browsedBodyStyle}</dd>
                   </div>
                   <div>
                     <dt>Net trade-in value</dt>
@@ -1489,26 +1418,8 @@ export const AutoLoanCalculator: React.FC = () => {
             <article className="mt-loan-calc__info-card">
               <span className="mt-loan-calc__info-mark"><Car size={20} weight="bold" aria-hidden /></span>
               <h3>Recommendations for your budget</h3>
-              <p>Use your estimate to explore vehicles near your target and build a shortlist that fits your plans.</p>
+              <p>Use your estimate to compare financing scenarios and build a budget that fits your plans.</p>
             </article>
-          </div>
-        </section>
-
-        <section className="mt-loan-calc__info-section" aria-labelledby="mt-loan-calc-tools-heading">
-          <div className="mt-loan-calc__section-heading">
-            <span className="mt-loan-calc__section-kicker">Keep researching</span>
-            <h2 id="mt-loan-calc-tools-heading">Shopping tools</h2>
-          </div>
-          <div className="mt-loan-calc__tools-grid">
-            <Link className="mt-loan-calc__tool-card" to="/vehicles">
-              <span>Browse inventory</span><strong>Shop for cars</strong><ArrowRight size={20} aria-hidden />
-            </Link>
-            <Link className="mt-loan-calc__tool-card" to="/rate-your-car">
-              <span>Share your ownership experience</span><strong>Rate a car</strong><ArrowRight size={20} aria-hidden />
-            </Link>
-            <Link className="mt-loan-calc__tool-card" to="/compare-vehicles">
-              <span>Compare your shortlist</span><strong>Compare vehicles</strong><ArrowRight size={20} aria-hidden />
-            </Link>
           </div>
         </section>
 

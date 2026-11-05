@@ -20,6 +20,7 @@ export interface GlobalHeaderProps {
   onSignInClick?: () => void;
   onProfileClick?: () => void;
   isAuthenticated?: boolean;
+  disableNavDropdowns?: boolean;
 }
 
 const navigationItems = [
@@ -207,7 +208,7 @@ const navigationItems = [
   }
 ];
 
-export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
+export const GlobalHeader: React.FC<GlobalHeaderProps> = ({ disableNavDropdowns = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -381,6 +382,13 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   const [contentLeft, setContentLeft] = useState<number | null>(null);
   // State to control the CSS transition class for the mega dropdown
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  useEffect(() => {
+    if (!disableNavDropdowns) return;
+    setActiveDropdown(null);
+    setHoveredNavItem(null);
+    setIsDropdownVisible(false);
+  }, [disableNavDropdowns]);
 
   // Research Vehicles Form State
   const [researchMake, setResearchMake] = useState('');
@@ -1009,6 +1017,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   };
 
   const handleNavHover = (label: string) => {
+    if (disableNavDropdowns) return;
     // Calculate position synchronously before showing dropdown to prevent jump
     const targetRef = label === 'News + Stories' ? newsStoriesNavRef :
                      label === 'Research Vehicles' ? researchVehiclesNavRef :
@@ -1069,6 +1078,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
   };
 
   const handleNavLeave = () => {
+    if (disableNavDropdowns) return;
     // Don't close dropdown - let the mega dropdown's mouse handlers manage it
     // This prevents the dropdown from closing when moving from nav to dropdown
     return;
@@ -3243,12 +3253,16 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                      item.label === 'Buy + Sell' ? buySellNavRef : null}
                 style={navItemStyle}
                 onMouseEnter={() => {
-                  setHoveredNavItem(item.label);
-                  handleNavHover(item.label);
+                  if (!disableNavDropdowns) {
+                    setHoveredNavItem(item.label);
+                    handleNavHover(item.label);
+                  }
                 }}
                 onMouseLeave={() => {
-                  setHoveredNavItem(null);
-                  handleNavLeave();
+                  if (!disableNavDropdowns) {
+                    setHoveredNavItem(null);
+                    handleNavLeave();
+                  }
                 }}
               >
                 <a
@@ -3256,9 +3270,9 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
                   style={navLinkStyle}
                 >
                   {item.label}
-                  <Icon name="keyboard_arrow_down" size={16} style={{ transition: 'transform var(--transition-fast, 150ms ease-in-out)', transform: isHovered ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                  {!disableNavDropdowns && <Icon name="keyboard_arrow_down" size={16} style={{ transition: 'transform var(--transition-fast, 150ms ease-in-out)', transform: isHovered ? 'rotate(180deg)' : 'rotate(0deg)' }} />}
                 </a>
-                {activeDropdown === item.label && item.subItems && !(item as any).hasMegaDropdown && (
+                {!disableNavDropdowns && activeDropdown === item.label && item.subItems && !('hasMegaDropdown' in item && item.hasMegaDropdown) && (
                   <div style={navDropdownStyle}>
                     {item.subItems.map((subItem) => {
                       const isSubActive = isSubItemActive(subItem.href);
@@ -3309,7 +3323,7 @@ export const GlobalHeader: React.FC<GlobalHeaderProps> = () => {
 
           {/* Mega Dropdown - Rendered outside nav items for proper positioning */}
           {navigationItems.map((item, index) => {
-            if (activeDropdown === item.label && (item as any).hasMegaDropdown && (item as any).megaDropdown) {
+            if (!disableNavDropdowns && activeDropdown === item.label && 'hasMegaDropdown' in item && item.hasMegaDropdown && item.megaDropdown) {
               const isVisible = indicatorLeft !== null && contentLeft !== null && isDropdownVisible;
 
               const megaDropdownStyle: React.CSSProperties = {

@@ -56,10 +56,11 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Pages that should hide the global header and footer
   const fullScreenPages = ['/journey-builder'];
   const isFullScreenPage = fullScreenPages.includes(location.pathname);
+  const isAutoLoanCalculator = location.pathname.startsWith('/auto-loan-calculator');
 
   return (
     <div className="app">
-      {!isFullScreenPage && <GlobalHeader />}
+      {!isFullScreenPage && <GlobalHeader disableNavDropdowns={isAutoLoanCalculator} />}
       <main className="app__main">
         {children}
       </main>
