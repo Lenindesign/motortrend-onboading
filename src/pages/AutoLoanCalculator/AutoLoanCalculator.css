@@ -2333,3 +2333,29 @@
     white-space: nowrap;
   }
 }
+
+.mt-loan-calc__shell-top.is-sticky {
+  padding: var(--spacing-1) var(--spacing-2);
+}
+
+.mt-loan-calc__shell-top.is-sticky .mt-loan-calc__step-dot {
+  gap: 0;
+}
+
+.mt-loan-calc__shell-top.is-sticky .mt-loan-calc__step-button {
+  gap: 0;
+}
+
+.mt-loan-calc__shell-top.is-sticky .mt-loan-calc__step-number {
+  width: var(--spacing-4);
+  height: var(--spacing-4);
+  flex-basis: var(--spacing-4);
+}
+
+.mt-loan-calc__shell-top.is-sticky .mt-loan-calc__step-name {
+  display: none;
+}
+
+.mt-loan-calc__shell-top.is-sticky .mt-loan-calc__step-dot::after {
+  top: var(--spacing-2);
+}

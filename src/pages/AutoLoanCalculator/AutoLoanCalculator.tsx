@@ -363,6 +363,7 @@ export const AutoLoanCalculator: React.FC = () => {
   const [salesTaxPercent, setSalesTaxPercent] = useState(stateDefaults.VA.tax.toString());
   const [fees, setFees] = useState(stateDefaults.VA.fees.toString());
   const [includeFeesInLoan, setIncludeFeesInLoan] = useState(true);
+  const [isStepperSticky, setIsStepperSticky] = useState(false);
   const [openEstimateAccordions, setOpenEstimateAccordions] = useState<Record<EstimateAccordionKey, boolean>>({
     totalInterest: false,
     netTrade: false,
@@ -396,6 +397,33 @@ export const AutoLoanCalculator: React.FC = () => {
       } else {
         rootStyle.removeProperty('--mt-loan-calc-sticky-top');
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const stepper = shellTopRef.current;
+    if (!stepper) return undefined;
+
+    let frame = 0;
+    const updateStickyState = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const stickyTop = Number.parseFloat(getComputedStyle(stepper).top) || 0;
+        const stepperBounds = stepper.getBoundingClientRect();
+        const shellBounds = stepper.parentElement?.getBoundingClientRect();
+        const stuck = stepperBounds.top <= stickyTop + 1
+          && Boolean(shellBounds && shellBounds.bottom > stepperBounds.bottom + 1);
+        setIsStepperSticky((current) => current === stuck ? current : stuck);
+      });
+    };
+
+    updateStickyState();
+    window.addEventListener('scroll', updateStickyState, { passive: true });
+    window.addEventListener('resize', updateStickyState);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', updateStickyState);
+      window.removeEventListener('resize', updateStickyState);
     };
   }, []);
 
@@ -1260,7 +1288,7 @@ export const AutoLoanCalculator: React.FC = () => {
           noGap
           className="mt-loan-calc__shell"
         >
-          <div className="mt-loan-calc__shell-top" ref={shellTopRef}>
+          <div className={`mt-loan-calc__shell-top${isStepperSticky ? ' is-sticky' : ''}`} ref={shellTopRef}>
             <ol className="mt-loan-calc__steps" aria-label="Calculator steps">
               {steps.map((step, index) => (
                 <li
